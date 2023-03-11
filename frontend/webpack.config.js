@@ -22,7 +22,7 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: [nodeModulesPath],
         use: {
-          loader: ['babel-loader', 'eslint-loader'],
+          loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-env', '@babel/preset-react']
           },  
