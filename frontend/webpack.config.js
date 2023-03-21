@@ -11,7 +11,7 @@ module.exports = {
     bundle: [
         mainPath,
     ]
- },
+  },
   output: {
     path: buildPath,
     filename: 'bundle.js',
@@ -29,6 +29,14 @@ module.exports = {
         },
       },
       {
+        test: /node_modules\/recoil\/.*\.js$/,
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env', '@babel/preset-react'],
+          plugins: ['@babel/plugin-proposal-class-properties']
+        }
+      },
+      {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
@@ -42,6 +50,20 @@ module.exports = {
           loader: 'url-loader',
           options: {
           limit: 10000,
+          },
+        }],
+      },
+      {
+        test: /\.(s?)css$/,
+        use: [{
+          loader: 'css-loader',
+          options: {
+            sourceMap: true,
+          },
+        }, {
+          loader: 'sass-loader',
+          options: {
+            sourceMap: true,
           },
         }],
       }
