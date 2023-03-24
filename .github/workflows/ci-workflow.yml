@@ -18,6 +18,13 @@ on:
       # OPENSHIFT_LICENSE_PLATE_SILVER:
       #   required: true
       #   type: string
+    secrets:
+      OPENSHIFT_SERVER_URL_SILVER:
+        required: true
+      OPENSHIFT_SA_PIPELINE_TOKEN_SILVER:
+        required: true
+      OPENSHIFT_LICENSE_PLATE_SILVER:
+        required: true
 
 jobs:
   build:
