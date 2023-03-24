@@ -16,3 +16,4 @@ jobs:
     with:
       DOCKER_CONTEXT: roadside-forms-frontend/frontend_web_app
       DOCKER_FILE: roadside-forms-frontend/frontend_web_app/Dockerfile
+    secrets: inherit
