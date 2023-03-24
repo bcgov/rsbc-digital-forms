@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 const custom = require('../webpack.config.js');
 module.exports = {
   "stories": [
