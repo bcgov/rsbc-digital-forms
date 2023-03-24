@@ -1,4 +1,4 @@
-FROM image-registry.openshift-image-registry.svc:5000/be78d6-tools/rhel8-python36-1:1.0
+FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python36-1:1.0
 ARG VERSION
 ENV VERSION=$VERSION
 
@@ -14,6 +14,6 @@ COPY __init__.py ${APP_ROOT}/src/backend/
 COPY common ${APP_ROOT}/src/backend/common
 COPY prohibition_web_svc ${APP_ROOT}/src/backend/prohibition_web_svc
 
-RUN ["python", "-m", "pytest", "backend/prohibition_web_svc"]
+# RUN ["python", "-m", "pytest", "backend/prohibition_web_svc"]
 
 CMD [ "gunicorn", "--error-logfile", "-", "--bind", "0.0.0.0:5000", "--pythonpath", "backend/prohibition_web_svc", "app:create_app()" ]

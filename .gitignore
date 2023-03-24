@@ -6,7 +6,6 @@ __pycache__/
 *.py[cod]
 build/
 node_modules/
-public/
 TEST-*xml
 venv/
 
@@ -17,3 +16,4 @@ db.sqlite3
 .nvm/
 env/
 dist_old/
+build
