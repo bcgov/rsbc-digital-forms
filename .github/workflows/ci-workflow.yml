@@ -9,6 +9,15 @@ on:
       DOCKER_FILE:
         required: true
         type: string
+      OPENSHIFT_SERVER_URL_SILVER:
+        required: true
+        type: string
+      OPENSHIFT_SA_PIPELINE_TOKEN_SILVER:
+        required: true
+        type: string
+      OPENSHIFT_LICENSE_PLATE_SILVER:
+        required: true
+        type: string
 
 jobs:
   build:
@@ -25,9 +34,9 @@ jobs:
       - name: Authenticate and set context for build
         uses: redhat-actions/oc-login@v1.1.2
         with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_URL_SILVER }}
-          openshift_token: ${{ secrets.OPENSHIFT_SA_PIPELINE_TOKEN_SILVER }}
-          namespace: "${{ secrets.OPENSHIFT_LICENSE_PLATE_SILVER }}-tools"
+          openshift_server_url: ${{ inputs.OPENSHIFT_SERVER_URL_SILVER }}
+          openshift_token: ${{ inputs.OPENSHIFT_SA_PIPELINE_TOKEN_SILVER }}
+          namespace: "${{ inputs.OPENSHIFT_LICENSE_PLATE_SILVER }}-tools"
 
       - name: Build
         uses: docker/build-push-action@v3
