@@ -1,5 +1,5 @@
 # FROM registry.access.redhat.com/ubi8/nodejs-16-minimal:latest AS build
-FROM artifacts.developer.gov.bc.ca/dbe7-images/ubi8-nodejs16:1.0 AS build
+FROM artifacts.developer.gov.bc.ca/dbe7-images/node16:1.0 AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
