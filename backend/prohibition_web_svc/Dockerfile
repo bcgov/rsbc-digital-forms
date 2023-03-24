@@ -1,4 +1,4 @@
-FROM image-registry.openshift-image-registry.svc:5000/be78d6-tools/rhel8-python36-1:1.0
+FROM image-registry.apps.silver.devops.gov.bc.ca/be78d6-tools/rhel8-python36-1:1.0
 ARG VERSION
 ENV VERSION=$VERSION
 
