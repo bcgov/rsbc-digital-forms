@@ -1,0 +1,20 @@
+name: prohibition_web_svc-ci
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches-ignore:
+      - master
+    paths:
+      - backend/*.py
+      - backend/common/**
+      - backend/prohibition_web_svc/**
+      - .github/workflows/prohibition_web_svc-ci.yml
+      - trigger.txt
+
+jobs:
+  CI:
+    uses: ./.github/workflows/ci-workflow.yml
+    with:
+      DOCKER_CONTEXT: backend
+      DOCKER_FILE: backend/prohibition_web_svc/Dockerfile
