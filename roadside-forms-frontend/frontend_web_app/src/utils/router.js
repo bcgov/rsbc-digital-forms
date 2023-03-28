@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Route, BrowserRouter, Routes} from 'react-router-dom';
+import PrivateRoute from '../routes/PrivateRoute';
 
 class Router extends Component {
 
@@ -9,8 +10,8 @@ class Router extends Component {
         <BrowserRouter>
                 <Routes>
                     <Route 
-                         path="/" 
-                         element={<h1>Hello, world!</h1>}  />
+                      path="/" 
+                      element={<h1>Hello, world!</h1>}  />
                 </Routes>
         </BrowserRouter>
     );
