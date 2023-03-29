@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Route, BrowserRouter, Routes} from 'react-router-dom';
+import { Login } from '../components/Login/login';
 import PrivateRoute from '../routes/PrivateRoute';
 
 class Router extends Component {
@@ -11,7 +12,7 @@ class Router extends Component {
                 <Routes>
                     <Route 
                       path="/" 
-                      element={<h1>Hello, world!</h1>}  />
+                      element={<Login />}  />
                 </Routes>
         </BrowserRouter>
     );
