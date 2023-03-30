@@ -1,14 +1,15 @@
 import React from 'react';
 import { ReactKeycloakProvider } from "@react-keycloak/web";
 import Router from './utils/router';
-import keycloak from './keycloak';
+import keycloak, { keycloakInitConfig } from './keycloak';
 
 function App() {
+  console.log(process)
   return (
     <div className="App">    
-      {/* <ReactKeycloakProvider authClient={keycloak}> */}
+      <ReactKeycloakProvider authClient={keycloak} initOptions={keycloakInitConfig}>
         <Router/>
-      {/* </ReactKeycloakProvider> */}
+      </ReactKeycloakProvider>
     </div>
   );
 }

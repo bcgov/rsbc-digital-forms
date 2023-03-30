@@ -6,4 +6,8 @@ const keycloak = new Keycloak({
     clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID,
    });
 
+   export const keycloakInitConfig = {
+    pkceMethod: 'S256',
+  };
+
 export default keycloak;
