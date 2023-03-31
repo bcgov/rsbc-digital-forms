@@ -1,4 +1,4 @@
-name: prohibition_web_svc-ci
+name: roadside_forms_backend-ci
 
 on:
   pull_request:
@@ -10,7 +10,7 @@ on:
       - backend/*.py
       - backend/common/**
       - backend/prohibition_web_svc/**
-      - .github/workflows/prohibition_web_svc-ci.yml
+      - .github/workflows/roadside_forms_backend.yml
       - trigger.txt
 
 jobs:
