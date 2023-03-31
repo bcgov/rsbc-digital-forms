@@ -18,6 +18,7 @@ on:
         default: latest
       IMAGE_NAME:
         required: true
+        type: string
     secrets:
       DOCKER_REGISTRY:
         required: true
