@@ -1,5 +1,5 @@
 import os
-from backend.common.config import Config as BaseConfig
+from python.common.config import Config as BaseConfig
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 

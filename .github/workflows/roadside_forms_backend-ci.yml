@@ -7,9 +7,9 @@ on:
       - master
       - main
     paths:
-      - backend/*.py
-      - backend/common/**
-      - backend/prohibition_web_svc/**
+      - python/*.py
+      - python/common/**
+      - python/prohibition_web_svc/**
       - .github/workflows/roadside_forms_backend-ci.yml
       - trigger.txt
 
@@ -17,8 +17,8 @@ jobs:
   CI:
     uses: ./.github/workflows/ci-workflow.yml
     with:
-      DOCKER_CONTEXT: backend
-      DOCKER_FILE: backend/prohibition_web_svc/Dockerfile
+      DOCKER_CONTEXT: python
+      DOCKER_FILE: python/prohibition_web_svc/Dockerfile
       # OPENSHIFT_SERVER_URL_SILVER: "${{ secrets.OPENSHIFT_SERVER_URL_SILVER }}"
       # OPENSHIFT_SA_PIPELINE_TOKEN_SILVER: ${{ secrets.OPENSHIFT_SA_PIPELINE_TOKEN_SILVER }}
       # OPENSHIFT_LICENSE_PLATE_SILVER: "${{ secrets.OPENSHIFT_LICENSE_PLATE_SILVER }}"

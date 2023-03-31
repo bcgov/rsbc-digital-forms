@@ -10,9 +10,9 @@ on:
       - master
       - main
     paths:
-      - backend/*.py
-      - backend/common/**
-      - backend/prohibition_web_svc/**
+      - python/*.py
+      - python/common/**
+      - python/prohibition_web_svc/**
       - .github/workflows/roadside_forms_backend-cd.yml
       - trigger.txt
 
@@ -20,7 +20,7 @@ jobs:
   CD:
     uses: ./.github/workflows/cd-workflow.yml
     with:
-      DOCKER_CONTEXT: backend
-      DOCKER_FILE: backend/prohibition_web_svc/Dockerfile
+      DOCKER_CONTEXT: python
+      DOCKER_FILE: python/prohibition_web_svc/Dockerfile
       DOCKER_IMAGE_NAME: rsbc-roadside-forms-backend-api
     secrets: inherit

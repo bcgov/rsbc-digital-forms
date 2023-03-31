@@ -15,10 +15,10 @@ RUN source /opt/app-root/etc/scl_enable && \
     cd ${APP_ROOT}/src && pip install -r requirements.txt
 
 
-COPY __init__.py ${APP_ROOT}/src/backend/
-COPY common ${APP_ROOT}/src/backend/common
-COPY form_handler ${APP_ROOT}/src/backend/form_handler
+COPY __init__.py ${APP_ROOT}/src/python/
+COPY common ${APP_ROOT}/src/python/common
+COPY form_handler ${APP_ROOT}/src/python/form_handler
 
 # RUN ["python", "-m", "pytest", "backend/form_handler"]
 
-CMD [ "python", "backend/form_handler/listener.py" ]
+CMD [ "python", "python/form_handler/listener.py" ]
