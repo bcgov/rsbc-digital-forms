@@ -18,9 +18,9 @@ on:
       - master
       - main
     paths:
-      - backend/*.py
-      - backend/common/**
-      - backend/form_handler/**
+      - python/*.py
+      - python/common/**
+      - python/form_handler/**
       - .github/workflows/form_handler-ci.yml
       - trigger.txt
 
@@ -28,6 +28,6 @@ jobs:
   CI:
     uses: ./.github/workflows/ci-workflow.yml
     with:
-      DOCKER_CONTEXT: backend
-      DOCKER_FILE: backend/form_handler/Dockerfile
+      DOCKER_CONTEXT: python
+      DOCKER_FILE: python/form_handler/Dockerfile
     secrets: inherit
