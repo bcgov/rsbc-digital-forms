@@ -10,7 +10,7 @@ on:
       - backend/*.py
       - backend/common/**
       - backend/prohibition_web_svc/**
-      - .github/workflows/roadside_forms_backend.yml
+      - .github/workflows/roadside_forms_backend-ci.yml
       - trigger.txt
 
 jobs:
