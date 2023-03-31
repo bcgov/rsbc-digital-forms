@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import './header.css';
+import './header.scss';
 import { getCurrentDateTime } from '../../utils/dateTime';
 
 export const Header = ({ user, onLogin, onLogout}) => {
