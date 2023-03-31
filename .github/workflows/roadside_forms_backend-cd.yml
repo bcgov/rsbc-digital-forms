@@ -23,4 +23,5 @@ jobs:
       DOCKER_CONTEXT: backend
       DOCKER_FILE: backend/prohibition_web_svc/Dockerfile
       DOCKER_IMAGE_NAME: rsbc-roadside-forms-backend-api
+      IMAGE_NAME: "rsbc-roadside-forms-app-api-image"
     secrets: inherit
