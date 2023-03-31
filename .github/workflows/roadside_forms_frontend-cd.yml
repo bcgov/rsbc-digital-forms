@@ -1,20 +1,24 @@
-name: roadside_forms_frontend-ci.yml
+name: roadside_forms_frontend-cd
 
 on:
+  # push:
+  #   branches:
+  #     - master
   pull_request:
     types: [opened, reopened, edited, synchronize]
-    branches-ignore:
+    branches:
       - master
       - main
     paths:
       - roadside-forms-frontend/frontend_web_app/**
-      - .github/workflows/roadside_forms_frontend-ci.yml
+      - .github/workflows/roadside_forms_frontend-cd.yml
       - trigger.txt
 
 jobs:
-  CI:
-    uses: ./.github/workflows/ci-workflow.yml
+  CD:
+    uses: ./.github/workflows/cd-workflow.yml
     with:
       DOCKER_CONTEXT: roadside-forms-frontend/frontend_web_app
       DOCKER_FILE: roadside-forms-frontend/frontend_web_app/Dockerfile
+      DOCKER_IMAGE_NAME: rsbc-roadside-forms-frontend
     secrets: inherit
