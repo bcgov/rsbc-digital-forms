@@ -30,3 +30,4 @@ jobs:
     with:
       DOCKER_CONTEXT: backend
       DOCKER_FILE: backend/form_handler/Dockerfile
+    secrets: inherit
