@@ -1,3 +1,12 @@
+$primary-color: #003366;
+
+.base-class {
+  background-position: left;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 5rem;
+}
+
 #roadsafety-header {
   align-items: center;
   display: flex;
@@ -18,17 +27,14 @@
 
 .container {
   font-family: 'Avenir',Helvetica,Arial,sans-serif;
-  background-color: #003366;
+  background-color: $primary-color;
   max-width: 100%;
   min-height: 120px;
 }
 
 .brand-logo {
+  @extend .base-class;
   background-image: url("../../assets/BCID_RoadSafetyBC_logo_transparent.png");
-  background-position: left;
-  background-repeat: no-repeat;
-  background-size: contain;
-  height: 5rem;
   margin: 1rem auto;
   padding: 0;
   position: absolute;
@@ -37,18 +43,12 @@
 }
 
 .connected {
+  @extend .base-class;
   background-image: url("../../assets/connect.png");
-  background-position: left;
-  background-repeat: no-repeat;
-  background-size: contain;
   background-color: transparent;
-  height: 5rem;
 }
 
 .disconnected {
+  @extend .base-class;
   background-image: url("../../assets/dis.png");
-  background-position: left;
-  background-repeat: no-repeat;
-  background-size: contain;
-  height: 5rem;
 }
