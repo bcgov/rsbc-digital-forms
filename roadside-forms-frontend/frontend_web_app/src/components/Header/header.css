@@ -13,7 +13,7 @@
 
 .col-right{
   text-align: right;
-  margin-top: 20px;
+  margin-top: 1.5rem !important;
 }
 
 .container {
@@ -33,5 +33,22 @@
   padding: 0;
   position: absolute;
   top: 0;
-  width: 50%;
+  width: 25%;
+}
+
+.connected {
+  background-image: url("../../assets/connect.png");
+  background-position: left;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-color: transparent;
+  height: 5rem;
+}
+
+.disconnected {
+  background-image: url("../../assets/dis.png");
+  background-position: left;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 5rem;
 }
