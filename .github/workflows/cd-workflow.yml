@@ -78,6 +78,8 @@ jobs:
           openshift_token: ${{ secrets.OPENSHIFT_SA_PIPELINE_TOKEN_SILVER }}
           namespace: "${{ secrets.OPENSHIFT_LICENSE_PLATE_SILVER }}-tools"
       - name: Trigger Image import
+        env:
+          IMAGE_NAME: ${{ inputs.IMAGE_NAME }}
         run: |
           oc import-image $IMAGE_NAME:latest --confirm
         
