@@ -5,6 +5,7 @@ on:
     types: [opened, reopened, edited, synchronize]
     branches-ignore:
       - master
+      - main
     paths:
       - roadside-forms-frontend/frontend_web_app/**
       - .github/workflows/roadside_forms_frontend-ci.yml
