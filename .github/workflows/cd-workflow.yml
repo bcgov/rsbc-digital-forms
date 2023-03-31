@@ -67,4 +67,4 @@ jobs:
           push: true
           build-args: |
             VERSION=${{ steps.tag.outputs.new_version }}
-          tags: ${{ secrets.DOCKER_REGISTRY }}/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_IMAGE_TAG }}
+          tags: ${{ secrets.DOCKER_REGISTRY }}/dbe7-images/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_IMAGE_TAG }}
