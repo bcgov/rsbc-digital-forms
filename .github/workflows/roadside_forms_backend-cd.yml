@@ -1,0 +1,27 @@
+name: roadside_forms_backend-cd
+
+on:
+  # push:
+  #   branches:
+  #     - master
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches:
+      - master
+      - main
+    paths:
+      - backend/*.py
+      - backend/common/**
+      - backend/prohibition_web_svc/**
+      - .github/workflows/roadside_forms_backend-cd.yml
+      - trigger.txt
+
+jobs:
+  CD:
+    uses: ./.github/workflows/cd-workflow.yml
+    with:
+      DOCKER_CONTEXT: backend
+      DOCKER_FILE: backend/prohibition_web_svc/Dockerfile
+      DOCKER_IMAGE_NAME: rsbc-roadside-forms-backend-api
+      IMAGE_NAME: "rsbc-roadside-forms-app-api-image"
+    secrets: inherit
