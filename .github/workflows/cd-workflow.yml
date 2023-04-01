@@ -23,6 +23,12 @@ on:
         required: true
       DOCKER_PASSWORD:
         required: true
+      REACT_APP_KEYCLOAK_URL:
+        required: true
+      REACT_APP_KEYCLOAK_REALM:
+        required: true
+      REACT_APP_KEYCLOAK_CLIENT_ID:
+        required: true
 
 jobs:
   build:
@@ -60,6 +66,10 @@ jobs:
           fetch_all_tags: true
 
       - name: Build
+        env:
+          REACT_APP_KEYCLOAK_URL: ${{ secrets.REACT_APP_KEYCLOAK_URL }}
+          REACT_APP_KEYCLOAK_REALM: ${{ secrets.REACT_APP_KEYCLOAK_REALM }}
+          REACT_APP_KEYCLOAK_CLIENT_ID: ${{ secrets.REACT_APP_KEYCLOAK_CLIENT_ID }}
         uses: docker/build-push-action@v3
         with:
           context: ${{ inputs.DOCKER_CONTEXT }}
