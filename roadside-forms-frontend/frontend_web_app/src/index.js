@@ -2,6 +2,7 @@ import React from 'react';
 // import ReactDOM from 'react-dom/client';
 import ReactDOM from 'react-dom'
 import { RecoilRoot } from "recoil";
+import 'bootstrap/dist/css/bootstrap.css';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';

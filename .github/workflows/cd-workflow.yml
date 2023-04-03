@@ -23,6 +23,12 @@ on:
         required: true
       DOCKER_PASSWORD:
         required: true
+      REACT_APP_KEYCLOAK_URL:
+        required: true
+      REACT_APP_KEYCLOAK_REALM:
+        required: true
+      REACT_APP_KEYCLOAK_CLIENT_ID:
+        required: true
 
 jobs:
   build:
@@ -60,6 +66,10 @@ jobs:
           fetch_all_tags: true
 
       - name: Build
+        env:
+          REACT_APP_KEYCLOAK_URL: ${{ secrets.REACT_APP_KEYCLOAK_URL }}
+          REACT_APP_KEYCLOAK_REALM: ${{ secrets.REACT_APP_KEYCLOAK_REALM }}
+          REACT_APP_KEYCLOAK_CLIENT_ID: ${{ secrets.REACT_APP_KEYCLOAK_CLIENT_ID }}
         uses: docker/build-push-action@v3
         with:
           context: ${{ inputs.DOCKER_CONTEXT }}
@@ -67,4 +77,19 @@ jobs:
           push: true
           build-args: |
             VERSION=${{ steps.tag.outputs.new_version }}
-          tags: ${{ secrets.DOCKER_REGISTRY }}/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_IMAGE_TAG }}
+            REACT_APP_KEYCLOAK_URL=${{ secrets.REACT_APP_KEYCLOAK_URL }}
+            REACT_APP_KEYCLOAK_REALM=${{ secrets.REACT_APP_KEYCLOAK_REALM }}
+            REACT_APP_KEYCLOAK_CLIENT_ID=${{ secrets.REACT_APP_KEYCLOAK_CLIENT_ID }}
+          tags: ${{ secrets.DOCKER_REGISTRY }}/dbe7-images/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_IMAGE_TAG }}
+      - name: Authenticate and set context for tools namespace
+        uses: redhat-actions/oc-login@v1.1.2
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_URL_SILVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_SA_PIPELINE_TOKEN_SILVER }}
+          namespace: "${{ secrets.OPENSHIFT_LICENSE_PLATE_SILVER }}-tools"
+      - name: Trigger Image import
+        env:
+          IMAGE_NAME: ${{ inputs.DOCKER_IMAGE_NAME }}
+        run: |
+          oc import-image $IMAGE_NAME:latest --confirm
+        
