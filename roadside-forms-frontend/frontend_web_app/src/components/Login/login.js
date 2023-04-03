@@ -5,6 +5,7 @@ import { Button } from '../Button/Button';
 
 export const Login = () => {
     const { keycloak, initialized } = useKeycloak();
+    console.log(keycloak)
     return(    
         <div className="wrapper">
             <div>
