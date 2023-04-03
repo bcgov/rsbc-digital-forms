@@ -1,0 +1,54 @@
+$primary-color: #003366;
+
+.base-class {
+  background-position: left;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 5rem;
+}
+
+#roadsafety-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100%;
+  min-height: 120px;
+}
+
+.col-right{
+  text-align: right;
+  margin-top: 1.5rem !important;
+}
+
+.container {
+  font-family: 'Avenir',Helvetica,Arial,sans-serif;
+  background-color: $primary-color;
+  max-width: 100%;
+  min-height: 120px;
+}
+
+.brand-logo {
+  @extend .base-class;
+  background-image: url("../../assets/BCID_RoadSafetyBC_logo_transparent.png");
+  margin: 1rem auto;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  width: 25%;
+}
+
+.connected {
+  @extend .base-class;
+  background-image: url("../../assets/connect.png");
+  background-color: transparent;
+}
+
+.disconnected {
+  @extend .base-class;
+  background-image: url("../../assets/dis.png");
+}

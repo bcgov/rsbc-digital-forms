@@ -17,3 +17,4 @@ db.sqlite3
 env/
 dist_old/
 build
+.idea
