@@ -1,49 +1,72 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
+import './header.scss';
+import { getCurrentDateTime } from '../../utils/dateTime';
 
-import { Button } from '../Button/Button';
-import './header.css';
+export const Header = ({ user, onLogin, onLogout}) => {
+  const [isConnected, setIsConnected] = useState(navigator.onLine);
+  const [time, setTime] = useState('');
+  const [date, setDate] = useState('');
+  const [day, setDay] = useState('');
 
-export const Header = ({ user, onLogin, onLogout, onCreateAccount }) => (
+  useEffect(() => {
+    const handleOnline = () => setIsConnected(true);
+    const handleOffline = () => setIsConnected(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    const interval = setInterval(() => {
+      const {dateString, dayString, timeString} = getCurrentDateTime();
+      setDate(dateString);
+      setDay(dayString + ',');
+      setTime(timeString);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    }
+  }, []);
+
+  return (
   <header>
-    <div className="wrapper">
-      <div>
-        <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-          <g fill="none" fillRule="evenodd">
-            <path
-              d="M10 0h12a10 10 0 0110 10v12a10 10 0 01-10 10H10A10 10 0 010 22V10A10 10 0 0110 0z"
-              fill="#FFF"
-            />
-            <path
-              d="M5.3 10.6l10.4 6v11.1l-10.4-6v-11zm11.4-6.2l9.7 5.5-9.7 5.6V4.4z"
-              fill="#555AB9"
-            />
-            <path
-              d="M27.2 10.6v11.2l-10.5 6V16.5l10.5-6zM15.7 4.4v11L6 10l9.7-5.5z"
-              fill="#91BAF8"
-            />
-          </g>
-        </svg>
-        <h1>Acme</h1>
-      </div>
-      <div>
-        {user ? (
-          <>
-            <span className="welcome">
-              Welcome, <b>{user.name}</b>!
-            </span>
-            <Button size="small" onClick={onLogout} label="Log out" />
-          </>
-        ) : (
-          <>
-            <Button size="small" onClick={onLogin} label="Log in" />
-            <Button primary size="small" onClick={onCreateAccount} label="Sign up" />
-          </>
-        )}
+    <div id="roadsafety-header" className='container'>
+      <div className='row'> 
+        <div className="col-sm-3" >
+          <div className='brand-logo'></div>
+        </div>
+        { user && (<div className='col-sm-9'>
+        <div className="row">
+          <div className=" col-sm-4 time font-weight-bold mt-4">
+            &nbsp;<span className="text-light d-block large">{time}</span>
+            <span className="text-light d-block large">{day} {date}</span>
+          </div>
+          <div className=" col-sm-2 icon font-weight-bold mt-4">
+            {isConnected ? (
+              <div className='connected'></div>
+            ) : (
+              <div className='disconnected'></div>
+            )}
+          </div>
+          <div className=" col-sm-4 user-info font-weight-bold col-right">
+            &nbsp;<span className="text-light d-block large">John SMITH</span>
+            <span className="text-light d-block large">Vancouver Police Dept.</span>
+          </div>
+          <div className=" col-sm-2 links font-weight-bold col-right">
+            &nbsp;<a className="d-block text-light" href="https://example.com">Settings</a>
+            <a className="d-block text-light" href="https://example.com">Logout</a>
+          </div>
+         </div>
+         </div>
+         )}
       </div>
     </div>
   </header>
 );
+}
 
 Header.propTypes = {
   user: PropTypes.shape({}),
