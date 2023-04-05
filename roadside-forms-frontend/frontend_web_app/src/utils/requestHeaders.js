@@ -8,7 +8,9 @@ import keycloak from "../keycloak"
 export const createRequestHeader = (customHeaders = {}) => ({
   headers: {
     'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
     'Authorization': `Bearer ${keycloak.token}`,
+    'credentials': 'same-origin',
     ...customHeaders,
   },
 });

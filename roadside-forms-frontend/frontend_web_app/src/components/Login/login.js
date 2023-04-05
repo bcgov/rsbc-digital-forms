@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { UserRolesApi } from '../../api/userRolesApi';
 import { useKeycloak } from '@react-keycloak/web';
 import { Button } from '../Button/Button';
 import { Header } from '../Header/Header';
@@ -13,7 +14,11 @@ export const Login = () => {
             <div>
                 <h1>Login</h1>
                 <Button primary size="small" onClick={() => keycloak.login()} label="Log in" />
-            </div>      
+            </div>
+            {/* for testing purposes */}
+            {keycloak.authenticated  && 
+            <Button primary size="small" onClick={() => UserRolesApi.getAll() } label="test" />  
+            }
         </div>
     );
   };

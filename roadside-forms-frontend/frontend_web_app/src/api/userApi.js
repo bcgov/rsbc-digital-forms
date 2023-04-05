@@ -10,6 +10,7 @@ export const UserApi = {
         return await api.request({
           url: "/users",
           method: "GET",
+          headers:{...headers},
         }).then ( (response) => {
           console.log(response)
           return {
@@ -31,6 +32,7 @@ export const UserApi = {
         return await api.request({
           url: "/users",
           method: "GET",
+          headers:{...headers},
         }).then ( (response) => {
           console.log(response)
           return {
@@ -52,7 +54,7 @@ export const UserApi = {
         return await api.request({
           url: "/users",
           method: "POST",
-          headers,
+          headers:{...headers},
           data: {...data},
         }).then ( (response) => {
           console.log(response)
