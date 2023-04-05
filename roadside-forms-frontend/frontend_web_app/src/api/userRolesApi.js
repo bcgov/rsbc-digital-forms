@@ -10,7 +10,7 @@ export const UserRolesApi = {
         const response = await api.request({
           url: "/user_roles",
           method: "GET",
-          headers,
+          headers:{...headers},
         })
     
         return response.json()
@@ -23,7 +23,7 @@ export const UserRolesApi = {
         const response = await api.request({
           url: "/user_roles",
           method: "POST",
-          headers,
+          headers: {...headers},
           data: {...data},
         })
     
