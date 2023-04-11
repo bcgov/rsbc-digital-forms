@@ -1,25 +1,23 @@
 import React, { Component } from 'react';
-import { Route, BrowserRouter, Routes} from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import { Login } from '../components/Login/login';
-import PrivateRoute from '../routes/PrivateRoute';
+// import PrivateRoute from '../routes/PrivateRoute';
+import { RequestAccess } from '../components/RequestAccess/requestAccess';
 
 class Router extends Component {
-
-  render() {
-
+    render() {
     return (
         <BrowserRouter>
                 <Routes>
-                    <Route 
-                      path="/" 
-                      element={<Login />}  />
+                    <Route path="/login" element={<Login/>} />
+                    <Route path="/requestAccess" element={<RequestAccess/>}  />
+                    <Route path="/" element={<Navigate to="/login" />} />
                 </Routes>
         </BrowserRouter>
     );
   }
-
 }
 
 Router.propTypes = {};
-
+  
 export default Router;
