@@ -26,7 +26,6 @@ $primary-color: #003366;
 }
 
 .container {
-  font-family: 'Avenir',Helvetica,Arial,sans-serif;
   background-color: $primary-color;
   max-width: 100%;
   min-height: 120px;
@@ -44,7 +43,7 @@ $primary-color: #003366;
 
 .connected {
   @extend .base-class;
-  background-image: url("../../assets/connect.png");
+  background-image: url("../../assets/connected.png");
   background-color: transparent;
 }
 
