@@ -40,7 +40,8 @@ export const Header = ({ user, onLogin, onLogout}) => {
         <div className="col-sm-3" >
           <div className='brand-logo'></div>
         </div>
-        {  (<div className='col-sm-9'>
+         {/* added keycloak.authenticated for testing purposes only*/}
+        { keycloak.authenticated && (<div className='col-sm-9'>
         <div className="row">
           <div className=" col-sm-4 time fw-bold mt-4">
             &nbsp;<span className="text-light d-block large">{time}</span>
