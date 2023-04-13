@@ -13,7 +13,6 @@ import { Footer } from './components/Footer/footer';
 library.add(fab, far, fas);
 
 function App() {
-  console.log(process)
   return (
     <div className="App">
       <ReactKeycloakProvider authClient={keycloak} initOptions={keycloakInitConfig}>
