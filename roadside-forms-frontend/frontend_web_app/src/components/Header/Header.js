@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import { useKeycloak } from '@react-keycloak/web';
 import './header.scss';
 import { getCurrentDateTime } from '../../utils/dateTime';
+import CloudOutlinedIcon from '@mui/icons-material/CloudOutlined';
+import CloudOffOutlinedIcon from '@mui/icons-material/CloudOffOutlined';
 
-export const Header = ({ user, onLogin, onLogout}) => {
+export const Header = ({user}) => {
   const [isConnected, setIsConnected] = useState(navigator.onLine);
   const { keycloak} = useKeycloak();
   const [time, setTime] = useState('');
@@ -49,9 +51,9 @@ export const Header = ({ user, onLogin, onLogout}) => {
           </div>
           <div className=" col-sm-2 icon mt-4">
             {isConnected ? (
-              <div className='connected'></div>
+              <CloudOutlinedIcon sx={{ color: "white" , fontSize: 80}}></CloudOutlinedIcon>
             ) : (
-              <div className='disconnected'></div>
+              <CloudOffOutlinedIcon sx={{ color: "white" , fontSize: 80}}></CloudOffOutlinedIcon>
             )}
           </div>
           <div className=" col-sm-4 user-info fw-bold col-right">
@@ -73,9 +75,6 @@ export const Header = ({ user, onLogin, onLogout}) => {
 
 Header.propTypes = {
   user: PropTypes.shape({}),
-  onLogin: PropTypes.func.isRequired,
-  onLogout: PropTypes.func.isRequired,
-  onCreateAccount: PropTypes.func.isRequired,
 };
 
 Header.defaultProps = {
