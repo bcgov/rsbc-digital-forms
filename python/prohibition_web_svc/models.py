@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 import logging
 
 db = SQLAlchemy()
-
+migrate = Migrate()
 
 class Form(db.Model):
     id = db.Column('id', db.String(20), primary_key=True)
@@ -141,3 +142,59 @@ class UserRole(db.Model):
             .filter(UserRole.approved_dt != None) \
             .all()
         return UserRole.collection_to_list_roles(rows)
+
+class Agency(db.Model):
+    __tablename__ = 'agency'
+    id = db.Column(db.Integer, primary_key=True)
+    vjur = db.Column(db.String)
+    agency_name = db.Column(db.String)
+    
+class City(db.Model):
+    __tablename__ = 'city'
+    id = db.Column(db.Integer, primary_key=True)
+    objectCd = db.Column(db.String)
+    objectDsc = db.Column(db.String)
+    
+class Country(db.Model):
+    __tablename__ = 'country'
+    id = db.Column(db.Integer, primary_key=True)
+    objectCd = db.Column(db.String)
+    objectDsc = db.Column(db.String)
+    
+class ImpoundLotOperator(db.Model):
+    __tablename__ = 'impound_lot_operator'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    lot_address = db.Column(db.String)
+    city = db.Column(db.String)
+    phone = db.Column(db.String)
+    
+class Jurisdiction(db.Model):
+    __tablename__ = 'jurisdiction'
+    id = db.Column(db.Integer, primary_key=True)
+    objectCd = db.Column(db.String)
+    objectDsc = db.Column(db.String)
+    
+class Permission(db.Model):
+    __tablename__ = 'permission'
+    id = db.Column(db.Integer, primary_key=True)
+    role = db.Column(db.String)
+    permission = db.Column(db.String)
+
+class Province(db.Model):
+    __tablename__ = 'province'
+    id = db.Column(db.Integer, primary_key=True)
+    objectCd = db.Column(db.String)
+    objectDsc = db.Column(db.String)
+    
+class VehicleStyle(db.Model):
+    __tablename__ = 'vehicle_style'
+    code = db.Column(db.String, primary_key=True)
+    name = db.Column(db.String)
+
+class Vehicle(db.Model):
+    __tablename__ = 'vehicle'
+    id = db.Column(db.Integer, primary_key=True)
+    mk = db.Column(db.String)
+    search = db.Column(db.String)
+    md = db.Column(db.String)
