@@ -56,8 +56,6 @@ services:
       build:
         context: python
         dockerfile: prohibition_web_svc/Dockerfile-local
-      # depends_on:
-      #   - icbc_mock_svc
       environment:
         FLASK_SECRET_KEY: "${FLASK_SECRET_KEY}"
         ICBC_API_ROOT: "http://icbc_mock_svc:5000/vips/icbc"
@@ -72,12 +70,37 @@ services:
         ADMIN_USERNAME: "${ADMIN_USERNAME}"
         FLASK_BASIC_AUTH_USER: "${FLASK_BASIC_AUTH_USER}"
         FLASK_BASIC_AUTH_PASS: "${FLASK_BASIC_AUTH_PASS}"
+      command: bash -c "cd /home/appuser/python/prohibition_web_svc && flask db upgrade && gunicorn --bind 0.0.0.0:5000 --pythonpath /home/appuser/python/prohibition_web_svc app:create_app"
       networks:
         - docker-network
       ports:
         - "5002:5000"
-
-
+      depends_on: 
+        db:
+          condition: service_healthy
+    
+    db:
+      image: postgres:14.1-alpine
+      restart: always
+      environment:
+        - POSTGRES_USER=testuser
+        - POSTGRES_PASSWORD=pass
+        - POSTGRES_DB=test
+      ports:
+        - '5432:5432'
+      volumes: 
+        - db:/var/lib/postgresql/data
+      networks:
+        - docker-network
+      healthcheck:
+        test: ["CMD", "pg_isready", "-q", "-d", "test", "-U", "testuser"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
 
 networks:
   docker-network:
+
+volumes:
+  db: {}
+

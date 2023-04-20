@@ -2,7 +2,7 @@ from flask_api import FlaskAPI
 import logging
 import pytz
 from datetime import datetime
-from python.prohibition_web_svc.models import db, Form, UserRole, User
+from python.prohibition_web_svc.models import db, migrate, Form, UserRole, User
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.blueprints import static, forms, admin_forms
 from python.prohibition_web_svc.blueprints import icbc
@@ -24,9 +24,9 @@ application.register_blueprint(static.bp)
 application.register_blueprint(user_roles.bp)
 application.register_blueprint(users.bp)
 
-
+logging.debug(Config.DATABASE_URI)
 db.init_app(application)
-
+migrate.init_app(application, db)
 
 def create_app():
     with application.app_context():
