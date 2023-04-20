@@ -6,9 +6,9 @@ COPY prohibition_web_svc/requirements.txt ${APP_ROOT}/src/
 
 RUN source /opt/app-root/etc/scl_enable && \
     set -x && \
-    pip install -U pip setuptools wheel && \
+    pip3 install -U pip3 setuptools wheel && \
     sha256sum "${APP_ROOT}/src/requirements.txt" > ${APP_ROOT}/requirements.sha256  && \
-    cd ${APP_ROOT}/src && pip install -r requirements.txt
+    cd ${APP_ROOT}/src && pip3 install -r requirements.txt
 
 COPY __init__.py ${APP_ROOT}/src/python/
 COPY common ${APP_ROOT}/src/python/common
