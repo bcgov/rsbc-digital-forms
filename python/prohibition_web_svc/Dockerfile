@@ -4,10 +4,9 @@ ENV VERSION=$VERSION
 
 COPY prohibition_web_svc/requirements.txt ${APP_ROOT}/src/
 
-RUN pip3 install -U pip
 RUN source /opt/app-root/etc/scl_enable && \
     set -x && \
-    pip3 install -U pip3 setuptools wheel && \
+    pip3 install -U pip setuptools wheel && \
     sha256sum "${APP_ROOT}/src/requirements.txt" > ${APP_ROOT}/requirements.sha256  && \
     cd ${APP_ROOT}/src && pip3 install -r requirements.txt
 
