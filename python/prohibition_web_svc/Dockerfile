@@ -4,6 +4,7 @@ ENV VERSION=$VERSION
 
 COPY prohibition_web_svc/requirements.txt ${APP_ROOT}/src/
 
+RUN pip install --upgrade pip
 RUN source /opt/app-root/etc/scl_enable && \
     set -x && \
     pip3 install -U pip setuptools wheel && \
