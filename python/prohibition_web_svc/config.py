@@ -15,8 +15,13 @@ class Config(BaseConfig):
 
     # URL of requesting resource
     ACCESS_CONTROL_ALLOW_ORIGIN         = os.getenv('ACCESS_CONTROL_ALLOW_ORIGIN', '*')
-
-    DATABASE_URI                        = os.getenv('DATABASE_URI', 'sqlite:///:memory:')
+    
+    DB_HOST = os.environ.get('DB_HOST', 'db')
+    DB_USER = os.environ.get('DB_USER', 'testuser')
+    DB_PASS = os.environ.get('DB_PASS', 'pass')
+    DB_PORT = os.environ.get('DB_PORT', 5432)
+    DB_NAME = os.environ.get('DB_NAME', 'test')
+    DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
     # This user has the ability to add, edit and delete other users
     ADMIN_USERNAME                      = os.getenv('ADMIN_USERNAME')
