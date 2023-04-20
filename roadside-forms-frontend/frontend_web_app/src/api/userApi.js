@@ -48,9 +48,7 @@ export const UserApi = {
       })
       },
     post: async function (data) {
-      const headers = {
-        ...createRequestHeader(),
-      };
+      const headers = createRequestHeader();
         return await api.request({
           url: "/users",
           method: "POST",
