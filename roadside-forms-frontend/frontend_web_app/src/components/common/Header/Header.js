@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useKeycloak } from '@react-keycloak/web';
 import './header.scss';
-import { getCurrentDateTime } from '../../utils/dateTime';
+import { getCurrentDateTime } from '../../../utils/dateTime';
 import CloudOutlinedIcon from '@mui/icons-material/CloudOutlined';
 import CloudOffOutlinedIcon from '@mui/icons-material/CloudOffOutlined';
 
 export const Header = ({user}) => {
   const [isConnected, setIsConnected] = useState(navigator.onLine);
+  const [isLoading, setIsLoading] = useState(true);
   const { keycloak} = useKeycloak();
   const [time, setTime] = useState('');
   const [date, setDate] = useState('');
@@ -26,6 +27,7 @@ export const Header = ({user}) => {
       setDate(dateString);
       setDay(dayString + ',');
       setTime(timeString);
+      setIsLoading(false);
     }, 1000);
 
     return () => {
@@ -43,7 +45,7 @@ export const Header = ({user}) => {
           <div className='brand-logo'></div>
         </div>
          {/* added keycloak.authenticated for testing purposes only*/}
-        { keycloak.authenticated && (<div className='col-sm-9'>
+        { keycloak.authenticated && !isLoading && (<div className='col-sm-9'>
         <div className="row">
           <div className=" col-sm-4 time fw-bold mt-4">
             &nbsp;<span className="text-light d-block large">{time}</span>
