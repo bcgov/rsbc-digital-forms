@@ -9,16 +9,6 @@ from python.common.config import Config
 logging.config.dictConfig(Config.LOGGING)
 
 
-def load_permissions_into_dict(data):
-    officer_roles = {'permissions':[]}
-    admin_roles = {'permissions':[]}
-    for permission in data:
-        if permission.role == 'officer':
-            officer_roles['permissions'].append(permission.permission)
-        elif permission.role == 'administrator':
-            admin_roles['permissions'].append(permission.permission)
-    return {'officer':officer_roles, 'administrator':admin_roles}
-
 def load_json_into_dict(file_name) -> dict:
     with open(file_name, 'r') as f:
         data = f.read()
