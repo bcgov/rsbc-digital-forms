@@ -1,8 +1,8 @@
 import logging
 import jwt
 import json
-from python.common.helper import load_permissions_into_dict
-from python.prohibition_web_svc.models import db, UserRole, Permission
+from python.common.helper import load_json_into_dict
+from python.prohibition_web_svc.models import db, UserRole
 from python.prohibition_web_svc.config import Config
 
 
@@ -79,7 +79,7 @@ def get_user_guid_from_decoded_access_token(**kwargs) -> tuple:
 
 
 def load_roles_and_permissions_from_static_file(**kwargs) -> tuple:
-    permissions = load_permissions_into_dict(Permission.query.all())
+    permissions = load_json_into_dict("python/prohibition_web_svc/data/permissions.json")
     kwargs['permissions'] = permissions
     return permissions is not None, kwargs
 

@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from dataclasses import dataclass
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import logging
@@ -144,113 +143,57 @@ class UserRole(db.Model):
             .all()
         return UserRole.collection_to_list_roles(rows)
 
-@dataclass
 class Agency(db.Model):
     __tablename__ = 'agency'
-    
-    id:int
-    vjur:str
-    agency_name:str
-    
     id = db.Column(db.Integer, primary_key=True)
     vjur = db.Column(db.String)
     agency_name = db.Column(db.String)
     
-@dataclass
 class City(db.Model):
     __tablename__ = 'city'
-    
-    id:int
-    objectCd:str
-    objectDsc:str
-    
     id = db.Column(db.Integer, primary_key=True)
     objectCd = db.Column(db.String)
     objectDsc = db.Column(db.String)
-
-@dataclass    
+    
 class Country(db.Model):
     __tablename__ = 'country'
-    
-    id:int
-    objectCd:str
-    objectDsc:str
-    
     id = db.Column(db.Integer, primary_key=True)
     objectCd = db.Column(db.String)
     objectDsc = db.Column(db.String)
-
-@dataclass    
+    
 class ImpoundLotOperator(db.Model):
     __tablename__ = 'impound_lot_operator'
-    
-    id:int
-    name:str
-    lot_address:str
-    city:str
-    phone:str
-    
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     lot_address = db.Column(db.String)
     city = db.Column(db.String)
     phone = db.Column(db.String)
-
-@dataclass    
+    
 class Jurisdiction(db.Model):
     __tablename__ = 'jurisdiction'
-    
-    id:int
-    objectCd:str
-    objectDsc:str
-    
     id = db.Column(db.Integer, primary_key=True)
     objectCd = db.Column(db.String)
     objectDsc = db.Column(db.String)
-
-@dataclass    
+    
 class Permission(db.Model):
     __tablename__ = 'permission'
-    
-    id:int
-    role:str
-    permission:str
-    
     id = db.Column(db.Integer, primary_key=True)
     role = db.Column(db.String)
     permission = db.Column(db.String)
 
-@dataclass
 class Province(db.Model):
     __tablename__ = 'province'
-    
-    id:int
-    objectCd:str
-    objectDsc:str
-    
     id = db.Column(db.Integer, primary_key=True)
     objectCd = db.Column(db.String)
     objectDsc = db.Column(db.String)
-
-@dataclass    
+    
 class VehicleStyle(db.Model):
     __tablename__ = 'vehicle_style'
-    
-    code:str
-    name:str
-    
     code = db.Column(db.String, primary_key=True)
     name = db.Column(db.String)
 
-@dataclass
 class Vehicle(db.Model):
     __tablename__ = 'vehicle'
-    
-    id:int
-    mk:str
-    search:str
-    md:str
-    
     id = db.Column(db.Integer, primary_key=True)
     mk = db.Column(db.String)
     search = db.Column(db.String)

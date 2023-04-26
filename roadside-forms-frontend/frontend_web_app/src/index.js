@@ -11,9 +11,11 @@ import reportWebVitals from './reportWebVitals';
 
 // const root = ReactDOM.createRoot(document.getElementById('root'));
 ReactDOM.render(
+  <React.StrictMode>
     <RecoilRoot>
       <App />
-    </RecoilRoot>,
+    </RecoilRoot>
+  </React.StrictMode>,
   document.getElementById('root')
 );
 
