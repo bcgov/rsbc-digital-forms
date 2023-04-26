@@ -1,15 +1,27 @@
 from python.prohibition_web_svc.config import Config
-from python.common.helper import middle_logic
+from python.common.helper import middle_logic, load_json_into_dict
 from python.prohibition_web_svc.business.keycloak_logic import get_authorized_keycloak_user
 import python.prohibition_web_svc.http_responses as http_responses
 import python.prohibition_web_svc.middleware.splunk_middleware as splunk_middleware
 from flask import request, make_response, Blueprint
 from python.common.splunk import log_to_splunk
 from flask_cors import CORS
+from python.prohibition_web_svc.models import db, Agency, City, Country, ImpoundLotOperator, Jurisdiction, Permission, Province, Vehicle, VehicleStyle
 
 import logging.config
-import python.common.helper as helper
 from flask import jsonify
+
+resource_map = {
+    "agencies": Agency,
+    "cities": City,
+    "countries": Country,
+    "impound_lot_operator": ImpoundLotOperator,
+    "jurisdictions": Jurisdiction,
+    "permissions": Permission,
+    "provinces": Province,
+    "vehicle_styles": VehicleStyle,
+    "vehicles": Vehicle
+}
 
 logging.config.dictConfig(Config.LOGGING)
 logging.info('*** static blueprint loaded ***')
@@ -80,16 +92,12 @@ def update(resource, static_id):
 
 
 def _get_agencies(**kwargs) -> tuple:
-    resource = kwargs.get('resource')
     try:
-        data = helper.load_json_into_dict('python/prohibition_web_svc/data/agencies.json'.format(resource))
+        data = jsonify(Agency.query.all())
         kwargs['response'] = make_response(data, 200)
-        # static = helper.load_json_into_dict('python/prohibition_web_svc/data/agencies.json')
-        # ids = [o['id'] for o in static]
-        # kwargs['response'] = make_response(jsonify(ids), 200)
         return True, kwargs
     except Exception as e:
-        logging.warning("error getting static data")
+        logging.warning("error getting static data", e)
         return False, kwargs
 
 
@@ -141,7 +149,7 @@ def _get_configuration(**kwargs) -> tuple:
 def _get_resource(**kwargs) -> tuple:
     resource = kwargs.get('resource')
     try:
-        data = helper.load_json_into_dict('python/prohibition_web_svc/data/{}.json'.format(resource))
+        data = jsonify(db.session.query(resource_map[resource]).all())
         kwargs['response'] = make_response(data, 200)
         return True, kwargs
     except Exception as e:
