@@ -70,7 +70,7 @@ services:
         ADMIN_USERNAME: "${ADMIN_USERNAME}"
         FLASK_BASIC_AUTH_USER: "${FLASK_BASIC_AUTH_USER}"
         FLASK_BASIC_AUTH_PASS: "${FLASK_BASIC_AUTH_PASS}"
-      command: bash -c "cd /home/appuser/python/prohibition_web_svc && flask db upgrade && gunicorn --bind 0.0.0.0:5000 --pythonpath /home/appuser/python/prohibition_web_svc app:create_app"
+      command: bash -c "cd /home/appuser/python/prohibition_web_svc && flask db upgrade && gunicorn --bind 0.0.0.0:5000 --pythonpath /home/appuser/python/prohibition_web_svc 'app:create_app()'"
       networks:
         - docker-network
       ports:
