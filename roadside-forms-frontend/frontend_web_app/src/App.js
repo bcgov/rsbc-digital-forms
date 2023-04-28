@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReactKeycloakProvider } from "@react-keycloak/web";
-import Router from './utils/router';
+import AppRouter from './routes/appRouter';
 import keycloak, { keycloakInitConfig } from './keycloak';
 import '../src/utils/commonStyles.scss';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -17,7 +17,7 @@ function App() {
     <div className="App">
       <ReactKeycloakProvider authClient={keycloak} initOptions={keycloakInitConfig}>
         <Header/>
-        <Router/>
+        <AppRouter/>
         <Footer/>
       </ReactKeycloakProvider>
     </div>
