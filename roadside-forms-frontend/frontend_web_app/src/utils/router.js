@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
+import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import { Login } from '../components/Login/login';
 import { Dashboard } from '../components/Dashboard/Dashboard';
 import PrivateRoute from '../routes/PrivateRoute';
@@ -12,7 +12,7 @@ class Router extends Component {
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/" element={<PrivateRoute element={<Dashboard />} />} />
-                <Route path="/requestAccess" element={<RequestAccess />}  />
+                <Route path="/requestAccess" element={  <PrivateRoute> <RequestAccess/> </PrivateRoute> } />
             </Routes>
         </BrowserRouter>
     );
