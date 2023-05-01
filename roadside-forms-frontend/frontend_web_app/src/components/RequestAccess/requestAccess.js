@@ -43,7 +43,7 @@ export const RequestAccess= () => {
     StaticDataApi.get("agencies").then((response) => {
       const data = response.data
       setResource(data)
-      setOptions(data.map((item) => { return ({"label":item.agency_name,"value":item.vjur})}))
+      setOptions(data.map((item) => { return ({"label":item.agency_name,"value":item.agency_name})}))
     })
   }
 
