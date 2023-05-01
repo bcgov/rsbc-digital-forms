@@ -1,4 +1,3 @@
-import { StaticDataApi } from "../api/staticDataApi";
 import * as staticData from "../atoms/staticData"
 
 export const staticResources = {
