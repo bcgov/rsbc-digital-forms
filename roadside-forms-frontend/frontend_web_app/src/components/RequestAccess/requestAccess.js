@@ -6,10 +6,16 @@ import WarningIcon from '@mui/icons-material/Warning';
 import { Input }from '../common/Input/Input'
 import { Select } from '../common/Select/Select';
 import { UserApi } from '../../api/userApi';
+import { staticResources } from '../../utils/helpers';
+import { useSetRecoilState} from 'recoil';
+import { StaticDataApi } from '../../api/staticDataApi';
 
 export const RequestAccess= () => {
   const [showApplication, setShowApplication] = useState(false)
+  const [options, setOptions] = useState([])
   const [showApplicationReceived, setShowApplicationReceived] = useState(false)
+  const setResource = useSetRecoilState(staticResources["agencies"]);
+  
 
   const initialValues = {
     last_name: '',
@@ -17,13 +23,6 @@ export const RequestAccess= () => {
     agency:'',
     badge_number:''
   };
-
-  const options = [
-    { value: 'Option 1', label: 'Option 1' },
-    { value: 'Option 2', label: 'Option 2' },
-    { value: 'Option 3', label: 'Option 3' },
-  ];
-
  
   const onSubmit = (values, { setSubmitting }) => {
     const data = values;
@@ -41,6 +40,11 @@ export const RequestAccess= () => {
 
   const handleClick = () => {
     setShowApplication(true);
+    StaticDataApi.get("agencies").then((response) => {
+      const data = response.data
+      setResource(data)
+      setOptions(data.map((item) => { return ({"label":item.agency_name,"value":item.agency_name})}))
+    })
   }
 
   return (
