@@ -1,6 +1,5 @@
 import React from 'react';
 import { Navigate} from 'react-router-dom';
-import { UserRolesApi } from '../../api/userRolesApi';
 import { useKeycloak } from '@react-keycloak/web';
 import { Button } from '../common/Button/Button';
 import './login.scss';
