@@ -6,10 +6,15 @@ import WarningIcon from '@mui/icons-material/Warning';
 import { Input }from '../common/Input/Input'
 import { Select } from '../common/Select/Select';
 import { UserApi } from '../../api/userApi';
+import { staticResources } from '../../utils/helpers';
+import { useSetRecoilState, useRecoilValue, atom } from 'recoil';
+import { StaticDataApi } from '../../api/staticDataApi';
 
 export const RequestAccess= () => {
   const [showApplication, setShowApplication] = useState(false)
   const [showApplicationReceived, setShowApplicationReceived] = useState(false)
+  const setResource = useSetRecoilState(staticResources["agencies"]);
+  const atomResource = useRecoilValue(staticResources["agencies"])
 
   const initialValues = {
     last_name: '',
@@ -41,6 +46,9 @@ export const RequestAccess= () => {
 
   const handleClick = () => {
     setShowApplication(true);
+    setResource(StaticDataApi.get("agencies")).then( () => {
+      console.log(atomResource)
+    })
   }
 
   return (

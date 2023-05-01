@@ -6,7 +6,7 @@ import { Button } from '../common/Button/Button';
 import './login.scss';
 
 export const Login = () => {
-    const { keycloak} = useKeycloak();
+    const { keycloak } = useKeycloak();
     const redirectUri = `${process.env.REACT_APP_BASE_URL}/requestAccess`;
 
     const handleClick = async () => {

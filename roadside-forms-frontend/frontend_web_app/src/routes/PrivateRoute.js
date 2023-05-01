@@ -1,34 +1,13 @@
-import { Route, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import React from 'react';
 import { useKeycloak } from "@react-keycloak/web";
 
-function PrivateRoute({ element: Element,...rest }) {
-    const [authenticated, setAuthenticated] = React.useState(false);
+function PrivateRoute(children){
     const { keycloak } = useKeycloak();
-
-    React.useEffect(() => {
-        let isMounted = true;
-        
-        const checkAuth = async () => {
-          const isAuthenticated = await keycloak.authenticated;
-          if (isMounted) {
-            setAuthenticated(isAuthenticated);
-          }
-        };
-    
-        checkAuth();
-    
-        return () => {
-          isMounted = false;
-        };
-    }, [keycloak.authenticated]);
-
-    console.log( keycloak )
-    if (!authenticated) {
-        return <Navigate to="/login" />;
-      }
-    
-    return <Element {...rest} />;
+    if (!keycloak.authenticated) {
+      return <Navigate to="/" replace />
+    }
+    return children
 }
-  
-export default React.memo(PrivateRoute);
+
+export default PrivateRoute
