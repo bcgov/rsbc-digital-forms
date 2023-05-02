@@ -29,7 +29,7 @@ on:
         required: true
       REACT_APP_KEYCLOAK_CLIENT_ID:
         required: true
-      REACT_APP_BASE_URL:
+      REACT_APP_BASE_URL_DEV:
         required: true
 
 jobs:
