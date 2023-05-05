@@ -4,7 +4,7 @@ export const staticResources = {
     "agencies": staticData.agencies,
     "cities": staticData.cities,
     "countries": staticData.countries,
-    "impound_lot_operator": staticData.impoundLotOperators,
+    "impound_lot_operators": staticData.impoundLotOperators,
     "jurisdictions": staticData.jurisdictions,
     "permissions": staticData.permissions,
     "provinces": staticData.provinces,
