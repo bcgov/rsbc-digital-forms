@@ -1,0 +1,25 @@
+.text-font{
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-size: large;
+}
+
+.border-design{
+    border: 1px solid black;
+    color: black;
+    margin: 2rem;
+    background-color: #F2F2F2;
+    border-radius: 0.2rem;
+    padding: 2rem;
+    text-align: center;
+}
+
+.error-message{
+    color: #D8292F;
+}
+
+.field-width{
+    width: 100%;
+}
+select {
+    height: 33px;
+  }
