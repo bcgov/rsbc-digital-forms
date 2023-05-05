@@ -15,7 +15,7 @@ resource_map = {
     "agencies": Agency,
     "cities": City,
     "countries": Country,
-    "impound_lot_operator": ImpoundLotOperator,
+    "impound_lot_operators": ImpoundLotOperator,
     "jurisdictions": Jurisdiction,
     "permissions": Permission,
     "provinces": Province,
@@ -150,6 +150,8 @@ def _get_resource(**kwargs) -> tuple:
     resource = kwargs.get('resource')
     try:
         data = jsonify(db.session.query(resource_map[resource]).all())
+        if resource == 'impound_lot_operators':
+            logging.debug("impound data: {}".format(data))
         kwargs['response'] = make_response(data, 200)
         return True, kwargs
     except Exception as e:
