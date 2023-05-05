@@ -7,14 +7,14 @@ import { Input }from '../common/Input/Input'
 import { Select } from '../common/Select/Select';
 import { UserApi } from '../../api/userApi';
 import { staticResources } from '../../utils/helpers';
-import { useSetRecoilState} from 'recoil';
+import { useRecoilState } from 'recoil';
 import { StaticDataApi } from '../../api/staticDataApi';
 
 export const RequestAccess= () => {
   const [showApplication, setShowApplication] = useState(false)
   const [options, setOptions] = useState([])
   const [showApplicationReceived, setShowApplicationReceived] = useState(false)
-  const setResource = useSetRecoilState(staticResources["agencies"]);
+  const [agencies, setAgency] = useRecoilState(staticResources["agencies"])
   
 
   const initialValues = {
@@ -40,11 +40,15 @@ export const RequestAccess= () => {
 
   const handleClick = () => {
     setShowApplication(true);
-    StaticDataApi.get("agencies").then((response) => {
-      const data = response.data
-      setResource(data)
-      setOptions(data.map((item) => { return ({"label":item.agency_name,"value":item.agency_name})}))
-    })
+    if (agencies === undefined || agencies.length === 0){
+      StaticDataApi.get("agencies").then((resp) => {
+        setAgency(resp.data)
+        setOptions(resp.data.map((item) => { return ({"label":item.agency_name,"value":item.agency_name})}))
+      })
+      
+    }else{
+      setOptions(agencies.map((item) => { return ({"label":item.agency_name,"value":item.agency_name})}))
+    }
   }
 
   return (
