@@ -80,8 +80,18 @@ def create():
 @bp.route('/users/<string:user_guid>', methods=['GET'])
 def get(user_guid):
     if request.method == 'GET':
-        if request.method == 'GET':
-            return make_response({"error": "method not implemented"}, 405)
+        kwargs = middle_logic(
+            [
+                {"try": splunk_middleware.get_user, "fail": []},
+                {"try": splunk.log_to_splunk, "fail": []},
+                {"try": user_middleware.get_user, "fail": [
+                    {"try": http_responses.server_error_response, "fail": []}
+                ]}
+            ],
+            user_guid=user_guid,
+            request=request,
+            config=Config)
+        return kwargs.get('response')
 
 
 @bp.route('/users/<string:user_guid>', methods=['PATCH'])
