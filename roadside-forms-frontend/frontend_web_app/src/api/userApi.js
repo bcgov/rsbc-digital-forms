@@ -25,12 +25,12 @@ export const UserApi = {
           }
       })
       },
-      get: async function () {
+      get: async function (userId) {
         const headers = {
           ...createRequestHeader(),
         };
         return await api.request({
-          url: "/users",
+          url: `/users/${userId}`,
           method: "GET",
           headers:{...headers},
         }).then ( (response) => {
