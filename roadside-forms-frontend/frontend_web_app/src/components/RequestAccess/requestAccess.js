@@ -1,20 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../common/Button/Button';
 import { Formik, Form} from 'formik';
 import { validate } from './validate';
 import WarningIcon from '@mui/icons-material/Warning';
 import { Input }from '../common/Input/Input'
-import { Select } from '../common/Select/Select';
+import { SearchableSelect } from '../common/Select/SearchableSelect';
 import { UserApi } from '../../api/userApi';
 import { staticResources } from '../../utils/helpers';
 import { useRecoilState } from 'recoil';
 import { StaticDataApi } from '../../api/staticDataApi';
+import { useRecoilValue } from 'recoil';
+import { userAtom } from '../../atoms/users';
+import { useNavigate} from 'react-router-dom';
 
 export const RequestAccess= () => {
   const [showApplication, setShowApplication] = useState(false)
   const [options, setOptions] = useState([])
   const [showApplicationReceived, setShowApplicationReceived] = useState(false)
   const [agencies, setAgency] = useRecoilState(staticResources["agencies"])
+  const user = useRecoilValue(userAtom);
+  const navigate = useNavigate();
   
 
   const initialValues = {
@@ -51,6 +56,12 @@ export const RequestAccess= () => {
     }
   }
 
+  useEffect(() => {
+    if (user.length !== 0) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
   return (
     <div className='border-design text-font'>
       {!showApplicationReceived && (<div>
@@ -75,16 +86,16 @@ export const RequestAccess= () => {
             <Form>
               <div className='row'>
                 <div className='col-sm-3'>
-                  <Input label="SURNAME" name="last_name" className="field-width" type="text"></Input>
+                  <Input label="SURNAME" name="last_name" className="field-width field-height" type="text"></Input>
                 </div>
                 <div className='col-sm-3'>
-                  <Input label="Given" name="first_name" className="field-width" type="text"></Input>
+                  <Input label="Given" name="first_name" className="field-width field-height" type="text"></Input>
                 </div>
                 <div className='col-sm-4'>
-                  <Select label="Agency or RCMP Detachment" className="field-width" name="agency" options={options} />
+                  <SearchableSelect label="Agency or RCMP Detachment" className="field-width field-height" name="agency" options={options} />
                 </div>
                 <div className='col-sm-2'>
-                  <Input label="PRIME ID" name="badge_number" className="field-width" type="text" maxLength={6} ></Input>
+                  <Input label="PRIME ID" name="badge_number" className="field-width field-height" type="text" maxLength={6} ></Input>
                 </div>
               </div>
               <div className="info-container">
@@ -110,7 +121,7 @@ export const RequestAccess= () => {
       </div>)}
       {showApplicationReceived && (<div>
         <p>
-          <span class="fw-bold">Application received.</span> Thank-you!
+          <span className="fw-bold">Application received.</span> Thank-you!
         </p>
         <p>
           Your application will be reviewed and approved within 24 business hours.
