@@ -125,6 +125,7 @@ class UserRole(db.Model):
             "submitted_dt": rows.submitted_dt,
             "user_guid": rows.user_guid,
             "username": rows.username,
+            "login": rows.login,
         }
 
     @staticmethod
