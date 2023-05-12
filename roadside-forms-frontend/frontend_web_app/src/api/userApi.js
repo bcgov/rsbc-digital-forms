@@ -8,23 +8,42 @@ export const UserApi = {
           ...createRequestHeader(),
         };
         return await api.request({
-          url: "/users",
+          url: "/admin/users",
           method: "GET",
           headers:{...headers},
         }).then ( (response) => {
-          console.log(response)
           return {
               status: response.status,
               data: response.data
           }
       }).catch((error) =>{
-          console.log(error)
           return {
               status: error.status,
               data: error.response
           }
       })
       },
+      delete: async function (data) {
+        const headers = createRequestHeader();
+          return await api.request({
+            url: `/admin/users/${data.user_guid}/roles/${data.role_name}`,
+            method: "DELETE",
+            headers:{...headers},
+          }).then ( (response) => {
+            console.log(response)
+            return {
+                status: response.status,
+                data: response.data
+            }
+        }).catch((error) =>{
+            console.log(error)
+            return {
+                status: error.status,
+                data: error.response
+            }
+        })
+    
+        },
       get: async function (userId) {
         const headers = {
           ...createRequestHeader(),
@@ -69,4 +88,45 @@ export const UserApi = {
       })
   
       },
+      patch: async function (data) {
+        const headers = createRequestHeader();
+          return await api.request({
+            url: `/admin/users/${data.user_guid}/roles/officer`,
+            method: "PATCH",
+            headers:{...headers},
+          }).then ( (response) => {
+            console.log(response)
+            return {
+                status: response.status,
+                data: response.data
+            }
+        }).catch((error) =>{
+            console.log(error)
+            return {
+                status: error.status,
+                data: error.response
+            }
+        })
+        },
+        postAdmin: async function (data) {
+          const headers = createRequestHeader();
+            return await api.request({
+              url: `/admin/users/${data.user_guid}/roles`,
+              method: "POST",
+              data: {"role_name": "administrator"},
+              headers:{...headers},
+            }).then ( (response) => {
+              console.log(response)
+              return {
+                  status: response.status,
+                  data: response.data
+              }
+          }).catch((error) =>{
+              console.log(error)
+              return {
+                  status: error.status,
+                  data: error.response
+              }
+          })
+          },
 };
