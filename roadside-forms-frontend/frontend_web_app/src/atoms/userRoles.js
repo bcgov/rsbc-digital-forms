@@ -1,6 +1,6 @@
 import {atom} from 'recoil'
 
-const userRolesAtom = atom({
+export const userRolesAtom = atom({
     key: 'userRoles',
     default: [],
   });
