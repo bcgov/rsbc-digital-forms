@@ -1,24 +1,29 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useKeycloak } from '@react-keycloak/web';
-import './header.scss';
-import { getCurrentDateTime } from '../../../utils/dateTime';
-import { UserApi } from '../../../api/userApi';
 import CloudOutlinedIcon from '@mui/icons-material/CloudOutlined';
 import CloudOffOutlinedIcon from '@mui/icons-material/CloudOffOutlined';
 import { useSetRecoilState} from 'recoil';
+import { Link } from 'react-router-dom';
+
 import { userAtom } from '../../../atoms/users';
+import { userRolesAtom } from '../../../atoms/userRoles';
+import { getCurrentDateTime } from '../../../utils/dateTime';
+import { UserApi } from '../../../api/userApi';
+import { UserRolesApi } from '../../../api/userRolesApi';
+import './header.scss';
 
 export const Header = () => {
   const [isConnected, setIsConnected] = useState(navigator.onLine);
   const [isLoading, setIsLoading] = useState(true);
   const [userInfo, setUserInfo] = useState({username: null, agency: null });
+  const [userAdminInfo, setuserAdminInfo] = useState(false);
   const { keycloak, initialized} = useKeycloak();
   const [time, setTime] = useState('');
   const [date, setDate] = useState('');
   const [day, setDay] = useState('');
   const [userId, setUserId] = useState(null);
   const setUserData = useSetRecoilState(userAtom);
+  const setUserRoleData = useSetRecoilState(userRolesAtom);
 
 
   useEffect(() => {
@@ -49,6 +54,17 @@ export const Header = () => {
           setUserData([]);
           console.log("Error", error.response.data.error);
         })
+        UserRolesApi.get().then((resp) =>{
+          if (resp && (resp.status === 201 || resp.status === 200)) {
+            const data = resp.data
+            setUserRoleData(data);
+            setuserAdminInfo(data.some( role => role['role_name'] === 'administrator' ))
+          }
+          else {
+            setUserRoleData([]);
+            console.log(resp.data.error);
+          }
+        })
      }
     
     const handleOnline = () => setIsConnected(true);
@@ -72,7 +88,8 @@ export const Header = () => {
     }
   }, [keycloak.authenticated, 
       initialized, 
-      setUserData, 
+      setUserData,
+      setUserRoleData, 
       keycloak.tokenParsed, 
       userId]);
 
@@ -101,7 +118,7 @@ export const Header = () => {
             <span className="text-light d-block large">{userInfo.agency}</span>
           </div>
           <div className=" col-sm-2 links fw-bold col-right">
-            &nbsp;{ <div><a className="d-block text-light" href="https://example.com">Settings</a></div>}
+            &nbsp; {userAdminInfo ? <div><Link className="d-block text-light" to="/admin-console">Admin</Link></div> :<div><a className="d-block text-light" href="https://example.com">Settings</a></div>}
             <a className="d-block text-light" href="/" onClick={() => keycloak.logout()}>Logout</a>
           </div>
          </div>
