@@ -9,6 +9,7 @@ export const staticResources = {
     "permissions": staticData.permissions,
     "provinces": staticData.provinces,
     "vehicle_styles": staticData.vehicleStyles,
+    "vehicle_colours": staticData.vehicleColours,
     "vehicles": staticData.vehicles
 
 }
