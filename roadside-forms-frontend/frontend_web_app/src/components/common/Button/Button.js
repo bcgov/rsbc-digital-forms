@@ -5,13 +5,19 @@ import './button.scss';
 /**
  * Primary UI component for user interaction
  */
-export const Button = ({ primary, backgroundColor, size, label, icon=null, ...props }) => {
+export const Button = ({ primary, backgroundColor, size, label, icon=null, disabled, ...props }) => {
   const mode = primary ? 'storybook-button--primary' : 'storybook-button--secondary';
+
+  const buttonStyle = {
+    backgroundColor: disabled ? 'steelblue' : (backgroundColor || null),
+    // Add other styles as needed
+  }; 
   return (
     <button
       type="button"
       className={['storybook-button', `storybook-button--${size}`, mode].join(' ')}
-      style={backgroundColor && { backgroundColor }}
+      style={buttonStyle}
+      disabled={disabled}
       {...props}
     >
       {icon}
