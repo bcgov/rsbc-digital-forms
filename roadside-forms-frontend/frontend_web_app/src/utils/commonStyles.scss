@@ -1,0 +1,72 @@
+.base-class{
+    border: 1px solid black;
+    color: black;
+    border-radius: 0.2rem;
+    text-align: center;
+}
+
+.text-font{
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-size: large;
+}
+
+.border-design{
+    @extend .base-class;
+    background-color: #F2F2F2;
+    margin: 2rem;
+    padding: 2rem;
+}
+
+.multi-select-container {
+    position: relative;
+    height: 67px;
+    transition: height 0.3s;
+    overflow: hidden;
+  }
+  
+  .multi-select-container.expanded {
+    height: 150px;
+  }
+
+.outline{
+    @extend .base-class;
+    margin: 2rem;
+    padding: 2rem;
+}
+
+.border-design-form{
+    @extend .base-class;
+    background-color: #F2F2F2;
+    margin: 1rem;
+    padding: 1rem;
+}
+
+.error-message{
+    color: #D8292F;
+}
+.required-asterisk{
+    color: #D8292F;
+}
+
+.field-width{
+    width: 100%;
+}
+.field-height {
+    height: 40px;
+  }
+
+.right{
+    text-align: right;
+}
+
+.left{
+    text-align: left;
+}
+
+.center{
+    text-align: center;
+}
+
+.flex{
+    display: flex; 
+}
