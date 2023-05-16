@@ -19,8 +19,8 @@
     "react-router-dom": "^6.9.0",
     "react-scripts": "4.0.3",
     "recoil": "^0.7.7",
-    "webpack": "4.44.2",
     "web-vitals": "^2.1.4",
+    "webpack": "4.44.2",
     "workbox-background-sync": "^6.5.4",
     "workbox-broadcast-update": "^6.5.4",
     "workbox-cacheable-response": "^6.5.4",
@@ -34,7 +34,9 @@
     "workbox-strategies": "^6.5.4",
     "workbox-streams": "^6.5.4"
   },
-  "resolutions": { "react-error-overlay": "6.0.9" },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build --exclude 'src/stories/**/*'",
@@ -81,6 +83,7 @@
     "@storybook/react": "^6.5.16",
     "@storybook/testing-library": "^0.0.13",
     "react-select": "^5.7.2",
-    "sass": "^1.60.0"
+    "sass": "^1.60.0",
+    "yup": "^1.1.1"
   }
 }
