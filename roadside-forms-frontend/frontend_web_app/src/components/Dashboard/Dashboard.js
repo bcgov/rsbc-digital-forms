@@ -5,13 +5,14 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddIcon from '@mui/icons-material/Add';
 import Table from 'react-bootstrap/Table';
 import { useSetRecoilState} from 'recoil';
-
 import { staticResources } from '../../utils/helpers';
 import { StaticDataApi } from '../../api/staticDataApi';
 import { Button } from '../common/Button/Button';
+import { useNavigate} from 'react-router-dom';
 import './dashboard.scss'
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
   const setAgencyResource = useSetRecoilState(staticResources["agencies"]);
   const setCityResource = useSetRecoilState(staticResources["cities"]);
   const setCountryResource = useSetRecoilState(staticResources["countries"]);
@@ -19,34 +20,59 @@ export const Dashboard = () => {
   const setImpoundResource = useSetRecoilState(staticResources["impound_lot_operators"]);
   const setProvinceResource = useSetRecoilState(staticResources["provinces"]);
   const setVehicleStyleResource = useSetRecoilState(staticResources["vehicle_styles"]);
+  const setVehicleColourResource = useSetRecoilState(staticResources["vehicle_colours"]);
   const setVehicleResource = useSetRecoilState(staticResources["vehicles"]);
 
   useEffect(() => {
-    const agencyData = StaticDataApi.get("agencies").data
-    const cityData = StaticDataApi.get("cities").data
-    const contryData = StaticDataApi.get("countries").data
-    const jurisdictionData = StaticDataApi.get("jurisdictions").data
-    const impoundData = StaticDataApi.get("impound_lot_operators").data
-    const provinceData = StaticDataApi.get("provinces").data
-    const vehicleStyleData = StaticDataApi.get("vehicle_styles").data
-    const vehicleData = StaticDataApi.get("vehicles").data
-    
-    setVehicleResource(vehicleData)
-    setVehicleStyleResource(vehicleStyleData)
-    setProvinceResource(provinceData)
-    setImpoundResource(impoundData)
-    setJurisdictionResource(jurisdictionData)
-    setCountryResource(contryData)
-    setCityResource(cityData)
-    setAgencyResource(agencyData)
-  }, [setVehicleResource,setVehicleStyleResource,setProvinceResource,setImpoundResource,setJurisdictionResource,setCountryResource,setCityResource,setAgencyResource,]);
+    const fetchData = async () => {
+      try {
+          const agencyData = await StaticDataApi.get("agencies")
+          const cityData = await StaticDataApi.get("cities")
+          const contryData = await StaticDataApi.get("countries")
+          const jurisdictionData = await StaticDataApi.get("jurisdictions")
+          const impoundData = await StaticDataApi.get("impound_lot_operators")
+          const provinceData = await StaticDataApi.get("provinces")
+          const vehicleStyleData = await StaticDataApi.get("vehicle_styles")
+          const vehicleColourData = await StaticDataApi.get("vehicle_colours")
+          const vehicleData = await StaticDataApi.get("vehicles")
+          
+          setVehicleResource(vehicleData.data)
+          setVehicleStyleResource(vehicleStyleData.data)
+          setVehicleColourResource(vehicleColourData.data)
+          setProvinceResource(provinceData.data)
+          setImpoundResource(impoundData.data)
+          setJurisdictionResource(jurisdictionData.data)
+          setCountryResource(contryData.data)
+          setCityResource(cityData.data)
+          setAgencyResource(agencyData.data)
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+  
+       fetchData();
+    }, [
+      setVehicleResource,
+      setVehicleColourResource,
+      setVehicleStyleResource,
+      setProvinceResource,
+      setImpoundResource,
+      setJurisdictionResource,
+      setCountryResource,
+      setCityResource,
+      setAgencyResource,
+    ]);
 
+
+  const handleClick = () => {
+    navigate("/createEvent");
+  }
       return (
       <>
       <div className='border-design text-font'>
         <div className='dashboard-header'>
           <h3><EditIcon/>Events in Progress</h3>
-          <Button primary size="large" onClick={() => {}} label="New Event" icon={<AddIcon/>} />
+          <Button primary size="large" onClick={handleClick} label="New Event" icon={<AddIcon/>} />
         </div>
         <hr className='hr' />
         <Table>

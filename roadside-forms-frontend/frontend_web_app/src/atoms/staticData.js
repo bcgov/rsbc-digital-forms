@@ -10,6 +10,11 @@ export const vehicleStyles = atom({
     default: [],
   });
 
+  export const vehicleColours = atom({
+    key:"allVehicleColours",
+    default: [],
+  });
+
 export const provinces = atom({
     key:"allProvinces",
     default: [],
