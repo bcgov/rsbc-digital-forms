@@ -1,0 +1,20 @@
+name: roadside_forms_frontend-ci.yml
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches-ignore:
+      - master
+      - main
+    paths:
+      - roadside-forms-frontend/frontend_web_app/**
+      - .github/workflows/roadside_forms_frontend-ci.yml
+      - trigger.txt
+
+jobs:
+  CI:
+    uses: ./.github/workflows/ci-workflow.yml
+    with:
+      DOCKER_CONTEXT: roadside-forms-frontend/frontend_web_app
+      DOCKER_FILE: roadside-forms-frontend/frontend_web_app/Dockerfile
+    secrets: inherit
