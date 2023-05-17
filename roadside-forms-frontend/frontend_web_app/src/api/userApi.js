@@ -8,7 +8,7 @@ export const UserApi = {
           ...createRequestHeader(),
         };
         return await api.request({
-          url: "/admin/users",
+          url: "/api/v1/admin/users",
           method: "GET",
           headers:{...headers},
         }).then ( (response) => {
@@ -26,7 +26,7 @@ export const UserApi = {
       delete: async function (data) {
         const headers = createRequestHeader();
           return await api.request({
-            url: `/admin/users/${data.user_guid}/roles/${data.role_name}`,
+            url: `/api/v1/admin/users/${data.user_guid}/roles/${data.role_name}`,
             method: "DELETE",
             headers:{...headers},
           }).then ( (response) => {
@@ -49,7 +49,7 @@ export const UserApi = {
           ...createRequestHeader(),
         };
         return await api.request({
-          url: `/users/${userId}`,
+          url: `/api/v1/users/${userId}`,
           method: "GET",
           headers:{...headers},
         }).then ( (response) => {
@@ -69,7 +69,7 @@ export const UserApi = {
     post: async function (data) {
       const headers = createRequestHeader();
         return await api.request({
-          url: "/users",
+          url: "/api/v1/users",
           method: "POST",
           headers:{...headers},
           data: {...data},
@@ -91,7 +91,7 @@ export const UserApi = {
       patch: async function (data) {
         const headers = createRequestHeader();
           return await api.request({
-            url: `/admin/users/${data.user_guid}/roles/officer`,
+            url: `/api/v1/admin/users/${data.user_guid}/roles/officer`,
             method: "PATCH",
             headers:{...headers},
           }).then ( (response) => {
@@ -111,7 +111,7 @@ export const UserApi = {
         postAdmin: async function (data) {
           const headers = createRequestHeader();
             return await api.request({
-              url: `/admin/users/${data.user_guid}/roles`,
+              url: `/api/v1/admin/users/${data.user_guid}/roles`,
               method: "POST",
               data: {"role_name": "administrator"},
               headers:{...headers},
