@@ -6,7 +6,7 @@ export const UserRolesApi = {
     get: async function () {
       const headers = createRequestHeader();
          return await api.request({
-          url: "/user_roles",
+          url: "/api/v1/user_roles",
           method: "GET",
           headers:{...headers},
         }).then ( (response) => {
@@ -27,7 +27,7 @@ export const UserRolesApi = {
         ...createRequestHeader(),
       };
         const response = await api.request({
-          url: "/user_roles",
+          url: "/api/v1/user_roles",
           method: "POST",
           headers: {...headers},
           data: {...data},
