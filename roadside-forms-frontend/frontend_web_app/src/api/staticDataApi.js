@@ -8,7 +8,7 @@ export const StaticDataApi = {
           ...createRequestHeader(),
         };
         return await api.request({
-          url: `/static/${resource}`,
+          url: `/api/v1/static/${resource}`,
           method: "GET",
           headers:{...headers},
         }).then ( (response) => {
