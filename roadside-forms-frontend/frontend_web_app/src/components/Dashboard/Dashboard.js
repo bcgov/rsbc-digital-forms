@@ -9,6 +9,7 @@ import { staticResources } from '../../utils/helpers';
 import { StaticDataApi } from '../../api/staticDataApi';
 import { Button } from '../common/Button/Button';
 import { useNavigate} from 'react-router-dom';
+import {db} from '../../db'
 import './dashboard.scss'
 
 export const Dashboard = () => {
@@ -45,12 +46,59 @@ export const Dashboard = () => {
           setCountryResource(contryData.data)
           setCityResource(cityData.data)
           setAgencyResource(agencyData.data)
+
+          try {
+            db.vehicles.bulkPut(vehicleData.data);
+          } catch (error) {
+            console.log(error)
+          }
+          try {
+            db.vehicleStyles.bulkPut(vehicleStyleData.data);
+          } catch (error) {
+            console.log(error)
+          }
+          try {
+            db.vehicleColours.bulkPut(vehicleColourData.data);
+          } catch (error) {
+            console.log(error)
+          }
+          try {
+            db.provinces.bulkPut(provinceData.data);
+          } catch (error) {
+            console.log(error)
+          }
+          try {
+            db.impoundLotOperators.bulkPut(impoundData.data);
+          } catch (error) {
+            console.log(error)
+          }
+          try {
+            db.jurisdictions.bulkPut(jurisdictionData.data);
+          } catch (error) {
+            console.log(error)
+          }
+          try {
+            db.contries.bulkPut(contryData.data);
+          } catch (error) {
+            console.log(error)
+          }
+          try {
+            db.cities.bulkPut(cityData.data);
+          } catch (error) {
+            console.log(error)
+          }
+          try {
+            db.agencies.bulkPut(agencyData.data);
+          } catch (error) {
+            console.log(error)
+          }
         } catch (error) {
           console.error('Error fetching data:', error);
         }
       };
   
        fetchData();
+       
     }, [
       setVehicleResource,
       setVehicleColourResource,
