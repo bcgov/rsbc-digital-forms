@@ -10,6 +10,7 @@ import { userRolesAtom } from '../../../atoms/userRoles';
 import { getCurrentDateTime } from '../../../utils/dateTime';
 import { UserApi } from '../../../api/userApi';
 import { UserRolesApi } from '../../../api/userRolesApi';
+import {db} from '../../../db'
 import './header.scss';
 
 export const Header = () => {
@@ -43,6 +44,7 @@ export const Header = () => {
           if (response && (response.status === 201 || response.status === 200)) {
             const data = response.data
             setUserData(data);
+            db.user.put(data);
             setUserInfo({"username":data.login,"agency":data.agency})
           }
           else {
@@ -57,6 +59,7 @@ export const Header = () => {
         UserRolesApi.get().then((resp) =>{
           if (resp && (resp.status === 201 || resp.status === 200)) {
             const data = resp.data
+            db.userRoles.put(data);
             setUserRoleData(data);
             setuserAdminInfo(data.some( role => role['role_name'] === 'administrator' ))
           }
