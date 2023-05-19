@@ -44,7 +44,9 @@ export const Header = () => {
           if (response && (response.status === 201 || response.status === 200)) {
             const data = response.data
             setUserData(data);
-            db.user.put(data);
+            if(data){
+              db.user.put(data);
+            }
             setUserInfo({"username":data.login,"agency":data.agency})
           }
           else {
@@ -59,7 +61,9 @@ export const Header = () => {
         UserRolesApi.get().then((resp) =>{
           if (resp && (resp.status === 201 || resp.status === 200)) {
             const data = resp.data
-            db.userRoles.put(data);
+            if(data){
+              db.userRoles.bulkPut(data);
+            }
             setUserRoleData(data);
             setuserAdminInfo(data.some( role => role['role_name'] === 'administrator' ))
           }
