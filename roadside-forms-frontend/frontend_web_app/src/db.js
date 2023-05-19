@@ -4,7 +4,7 @@ export const db = new Dexie('digitalForms');
 
 db.version(1).stores({
   user: 'user_guid, business_guid, username, agency, badge_number, last_name, first_name, display_name, login',
-  userRoles:'user_guid, role_name, submitted_dt, approved_dt',
+  userRoles:'[user_guid+role_name], user_guid, role_name, submitted_dt, approved_dt',
   vehicles: 'id, mk, search, md',
   vehicleStyles: 'code, name',
   vehicleColours: 'code, display_name, colour_class',
