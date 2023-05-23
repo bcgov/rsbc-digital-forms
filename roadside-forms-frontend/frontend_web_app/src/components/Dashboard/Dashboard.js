@@ -9,6 +9,7 @@ import { staticResources } from '../../utils/helpers';
 import { StaticDataApi } from '../../api/staticDataApi';
 import { Button } from '../common/Button/Button';
 import { useNavigate} from 'react-router-dom';
+import {db} from '../../db'
 import './dashboard.scss'
 
 export const Dashboard = () => {
@@ -45,12 +46,27 @@ export const Dashboard = () => {
           setCountryResource(contryData.data)
           setCityResource(cityData.data)
           setAgencyResource(agencyData.data)
+
+          try {
+            db.vehicles.bulkPut(vehicleData.data);
+            db.vehicleStyles.bulkPut(vehicleStyleData.data);
+            db.vehicleColours.bulkPut(vehicleColourData.data);
+            db.provinces.bulkPut(provinceData.data);
+            db.impoundLotOperators.bulkPut(impoundData.data);
+            db.jurisdictions.bulkPut(jurisdictionData.data);
+            db.contries.bulkPut(contryData.data);
+            db.cities.bulkPut(cityData.data);
+            db.agencies.bulkPut(agencyData.data);
+          } catch (error) {
+            console.log(error)
+          }
         } catch (error) {
           console.error('Error fetching data:', error);
         }
       };
   
        fetchData();
+       
     }, [
       setVehicleResource,
       setVehicleColourResource,
