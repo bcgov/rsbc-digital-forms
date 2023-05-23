@@ -1,0 +1,16 @@
+{% extends "appeals_registry_base.html" %}
+
+{% block primary_text_1 %}
+{{ full_name }}, the applicant of prohibition {{ prohibition_number }},
+did not schedule the review within 24 hours of payment.
+{% endblock %}
+
+{% block primary_text_2 %}
+<p>Receipt details</p>
+<ul>
+    <li>Number: {{ receipt_number }}</li>
+    <li>Amount: {{ receipt_amount }}</li>
+    <li>Date: {{ receipt_date }}</li>
+    <li>Order Number: {{ order_number }}</li>
+</ul>
+{% endblock %}
