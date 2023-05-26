@@ -29,7 +29,7 @@ export const Dashboard = () => {
       try {
           const agencyData = await StaticDataApi.get("agencies")
           const cityData = await StaticDataApi.get("cities")
-          const contryData = await StaticDataApi.get("countries")
+          const countryData = await StaticDataApi.get("countries")
           const jurisdictionData = await StaticDataApi.get("jurisdictions")
           const impoundData = await StaticDataApi.get("impound_lot_operators")
           const provinceData = await StaticDataApi.get("provinces")
@@ -43,7 +43,7 @@ export const Dashboard = () => {
           setProvinceResource(provinceData.data)
           setImpoundResource(impoundData.data)
           setJurisdictionResource(jurisdictionData.data)
-          setCountryResource(contryData.data)
+          setCountryResource(countryData.data)
           setCityResource(cityData.data)
           setAgencyResource(agencyData.data)
 
@@ -54,7 +54,7 @@ export const Dashboard = () => {
             db.provinces.bulkPut(provinceData.data);
             db.impoundLotOperators.bulkPut(impoundData.data);
             db.jurisdictions.bulkPut(jurisdictionData.data);
-            db.contries.bulkPut(contryData.data);
+            db.countries.bulkPut(countryData.data);
             db.cities.bulkPut(cityData.data);
             db.agencies.bulkPut(agencyData.data);
           } catch (error) {
