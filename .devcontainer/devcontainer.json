@@ -2,9 +2,13 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/javascript-node-mongo
 {
 	"name": "local DeV Env",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "app",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    // "runServices": ["vscode","db"],
+    "shutdownAction": "stopCompose",
+    "postCreateCommand": "source ~/.windows.sh",
+    // "workspaceFolder": "/workspace",
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -15,13 +19,49 @@
 		"vscode": {
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
-				"mongodb.mongodb-vscode"
-			]
+				"mongodb.mongodb-vscode",
+				// "IBM.output-colorizer",
+                // "eamodio.gitlens",
+                // "mhutchie.git-graph",
+                // "davidanson.vscode-markdownlint",
+                // "shardulm94.trailing-spaces",
+                // "alefragnani.Bookmarks",
+                // "Gruntfuggly.todo-tree",
+                // "mohsen1.prettify-json",
+                // "quicktype.quicktype",
+                // "spikespaz.vscode-smoothtype",
+                // "stkb.rewrap",
+                // "vscode-icons-team.vscode-icons",
+                "ms-azuretools.vscode-docker",
+                "github.copilot"
+			],
+			"settings": {
+				"files.eol": "\n",
+				"editor.tabSize": 2,
+				"remote.extensionKind": {
+					"ms-azuretools.vscode-docker": "workspace"
+				},
+				"editor.codeActionsOnSave": {
+					"source.fixAll.eslint": true
+				},
+				// "eslint.validate": [
+				// 	"javascript",
+				// 	"javascriptreact",
+				// 	"typescript",
+				// 	"typescriptreact"
+				// ],
+				"editor.formatOnSave": true,
+				// "[javascript]": {
+				// 	"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+				// 	"editor.formatOnSave": false
+				//   },
+				  "prettier-eslint.eslintIntegration": true
+			}
 		}
-	}
+	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [3000, 27017],
+	"forwardPorts": [3000, 27017]
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "yarn install",
