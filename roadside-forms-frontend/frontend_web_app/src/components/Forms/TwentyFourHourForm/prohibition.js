@@ -1,11 +1,11 @@
-import { Radio } from "../../../common/Radio/radio"
-import { Input } from "../../../common/Input/Input"
-import { SearchableSelect } from "../../../common/Select/SearchableSelect"
-import { DatePickerField } from '../../../common/DateField/DatePicker';
-import { TimeInputField } from '../../../common/Input/TimeInputField';
-import { NumericInput } from "../../../common/Input/NumericInput";
+import { Radio } from "../../common/Radio/radio"
+import { Input } from "../../common/Input/Input"
+import { SearchableSelect } from "../../common/Select/SearchableSelect"
+import { DatePickerField } from '../../common/DateField/DatePicker';
+import { TimeInputField } from '../../common/Input/TimeInputField';
+import { NumericInput } from "../../common/Input/NumericInput";
 import { useFormikContext } from 'formik';
-import { Checkbox } from "../../../common/Checkbox/checkbox";
+import { Checkbox } from "../../common/Checkbox/checkbox";
 import PropTypes from 'prop-types';
 
 export const Prohibition = (props) => {
