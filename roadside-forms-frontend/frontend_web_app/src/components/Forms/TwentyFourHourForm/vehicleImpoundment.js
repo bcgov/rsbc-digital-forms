@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Radio } from '../../../common/Radio/radio';
+import { Radio } from '../../common/Radio/radio';
 import { useFormikContext } from 'formik';
-import { Input } from '../../../common/Input/Input';
-import { DatePickerField } from '../../../common/DateField/DatePicker';
-import { TimeInputField } from '../../../common/Input/TimeInputField';
-import { PhoneField } from '../../../common/Input/phoneField';
-import { SearchableSelect } from '../../../common/Select/SearchableSelect';
+import { Input } from '../../common/Input/Input';
+import { DatePickerField } from '../../common/DateField/DatePicker';
+import { TimeInputField } from '../../common/Input/TimeInputField';
+import { PhoneField } from '../../common/Input/phoneField';
+import { SearchableSelect } from '../../common/Select/SearchableSelect';
 import PropTypes from 'prop-types';
 
 export const VehicleImpoundment = (props) => {
@@ -63,18 +63,18 @@ export const VehicleImpoundment = (props) => {
                 <div className='impoud-lot-fields' style={{backgroundColor: "lightgray"}}>
                     <div className='row'>
                         <div className='col-sm-12'>
-                            <Input value={values['ILO-name']} label="Impound Lot Operator Name" name="ILO-name"  className="field-height field-width" type="text" required></Input>
+                            <Input value={values['ILO-name']} label="Impound Lot Operator Name" name="ILO-name"  className="field-height field-width" type="text" required/>
                         </div>
                     </div>
                     <div className='row'>
                         <div className='col-sm-4'>
-                            <Input value={values['ILO-address']} label="Public Lot Address" name="ILO-address"  className="field-height field-width" type="text" required></Input>
+                            <Input value={values['ILO-address']} label="Public Lot Address" name="ILO-address"  className="field-height field-width" type="text" required/>
                         </div>
                         <div className='col-sm-4'>
-                            <Input value={values['ILO-city']} label="City" name="ILO-city"  className="field-height field-width" type="text" required></Input>
+                            <Input value={values['ILO-city']} label="City" name="ILO-city"  className="field-height field-width" type="text" required/>
                         </div>
                         <div className='col-sm-4'>
-                            <PhoneField value={values['ILO-phone']} className="field-height field-width" label="Public Phone Number" name="ILO-phone" required></PhoneField>
+                            <PhoneField value={values['ILO-phone']} className="field-height field-width" label="Public Phone Number" name="ILO-phone" required/>
                         </div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@ export const VehicleImpoundment = (props) => {
             {values['reason-for-not-impounding'] === 'released' && (
                 <div className='row' style={{ minHeight: '85px' }}>
                     <div className='col-sm-4'>
-                        <Input label="Vehicle Released To" name="vehicle-released-to"  className="field-height field-width" type="text" required></Input>
+                        <Input label="Vehicle Released To" name="vehicle-released-to"  className="field-height field-width" type="text" required/>
                     </div>
                     <div className='col-sm-4'>
                         <DatePickerField name="date-released" label="Date Released" className="field-height field-width" required/>

@@ -123,7 +123,7 @@ export const CreateEvent = () => {
                             
                         </div>
                         { values['24Hour'] &&  <TwentyFourHourForm cities={cities} impoundLotOperators={impoundLotOperators}/> }
-                        <OfficerInfo></OfficerInfo>
+                        <OfficerInfo/>
                         <div className='right'>
                             <Button primary size='large' label="Next: Preview" type="submit" disabled={isSubmitting}/>
                         </div>

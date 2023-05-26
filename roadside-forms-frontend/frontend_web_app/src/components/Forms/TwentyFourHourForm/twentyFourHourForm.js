@@ -1,7 +1,7 @@
 import React from 'react';
-import { VehicleImpoundment } from './component/vehicleImpoundment';
-import { Prohibition } from './component/prohibition';
-import { ReasonableGrounds } from './component/reasonableGrounds';
+import { VehicleImpoundment } from './vehicleImpoundment';
+import { Prohibition } from './prohibition';
+import { ReasonableGrounds } from './reasonableGrounds';
 import PropTypes from 'prop-types';
 
 export const TwentyFourHourForm = (props) => {
@@ -9,9 +9,9 @@ export const TwentyFourHourForm = (props) => {
  console.log(impoundLotOperators);
   return (
     <div>
-    <VehicleImpoundment impoundLotOperators={impoundLotOperators}></VehicleImpoundment>
-    <Prohibition cities={cities}></Prohibition>
-    <ReasonableGrounds></ReasonableGrounds>
+    <VehicleImpoundment impoundLotOperators={impoundLotOperators}/>
+    <Prohibition cities={cities}/>
+    <ReasonableGrounds/>
     </div>
   );
 }
