@@ -7,6 +7,7 @@ import { DriverInfo } from '../CommonForm/driverInfo';
 import { InitialValues } from './initialValues';
 import { VehicleInfo } from '../CommonForm/vehicleInfo';
 import { OfficerInfo } from '../CommonForm/officerInfo';
+import { TwentyFourHourForm } from '../Forms/TwentyFourHourForm/twentyFourHourForm';
 import { RegisteredOwnerInfo } from '../CommonForm/registeredOwnerInfo';
 import { useRecoilValue } from 'recoil';
 import { staticResources } from '../../utils/helpers';
@@ -18,17 +19,27 @@ export const CreateEvent = () => {
     const vehicleColoursAtom = useRecoilValue(staticResources["vehicle_colours"]);
     const jurisdictionsAtom = useRecoilValue(staticResources["jurisdictions"]);
     const provincesAtom = useRecoilValue(staticResources["provinces"]);
+    const cityAtom = useRecoilValue(staticResources["cities"]);
     const vehiclesAtom= useRecoilValue(staticResources["vehicles"]);
+    const impoundAtom= useRecoilValue(staticResources["impound_lot_operators"]);
     const [jurisdictions, setJurisdictions] = useState([]);
     const [provinces, setProvinces] = useState([]);
     const [vehicleStyles, setVehicleStyles] = useState([]);
     const [vehicles, setVehicles] = useState([]);
     const [vehicleColours, setVehicleColours] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [impoundLotOperators, setImpoundLotOperators] = useState([]);
+
     const navigate = useNavigate();
 
     useEffect(() => {
         setJurisdictions(
             jurisdictionsAtom.map((each) => ({ label: each.objectDsc, value: each.objectCd }))
+        );
+        setImpoundLotOperators(
+            impoundAtom.map((each) => ({
+                label: each.name + ', ' +each.lot_address+', '+each.city+', '+each.phone,
+                value: each.name + ', ' +each.lot_address+', '+each.city+', '+each.phone }))
         );
         setProvinces(
             provincesAtom.map((each) => ({ label: each.objectDsc, value: each.objectCd }))
@@ -42,15 +53,18 @@ export const CreateEvent = () => {
         setVehicles(
             vehiclesAtom.map((each) => ({ label: each.search, value: each.search }))
         );
+        setCities(
+            cityAtom.map((each) => ({ label: each.objectDsc, value: each.objectCd }))
+        );
       }, [
         vehicleStylesAtom,
         jurisdictionsAtom,
         provincesAtom,
         vehiclesAtom,
-        vehicleColoursAtom
+        vehicleColoursAtom,
+        cityAtom,
+        impoundAtom
     ]);
-
-    console.log("vehicleColours", vehicleColours);
 
     const generateYearOptions = () => {
         const currentYear = new Date().getFullYear();
@@ -70,7 +84,7 @@ export const CreateEvent = () => {
     };
 
     const handleGoBack = () => {
-        navigate(-1);
+        navigate('/');
       };
 
     return (
@@ -79,16 +93,19 @@ export const CreateEvent = () => {
                 <Button onClick={handleGoBack}  primary size='large' label="Save & Return to Main Menu"/>
             </div>
             <div className="outline">
-            <Formik initialValues={InitialValues()} validationSchema={validationSchema} onSubmit={onSubmit}>
-                {({ isSubmitting }) => (
+            <Formik 
+                initialValues={InitialValues()} 
+                validationSchema={validationSchema} 
+                onSubmit={onSubmit}>
+                {({ isSubmitting, values }) => (
                     <Form>
                         <div className='row mt-2'>
                             <div className='col-sm-4 left checkboxs'>
                                 <h4>Documents to Generate</h4>
-                                <Checkbox name="IRP">Immediate Roadside Prohibition</Checkbox>
-                                <Checkbox name="VI">Vehicle Impound</Checkbox>
-                                <Checkbox name="24Hour">24-hour Driving Prohibition</Checkbox>
-                                <Checkbox name="12Hour">12-hour Driving Prohibition</Checkbox>
+                                <Checkbox name="IRP" >Immediate Roadside Prohibition</Checkbox>
+                                <Checkbox name="VI" >Vehicle Impound</Checkbox>
+                                <Checkbox name="24Hour" >24-hour Driving Prohibition</Checkbox>
+                                <Checkbox name="12Hour" >12-hour Driving Prohibition</Checkbox>
                             </div>
                             <div className='col-sm-4 form-id-border'>
                                 <h5>IRP number: 21-9876540</h5>
@@ -103,8 +120,10 @@ export const CreateEvent = () => {
                             <DriverInfo jurisdictions={jurisdictions} provinces={provinces}/>
                             <VehicleInfo vehicleColours={vehicleColours} years={generateYearOptions()} provinces={provinces} jurisdictions={jurisdictions} vehicles={vehicles} vehicleStyles={vehicleStyles}/>
                             <RegisteredOwnerInfo provinces={provinces}/>
-                            <OfficerInfo></OfficerInfo>
+                            
                         </div>
+                        { values['24Hour'] &&  <TwentyFourHourForm cities={cities} impoundLotOperators={impoundLotOperators}/> }
+                        <OfficerInfo></OfficerInfo>
                         <div className='right'>
                             <Button primary size='large' label="Next: Preview" type="submit" disabled={isSubmitting}/>
                         </div>
