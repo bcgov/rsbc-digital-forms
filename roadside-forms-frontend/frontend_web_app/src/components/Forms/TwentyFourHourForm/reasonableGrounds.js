@@ -1,6 +1,6 @@
-import { Radio } from '../../../common/Radio/radio';
-import { Checkbox } from '../../../common/Checkbox/checkbox';
-import { Input } from '../../../common/Input/Input';
+import { Radio } from '../../common/Radio/radio';
+import { Checkbox } from '../../common/Checkbox/checkbox';
+import { Input } from '../../common/Input/Input';
 import { useFormikContext } from 'formik';
 
 export const ReasonableGrounds = () => {
@@ -20,7 +20,7 @@ export const ReasonableGrounds = () => {
                 <Checkbox name="other-reasonable-ground" >Other</Checkbox>
             </div>
             {values["other-reasonable-ground"] && (<div className='col-sm-12 left other-selected'>
-                <Input label="Other" name="other-reason"  className="field-height field-width" type="text"></Input>
+                <Input label="Other" name="other-reason"  className="field-height field-width" type="text"/>
             </div>)}
             </div>
             <div className="row">
