@@ -5,6 +5,7 @@ export const InitialValues = () => {
     const user = useRecoilValue(userAtom);
 
     return {
+        //common fields
         "IRP": false,
         "VI": false,
         "24Hour": false,
@@ -40,7 +41,42 @@ export const InitialValues = () => {
         "registered-owner-postal": '',
         "officer-lastname":user.last_name || '',
         "officer-prime-id":user.badge_number || '',
-        "officer-agency":user.agency || ''
+        "officer-agency":user.agency || '',
+        //24-hour form fields
+        "vehicle-impounded":'',
+        "key-location": '',
+        "reason-for-not-impounding": '',
+        'ILO-options': '',
+        "ILO-name": '',
+        "ILO-address":'',
+        "ILO-city":'',
+        "ILO-phone":'',
+        "vehicle-released-to": '',
+        "date-released": '',
+        "time-released": '',
+        "type-of-prohibition": '',
+        "offence-address":'',
+        "offence-city":'',
+        "offence-agency-file":'',
+        "date-of-driving":'',
+        "time-of-driving": '',
+        "witnessed-by-officer":false,
+        "admission-by-driver":false,
+        "independent-witness":false,
+        "video-surveillance":false,
+        "other-reasonable-ground":false,
+        "prescribed-device":'',
+        "test-used-alcohol": '',
+        "ASD-expiry-date": '',
+        "alcohol-test-result": '',
+        "BAC-result": '',
+        "test-used-drug": '',
+        "THC":false,
+        "Cocaine":false,
+
+
+
+
 
     }
 }

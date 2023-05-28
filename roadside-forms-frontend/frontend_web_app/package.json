@@ -84,6 +84,7 @@
     "@storybook/preset-create-react-app": "^3.2.0",
     "@storybook/react": "^6.5.16",
     "@storybook/testing-library": "^0.0.13",
+    "react-datepicker": "^4.11.0",
     "react-select": "^5.7.2",
     "sass": "^1.60.0",
     "yup": "^1.1.1"

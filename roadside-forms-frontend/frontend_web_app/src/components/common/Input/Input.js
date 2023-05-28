@@ -17,7 +17,7 @@ export const Input = ({ label, required, onChange, ...props }) => {
     <div>
       <label htmlFor={props.id || props.name}>
         {label}
-        {required && <span className="required-asterisk">*</span>}
+        {required && <span className="required-asterisk"> *</span>}
         </label>
       <input id={field.name} {...field} {...props} onChange={handleInputChange} />
       {meta.touched && meta.error ? <div className="error-message">{meta.error}</div> : null}
