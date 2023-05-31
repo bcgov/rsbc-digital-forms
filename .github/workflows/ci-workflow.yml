@@ -51,6 +51,7 @@ jobs:
           context: ${{ inputs.DOCKER_CONTEXT }}
           file: ${{ inputs.DOCKER_FILE }}
           push: false
+          load: true
           tags: tempimage:latest
       - name: Check Images
         run: |
