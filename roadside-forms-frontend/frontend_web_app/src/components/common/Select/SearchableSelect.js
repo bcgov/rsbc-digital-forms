@@ -17,7 +17,7 @@ export const SearchableSelect = ({ onChange, label, required, options, ...props 
 
   return (
     <div>
-      <label htmlFor={props.id || props.name}>{label}{required && <span className="required-asterisk">*</span>}</label>
+      <label htmlFor={field.name}>{label}{required && <span className="required-asterisk">*</span>}</label>
       <Select
         {...field}
         {...props}
