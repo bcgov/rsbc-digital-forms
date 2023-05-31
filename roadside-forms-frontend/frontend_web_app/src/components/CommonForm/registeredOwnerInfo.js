@@ -1,6 +1,6 @@
 import { Checkbox } from "../common/Checkbox/checkbox"
 import { Input } from "../common/Input/Input"
-import { Button } from "../common/Button/Button"
+import Button from 'react-bootstrap/Button';
 import { PhoneField } from "../common/Input/phoneField"
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
@@ -48,7 +48,7 @@ export const RegisteredOwnerInfo = (props) => {
         <div className='registered-owner-info border-design-form left'>
             <div className="row" style={{ minHeight: '40px' }}>
                 <div className="col-sm-10"><h3>Registered Owner</h3></div>
-                <div className="col-sm-2 right"><Button primary size="medium"  label="Fill from driver" onClick={handlePopulateFields} /></div>
+                <div className="col-sm-2 right"><Button className="slim-button" variant="primary" onClick={handlePopulateFields}>Fill from driver</Button></div>
             </div>
             <div className="row" style={{ minHeight: '85px' }}>
                 <div className="col-sm-12 mt-4">
