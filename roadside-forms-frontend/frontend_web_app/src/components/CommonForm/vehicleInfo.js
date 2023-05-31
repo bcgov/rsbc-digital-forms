@@ -4,7 +4,7 @@ import React, { useState, useEffect} from 'react';
 import { Input } from "../common/Input/Input"
 import { SearchableSelect } from "../common/Select/SearchableSelect"
 import { useFormikContext } from 'formik';
-import { Button } from "../common/Button/Button"
+import Button from 'react-bootstrap/Button';
 import { MultiSelectField } from "../common/Select/MultiSelectField";
 
 export const VehicleInfo = (props) => {
@@ -27,7 +27,7 @@ export const VehicleInfo = (props) => {
                 <div className="row" style={{ minHeight: '85px' }}>
                     <div className="col-sm-5" ><SearchableSelect  className='field-height field-width' label="Jurisdiction"  name="vehicle-jurisdiction" options={jurisdictions} /></div>
                     <div className=" col-sm-5"><Input className='field-height field-width' label="Plate Number" name="plate-number" type="text"/></div>
-                    <div className=" col-sm-2 mt-4"><Button primary size='medium' label="ICBC Prefill" disabled={disableBtn}/></div>
+                    <div className=" col-sm-1 mt-4"><Button className="slim-button" variant="primary" disabled={disableBtn}>ICBC Prefill</Button></div>
                 </div>
                 <div className="row" style={{ minHeight: '85px' }}>
                     <div className=" col-sm-5"><Input label="Registration Number" name="registration-number" className="field-height field-width" type="text"/></div>

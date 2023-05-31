@@ -1,40 +1,54 @@
 import React, { useState } from 'react';
 import { useField } from 'formik';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import Select from 'react-select';
+import { MultiSelectWidget } from '../Widget/MultiSelectWidget'; 
 
-export const MultiSelectField = ({ label, options, ...props }) => {
-  const [field, meta, helpers] = useField(props.name);
-  const [expanded, setExpanded] = useState(false);
+export const MultiSelectField = ({ label, name, options }) => {
+  const [field, , helpers] = useField(name);
+  const [showModal, setShowModal] = useState(false);
 
-  const handleChange = event => {
-    const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
-    helpers.setValue(selectedOptions);
+  const handleToggleModal = () => {
+    setShowModal(!showModal);
   };
 
-  const toggleExpand = () => {
-    setExpanded(!expanded);
+  const handleSelect = (selectedOptions) => {
+    const selectedValues = selectedOptions.map((option) => option.value);
+    helpers.setValue(selectedValues);
+    setShowModal(false);
   };
-
-  const containerClassName = `multi-select-container ${expanded ? 'expanded' : ''}`;
 
   return (
-    <div className={containerClassName}>
-      <label htmlFor={props.name}>{label}</label>
-      <select
-        id={props.name}
-        onChange={handleChange}
-        value={field.value}
-        onFocus={toggleExpand}
-        onBlur={toggleExpand}
-        multiple
-        {...props}
-      >
-        {options.map(option => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      {meta.touched && meta.error && <div>{meta.error}</div>}
-    </div>
+    <>
+      <label>{label}</label>{' '}<Button variant="primary" className="slim-button" onClick={handleToggleModal}>
+            Edit
+          </Button>
+      <Select
+        isMulti
+        options={options}
+        id={name}
+        value={options.filter((option) => field.value.includes(option.value))}
+        onChange={(selectedOptions) => {
+          const selectedValues = selectedOptions.map((option) => option.value);
+          helpers.setValue(selectedValues);
+        }}
+        onBlur={helpers.setTouched}
+        onMouseDown={handleToggleModal}
+      />
+      <Modal show={showModal} onHide={handleToggleModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Select Options</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <MultiSelectWidget name={name} options={options} onSelect={handleSelect} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleToggleModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };
