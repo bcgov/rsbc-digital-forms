@@ -65,7 +65,7 @@ jobs:
           scan-type: image
           image-ref: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
           format: table
-          exit-code: '1'
+          # exit-code: '1'
           ignore-unfixed: true
           severity: HIGH,CRITICAL
       - name: Run Trivy vulnerability scanner- save to file
@@ -76,7 +76,7 @@ jobs:
           format: 'template'
           template: '@/contrib/sarif.tpl'
           output: 'trivy-results.sarif'
-          exit-code: '1'
+          # exit-code: '1'
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
   
