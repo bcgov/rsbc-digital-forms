@@ -9,7 +9,7 @@ on:
     paths:
       - roadside-forms-frontend/frontend_web_app/**
       - .github/workflows/roadside_forms_frontend-ci.yml
-      # - trigger.txt
+      - trigger.txt
 
 jobs:
   CI:
