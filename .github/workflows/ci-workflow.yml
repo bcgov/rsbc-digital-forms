@@ -9,6 +9,9 @@ on:
       DOCKER_FILE:
         required: true
         type: string
+      DOCKER_IMAGE_NAME:
+        # required: true
+        type: string
       # OPENSHIFT_SERVER_URL_SILVER:
       #   required: true
       #   type: string
@@ -52,7 +55,7 @@ jobs:
           file: ${{ inputs.DOCKER_FILE }}
           push: false
           load: true
-          tags: tempimage:latest
+          tags:  ${{ inputs.DOCKER_IMAGE_NAME }}:latest
       - name: Check Images
         run: |
           docker images
