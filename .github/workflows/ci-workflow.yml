@@ -77,13 +77,13 @@ jobs:
           format: 'template'
           # exit-code: '1'
           ignore-unfixed: true
-          template: "@trivy/github-markdown.tpl"
-          output: trivy.md
-          severity: HIGH,CRITICAL   
-      - name: Send results to Status
-        if: always()
-        run: |
-          cat trivy.md >> $GITHUB_STEP_SUMMARY   
+          template: "@/contrib/html.tpl"
+          output: ${{ github.step_summary }}
+          severity: HIGH,CRITICAL
+      # - name: Send results to Status
+      #   if: always()
+      #   run: |
+      #     cat trivy.md >> $GITHUB_STEP_SUMMARY   
       # - uses: mshick/add-pr-comment@v2
       #   if: always()
       #   with:
