@@ -93,10 +93,6 @@ jobs:
       #     sarif-file: scan.sarif
       #     title: "Security scanning results"
       #     odc-sarif: false
-      - name: Open file
-        if: always()
-        run: |
-          cat scan.html  
       # - name: Send results to Status
       #   if: always()
       #   run: |
