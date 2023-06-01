@@ -96,6 +96,7 @@ jobs:
       - name: Open file
         if: always()
         run: |
+          sed -i 's/<head>.*<\/head>//gs' scan.html
           cat scan.html  
       # - name: Send results to Status
       #   if: always()
