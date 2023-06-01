@@ -68,6 +68,23 @@ jobs:
           exit-code: '1'
           ignore-unfixed: true
           severity: HIGH,CRITICAL
+      - name: Run Trivy vulnerability scanner- save to file
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        if: always()
+        with:
+          scan-type: image
+          image-ref: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
+          format: 'template'
+          # exit-code: '1'
+          ignore-unfixed: true
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results.sarif'
+          severity: HIGH,CRITICAL      
+      - uses: mshick/add-pr-comment@v2
+        if: always()
+        with:
+          message-path: |
+            trivy-results.sarif
       
 
   build:
