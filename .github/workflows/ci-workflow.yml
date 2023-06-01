@@ -93,10 +93,11 @@ jobs:
       #     sarif-file: scan.sarif
       #     title: "Security scanning results"
       #     odc-sarif: false
+      # sed -i 's/<head>.*<\/head>//gs' scan.html
       - name: Open file
         if: always()
         run: |
-          sed -i 's/<head>.*<\/head>//gs' scan.html
+          sed -i 's/<b>.*</b>//g' scan.html
           cat scan.html  
       # - name: Send results to Status
       #   if: always()
