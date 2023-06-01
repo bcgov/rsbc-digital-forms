@@ -76,7 +76,7 @@ jobs:
           image-ref: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
           format: 'template'
           # format: 'table'
-          # exit-code: '1'
+          exit-code: '1'
           ignore-unfixed: true
           template: "@/contrib/html.tpl"
           # template: "@/markdown.tpl"
@@ -104,6 +104,10 @@ jobs:
       #   if: always()
       #   run: |
       #     cat scan.md >> $GITHUB_STEP_SUMMARY   
+      - name: Send results to Status
+        if: always()
+        run: |
+          cat scan_1.html >> $GITHUB_STEP_SUMMARY   
       - uses: mshick/add-pr-comment@v2
         if: always()
         with:
