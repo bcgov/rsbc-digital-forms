@@ -94,11 +94,12 @@ jobs:
       #     title: "Security scanning results"
       #     odc-sarif: false
       # sed -i 's/<head>.*<\/head>//gs' scan.html
+      # sed -i 's/<b>.*</b>//g' scan.html
       - name: Open file
         if: always()
-        run: |
-          sed -i 's/<b>.*</b>//g' scan.html
-          cat scan.html  
+        run: |          
+          sed '/<head/,/<\/head>/d' scan.html >scan_1.html
+          cat scan_1.html  
       # - name: Send results to Status
       #   if: always()
       #   run: |
@@ -107,7 +108,7 @@ jobs:
         if: always()
         with:
           message-path: |
-            scan.html
+            scan_1.html
       
 
   build:
