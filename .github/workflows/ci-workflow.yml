@@ -78,12 +78,12 @@ jobs:
           # exit-code: '1'
           ignore-unfixed: true
           template: "@/contrib/html.tpl"
-          output: ${{ github.step_summary }}
+          output: scan.html
           severity: HIGH,CRITICAL
-      # - name: Send results to Status
-      #   if: always()
-      #   run: |
-      #     cat trivy.md >> $GITHUB_STEP_SUMMARY   
+      - name: Send results to Status
+        if: always()
+        run: |
+          cat scan.html >> $GITHUB_STEP_SUMMARY   
       # - uses: mshick/add-pr-comment@v2
       #   if: always()
       #   with:
