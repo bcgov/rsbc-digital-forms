@@ -74,23 +74,34 @@ jobs:
         with:
           scan-type: image
           image-ref: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
-          # format: 'template'
-          format: 'table'
+          format: 'template'
+          # format: 'table'
           # exit-code: '1'
           ignore-unfixed: true
           # template: "@/contrib/html.tpl"
           # template: "@/markdown.tpl"
-          output: scan.md
+          template: "@/contrib/sarif.tpl"
+          output: scan.sarif
           severity: HIGH,CRITICAL
-      - name: Send results to Status
-        if: always()
-        run: |
-          cat scan.md >> $GITHUB_STEP_SUMMARY   
-      - uses: mshick/add-pr-comment@v2
-        if: always()
+      - name: Post SARIF findings in the issue
+        uses: sett-and-hive/sarif-to-issue-action@v1
         with:
-          message-path: |
-            scan.md
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          branch: ${{ github.head_ref }}
+          pr-number: ${{ github.event.number }}
+          sarif-file: scan.sarif
+          title: "Security scanning results"
+          odc-sarif: false
+      # - name: Send results to Status
+      #   if: always()
+      #   run: |
+      #     cat scan.md >> $GITHUB_STEP_SUMMARY   
+      # - uses: mshick/add-pr-comment@v2
+      #   if: always()
+      #   with:
+      #     message-path: |
+      #       scan.md
       
 
   build:
