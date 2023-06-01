@@ -74,11 +74,12 @@ jobs:
         with:
           scan-type: image
           image-ref: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
-          format: 'template'
+          # format: 'template'
+          format: 'table'
           # exit-code: '1'
           ignore-unfixed: true
           # template: "@/contrib/html.tpl"
-          template: "@/markdown.tpl"
+          # template: "@/markdown.tpl"
           output: scan.md
           severity: HIGH,CRITICAL
       - name: Send results to Status
