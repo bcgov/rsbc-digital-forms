@@ -92,6 +92,12 @@ jobs:
           allow-repeats: true
           message-path: |
             trivy_updated.html
+      - name: Update comment on PR
+        uses: machine-learning-apps/pr-comment@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path: trivy_updated.html
       
 
   build:
