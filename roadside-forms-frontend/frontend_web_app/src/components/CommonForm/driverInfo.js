@@ -2,7 +2,7 @@ import { Input } from "../common/Input/Input"
 import React, { useState, useEffect} from 'react';
 import { SearchableSelect } from "../common/Select/SearchableSelect"
 import PropTypes from 'prop-types';
-import { Button } from "../common/Button/Button"
+import Button from 'react-bootstrap/Button';
 import { DateOfBirthField } from "../common/DateField/dateOfBirthField"
 import { PhoneField } from "../common/Input/phoneField";
 import { useFormikContext } from 'formik';
@@ -28,8 +28,8 @@ export const DriverInfo = (props) => {
                 <div>
                     <div className="row" style={{ minHeight: '85px' }}>
                         <div className=" col-sm-4"><Input className='field-height field-width' label="Driver's Licence Number" name="drivers-number" type="text"/></div>
-                        <div className=" col-sm-1 mt-4 pr-2"><Button primary size='medium' label="ICBC Prefill" disabled={disableBtn}/></div>
-                        <div className=" col-sm-1 mt-4 left" ><Button primary  size='medium' label="Scan DL" disabled={disableBtn}/></div>
+                        <div className=" col-sm-1 mt-4 pr-2"><Button className="slim-button" variant="primary" disabled={disableBtn}>ICBC Prefill</Button></div>
+                        <div className=" col-sm-1 mt-4 left" ><Button className="slim-button" variant="primary" disabled={disableBtn}>Scan DL</Button></div>
                         <div className="col-sm-6" ><SearchableSelect  className='field-height field-width' label="Province / State/ International"  name="drivers-licence-jurisdiction" options={jurisdictions} /></div>
                     </div>
                     <div className="row" style={{ minHeight: '85px' }}>
