@@ -76,7 +76,7 @@ jobs:
           ignore-unfixed: true
           template: "@/contrib/html.tpl"
           output: trivy.html
-          severity: HIGH,CRITICAL
+          severity: CRITICAL
       - name: Edit html file to clean headers
         if: always()
         run: |          
