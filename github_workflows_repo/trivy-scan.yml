@@ -1,0 +1,8 @@
+
+# name: "daily-trivy-scan"
+
+# on:
+#   schedule:
+#     - cron: '0 0 * * *'
+
+# jobs:
