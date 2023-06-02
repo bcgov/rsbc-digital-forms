@@ -22,7 +22,7 @@ iniconfig==1.1.1
 iso8601==0.1.12
 itsdangerous==2.0.1
 Jinja2==3.0.3
-korean-lunar-calendar==0.2.1
+korean-lunar-calendar==0.3.1
 MarkupSafe==2.0.1
 packaging==21.3
 pika==1.1.0
