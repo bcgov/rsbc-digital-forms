@@ -77,6 +77,17 @@ jobs:
           template: "@/contrib/html.tpl"
           output: trivy.html
           severity: CRITICAL
+      - name: Run Trivy vulnerability scanner- save to sarif file
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        if: always()
+        with:
+          scan-type: image
+          image-ref: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
+          format: 'template'
+          ignore-unfixed: true
+          template: "@/contrib/sarif.tpl"
+          output: trivy.sarif
+          severity: CRITICAL
       - name: Edit html file to clean headers
         if: always()
         run: |          
@@ -92,13 +103,16 @@ jobs:
           allow-repeats: true
           message-path: |
             trivy_updated.html
-      - name: Create comment
-        uses: peter-evans/create-or-update-comment@v3
+      - name: Post SARIF findings in the issue
+        uses: sett-and-hive/sarif-to-issue-action@v1
         with:
-          edit-mode: append
-          issue-number: ${{ github.event.pull_request.number }}
-          body-path: |
-            trivy_updated.html
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          branch: ${{ github.head_ref }}
+          sarif-file: trivy.sarif
+          title: "Critical vulnerabilities found in ${{ inputs.DOCKER_IMAGE_NAME }} on PR ${{ github.event.number }}"
+          odc-sarif: false
+      
       
 
   build:
