@@ -17,8 +17,18 @@ jobs:
       fail-fast: false
       matrix:
         contexts: [ 'roadside-forms-frontend/frontend_web_app', 'python/prohibition_web_svc','python/form_handler' ]
-        image_names: ['rsbc-roadside-forms-frontend','rsbc-roadside-forms-backend-api','rsbc-roadside-forms-form-handler']
-        sarif_file: [ 'trivy-frontend.sarif','trivy-backend.sarif','trivy-form-handler.sarif']
+        # image_names: ['rsbc-roadside-forms-frontend','rsbc-roadside-forms-backend-api','rsbc-roadside-forms-form-handler']
+        # sarif_file: [ 'trivy-frontend.sarif','trivy-backend.sarif','trivy-form-handler.sarif']
+        include:
+            - contexts: roadside-forms-frontend/frontend_web_app
+              image_names: rsbc-roadside-forms-frontend
+              sarif_file: trivy-frontend.sarif
+            - contexts: python/prohibition_web_svc
+              image_names: rsbc-roadside-forms-backend-api
+              sarif_file: trivy-backend.sarif
+            - contexts: python/form_handler
+              image_names: rsbc-roadside-forms-form-handler
+              sarif_file: trivy-form-handler.sarif
     steps:
       - name: Checkout
         uses: actions/checkout@v3
