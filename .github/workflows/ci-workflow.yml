@@ -96,6 +96,7 @@ jobs:
         uses: peter-evans/create-or-update-comment@v3
         with:
           edit-mode: append
+          issue-number: ${{ github.event.pull_request.number }}
           body-path: |
             trivy_updated.html
       
