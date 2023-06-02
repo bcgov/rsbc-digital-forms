@@ -11,7 +11,7 @@ on:
       - python/common/**
       - python/prohibition_web_svc/**
       - .github/workflows/roadside_forms_backend-ci.yml
-      - trigger.txt
+      # - trigger.txt
 
 jobs:
   CI:
