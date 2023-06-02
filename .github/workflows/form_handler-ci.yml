@@ -30,4 +30,5 @@ jobs:
     with:
       DOCKER_CONTEXT: python
       DOCKER_FILE: python/form_handler/Dockerfile
+      DOCKER_IMAGE_NAME: rsbc-roadside-forms-form-handler
     secrets: inherit
