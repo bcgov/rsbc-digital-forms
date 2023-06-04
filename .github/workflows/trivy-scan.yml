@@ -60,7 +60,7 @@ jobs:
         with:
           scan-type: image
           image-ref: ${{matrix.image_names}}:latest
-          format: 'template'
+          format: 'sarif'
           ignore-unfixed: true
           template: "@/contrib/sarif.tpl"
           output: ${{matrix.sarif_file}}
