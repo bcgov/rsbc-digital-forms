@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        contexts: [ 'roadside-forms-frontend/frontend_web_app', 'python/prohibition_web_svc','python/form_handler' ]
+        # contexts: [ 'roadside-forms-frontend/frontend_web_app', 'python/prohibition_web_svc','python/form_handler' ]
         include:
             - contexts: roadside-forms-frontend/frontend_web_app
               image_names: rsbc-roadside-forms-frontend
