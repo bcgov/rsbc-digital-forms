@@ -21,7 +21,6 @@ export const VehicleImpoundment = (props) => {
         setFieldValue('ILO-city', city);
         setFieldValue('ILO-phone', phone);
       } else {
-        console.log("hello")
         setFieldValue('ILO-name', '');
         setFieldValue('ILO-address', '');
         setFieldValue('ILO-city', '');
