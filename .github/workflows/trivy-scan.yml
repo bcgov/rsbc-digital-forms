@@ -54,6 +54,16 @@ jobs:
           push: false
           load: true
           tags:  ${{matrix.image_names}}:latest
+      - name: Run Trivy vulnerability scanner- Alert for Critical
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        if: always()
+        with:
+          scan-type: image
+          image-ref: ${{matrix.image_names}}:latest
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: CRITICAL
       - name: Run Trivy vulnerability scanner- save to sarif file
         uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
         if: always()
@@ -67,5 +77,6 @@ jobs:
           severity: CRITICAL,HIGH,MEDIUM,LOW
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
+        if: always()
         with:
           sarif_file: ${{matrix.sarif_file}}
