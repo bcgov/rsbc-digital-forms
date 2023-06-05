@@ -24,21 +24,20 @@ export const TimeInputField = ({ required, label, ...props }) => {
 
   return (
     <div>
-      <label>{label}{required && <span className="required-asterisk"> *</span>}
+      <label htmlFor={props.name}>{label}{required && <span className="required-asterisk"> *</span>}
         <span style={{color: "gray"}}>HHMM in Pacific Time</span>
         </label>
       <input
         type="text"
         {...field}
         {...props}
+        id={props.name}
         value={field.value}
         onChange={handleInputChange}
         required={required}
         className={`form-control ${meta.touched && meta.error && 'is-invalid'}`}
       />
-      {meta.touched && meta.error && (
-        <div className="invalid-feedback">{meta.error}</div>
-      )}
+      {meta.touched && meta.error ? <div className="error-message">{meta.error}</div> : null}
     </div>
   );
 };

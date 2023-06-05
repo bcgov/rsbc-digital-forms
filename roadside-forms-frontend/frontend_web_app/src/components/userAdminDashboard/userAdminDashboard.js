@@ -58,7 +58,6 @@ export const UserAdminDashboard = () => {
     }
 
     const onSubmit = (values, { setSubmitting }) => {
-      console.log(values.user)
       UserApi.postAdmin(values.user).then(() => {
         setSubmitting(false);
         getAllUsers();
