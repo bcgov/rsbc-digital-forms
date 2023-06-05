@@ -73,10 +73,5 @@ export const InitialValues = () => {
         "test-used-drug": '',
         "THC":false,
         "Cocaine":false,
-
-
-
-
-
     }
 }

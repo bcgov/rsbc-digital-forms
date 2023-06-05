@@ -22,7 +22,7 @@ export const SearchableSelect = ({ onChange, label, required, options, ...props 
         {...field}
         {...props}
         value={value}
-        id={field.name}
+        inputId={field.name}
         onChange={handleChange}
         options={options}
         isSearchable

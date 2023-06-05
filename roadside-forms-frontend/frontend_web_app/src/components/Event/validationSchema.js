@@ -151,7 +151,7 @@ export const validationSchema = Yup.object().shape({
   "date-released": Yup.date()
   .max(new Date(), 'Date of release cannot be a future date')
   .nullable()
-  .test('prohibition', 'Date of release is required when release is selected', function(value) {
+  .test('released', 'Date of release is required when release is selected', function(value) {
     const selectedValue = this.parent['reason-for-not-impounding'];
 
     if (selectedValue === 'released' && !value) {

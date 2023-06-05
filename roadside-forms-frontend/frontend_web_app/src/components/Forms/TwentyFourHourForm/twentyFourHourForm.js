@@ -6,14 +6,13 @@ import PropTypes from 'prop-types';
 
 export const TwentyFourHourForm = (props) => {
     const {cities, impoundLotOperators} = props;
- console.log(impoundLotOperators);
-  return (
-    <div>
-    <VehicleImpoundment impoundLotOperators={impoundLotOperators}/>
-    <Prohibition cities={cities}/>
-    <ReasonableGrounds/>
-    </div>
-  );
+    return (
+      <div>
+      <VehicleImpoundment impoundLotOperators={impoundLotOperators}/>
+      <Prohibition cities={cities}/>
+      <ReasonableGrounds/> 
+      </div>
+    );
 }
 
 TwentyFourHourForm.propTypes = {
