@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Formik, Form} from 'formik';
 import { Checkbox } from '../common/Checkbox/checkbox';
 import { validationSchema } from './validationSchema';
-import { Button } from '../common/Button/Button';
+import Button from 'react-bootstrap/Button';
 import { DriverInfo } from '../CommonForm/driverInfo';
 import { InitialValues } from './initialValues';
 import { VehicleInfo } from '../CommonForm/vehicleInfo';
@@ -90,7 +90,7 @@ export const CreateEvent = () => {
     return (
         <div className='text-font'>
             <div className='m-4'>
-                <Button onClick={handleGoBack}  primary size='large' label="Save & Return to Main Menu"/>
+                <Button  variant="primary" onClick={handleGoBack}>Save & Return to Main Menu</Button>
             </div>
             <div className="outline">
             <Formik 
@@ -125,7 +125,7 @@ export const CreateEvent = () => {
                         { values['24Hour'] &&  <TwentyFourHourForm cities={cities} impoundLotOperators={impoundLotOperators}/> }
                         <OfficerInfo/>
                         <div className='right'>
-                            <Button primary size='large' label="Next: Preview" type="submit" disabled={isSubmitting}/>
+                            <Button  variant="primary" type="submit"disabled={isSubmitting}>Next: Preview</Button>
                         </div>
                     </Form>
                 )}

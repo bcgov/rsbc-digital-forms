@@ -1,9 +1,19 @@
+$primary: #003366; // Change this to your desired primary color
+
+// Import Bootstrap and its dependencies
+@import '~bootstrap/scss/bootstrap';
+
 .base-class{
     border: 1px solid black;
     color: black;
     border-radius: 0.2rem;
     text-align: center;
 }
+
+.slim-button {
+    padding: 0.15rem 1.0rem;
+    font-size: 0.875rem; 
+  }
 
 .text-font{
     font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -16,17 +26,6 @@
     margin: 2rem;
     padding: 2rem;
 }
-
-.multi-select-container {
-    position: relative;
-    height: 67px;
-    transition: height 0.3s;
-    overflow: hidden;
-  }
-  
-  .multi-select-container.expanded {
-    height: 150px;
-  }
 
 .outline{
     @extend .base-class;
