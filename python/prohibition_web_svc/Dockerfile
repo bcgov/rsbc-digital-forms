@@ -1,4 +1,4 @@
-FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python36-1:1.0
+FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python38:1-127.1684740820
 ARG VERSION
 ENV VERSION=$VERSION
 
