@@ -102,9 +102,11 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_guid'], ['user.user_guid'], ),
     sa.PrimaryKeyConstraint('role_name', 'user_guid')
     )
-    
-    meta = MetaData(bind=op.get_bind())
-    meta.reflect(only=('country','agency','vehicle_style','vehicle','province','permission','jurisdiction','impound_lot_operator','city','agency',))
+
+    bind=op.get_bind()
+    meta = sa.MetaData()
+    meta.bind = bind
+    meta.reflect(bind=bind, only=('country','agency','vehicle_style','vehicle','province','permission','jurisdiction','impound_lot_operator','city','agency',))
     
     country = Table('country', meta)
     op.bulk_insert(country,
