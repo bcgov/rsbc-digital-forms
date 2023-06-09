@@ -1,13 +1,13 @@
-FROM python:3.7.3-stretch
+FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python38:1-127.1684740820
 
 COPY prohibition_web_svc/requirements.txt /tmp/
 
 RUN pip3 install -U pip
 RUN pip3 install -r /tmp/requirements.txt
 
-RUN useradd --create-home appuser
-WORKDIR /home/appuser
-USER appuser
+# RUN useradd --create-home appuser
+# WORKDIR /home/appuser
+# USER appuser
 
 COPY common /home/appuser/python/common
 COPY prohibition_web_svc /home/appuser/python/prohibition_web_svc
