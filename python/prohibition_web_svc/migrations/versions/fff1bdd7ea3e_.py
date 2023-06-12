@@ -25,8 +25,10 @@ def upgrade():
     sa.PrimaryKeyConstraint('code')
     )
 
-    meta = sa.MetaData(bind=op.get_bind())
-    meta.reflect(only=('vehicle_colour',))
+    bind=op.get_bind()
+    meta = sa.MetaData()
+    meta.bind = bind
+    meta.reflect(bind=bind, only=('vehicle_colour',))
     
     vehicle_colour = sa.Table('vehicle_colour', meta)
     op.bulk_insert(vehicle_colour, 
