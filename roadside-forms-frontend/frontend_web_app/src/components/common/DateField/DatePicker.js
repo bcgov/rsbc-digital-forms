@@ -21,17 +21,14 @@ export const DatePickerField = ({ required, label, ...props }) => {
           {...field}
           {...props}
           selected={field.value}
+          id={props.name}
           onChange={handleDateChange}
           dateFormat="yyyyMMdd"
           className={`form-control ${meta.touched && meta.error && 'is-invalid'}`}
         />
         <CalendarToday />
-        {meta.touched && meta.error && (
-        <div className="invalid-feedback">{meta.error}</div>
-      )}
       </div>
-
-      
+      {meta.touched && meta.error ? <div className="error-message">{meta.error}</div> : null}  
     </div>
   );
 };
