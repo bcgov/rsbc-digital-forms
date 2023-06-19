@@ -95,7 +95,7 @@ export const UserAdminDashboard = () => {
                   <td>{user.user_guid}</td>
                   <td>{user.login}</td>
                   <td>{user.role_name}</td>
-                  <td className="text-muted small">{moment(user.submitted_dt).tz("UTC").format("YYYY-MM-DD HH:mm")}</td>
+                  <td className="text-muted small">{moment(user.submitted_dt).tz("America/Vancouver").format("YYYY-MM-DD HH:mm")}</td>
                   <td>{user.approved_dt ? <Button variant="danger" onClick={() => {deleteUser(user)}} >Delete</Button> : <Button variant="success" onClick={() => {approveUser(user)}} >Approve</Button>}</td>
                 </tr>
               ))}
