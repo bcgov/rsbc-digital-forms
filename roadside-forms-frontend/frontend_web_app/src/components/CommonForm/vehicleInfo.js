@@ -14,7 +14,7 @@ export const VehicleInfo = (props) => {
     const driversLicenceJurisdiction = values['vehicle-jurisdiction'];
 
     useEffect(() => {
-        if (driversLicenceJurisdiction === 'BC'){
+        if (driversLicenceJurisdiction && driversLicenceJurisdiction.value === 'BC'){
             setdisableBtn(false);
         } else{
             setdisableBtn(true)

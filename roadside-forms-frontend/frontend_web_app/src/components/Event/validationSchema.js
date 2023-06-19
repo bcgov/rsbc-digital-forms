@@ -84,27 +84,26 @@ export const validationSchema = Yup.object().shape({
   "phone": Yup.string().matches(/^\d{3}-\d{3}-\d{4}$/, 'Phone number format ###-###-####'),
   "dob": Yup.string()
   .nullable()
-  .test('dob-validation', 'Invalid Date of Birth', (dob) => {
-    if (!dob) return true;
-
-    const dateRegex = /^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/;
-    if (!dateRegex.test(dob)) return false;
-
-    const year = Number(dob.substring(0, 4));
-    const month = Number(dob.substring(4, 6));
-    const day = Number(dob.substring(6, 8));
-
+  .test('dob-validation', 'Invalid Date of Birth', function (dob) {
+    if (!dob) {
+      // Return true if the field is empty
+      return true;
+    }
     const currentDate = new Date();
-    const inputDate = new Date(year, month - 1, day);
+    const inputDate = new Date(dob);
 
-    // Check if the input date is valid and within the desired range
-    return (
-      inputDate.getFullYear() === year &&
-      inputDate.getMonth() === month - 1 &&
-      inputDate.getDate() === day &&
-      inputDate <= currentDate &&
-      year >= 1900
-    );
+    // Check if the input date is valid and within the desired age range
+    if (
+      isNaN(inputDate) ||
+      inputDate > currentDate ||
+      inputDate.getFullYear() < 1900 ||
+      inputDate.getFullYear() > currentDate.getFullYear() - 10 ||
+      inputDate.getFullYear() < currentDate.getFullYear() - 120
+    ) {
+      return this.createError({ message: 'Driver must be between 10 to 120 years old' });
+    }
+
+    return true;
   }),
   "vin-number": Yup.string().max(20, 'VIN must be 20 characters or less'),
   "nsc-number": Yup.string().max(14, 'NSC no. must be 14 characters or less'),
@@ -143,10 +142,47 @@ export const validationSchema = Yup.object().shape({
         message: 'Date of driving is required',
       });
     }
+    if (twentyFourHourValue && value) {
+      const today = new Date();
+      const oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+
+      if (value < oneYearAgo) {
+        return this.createError({
+          path: 'date-of-driving',
+          message: 'Date of driving cannot be older than a year',
+        });
+      }
+    }
 
     return true;
   }),
-  "time-of-driving": prohibitionValidation(Yup.ref('24Hour')),
+  "time-of-driving": Yup.string()
+     .matches(/^([01]\d|2[0-3])[0-5]\d$/, 'Invalid time format')
+  .test('pacific-time', 'Invalid Pacific Time', (value) => {
+    if (!value) return true;
+
+    const currentTime = new Date();
+    const currentUtcHour = currentTime.getUTCHours();
+    const currentUtcMinute = currentTime.getUTCMinutes();
+
+    let currentPacificHour = (currentUtcHour - 7 + 24) % 24; // Convert UTC to Pacific Time (UTC-7)
+    const currentPacificMinute = currentUtcMinute;
+
+    const enteredHour = parseInt(value.substr(0, 2));
+    const enteredMinute = parseInt(value.substr(2, 2));
+
+    if (enteredHour < currentPacificHour) {
+      return false; // Entered hour is earlier than current Pacific Time hour
+    } else if (enteredHour === currentPacificHour && enteredMinute < currentPacificMinute) {
+      return false; // Entered hour is the same as current Pacific Time hour, but minute is earlier
+    } else if (enteredHour > currentPacificHour) {
+      return false; // Entered hour is later than current Pacific Time hour
+    } else if (enteredMinute < 0 || enteredMinute > 59) {
+      return false; // Entered minute is outside the valid range (0 to 59)
+    }
+
+    return true;
+  }),
   "vehicle-released-to": releasedToDriverValidation(Yup.ref('reason-for-not-impounding')),
   "date-released": Yup.date()
   .max(new Date(), 'Date of release cannot be a future date')
@@ -156,14 +192,52 @@ export const validationSchema = Yup.object().shape({
 
     if (selectedValue === 'released' && !value) {
       return this.createError({
-        path: 'date-of-release',
+        path: 'date-released',
         message: 'Date of release is required',
       });
     }
 
+    if (selectedValue === 'released' && value) {
+      const today = new Date();
+      const oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+
+      if (value < oneYearAgo) {
+        return this.createError({
+          path: 'date-released',
+          message: 'Date of release cannot be older than a year',
+        });
+      }
+    }
+
     return true;
   }),
-  "time-released": releasedToDriverValidation(Yup.ref('reason-for-not-impounding')),
+  "time-released": releasedToDriverValidation(Yup.ref('reason-for-not-impounding'))
+  .matches(/^([01]\d|2[0-3])[0-5]\d$/, 'Invalid time format')
+  .test('pacific-time', 'Invalid Pacific Time', (value) => {
+    if (!value) return true;
+
+    const currentTime = new Date();
+    const currentUtcHour = currentTime.getUTCHours();
+    const currentUtcMinute = currentTime.getUTCMinutes();
+
+    let currentPacificHour = (currentUtcHour - 7 + 24) % 24; // Convert UTC to Pacific Time (UTC-7)
+    const currentPacificMinute = currentUtcMinute;
+
+    const enteredHour = parseInt(value.substr(0, 2));
+    const enteredMinute = parseInt(value.substr(2, 2));
+
+    if (enteredHour < currentPacificHour) {
+      return false; // Entered hour is earlier than current Pacific Time hour
+    } else if (enteredHour === currentPacificHour && enteredMinute < currentPacificMinute) {
+      return false; // Entered hour is the same as current Pacific Time hour, but minute is earlier
+    } else if (enteredHour > currentPacificHour) {
+      return false; // Entered hour is later than current Pacific Time hour
+    } else if (enteredMinute < 0 || enteredMinute > 59) {
+      return false; // Entered minute is outside the valid range (0 to 59)
+    }
+
+    return true;
+  }),
   "test-used-alcohol": typeOfProhibitionAlcoholValidation(Yup.ref('type-of-prohibition')),
   "BAC-result": typeOfProhibitionAlcoholValidation(Yup.ref('type-of-prohibition')),
   'ASD-expiry-date': Yup.date()
