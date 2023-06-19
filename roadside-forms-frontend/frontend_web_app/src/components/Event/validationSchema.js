@@ -171,15 +171,12 @@ export const validationSchema = Yup.object().shape({
     const enteredHour = parseInt(value.substr(0, 2));
     const enteredMinute = parseInt(value.substr(2, 2));
 
-    if (enteredHour < currentPacificHour) {
-      return false; // Entered hour is earlier than current Pacific Time hour
-    } else if (enteredHour === currentPacificHour && enteredMinute < currentPacificMinute) {
-      return false; // Entered hour is the same as current Pacific Time hour, but minute is earlier
-    } else if (enteredHour > currentPacificHour) {
-      return false; // Entered hour is later than current Pacific Time hour
-    } else if (enteredMinute < 0 || enteredMinute > 59) {
-      return false; // Entered minute is outside the valid range (0 to 59)
-    }
+    if (enteredHour < currentPacificHour ||
+      (enteredHour === currentPacificHour && enteredMinute < currentPacificMinute) ||
+      enteredHour > currentPacificHour ||
+      enteredMinute < 0 || enteredMinute > 59) {
+      return false; // Invalid entered hour or minute
+  }
 
     return true;
   }),
@@ -226,15 +223,12 @@ export const validationSchema = Yup.object().shape({
     const enteredHour = parseInt(value.substr(0, 2));
     const enteredMinute = parseInt(value.substr(2, 2));
 
-    if (enteredHour < currentPacificHour) {
-      return false; // Entered hour is earlier than current Pacific Time hour
-    } else if (enteredHour === currentPacificHour && enteredMinute < currentPacificMinute) {
-      return false; // Entered hour is the same as current Pacific Time hour, but minute is earlier
-    } else if (enteredHour > currentPacificHour) {
-      return false; // Entered hour is later than current Pacific Time hour
-    } else if (enteredMinute < 0 || enteredMinute > 59) {
-      return false; // Entered minute is outside the valid range (0 to 59)
-    }
+    if (enteredHour < currentPacificHour ||
+      (enteredHour === currentPacificHour && enteredMinute < currentPacificMinute) ||
+      enteredHour > currentPacificHour ||
+      enteredMinute < 0 || enteredMinute > 59) {
+    return false; // Invalid entered hour or minute
+  }
 
     return true;
   }),
