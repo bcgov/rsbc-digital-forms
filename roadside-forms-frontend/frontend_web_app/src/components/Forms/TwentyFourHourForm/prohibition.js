@@ -3,7 +3,6 @@ import { Input } from "../../common/Input/Input"
 import { SearchableSelect } from "../../common/Select/SearchableSelect"
 import { DatePickerField } from '../../common/DateField/DatePicker';
 import { TimeInputField } from '../../common/Input/TimeInputField';
-import { TestAdministered } from "./testAdministered";
 import PropTypes from 'prop-types';
 
 export const Prohibition = (props) => {
