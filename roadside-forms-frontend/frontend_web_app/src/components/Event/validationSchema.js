@@ -171,14 +171,10 @@ export const validationSchema = Yup.object().shape({
     const enteredHour = parseInt(value.substr(0, 2));
     const enteredMinute = parseInt(value.substr(2, 2));
 
-    if (enteredHour < currentPacificHour ||
+    return !(enteredHour < currentPacificHour ||
       (enteredHour === currentPacificHour && enteredMinute < currentPacificMinute) ||
       enteredHour > currentPacificHour ||
-      enteredMinute < 0 || enteredMinute > 59) {
-      return false; // Invalid entered hour or minute
-  }
-
-    return true;
+      enteredMinute < 0 || enteredMinute > 59);
   }),
   "vehicle-released-to": releasedToDriverValidation(Yup.ref('reason-for-not-impounding')),
   "date-released": Yup.date()
@@ -223,14 +219,10 @@ export const validationSchema = Yup.object().shape({
     const enteredHour = parseInt(value.substr(0, 2));
     const enteredMinute = parseInt(value.substr(2, 2));
 
-    if (enteredHour < currentPacificHour ||
+    return !(enteredHour < currentPacificHour ||
       (enteredHour === currentPacificHour && enteredMinute < currentPacificMinute) ||
       enteredHour > currentPacificHour ||
-      enteredMinute < 0 || enteredMinute > 59) {
-    return false; // Invalid entered hour or minute
-  }
-
-    return true;
+      enteredMinute < 0 || enteredMinute > 59);
   }),
   "test-used-alcohol": typeOfProhibitionAlcoholValidation(Yup.ref('type-of-prohibition')),
   "BAC-result": typeOfProhibitionAlcoholValidation(Yup.ref('type-of-prohibition')),
