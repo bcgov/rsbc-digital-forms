@@ -1,22 +1,11 @@
 import * as Yup from 'yup';
 
-const vehicleNotImpoundedValidation = (selectedValue) => {
-  return Yup.string().test('vehicleNotImpounded', 'This field is required', function(value) {
-    const { createError, path, options } = this;
-
-    if (selectedValue === 'Yes' && !value) {
-      return createError({ path, message: options.message });
-    }
-
-    return true;
-  });
-};
 
 const vehicleImpoundedValidation = (selectedValue) => {
   return Yup.string().test('vehicleImpounded', 'This field is required', function(value) {
     const { createError, path, options } = this;
-
-    if (selectedValue === 'Yes' && !value) {
+    const vehicleImpoundedValue = this.resolve(selectedValue);
+    if (vehicleImpoundedValue === 'YES' && !value) {
       return createError({ path, message: options.message });
     }
 
@@ -27,8 +16,8 @@ const vehicleImpoundedValidation = (selectedValue) => {
 const typeOfProhibitionAlcoholValidation = (selectedValue) => {
   return Yup.string().test('typeOfProhibitionAlcohol', 'This field is required', function(value) {
     const { createError, path, options } = this;
-
-    if (selectedValue === 'alcohol' && !value) {
+    const checkValue = this.resolve(selectedValue);
+    if (checkValue === 'alcohol' && !value) {
       return createError({ path, message: options.message });
     }
 
@@ -39,8 +28,9 @@ const typeOfProhibitionAlcoholValidation = (selectedValue) => {
 const typeOfProhibitionDrugsValidation = (selectedValue) => {
   return Yup.string().test('typeOfProhibitionDrugs', 'This field is required', function(value) {
     const { createError, path, options } = this;
+    const checkValue = this.resolve(selectedValue);
 
-    if (selectedValue === 'drugs' && !value) {
+    if (checkValue === 'drugs' && !value) {
       return createError({ path, message: options.message });
     }
 
@@ -51,8 +41,9 @@ const typeOfProhibitionDrugsValidation = (selectedValue) => {
 const releasedToDriverValidation = (selectedValue) => {
   return Yup.string().test('releasedToDriver', 'This field is required', function(value) {
     const { createError, path, options } = this;
+    const checkValue = this.resolve(selectedValue)
 
-    if (selectedValue === 'released' && !value) {
+    if (checkValue === 'released' && !value) {
       return createError({ path, message: options.message });
     }
 
@@ -61,7 +52,7 @@ const releasedToDriverValidation = (selectedValue) => {
 };
 
 const prohibitionValidation = (yesSeleted) => {
-  return Yup.string().test('prohibition', 'This field is required', function(value) {
+  return Yup.mixed().test('prohibition', 'This field is required', function(value) {
     const { createError, path, options } = this;
 
     if (yesSeleted && !value) {
@@ -72,39 +63,93 @@ const prohibitionValidation = (yesSeleted) => {
   });
 };
 
+const validatePacificTime = (value) => {
+    if (!value) {
+      return true;
+    }
+
+    const currentTime = new Date();
+    const currentUtcHour = currentTime.getUTCHours();
+    const currentUtcMinute = currentTime.getUTCMinutes();
+
+    let currentPacificHour = (currentUtcHour - 7 + 24) % 24; // Convert UTC to Pacific Time (UTC-7)
+    const currentPacificMinute = currentUtcMinute;
+
+    const enteredHour = parseInt(value.substr(0, 2));
+    const enteredMinute = parseInt(value.substr(2, 2));
+
+    return !(enteredHour < currentPacificHour ||
+      (enteredHour === currentPacificHour && enteredMinute < currentPacificMinute) ||
+      enteredHour > currentPacificHour ||
+      enteredMinute < 0 || enteredMinute > 59);
+};
+
+const validateRequiredDateWithMax = (selectedValue, errorPath, maxDate) => {
+  return function(value) {
+    if (selectedValue && !value) {
+      return this.createError({
+        path: errorPath,
+        message: 'Date is required',
+      });
+    }
+
+    if (selectedValue && value) {
+      const today = new Date();
+      const oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+
+      if (value < oneYearAgo) {
+        return this.createError({
+          path: errorPath,
+          message: 'Date cannot be older than a year',
+        });
+      }
+    }
+
+    if (value && maxDate && value > maxDate) {
+      return this.createError({
+        path: errorPath,
+        message: `Date cannot be a future date or later than ${maxDate.toDateString()}`,
+      });
+    }
+
+    return true;
+  };
+};
+
+
+
 export const validationSchema = Yup.object().shape({
   //common form fields validation
   "last-name": Yup.string().required('Last Name is required'),
   "address": Yup.string().required('Address is required'),
   "city": Yup.string().required('City is required'),
-  "prov-state": Yup.string().required('Prov / State is required'),
+  "prov-state": Yup.object().required('Prov / State is required'),
   "officer-lastname": Yup.string().required('Last Name is required'),
   "officer-prime-id": Yup.string().required('PRIME ID is required'),
   "officer-agency": Yup.string().required('Agency is required'),
   "phone": Yup.string().matches(/^\d{3}-\d{3}-\d{4}$/, 'Phone number format ###-###-####'),
   "dob": Yup.string()
   .nullable()
-  .test('dob-validation', 'Invalid Date of Birth', (dob) => {
-    if (!dob) return true;
-
-    const dateRegex = /^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/;
-    if (!dateRegex.test(dob)) return false;
-
-    const year = Number(dob.substring(0, 4));
-    const month = Number(dob.substring(4, 6));
-    const day = Number(dob.substring(6, 8));
-
+  .test('dob-validation', 'Invalid Date of Birth', function (dob) {
+    if (!dob) {
+      // Return true if the field is empty
+      return true;
+    }
     const currentDate = new Date();
-    const inputDate = new Date(year, month - 1, day);
+    const inputDate = new Date(dob);
 
-    // Check if the input date is valid and within the desired range
-    return (
-      inputDate.getFullYear() === year &&
-      inputDate.getMonth() === month - 1 &&
-      inputDate.getDate() === day &&
-      inputDate <= currentDate &&
-      year >= 1900
-    );
+    // Check if the input date is valid and within the desired age range
+    if (
+      isNaN(inputDate) ||
+      inputDate > currentDate ||
+      inputDate.getFullYear() < 1900 ||
+      inputDate.getFullYear() > currentDate.getFullYear() - 10 ||
+      inputDate.getFullYear() < currentDate.getFullYear() - 120
+    ) {
+      return this.createError({ message: 'Driver must be between 10 to 120 years old' });
+    }
+
+    return true;
   }),
   "vin-number": Yup.string().max(20, 'VIN must be 20 characters or less'),
   "nsc-number": Yup.string().max(14, 'NSC no. must be 14 characters or less'),
@@ -126,7 +171,19 @@ export const validationSchema = Yup.object().shape({
   'ILO-address': vehicleImpoundedValidation(Yup.ref('vehicle-impounded')),
   'ILO-city': vehicleImpoundedValidation(Yup.ref('vehicle-impounded')),
   'ILO-phone': vehicleImpoundedValidation(Yup.ref('vehicle-impounded')),
-  'reason-for-not-impounding': vehicleNotImpoundedValidation(Yup.ref('vehicle-impounded')),
+  "reason-for-not-impounding": Yup.string()
+  .test('not-impounded', 'Reason for not Impounding is required', function(value) {
+    const vehicleImpoundedValue = this.resolve(Yup.ref('vehicle-impounded'));
+
+    if (vehicleImpoundedValue === 'NO' && !value) {
+      return this.createError({
+        path: 'reason-for-not-impounding',
+        message: 'Reason for not Impounding is required',
+      });
+    }
+
+    return true;
+  }),
   "type-of-prohibition": prohibitionValidation(Yup.ref('24Hour')),
   "offence-address": prohibitionValidation(Yup.ref('24Hour')),
   "offence-city": prohibitionValidation(Yup.ref('24Hour')),
@@ -134,36 +191,30 @@ export const validationSchema = Yup.object().shape({
   'date-of-driving': Yup.date()
   .max(new Date(), 'Date of driving cannot be a future date')
   .nullable()
-  .test('prohibition', 'Date of driving is required when 24-hour is selected', function(value) {
+  .test('prohibition', 'Date of driving is required when 24-hour is selected', validateRequiredDateWithMax(Yup.ref('24Hour'), 'date-of-driving', new Date())),
+  "time-of-driving": Yup.string()
+  .matches(/^([01]\d|2[0-3])[0-5]\d$/, 'Invalid time format')
+  .test('required', 'Time of driving is required when 24-hour is selected', function(value) {
     const twentyFourHourValue = this.parent['24Hour'];
 
     if (twentyFourHourValue && !value) {
       return this.createError({
-        path: 'date-of-driving',
-        message: 'Date of driving is required',
+        path: 'time-of-driving',
+        message: 'Time of driving is required',
       });
     }
 
     return true;
-  }),
-  "time-of-driving": prohibitionValidation(Yup.ref('24Hour')),
+  })
+  .test('pacific-time', 'Invalid Pacific Time', validatePacificTime),
   "vehicle-released-to": releasedToDriverValidation(Yup.ref('reason-for-not-impounding')),
   "date-released": Yup.date()
-  .max(new Date(), 'Date of release cannot be a future date')
-  .nullable()
-  .test('released', 'Date of release is required when release is selected', function(value) {
-    const selectedValue = this.parent['reason-for-not-impounding'];
-
-    if (selectedValue === 'released' && !value) {
-      return this.createError({
-        path: 'date-of-release',
-        message: 'Date of release is required',
-      });
-    }
-
-    return true;
-  }),
-  "time-released": releasedToDriverValidation(Yup.ref('reason-for-not-impounding')),
+   .max(new Date(), 'Date of release cannot be a future date')
+   .nullable()
+   .test('released', 'Date of release is required when release is selected', validateRequiredDateWithMax(Yup.ref('reason-for-not-impounding'), 'date-released', new Date())),
+  "time-released": releasedToDriverValidation(Yup.ref('reason-for-not-impounding'))
+  .matches(/^([01]\d|2[0-3])[0-5]\d$/, 'Invalid time format')
+  .test('pacific-time', 'Invalid Pacific Time', validatePacificTime),
   "test-used-alcohol": typeOfProhibitionAlcoholValidation(Yup.ref('type-of-prohibition')),
   "BAC-result": typeOfProhibitionAlcoholValidation(Yup.ref('type-of-prohibition')),
   'ASD-expiry-date': Yup.date()
@@ -177,6 +228,7 @@ export const validationSchema = Yup.object().shape({
         message: 'This field is required',
       });
     }
+    
 
     return true;
   }),
