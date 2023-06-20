@@ -31,7 +31,12 @@ export const RequestAccess= () => {
   };
  
   const onSubmit = (values, { setSubmitting }) => {
-    const data = values;
+    const data = {
+      agency: values.agency.value,
+      badge_number: values.badge_number,
+      first_name: values.first_name,
+      last_name: values.last_name,
+    };
     UserApi.post(data)
       .then((data) => {
         setSubmitting(false);
