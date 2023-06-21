@@ -70,7 +70,7 @@ export const CreateEvent = () => {
 
     const generateYearOptions = () => {
         const currentYear = new Date().getFullYear();
-        const startYear = 1991;
+        const startYear = 1900;
         const years = [];
       
         for (let year = startYear; year <= currentYear; year++) {
