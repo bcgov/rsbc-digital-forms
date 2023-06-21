@@ -43,3 +43,23 @@ export const formTypes = (form) => {
     const forms = (form['IRP'] ? 'IRP,': " ") + (form['VI'] ? 'VI,': " ") + (form['24Hour'] ? '24Hour,': " ") + (form['12Hour'] ? '12Hour': " ");
     return (forms)   
 }
+
+const fieldsToSplit = {"VEHICLE_MAKE":0,"VEHICLE_MODEL":1,}
+
+export const printFormatHelper = (values, data, key) => {
+    let val = "";
+    if(key in fieldsToSplit){
+        val = values[data["field_name"][fieldsToSplit[key]]]
+        return val
+    } 
+    if(data["field_name"].isArray()){
+        for(var field in data["field_name"]){
+            val += values[field] + " "
+        }
+        return val
+    }
+    val = values[data["field_name"]]
+
+    return val
+}
+  
