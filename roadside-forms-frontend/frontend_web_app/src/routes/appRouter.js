@@ -7,7 +7,7 @@ import { RequestAccess } from '../components/RequestAccess/requestAccess';
 import { UserAdminDashboard } from '../components/userAdminDashboard/userAdminDashboard';
 import { Header } from '../components/common/Header/Header';
 import { CreateEvent } from '../components/Event/createEvent';
-import { SVGtest } from '../components/Forms/Print/svgTest';
+import { SVGprint } from '../components/Forms/Print/svgPrint';
 
 class AppRouter extends Component {
     render() {
@@ -16,12 +16,12 @@ class AppRouter extends Component {
             <Header/>
             <Routes>
                 <Route path="/login" element={<Login />} />
-                <Route path="/svg-test" element={<SVGtest />} exact />
                 <Route element={<PrivateRoutes/> } >
                     <Route path="/requestAccess" element={<RequestAccess/>} />
                     <Route path="/createEvent" element={<CreateEvent/>} />
                     <Route path="/" element={<Dashboard/>} exact/>
                     <Route path="/admin-console" element={<UserAdminDashboard />} exact />
+                    <Route path="/svg-test" element={<SVGprint />} exact />
                 </Route>
             </Routes>
         </Router>
