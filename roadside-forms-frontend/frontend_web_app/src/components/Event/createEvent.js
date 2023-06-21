@@ -13,6 +13,7 @@ import { OfficerInfo } from '../CommonForm/officerInfo';
 import { TwentyFourHourForm } from '../Forms/TwentyFourHourForm/twentyFourHourForm';
 import { RegisteredOwnerInfo } from '../CommonForm/registeredOwnerInfo';
 import { staticResources, getEventDataToSave, getTwentyFourHourDataToSave } from '../../utils/helpers';
+import {SVGprint} from '../Forms/Print/svgPrint'
 import {db} from '../../db'
 import './createEvent.scss';
 
@@ -32,6 +33,7 @@ export const CreateEvent = () => {
     const [vehicleColours, setVehicleColours] = useState([]);
     const [cities, setCities] = useState([]);
     const [impoundLotOperators, setImpoundLotOperators] = useState([]);
+    const [currentStep, setCurrentStep] = useState(0);
 
     const navigate = useNavigate();
 
@@ -107,6 +109,59 @@ export const CreateEvent = () => {
         // navigate('/');
       };
 
+      const nextPage = () => {
+        setCurrentStep(currentStep + 1);
+      };
+
+      const prevPage = () => {
+        setCurrentStep(currentStep - 1);
+      };
+
+      const renderPage = (currentStep, values) => {
+        console.log(currentStep)
+        switch (currentStep) {
+          case 0:
+            return (
+            <>
+            <div className='row mt-2'>
+            <div className='col-sm-4 left checkboxs'>
+                <h4>Documents to Generate</h4>
+                <Checkbox name="IRP" >Immediate Roadside Prohibition</Checkbox>
+                <Checkbox name="VI" >Vehicle Impound</Checkbox>
+                <Checkbox name="24Hour" >24-hour Driving Prohibition</Checkbox>
+                <Checkbox name="12Hour" >12-hour Driving Prohibition</Checkbox>
+            </div>
+            <div className='col-sm-4 form-id-border'>
+                <h5>IRP number: 21-9876540</h5>
+                <h5>VI number: 22-1234560</h5>
+            </div>
+            <div className='col-sm-4 time-of-completion center mt-5'>
+                <span>Estimated time to complete:</span>
+                <h5>12 minutes</h5>
+            </div>
+        </div>
+        <div className='common-fields'>
+            <DriverInfo jurisdictions={jurisdictions} provinces={provinces}/>
+            <VehicleInfo vehicleColours={vehicleColours} years={generateYearOptions()} provinces={provinces} jurisdictions={jurisdictions} vehicles={vehicles} vehicleStyles={vehicleStyles}/>
+            <RegisteredOwnerInfo provinces={provinces}/>
+            
+        </div>
+        { values['24Hour'] &&  <TwentyFourHourForm cities={cities} impoundLotOperators={impoundLotOperators}/> }
+        <OfficerInfo/>
+        </>
+                
+            );
+          case 1:
+            console.log(currentStep)
+            return (
+              <SVGprint values={values}/>
+            );
+          // Add more cases for each page
+          default:
+            return null;
+        }
+      };
+
     return (
         <div id='event-container' className='text-font'>
             <div id='button-container' className='m-4'>
@@ -120,33 +175,22 @@ export const CreateEvent = () => {
                 onSubmit={onSubmit}>
                 {({ isSubmitting, values }) => (
                     <Form>
-                        <div className='row mt-2'>
-                            <div className='col-sm-4 left checkboxs'>
-                                <h4>Documents to Generate</h4>
-                                <Checkbox name="IRP" >Immediate Roadside Prohibition</Checkbox>
-                                <Checkbox name="VI" >Vehicle Impound</Checkbox>
-                                <Checkbox name="24Hour" >24-hour Driving Prohibition</Checkbox>
-                                <Checkbox name="12Hour" >12-hour Driving Prohibition</Checkbox>
+                        {renderPage(currentStep, values)}
+                        {currentStep > 0 && (
+                            <div className='right'>
+                                <Button type="button" onClick={() => prevPage()}>
+                                    Previous
+                                </Button>
                             </div>
-                            <div className='col-sm-4 form-id-border'>
-                                <h5>IRP number: 21-9876540</h5>
-                                <h5>VI number: 22-1234560</h5>
-                            </div>
-                            <div className='col-sm-4 time-of-completion center mt-5'>
-                                <span>Estimated time to complete:</span>
-                                <h5>12 minutes</h5>
-                            </div>
-                        </div>
-                        <div className='common-fields'>
-                            <DriverInfo jurisdictions={jurisdictions} provinces={provinces}/>
-                            <VehicleInfo vehicleColours={vehicleColours} years={generateYearOptions()} provinces={provinces} jurisdictions={jurisdictions} vehicles={vehicles} vehicleStyles={vehicleStyles}/>
-                            <RegisteredOwnerInfo provinces={provinces}/>
-                            
-                        </div>
-                        { values['24Hour'] &&  <TwentyFourHourForm cities={cities} impoundLotOperators={impoundLotOperators}/> }
-                        <OfficerInfo/>
+                        )}
                         <div className='right'>
-                            <Button  variant="primary" type="submit"disabled={isSubmitting}>Next: Preview</Button>
+                            {currentStep <  4 ? (    
+                                <Button type="button" onClick={() => nextPage()}>
+                                    Next
+                                </Button>
+                            ) : (
+                                <Button variant="primary" type="submit">Submit</Button>   
+                            )}
                         </div>
                     </Form>
                 )}
