@@ -12,7 +12,6 @@ export const StaticDataApi = {
           method: "GET",
           headers:{...headers},
         }).then ( (response) => {
-          console.log(response)
           return {
               status: response.status,
               data: response.data

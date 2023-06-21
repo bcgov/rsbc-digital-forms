@@ -10,7 +10,8 @@ import { staticResources } from '../../utils/helpers';
 import { useRecoilState } from 'recoil';
 import { StaticDataApi } from '../../api/staticDataApi';
 import { useRecoilValue } from 'recoil';
-import { userAtom } from '../../atoms/users';
+import { userRolesAtom } from '../../atoms/userRoles';
+import { loginCompletedAtom } from '../../atoms/loginCompleted';
 import { useNavigate} from 'react-router-dom';
 
 export const RequestAccess= () => {
@@ -18,10 +19,10 @@ export const RequestAccess= () => {
   const [options, setOptions] = useState([])
   const [showApplicationReceived, setShowApplicationReceived] = useState(false)
   const [agencies, setAgency] = useRecoilState(staticResources["agencies"])
-  const user = useRecoilValue(userAtom);
+  const userRoles = useRecoilValue(userRolesAtom);
+  const loginComplete = useRecoilValue(loginCompletedAtom);
   const navigate = useNavigate();
   
-
   const initialValues = {
     last_name: '',
     first_name: '',
@@ -30,10 +31,14 @@ export const RequestAccess= () => {
   };
  
   const onSubmit = (values, { setSubmitting }) => {
-    const data = values;
+    const data = {
+      agency: values.agency.value,
+      badge_number: values.badge_number,
+      first_name: values.first_name,
+      last_name: values.last_name,
+    };
     UserApi.post(data)
       .then((data) => {
-        console.log("Success", data);
         setSubmitting(false);
         setShowApplication(false);
         setShowApplicationReceived(true);
@@ -57,13 +62,14 @@ export const RequestAccess= () => {
   }
 
   useEffect(() => {
-    if (user.length !== 0) {
+    if (userRoles.length !== 0) {
       navigate("/");
     }
-  }, [user, navigate]);
+  }, [userRoles, navigate]);
 
-  return (
-    <div className='border-design text-font'>
+  return (<>
+    {userRoles.length === 0 && loginComplete && 
+    (<div className='border-design text-font'>
       {!showApplicationReceived && (<div>
         <p>
           <span className="fw-bold">Welcome to the Digital Forms system</span>
@@ -127,6 +133,8 @@ export const RequestAccess= () => {
           Your application will be reviewed and approved within 24 business hours.
         </p>
       </div>)}
-    </div>
+      
+    </div>)
+}</>
   );
 }

@@ -6,7 +6,8 @@ import { useSetRecoilState} from 'recoil';
 import { Link } from 'react-router-dom';
 
 import { userAtom } from '../../../atoms/users';
-import { userRolesAtom } from '../../../atoms/userRoles';
+import {  userRolesAtom } from '../../../atoms/userRoles';
+import { loginCompletedAtom } from '../../../atoms/loginCompleted';
 import { getCurrentDateTime } from '../../../utils/dateTime';
 import { UserApi } from '../../../api/userApi';
 import { UserRolesApi } from '../../../api/userRolesApi';
@@ -25,6 +26,7 @@ export const Header = () => {
   const [userId, setUserId] = useState(null);
   const setUserData = useSetRecoilState(userAtom);
   const setUserRoleData = useSetRecoilState(userRolesAtom);
+  const setLoginCompleted = useSetRecoilState(loginCompletedAtom);
 
 
   useEffect(() => {
@@ -66,10 +68,12 @@ export const Header = () => {
             }
             setUserRoleData(data);
             setuserAdminInfo(data.some( role => role['role_name'] === 'administrator' ))
+            setLoginCompleted(true);
           }
           else {
             setUserRoleData([]);
             console.log(resp.data.error);
+            setLoginCompleted(true);
           }
         })
      }
