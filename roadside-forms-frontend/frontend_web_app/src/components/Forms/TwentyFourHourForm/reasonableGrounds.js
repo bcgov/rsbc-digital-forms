@@ -31,6 +31,14 @@ export const ReasonableGrounds = () => {
                     ]}/>
                 </div>
             </div>
+            {values["prescribed-device"] === 'NO' && <div className="row">
+                <div className="col">
+                    <Radio label="Why was a prescribed test not used?" name="reason_prescribed_test_not_used" options={[
+                    { label: 'Refused by driver', value: 'refused' },
+                    { label: 'Opinion formed the driver was affected by alcohol and/or drugs', value: 'opinion' }
+                    ]}/>
+                </div>
+            </div>}
         </div>
     )
 }
