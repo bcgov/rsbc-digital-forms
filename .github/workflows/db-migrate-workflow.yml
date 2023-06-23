@@ -17,6 +17,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: dev
     env:
       checkout_branch: patch/dbmigrate
       DOCKER_IMAGE_NAME: db-migrate-image
@@ -58,7 +59,7 @@ jobs:
           file: ${{ env.DOCKER_FILE }}
           push: true
           tags: ${{ secrets.DOCKER_REGISTRY }}/dbe7-images/${{ env.DOCKER_IMAGE_NAME }}-${{ env.namespace }}:${{ env.DOCKER_IMAGE_TAG }}
-      - name: Authenticate and set context for cluster ca
+      - name: Authenticate and set context
         uses: redhat-actions/oc-login@v1.2
         with:
           openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_URL_SILVER }}
