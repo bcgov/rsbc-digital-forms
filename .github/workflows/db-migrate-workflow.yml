@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      checkout_branch: release/1.0
+      checkout_branch: patch/dbmigrate
       DOCKER_IMAGE_NAME: db-migrate-image
       DOCKER_CONTEXT_FOLDER: python
       DOCKER_FILE: python/prohibition_web_svc/Dockerfile-migration
