@@ -17,11 +17,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      checkout_branch: db-migrate
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ inputs.checkout_branch }}
+        #   ref: ${{ inputs.checkout_branch }}
+          ref: ${{ env.checkout_branch }}
 
     #   - name: Setup
     #     uses: docker/setup-buildx-action@v2
