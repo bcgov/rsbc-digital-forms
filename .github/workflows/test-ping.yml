@@ -1,0 +1,13 @@
+name: cd-workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ping
+        run: |
+          curl --location 'https://api-be5301-dev.apps.silver.devops.gov.bc.ca/dfevents/ping'
+        
