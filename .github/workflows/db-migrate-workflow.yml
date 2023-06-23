@@ -67,4 +67,5 @@ jobs:
           namespace: "${{ secrets.OPENSHIFT_LICENSE_PLATE_SILVER }}-${{ env.namespace }}"
       - name: Run Migration
         run: |
+          oc delete pod migrate-pod --ignore-not-found=true
           oc process -f migrate-pod.yml --param IMAGE_NAME=${{ secrets.DOCKER_REGISTRY }}/dbe7-images/${{ env.DOCKER_IMAGE_NAME }}-${{ env.namespace }}:${{ env.DOCKER_IMAGE_TAG }} --param DB_HOST=${{ secrets.DB_HOST }} --param DB_NAME=${{ secrets.DB_NAME }}  --param DB_PORT=${{ secrets.DB_PORT }}  --param DB_USER=${{ secrets.DB_USER }}   --param DB_PASS=${{ secrets.DB_PASS }} | oc apply -f -
