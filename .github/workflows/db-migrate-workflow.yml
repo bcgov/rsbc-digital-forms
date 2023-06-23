@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      checkout_branch: db-migrate
+      checkout_branch: release/1.0
     steps:
       - name: Checkout
         uses: actions/checkout@v3
