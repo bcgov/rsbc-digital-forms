@@ -20,7 +20,7 @@ jobs:
     env:
       checkout_branch: release/1.0
       DOCKER_IMAGE_NAME: db-migrate-image
-      DOCKER_CONTEXT: python
+      DOCKER_CONTEXT_FOLDER: python
       DOCKER_FILE: python/prohibition_web_svc/Dockerfile-migration
       DOCKER_IMAGE_TAG: latest
       namespace: dev
@@ -54,7 +54,7 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v3
         with:
-          context: ${{ env.DOCKER_CONTEXT }}
+          context: ${{ env.DOCKER_CONTEXT_FOLDER }}
           file: ${{ env.DOCKER_FILE }}
           push: true
           tags: ${{ secrets.DOCKER_REGISTRY }}/dbe7-images/${{ env.DOCKER_IMAGE_NAME }}-${{ env.namespace }}:${{ env.DOCKER_IMAGE_TAG }}
