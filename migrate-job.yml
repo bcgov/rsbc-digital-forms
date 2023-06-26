@@ -43,6 +43,8 @@ objects:
       completions: 1
       template:
         spec:
+          imagePullSecrets:
+            - name: artifactory-pull-secret
           containers:
           - image: ${IMAGE_NAME}
             name: migrate-pod
