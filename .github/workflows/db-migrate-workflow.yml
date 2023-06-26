@@ -17,20 +17,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: ${{ inputs.environment }}
     env:
-      checkout_branch: patch/dbmigrate
+      checkout_branch: ${{ inputs.checkout_branch }}
       DOCKER_IMAGE_NAME: db-migrate-image
       DOCKER_CONTEXT_FOLDER: python
       DOCKER_FILE: python/prohibition_web_svc/Dockerfile-migration
       DOCKER_IMAGE_TAG: latest
-      namespace: dev
+      namespace: ${{ inputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-        #   ref: ${{ inputs.checkout_branch }}
-          ref: ${{ env.checkout_branch }}
+          ref: ${{ inputs.checkout_branch }}
+          # ref: ${{ env.checkout_branch }}
 
       - name: Setup
         uses: docker/setup-buildx-action@v2
@@ -58,14 +58,14 @@ jobs:
           context: ${{ env.DOCKER_CONTEXT_FOLDER }}
           file: ${{ env.DOCKER_FILE }}
           push: true
-          tags: ${{ secrets.DOCKER_REGISTRY }}/dbe7-images/${{ env.DOCKER_IMAGE_NAME }}-${{ env.namespace }}:${{ env.DOCKER_IMAGE_TAG }}
+          tags: ${{ secrets.DOCKER_REGISTRY }}/dbe7-images/${{ env.DOCKER_IMAGE_NAME }}-${{ inputs.environment }}:${{ env.DOCKER_IMAGE_TAG }}
       - name: Authenticate and set context
         uses: redhat-actions/oc-login@v1.2
         with:
           openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_URL_SILVER }}
           openshift_token: ${{ secrets.OPENSHIFT_SA_PIPELINE_TOKEN_SILVER_ENV }}
-          namespace: "${{ secrets.OPENSHIFT_LICENSE_PLATE_SILVER }}-${{ env.namespace }}"
+          namespace: "${{ secrets.OPENSHIFT_LICENSE_PLATE_SILVER }}-${{ inputs.environment }}"
       - name: Run Migration
         run: |
           oc delete pod migrate-pod --ignore-not-found=true
-          oc process -f migrate-pod.yml --param IMAGE_NAME=${{ secrets.DOCKER_REGISTRY }}/dbe7-images/${{ env.DOCKER_IMAGE_NAME }}-${{ env.namespace }}:${{ env.DOCKER_IMAGE_TAG }} --param DB_HOST=${{ secrets.DB_HOST }} --param DB_NAME=${{ secrets.DB_NAME }}  --param DB_PORT=${{ secrets.DB_PORT }}  --param DB_USER=${{ secrets.DB_USER }}   --param DB_PASS=${{ secrets.DB_PASS }} | oc apply -f -
+          oc process -f migrate-pod.yml --param IMAGE_NAME=${{ secrets.DOCKER_REGISTRY }}/dbe7-images/${{ env.DOCKER_IMAGE_NAME }}-${{ inputs.environment }}:${{ env.DOCKER_IMAGE_TAG }} --param DB_HOST=${{ secrets.DB_HOST }} --param DB_NAME=${{ secrets.DB_NAME }}  --param DB_PORT=${{ secrets.DB_PORT }}  --param DB_USER=${{ secrets.DB_USER }}   --param DB_PASS=${{ secrets.DB_PASS }} | oc apply -f -
