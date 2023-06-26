@@ -5,10 +5,17 @@ on:
     inputs:
       environment:
         required: true
-        type: string
+        type: choice
+        options:
+          - dev
+          - test
+          - prod
       checkout_branch:
         required: true
-        type: string
+        type: choice
+        options:
+          - main
+          - release/1.0
   push:
     branches:
       - patch/dbmigrate
