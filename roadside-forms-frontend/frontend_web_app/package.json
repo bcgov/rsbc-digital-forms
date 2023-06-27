@@ -48,7 +48,11 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "build:ci": "react-scripts build --exclude 'src/stories/**/*'",
+    "start:react": "react-scripts -r @cypress/instrument-cra start",
+    "start:ci": "cross-env NODE_ENV=test concurrently npm:start:react:proxy-server",
+    "start:react:proxy-server": "node scripts/testserver.js"
   },
   "eslintConfig": {
     "extends": [
@@ -88,7 +92,10 @@
     "@storybook/preset-create-react-app": "^7.0.18",
     "@storybook/react": "^7.0.18",
     "@storybook/testing-library": "^0.1.0",
+    "concurrently": "^8.2.0",
+    "cross-env": "^7.0.3",
     "cypress": "^12.16.0",
+    "express": "^4.18.2",
     "react-datepicker": "^4.11.0",
     "react-select": "^5.7.2",
     "sass": "^1.60.0",
