@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '../common/Button/Button';
+import Button from 'react-bootstrap/Button';
 import { Formik, Form} from 'formik';
 import { validate } from './validate';
 import WarningIcon from '@mui/icons-material/Warning';
@@ -84,7 +84,7 @@ export const RequestAccess= () => {
           Please apply for access after completing the training course and with the approval of your unit commander.
         </p>
       </div>)}
-      {!showApplication && !showApplicationReceived && <Button primary size="large" label="Apply for Access" onClick={handleClick}/>}
+      {!showApplication && !showApplicationReceived && <Button variant="primary" onClick={handleClick}>Apply for Access</Button>}
       {showApplication && ( <div>
         <div className=' d-flex justify-content-center mt-2'>
           <Formik initialValues={initialValues} validate={validate} onSubmit={onSubmit}>
@@ -119,7 +119,7 @@ export const RequestAccess= () => {
                   <div className="col" />
                 </div>
               </div>
-              <Button primary size='large' label="Apply for Access" type="submit" disabled={isSubmitting}/>
+              <Button variant="primary" type="submit" disabled={isSubmitting}>Apply for Access</Button>
             </Form>
           )}
           </Formik>
