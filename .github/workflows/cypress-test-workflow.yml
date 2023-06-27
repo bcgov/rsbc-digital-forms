@@ -19,6 +19,8 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           runTests: false
+          working-directory: roadside-forms-frontend/frontend_web_app
+
       - run: node --version
       - run: /
           cd roadside-forms-frontend/frontend_web_app
