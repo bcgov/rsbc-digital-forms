@@ -2,7 +2,6 @@
 import { render, fireEvent, act } from '@testing-library/react';
 import { RecoilRoot } from 'recoil';
 import { RequestAccess } from '../../../components/RequestAccess/requestAccess';
-import { useNavigate } from 'react-router-dom';
 
 import { StaticDataApi } from '../../../api/staticDataApi';
 import { userRolesAtom } from '../../../atoms/userRoles'; 
