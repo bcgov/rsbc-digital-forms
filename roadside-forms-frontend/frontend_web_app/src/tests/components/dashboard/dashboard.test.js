@@ -2,7 +2,6 @@ import React from 'react';
 import { render, act } from '@testing-library/react';
 import { RecoilRoot } from 'recoil';
 import { Dashboard } from '../../../components/Dashboard/Dashboard';
-import { useNavigate } from 'react-router-dom';
 import { StaticDataApi } from '../../../api/staticDataApi';
 import { vehicleStyles, jurisdictions, provinces, vehicles, vehicleColours, cities, impoundLotOperators } from '../../../atoms/staticData';
 
