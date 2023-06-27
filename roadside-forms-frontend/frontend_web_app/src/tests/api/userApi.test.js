@@ -12,7 +12,7 @@ describe('UserApi Testing', () => {
     // Reset the mock for createRequestHeader before each test
     createRequestHeader.mockClear();
   });
-  // beforeEach(cleanup);
+  beforeEach(cleanup);
   test('should fetch user info based on userId', async () => {
     const userApiData = [
       {
