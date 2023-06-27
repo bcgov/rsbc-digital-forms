@@ -8,9 +8,9 @@ on:
 jobs:
   install:
     runs-on: ubuntu-latest
-    container:
-      image: cypress/browsers:node16.16.0-chrome105-ff104-edge
-      options: --user 1001
+    # container:
+    #   image: cypress/browsers:node16.16.0-chrome105-ff104-edge
+    #   options: --user 1001
     steps:
       - name: Checkout
         uses: actions/checkout@v3
