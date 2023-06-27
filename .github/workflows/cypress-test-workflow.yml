@@ -22,7 +22,8 @@ jobs:
           working-directory: roadside-forms-frontend/frontend_web_app
 
       - run: node --version
-      - run: /
+      - name: Build the app
+        run: |          
           cd roadside-forms-frontend/frontend_web_app
           npm run build:ci
 
