@@ -19,11 +19,11 @@ describe('CreateEvent component', () => {
           initializeState={(snap) => {
             snap.set(vehicleStyles, [  {
                 "code": "2DR",
-                "name": "2-DOOR SEDAN"
+                "name": "2-DOOR "
             },
             {
                 "code": "3DR",
-                "name": "3-DOOR HATCH"
+                "name": "3-DOOR "
             }]);
             snap.set(jurisdictions, [{
                 "objectCd": "AL",
@@ -42,12 +42,12 @@ describe('CreateEvent component', () => {
                 "objectDsc": "ALBERTA"
             }]);
             snap.set(vehicles, [{
-                "mk": "AC",
+                "mk": "AC-TEST",
                 "search": "A C (GREAT BRITAIN)",
                 "md": ""
             },
             {
-                "mk": "AC",
+                "mk": "TEST",
                 "search": "A C (GREAT BRITAIN) - 3000 ME",
                 "md": "300"
             }]);
@@ -56,25 +56,25 @@ describe('CreateEvent component', () => {
                 "display_name": 'test'}
             ]);
             snap.set(cities, [{
-                "objectCd": "OHMH",
-                "objectDsc": "100 MILE HOUSE"
+                "objectCd": "TEST",
+                "objectDsc": "10 TEST HOUSE"
             },
             {
                 "objectCd": "OHTM",
-                "objectDsc": "103 MILE HOUSE"
+                "objectDsc": "10390 TEST ST"
             }]);
             snap.set(impoundLotOperators, [
             {
-                "name": "24 HOUR TOWING",
-                "lot_address": "728 PAYNE ST",
-                "city": "CRESTON",
-                "phone": "250-428-2323"
+                "name": "TSET",
+                "lot_address": "7 TEST ST",
+                "city": "TEST",
+                "phone": "250-003-73654"
             },
             {
-                "name": "5 STAR TOWING",
-                "lot_address": "733 2ND AVE",
-                "city": "PRINCE GEORGE",
-                "phone": "250-614-9393"
+                "name": "TSET",
+                "lot_address": "7 TEST ST",
+                "city": "TEST",
+                "phone": "250-003-73654"
             }]);
           }}
         >
