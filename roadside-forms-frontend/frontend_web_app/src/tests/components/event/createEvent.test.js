@@ -2,7 +2,6 @@ import React from 'react';
 import { render, act } from '@testing-library/react';
 import { RecoilRoot } from 'recoil';
 import { CreateEvent } from '../../../components/Event/createEvent';
-import { useNavigate } from 'react-router-dom';
 import { vehicleStyles, jurisdictions, provinces, vehicles, vehicleColours, cities, impoundLotOperators } from '../../../atoms/staticData';
 
 jest.mock('react-router-dom', () => ({
