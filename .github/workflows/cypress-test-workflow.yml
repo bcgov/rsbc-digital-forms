@@ -30,6 +30,10 @@ jobs:
         env:
           # make sure every Cypress install prints minimal information
           CI: ""
+          REACT_APP_KEYCLOAK_URL: ${{ secrets.REACT_APP_KEYCLOAK_URL }}
+          REACT_APP_KEYCLOAK_REALM: ${{ secrets.REACT_APP_KEYCLOAK_REALM }}
+          REACT_APP_KEYCLOAK_CLIENT_ID: ${{ secrets.REACT_APP_KEYCLOAK_CLIENT_ID }}
+          REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL_DEV }}
         run: |          
           cd roadside-forms-frontend/frontend_web_app
           npm run build:ci
