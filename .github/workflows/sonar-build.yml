@@ -6,6 +6,8 @@ on:
     branches-ignore:
       - master
       - main
+permissions:
+  contents: read
 jobs:
   sonarcloud:
     name: SonarCloud
