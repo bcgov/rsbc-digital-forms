@@ -68,7 +68,7 @@ jobs:
       matrix:
         # run copies of the current job in parallel
         # containers: [1, 2, 3, 4, 5]
-        containers: [1]
+        browsers: ['chrome', 'firefox', 'edge']
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -92,7 +92,8 @@ jobs:
           working-directory: ${{ inputs.BUILD_CONTEXT }}
           wait-on: "http://localhost:3000"
           wait-on-timeout: 120
-          browser: chrome
+          # browser: chrome
+          browser: ${{ matrix.browsers }}
           record: false
           spec: cypress/e2e/*
           config-file: cypress.config.js
