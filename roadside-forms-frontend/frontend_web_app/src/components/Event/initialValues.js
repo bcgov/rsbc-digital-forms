@@ -10,7 +10,7 @@ export const InitialValues = () => {
         "VI": false,
         "24Hour": false,
         "12Hour": false,
-        "drivers-licence-jurisdiction": '',
+        "drivers-licence-jurisdiction":{ value: 'BC', label: 'BRITISH COLUMBIA' },
         "drivers-number":'',
         "last-name":'',
         "given-name":'',
@@ -18,16 +18,16 @@ export const InitialValues = () => {
         "address":'',
         "city":'',
         "phone": '',
-        "prov-state":'',
+        "prov-state":{ value: 'BC', label: 'BRITISH COLUMBIA' },
         "postal-code":'',
-        "vehicle-jurisdiction": '',
+        "vehicle-jurisdiction":{ value: 'BC', label: 'BRITISH COLUMBIA' },
         "plate-number": '',
         "registration-number": '',
         "vehicle-year": '',
         "vehicle-make-model": '',
         "vehicle-style": '',
         "vehicle-colour": [],
-        "nsc-prov-state": '',
+        "nsc-prov-state":{ value: 'BC', label: 'BRITISH COLUMBIA' },
         "vin-number": '',
         "nsc-number": '',
         "owned-by-corp" : false,
@@ -37,7 +37,7 @@ export const InitialValues = () => {
         "registered-owner-address": '',
         "registered-owner-phone": '',
         "registered-owner-city": '',
-        "registered-owner-prov-state": '',
+        "registered-owner-prov-state": {},
         "registered-owner-postal": '',
         "officer-lastname":user.last_name || '',
         "officer-prime-id":user.badge_number || '',
@@ -73,10 +73,5 @@ export const InitialValues = () => {
         "test-used-drug": '',
         "THC":false,
         "Cocaine":false,
-
-
-
-
-
     }
 }
