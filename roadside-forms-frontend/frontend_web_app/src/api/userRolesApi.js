@@ -4,7 +4,9 @@ import { createRequestHeader } from "../utils/requestHeaders";
 export const UserRolesApi = {
 
     get: async function () {
-      const headers = createRequestHeader();
+      const headers = {
+        ...createRequestHeader(),
+      };
          return await api.request({
           url: "/api/v1/user_roles",
           method: "GET",
