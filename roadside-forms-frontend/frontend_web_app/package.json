@@ -48,7 +48,12 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --coverage",
-    "storybook": "start-storybook -p 6006"
+    "storybook": "start-storybook -p 6006",
+    "cypress:open": "cypress open",
+    "build:ci": "react-scripts build --exclude 'src/stories/**/*'",
+    "start:react": "react-scripts -r @cypress/instrument-cra start",
+    "start:ci": "cross-env NODE_ENV=test concurrently npm:start:react:proxy-server",
+    "start:react:proxy-server": "node scripts/testserver.js"
   },
   "eslintConfig": {
     "extends": [
