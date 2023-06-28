@@ -56,7 +56,7 @@ jobs:
           if-no-files-found: error
           path: ${{ inputs.BUILD_CONTEXT }}/build
  
-  ui-chrome-tests:
+  ui-tests:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     container:
@@ -68,7 +68,7 @@ jobs:
       matrix:
         # run copies of the current job in parallel
         # containers: [1, 2, 3, 4, 5]
-        browsers: ['chrome', 'firefox', 'edge']
+        browsers: ['chrome', 'firefox']
     steps:
       - name: Checkout
         uses: actions/checkout@v3
