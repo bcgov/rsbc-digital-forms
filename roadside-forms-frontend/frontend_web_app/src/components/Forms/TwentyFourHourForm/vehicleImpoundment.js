@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Radio } from '../../common/Radio/radio';
-import { useFormikContext } from 'formik';
+import { useFormikContext} from 'formik';
 import { Input } from '../../common/Input/Input';
 import { DatePickerField } from '../../common/DateField/DatePicker';
 import { TimeInputField } from '../../common/Input/TimeInputField';
@@ -28,6 +28,21 @@ export const VehicleImpoundment = (props) => {
       }
     };
 
+    useEffect(() => {
+        if (values['vehicle-impounded'] === 'NO') {
+          setFieldValue('key-location', '');
+          setFieldValue('ILO-name', '');
+          setFieldValue('ILO-address', '');
+          setFieldValue('ILO-city', '');
+          setFieldValue('ILO-phone', '');
+          setFieldValue('ILO-options', '');
+        }
+        else if(values['vehicle-impounded'] === 'YES'){
+          setFieldValue('reason-for-not-impounding', '')
+        }
+      }, [values['vehicle-impounded'], setFieldValue]);
+
+
     const reasonForNotImpounding = [
       {label:"Released to other driver",value:"released"},
       {label:"Left at roadside",value:"roadside"},
@@ -51,7 +66,8 @@ export const VehicleImpoundment = (props) => {
                     <Radio label="Location of Keys?" name="key-location" options={[
                         {value:"WITH VEHICLE", label:"With vehicle"},
                         {value:"WITH DRIVER", label:"With driver"}
-                    ]} required/>
+                    ]} required />
+                    
                 </div>
                 </div>
             <div className='impound-lot-operator'>
