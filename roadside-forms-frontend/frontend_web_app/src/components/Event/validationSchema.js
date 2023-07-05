@@ -113,7 +113,11 @@ export const validationSchema = Yup.object().shape({
     const currentYear = currentDate.year();
     const inputYear = inputDate.year();
 
-    const ageInYears = currentYear - inputYear;
+    // Set the time zone offset to Pacific Standard Time (PST)
+    const pacificOffset = 480; // PST offset is 480 minutes (8 hours)
+    inputDate.setMinutes(inputDate.getMinutes() + pacificOffset);
+
+    const ageInYears = currentDate.getFullYear() - inputDate.getFullYear();
 
     // Check if the input date is valid and within the desired age range
     if (isNaN(ageInYears) || ageInYears < 10 || ageInYears > 120) {
@@ -141,6 +145,7 @@ export const validationSchema = Yup.object().shape({
 
     return true;
   }),
+
   "vin-number": Yup.string().max(20, 'VIN must be 20 characters or less'),
   "nsc-number": Yup.string().max(14, 'NSC no. must be 14 characters or less'),
   //24 Hour Fields validation
