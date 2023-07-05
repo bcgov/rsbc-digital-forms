@@ -6,7 +6,7 @@ import { DatePickerField } from '../../common/DateField/DatePicker';
 export const TestAdministered = (props) => {
     const { values } = useFormikContext();
     return(
-        <>{values["type-of-prohibition"] !== '' && (<div className='border-design-form left text-font'>
+        <>{values["prescribed-device"] === 'YES' && (<div className='border-design-form left text-font'>
             <h3 >Test Administered - {values["type-of-prohibition"] === "alcohol" ? 'Alcohol 215(2)' : 'Drugs 215(3)'}</h3>
         {values["type-of-prohibition"] === "alcohol" && (
             <div className="test-admin-alcohol">
