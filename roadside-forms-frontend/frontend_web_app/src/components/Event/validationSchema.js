@@ -61,18 +61,18 @@ const validateRequiredDateWithMax = (selectedValue, errorPath, maxDate) => {
     }
 
     if (selectedValue && value) {
-      // Adjust the current date and yesterday's date to Pacific Timezone
+      // Adjust the current date and 7 days ago date to Pacific Timezone
       const today = new Date();
-      const yesterdayPST = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
-      const todayPST = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const currentTimestamp = today.getTime();
+      const pacificOffset = 480; // PST offset is 480 minutes (8 hours)
+      const currentTimestampPST = currentTimestamp - pacificOffset * 60 * 1000;
+      const sevenDaysAgoTimestampPST = currentTimestampPST - 7 * 24 * 60 * 60 * 1000;
+      const sevenDaysAgoPST = new Date(sevenDaysAgoTimestampPST);
 
-      if (
-        (value.getTime() !== yesterdayPST.getTime()) &&
-        (value.getTime() !== todayPST.getTime())
-      ) {
+      if (value < sevenDaysAgoPST) {
         return this.createError({
           path: errorPath,
-          message: 'Date must be yesterday or today',
+          message: 'Date cannot be older than 7 days',
         });
       }
     }
@@ -107,25 +107,27 @@ export const validationSchema = Yup.object().shape({
       return true;
     }
 
-    const currentDate = moment();
-    const inputDate = moment(dob).utcOffset('+07:00');;
-  
-    const currentYear = currentDate.year();
-    const inputYear = inputDate.year();
+    const currentDate = new Date();
+    const inputDate = new Date(dob);
 
-    const ageInYears = currentYear - inputYear;
+    // Set the time zone offset to Pacific Standard Time (PST)
+    const pacificOffset = 480; // PST offset is 480 minutes (8 hours)
+    inputDate.setMinutes(inputDate.getMinutes() + pacificOffset);
+
+    const ageInYears = currentDate.getFullYear() - inputDate.getFullYear();
 
     // Check if the input date is valid and within the desired age range
-    if (isNaN(ageInYears) || ageInYears < 10 || ageInYears > 120) {
+    if (isNaN(inputDate) || ageInYears < 10 || ageInYears > 120) {
       return this.createError({ message: 'Driver must be between 10 to 120 years old' });
     }
 
-    const currentMonth = currentDate.month();
-    const currentDay = currentDate.date();
+    // Get the current month and day
+    const currentMonth = currentDate.getMonth();
+    const currentDay = currentDate.getDate();
 
     // Get the month and day from the adjusted input date
-    const inputMonth = inputDate.month();
-    const inputDay = inputDate.date();
+    const inputMonth = inputDate.getMonth();
+    const inputDay = inputDate.getDate();
 
     // Check if the user is exactly 10 years old
     if (ageInYears === 10 && (inputMonth > currentMonth || (inputMonth === currentMonth && inputDay > currentDay))) {
@@ -203,26 +205,10 @@ export const validationSchema = Yup.object().shape({
    .nullable()
    .test('released', 'Date of release is required when release is selected', validateRequiredDateWithMax(Yup.ref('reason-for-not-impounding'), 'date-released', new Date())),
   "time-released": releasedToDriverValidation(Yup.ref('reason-for-not-impounding'))
-  .matches(/^([01]\d|2[0-3])[0-5]\d$/, 'Invalid time format'),
+  .matches(/^([01]\d|2[0-3])[0-5]\d$/, 'Invalid time format')
+  .test('pacific-time', 'Invalid Pacific Time', validatePacificTime),
   "test-used-alcohol": prescribedDeviceValidation(Yup.ref('prescribed-device')),
-  "BAC-result": Yup.number()
-  .nullable()
-  .positive('BAC result must be a positive number')
-  .integer('BAC result must be an integer')
-  .min(2, 'BAC result must be greater than 1')
-  .max(998, 'BAC result must be less than 999')
-  .test('BAC-result', 'BAC-result is required when instrument is selected', function (value) {
-    const selectedValue = this.parent['test-used-alcohol'];
-
-    if (selectedValue === 'instrument' && !value) {
-      return this.createError({
-        path: 'BAC-result',
-        message: 'This field is required',
-      });
-    }
-
-    return true;
-  }),
+  "BAC-result": prescribedDeviceValidation(Yup.ref('prescribed-device')),
   'ASD-expiry-date': Yup.date()
   .nullable()
   .test('ASD', 'ASD expiry date is required when ASD is selected', function (value) {
