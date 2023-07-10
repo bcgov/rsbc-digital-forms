@@ -35,6 +35,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: write-all
     # if: ${{ !(
     #     github.event.pull_request.head.ref =~ '^hotfixrelease/' ||
     #     github.event.pull_request.head.ref =~ '^hotfix/' ||
