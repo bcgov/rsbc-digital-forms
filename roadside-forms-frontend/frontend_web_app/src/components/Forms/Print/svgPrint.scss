@@ -6,6 +6,10 @@
   font-size: 2.5pt;
 }
 
+.fontXSmall {
+  font-size: 2pt;
+}
+
 .fontLarge {
   font-size: 4.5pt;
 }
@@ -30,15 +34,37 @@
   }
 
   #roadsafety-header {
-   display: none;
+    display: none;
   }
 
   #roadesafety-footer{
     display: none;
    }
 
-  .svg-wrapper {
+  #event-container{
+    all: unset;
+  }
+
+  #button-container{
+    display: none;
+  }
+
+  .outline{
+    all: unset !important;
+  }
+
+  
+
+  .svg-wrapper{
     page-break-before:always;
-    transform: rotate(-90deg) scale(1.12) translate(-125px);
+
+    &--landscape{
+      transform: rotate(-90deg) scale(1.12) translate(-125px);
+      display: block !important;
+    } 
+    &--portrait {
+      transform: scale(1.25) translate(0px, 100px);
+      display: block !important;
+    } 
   }
 }
