@@ -19,31 +19,30 @@ export const TestAdministered = (props) => {
                             ]} required />
                     </div>
                 </div> 
-                {(values["test-used-alcohol"] === "alco-sensor" || values["test-used-alcohol"] ==="instrument") &&<div className="row">
+                {(values["test-used-alcohol"] === "alco-sensor") &&<div className="row">
                      <div className="col-sm-12">
-                        {values["test-used-alcohol"] === "alco-sensor" &&
-                            <DatePickerField name="ASD-expiry-date" label="ASD Expiry Date" className="field-height field-width" required/>}
-                        {values["test-used-alcohol"] === "instrument" && 
-                            <Radio label= "Result" name="alcohol-test-result" options={[
+                        <DatePickerField name="ASD-expiry-date" label="ASD Expiry Date" className="field-height field-width" required/>
+                        <Radio label= "Result" name="alcohol-test-result" options={[
                                 { label: '51-99 mg%', value: '51-99 mg%' },
                                 { label: 'Over 99 mg%', value: 'Over 99 mg%' },
-                                ]} required />}
+                                ]} required />
                     </div>
                 </div>}
-                <div className="row">
+                {values["test-used-alcohol"] ==="instrument" && <div className="row">
                     <div className="col-sm-12 mt-2">
                         <NumericInput label="BAC Result(mg%)" name="BAC-result" required/>
                     </div>
-                </div>
+                </div>}
             </div>)}
             {values["type-of-prohibition"] === "drugs" && (
             <div className="test-admin-drug">
                 <div className="row">
                     <div className="col-sm-12">
                         <Radio label= "Which test was used?" name="test-used-drug" options={[
-                            { label: 'Alco-Sensor FST(ASD)', value: 'alco-sensor' },
-                            { label: 'Approved Instrument', value: 'instrument' },
-                            { label: 'Prescribed Physical Coordination Test (SFST)', value: 'physical-cordination-test' }
+                            { label: 'Approved Drug', value: 'approved-drug' },
+                            { label: 'Screening Equipment', value: 'screening-equipment' },
+                            { label: 'Prescribed Physical Coordination Test (SFST)', value: 'physical-cordination-test-sfts' },
+                            { label: 'Prescribed Physical Coordination Test (DRE)', value: 'physical-cordination-test-dre' }
                             ]} required />
                     </div>
                 </div>
