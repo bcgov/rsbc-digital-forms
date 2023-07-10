@@ -50,27 +50,6 @@ const prohibitionValidation = (yesSeleted) => {
   });
 };
 
-const validatePacificTime = (value) => {
-    if (!value) {
-      return true;
-    }
-
-    const currentTime = new Date();
-    const currentUtcHour = currentTime.getUTCHours();
-    const currentUtcMinute = currentTime.getUTCMinutes();
-
-    let currentPacificHour = (currentUtcHour - 7 + 24) % 24; // Convert UTC to Pacific Time (UTC-7)
-    const currentPacificMinute = currentUtcMinute;
-
-    const enteredHour = parseInt(value.substr(0, 2));
-    const enteredMinute = parseInt(value.substr(2, 2));
-
-    return !(enteredHour < currentPacificHour ||
-      (enteredHour === currentPacificHour && enteredMinute < currentPacificMinute) ||
-      enteredHour > currentPacificHour ||
-      enteredMinute < 0 || enteredMinute > 59);
-};
-
 const validateRequiredDateWithMax = (selectedValue, errorPath, maxDate) => {
   return function(value) {
     if (selectedValue && !value) {
@@ -81,18 +60,18 @@ const validateRequiredDateWithMax = (selectedValue, errorPath, maxDate) => {
     }
 
     if (selectedValue && value) {
-      // Adjust the current date and 7 days ago date to Pacific Timezone
+      // Adjust the current date and yesterday's date to Pacific Timezone
       const today = new Date();
-      const currentTimestamp = today.getTime();
-      const pacificOffset = 480; // PST offset is 480 minutes (8 hours)
-      const currentTimestampPST = currentTimestamp - pacificOffset * 60 * 1000;
-      const sevenDaysAgoTimestampPST = currentTimestampPST - 7 * 24 * 60 * 60 * 1000;
-      const sevenDaysAgoPST = new Date(sevenDaysAgoTimestampPST);
+      const yesterdayPST = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
+      const todayPST = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-      if (value < sevenDaysAgoPST) {
+      if (
+        (value.getTime() !== yesterdayPST.getTime()) &&
+        (value.getTime() !== todayPST.getTime())
+      ) {
         return this.createError({
           path: errorPath,
-          message: 'Date cannot be older than 7 days',
+          message: 'Date must be yesterday or today',
         });
       }
     }
@@ -107,7 +86,6 @@ const validateRequiredDateWithMax = (selectedValue, errorPath, maxDate) => {
     return true;
   };
 };
-
 
 
 export const validationSchema = Yup.object().shape({
@@ -219,21 +197,36 @@ export const validationSchema = Yup.object().shape({
     }
 
     return true;
-  })
-  .test('pacific-time', 'Invalid Pacific Time', validatePacificTime),
+  }),
   "vehicle-released-to": releasedToDriverValidation(Yup.ref('reason-for-not-impounding')),
   "date-released": Yup.date()
    .max(new Date(), 'Date of release cannot be a future date')
    .nullable()
    .test('released', 'Date of release is required when release is selected', validateRequiredDateWithMax(Yup.ref('reason-for-not-impounding'), 'date-released', new Date())),
   "time-released": releasedToDriverValidation(Yup.ref('reason-for-not-impounding'))
-  .matches(/^([01]\d|2[0-3])[0-5]\d$/, 'Invalid time format')
-  .test('pacific-time', 'Invalid Pacific Time', validatePacificTime),
+  .matches(/^([01]\d|2[0-3])[0-5]\d$/, 'Invalid time format'),
   "test-used-alcohol": prescribedDeviceValidation(Yup.ref('prescribed-device')),
-  "BAC-result": prescribedDeviceValidation(Yup.ref('prescribed-device')),
+  "BAC-result": Yup.number()
+  .nullable()
+  .positive('BAC result must be a positive number')
+  .integer('BAC result must be an integer')
+  .min(2, 'BAC result must be greater than 1')
+  .max(998, 'BAC result must be less than 999')
+  .test('BAC-result', 'BAC-result is required when instrument is selected', function (value) {
+    const selectedValue = this.parent['test-used-alcohol'];
+
+    if (selectedValue === 'instrument' && !value) {
+      return this.createError({
+        path: 'BAC-result',
+        message: 'This field is required',
+      });
+    }
+
+    return true;
+  }),
   'ASD-expiry-date': Yup.date()
   .nullable()
-  .test('ASD', 'ASD expiry date is required when ASD is is selected', function(value) {
+  .test('ASD', 'ASD expiry date is required when ASD is selected', function (value) {
     const selectedValue = this.parent['test-used-alcohol'];
 
     if (selectedValue === 'alco-sensor' && !value) {
@@ -242,18 +235,24 @@ export const validationSchema = Yup.object().shape({
         message: 'This field is required',
       });
     }
-    
+
+    if (value && value < new Date()) {
+      return this.createError({
+        path: 'ASD-expiry-date',
+        message: 'Expired!',
+      });
+    }
 
     return true;
   }),
-  'alcohol-test-result': Yup.date()
+  'alcohol-test-result': Yup.string()
   .nullable()
-  .test('Instrument', 'Test result is required when Instrument is is selected', function(value) {
+  .test('alcohol-test-result', 'Test result is required when alco-sensor is selected', function(value) {
     const selectedValue = this.parent['test-used-alcohol'];
 
-    if (selectedValue === 'instrument' && !value) {
+    if (selectedValue === 'alco-sensor' && !value) {
       return this.createError({
-        path: 'instrument',
+        path: 'alcohol-test-result',
         message: 'This field is required',
       });
     }
