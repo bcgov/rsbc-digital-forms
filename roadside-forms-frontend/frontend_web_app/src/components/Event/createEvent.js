@@ -185,8 +185,24 @@ export const CreateEvent = () => {
         setCurrentStep(currentStep - 1);
       };
 
+      const renderSVGForm = (values) => {
+        const forms = {"TwentyFourHour": values["24Hour"], "TwelveHour": values["12Hour"], "IRP": values["IRP"], "VI": values["VI"] }
+        const componentsToRender = []
+        console.log(values)
+        for(const item in forms){
+            if (forms[item]) {
+                for (const form in formsPNG[item]) {
+                    if (form === "ILO" && !forms["VI"]){ 
+                        break
+                    }
+                    componentsToRender.push(<SVGprint key={item+form} form={formsPNG[item][form]["png"]} formAspect={formsPNG[item][form]["aspectClass"]} formType={form} values={values}/>)
+                }
+            }
+        }
+        return componentsToRender
+      }
+
       const renderPage = (currentStep, values) => {
-        console.log(currentStep)
         switch (currentStep) {
           case 0:
             return (
@@ -212,7 +228,6 @@ export const CreateEvent = () => {
             <DriverInfo jurisdictions={jurisdictions} provinces={provinces}/>
             <VehicleInfo vehicleColours={vehicleColours} years={generateYearOptions()} provinces={provinces} jurisdictions={jurisdictions} vehicles={vehicles} vehicleStyles={vehicleStyles}/>
             <RegisteredOwnerInfo provinces={provinces}/>
-            
         </div>
         { values['24Hour'] &&  <TwentyFourHourForm cities={cities} impoundLotOperators={impoundLotOperators}/> }
         <OfficerInfo/>
@@ -220,10 +235,11 @@ export const CreateEvent = () => {
                 
             );
           case 1:
-            console.log(currentStep)
-            return (
-              <SVGprint values={values}/>
-            );
+            return(
+                <div>
+                    {renderSVGForm(values)}
+                </div> 
+            )
           // Add more cases for each page
           default:
             return null;
