@@ -25,7 +25,7 @@ export const TimeInputField = ({ required, label, ...props }) => {
   return (
     <div>
       <label htmlFor={props.name}>{label}{required && <span className="required-asterisk"> *</span>}
-        <span style={{color: "gray"}}>HHMM in Pacific Time</span>
+        <span style={{color: "gray"}}>Time in 24-hour clock</span>
         </label>
       <input
         type="text"
