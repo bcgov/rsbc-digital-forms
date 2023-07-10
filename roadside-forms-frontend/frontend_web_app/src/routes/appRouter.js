@@ -16,11 +16,12 @@ class AppRouter extends Component {
             <Header/>
             <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/requestAccess" element={<RequestAccess/>} />
                 <Route element={<PrivateRoutes/> } >
                     <Route path="/createEvent" element={<CreateEvent/>} />
                     <Route path="/" element={<Dashboard/>} exact/>
                     <Route path="/admin-console" element={<UserAdminDashboard />} exact />
-                    <Route path="/svg-test" element={<SVGprint />} exact />
+                    <Route path="/svg-preview" element={<SVGprint />} exact />
                 </Route>
             </Routes>
         </Router>

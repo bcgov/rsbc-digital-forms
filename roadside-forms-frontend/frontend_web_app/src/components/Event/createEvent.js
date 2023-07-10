@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
+import Row from 'react-bootstrap/Row';
 import { Checkbox } from '../common/Checkbox/checkbox';
 import { validationSchema } from './validationSchema';
 import Button from 'react-bootstrap/Button';
@@ -13,6 +14,7 @@ import { useRecoilValue } from 'recoil';
 import { staticResources } from '../../utils/helpers';
 import { useNavigate } from 'react-router-dom';
 import { SVGprint } from '../Forms/Print/svgPrint';
+import { formsPNG } from '../../utils/helpers';
 import './createEvent.scss';
 
 export const CreateEvent = () => {
@@ -85,6 +87,9 @@ export const CreateEvent = () => {
         setSubmitting(false);
     };
 
+    const printForms = () => window.print()
+    
+
     const handleGoBack = () => {
         navigate('/');
       };
@@ -97,8 +102,24 @@ export const CreateEvent = () => {
         setCurrentStep(currentStep - 1);
       };
 
+      const renderSVGForm = (values) => {
+        const forms = {"TwentyFourHour": values["24Hour"], "TwelveHour": values["12Hour"], "IRP": values["IRP"], "VI": values["VI"] }
+        const componentsToRender = []
+        console.log(values)
+        for(const item in forms){
+            if (forms[item]) {
+                for (const form in formsPNG[item]) {
+                    if (form === "ILO" && !forms["VI"]){ 
+                        break
+                    }
+                    componentsToRender.push(<SVGprint key={item+form} form={formsPNG[item][form]["png"]} formAspect={formsPNG[item][form]["aspectClass"]} formType={form} values={values}/>)
+                }
+            }
+        }
+        return componentsToRender
+      }
+
       const renderPage = (currentStep, values) => {
-        console.log(currentStep)
         switch (currentStep) {
           case 0:
             return (
@@ -124,7 +145,6 @@ export const CreateEvent = () => {
             <DriverInfo jurisdictions={jurisdictions} provinces={provinces}/>
             <VehicleInfo vehicleColours={vehicleColours} years={generateYearOptions()} provinces={provinces} jurisdictions={jurisdictions} vehicles={vehicles} vehicleStyles={vehicleStyles}/>
             <RegisteredOwnerInfo provinces={provinces}/>
-            
         </div>
         { values['24Hour'] &&  <TwentyFourHourForm cities={cities} impoundLotOperators={impoundLotOperators}/> }
         <OfficerInfo/>
@@ -132,10 +152,11 @@ export const CreateEvent = () => {
                 
             );
           case 1:
-            console.log(currentStep)
-            return (
-              <SVGprint values={values}/>
-            );
+            return(
+                <div>
+                    {renderSVGForm(values)}
+                </div> 
+            )
           // Add more cases for each page
           default:
             return null;
@@ -143,8 +164,8 @@ export const CreateEvent = () => {
       };
 
     return (
-        <div className='text-font'>
-            <div className='m-4'>
+        <div id='event-container' className='text-font'>
+            <div id='button-container' className='m-4'>
                 <Button  variant="primary" onClick={handleGoBack}>Save & Return to Main Menu</Button>
             </div>
             <div className="outline">
@@ -155,21 +176,28 @@ export const CreateEvent = () => {
                 {({ isSubmitting, values }) => (
                     <Form>
                         {renderPage(currentStep, values)}
+                        <div id='button-container' className="flex">  
                         {currentStep > 0 && (
-                            <div className='right'>
+                            <div className='left'>
                                 <Button type="button" onClick={() => prevPage()}>
                                     Previous
                                 </Button>
                             </div>
                         )}
                         <div className='right'>
-                            {currentStep <  4 ? (    
+                            {currentStep <  4 ?
+                                (currentStep === 1 ? 
+                                    <Button type="button" onClick={() => printForms()}>
+                                        Print
+                                    </Button>
+                                    : (    
                                 <Button type="button" onClick={() => nextPage()}>
                                     Next
                                 </Button>
-                            ) : (
+                            )) : (
                                 <Button variant="primary" type="submit">Submit</Button>   
                             )}
+                        </div>
                         </div>
                     </Form>
                 )}

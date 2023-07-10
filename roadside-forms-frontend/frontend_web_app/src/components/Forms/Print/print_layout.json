@@ -1,371 +1,1200 @@
 {
-    "VIOLATION_NUMBER": {
-      "field_type": "text",
-      "field_name": "",
-      "classNames": "fontLarge",
-      "start": {
-        "x": 4,
-        "y": 24.5
-      }
-    },
-    "DRIVER_NAME": {
-      "field_type": "text",
-      "field_name": ["last-name", "first-name"],
-      "classNames": "fontSmall",
-      "start": {
-        "x": 7.2,
-        "y": 32.5
-      }
-    },
-    "DRIVER_DL_NUMBER": {
-      "field_type": "text",
-      "field_name": "drivers-number",
-      "classNames": "fontSmall",
-      "start": {
-        "x": 7.2,
-        "y": 39.5
-      }
-    },
-    "DRIVER_DL_PROVINCE": {
+    "driver":{
+        "VIOLATION_NUMBER": {
         "field_type": "text",
-        "field_name": "prov-state",
+        "field_name": "",
+        "classNames": "fontLarge",
+        "start": {
+            "x": 4,
+            "y": 24.5
+        }
+        },
+        "DRIVER_NAME": {
+        "field_type": "text",
+        "field_name": ["given-name", "last-name"],
         "classNames": "fontSmall",
         "start": {
-          "x": 54,
-          "y": 39.5
+            "x": 7.2,
+            "y": 32.5
         }
-      },
-    "DRIVER_DOB": {
-      "field_type": "text",
-      "field_name": "dob",
-      "classNames": "fontSmall",
-      "start": {
-        "x": 77,
-        "y": 39.5
-      }
-    },
-    "DRIVER_ADDRESS": {
+        },
+        "DRIVER_DL_NUMBER": {
         "field_type": "text",
-        "field_name": "address",
+        "field_name": "drivers-number",
         "classNames": "fontSmall",
         "start": {
-          "x": 7.2,
-          "y": 46.5
+            "x": 7.2,
+            "y": 39.5
         }
-      },
-    "REASON_ALCOHOL_215": {
-      "field_type": "checkbox",
-      "field_name": "",
-      "classNames": "fontSmall",
-      "start": {
-        "x": 22.8,
-        "y": 51
-      }
-      },
-    "REASON_DRUGS_215": {
+        },
+        "DRIVER_DL_PROVINCE": {
+            "field_type": "text",
+            "field_name": "prov-state",
+            "classNames": "fontSmall",
+            "start": {
+            "x": 54,
+            "y": 39.5
+            }
+        },
+        "DRIVER_DOB": {
+        "field_type": "text",
+        "field_name": "dob",
+        "classNames": "fontSmall",
+        "start": {
+            "x": 77,
+            "y": 39.5
+        }
+        },
+        "DRIVER_ADDRESS": {
+            "field_type": "text",
+            "field_name": ["address", "city", "prov-state", "postal-code"],
+            "classNames": "fontSmall",
+            "start": {
+            "x": 7.2,
+            "y": 46.5
+            }
+        },
+        "REASON_ALCOHOL_215": {
         "field_type": "checkbox",
-        "field_name": "",
+        "field_name": "type-of-prohibition",
+        "field_val": "alcohol",
         "classNames": "fontSmall",
         "start": {
-          "x": 50.7,
-          "y": 51
+            "x": 22.8,
+            "y": 51
         }
         },
-    "NOTICE_TIME": {
+        "REASON_DRUGS_215": {
+            "field_type": "checkbox",
+            "field_name": "type-of-prohibition",
+            "field_val": "drugs",
+            "classNames": "fontSmall",
+            "start": {
+            "x": 50.7,
+            "y": 51
+            }
+            },
+        "NOTICE_TIME": {
+            "field_type": "text",
+            "field_name": "time-of-driving",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 66.5
+            }
+            },
+        "NOTICE_DAY": {
+            "field_type": "text",
+            "field_name": "date-of-driving",
+            "date_val": "Do",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 38.4,
+                "y": 66.5
+            }
+            },
+        "NOTICE_MONTH": {
+            "field_type": "text",
+            "field_name": "date-of-driving",
+            "date_val": "MMMM",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 58.9,
+                "y": 66.5
+            }
+            },
+        "NOTICE_YEAR": {
+            "field_type": "text",
+            "field_name": "date-of-driving",
+            "date_val": "YYYY",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 90.8,
+                "y": 66.5
+            }
+            },
+        "DL_SURRENDER_LOCATION": {
+            "field_type": "text",
+            "field_name": "",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 4.7,
+                "y": 83.5
+            }
+            },
+        "OFFICER_LAST_NAME": {
+            "field_type": "text",
+            "field_name": "officer-lastname",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 4.7,
+                "y": 89.5
+            }
+            },
+        "OFFICER_BADGE_NUMBER": {
+            "field_type": "text",
+            "field_name": "officer-prime-id",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 81,
+                "y": 89.5
+            }
+            },
+        "AGENCY_NAME": {
+            "field_type": "text",
+            "field_name": "officer-agency",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 4.7,
+                "y": 96.5
+            }
+            },
+        "AGENCY_FILE_NUMBER": {
+            "field_type": "text",
+            "field_name": "offence-agency-file",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 66.2,
+                "y": 96.5
+            }
+            },
+        "OWNER_NAME": {
+            "field_type": "text",
+            "field_name": ["owner-first-name","owner-last-name"],
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 106.5
+            }
+            },
+        "OWNER_ADDRESS": {
+            "field_type": "text",
+            "field_name": ["registered-owner-address", "registered-owner-city"],
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 113.5
+            }
+            },
+        "OWNER_PROVINCE": {
+            "field_type": "text",
+            "field_name": "registered-owner-prov-state",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 76.9,
+                "y": 113.5
+            }
+            },
+        "OWNER_POSTAL_CODE": {
+            "field_type": "text",
+            "field_name": "registered-owner-postal",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 89.2,
+                "y": 113.5
+            }
+            },
+        "VEHICLE_LICENSE_NUMBER": {
+            "field_type": "text",
+            "field_name": "plate-number",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 120.5
+            }
+            },
+        "VEHICLE_PROVINCE": {
+            "field_type": "text",
+            "field_name": "nsc-prov-state",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 27.5,
+                "y": 120.5
+            }
+            },
+        "VEHICLE_LICENSE_YEAR": {
+            "field_type": "text",
+            "field_name": "",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 67.6,
+                "y": 126
+            }
+            },
+        "VEHICLE_TAG_NUMBER": {
+            "field_type": "text",
+            "field_name": "",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 79.9,
+                "y": 126
+            }
+            },
+        "VEHICLE_REGISTRATION_NUMBER": {
+            "field_type": "text",
+            "field_name": "registration-number",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 70,
+                "y": 120.5
+            }
+            },
+        "VEHICLE_TYPE": {
+            "field_type": "text",
+            "field_name": "vehicle-style",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 90.8,
+                "y": 120.5
+            }
+            },
+        "VEHICLE_MAKE": {
+            "field_type": "text",
+            "field_name": "vehicle-make-model",
+            "delimeter": "-",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_MODEL": {
+            "field_type": "text",
+            "field_name": "vehicle-make-model",
+            "delimeter": "-",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 27.7,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_YEAR": {
+            "field_type": "text",
+            "field_name": "vehicle-year",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 43.3,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_COLOR": {
+            "field_type": "text",
+            "field_name": "vehicle-colour",
+            "classNames": "fontXSmall",
+            "start": {
+                "x": 53.9,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_NSC_PUJ": {
+            "field_type": "text",
+            "field_name": "nsc-prov-state",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 66.2,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_NSC_NUMBER": {
+            "field_type": "text",
+            "field_name": "nsc-number",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 79,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_VIN": {
+            "field_type": "text",
+            "field_name": "vin-number",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 132.5
+            }
+            },
+        "OWNER_PHONE_AREA_CODE": {
+            "field_type": "text",
+            "field_name": "registered-owner-phone",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 74.3,
+                "y": 132.5
+            }
+            },
+        "NOT_IMPOUNDED": {
+            "field_type": "checkbox",
+            "field_name": "vehicle-impounded",
+            "field_val": "NO",
+            "classNames": "fontText",
+            "start": {
+                "x": 4.5,
+                "y": 139.3
+            }
+            },
+        "IMPOUNDED": {
+            "field_type": "checkbox",
+            "field_name": "vehicle-impounded",
+            "field_val": "YES",
+            "classNames": "fontText",
+            "start": {
+                "x": 4.5,
+                "y": 142.6
+            }
+            },
+        "NOT_IMPOUNDED_REASON": {
+            "field_type": "text",
+            "field_name": "reason-for-not-impounding",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 42.5,
+                "y": 139.3
+            }
+        },
+        "IMPOUNDED_LOT": {
+            "field_type": "text",
+            "field_name": "ILO-name",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 52.3,
+                "y": 148
+            }
+            },
+        "IMPOUNDED_ADDRESS": {
+            "field_type": "text",
+            "field_name": ["ILO-address","ILO-city"],
+            "classNames": "fontSmall",
+            "start": {
+                "x": 3.9,
+                "y": 153.2
+            }
+            },
+        "IMPOUNDED_PHONE_AREA_CODE": {
+            "field_type": "text",
+            "field_name": "ILO-phone",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 72.6,
+                "y": 153.2
+            }
+        },
+        "RELEASE_LOCATION_KEYS": {
+            "field_type": "text",
+            "field_name": "key-location",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 4.7,
+                "y": 168.7
+            }
+            },
+        "RELEASE_LOCATION_VEHICLE": {
+            "field_type": "text",
+            "field_name": "reason-for-not-impounding",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 54.8,
+                "y": 168.7
+            }
+            },
+        "RELEASE_PERSON": {
+            "field_type": "text",
+            "field_name": "vehicle-released-to",
+            "classNames": "fontXSmall",
+            "start": {
+                "x": 4.5,
+                "y": 173.5
+            }
+            },
+        "RELEASE_DATE": {
+            "field_type": "text",
+            "field_name": "date-released",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 79,
+                "y": 173.5
+            }
+            },
+        "RELEASE_TIME": {
+            "field_type": "text",
+            "field_name": "time-released",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 95,
+                "y": 173.5
+            }
+            },
+        "DRIVER_COPY": {
+            "field_type": "always",
+            "field_name": "",
+            "field_value":"DRIVER COPY",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 74,
+                "y": 194.1
+            }
+            }
+    },
+    "officer":{
+        "VIOLATION_NUMBER": {
         "field_type": "text",
         "field_name": "",
-        "classNames": "fontSmall",
+        "classNames": "fontLarge",
         "start": {
-            "x": 6.4,
-            "y": 66.5
+            "x": 4,
+            "y": 24.5
         }
         },
-    "NOTICE_DAY": {
+        "DRIVER_NAME": {
         "field_type": "text",
-        "field_name": "",
+        "field_name": ["last-name", "given-name"],
         "classNames": "fontSmall",
         "start": {
-            "x": 38.4,
-            "y": 66.5
+            "x": 7.2,
+            "y": 32.5
         }
         },
-    "NOTICE_MONTH": {
+        "DRIVER_DL_NUMBER": {
         "field_type": "text",
-        "field_name": "",
+        "field_name": "drivers-number",
         "classNames": "fontSmall",
         "start": {
-            "x": 58.9,
-            "y": 66.5
+            "x": 7.2,
+            "y": 39.5
         }
         },
-    "NOTICE_YEAR": {
+        "DRIVER_DL_PROVINCE": {
+            "field_type": "text",
+            "field_name": "prov-state",
+            "classNames": "fontSmall",
+            "start": {
+            "x": 54,
+            "y": 39.5
+            }
+        },
+        "DRIVER_DOB": {
         "field_type": "text",
-        "field_name": "",
+        "field_name": "dob",
         "classNames": "fontSmall",
         "start": {
-            "x": 90.8,
-            "y": 66.5
+            "x": 77,
+            "y": 39.5
         }
         },
-    "DL_SURRENDER_LOCATION": {
-        "field_type": "text",
-        "field_name": "",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 4.7,
-            "y": 83.5
-        }
+        "DRIVER_ADDRESS": {
+            "field_type": "text",
+            "field_name": ["address", "city", "prov-state", "postal-code"],
+            "classNames": "fontSmall",
+            "start": {
+            "x": 7.2,
+            "y": 46.5
+            }
         },
-    "OFFICER_LAST_NAME": {
-        "field_type": "text",
-        "field_name": "officer-lastname",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 4.7,
-            "y": 89.5
-        }
-        },
-    "OFFICER_BADGE_NUMBER": {
-        "field_type": "text",
-        "field_name": "officer-prime-id",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 81,
-            "y": 89.5
-        }
-        },
-    "AGENCY_NAME": {
-        "field_type": "text",
-        "field_name": "officer-agency",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 4.7,
-            "y": 96.5
-        }
-        },
-    "AGENCY_FILE_NUMBER": {
-        "field_type": "text",
-        "field_name": "",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 66.2,
-            "y": 96.5
-        }
-        },
-    "OWNER_NAME": {
-        "field_type": "text",
-        "field_name": "owner-last-name",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 6.4,
-            "y": 106.5
-        }
-        },
-    "OWNER_ADDRESS": {
-        "field_type": "text",
-        "field_name": "registered-owner-address",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 6.4,
-            "y": 113.5
-        }
-        },
-    "OWNER_PROVINCE": {
-        "field_type": "text",
-        "field_name": "registered-owner-prov-state",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 76.9,
-            "y": 113.5
-        }
-        },
-    "OWNER_POSTAL_CODE": {
-        "field_type": "text",
-        "field_name": "registered-owner-postal",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 89.2,
-            "y": 113.5
-        }
-        },
-    "VEHICLE_LICENSE_NUMBER": {
-        "field_type": "text",
-        "field_name": "",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 6.4,
-            "y": 120.5
-        }
-        },
-    "VEHICLE_PROVINCE": {
-        "field_type": "text",
-        "field_name": "",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 27,
-            "y": 120.5
-        }
-        },
-    "VEHICLE_REGISTRATION_NUMBER": {
-        "field_type": "text",
-        "field_name": "registration-number",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 70,
-            "y": 120.5
-        }
-        },
-    "VEHICLE_TYPE": {
-        "field_type": "text",
-        "field_name": "vehicle-style",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 90.8,
-            "y": 120.5
-        }
-        },
-    "VEHICLE_MAKE": {
-        "field_type": "text",
-        "field_name": "vehicle-make-model",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 6.4,
-            "y": 126.5
-        }
-        },
-    "VEHICLE_MODEL": {
-        "field_type": "text",
-        "field_name": "vehicle-make-model",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 27.7,
-            "y": 126.5
-        }
-        },
-    "VEHICLE_YEAR": {
-        "field_type": "text",
-        "field_name": "vehicle-year",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 43.3,
-            "y": 126.5
-        }
-        },
-    "VEHICLE_COLOR": {
-        "field_type": "text",
-        "field_name": "vehicle-colour",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 53.9,
-            "y": 126.5
-        }
-        },
-    "VEHICLE_NSC_PUJ": {
-        "field_type": "text",
-        "field_name": "nsc-number",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 66.2,
-            "y": 126.5
-        }
-        },
-    "VEHICLE_VIN": {
-        "field_type": "text",
-        "field_name": "vin-number",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 6.4,
-            "y": 132.5
-        }
-        },
-    "OWNER_PHONE_AREA_CODE": {
-        "field_type": "text",
-        "field_name": "registered-owner-phone",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 73.6,
-            "y": 132.5
-        }
-        },
-    "OWNER_PHONE_NUMBER": {
-        "field_type": "text",
-        "field_name": "registered-owner-phone",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 81.8,
-            "y": 132.5
-        }
-        },
-    "NOT_IMPOUNDED": {
+        "REASON_ALCOHOL_215": {
         "field_type": "checkbox",
-        "field_name": "",
-        "classNames": "fontText",
+        "field_name": "type-of-prohibition",
+        "field_val": "alcohol",
+        "classNames": "fontSmall",
         "start": {
-            "x": 4.5,
-            "y": 139.3
+            "x": 22.8,
+            "y": 51
         }
         },
-    "IMPOUNDED": {
+        "REASON_DRUGS_215": {
+            "field_type": "checkbox",
+            "field_name": "type-of-prohibition",
+            "field_val": "drugs",
+            "classNames": "fontSmall",
+            "start": {
+            "x": 50.7,
+            "y": 51
+            }
+            },
+        "NOTICE_TIME": {
+            "field_type": "text",
+            "field_name": "time-of-driving",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 66.5
+            }
+            },
+        "NOTICE_DAY": {
+            "field_type": "text",
+            "field_name": "date-of-driving",
+            "date_val": "Do",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 38.4,
+                "y": 66.5
+            }
+            },
+        "NOTICE_MONTH": {
+            "field_type": "text",
+            "field_name": "date-of-driving",
+            "date_val": "MMMM",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 58.9,
+                "y": 66.5
+            }
+            },
+        "NOTICE_YEAR": {
+            "field_type": "text",
+            "field_name": "date-of-driving",
+            "date_val": "YYYY",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 90.8,
+                "y": 66.5
+            }
+            },
+        "DL_SURRENDER_LOCATION": {
+            "field_type": "text",
+            "field_name": "",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 4.7,
+                "y": 83.5
+            }
+            },
+        "OFFICER_LAST_NAME": {
+            "field_type": "text",
+            "field_name": "officer-lastname",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 4.7,
+                "y": 89.5
+            }
+            },
+        "OFFICER_BADGE_NUMBER": {
+            "field_type": "text",
+            "field_name": "officer-prime-id",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 81,
+                "y": 89.5
+            }
+            },
+        "AGENCY_NAME": {
+            "field_type": "text",
+            "field_name": "officer-agency",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 4.7,
+                "y": 96.5
+            }
+            },
+        "AGENCY_FILE_NUMBER": {
+            "field_type": "text",
+            "field_name": "offence-agency-file",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 66.2,
+                "y": 96.5
+            }
+            },
+        "OWNER_NAME": {
+            "field_type": "text",
+            "field_name": ["owner-first-name","owner-last-name"],
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 106.5
+            }
+            },
+        "OWNER_ADDRESS": {
+            "field_type": "text",
+            "field_name": ["registered-owner-address", "registered-owner-city"],
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 113.5
+            }
+            },
+        "OWNER_PROVINCE": {
+            "field_type": "text",
+            "field_name": "registered-owner-prov-state",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 76.9,
+                "y": 113.5
+            }
+            },
+        "OWNER_POSTAL_CODE": {
+            "field_type": "text",
+            "field_name": "registered-owner-postal",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 89.2,
+                "y": 113.5
+            }
+            },
+        "VEHICLE_LICENSE_NUMBER": {
+            "field_type": "text",
+            "field_name": "plate-number",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 120.5
+            }
+            },
+        "VEHICLE_PROVINCE": {
+            "field_type": "text",
+            "field_name": "nsc-prov-state",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 27.5,
+                "y": 120.5
+            }
+            },
+        "VEHICLE_REGISTRATION_NUMBER": {
+            "field_type": "text",
+            "field_name": "registration-number",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 70,
+                "y": 120.5
+            }
+            },
+        "VEHICLE_TYPE": {
+            "field_type": "text",
+            "field_name": "vehicle-style",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 90.8,
+                "y": 120.5
+            }
+            },
+        "VEHICLE_MAKE": {
+            "field_type": "text",
+            "field_name": "vehicle-make-model",
+            "delimeter": "-",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_MODEL": {
+            "field_type": "text",
+            "field_name": "vehicle-make-model",
+            "delimeter": "-",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 27.7,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_YEAR": {
+            "field_type": "text",
+            "field_name": "vehicle-year",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 43.3,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_COLOR": {
+            "field_type": "text",
+            "field_name": "vehicle-colour",
+            "classNames": "fontXSmall",
+            "start": {
+                "x": 53.9,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_NSC_PUJ": {
+            "field_type": "text",
+            "field_name": "nsc-prov-state",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 66.2,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_NSC_NUMBER": {
+            "field_type": "text",
+            "field_name": "nsc-number",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 79,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_VIN": {
+            "field_type": "text",
+            "field_name": "vin-number",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 132.5
+            }
+            },
+        "OWNER_PHONE_AREA_CODE": {
+            "field_type": "text",
+            "field_name": "registered-owner-phone",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 74.3,
+                "y": 132.5
+            }
+            },
+        "NOT_IMPOUNDED": {
+            "field_type": "checkbox",
+            "field_name": "vehicle-impounded",
+            "field_val": "NO",
+            "classNames": "fontText",
+            "start": {
+                "x": 4.5,
+                "y": 139.3
+            }
+            },
+        "IMPOUNDED": {
+            "field_type": "checkbox",
+            "field_name": "vehicle-impounded",
+            "field_val": "YES",
+            "classNames": "fontText",
+            "start": {
+                "x": 4.5,
+                "y": 142.6
+            }
+            },
+        "IMPOUNDED_LOT": {
+            "field_type": "text",
+            "field_name": "ILO-name",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 52.3,
+                "y": 148
+            }
+            },
+        "IMPOUNDED_ADDRESS": {
+            "field_type": "text",
+            "field_name": ["ILO-address","ILO-city"],
+            "classNames": "fontSmall",
+            "start": {
+                "x": 3.9,
+                "y": 153.2
+            }
+            },
+        "IMPOUNDED_PHONE_AREA_CODE": {
+            "field_type": "text",
+            "field_name": "ILO-phone",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 72.6,
+                "y": 153.2
+            }
+            },
+        "RELEASE_LOCATION_KEYS": {
+            "field_type": "text",
+            "field_name": "key-location",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 4.7,
+                "y": 168.7
+            }
+            },
+        "RELEASE_LOCATION_VEHICLE": {
+            "field_type": "text",
+            "field_name": "reason-for-not-impounding",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 54.8,
+                "y": 168.7
+            }
+            },
+        "DRIVER_COPY": {
+            "field_type": "text",
+            "field_name": "",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 74,
+                "y": 194.1
+            }
+            }
+    },
+    "ILO":{
+        "VIOLATION_NUMBER": {
+        "field_type": "text",
+        "field_name": "",
+        "classNames": "fontLarge",
+        "start": {
+            "x": 4,
+            "y": 24.5
+        }
+        },
+        "DRIVER_NAME": {
+        "field_type": "text",
+        "field_name": ["last-name", "given-name"],
+        "classNames": "fontSmall",
+        "start": {
+            "x": 7.2,
+            "y": 32.5
+        }
+        },
+        "DRIVER_DL_NUMBER": {
+        "field_type": "text",
+        "field_name": "drivers-number",
+        "classNames": "fontSmall",
+        "start": {
+            "x": 7.2,
+            "y": 39.5
+        }
+        },
+        "DRIVER_DL_PROVINCE": {
+            "field_type": "text",
+            "field_name": "prov-state",
+            "classNames": "fontSmall",
+            "start": {
+            "x": 54,
+            "y": 39.5
+            }
+        },
+        "DRIVER_DOB": {
+        "field_type": "text",
+        "field_name": "dob",
+        "classNames": "fontSmall",
+        "start": {
+            "x": 77,
+            "y": 39.5
+        }
+        },
+        "DRIVER_ADDRESS": {
+            "field_type": "text",
+            "field_name": ["address", "city", "prov-state", "postal-code"],
+            "classNames": "fontSmall",
+            "start": {
+            "x": 7.2,
+            "y": 46.5
+            }
+        },
+        "REASON_ALCOHOL_215": {
         "field_type": "checkbox",
-        "field_name": "",
-        "classNames": "fontText",
-        "start": {
-            "x": 4.5,
-            "y": 142.6
-        }
-        },
-    "IMPOUNDED_LOT": {
-        "field_type": "text",
-        "field_name": "",
+        "field_name": "type-of-prohibition",
+        "field_val": "alcohol",
         "classNames": "fontSmall",
         "start": {
-            "x": 52.3,
-            "y": 148
+            "x": 22.8,
+            "y": 51
         }
         },
-    "IMPOUNDED_ADDRESS": {
-        "field_type": "text",
-        "field_name": "",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 3.9,
-            "y": 153.2
-        }
-        },
-    "IMPOUNDED_PHONE_AREA_CODE": {
-        "field_type": "text",
-        "field_name": "",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 72,
-            "y": 153.2
-        }
-        },
-    "RELEASE_LOCATION_KEYS": {
-        "field_type": "text",
-        "field_name": "",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 4.7,
-            "y": 168.7
-        }
-        },
-    "RELEASE_LOCATION_VEHICLE": {
-        "field_type": "text",
-        "field_name": "",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 54.8,
-            "y": 168.7
-        }
-        },
-    "DRIVER_COPY": {
-        "field_type": "text",
-        "field_name": "",
-        "classNames": "fontSmall",
-        "start": {
-            "x": 74,
-            "y": 194.1
-        }
-        }
+        "REASON_DRUGS_215": {
+            "field_type": "checkbox",
+            "field_name": "type-of-prohibition",
+            "field_val": "drugs",
+            "classNames": "fontSmall",
+            "start": {
+            "x": 50.7,
+            "y": 51
+            }
+            },
+        "NOTICE_TIME": {
+            "field_type": "text",
+            "field_name": "time-of-driving",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 66.5
+            }
+            },
+        "NOTICE_DAY": {
+            "field_type": "text",
+            "field_name": "date-of-driving",
+            "date_val": "Do",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 38.4,
+                "y": 66.5
+            }
+            },
+        "NOTICE_MONTH": {
+            "field_type": "text",
+            "field_name": "date-of-driving",
+            "date_val": "MMMM",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 58.9,
+                "y": 66.5
+            }
+            },
+        "NOTICE_YEAR": {
+            "field_type": "text",
+            "field_name": "date-of-driving",
+            "date_val": "YYYY",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 90.8,
+                "y": 66.5
+            }
+            },
+        "DL_SURRENDER_LOCATION": {
+            "field_type": "text",
+            "field_name": "",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 4.7,
+                "y": 83.5
+            }
+            },
+        "OFFICER_LAST_NAME": {
+            "field_type": "text",
+            "field_name": "officer-lastname",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 4.7,
+                "y": 89.5
+            }
+            },
+        "OFFICER_BADGE_NUMBER": {
+            "field_type": "text",
+            "field_name": "officer-prime-id",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 81,
+                "y": 89.5
+            }
+            },
+        "AGENCY_NAME": {
+            "field_type": "text",
+            "field_name": "officer-agency",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 4.7,
+                "y": 96.5
+            }
+            },
+        "AGENCY_FILE_NUMBER": {
+            "field_type": "text",
+            "field_name": "offence-agency-file",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 66.2,
+                "y": 96.5
+            }
+            },
+        "OWNER_NAME": {
+            "field_type": "text",
+            "field_name": ["owner-first-name","owner-last-name"],
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 106.5
+            }
+            },
+        "OWNER_ADDRESS": {
+            "field_type": "text",
+            "field_name": ["registered-owner-address", "registered-owner-city"],
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 113.5
+            }
+            },
+        "OWNER_PROVINCE": {
+            "field_type": "text",
+            "field_name": "registered-owner-prov-state",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 76.9,
+                "y": 113.5
+            }
+            },
+        "OWNER_POSTAL_CODE": {
+            "field_type": "text",
+            "field_name": "registered-owner-postal",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 89.2,
+                "y": 113.5
+            }
+            },
+        "VEHICLE_LICENSE_NUMBER": {
+            "field_type": "text",
+            "field_name": "plate-number",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 120.5
+            }
+            },
+        "VEHICLE_PROVINCE": {
+            "field_type": "text",
+            "field_name": "nsc-prov-state",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 27.5,
+                "y": 120.5
+            }
+            },
+        "VEHICLE_REGISTRATION_NUMBER": {
+            "field_type": "text",
+            "field_name": "registration-number",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 70,
+                "y": 120.5
+            }
+            },
+        "VEHICLE_TYPE": {
+            "field_type": "text",
+            "field_name": "vehicle-style",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 90.8,
+                "y": 120.5
+            }
+            },
+        "VEHICLE_MAKE": {
+            "field_type": "text",
+            "field_name": "vehicle-make-model",
+            "delimeter": "-",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_MODEL": {
+            "field_type": "text",
+            "field_name": "vehicle-make-model",
+            "delimeter": "-",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 27.7,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_YEAR": {
+            "field_type": "text",
+            "field_name": "vehicle-year",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 43.3,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_COLOR": {
+            "field_type": "text",
+            "field_name": "vehicle-colour",
+            "classNames": "fontXSmall",
+            "start": {
+                "x": 53.9,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_NSC_PUJ": {
+            "field_type": "text",
+            "field_name": "nsc-prov-state",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 66.2,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_NSC_NUMBER": {
+            "field_type": "text",
+            "field_name": "nsc-number",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 79,
+                "y": 126.5
+            }
+            },
+        "VEHICLE_VIN": {
+            "field_type": "text",
+            "field_name": "vin-number",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 6.4,
+                "y": 132.5
+            }
+            },
+        "OWNER_PHONE_AREA_CODE": {
+            "field_type": "text",
+            "field_name": "registered-owner-phone",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 74.3,
+                "y": 132.5
+            }
+            },
+        "NOT_IMPOUNDED": {
+            "field_type": "checkbox",
+            "field_name": "vehicle-impounded",
+            "field_val": "NO",
+            "classNames": "fontText",
+            "start": {
+                "x": 4.5,
+                "y": 139.3
+            }
+            },
+        "IMPOUNDED": {
+            "field_type": "checkbox",
+            "field_name": "vehicle-impounded",
+            "field_val": "YES",
+            "classNames": "fontText",
+            "start": {
+                "x": 4.5,
+                "y": 142.6
+            }
+            },
+        "IMPOUNDED_LOT": {
+            "field_type": "text",
+            "field_name": "ILO-name",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 52.3,
+                "y": 148
+            }
+            },
+        "IMPOUNDED_ADDRESS": {
+            "field_type": "text",
+            "field_name": ["ILO-address","ILO-city"],
+            "classNames": "fontSmall",
+            "start": {
+                "x": 3.9,
+                "y": 153.2
+            }
+            },
+        "IMPOUNDED_PHONE_AREA_CODE": {
+            "field_type": "text",
+            "field_name": "ILO-phone",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 72.6,
+                "y": 153.2
+            }
+            },
+        "RELEASE_LOCATION_KEYS": {
+            "field_type": "text",
+            "field_name": "key-location",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 4.7,
+                "y": 168.7
+            }
+            },
+        "RELEASE_LOCATION_VEHICLE": {
+            "field_type": "text",
+            "field_name": "",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 54.8,
+                "y": 168.7
+            }
+            },
+        "ILO_COPY": {
+            "field_type": "always",
+            "field_name": "",
+            "field_value":"ILO COPY",
+            "classNames": "fontSmall",
+            "start": {
+                "x": 74,
+                "y": 194.1
+            }
+            }
+    },
+    "APPEAL":{
+    }
 }
