@@ -21,7 +21,7 @@
     "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
     "recoil": "^0.7.7",
-    "web-vitals": "^2.1.4",
+    "web-vitals": "^3.4.0",
     "webpack": "5.85.1",
     "postcss-import": "^14.0.0",
     "postcss": "^8.2.4",
