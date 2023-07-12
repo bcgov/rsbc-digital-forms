@@ -38,7 +38,7 @@ jobs:
       - name: Run Tests
         run: |
           cd roadside-forms-frontend/frontend_web_app
-          npm run coverage
+          npm run test
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         if: always()
@@ -47,3 +47,12 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: roadside-forms-frontend/frontend_web_app
+          # projectKey: ${{ secrets.SONAR_PROJECT_KEY }}
+          # projectName: ${{ secrets.SONAR_PROJECT_NAME }}
+          extraProperties: |
+            sonar.javascript.lcov.reportPaths=coverage/lcov.info
+          #   sonar.exclusions=**/*.test.js,**/*.spec.js
+          #   sonar.coverage.exclusions=**/*.test.js,**/*.spec.js
+          #   sonar.test.inclusions=**/*.test.js,**/*.spec.js
+            # sonar.javascript.lcov.reportPaths=coverage/lcov.info
+          #   sonar.testExecutionReportPaths=test-report.xml
