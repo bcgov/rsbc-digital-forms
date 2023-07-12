@@ -12,16 +12,7 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-      pull-requests: read
-      checks: write
-      issues: write
-      statuses: write
-      deployments: write
-      id-token: write
+    # permissions: write-all
     steps:
       - uses: actions/checkout@v3
         with:
@@ -31,3 +22,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: roadside-forms-frontend/frontend_web_app
