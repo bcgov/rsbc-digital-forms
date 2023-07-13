@@ -8,7 +8,7 @@ jest.mock('@react-keycloak/web');
 describe('Keycloak test', () => {
   beforeEach(cleanup);
 
-  test('renders without crashing', () => {
+  test('renders without crashing', async () => {
     useKeycloak.mockReturnValue({
       keycloak: { authenticated: false },
       initialized: true,
