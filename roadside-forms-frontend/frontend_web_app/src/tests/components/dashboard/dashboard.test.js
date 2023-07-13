@@ -15,7 +15,7 @@ describe('Dashboard component', () => {
     let container; 
 
     await act(async () => {
-      ({ container } = await render( 
+      ({ container } = render( 
         <RecoilRoot
           initializeState={(snap) => {
             snap.set(vehicleStyles, [  {
