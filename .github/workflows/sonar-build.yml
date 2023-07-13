@@ -48,8 +48,9 @@ jobs:
         with:
           projectBaseDir: roadside-forms-frontend/frontend_web_app            
             -Dsonar.coverage.exclusions=src/setupTests.js
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.tests=src/tests/
+            # -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            # -Dsonar.tests=src/tests/
             # -Dsonar.verbose=true
             # -Dsonar.test.exclusions=src/tests/**
 
