@@ -311,6 +311,7 @@ class Event(db.Model):
     regist_owner_prov:str
     regist_owner_postal:str
     regist_owner_phone:int
+    printed:bool
     created_dt:datetime
     updated_dt:datetime
     created_by:str
@@ -338,6 +339,7 @@ class Event(db.Model):
     vehicle_vin_no = db.Column(db.String)
     nsc_prov_state = db.Column(db.String)
     nsc_no = db.Column(db.String)
+    printed = db.Column(db.Boolean)
     owned_by_corp = db.Column(db.Boolean)
     corporation_name = db.Column(db.String)
     regist_owner_last_name=db.Column(db.String)
