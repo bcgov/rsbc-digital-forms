@@ -4,7 +4,6 @@ import { RecoilRoot } from 'recoil';
 import { Dashboard } from '../../../components/Dashboard/Dashboard';
 import { StaticDataApi } from '../../../api/staticDataApi';
 import { vehicleStyles, jurisdictions, provinces, vehicles, vehicleColours, cities, impoundLotOperators } from '../../../atoms/staticData';
-
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
     useNavigate: jest.fn(),
@@ -12,6 +11,7 @@ jest.mock('react-router-dom', () => ({
 describe('Dashboard component', () => {
     test('renders dashboard component correctly', async () => {
     StaticDataApi.get = jest.fn().mockResolvedValue({});
+    
     let container; 
 
     await act(async () => {
