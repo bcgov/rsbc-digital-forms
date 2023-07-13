@@ -47,6 +47,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: roadside-forms-frontend/frontend_web_app
+            -Dsonar.test.exclusions=tests/**
+            -Dsonar.coverage.exclusions=tests/**/*.test.js,tests/**/*.spec.js,src/**/*.test.js,src/**/*.spec.js,src/setupTests.js
+            -Dsonar.tests=tests/
+            -Dsonar.verbose=true
+
           # projectKey: ${{ secrets.SONAR_PROJECT_KEY }}
           # projectName: ${{ secrets.SONAR_PROJECT_NAME }}
           # extraProperties: |
