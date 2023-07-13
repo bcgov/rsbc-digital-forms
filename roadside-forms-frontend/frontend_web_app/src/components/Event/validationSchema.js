@@ -107,10 +107,6 @@ export const validationSchema = Yup.object().shape({
       return true;
     }
 
-// <<<<<<< bugfix/fixsonarscanv1
-//     const currentDate = new Date();
-//     const inputDate = new Date(dob);
-// =======
     const currentDate = moment();
     const inputDate = moment(dob).utcOffset('+07:00');;
   
@@ -118,41 +114,18 @@ export const validationSchema = Yup.object().shape({
     const inputYear = inputDate.year();
 
     const ageInYears = currentYear - inputYear;
-// >>>>>>> release/1.0
-
-    // Set the time zone offset to Pacific Standard Time (PST)
-    const pacificOffset = 480; // PST offset is 480 minutes (8 hours)
-    inputDate.setMinutes(inputDate.getMinutes() + pacificOffset);
-
-    const ageInYears = currentDate.getFullYear() - inputDate.getFullYear();
 
     // Check if the input date is valid and within the desired age range
-// <<<<<<< bugfix/fixsonarscanv1
-//     if (isNaN(inputDate) || ageInYears < 10 || ageInYears > 120) {
-// =======
     if (isNaN(ageInYears) || ageInYears < 10 || ageInYears > 120) {
-// >>>>>>> release/1.0
       return this.createError({ message: 'Driver must be between 10 to 120 years old' });
     }
 
-    // Get the current month and day
-// <<<<<<< bugfix/fixsonarscanv1
-//     const currentMonth = currentDate.getMonth();
-//     const currentDay = currentDate.getDate();
-
-//     // Get the month and day from the adjusted input date
-//     const inputMonth = inputDate.getMonth();
-//     const inputDay = inputDate.getDate();
-// =======
     const currentMonth = currentDate.month();
     const currentDay = currentDate.date();
 
     // Get the month and day from the adjusted input date
     const inputMonth = inputDate.month();
     const inputDay = inputDate.date();
-    console.log('inputdat', inputDay)
-    console.log('currentDay', currentDay)
-// >>>>>>> release/1.0
 
     // Check if the user is exactly 10 years old
     if (ageInYears === 10 && (inputMonth > currentMonth || (inputMonth === currentMonth && inputDay > currentDay))) {
