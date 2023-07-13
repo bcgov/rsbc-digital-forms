@@ -47,8 +47,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: roadside-forms-frontend/frontend_web_app            
-            -Dsonar.coverage.exclusions=src/setupTests.js
-            -Dsonar.tests=src/tests/
+            # -Dsonar.coverage.exclusions=src/setupTests.js
+            # -Dsonar.tests=src/tests/
             # -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             # -Dsonar.tests=src/tests/
             # -Dsonar.verbose=true
