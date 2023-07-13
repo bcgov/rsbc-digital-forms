@@ -109,7 +109,9 @@ export const Header = () => {
     <div id="roadsafety-header" data-testid="roadsafety-header" className='container text-font' style={{maxWidth: "100%"}}>
       <div className='row'> 
         <div className="col-sm-3" >
+        <Link to="/">
           <div className='brand-logo'></div>
+        </Link>
         </div>
         { keycloak.authenticated && !isLoading && (<div className='col-sm-9'>
         <div className="row">
