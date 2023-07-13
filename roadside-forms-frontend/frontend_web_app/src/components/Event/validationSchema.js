@@ -120,15 +120,12 @@ export const validationSchema = Yup.object().shape({
       return this.createError({ message: 'Driver must be between 10 to 120 years old' });
     }
 
-    // Get the current month and day
     const currentMonth = currentDate.month();
     const currentDay = currentDate.date();
 
     // Get the month and day from the adjusted input date
     const inputMonth = inputDate.month();
     const inputDay = inputDate.date();
-    console.log('inputdat', inputDay)
-    console.log('currentDay', currentDay)
 
     // Check if the user is exactly 10 years old
     if (ageInYears === 10 && (inputMonth > currentMonth || (inputMonth === currentMonth && inputDay > currentDay))) {
