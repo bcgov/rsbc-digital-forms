@@ -30,7 +30,6 @@ export const UserApi = {
             method: "DELETE",
             headers:{...headers},
           }).then ( (response) => {
-            console.log(response)
             return {
                 status: response.status,
                 data: response.data
@@ -53,7 +52,6 @@ export const UserApi = {
           method: "GET",
           headers:{...headers},
         }).then ( (response) => {
-          console.log(response)
           return {
               status: response.status,
               data: response.data
@@ -74,7 +72,6 @@ export const UserApi = {
           headers:{...headers},
           data: {...data},
         }).then ( (response) => {
-          console.log(response)
           return {
               status: response.status,
               data: response.data
@@ -95,7 +92,6 @@ export const UserApi = {
             method: "PATCH",
             headers:{...headers},
           }).then ( (response) => {
-            console.log(response)
             return {
                 status: response.status,
                 data: response.data
@@ -116,7 +112,6 @@ export const UserApi = {
               data: {"role_name": "administrator"},
               headers:{...headers},
             }).then ( (response) => {
-              console.log(response)
               return {
                   status: response.status,
                   data: response.data
