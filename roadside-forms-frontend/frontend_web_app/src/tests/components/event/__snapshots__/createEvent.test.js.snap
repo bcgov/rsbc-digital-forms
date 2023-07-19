@@ -1492,8 +1492,8 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   </label>
                   <input
                     class="field-height field-width"
-                    id="regist_owner_postal"
-                    name="regist_owner_postal"
+                    id="registered-owner-postal"
+                    name="registered-owner-postal"
                     value=""
                   />
                 </div>
@@ -1585,14 +1585,19 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
           </div>
         </div>
         <div
-          class="right"
+          class="flex"
+          id="button-container"
         >
-          <button
-            class="btn btn-primary"
-            type="submit"
+          <div
+            class="right"
           >
-            Next: Preview
-          </button>
+            <button
+              class="btn btn-primary"
+              type="button"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </form>
     </div>
