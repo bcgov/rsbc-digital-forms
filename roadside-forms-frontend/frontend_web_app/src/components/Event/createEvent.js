@@ -1,12 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Formik, Form } from 'formik';
+import React, { useState, useEffect } from 'react';
+import { Formik, Form, useFormikContext } from 'formik';
 import Row from 'react-bootstrap/Row';
-<<<<<<< HEAD
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import Button from 'react-bootstrap/Button';
-=======
->>>>>>> 92b94ae (SVG setup and populating/printing)
 import { Checkbox } from '../common/Checkbox/checkbox';
 import { validationSchema } from './validationSchema';
 import { DriverInfo } from '../CommonForm/driverInfo';
@@ -15,17 +12,9 @@ import { VehicleInfo } from '../CommonForm/vehicleInfo';
 import { OfficerInfo } from '../CommonForm/officerInfo';
 import { TwentyFourHourForm } from '../Forms/TwentyFourHourForm/twentyFourHourForm';
 import { RegisteredOwnerInfo } from '../CommonForm/registeredOwnerInfo';
-<<<<<<< HEAD
-import { staticResources, getEventDataToSave, getTwentyFourHourDataToSave } from '../../utils/helpers';
+import { staticResources, getEventDataToSave, getTwentyFourHourDataToSave, formsPNG } from '../../utils/helpers';
 import {SVGprint} from '../Forms/Print/svgPrint'
 import {db} from '../../db'
-=======
-import { useRecoilValue } from 'recoil';
-import { staticResources } from '../../utils/helpers';
-import { useNavigate } from 'react-router-dom';
-import { SVGprint } from '../Forms/Print/svgPrint';
-import { formsPNG } from '../../utils/helpers';
->>>>>>> 92b94ae (SVG setup and populating/printing)
 import './createEvent.scss';
 
 export const CreateEvent = () => {
@@ -47,6 +36,7 @@ export const CreateEvent = () => {
     const [currentStep, setCurrentStep] = useState(0);
 
     const navigate = useNavigate();
+    const { values, submitForm } = useFormikContext();
 
     useEffect(() => {
         setJurisdictions(
@@ -98,7 +88,6 @@ export const CreateEvent = () => {
         setSubmitting(false);
     };
 
-<<<<<<< HEAD
     const handleGoBackandSave = (values) => {
         const eventData = getEventDataToSave(values);
         if(eventData["event_id"]===undefined){
@@ -117,15 +106,9 @@ export const CreateEvent = () => {
         
         console.log("save value")
         console.log()
-        // navigate('/');
-=======
-    const printForms = () => window.print()
-    
-
-    const handleGoBack = () => {
         navigate('/');
->>>>>>> 92b94ae (SVG setup and populating/printing)
-      };
+    }
+    const printForms = () => window.print()
 
       const nextPage = () => {
         setCurrentStep(currentStep + 1);
@@ -198,11 +181,7 @@ export const CreateEvent = () => {
     return (
         <div id='event-container' className='text-font'>
             <div id='button-container' className='m-4'>
-<<<<<<< HEAD
                 <Button  variant="primary" onClick={() => handleGoBackandSave(formValues)}>Save & Return to Main Menu</Button>
-=======
-                <Button  variant="primary" onClick={handleGoBack}>Save & Return to Main Menu</Button>
->>>>>>> 92b94ae (SVG setup and populating/printing)
             </div>
             <div className="outline">
             <Formik 
