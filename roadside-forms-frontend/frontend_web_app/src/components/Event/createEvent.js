@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Formik, Form} from 'formik';
+import { Formik, Form, useFormikContext } from 'formik';
+import Row from 'react-bootstrap/Row';
 import { Checkbox } from '../common/Checkbox/checkbox';
 import { validationSchema } from './validationSchema';
 import Button from 'react-bootstrap/Button';
@@ -12,6 +13,9 @@ import { RegisteredOwnerInfo } from '../CommonForm/registeredOwnerInfo';
 import { useRecoilValue } from 'recoil';
 import { staticResources } from '../../utils/helpers';
 import { useNavigate } from 'react-router-dom';
+import { SVGprint } from '../Forms/Print/svgPrint';
+import { formsPNG } from '../../utils/helpers';
+import {db} from '../../db'
 import './createEvent.scss';
 
 export const CreateEvent = () => {
@@ -31,6 +35,7 @@ export const CreateEvent = () => {
     const [impoundLotOperators, setImpoundLotOperators] = useState([]);
 
     const navigate = useNavigate();
+    const { values, submitForm } = useFormikContext();
 
     useEffect(() => {
         setJurisdictions(
@@ -84,13 +89,14 @@ export const CreateEvent = () => {
     };
 
     const handleGoBack = () => {
+        console.log(values)
         navigate('/');
       };
 
     return (
-        <div className='text-font'>
-            <div className='m-4'>
-                <Button  variant="primary" onClick={handleGoBack}>Save & Return to Main Menu</Button>
+        <div id='event-container' className='text-font'>
+            <div id='button-container' className='m-4'>
+                <Button  variant="primary" onClick={() => handleGoBack(values)}>Save & Return to Main Menu</Button>
             </div>
             <div className="outline">
             <Formik 
