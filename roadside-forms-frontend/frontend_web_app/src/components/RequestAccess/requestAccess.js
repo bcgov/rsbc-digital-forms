@@ -50,7 +50,7 @@ export const RequestAccess= () => {
 
   const handleClick = () => {
     setShowApplication(true);
-    if (agencies === undefined || agencies.length === 0){
+    if (agencies === undefined || (agencies && agencies.length === 0)){
       StaticDataApi.get("agencies").then((resp) => {
         setAgency(resp.data)
         setOptions(resp.data.map((item) => { return ({"label":item.agency_name,"value":item.agency_name})}))
@@ -62,13 +62,13 @@ export const RequestAccess= () => {
   }
 
   useEffect(() => {
-    if (userRoles.length !== 0) {
+    if (userRoles && userRoles.length !== 0) {
       navigate("/");
     }
   }, [userRoles, navigate]);
 
   return (<>
-    {userRoles.length === 0 && loginComplete && 
+    {userRoles && userRoles.length === 0 && loginComplete && 
     (<div className='border-design text-font'>
       {!showApplicationReceived && (<div>
         <p>
