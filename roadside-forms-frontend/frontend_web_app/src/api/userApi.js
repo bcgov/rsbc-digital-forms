@@ -35,7 +35,7 @@ export const UserApi = {
                 data: response.data
             }
         }).catch((error) =>{
-            console.log(error)
+            // console.log(error)
             return {
                 status: error.status,
                 data: error.response
@@ -57,7 +57,7 @@ export const UserApi = {
               data: response.data
           }
       }).catch((error) =>{
-          console.log(error)
+          // console.log(error)
           return {
               status: error.status,
               data: error.response
@@ -77,7 +77,7 @@ export const UserApi = {
               data: response.data
           }
       }).catch((error) =>{
-          console.log(error)
+          // console.log(error)
           return {
               status: error.status,
               data: error.response
@@ -97,7 +97,7 @@ export const UserApi = {
                 data: response.data
             }
         }).catch((error) =>{
-            console.log(error)
+            // console.log(error)
             return {
                 status: error.status,
                 data: error.response
@@ -117,7 +117,7 @@ export const UserApi = {
                   data: response.data
               }
           }).catch((error) =>{
-              console.log(error)
+              // console.log(error)
               return {
                   status: error.status,
                   data: error.response

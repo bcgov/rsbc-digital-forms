@@ -38,7 +38,6 @@ export const UserAdminDashboard = () => {
     const getAllUsers = () =>{
       UserApi.getAll().then( (resp) => {
         setSelectUsers(resp.data.filter(user => user.role_name === "officer" ).map((user) => { return ({"label":user.login,"value":user})}));
-        console.log(resp.data)
         setData(resp.data);
         setLoading(false);
       })

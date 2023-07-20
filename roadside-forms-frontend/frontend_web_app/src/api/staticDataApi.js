@@ -17,7 +17,7 @@ export const StaticDataApi = {
               data: response.data
           }
       }).catch((error) =>{
-          console.log(error)
+          // console.log(error)
           return {
               status: error.status,
               data: error.response
