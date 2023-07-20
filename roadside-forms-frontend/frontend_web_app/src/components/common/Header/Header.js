@@ -53,12 +53,10 @@ export const Header = () => {
           }
           else {
             setUserData([]);
-            console.log(response.data.error);
           }
         })
         .catch((error) => {
           setUserData([]);
-          console.log("Error", error.response.data.error);
         })
         UserRolesApi.get().then((resp) =>{
           if (resp && (resp.status === 201 || resp.status === 200)) {

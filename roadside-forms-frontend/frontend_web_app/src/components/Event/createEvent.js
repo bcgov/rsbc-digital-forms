@@ -95,7 +95,6 @@ export const CreateEvent = () => {
       };
 
     const onSubmit = (values, { setSubmitting }) => {
-        console.log('submit data', values);
         setSubmitting(false);
     };
 
@@ -139,7 +138,6 @@ export const CreateEvent = () => {
       const renderSVGForm = (values) => {
         const forms = {"TwentyFourHour": values["24Hour"], "TwelveHour": values["12Hour"], "IRP": values["IRP"], "VI": values["VI"] }
         const componentsToRender = []
-        console.log(values)
         for(const item in forms){
             if (forms[item]) {
                 for (const form in formsPNG[item]) {
