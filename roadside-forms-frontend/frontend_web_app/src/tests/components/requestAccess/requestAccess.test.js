@@ -14,7 +14,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 describe('RequestAccess component', () => {
-  test('should match snapshot',async() => {
+  test('should match snapshot',async () => {
     const handleClickMock = jest.fn(); 
     StaticDataApi.get = jest.fn().mockResolvedValue({
         data: [
