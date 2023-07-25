@@ -10,12 +10,13 @@ To install this extension, you must be using a Chromium-based browser like Edge 
 You may wish to pin the extension so it is always visible. The icon will show in colour and the Fill button will appear only when the DEV or TEST environments are loaded.
 
 Steps:
- 1. Go to Extensions in the browser settings.
- 2. Enable the developer mode toggle.
- 3. Select the "Load Unpacked" link on the extensions page.
+ 1. Go to **Extensions** in the browser settings.
+ 2. Enable the **Developer Mode** toggle (this allows you to side-load the extension).
+ 3. Select the **Load Unpacked** link on the Extensions page.
  4. Enable the extension, if needed.
  5. Browse to the DEV or TEST environment.
 
+This screenshot illustrates the steps:
 ![Steps to install this extension](images/installation.png)
 
 ## Usage
@@ -25,20 +26,5 @@ When in the DEV or TEST environment, click the "Fill" button in the top-left cor
 ![This is what the button looks like](images/usage.png)
 
 Example of the form after clicking the "Fill" button:
-<img src="images/example.png" width="50%" height="50%">
 
-## Making changes to this extension
-If you want to modify this project, here is a description of what each file does:
-
-- icons/: folder for icon images shown in the extension bar.
-- chance.min.js: copy of the open-source chance.js library, for generating field values.
-- content.js: the primary script, which gets called when the Fill button is pressed.
-- helper-functions.js: helper functions called from content.js.
-- tables.js: data used from content.js (e.g. a table of towns and cities in BC).
-- manifest.json: the file that the browser uses to get information about this extension
-- README.md: this file
-
-## Notes
-This extension works by injecting JavaScript onto pages that load from the DEV and TEST environment. The JavaScript accesses the form elements (fields, buttons, checkboxes) and adds values to the fields. The custom React fields may not work as expected until you click on the selected values. This should be fixable in the near future if we can figure out how these custom elements work.
-
-The extension should work in any Chromium-based browser. It will not work in Firefox unless you change the manifest to v2.
+<img src="images/example.png" width="75%" height="75%">
