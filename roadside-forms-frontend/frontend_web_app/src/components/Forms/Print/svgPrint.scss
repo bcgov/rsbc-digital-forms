@@ -1,0 +1,70 @@
+.svg_icons {
+    transform: scale(0.2);
+  }
+
+.fontSmall {
+  font-size: 2.5pt;
+}
+
+.fontXSmall {
+  font-size: 2pt;
+}
+
+.fontLarge {
+  font-size: 4.5pt;
+}
+
+.fontText {
+  font-size: 3pt;
+}
+
+@media print {
+
+  @page {
+    size: letter;
+    margin: 0;
+  }
+
+  html {
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  #roadsafety-header {
+    display: none;
+  }
+
+  #roadesafety-footer{
+    display: none;
+   }
+
+  #event-container{
+    all: unset;
+  }
+
+  #button-container{
+    display: none;
+  }
+
+  .outline{
+    all: unset !important;
+  }
+
+  
+
+  .svg-wrapper{
+    page-break-before:always;
+
+    &--landscape{
+      transform: rotate(-90deg) scale(1.12) translate(-125px);
+      display: block !important;
+    } 
+    &--portrait {
+      transform: scale(1.25) translate(0px, 100px);
+      display: block !important;
+    } 
+  }
+}
