@@ -27,7 +27,7 @@ When in the DEV or TEST environment, click the "Fill" button in the top-left cor
 
 Example of the form after clicking the "Fill" button:
 
-<img src="images/example.png" width="75%" height="75%">
+<img src="images/example.gif" width="75%" height="75%">
 
 
 ## Also see
