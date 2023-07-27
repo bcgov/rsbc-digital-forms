@@ -1,22 +1,25 @@
 import pytest
-from python.prohibition_web_svc.config import Config
+from python.prohibition_web_svc.config import Config,TestConfig
 import responses
 from datetime import datetime
 import python.prohibition_web_svc.middleware.keycloak_middleware as middleware
-from python.prohibition_web_svc.models import db, UserRole
+from python.prohibition_web_svc.models import db, UserRole, User, Form
 from python.prohibition_web_svc.app import create_app
 import logging
 import json
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def application():
-    return create_app()
+    Config.RUNNING_TESTS = True
+    app = create_app()
+    app.config.from_object(TestConfig)
+    with app.app_context():
+        yield app
 
 
 @pytest.fixture
 def as_guest(application):
-    application.config['TESTING'] = True
     with application.test_client() as client:
         yield client
 
@@ -24,15 +27,56 @@ def as_guest(application):
 @pytest.fixture
 def database(application):
     with application.app_context():
-        db.init_app(application)
-        db.create_all()
+        db.session.begin_nested()
         yield db
-        db.drop_all()
         db.session.commit()
+        db.session.rollback()
+        db.session.close()
 
 
 @pytest.fixture
-def roles(database):
+def clean_db(database):
+    UserRole.query.delete()
+    Form.query.delete()
+    User.query.delete()
+    db.session.commit()
+
+
+@pytest.fixture
+def users(database, clean_db):
+    today = datetime.strptime("2021-07-21", "%Y-%m-%d")
+    users = [
+        User(
+            user_guid='john@idir',
+            username="aaa-bbb-ccc",
+            agency='RCMP Terrace',
+            badge_number="0234",
+            first_name="John",
+            last_name="Smith",
+            login="john@idir"),
+        User(
+            user_guid='larry@idir',
+            username="ddd-eee-fff",
+            agency='RCMP Terrace',
+            badge_number="8808",
+            first_name="Larry",
+            last_name="Smith",
+            login='larry@idir'),
+        User(
+            user_guid='mo@idir',
+            username="ggg-hhh-iii",
+            agency='RCMP Terrace',
+            badge_number="8805",
+            first_name="Mo",
+            last_name="Test",
+            login='mo@idir'),
+    ]
+    db.session.bulk_save_objects(users)
+    db.session.commit() 
+    return users
+
+@pytest.fixture
+def roles(database, clean_db, users):
     today = datetime.strptime("2021-07-21", "%Y-%m-%d")
     user_role = [
         UserRole(user_guid='john@idir', role_name='officer', submitted_dt=today),
@@ -41,7 +85,7 @@ def roles(database):
     ]
     db.session.bulk_save_objects(user_role)
     db.session.commit()
-
+    yield
 
 @responses.activate
 def test_administrator_can_get_all_roles_for_specific_user(as_guest, monkeypatch, roles):
@@ -237,23 +281,14 @@ def _mock_keycloak_certificates(**kwargs) -> tuple:
     return True, kwargs
 
 
-def _get_unauthorized_user(**kwargs) -> tuple:
-    logging.warning("inside _get_unauthorized_user()")
-    kwargs['decoded_access_token'] = {'preferred_username': 'john@idir'}
-    return True, kwargs
-
-
 def _get_authorized_user(**kwargs) -> tuple:
     logging.warning("inside _get_authorized_user()")
-    kwargs['decoded_access_token'] = {'preferred_username': 'larry@idir'}
-    return True, kwargs
-
-
-def _get_administrative_user_from_environment_variable(**kwargs) -> tuple:
-    kwargs['decoded_access_token'] = {'preferred_username': 'administrator@idir'}
+    kwargs['decoded_access_token'] = {'preferred_username': 'larry@idir','display_name':'Larry test',
+                                      'identity_provider':'idir'}
     return True, kwargs
 
 
 def _get_administrative_user_from_database(**kwargs) -> tuple:
-    kwargs['decoded_access_token'] = {'preferred_username': 'mo@idir'}
+    kwargs['decoded_access_token'] = {'preferred_username': 'mo@idir','display_name':'Mo test',
+                                      'identity_provider':'idir'}
     return True, kwargs

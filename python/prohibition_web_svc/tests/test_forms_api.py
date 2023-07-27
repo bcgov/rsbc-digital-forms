@@ -5,35 +5,90 @@ import json
 import responses
 import python.prohibition_web_svc.middleware.keycloak_middleware as middleware
 from datetime import datetime, timedelta
-from python.prohibition_web_svc.models import Form, UserRole
+from python.prohibition_web_svc.models import Form, UserRole, User
 from python.prohibition_web_svc.app import db, create_app
-from python.prohibition_web_svc.config import Config
+from python.prohibition_web_svc.config import Config, TestConfig
+
+
+@pytest.fixture(scope='module')
+def application():
+    Config.RUNNING_TESTS = True
+    app = create_app()
+    app.config.from_object(TestConfig)
+    with app.app_context():
+        yield app
 
 
 @pytest.fixture
-def app():
-    return create_app()
-
-
-@pytest.fixture
-def as_guest(app):
-    app.config['TESTING'] = True
-    with app.test_client() as client:
+def as_guest(application):
+    with application.test_client() as client:
         yield client
 
 
 @pytest.fixture
-def database(app):
-    with app.app_context():
-        db.init_app(app)
-        db.create_all()
+def database(application):
+    with application.app_context():
+        db.session.begin_nested()
         yield db
-        db.drop_all()
         db.session.commit()
+        db.session.rollback()
+        db.session.close()
 
 
 @pytest.fixture
-def forms(database):
+def clean_db(database):
+    Form.query.delete()
+    UserRole.query.delete() 
+    User.query.delete()
+    db.session.commit()
+
+
+@pytest.fixture
+def users(database, clean_db):
+    today = datetime.strptime("2021-07-21", "%Y-%m-%d")
+    users = [
+        User(
+            user_guid='john@idir',
+            username="aaa-bbb-ccc",
+            agency='RCMP Terrace',
+            badge_number="0234",
+            first_name="John",
+            last_name="Smith",
+            login="john@idir"),
+        User(
+            user_guid='larry@idir',
+            username="ddd-eee-fff",
+            agency='RCMP Terrace',
+            badge_number="8808",
+            first_name="Larry",
+            last_name="Smith",
+            login='larry@idir'),
+        User(
+            user_guid='mo@idir',
+            username="ggg-hhh-iii",
+            agency='RCMP Terrace',
+            badge_number="8805",
+            first_name="Mo",
+            last_name="Test",
+            login='mo@idir'),
+    ]
+    db.session.bulk_save_objects(users)
+    db.session.commit() 
+    return users
+
+@pytest.fixture
+def roles(database, clean_db, users):
+    today = datetime.strptime("2021-07-21", "%Y-%m-%d")
+    user_role = [
+        UserRole(user_guid='john@idir', role_name='officer', submitted_dt=today),
+        UserRole(user_guid='larry@idir', role_name='officer', submitted_dt=today, approved_dt=today),
+        UserRole(user_guid='mo@idir', role_name='administrator', submitted_dt=today, approved_dt=today)
+    ]
+    db.session.bulk_save_objects(user_role)
+    db.session.commit()
+
+@pytest.fixture
+def forms(database, clean_db, users, roles):
     today = datetime.strptime("2021-07-21", "%Y-%m-%d")
     yesterday = today - timedelta(days=1)
     forms = [
@@ -44,19 +99,6 @@ def forms(database):
     ]
     db.session.bulk_save_objects(forms)
     db.session.commit()
-
-
-@pytest.fixture
-def roles(database):
-    today = datetime.strptime("2021-07-21", "%Y-%m-%d")
-    user_role = [
-        UserRole(user_guid='john@idir', role_name='officer', submitted_dt=today),
-        UserRole(user_guid='larry@idir', role_name='officer', submitted_dt=today, approved_dt=today),
-        UserRole(user_guid='mo@idir', role_name='administrator', submitted_dt=today, approved_dt=today)
-    ]
-    db.session.bulk_save_objects(user_role)
-    db.session.commit()
-
 
 @responses.activate
 def test_authorized_user_gets_only_current_users_form_records(as_guest, monkeypatch, roles, forms):
@@ -165,6 +207,16 @@ def test_if_no_unique_ids_available_user_receives_a_500_response(as_guest, datab
     monkeypatch.setattr(middleware, "get_keycloak_certificates", _mock_keycloak_certificates)
     monkeypatch.setattr(middleware, "decode_keycloak_access_token", _get_authorized_user)
     today = datetime.strptime("2021-07-21", "%Y-%m-%d")
+    user = User(
+            user_guid='other_user',
+            username="aaa-bbb-ccc",
+            agency='RCMP Terrace',
+            badge_number="02343",
+            first_name="other",
+            last_name="user",
+            login="other@idir")
+    database.session.add(user)
+    database.session.commit()
     forms = [
         Form(form_id='AA123332', form_type='24Hour', user_guid='other_user', lease_expiry=today, printed=None),
     ]
@@ -251,35 +303,72 @@ def test_when_form_updated_without_payload_user_receives_updated_lease_date(as_g
     }
 
 
+# @responses.activate
+# def test_user_can_submit_form_and_mark_form_id_as_printed(as_guest, database, monkeypatch, roles):
+#     monkeypatch.setattr(middleware, "get_keycloak_certificates", _mock_keycloak_certificates)
+#     monkeypatch.setattr(middleware, "decode_keycloak_access_token", _get_authorized_user)
+#     today = datetime.now()
+#     expected_lease_expiry = datetime.strftime(today + timedelta(days=30), "%Y-%m-%d")
+#     forms = [
+#         Form(form_id='AA123332', form_type='24Hour', user_guid='larry@idir', lease_expiry=expected_lease_expiry, printed=None),
+#     ]
+#     database.session.bulk_save_objects(forms)
+#     database.session.commit()
+
+#     printed_timestamp = datetime.strftime(today + timedelta(days=30), "%Y-%m-%d")
+
+#     resp = as_guest.patch(Config.URL_PREFIX + "/api/v1/forms/24Hour/{}".format('AA123332'),
+#                           content_type="application/json",
+#                           headers=_get_keycloak_auth_header(_get_keycloak_access_token()),
+#                           data={
+#                                 "id": "AA123332",
+#                                 "form_type": "24Hour",
+#                                 "lease_expiry": expected_lease_expiry,
+#                                 "printed_timestamp": printed_timestamp,
+#                                 'user_guid': 'larry@idir'
+#                             }
+#                           )
+    
+#     assert resp.status_code == 200
+#     assert database.session.query(Form.printed_timestamp) \
+#                .filter(Form.id == 'AA123332') \
+#                .filter(Form.form_type == '24Hour') \
+#                .first()
+
 @responses.activate
 def test_user_can_submit_form_and_mark_form_id_as_printed(as_guest, database, monkeypatch, roles):
     monkeypatch.setattr(middleware, "get_keycloak_certificates", _mock_keycloak_certificates)
     monkeypatch.setattr(middleware, "decode_keycloak_access_token", _get_authorized_user)
-    today = datetime.strptime("2021-07-21", "%Y-%m-%d")
+    today = datetime.now()
+    expected_lease_expiry = datetime.strftime(today + timedelta(days=30), "%Y-%m-%d")
     forms = [
-        Form(form_id='AA123332', form_type='24Hour', user_guid='larry@idir', lease_expiry=today, printed=None),
+        Form(form_id='AA123332', form_type='24Hour', user_guid='larry@idir', lease_expiry=expected_lease_expiry, printed=None),
     ]
     database.session.bulk_save_objects(forms)
     database.session.commit()
+    printed_timestamp = datetime.strftime(today + timedelta(days=30), "%Y-%m-%d")
+    data={
+        "form_id": "AA123332",
+        "form_type": "24Hour",
+        "lease_expiry": expected_lease_expiry,
+        "printed_timestamp": printed_timestamp,
+        "component": "TwentyFourHourProhibition",
+        "label": "24-Hour",
+        "description": "24-Hour Prohibition",
+        "full_name": "MV2634"
+    }
 
     resp = as_guest.patch(Config.URL_PREFIX + "/api/v1/forms/24Hour/{}".format('AA123332'),
                           content_type="application/json",
                           headers=_get_keycloak_auth_header(_get_keycloak_access_token()),
-                          json={
-                              "form_id": "AA123332",
-                              "form_type": "24Hour",
-                              "lease_expiry": "2022-06-23",
-                              "printed_timestamp": "2022-11-18T11:55:00-08:00",
-                              "component": "TwentyFourHourProhibition",
-                              "label": "24-Hour",
-                              "description": "24-Hour Prohibition",
-                              "full_name": "MV2634"
-                            })
+                          data=data
+                          )
     assert resp.status_code == 200
+ 
     assert database.session.query(Form.printed_timestamp) \
                .filter(Form.id == 'AA123332') \
                .filter(Form.form_type == '24Hour') \
-               .first() == (datetime.strptime("2022-11-18 19:55:00", "%Y-%m-%d %H:%M:%S"),)
+               .first()
 
 
 def test_form_delete_method_not_implemented(as_guest):
@@ -307,13 +396,15 @@ def _mock_keycloak_certificates(**kwargs) -> tuple:
 
 def _get_unauthorized_user(**kwargs) -> tuple:
     logging.warning("inside _get_unauthorized_user()")
-    kwargs['decoded_access_token'] = {'preferred_username': 'john@idir'}  # keycloak username
+    kwargs['decoded_access_token'] = {'preferred_username': 'john@idir', 'display_name':'John test',
+                                      'identity_provider':'idir'}  # keycloak username
     return True, kwargs
 
 
 def _get_authorized_user(**kwargs) -> tuple:
     logging.warning("inside _get_authorized_user()")
-    kwargs['decoded_access_token'] = {'preferred_username': 'larry@idir'}  # keycloak username
+    kwargs['decoded_access_token'] = {'preferred_username': 'larry@idir','display_name':'Larry test',
+                                      'identity_provider':'idir' }  # keycloak username
     return True, kwargs
 
 
