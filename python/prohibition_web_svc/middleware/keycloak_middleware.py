@@ -64,7 +64,7 @@ def get_username_from_decoded_access_token(**kwargs) -> tuple:
             logging.debug('IDIR user')
             kwargs['idir_username'] = decoded_access_token['idir_username']
             kwargs['login'] = str(kwargs.get('idir_username', '')) + '@' + str(kwargs.get('identity_provider', ''))
-        logging.debug("login id from access token: " +  kwargs.get('login'))
+        logging.debug("login id from access token: " +  str(kwargs.get('login', None)))
     except Exception as e:
         kwargs['error'] = "preferred_username or login not present in decoded access token: " + str(e)
         return False, kwargs

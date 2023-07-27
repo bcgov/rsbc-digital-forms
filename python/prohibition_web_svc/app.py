@@ -1,8 +1,7 @@
 from flask_api import FlaskAPI
 import logging
-import pytz
-from datetime import datetime
-from python.prohibition_web_svc.models import db, migrate, Form, UserRole, User
+from python.prohibition_web_svc.dev_database_seeder import seed_forms_for_development, seed_initial_administrator
+from python.prohibition_web_svc.models import db, migrate
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.blueprints import static, forms, admin_forms
 from python.prohibition_web_svc.blueprints import icbc
@@ -35,51 +34,6 @@ def create_app():
 
 
 def initialize_app(app):
-    # Create tables if they do not exist already
-    @app.before_first_request
-    def create_tables_and_seed():
-        engine = db.get_engine()
-        tables = db.inspect(engine).get_table_names()
-        if len(tables) == 0:
-            logging.warning('Sqlite database does not exist - creating new file')
-            db.create_all()
-            _seed_forms_for_development(db)
-            seed_initial_administrator(db)
-        else:
-            logging.info("database already exists - no need to recreate")
-
-
-def _seed_forms_for_development(database):
-    if Config.ENVIRONMENT in ('dev', 'pr'):
-        seed_records = []
-        prefix = ["JZ", "VZ", "40", "22"]
-        for idx, form_type in enumerate(["12Hour", "24Hour", "IRP", "VI"]):
-            for x in range(100000, 100100):
-                unique_id = '{}{}'.format(prefix[idx], str(x))
-                seed_records.append(Form(
-                    form_id=unique_id,
-                    form_type=form_type))
-        database.session.bulk_save_objects(seed_records)
-        database.session.commit()
-        logging.warning("seed temporary unique form_ids")
-    return
-
-
-def seed_initial_administrator(database):
-    vancouver_tz = pytz.timezone("America/Vancouver")
-    current_dt = datetime.now(vancouver_tz)
-    user = User(username=Config.ADMIN_USERNAME,
-                user_guid=Config.ADMIN_USERNAME,
-                badge_number='0000',
-                agency="RoadSafety",
-                first_name="Initial",
-                last_name="Administrator")
-    database.session.add(user)
-    roles = [
-        UserRole(user_guid=Config.ADMIN_USERNAME, role_name='officer', submitted_dt=current_dt, approved_dt=current_dt),
-        UserRole(user_guid=Config.ADMIN_USERNAME, role_name='administrator', submitted_dt=current_dt, approved_dt=current_dt)
-    ]
-    database.session.bulk_save_objects(roles)
-    database.session.commit()
-    logging.warning("seed initial administrator: " + Config.ADMIN_USERNAME)
-    return
+   if Config.ENVIRONMENT in ('dev', 'pr') and not Config.RUNNING_TESTS:
+        seed_forms_for_development(db)
+        # seed_initial_administrator(db)
