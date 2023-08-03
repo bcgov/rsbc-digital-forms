@@ -15,6 +15,7 @@ import { staticResources } from '../../utils/helpers';
 import { useNavigate } from 'react-router-dom';
 import { SVGprint } from '../Forms/Print/svgPrint';
 import { formsPNG } from '../../utils/helpers';
+import { ConfirmationStep } from './ConfirmationStep/confirmationStep';
 import './createEvent.scss';
 
 export const CreateEvent = () => {
@@ -86,7 +87,10 @@ export const CreateEvent = () => {
         setSubmitting(false);
     };
 
-    const printForms = () => window.print()
+    const printForms = () => {
+        window.print()
+        nextPage()
+    }
     
 
     const handleGoBack = () => {
@@ -155,6 +159,10 @@ export const CreateEvent = () => {
                     {renderSVGForm(values)}
                 </div> 
             )
+          case 2:
+            return(
+                <ConfirmationStep/>
+            )
           // Add more cases for each page
           default:
             return null;
@@ -183,7 +191,7 @@ export const CreateEvent = () => {
                             </div>
                         )}
                         <div className='right'>
-                            {currentStep <  4 ?
+                            {currentStep <  4 ?   
                                 (currentStep === 1 ? 
                                     <Button type="button" onClick={() => printForms()}>
                                         Print
