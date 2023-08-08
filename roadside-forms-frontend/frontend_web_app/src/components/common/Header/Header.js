@@ -72,7 +72,6 @@ export const Header = () => {
           }
           else {
             setUserRoleData([]);
-            console.log(resp.data.error);
             setLoginCompleted(true);
           }
         })
