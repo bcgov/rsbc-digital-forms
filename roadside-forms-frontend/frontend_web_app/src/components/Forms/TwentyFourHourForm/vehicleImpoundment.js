@@ -29,7 +29,7 @@ export const VehicleImpoundment = (props) => {
     };
 
     useEffect(() => {
-        if (values['vehicle-impounded'] === 'NO') {
+        if (values['vehicle_impounded'] === 'NO') {
           setFieldValue('key-location', '');
           setFieldValue('ILO-name', '');
           setFieldValue('ILO-address', '');
@@ -37,10 +37,10 @@ export const VehicleImpoundment = (props) => {
           setFieldValue('ILO-phone', '');
           setFieldValue('ILO-options', '');
         }
-        else if(values['vehicle-impounded'] === 'YES'){
-          setFieldValue('reason-for-not-impounding', '')
+        else if(values['vehicle_impounded'] === 'YES'){
+          setFieldValue('reason_for_not_impounding', '')
         }
-      }, [values['vehicle-impounded'], setFieldValue]);
+      }, [values['vehicle_impounded'], setFieldValue]);
 
 
     const reasonForNotImpounding = [
@@ -54,16 +54,16 @@ export const VehicleImpoundment = (props) => {
             <h3 >Vehicle Impoundment or Dispostion</h3>
             <div className="row">
                 <div className="col">
-                    <Radio label="Vehicle Impounded?" name="vehicle-impounded" options={[
+                    <Radio label="Vehicle Impounded?" name="vehicle_impounded" options={[
                     { label: 'Yes', value: 'YES' },
                     { label: 'No', value: 'NO' }
                     ]} required />
                 </div>
             </div>
-        {values['vehicle-impounded'] === 'YES' && (<>
+        {values['vehicle_impounded'] === 'YES' && (<>
             <div className="row">
                 <div className="col">
-                    <Radio label="Location of Keys?" name="key-location" options={[
+                    <Radio label="Location of Keys?" name="location_of_keys" options={[
                         {value:"WITH VEHICLE", label:"With vehicle"},
                         {value:"WITH DRIVER", label:"With driver"}
                     ]} required />
@@ -96,23 +96,23 @@ export const VehicleImpoundment = (props) => {
                 </div>
             </div>
         </>)}
-        {values['vehicle-impounded'] === 'NO' && (
+        {values['vehicle_impounded'] === 'NO' && (
         <>
             <div className="row" style={{ minHeight: '85px' }}>
                 <div className="col">
-                    <Radio label="Reason for not impounding?" name="reason-for-not-impounding" options={reasonForNotImpounding} required/>
+                    <Radio label="Reason for not impounding?" name="reason_for_not_impounding" options={reasonForNotImpounding} required/>
                 </div>
             </div>
-            {values['reason-for-not-impounding'] === 'released' && (
+            {values['reason-for-reason_for_not_impounding-impounding'] === 'released' && (
                 <div className='row' style={{ minHeight: '85px' }}>
                     <div className='col-sm-4'>
-                        <Input label="Vehicle Released To" name="vehicle-released-to"  className="field-height field-width" type="text" required/>
+                        <Input label="Vehicle Released To" name="vehicle_released_to"  className="field-height field-width" type="text" required/>
                     </div>
                     <div className='col-sm-4'>
-                        <DatePickerField name="date-released" label="Date Released" className="field-height field-width" required/>
+                        <DatePickerField name="date_released" label="Date Released" className="field-height field-width" required/>
                     </div>
                     <div className='col-sm-4'>
-                        <TimeInputField label="Time" className="field-height field-width" name="time-released" required/>
+                        <TimeInputField label="Time" className="field-height field-width" name="time_released" required/>
                     </div>
                 </div>
             )}

@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Formik, Form, useFormikContext } from 'formik';
+import React, { useState, useEffect, useRef } from 'react';
+import { Formik, Form } from 'formik';
 import Row from 'react-bootstrap/Row';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import Button from 'react-bootstrap/Button';
 import { Checkbox } from '../common/Checkbox/checkbox';
 import { validationSchema } from './validationSchema';
-import Button from 'react-bootstrap/Button';
 import { DriverInfo } from '../CommonForm/driverInfo';
 import { InitialValues } from './initialValues';
 import { VehicleInfo } from '../CommonForm/vehicleInfo';
 import { OfficerInfo } from '../CommonForm/officerInfo';
 import { TwentyFourHourForm } from '../Forms/TwentyFourHourForm/twentyFourHourForm';
 import { RegisteredOwnerInfo } from '../CommonForm/registeredOwnerInfo';
-import { useRecoilValue } from 'recoil';
-import { staticResources } from '../../utils/helpers';
-import { useNavigate } from 'react-router-dom';
-import { SVGprint } from '../Forms/Print/svgPrint';
-import { formsPNG } from '../../utils/helpers';
+import { staticResources, getEventDataToSave, getTwentyFourHourDataToSave } from '../../utils/helpers';
 import {db} from '../../db'
 import './createEvent.scss';
 
@@ -26,6 +24,7 @@ export const CreateEvent = () => {
     const cityAtom = useRecoilValue(staticResources["cities"]);
     const vehiclesAtom= useRecoilValue(staticResources["vehicles"]);
     const impoundAtom= useRecoilValue(staticResources["impound_lot_operators"]);
+    const [formValues, setFormValues] = useState([]);
     const [jurisdictions, setJurisdictions] = useState([]);
     const [provinces, setProvinces] = useState([]);
     const [vehicleStyles, setVehicleStyles] = useState([]);
@@ -35,7 +34,6 @@ export const CreateEvent = () => {
     const [impoundLotOperators, setImpoundLotOperators] = useState([]);
 
     const navigate = useNavigate();
-    const { values, submitForm } = useFormikContext();
 
     useEffect(() => {
         setJurisdictions(
@@ -88,18 +86,35 @@ export const CreateEvent = () => {
         setSubmitting(false);
     };
 
-    const handleGoBack = () => {
-        console.log(values)
-        navigate('/');
+    const handleGoBackandSave = (values) => {
+        const eventData = getEventDataToSave(values);
+        if(eventData["event_id"]===undefined){
+            // need a beter solution to this
+            eventData["event_id"] = 1
+        }
+        db.event.put(eventData)
+        if(values["IRP"]){
+            
+        }
+        if(values["24Hour"]){
+        }
+        if(values["12Hour"]){
+            
+        }
+        
+        console.log("save value")
+        console.log()
+        // navigate('/');
       };
 
     return (
         <div id='event-container' className='text-font'>
             <div id='button-container' className='m-4'>
-                <Button  variant="primary" onClick={() => handleGoBack(values)}>Save & Return to Main Menu</Button>
+                <Button  variant="primary" onClick={() => handleGoBackandSave(formValues)}>Save & Return to Main Menu</Button>
             </div>
             <div className="outline">
             <Formik 
+                innerRef={(formikActions) => (formikActions? setFormValues(formikActions.values) : setFormValues({}))}
                 initialValues={InitialValues()} 
                 validationSchema={validationSchema} 
                 onSubmit={onSubmit}>
