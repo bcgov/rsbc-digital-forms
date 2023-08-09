@@ -1,16 +1,33 @@
-name: sonar-scan
+name: sonar-scan-frontend
 on:
   workflow_dispatch:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, reopened, edited, synchronize]
     branches-ignore:
       - master
       - main
+    paths:
+      - roadside-forms-frontend/frontend_web_app/**
+      - .github/workflows/roadside_forms_frontend-ci.yml
+      - trigger.txt
+  push:
+    branches:
+      - feature/backendsonar
+# on:
+#   workflow_dispatch:
+#   pull_request:
+#     types: [opened, synchronize, reopened]
+#     branches-ignore:
+#       - master
+#       - main
+#   push:
+#     branches:
+#       - feature/backendsonar
 permissions:
   contents: read
 jobs:
-  sonarcloud:
-    name: SonarCloud
+  sonarcloud-frontend:
+    name: SonarCloud-frontend
     runs-on: ubuntu-latest
     # permissions: write-all
     steps:
