@@ -50,6 +50,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: roadside-forms-frontend/frontend_web_app
+  
 
   sonarcloud-prohibition-svc:
     name: SonarCloud-prohibition-svc
