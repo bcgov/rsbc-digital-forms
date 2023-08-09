@@ -1,0 +1,48 @@
+name: sonar-scan-prohibition-svc
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/backendsonar
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches-ignore:
+      - master
+      - main
+    paths:
+      - python/*.py
+      - python/common/**
+      - python/prohibition_web_svc/**
+      - .github/workflows/roadside_forms_backend-ci.yml
+      - trigger.txt
+permissions:
+  contents: read
+jobs: 
+
+  sonarcloud-prohibition-svc:
+    name: SonarCloud-prohibition-svc
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - uses: actions/setup-python@v4 
+        with:
+          python-version: 'pypy3.9' 
+      # - name: Install dependencies
+      #   run: |
+      #     cd python/prohibition_web_svc
+      #     pip install --upgrade pip
+      #     pip install -r requirements.txt
+      # - name: Run Tests
+      #   run: |
+      #     cd python/prohibition_web_svc
+      #     pytest
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: python/prohibition_web_svc
