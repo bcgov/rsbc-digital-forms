@@ -67,7 +67,7 @@ jobs:
           pip install -r requirements.txt
       - name: Run Tests
         run: |
-          cd python/prohibition_svc
+          cd python/prohibition_web_svc
           pytest
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -76,4 +76,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: python/prohibition_svc
+          projectBaseDir: python/prohibition_web_svc
