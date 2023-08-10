@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Formik, Form, useFormikContext } from 'formik';
+import { Formik, Form } from 'formik';
 import Row from 'react-bootstrap/Row';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
@@ -36,7 +36,6 @@ export const CreateEvent = () => {
     const [currentStep, setCurrentStep] = useState(0);
 
     const navigate = useNavigate();
-    const { values, submitForm } = useFormikContext();
 
     useEffect(() => {
         setJurisdictions(
