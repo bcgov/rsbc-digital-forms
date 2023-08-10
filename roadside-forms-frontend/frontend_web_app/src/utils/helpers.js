@@ -94,10 +94,6 @@ export const printFormatHelper = (values, data, key) => {
     }
     return val
 }
-<<<<<<< HEAD
-  
-=======
-
 
 export const printCheckHelper = (values, data, key) => {
     //if value is boolean just return it
@@ -112,4 +108,3 @@ export const printCheckHelper = (values, data, key) => {
 }
 
   
->>>>>>> 92b94ae (SVG setup and populating/printing)
