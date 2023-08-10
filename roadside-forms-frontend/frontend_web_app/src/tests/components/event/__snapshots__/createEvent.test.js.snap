@@ -137,14 +137,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="drivers-number"
+                      for="drivers_licence_no"
                     >
                       Driver's Licence Number
                     </label>
                     <input
                       class="field-height field-width"
-                      id="drivers-number"
-                      name="drivers-number"
+                      id="drivers_licence_no"
+                      name="drivers_licence_no"
                       type="text"
                       value=""
                     />
@@ -175,7 +175,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="drivers-licence-jurisdiction"
+                      for="drivers_licence_jurisdiction"
                     >
                       Province / State/ International
                     </label>
@@ -215,7 +215,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                               autocomplete="off"
                               autocorrect="off"
                               class=""
-                              id="drivers-licence-jurisdiction-select"
+                              id="drivers_licence_jurisdiction-select"
                               role="combobox"
                               spellcheck="false"
                               style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
@@ -251,14 +251,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                         </div>
                       </div>
                       <input
-                        name="drivers-licence-jurisdiction"
+                        name="drivers_licence_jurisdiction"
                         type="hidden"
                         value="BC"
                       />
                     </div>
                     <input
-                      id="drivers-licence-jurisdiction"
-                      name="drivers-licence-jurisdiction"
+                      id="drivers_licence_jurisdiction"
+                      name="drivers_licence_jurisdiction"
                       type="hidden"
                       value="{\\"value\\":\\"BC\\",\\"label\\":\\"BRITISH COLUMBIA\\"}"
                     />
@@ -274,7 +274,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="last-name"
+                      for="driver_last_name"
                     >
                       Last Name
                       <span
@@ -285,8 +285,8 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     </label>
                     <input
                       class="field-height field-width"
-                      id="last-name"
-                      name="last-name"
+                      id="driver_last_name"
+                      name="driver_last_name"
                       type="text"
                       value=""
                     />
@@ -297,14 +297,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="given-name"
+                      for="driver_given_name"
                     >
                       Given Name
                     </label>
                     <input
                       class="field-height field-width"
-                      id="given-name"
-                      name="given-name"
+                      id="driver_given_name"
+                      name="driver_given_name"
                       type="text"
                       value=""
                     />
@@ -316,7 +316,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   <div>
                     <div>
                       <label
-                        for="dob"
+                        for="driver_dob"
                       >
                         Date Of Birth( 0 yrs )
                       </label>
@@ -331,8 +331,8 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                           >
                             <input
                               class="form-control false"
-                              id="dob"
-                              name="dob"
+                              id="driver_dob"
+                              name="driver_dob"
                               placeholder="YYYYMMDD"
                               type="text"
                               value=""
@@ -366,7 +366,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="address"
+                      for="driver_address"
                     >
                       Address
                       <span
@@ -377,8 +377,8 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     </label>
                     <input
                       class="field-height field-width"
-                      id="address"
-                      name="address"
+                      id="driver_address"
+                      name="driver_address"
                       type="text"
                       value=""
                     />
@@ -389,15 +389,15 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="phone"
+                      for="driver_phone"
                     >
                       Phone number
                     </label>
                     <input
                       class="field-height field-width"
-                      id="phone"
+                      id="driver_phone"
                       maxlength="12"
-                      name="phone"
+                      name="driver_phone"
                       pattern="\\\\d{3}-\\\\d{3}-\\\\d{4}"
                       placeholder="###-###-####"
                       type="tel"
@@ -415,7 +415,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="city"
+                      for="driver_city"
                     >
                       City
                       <span
@@ -426,8 +426,8 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     </label>
                     <input
                       class="field-height field-width"
-                      id="city"
-                      name="city"
+                      id="driver_city"
+                      name="driver_city"
                       type="text"
                       value=""
                     />
@@ -438,7 +438,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="prov-state"
+                      for="driver_prov_state"
                     >
                       Province / State
                       <span
@@ -483,7 +483,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                               autocomplete="off"
                               autocorrect="off"
                               class=""
-                              id="prov-state-select"
+                              id="driver_prov_state-select"
                               role="combobox"
                               spellcheck="false"
                               style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
@@ -519,14 +519,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                         </div>
                       </div>
                       <input
-                        name="prov-state"
+                        name="driver_prov_state"
                         type="hidden"
                         value="BC"
                       />
                     </div>
                     <input
-                      id="prov-state"
-                      name="prov-state"
+                      id="driver_prov_state"
+                      name="driver_prov_state"
                       type="hidden"
                       value="{\\"value\\":\\"BC\\",\\"label\\":\\"BRITISH COLUMBIA\\"}"
                     />
@@ -537,14 +537,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="postal-code"
+                      for="driver_postal"
                     >
                       Postal / Zip
                     </label>
                     <input
                       class="field-height field-width"
-                      id="postal-code"
-                      name="postal-code"
+                      id="driver_postal"
+                      name="driver_postal"
                       value=""
                     />
                   </div>
@@ -568,7 +568,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="vehicle-jurisdiction"
+                      for="vehicle_jurisdiction"
                     >
                       Jurisdiction
                     </label>
@@ -608,7 +608,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                               autocomplete="off"
                               autocorrect="off"
                               class=""
-                              id="vehicle-jurisdiction-select"
+                              id="vehicle_jurisdiction-select"
                               role="combobox"
                               spellcheck="false"
                               style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
@@ -644,14 +644,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                         </div>
                       </div>
                       <input
-                        name="vehicle-jurisdiction"
+                        name="vehicle_jurisdiction"
                         type="hidden"
                         value="BC"
                       />
                     </div>
                     <input
-                      id="vehicle-jurisdiction"
-                      name="vehicle-jurisdiction"
+                      id="vehicle_jurisdiction"
+                      name="vehicle_jurisdiction"
                       type="hidden"
                       value="{\\"value\\":\\"BC\\",\\"label\\":\\"BRITISH COLUMBIA\\"}"
                     />
@@ -662,14 +662,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="plate-number"
+                      for="vehicle_plate_no"
                     >
                       Plate Number
                     </label>
                     <input
                       class="field-height field-width"
-                      id="plate-number"
-                      name="plate-number"
+                      id="vehicle_plate_no"
+                      name="vehicle_plate_no"
                       type="text"
                       value=""
                     />
@@ -695,14 +695,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="registration-number"
+                      for="vehicle_registration_no"
                     >
                       Registration Number
                     </label>
                     <input
                       class="field-height field-width"
-                      id="registration-number"
-                      name="registration-number"
+                      id="vehicle_registration_no"
+                      name="vehicle_registration_no"
                       type="text"
                       value=""
                     />
@@ -718,7 +718,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="vehicle-year"
+                      for="vehicle_year"
                     >
                       Vehicle Year
                     </label>
@@ -760,7 +760,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                               autocomplete="off"
                               autocorrect="off"
                               class=""
-                              id="vehicle-year-select"
+                              id="vehicle_year-select"
                               role="combobox"
                               spellcheck="false"
                               style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
@@ -796,14 +796,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                         </div>
                       </div>
                       <input
-                        name="vehicle-year"
+                        name="vehicle_year"
                         type="hidden"
                         value=""
                       />
                     </div>
                     <input
-                      id="vehicle-year"
-                      name="vehicle-year"
+                      id="vehicle_year"
+                      name="vehicle_year"
                       type="hidden"
                       value=""
                     />
@@ -814,7 +814,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="vehicle-make-model"
+                      for="vehicle_mk_md"
                     >
                       Vehicle Make and Model
                     </label>
@@ -856,7 +856,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                               autocomplete="off"
                               autocorrect="off"
                               class=""
-                              id="vehicle-make-model-select"
+                              id="vehicle_mk_md-select"
                               role="combobox"
                               spellcheck="false"
                               style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
@@ -892,14 +892,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                         </div>
                       </div>
                       <input
-                        name="vehicle-make-model"
+                        name="vehicle_mk_md"
                         type="hidden"
                         value=""
                       />
                     </div>
                     <input
-                      id="vehicle-make-model"
-                      name="vehicle-make-model"
+                      id="vehicle_mk_md"
+                      name="vehicle_mk_md"
                       type="hidden"
                       value=""
                     />
@@ -910,7 +910,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="vehicle-style"
+                      for="vehicle_style"
                     >
                       Vehicle Style
                     </label>
@@ -952,7 +952,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                               autocomplete="off"
                               autocorrect="off"
                               class=""
-                              id="vehicle-style-select"
+                              id="vehicle_style-select"
                               role="combobox"
                               spellcheck="false"
                               style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
@@ -988,14 +988,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                         </div>
                       </div>
                       <input
-                        name="vehicle-style"
+                        name="vehicle_style"
                         type="hidden"
                         value=""
                       />
                     </div>
                     <input
-                      id="vehicle-style"
-                      name="vehicle-style"
+                      id="vehicle_style"
+                      name="vehicle_style"
                       type="hidden"
                       value=""
                     />
@@ -1005,7 +1005,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   class=" col-sm-3"
                 >
                   <label
-                    for="vehicle-colour"
+                    for="vehicle_colour"
                   >
                     Vehicle Colour(s)
                   </label>
@@ -1054,7 +1054,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                             autocomplete="off"
                             autocorrect="off"
                             class=""
-                            id="vehicle-colour"
+                            id="vehicle_colour"
                             role="combobox"
                             spellcheck="false"
                             style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
@@ -1101,14 +1101,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="vin-number"
+                      for="vehicle_vin_no"
                     >
                       VIN Number
                     </label>
                     <input
                       class="field-height field-width"
-                      id="vin-number"
-                      name="vin-number"
+                      id="vehicle_vin_no"
+                      name="vehicle_vin_no"
                       type="text"
                       value=""
                     />
@@ -1119,7 +1119,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="nsc-prov-state"
+                      for="nsc_prov_state"
                     >
                       NSC Prov / State
                     </label>
@@ -1159,7 +1159,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                               autocomplete="off"
                               autocorrect="off"
                               class=""
-                              id="nsc-prov-state-select"
+                              id="nsc_prov_state-select"
                               role="combobox"
                               spellcheck="false"
                               style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
@@ -1195,14 +1195,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                         </div>
                       </div>
                       <input
-                        name="nsc-prov-state"
+                        name="nsc_prov_state"
                         type="hidden"
                         value="BC"
                       />
                     </div>
                     <input
-                      id="nsc-prov-state"
-                      name="nsc-prov-state"
+                      id="nsc_prov_state"
+                      name="nsc_prov_state"
                       type="hidden"
                       value="{\\"value\\":\\"BC\\",\\"label\\":\\"BRITISH COLUMBIA\\"}"
                     />
@@ -1213,14 +1213,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="nsc-number"
+                      for="nsc_no"
                     >
                       NSC Number
                     </label>
                     <input
                       class="field-height field-width"
-                      id="nsc-number"
-                      name="nsc-number"
+                      id="nsc_no"
+                      name="nsc_no"
                       type="text"
                       value=""
                     />
@@ -1265,8 +1265,8 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   <label>
                     <input
                       class="mr-1"
-                      id="owned-by-corp"
-                      name="owned-by-corp"
+                      id="owned_by_corp"
+                      name="owned_by_corp"
                       type="checkbox"
                       value="false"
                     />
@@ -1288,14 +1288,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
               >
                 <div>
                   <label
-                    for="owner-last-name"
+                    for="regist_owner_last_name"
                   >
                     Owner's Last Name
                   </label>
                   <input
                     class="field-height field-width"
-                    id="owner-last-name"
-                    name="owner-last-name"
+                    id="regist_owner_last_name"
+                    name="regist_owner_last_name"
                     value=""
                   />
                 </div>
@@ -1305,14 +1305,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
               >
                 <div>
                   <label
-                    for="owner-first-name"
+                    for="regist_owner_first_name"
                   >
                     Owner's First Name
                   </label>
                   <input
                     class="field-height field-width"
-                    id="owner-first-name"
-                    name="owner-first-name"
+                    id="regist_owner_first_name"
+                    name="regist_owner_first_name"
                     value=""
                   />
                 </div>
@@ -1327,14 +1327,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
               >
                 <div>
                   <label
-                    for="registered-owner-address"
+                    for="regist_owner_address"
                   >
                     Address
                   </label>
                   <input
                     class="field-height field-width"
-                    id="registered-owner-address"
-                    name="registered-owner-address"
+                    id="regist_owner_address"
+                    name="regist_owner_address"
                     type="text"
                     value=""
                   />
@@ -1345,15 +1345,15 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
               >
                 <div>
                   <label
-                    for="registered-owner-phone"
+                    for="regist_owner_phone"
                   >
                     Phone number
                   </label>
                   <input
                     class="field-height field-width"
-                    id="registered-owner-phone"
+                    id="regist_owner_phone"
                     maxlength="12"
-                    name="registered-owner-phone"
+                    name="regist_owner_phone"
                     pattern="\\\\d{3}-\\\\d{3}-\\\\d{4}"
                     placeholder="###-###-####"
                     type="tel"
@@ -1371,14 +1371,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
               >
                 <div>
                   <label
-                    for="registered-owner-city"
+                    for="regist_owner_city"
                   >
                     City
                   </label>
                   <input
                     class="field-height field-width"
-                    id="registered-owner-city"
-                    name="registered-owner-city"
+                    id="regist_owner_city"
+                    name="regist_owner_city"
                     type="text"
                     value=""
                   />
@@ -1389,7 +1389,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
               >
                 <div>
                   <label
-                    for="registered-owner-prov-state"
+                    for="regist_owner_prov_state"
                   >
                     Province / State
                   </label>
@@ -1427,7 +1427,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                             autocomplete="off"
                             autocorrect="off"
                             class=""
-                            id="registered-owner-prov-state-select"
+                            id="regist_owner_prov_state-select"
                             role="combobox"
                             spellcheck="false"
                             style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
@@ -1463,14 +1463,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       </div>
                     </div>
                     <input
-                      name="registered-owner-prov-state"
+                      name="regist_owner_prov_state"
                       type="hidden"
                       value=""
                     />
                   </div>
                   <input
-                    id="registered-owner-prov-state"
-                    name="registered-owner-prov-state"
+                    id="regist_owner_prov_state"
+                    name="regist_owner_prov_state"
                     type="hidden"
                     value="{}"
                   />
@@ -1481,14 +1481,14 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
               >
                 <div>
                   <label
-                    for="registered-owner-postal"
+                    for="regist_owner_postal"
                   >
                     Postal / Zip
                   </label>
                   <input
                     class="field-height field-width"
-                    id="registered-owner-postal"
-                    name="registered-owner-postal"
+                    id="regist_owner_postal"
+                    name="regist_owner_postal"
                     value=""
                   />
                 </div>
