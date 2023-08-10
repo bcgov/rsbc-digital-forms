@@ -68,6 +68,7 @@ exports[`Dashboard component renders dashboard component correctly 1`] = `
           </th>
         </tr>
       </thead>
+      <tbody />
     </table>
   </div>
   <div
