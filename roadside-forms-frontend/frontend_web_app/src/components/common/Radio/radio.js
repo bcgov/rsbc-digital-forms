@@ -3,7 +3,7 @@ import { useField } from 'formik';
 
 export const Radio = ({ name, options, required, label }) => {
   const [field, meta] = useField(name);
-
+  
   return (
     <div>
       {label && (
@@ -14,13 +14,14 @@ export const Radio = ({ name, options, required, label }) => {
       {options.map((option) => (
         <div key={option.value}>
           <input
-          className="mr-1"
+            className="mr-1"
             type="radio"
             {...field}
             id={`${name}-${option.value}`}
             value={option.value}
             checked={field.value === option.value}
             required={required}
+            disabled={option?.disabled} 
           />
           <label style={{ marginLeft: "5px" }} htmlFor={`${name}-${option.value}`}>{option.label}</label>
         </div>
@@ -29,4 +30,3 @@ export const Radio = ({ name, options, required, label }) => {
     </div>
   );
 };
-
