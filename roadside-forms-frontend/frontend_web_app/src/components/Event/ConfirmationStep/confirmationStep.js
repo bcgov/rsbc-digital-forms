@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import { Radio } from '../../common/Radio/radio';
 import { useFormikContext } from 'formik';
+import { useRecoilValue } from 'recoil';
+import { userAtom } from '../../../atoms/users'
 import { Checkbox } from "../../common/Checkbox/checkbox"
+import './conformationStep.scss'
 
 export const ConfirmationStep = () => {
   const { values} = useFormikContext();
+  const userData = useRecoilValue(userAtom);
   const documentServed = values['document-served'];
   const certifyNoticeDelivery = values['certify-notice-delivery'];
   const twentyFourHourForm = values['24Hour']
   const vi = values['VI']
-  const driverGivenName= values['given-name']
-  const driverLastName =values['last-name']
-  const dateOfDriving= values['date-of-driving']
-  const timeOfDriving =values['time-of-driving']
+  const driverGivenName = values['given-name']
+  const driverLastName = values['last-name']
+  const dateOfDriving = values['date-of-driving']
+  const timeOfDriving = values['time-of-driving']
+  const officerName = values[''] + ', ' + values['']
 
   const generateLabel = () => {
     let formNames = [];
@@ -77,10 +85,25 @@ export const ConfirmationStep = () => {
           <Checkbox name="certify-notice-delivery"> {certifyNoticeText}</Checkbox>
         </div>
         {certifyNoticeDelivery== true && 
+        <div>
+          <br/>
+          <Container className='ecos-container'>
+            <Row>
+              <Col>{"Enforcment Officers Name"}<br/>{userData.last_name + ", " + userData.first_name}</Col>
+              <Col>{"Officers Number"}<br/>{userData.badge_number} </Col>
+            </Row>
+            <Row>
+              <Col>{"Oranization/Detachment/Location of Officer"}<br/>{userData.agency}</Col>
+            </Row>
+            <Row>
+              <Col>{"Date Certified (YYYY-MM-DD)"}<br/>{formatDate(new Date())}</Col>
+            </Row>
+          </Container>
           <span className='mt-4'>
             The individual is prohibited under section 215 of the Motor Vehicle Act from driving a motor vehicle for 24 hours, commencing at {' '}
             {dateOfDriving? formatDate(dateOfDriving) : "N/A"}, {timeOfDriving? formatTime(timeOfDriving) : "N/A"}
           </span>
+          </div>
         }
       </div>
       )}
