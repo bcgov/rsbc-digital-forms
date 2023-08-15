@@ -49,5 +49,5 @@ six==1.16.0
 SQLAlchemy==2.0.15
 toml==0.10.2
 urllib3==1.26.7
-Werkzeug==2.3.0
+Werkzeug==2.3.7
 xmltodict==0.12.0
