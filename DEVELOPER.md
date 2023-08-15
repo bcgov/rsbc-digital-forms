@@ -54,9 +54,9 @@ Docker Desktop will appear on  the Start menu, but you need to log in and out to
 
 ### Access to Artifactory
 
-Once Docker is installed, you must log in to the container registry from Docker. The container images are stored in an OpenShift Artifactory repository. The command to log in is shown below. You can obtain a working credential from a member of the development team and replace the word "PASSWORD" below:
+Once Docker is installed, you must log in to the container registry from Docker. The container images are stored in an OpenShift Artifactory repository. The command to log in is shown below. You can obtain a working credential from a member of the development team and replace the words "USERNAME" and "PASSWORD" below:
 
-    docker login --username default-be78d6-kqpjvc --password PASSWORD artifacts.developer.gov.bc.ca/dbe7-images
+    docker login --username USERNAME --password PASSWORD artifacts.developer.gov.bc.ca/dbe7-images
 
 
 ### Using Docker Compose
