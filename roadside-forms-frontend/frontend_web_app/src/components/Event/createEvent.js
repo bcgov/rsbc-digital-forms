@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import Row from 'react-bootstrap/Row';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal'
 import { Checkbox } from '../common/Checkbox/checkbox';
 import { validationSchema } from './validationSchema';
 import { DriverInfo } from '../CommonForm/driverInfo';
@@ -12,9 +12,12 @@ import { VehicleInfo } from '../CommonForm/vehicleInfo';
 import { OfficerInfo } from '../CommonForm/officerInfo';
 import { TwentyFourHourForm } from '../Forms/TwentyFourHourForm/twentyFourHourForm';
 import { RegisteredOwnerInfo } from '../CommonForm/registeredOwnerInfo';
-import { staticResources, getEventDataToSave, getTwentyFourHourDataToSave, formsPNG } from '../../utils/helpers';
-import {SVGprint} from '../Forms/Print/svgPrint'
-import {db} from '../../db'
+import { useRecoilValue } from 'recoil';
+import { staticResources } from '../../utils/helpers';
+import { useNavigate } from 'react-router-dom';
+import { SVGprint } from '../Forms/Print/svgPrint';
+import { formsPNG } from '../../utils/helpers';
+import { ConfirmationStep } from './ConfirmationStep/confirmationStep';
 import './createEvent.scss';
 
 export const CreateEvent = () => {
@@ -34,6 +37,12 @@ export const CreateEvent = () => {
     const [cities, setCities] = useState([]);
     const [impoundLotOperators, setImpoundLotOperators] = useState([]);
     const [currentStep, setCurrentStep] = useState(0);
+    const [show, setShow] = useState(false);
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalBody, setModalBody] = useState('');
+    const [modalButtonText, setModalButtonText] = useState('');
+    const [isPrinted, setIsPrinted] = useState(false);
+    const [modalCloseFunc, setmodalCloseFunc] = useState(() => () => null);
 
     const navigate = useNavigate();
 
@@ -71,6 +80,25 @@ export const CreateEvent = () => {
         impoundAtom
     ]);
 
+    const handleClose = async () => {
+        setShow(false) 
+        modalCloseFunc()
+        setmodalCloseFunc(() => () => null)
+    }
+
+    const handleModalClose = async () => {
+        setShow(false)
+        setmodalCloseFunc(() => () => null)
+    }
+
+    const handleShow = (title, body, buttonText, func) => {
+        setModalTitle(title);
+        setModalBody(body);
+        setModalButtonText(buttonText);
+        setmodalCloseFunc(() => func)
+        setShow(true);
+    }
+
     const generateYearOptions = () => {
         const currentYear = new Date().getFullYear();
         const startYear = 1900;
@@ -97,7 +125,15 @@ export const CreateEvent = () => {
         navigate('/');
     }
 
-    const printForms = () => window.print()
+    const printForms = async () => {
+        handleShow('Print Form', 'If you print this form you cannot go back and edit it, please confirm you wish to proceed.', 'Print', () => handlePrintForms() )   
+    }
+
+    const handlePrintForms = async () => {
+        setIsPrinted(true);
+        window.print();
+        nextPage()
+    }
 
     const nextPage = () => {
         setCurrentStep(currentStep + 1);
@@ -161,6 +197,10 @@ export const CreateEvent = () => {
                     {renderSVGForm(values)}
                 </div> 
             )
+          case 2:
+            return(
+                <ConfirmationStep/>
+            )
           // Add more cases for each page
           default:
             return null;
@@ -180,9 +220,23 @@ export const CreateEvent = () => {
                 onSubmit={onSubmit}>
                 {({ isSubmitting, values }) => (
                     <Form>
+                        <Modal id="popconfirm-modal" show={show} onHide={handleClose}>
+                            <Modal.Header closeButton>
+                            <Modal.Title>{modalTitle}</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>{modalBody}</Modal.Body>
+                            <Modal.Footer>
+                            <Button variant="secondary" onClick={handleModalClose}>
+                                Close
+                            </Button>
+                            <Button variant="primary" onClick={handleClose}>
+                                {modalButtonText}
+                            </Button>
+                            </Modal.Footer>
+                        </Modal>
                         {renderPage(currentStep, values)}
                         <div id='button-container' className="flex">  
-                        {currentStep > 0 && (
+                        {((currentStep > 0 && !isPrinted) || (currentStep > 2 && isPrinted)) && (
                             <div className='left'>
                                 <Button type="button" onClick={() => prevPage()}>
                                     Previous
@@ -190,7 +244,7 @@ export const CreateEvent = () => {
                             </div>
                         )}
                         <div className='right'>
-                            {currentStep <  4 ?
+                            {currentStep <  4 ?   
                                 (currentStep === 1 ? 
                                     <Button type="button" onClick={() => printForms()}>
                                         Print
