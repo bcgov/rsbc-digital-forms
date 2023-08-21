@@ -386,6 +386,13 @@ class TwentyFourHourForm(db.Model):
     bac_result_mg:int
     test_used_drugs:str
     test_result_drugs:str
+    requested_prescribed_test:bool
+    requested_test_used:str
+    time_of_requested_test:str
+    requested_ASD_expiry_date:datetime
+    requested_alcohol_test_result:str
+    requested_BAC_result:int
+    requested_approved_instrument_used:str
     created_dt:datetime
     updated_dt:datetime
 
@@ -417,6 +424,13 @@ class TwentyFourHourForm(db.Model):
     bac_result_mg=db.Column(db.Integer)
     test_used_drugs=db.Column(db.String)
     test_result_drugs=db.Column(db.String)
+    requested_prescribed_test=db.Column(db.Boolean)
+    requested_test_used=db.Column(db.String)
+    time_of_requested_test=db.Column(db.String)
+    requested_ASD_expiry_date=db.Column(db.DateTime)
+    requested_alcohol_test_result=db.Column(db.String)
+    requested_BAC_result=db.Column(db.Integer)
+    requested_approved_instrument_used=db.Column(db.String)
     created_dt = db.Column(db.DateTime)
     updated_dt = db.Column(db.DateTime)
 
