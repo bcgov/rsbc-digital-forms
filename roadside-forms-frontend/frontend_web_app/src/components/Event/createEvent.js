@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import Row from 'react-bootstrap/Row';
+import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal'
 import { Checkbox } from '../common/Checkbox/checkbox';
 import { validationSchema } from './validationSchema';
-import Button from 'react-bootstrap/Button';
 import { DriverInfo } from '../CommonForm/driverInfo';
 import { InitialValues } from './initialValues';
 import { VehicleInfo } from '../CommonForm/vehicleInfo';
@@ -15,7 +15,8 @@ import { useRecoilValue } from 'recoil';
 import { staticResources } from '../../utils/helpers';
 import { useNavigate } from 'react-router-dom';
 import { SVGprint } from '../Forms/Print/svgPrint';
-import { formsPNG } from '../../utils/helpers';
+import { formsPNG, getEventDataToSave } from '../../utils/helpers';
+import { db } from '../../db'
 import { ConfirmationStep } from './ConfirmationStep/confirmationStep';
 import './createEvent.scss';
 
@@ -27,6 +28,7 @@ export const CreateEvent = () => {
     const cityAtom = useRecoilValue(staticResources["cities"]);
     const vehiclesAtom= useRecoilValue(staticResources["vehicles"]);
     const impoundAtom= useRecoilValue(staticResources["impound_lot_operators"]);
+    const [formValues, setFormValues] = useState([]);
     const [jurisdictions, setJurisdictions] = useState([]);
     const [provinces, setProvinces] = useState([]);
     const [vehicleStyles, setVehicleStyles] = useState([]);
@@ -113,29 +115,35 @@ export const CreateEvent = () => {
         setSubmitting(false);
     };
 
-    const handlePrintForms = async () => {
-        setIsPrinted(true);
-        window.print();
-        nextPage()
+    const handleGoBackandSave = (values) => {
+        const eventData = getEventDataToSave(values);
+        if(eventData["event_id"]===undefined){
+            // need a beter solution to this
+            eventData["event_id"] = 1
+        }
+        db.event.put(eventData)
+        navigate('/');
     }
 
     const printForms = async () => {
         handleShow('Print Form', 'If you print this form you cannot go back and edit it, please confirm you wish to proceed.', 'Print', () => handlePrintForms() )   
     }
 
-    const handleGoBack = () => {
-        navigate('/');
-      };
+    const handlePrintForms = async () => {
+        setIsPrinted(true);
+        window.print();
+        nextPage()
+    }
 
-      const nextPage = () => {
+    const nextPage = () => {
         setCurrentStep(currentStep + 1);
       };
 
-      const prevPage = () => {
+    const prevPage = () => {
         setCurrentStep(currentStep - 1);
       };
 
-      const renderSVGForm = (values) => {
+    const renderSVGForm = (values) => {
         const forms = {"TwentyFourHour": values["24Hour"], "TwelveHour": values["12Hour"], "IRP": values["IRP"], "VI": values["VI"] }
         const componentsToRender = []
         for(const item in forms){
@@ -151,7 +159,7 @@ export const CreateEvent = () => {
         return componentsToRender
       }
 
-      const renderPage = (currentStep, values) => {
+    const renderPage = (currentStep, values) => {
         switch (currentStep) {
           case 0:
             return (
@@ -202,10 +210,11 @@ export const CreateEvent = () => {
     return (
         <div id='event-container' className='text-font'>
             <div id='button-container' className='m-4'>
-                <Button  variant="primary" onClick={handleGoBack}>Save & Return to Main Menu</Button>
+                <Button  variant="primary" onClick={() => handleGoBackandSave(formValues)}>Save & Return to Main Menu</Button>
             </div>
             <div className="outline">
             <Formik 
+                innerRef={(formikActions) => (formikActions? setFormValues(formikActions.values) : setFormValues({}))}
                 initialValues={InitialValues()} 
                 validationSchema={validationSchema} 
                 onSubmit={onSubmit}>
