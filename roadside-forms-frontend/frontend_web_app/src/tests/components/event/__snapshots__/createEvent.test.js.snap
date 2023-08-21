@@ -1,0 +1,1601 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CreateEvent component renders create event component correctly 1`] = `
+<div>
+  <div
+    class="text-font"
+    id="event-container"
+  >
+    <div
+      class="m-4"
+      id="button-container"
+    >
+      <button
+        class="btn btn-primary"
+        type="button"
+      >
+        Save & Return to Main Menu
+      </button>
+    </div>
+    <div
+      class="outline"
+    >
+      <form
+        action="#"
+      >
+        <div
+          class="row mt-2"
+        >
+          <div
+            class="col-sm-4 left checkboxs"
+          >
+            <h4>
+              Documents to Generate
+            </h4>
+            <div>
+              <label>
+                <input
+                  class="mr-1"
+                  id="IRP"
+                  name="IRP"
+                  type="checkbox"
+                  value="false"
+                />
+                <span
+                  style="margin-left: 5px;"
+                >
+                  Immediate Roadside Prohibition
+                </span>
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  class="mr-1"
+                  id="VI"
+                  name="VI"
+                  type="checkbox"
+                  value="false"
+                />
+                <span
+                  style="margin-left: 5px;"
+                >
+                  Vehicle Impound
+                </span>
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  class="mr-1"
+                  id="24Hour"
+                  name="24Hour"
+                  type="checkbox"
+                  value="false"
+                />
+                <span
+                  style="margin-left: 5px;"
+                >
+                  24-hour Driving Prohibition
+                </span>
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  class="mr-1"
+                  id="12Hour"
+                  name="12Hour"
+                  type="checkbox"
+                  value="false"
+                />
+                <span
+                  style="margin-left: 5px;"
+                >
+                  12-hour Driving Prohibition
+                </span>
+              </label>
+            </div>
+          </div>
+          <div
+            class="col-sm-4 form-id-border"
+          >
+            <h5>
+              IRP number: 21-9876540
+            </h5>
+            <h5>
+              VI number: 22-1234560
+            </h5>
+          </div>
+          <div
+            class="col-sm-4 time-of-completion center mt-5"
+          >
+            <span>
+              Estimated time to complete:
+            </span>
+            <h5>
+              12 minutes
+            </h5>
+          </div>
+        </div>
+        <div
+          class="common-fields"
+        >
+          <div
+            class="driver-info border-design-form left"
+          >
+            <h3>
+              Driver's Information
+            </h3>
+            <div>
+              <div
+                class="row"
+                style="min-height: 85px;"
+              >
+                <div
+                  class=" col-sm-4"
+                >
+                  <div>
+                    <label
+                      for="drivers_licence_no"
+                    >
+                      Driver's Licence Number
+                    </label>
+                    <input
+                      class="field-height field-width"
+                      id="drivers_licence_no"
+                      name="drivers_licence_no"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div
+                  class=" col-sm-1 mt-4 pr-2"
+                >
+                  <button
+                    class="slim-button btn btn-primary"
+                    type="button"
+                  >
+                    ICBC Prefill
+                  </button>
+                </div>
+                <div
+                  class=" col-sm-1 mt-4 left"
+                >
+                  <button
+                    class="slim-button btn btn-primary"
+                    type="button"
+                  >
+                    Scan DL
+                  </button>
+                </div>
+                <div
+                  class="col-sm-6"
+                >
+                  <div>
+                    <label
+                      for="drivers_licence_jurisdiction"
+                    >
+                      Province / State/ International
+                    </label>
+                    <div
+                      class="field-height field-width css-b62m3t-container"
+                    >
+                      <span
+                        class="css-1f43avz-a11yText-A11yText"
+                        id="react-select-2-live-region"
+                      />
+                      <span
+                        aria-atomic="false"
+                        aria-live="polite"
+                        aria-relevant="additions text"
+                        class="css-1f43avz-a11yText-A11yText"
+                      />
+                      <div
+                        class=" css-13cymwt-control"
+                      >
+                        <div
+                          class=" css-1fdsijx-ValueContainer"
+                        >
+                          <div
+                            class=" css-1dimb5e-singleValue"
+                          >
+                            BRITISH COLUMBIA
+                          </div>
+                          <div
+                            class=" css-qbdosj-Input"
+                            data-value=""
+                          >
+                            <input
+                              aria-autocomplete="list"
+                              aria-expanded="false"
+                              aria-haspopup="true"
+                              autocapitalize="none"
+                              autocomplete="off"
+                              autocorrect="off"
+                              class=""
+                              id="drivers_licence_jurisdiction-select"
+                              role="combobox"
+                              spellcheck="false"
+                              style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
+                              tabindex="0"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class=" css-1hb7zxy-IndicatorsContainer"
+                        >
+                          <span
+                            class=" css-1u9des2-indicatorSeparator"
+                          />
+                          <div
+                            aria-hidden="true"
+                            class=" css-1xc3v61-indicatorContainer"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="css-tj5bde-Svg"
+                              focusable="false"
+                              height="20"
+                              viewBox="0 0 20 20"
+                              width="20"
+                            >
+                              <path
+                                d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <input
+                        name="drivers_licence_jurisdiction"
+                        type="hidden"
+                        value="BC"
+                      />
+                    </div>
+                    <input
+                      id="drivers_licence_jurisdiction"
+                      name="drivers_licence_jurisdiction"
+                      type="hidden"
+                      value="{\\"value\\":\\"BC\\",\\"label\\":\\"BRITISH COLUMBIA\\"}"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="row"
+                style="min-height: 85px;"
+              >
+                <div
+                  class=" col-sm-4"
+                >
+                  <div>
+                    <label
+                      for="driver_last_name"
+                    >
+                      Last Name
+                      <span
+                        class="required-asterisk"
+                      >
+                         *
+                      </span>
+                    </label>
+                    <input
+                      class="field-height field-width"
+                      id="driver_last_name"
+                      name="driver_last_name"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div
+                  class=" col-sm-4"
+                >
+                  <div>
+                    <label
+                      for="driver_given_name"
+                    >
+                      Given Name
+                    </label>
+                    <input
+                      class="field-height field-width"
+                      id="driver_given_name"
+                      name="driver_given_name"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div
+                  class=" col-sm-4"
+                >
+                  <div>
+                    <div>
+                      <label
+                        for="driver_dob"
+                      >
+                        Date Of Birth( 0 yrs )
+                      </label>
+                      <div
+                        class="d-flex align-items-center"
+                      >
+                        <div
+                          class="react-datepicker-wrapper"
+                        >
+                          <div
+                            class="react-datepicker__input-container"
+                          >
+                            <input
+                              class="form-control false"
+                              id="driver_dob"
+                              name="driver_dob"
+                              placeholder="YYYYMMDD"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                            data-testid="CalendarTodayIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="row"
+                style="min-height: 85px;"
+              >
+                <div
+                  class=" col-sm-9"
+                >
+                  <div>
+                    <label
+                      for="driver_address"
+                    >
+                      Address
+                      <span
+                        class="required-asterisk"
+                      >
+                         *
+                      </span>
+                    </label>
+                    <input
+                      class="field-height field-width"
+                      id="driver_address"
+                      name="driver_address"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div
+                  class=" col-sm-3"
+                >
+                  <div>
+                    <label
+                      for="driver_phone"
+                    >
+                      Phone number
+                    </label>
+                    <input
+                      class="field-height field-width"
+                      id="driver_phone"
+                      maxlength="12"
+                      name="driver_phone"
+                      pattern="\\\\d{3}-\\\\d{3}-\\\\d{4}"
+                      placeholder="###-###-####"
+                      type="tel"
+                      value=""
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="row"
+                style="min-height: 85px;"
+              >
+                <div
+                  class=" col-sm-4"
+                >
+                  <div>
+                    <label
+                      for="driver_city"
+                    >
+                      City
+                      <span
+                        class="required-asterisk"
+                      >
+                         *
+                      </span>
+                    </label>
+                    <input
+                      class="field-height field-width"
+                      id="driver_city"
+                      name="driver_city"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div
+                  class=" col-sm-4"
+                >
+                  <div>
+                    <label
+                      for="driver_prov_state"
+                    >
+                      Province / State
+                      <span
+                        class="required-asterisk"
+                      >
+                        *
+                      </span>
+                    </label>
+                    <div
+                      class="field-height field-width css-b62m3t-container"
+                    >
+                      <span
+                        class="css-1f43avz-a11yText-A11yText"
+                        id="react-select-3-live-region"
+                      />
+                      <span
+                        aria-atomic="false"
+                        aria-live="polite"
+                        aria-relevant="additions text"
+                        class="css-1f43avz-a11yText-A11yText"
+                      />
+                      <div
+                        class=" css-13cymwt-control"
+                      >
+                        <div
+                          class=" css-1fdsijx-ValueContainer"
+                        >
+                          <div
+                            class=" css-1dimb5e-singleValue"
+                          >
+                            BRITISH COLUMBIA
+                          </div>
+                          <div
+                            class=" css-qbdosj-Input"
+                            data-value=""
+                          >
+                            <input
+                              aria-autocomplete="list"
+                              aria-expanded="false"
+                              aria-haspopup="true"
+                              autocapitalize="none"
+                              autocomplete="off"
+                              autocorrect="off"
+                              class=""
+                              id="driver_prov_state-select"
+                              role="combobox"
+                              spellcheck="false"
+                              style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
+                              tabindex="0"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class=" css-1hb7zxy-IndicatorsContainer"
+                        >
+                          <span
+                            class=" css-1u9des2-indicatorSeparator"
+                          />
+                          <div
+                            aria-hidden="true"
+                            class=" css-1xc3v61-indicatorContainer"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="css-tj5bde-Svg"
+                              focusable="false"
+                              height="20"
+                              viewBox="0 0 20 20"
+                              width="20"
+                            >
+                              <path
+                                d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <input
+                        name="driver_prov_state"
+                        type="hidden"
+                        value="BC"
+                      />
+                    </div>
+                    <input
+                      id="driver_prov_state"
+                      name="driver_prov_state"
+                      type="hidden"
+                      value="{\\"value\\":\\"BC\\",\\"label\\":\\"BRITISH COLUMBIA\\"}"
+                    />
+                  </div>
+                </div>
+                <div
+                  class=" col-sm-4"
+                >
+                  <div>
+                    <label
+                      for="driver_postal"
+                    >
+                      Postal / Zip
+                    </label>
+                    <input
+                      class="field-height field-width"
+                      id="driver_postal"
+                      name="driver_postal"
+                      value=""
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="vehicle-info border-design-form left"
+          >
+            <h3>
+              Vehicle Information
+            </h3>
+            <div>
+              <div
+                class="row"
+                style="min-height: 85px;"
+              >
+                <div
+                  class="col-sm-5"
+                >
+                  <div>
+                    <label
+                      for="vehicle_jurisdiction"
+                    >
+                      Jurisdiction
+                    </label>
+                    <div
+                      class="field-height field-width css-b62m3t-container"
+                    >
+                      <span
+                        class="css-1f43avz-a11yText-A11yText"
+                        id="react-select-4-live-region"
+                      />
+                      <span
+                        aria-atomic="false"
+                        aria-live="polite"
+                        aria-relevant="additions text"
+                        class="css-1f43avz-a11yText-A11yText"
+                      />
+                      <div
+                        class=" css-13cymwt-control"
+                      >
+                        <div
+                          class=" css-1fdsijx-ValueContainer"
+                        >
+                          <div
+                            class=" css-1dimb5e-singleValue"
+                          >
+                            BRITISH COLUMBIA
+                          </div>
+                          <div
+                            class=" css-qbdosj-Input"
+                            data-value=""
+                          >
+                            <input
+                              aria-autocomplete="list"
+                              aria-expanded="false"
+                              aria-haspopup="true"
+                              autocapitalize="none"
+                              autocomplete="off"
+                              autocorrect="off"
+                              class=""
+                              id="vehicle_jurisdiction-select"
+                              role="combobox"
+                              spellcheck="false"
+                              style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
+                              tabindex="0"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class=" css-1hb7zxy-IndicatorsContainer"
+                        >
+                          <span
+                            class=" css-1u9des2-indicatorSeparator"
+                          />
+                          <div
+                            aria-hidden="true"
+                            class=" css-1xc3v61-indicatorContainer"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="css-tj5bde-Svg"
+                              focusable="false"
+                              height="20"
+                              viewBox="0 0 20 20"
+                              width="20"
+                            >
+                              <path
+                                d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <input
+                        name="vehicle_jurisdiction"
+                        type="hidden"
+                        value="BC"
+                      />
+                    </div>
+                    <input
+                      id="vehicle_jurisdiction"
+                      name="vehicle_jurisdiction"
+                      type="hidden"
+                      value="{\\"value\\":\\"BC\\",\\"label\\":\\"BRITISH COLUMBIA\\"}"
+                    />
+                  </div>
+                </div>
+                <div
+                  class=" col-sm-5"
+                >
+                  <div>
+                    <label
+                      for="vehicle_plate_no"
+                    >
+                      Plate Number
+                    </label>
+                    <input
+                      class="field-height field-width"
+                      id="vehicle_plate_no"
+                      name="vehicle_plate_no"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div
+                  class=" col-sm-1 mt-4"
+                >
+                  <button
+                    class="slim-button btn btn-primary"
+                    type="button"
+                  >
+                    ICBC Prefill
+                  </button>
+                </div>
+              </div>
+              <div
+                class="row"
+                style="min-height: 85px;"
+              >
+                <div
+                  class=" col-sm-5"
+                >
+                  <div>
+                    <label
+                      for="vehicle_registration_no"
+                    >
+                      Registration Number
+                    </label>
+                    <input
+                      class="field-height field-width"
+                      id="vehicle_registration_no"
+                      name="vehicle_registration_no"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="row"
+                style="min-height: 85px;"
+              >
+                <div
+                  class=" col-sm-3"
+                >
+                  <div>
+                    <label
+                      for="vehicle_year"
+                    >
+                      Vehicle Year
+                    </label>
+                    <div
+                      class="field-height field-width css-b62m3t-container"
+                    >
+                      <span
+                        class="css-1f43avz-a11yText-A11yText"
+                        id="react-select-5-live-region"
+                      />
+                      <span
+                        aria-atomic="false"
+                        aria-live="polite"
+                        aria-relevant="additions text"
+                        class="css-1f43avz-a11yText-A11yText"
+                      />
+                      <div
+                        class=" css-13cymwt-control"
+                      >
+                        <div
+                          class=" css-1fdsijx-ValueContainer"
+                        >
+                          <div
+                            class=" css-1jqq78o-placeholder"
+                            id="react-select-5-placeholder"
+                          >
+                            Select...
+                          </div>
+                          <div
+                            class=" css-qbdosj-Input"
+                            data-value=""
+                          >
+                            <input
+                              aria-autocomplete="list"
+                              aria-describedby="react-select-5-placeholder"
+                              aria-expanded="false"
+                              aria-haspopup="true"
+                              autocapitalize="none"
+                              autocomplete="off"
+                              autocorrect="off"
+                              class=""
+                              id="vehicle_year-select"
+                              role="combobox"
+                              spellcheck="false"
+                              style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
+                              tabindex="0"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class=" css-1hb7zxy-IndicatorsContainer"
+                        >
+                          <span
+                            class=" css-1u9des2-indicatorSeparator"
+                          />
+                          <div
+                            aria-hidden="true"
+                            class=" css-1xc3v61-indicatorContainer"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="css-tj5bde-Svg"
+                              focusable="false"
+                              height="20"
+                              viewBox="0 0 20 20"
+                              width="20"
+                            >
+                              <path
+                                d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <input
+                        name="vehicle_year"
+                        type="hidden"
+                        value=""
+                      />
+                    </div>
+                    <input
+                      id="vehicle_year"
+                      name="vehicle_year"
+                      type="hidden"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div
+                  class=" col-sm-3"
+                >
+                  <div>
+                    <label
+                      for="vehicle_mk_md"
+                    >
+                      Vehicle Make and Model
+                    </label>
+                    <div
+                      class="field-height field-width css-b62m3t-container"
+                    >
+                      <span
+                        class="css-1f43avz-a11yText-A11yText"
+                        id="react-select-6-live-region"
+                      />
+                      <span
+                        aria-atomic="false"
+                        aria-live="polite"
+                        aria-relevant="additions text"
+                        class="css-1f43avz-a11yText-A11yText"
+                      />
+                      <div
+                        class=" css-13cymwt-control"
+                      >
+                        <div
+                          class=" css-1fdsijx-ValueContainer"
+                        >
+                          <div
+                            class=" css-1jqq78o-placeholder"
+                            id="react-select-6-placeholder"
+                          >
+                            Select...
+                          </div>
+                          <div
+                            class=" css-qbdosj-Input"
+                            data-value=""
+                          >
+                            <input
+                              aria-autocomplete="list"
+                              aria-describedby="react-select-6-placeholder"
+                              aria-expanded="false"
+                              aria-haspopup="true"
+                              autocapitalize="none"
+                              autocomplete="off"
+                              autocorrect="off"
+                              class=""
+                              id="vehicle_mk_md-select"
+                              role="combobox"
+                              spellcheck="false"
+                              style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
+                              tabindex="0"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class=" css-1hb7zxy-IndicatorsContainer"
+                        >
+                          <span
+                            class=" css-1u9des2-indicatorSeparator"
+                          />
+                          <div
+                            aria-hidden="true"
+                            class=" css-1xc3v61-indicatorContainer"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="css-tj5bde-Svg"
+                              focusable="false"
+                              height="20"
+                              viewBox="0 0 20 20"
+                              width="20"
+                            >
+                              <path
+                                d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <input
+                        name="vehicle_mk_md"
+                        type="hidden"
+                        value=""
+                      />
+                    </div>
+                    <input
+                      id="vehicle_mk_md"
+                      name="vehicle_mk_md"
+                      type="hidden"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div
+                  class=" col-sm-3"
+                >
+                  <div>
+                    <label
+                      for="vehicle_style"
+                    >
+                      Vehicle Style
+                    </label>
+                    <div
+                      class="field-height field-width css-b62m3t-container"
+                    >
+                      <span
+                        class="css-1f43avz-a11yText-A11yText"
+                        id="react-select-7-live-region"
+                      />
+                      <span
+                        aria-atomic="false"
+                        aria-live="polite"
+                        aria-relevant="additions text"
+                        class="css-1f43avz-a11yText-A11yText"
+                      />
+                      <div
+                        class=" css-13cymwt-control"
+                      >
+                        <div
+                          class=" css-1fdsijx-ValueContainer"
+                        >
+                          <div
+                            class=" css-1jqq78o-placeholder"
+                            id="react-select-7-placeholder"
+                          >
+                            Select...
+                          </div>
+                          <div
+                            class=" css-qbdosj-Input"
+                            data-value=""
+                          >
+                            <input
+                              aria-autocomplete="list"
+                              aria-describedby="react-select-7-placeholder"
+                              aria-expanded="false"
+                              aria-haspopup="true"
+                              autocapitalize="none"
+                              autocomplete="off"
+                              autocorrect="off"
+                              class=""
+                              id="vehicle_style-select"
+                              role="combobox"
+                              spellcheck="false"
+                              style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
+                              tabindex="0"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class=" css-1hb7zxy-IndicatorsContainer"
+                        >
+                          <span
+                            class=" css-1u9des2-indicatorSeparator"
+                          />
+                          <div
+                            aria-hidden="true"
+                            class=" css-1xc3v61-indicatorContainer"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="css-tj5bde-Svg"
+                              focusable="false"
+                              height="20"
+                              viewBox="0 0 20 20"
+                              width="20"
+                            >
+                              <path
+                                d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <input
+                        name="vehicle_style"
+                        type="hidden"
+                        value=""
+                      />
+                    </div>
+                    <input
+                      id="vehicle_style"
+                      name="vehicle_style"
+                      type="hidden"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div
+                  class=" col-sm-3"
+                >
+                  <label
+                    for="vehicle_colour"
+                  >
+                    Vehicle Colour(s)
+                  </label>
+                   
+                  <button
+                    class="slim-button btn btn-primary"
+                    type="button"
+                  >
+                    Edit
+                  </button>
+                  <div
+                    class=" css-b62m3t-container"
+                  >
+                    <span
+                      class="css-1f43avz-a11yText-A11yText"
+                      id="react-select-8-live-region"
+                    />
+                    <span
+                      aria-atomic="false"
+                      aria-live="polite"
+                      aria-relevant="additions text"
+                      class="css-1f43avz-a11yText-A11yText"
+                    />
+                    <div
+                      class=" css-13cymwt-control"
+                    >
+                      <div
+                        class=" css-1fdsijx-ValueContainer"
+                      >
+                        <div
+                          class=" css-1jqq78o-placeholder"
+                          id="react-select-8-placeholder"
+                        >
+                          Select...
+                        </div>
+                        <div
+                          class=" css-qbdosj-Input"
+                          data-value=""
+                        >
+                          <input
+                            aria-autocomplete="list"
+                            aria-describedby="react-select-8-placeholder"
+                            aria-expanded="false"
+                            aria-haspopup="true"
+                            autocapitalize="none"
+                            autocomplete="off"
+                            autocorrect="off"
+                            class=""
+                            id="vehicle_colour"
+                            role="combobox"
+                            spellcheck="false"
+                            style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
+                            tabindex="0"
+                            type="text"
+                            value=""
+                          />
+                        </div>
+                      </div>
+                      <div
+                        class=" css-1hb7zxy-IndicatorsContainer"
+                      >
+                        <span
+                          class=" css-1u9des2-indicatorSeparator"
+                        />
+                        <div
+                          aria-hidden="true"
+                          class=" css-1xc3v61-indicatorContainer"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="css-tj5bde-Svg"
+                            focusable="false"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            width="20"
+                          >
+                            <path
+                              d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="row"
+                style="min-height: 85px;"
+              >
+                <div
+                  class=" col-sm-5"
+                >
+                  <div>
+                    <label
+                      for="vehicle_vin_no"
+                    >
+                      VIN Number
+                    </label>
+                    <input
+                      class="field-height field-width"
+                      id="vehicle_vin_no"
+                      name="vehicle_vin_no"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div
+                  class=" col-sm-3"
+                >
+                  <div>
+                    <label
+                      for="nsc_prov_state"
+                    >
+                      NSC Prov / State
+                    </label>
+                    <div
+                      class="field-height field-width css-b62m3t-container"
+                    >
+                      <span
+                        class="css-1f43avz-a11yText-A11yText"
+                        id="react-select-9-live-region"
+                      />
+                      <span
+                        aria-atomic="false"
+                        aria-live="polite"
+                        aria-relevant="additions text"
+                        class="css-1f43avz-a11yText-A11yText"
+                      />
+                      <div
+                        class=" css-13cymwt-control"
+                      >
+                        <div
+                          class=" css-1fdsijx-ValueContainer"
+                        >
+                          <div
+                            class=" css-1dimb5e-singleValue"
+                          >
+                            BRITISH COLUMBIA
+                          </div>
+                          <div
+                            class=" css-qbdosj-Input"
+                            data-value=""
+                          >
+                            <input
+                              aria-autocomplete="list"
+                              aria-expanded="false"
+                              aria-haspopup="true"
+                              autocapitalize="none"
+                              autocomplete="off"
+                              autocorrect="off"
+                              class=""
+                              id="nsc_prov_state-select"
+                              role="combobox"
+                              spellcheck="false"
+                              style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
+                              tabindex="0"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class=" css-1hb7zxy-IndicatorsContainer"
+                        >
+                          <span
+                            class=" css-1u9des2-indicatorSeparator"
+                          />
+                          <div
+                            aria-hidden="true"
+                            class=" css-1xc3v61-indicatorContainer"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="css-tj5bde-Svg"
+                              focusable="false"
+                              height="20"
+                              viewBox="0 0 20 20"
+                              width="20"
+                            >
+                              <path
+                                d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <input
+                        name="nsc_prov_state"
+                        type="hidden"
+                        value="BC"
+                      />
+                    </div>
+                    <input
+                      id="nsc_prov_state"
+                      name="nsc_prov_state"
+                      type="hidden"
+                      value="{\\"value\\":\\"BC\\",\\"label\\":\\"BRITISH COLUMBIA\\"}"
+                    />
+                  </div>
+                </div>
+                <div
+                  class=" col-sm-4"
+                >
+                  <div>
+                    <label
+                      for="nsc_no"
+                    >
+                      NSC Number
+                    </label>
+                    <input
+                      class="field-height field-width"
+                      id="nsc_no"
+                      name="nsc_no"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="registered-owner-info border-design-form left"
+          >
+            <div
+              class="row"
+              style="min-height: 40px;"
+            >
+              <div
+                class="col-sm-10"
+              >
+                <h3>
+                  Registered Owner
+                </h3>
+              </div>
+              <div
+                class="col-sm-2 right"
+              >
+                <button
+                  class="slim-button btn btn-primary"
+                  type="button"
+                >
+                  Fill from driver
+                </button>
+              </div>
+            </div>
+            <div
+              class="row"
+              style="min-height: 85px;"
+            >
+              <div
+                class="col-sm-12 mt-4"
+              >
+                <div>
+                  <label>
+                    <input
+                      class="mr-1"
+                      id="owned_by_corp"
+                      name="owned_by_corp"
+                      type="checkbox"
+                      value="false"
+                    />
+                    <span
+                      style="margin-left: 5px;"
+                    >
+                      Owned by Corporate Entity
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div
+              class="row"
+              style="min-height: 85px;"
+            >
+              <div
+                class="col-sm-6"
+              >
+                <div>
+                  <label
+                    for="regist_owner_last_name"
+                  >
+                    Owner's Last Name
+                  </label>
+                  <input
+                    class="field-height field-width"
+                    id="regist_owner_last_name"
+                    name="regist_owner_last_name"
+                    value=""
+                  />
+                </div>
+              </div>
+              <div
+                class="col-sm-6"
+              >
+                <div>
+                  <label
+                    for="regist_owner_first_name"
+                  >
+                    Owner's First Name
+                  </label>
+                  <input
+                    class="field-height field-width"
+                    id="regist_owner_first_name"
+                    name="regist_owner_first_name"
+                    value=""
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="row"
+              style="min-height: 85px;"
+            >
+              <div
+                class=" col-sm-9"
+              >
+                <div>
+                  <label
+                    for="regist_owner_address"
+                  >
+                    Address
+                  </label>
+                  <input
+                    class="field-height field-width"
+                    id="regist_owner_address"
+                    name="regist_owner_address"
+                    type="text"
+                    value=""
+                  />
+                </div>
+              </div>
+              <div
+                class=" col-sm-3"
+              >
+                <div>
+                  <label
+                    for="regist_owner_phone"
+                  >
+                    Phone number
+                  </label>
+                  <input
+                    class="field-height field-width"
+                    id="regist_owner_phone"
+                    maxlength="12"
+                    name="regist_owner_phone"
+                    pattern="\\\\d{3}-\\\\d{3}-\\\\d{4}"
+                    placeholder="###-###-####"
+                    type="tel"
+                    value=""
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="row"
+              style="min-height: 85px;"
+            >
+              <div
+                class=" col-sm-4"
+              >
+                <div>
+                  <label
+                    for="regist_owner_city"
+                  >
+                    City
+                  </label>
+                  <input
+                    class="field-height field-width"
+                    id="regist_owner_city"
+                    name="regist_owner_city"
+                    type="text"
+                    value=""
+                  />
+                </div>
+              </div>
+              <div
+                class=" col-sm-4"
+              >
+                <div>
+                  <label
+                    for="regist_owner_prov_state"
+                  >
+                    Province / State
+                  </label>
+                  <div
+                    class="field-height field-width css-b62m3t-container"
+                  >
+                    <span
+                      class="css-1f43avz-a11yText-A11yText"
+                      id="react-select-10-live-region"
+                    />
+                    <span
+                      aria-atomic="false"
+                      aria-live="polite"
+                      aria-relevant="additions text"
+                      class="css-1f43avz-a11yText-A11yText"
+                    />
+                    <div
+                      class=" css-13cymwt-control"
+                    >
+                      <div
+                        class=" css-1fdsijx-ValueContainer"
+                      >
+                        <div
+                          class=" css-1dimb5e-singleValue"
+                        />
+                        <div
+                          class=" css-qbdosj-Input"
+                          data-value=""
+                        >
+                          <input
+                            aria-autocomplete="list"
+                            aria-expanded="false"
+                            aria-haspopup="true"
+                            autocapitalize="none"
+                            autocomplete="off"
+                            autocorrect="off"
+                            class=""
+                            id="regist_owner_prov_state-select"
+                            role="combobox"
+                            spellcheck="false"
+                            style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
+                            tabindex="0"
+                            type="text"
+                            value=""
+                          />
+                        </div>
+                      </div>
+                      <div
+                        class=" css-1hb7zxy-IndicatorsContainer"
+                      >
+                        <span
+                          class=" css-1u9des2-indicatorSeparator"
+                        />
+                        <div
+                          aria-hidden="true"
+                          class=" css-1xc3v61-indicatorContainer"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="css-tj5bde-Svg"
+                            focusable="false"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            width="20"
+                          >
+                            <path
+                              d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <input
+                      name="regist_owner_prov_state"
+                      type="hidden"
+                      value=""
+                    />
+                  </div>
+                  <input
+                    id="regist_owner_prov_state"
+                    name="regist_owner_prov_state"
+                    type="hidden"
+                    value="{}"
+                  />
+                </div>
+              </div>
+              <div
+                class=" col-sm-4"
+              >
+                <div>
+                  <label
+                    for="regist_owner_postal"
+                  >
+                    Postal / Zip
+                  </label>
+                  <input
+                    class="field-height field-width"
+                    id="regist_owner_postal"
+                    name="regist_owner_postal"
+                    value=""
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="officer-info border-design-form left"
+        >
+          <h3>
+            Officer
+          </h3>
+          <div>
+            <div
+              class="row"
+              style="min-height: 85px;"
+            >
+              <div
+                class="col-sm-5"
+              >
+                <div>
+                  <label
+                    for="officer-lastname"
+                  >
+                    Last Name of Peace Officer Serving Prohibition Notice
+                    <span
+                      class="required-asterisk"
+                    >
+                       *
+                    </span>
+                  </label>
+                  <input
+                    class="field-height field-width"
+                    id="officer-lastname"
+                    name="officer-lastname"
+                    type="text"
+                    value=""
+                  />
+                </div>
+              </div>
+              <div
+                class=" col-sm-3"
+              >
+                <div>
+                  <label
+                    for="officer-prime-id"
+                  >
+                    PRIME ID
+                    <span
+                      class="required-asterisk"
+                    >
+                       *
+                    </span>
+                  </label>
+                  <input
+                    class="field-height field-width"
+                    id="officer-prime-id"
+                    name="officer-prime-id"
+                    type="text"
+                    value=""
+                  />
+                </div>
+              </div>
+              <div
+                class=" col-sm-4"
+              >
+                <div>
+                  <label
+                    for="officer-agency"
+                  >
+                    Agency or RCMP Detachment
+                    <span
+                      class="required-asterisk"
+                    >
+                       *
+                    </span>
+                  </label>
+                  <input
+                    class="field-height field-width"
+                    id="officer-agency"
+                    name="officer-agency"
+                    type="text"
+                    value=""
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex"
+          id="button-container"
+        >
+          <div
+            class="right"
+          >
+            <button
+              class="btn btn-primary"
+              type="button"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+`;

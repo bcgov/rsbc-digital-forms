@@ -14,6 +14,11 @@ db.version(1).stores({
   countries: 'id, objectCd, objectDsc',
   cities: 'id, objectCd, objectDsc',
   agencies: 'id, vjur, agency_name',
+  event: '[driver_licence_no+date_of_driving], event_id, icbc_sent_status, driver_licence_no, driver_jurisdiction, driver_last_name, driver_given_name, driver_dob, driver_address, driver_city, driver_prov, driver_postal, driver_phone, vehicle_jurisdiction, vehicle_plate_no, vehicle_registration_no, vehicle_year, vehicle_mk_md, vehicle_style, vehicle_colour, vehicle_vin_no, nsc_prov_state, nsc_no, owned_by_corp, corporation_name, regist_owner_last_name, regist_owner_first_name, regist_owner_address, regist_owner_dob, regist_owner_city, regist_owner_prov, regist_owner_postal, regist_owner_phone, printed, sync_status, created_dt, updated_dt, created_by, updated_by , vehicle_impounded, reason_for_not_impounding, vehicle_released_to, date_released, time_released, location_of_keys, impound_lot_operator, type_of_prohibition, intersection_or_address_of_offence, offence_city, agency_file_no, date_of_driving, time_of_driving, reasonable_ground, reasonable_ground_other, prescribed_test_used, date_of_test, time_of_test, reason_for_not_using_prescribed_test, test_used_alcohol, asd_expiry_date, result_alcohol, bac_result_mg, test_used_drugs, test_result_drugs, IRP, VI, 24Hour, 12Hour',
+  twenty_four_hour_form: 'form_id, event_id, vehicle_impounded, reason_for_not_impounding, vehicle_released_to, date_released, time_released, location_of_keys, impound_lot_operator, type_of_prohibition, intersection_or_address_of_offence, offence_city, agency_file_no, date_of_driving, time_of_driving, reasonable_ground, reasonable_ground_other, prescribed_test_used, date_of_test, time_of_test, reason_for_not_using_prescribed_test, test_used_alcohol, asd_expiry_date, result_alcohol, bac_result_mg, test_used_drugs, test_result_drugs, created_dt, updated_dt',
+  twelve_hour_form: 'form_id, event_id, created_dt, updated_dt',
+  irp_form: 'form_id, event_id, created_dt, updated_dt',
+  vi_form: 'form_id, event_id, created_dt, updated_dt',
 });
 
 db.open().catch(function (e) {
@@ -27,4 +32,3 @@ db.open().catch(function (e) {
 
  
  
-
