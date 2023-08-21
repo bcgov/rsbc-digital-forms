@@ -142,7 +142,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       Driver's Licence Number
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="drivers-number"
                       name="drivers-number"
                       type="text"
@@ -284,7 +284,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       </span>
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="last-name"
                       name="last-name"
                       type="text"
@@ -302,7 +302,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       Given Name
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="given-name"
                       name="given-name"
                       type="text"
@@ -376,7 +376,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       </span>
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="address"
                       name="address"
                       type="text"
@@ -425,7 +425,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       </span>
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="city"
                       name="city"
                       type="text"
@@ -542,7 +542,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       Postal / Zip
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="postal-code"
                       name="postal-code"
                       value=""
@@ -667,7 +667,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       Plate Number
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="plate-number"
                       name="plate-number"
                       type="text"
@@ -700,7 +700,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       Registration Number
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="registration-number"
                       name="registration-number"
                       type="text"
@@ -1106,7 +1106,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       VIN Number
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="vin-number"
                       name="vin-number"
                       type="text"
@@ -1218,7 +1218,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       NSC Number
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="nsc-number"
                       name="nsc-number"
                       type="text"
@@ -1293,7 +1293,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     Owner's Last Name
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="owner-last-name"
                     name="owner-last-name"
                     value=""
@@ -1310,7 +1310,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     Owner's First Name
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="owner-first-name"
                     name="owner-first-name"
                     value=""
@@ -1332,7 +1332,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     Address
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="registered-owner-address"
                     name="registered-owner-address"
                     type="text"
@@ -1376,7 +1376,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     City
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="registered-owner-city"
                     name="registered-owner-city"
                     type="text"
@@ -1486,7 +1486,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     Postal / Zip
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="registered-owner-postal"
                     name="registered-owner-postal"
                     value=""
@@ -1522,7 +1522,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     </span>
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="officer-lastname"
                     name="officer-lastname"
                     type="text"
@@ -1545,7 +1545,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     </span>
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="officer-prime-id"
                     name="officer-prime-id"
                     type="text"
@@ -1568,7 +1568,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     </span>
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="officer-agency"
                     name="officer-agency"
                     type="text"

@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { SVGprint } from '../Forms/Print/svgPrint';
 import { formsPNG } from '../../utils/helpers';
 import { ConfirmationStep } from './ConfirmationStep/confirmationStep';
+import { PoliceDetails } from '../Forms/TwentyFourHourForm/policeDetails';
 import './createEvent.scss';
 
 export const CreateEvent = () => {
@@ -82,11 +83,17 @@ export const CreateEvent = () => {
         setShow(false) 
         modalCloseFunc()
         setmodalCloseFunc(() => () => null)
+        setModalBody('')
+        setModalTitle('')
+        setModalButtonText('')
     }
 
     const handleModalClose = async () => {
         setShow(false)
         setmodalCloseFunc(() => () => null)
+        setModalBody('')
+        setModalTitle('')
+        setModalButtonText('')
     }
 
     const handleShow = (title, body, buttonText, func) => {
@@ -127,6 +134,10 @@ export const CreateEvent = () => {
         navigate('/');
       };
 
+    const handleWithdraw = () => {
+        navigate('/');
+    };
+
       const nextPage = () => {
         setCurrentStep(currentStep + 1);
       };
@@ -134,6 +145,10 @@ export const CreateEvent = () => {
       const prevPage = () => {
         setCurrentStep(currentStep - 1);
       };
+
+    const withdrawProhibition = () => {
+        handleShow('Confirm Withdraw Prohibition', 'Are you sure you want to withdraw this prohibition.', 'Withdraw', () => handleWithdraw() )   
+    };
 
       const renderSVGForm = (values) => {
         const forms = {"TwentyFourHour": values["24Hour"], "TwelveHour": values["12Hour"], "IRP": values["IRP"], "VI": values["VI"] }
@@ -159,10 +174,10 @@ export const CreateEvent = () => {
             <div className='row mt-2'>
             <div className='col-sm-4 left checkboxs'>
                 <h4>Documents to Generate</h4>
-                <Checkbox name="IRP" >Immediate Roadside Prohibition</Checkbox>
+                <Checkbox name="IRP" disabled={values['24Hour'] || values['12Hour']} >Immediate Roadside Prohibition</Checkbox>
                 <Checkbox name="VI" >Vehicle Impound</Checkbox>
-                <Checkbox name="24Hour" >24-hour Driving Prohibition</Checkbox>
-                <Checkbox name="12Hour" >12-hour Driving Prohibition</Checkbox>
+                <Checkbox name="24Hour" disabled={values['IRP'] || values['12Hour']} >24-hour Driving Prohibition</Checkbox>
+                <Checkbox name="12Hour" disabled={values['24Hour'] || values['IRP']} >12-hour Driving Prohibition</Checkbox>
             </div>
             <div className='col-sm-4 form-id-border'>
                 <h5>IRP number: 21-9876540</h5>
@@ -193,6 +208,10 @@ export const CreateEvent = () => {
             return(
                 <ConfirmationStep/>
             )
+          case 3:
+            return(
+                values['prescribed-device'] === 'NO' ? <PoliceDetails/> : null
+            )
           // Add more cases for each page
           default:
             return null;
@@ -211,7 +230,7 @@ export const CreateEvent = () => {
                 onSubmit={onSubmit}>
                 {({ isSubmitting, values }) => (
                     <Form>
-                        <Modal id="popconfirm-modal" show={show} onHide={handleClose}>
+                        <Modal id="popconfirm-modal" show={show} onHide={handleModalClose}>
                             <Modal.Header closeButton>
                             <Modal.Title>{modalTitle}</Modal.Title>
                             </Modal.Header>
@@ -227,10 +246,17 @@ export const CreateEvent = () => {
                         </Modal>
                         {renderPage(currentStep, values)}
                         <div id='button-container' className="flex">  
-                        {((currentStep > 0 && !isPrinted) || (currentStep > 2 && isPrinted)) && (
+                        {((currentStep > 0 && !isPrinted) || values['prescribed-device'] === 'YES') && (
                             <div className='left'>
                                 <Button type="button" onClick={() => prevPage()}>
                                     Previous
+                                </Button>
+                            </div>
+                        )}
+                        {(currentStep === 3 && values['prescribed-device'] === 'NO') && (
+                            <div className='left'>
+                                <Button type="button" onClick={() => withdrawProhibition()}>
+                                    Withdraw Prohibition
                                 </Button>
                             </div>
                         )}
