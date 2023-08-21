@@ -15,7 +15,8 @@ import { useRecoilValue } from 'recoil';
 import { staticResources } from '../../utils/helpers';
 import { useNavigate } from 'react-router-dom';
 import { SVGprint } from '../Forms/Print/svgPrint';
-import { formsPNG } from '../../utils/helpers';
+import { formsPNG, getEventDataToSave } from '../../utils/helpers';
+import { db } from '../../db'
 import { ConfirmationStep } from './ConfirmationStep/confirmationStep';
 import './createEvent.scss';
 
