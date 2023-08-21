@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
-import Row from 'react-bootstrap/Row';
+import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal'
 import { Checkbox } from '../common/Checkbox/checkbox';
 import { validationSchema } from './validationSchema';
