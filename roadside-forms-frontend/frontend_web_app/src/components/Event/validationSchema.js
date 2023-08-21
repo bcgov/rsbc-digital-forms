@@ -141,7 +141,6 @@ export const validationSchema = Yup.object().shape({
 
     return true;
   }),
-
   "vin-number": Yup.string().max(20, 'VIN must be 20 characters or less'),
   "nsc-number": Yup.string().max(14, 'NSC no. must be 14 characters or less'),
   //24 Hour Fields validation

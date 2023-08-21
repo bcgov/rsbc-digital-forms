@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddIcon from '@mui/icons-material/Add';
 import Table from 'react-bootstrap/Table';
 import { useSetRecoilState} from 'recoil';
-import { staticResources } from '../../utils/helpers';
+import { staticResources, formTypes } from '../../utils/helpers';
 import { StaticDataApi } from '../../api/staticDataApi';
 import { Button } from '../common/Button/Button';
 import { useNavigate} from 'react-router-dom';
@@ -13,6 +13,7 @@ import {db} from '../../db'
 import './dashboard.scss'
 
 export const Dashboard = () => {
+  const [formsData, setFormsData] = useState([]);
   const navigate = useNavigate();
   const setAgencyResource = useSetRecoilState(staticResources["agencies"]);
   const setCityResource = useSetRecoilState(staticResources["cities"]);
@@ -66,7 +67,7 @@ export const Dashboard = () => {
       };
   
        fetchData();
-       
+       db.table("event").toArray().then( (data) => setFormsData(data))
     }, [
       setVehicleResource,
       setVehicleColourResource,
@@ -77,6 +78,7 @@ export const Dashboard = () => {
       setCountryResource,
       setCityResource,
       setAgencyResource,
+      setFormsData,
     ]);
 
 
@@ -102,6 +104,19 @@ export const Dashboard = () => {
               <th>Next Step</th>
             </tr>
           </thead>
+          <tbody>
+          {formsData.map((data, index) => {
+            return(!data['printed'] ?
+                <tr key={data['vehicle_vin_no']}>
+                  <td>{data['created_dt'] ? data['created_dt'] : "N/A" }</td>
+                  <td>{formTypes(data)}</td>
+                  <td>{data['intersection_or_address_of_offence'] ? data['intersection_or_address_of_offence'] : "N/A" }</td>
+                  <td>{data['driver_last_name'] ? data['driver_last_name'] : "N/A" }</td>
+                  <td>{data['vehicle_plate_no'] ? data['vehicle_plate_no'] : "N/A" }</td>
+                  <td>Print</td>
+                </tr> : null )
+          })}
+          </tbody>
         </Table>
       </div>
       <div className='border-design text-font'>
