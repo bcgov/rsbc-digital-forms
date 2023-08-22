@@ -215,8 +215,9 @@ export const CreateEvent = () => {
                 <ConfirmationStep/>
             )
           case 3:
+            console.log(values)
             return(
-                values['prescribed-device'] === 'NO' ? <PoliceDetails/> : null
+                values['prescribed_test_used'] === 'NO' ? <PoliceDetails/> : null
             )
           // Add more cases for each page
           default:
@@ -253,14 +254,14 @@ export const CreateEvent = () => {
                         </Modal>
                         {renderPage(currentStep, values)}
                         <div id='button-container' className="flex">  
-                        {((currentStep > 0 && !isPrinted) || values['prescribed-device'] === 'YES') && (
+                        {((currentStep > 0 && !isPrinted) || values['prescribed_device'] === 'YES') && (
                             <div className='left'>
                                 <Button type="button" onClick={() => prevPage()}>
                                     Previous
                                 </Button>
                             </div>
                         )}
-                        {(currentStep === 3 && values['prescribed-device'] === 'NO') && (
+                        {(currentStep === 3 && values['prescribed_device'] === 'NO') && (
                             <div className='left'>
                                 <Button type="button" onClick={() => withdrawProhibition()}>
                                     Withdraw Prohibition
