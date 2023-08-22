@@ -120,16 +120,6 @@ export const CreateEvent = () => {
         setSubmitting(false);
     };
 
-    const handlePrintForms = async () => {
-        setIsPrinted(true);
-        window.print();
-        nextPage()
-    }
-
-    const printForms = async () => {
-        handleShow('Print Form', 'If you print this form you cannot go back and edit it, please confirm you wish to proceed.', 'Print', () => handlePrintForms() )   
-    }
-
     const handleGoBackandSave = (values) => {
         const eventData = getEventDataToSave(values);
         if(eventData["event_id"]===undefined){
@@ -140,9 +130,19 @@ export const CreateEvent = () => {
         navigate('/');
     }
 
+    const printForms = async () => {
+        handleShow('Print Form', 'If you print this form you cannot go back and edit it, please confirm you wish to proceed.', 'Print', () => handlePrintForms() )   
+    }
+
     const handleWithdraw = () => {
         navigate('/');
     };
+
+    const handlePrintForms = async () => {
+        setIsPrinted(true);
+        window.print();
+        nextPage()
+    }
 
     const nextPage = () => {
         setCurrentStep(currentStep + 1);
