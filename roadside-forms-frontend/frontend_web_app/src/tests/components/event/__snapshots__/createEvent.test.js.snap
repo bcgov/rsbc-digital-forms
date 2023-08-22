@@ -1522,7 +1522,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     </span>
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="officer-lastname"
                     name="officer-lastname"
                     type="text"
@@ -1545,7 +1545,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     </span>
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="officer-prime-id"
                     name="officer-prime-id"
                     type="text"
@@ -1568,7 +1568,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     </span>
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="officer-agency"
                     name="officer-agency"
                     type="text"
