@@ -18,6 +18,7 @@ import { staticResources, getEventDataToSave, formsPNG } from '../../utils/helpe
 import {SVGprint} from '../Forms/Print/svgPrint'
 import {db} from '../../db'
 import './createEvent.scss';
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 
 export const CreateEvent = () => {
     const vehicleStylesAtom = useRecoilValue(staticResources["vehicle_styles"]);
@@ -69,6 +70,7 @@ export const CreateEvent = () => {
         setCities(
             cityAtom.map((each) => ({ label: each.objectDsc, value: each.objectCd }))
         );
+        
       }, [
         vehicleStylesAtom,
         jurisdictionsAtom,
@@ -78,6 +80,22 @@ export const CreateEvent = () => {
         cityAtom,
         impoundAtom
     ]);
+
+    // useEffect(() => {
+    //     const element = document.getElementById('printdiv');
+    //     toPng(element).then(blob => {
+    //         // Do something with your blob
+    //         console.log(blob)
+    //         // save the blob as png file in localstorage
+    //         // localStorage.setItem('image', blob);
+        
+
+    //         const link = document.createElement('a');
+    //         link.download = 'my-image-name.png';
+    //         link.href = blob;
+    //         link.click();        
+    //   });
+    // }, [])
 
     const handleClose = async () => {
         setShow(false) 
@@ -131,6 +149,19 @@ export const CreateEvent = () => {
     }
 
     const printForms = async () => {
+        const element = document.getElementById('printdiv');
+        toPng(element).then(blob => {
+            // Do something with your blob
+            console.log(blob)
+            // save the blob as png file in localstorage
+            // localStorage.setItem('image', blob);
+        
+
+            const link = document.createElement('a');
+            link.download = 'my-image-name.png';
+            link.href = blob;
+            link.click();    
+        });
         handleShow('Print Form', 'If you print this form you cannot go back and edit it, please confirm you wish to proceed.', 'Print', () => handlePrintForms() )   
     }
 
@@ -140,6 +171,7 @@ export const CreateEvent = () => {
 
     const handlePrintForms = async () => {
         setIsPrinted(true);
+        
         window.print();
         nextPage()
     }
@@ -206,7 +238,7 @@ export const CreateEvent = () => {
             );
           case 1:
             return(
-                <div>
+                <div id="printdiv">
                     {renderSVGForm(values)}
                 </div> 
             )
