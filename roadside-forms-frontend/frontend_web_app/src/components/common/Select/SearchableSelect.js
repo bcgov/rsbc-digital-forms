@@ -6,14 +6,15 @@ export const SearchableSelect = ({ onChange, label, required, options, ...props 
   const [field, meta, helpers] = useField(props.name);
 
   const handleChange = (selectedOption) => {
-    helpers.setValue(selectedOption.value);
+    helpers.setValue(selectedOption);
     if (onChange) {
       onChange(selectedOption);
     }
   };
+ 
 
 
-  const value = field.value && options.find((option) => option.value === field.value.value);
+  const value = field.value ? options.find((option) => option.value === field.value.value) || field.value : null;
 
   return (
     <div>
@@ -22,10 +23,16 @@ export const SearchableSelect = ({ onChange, label, required, options, ...props 
         {...field}
         {...props}
         value={value}
-        id={field.name}
+        inputId={`${field.name}-select`}
         onChange={handleChange}
         options={options}
         isSearchable
+      />
+      <input
+        name={field.name}
+        id={field.name}
+        type="hidden"
+        value={field.value ? JSON.stringify(field.value) : ''} // Assuming field.value is an object with a value property
       />
       {meta.touched && meta.error ? <div className="error-message">{meta.error}</div> : null}
     </div>
