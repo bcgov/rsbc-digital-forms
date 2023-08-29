@@ -69,3 +69,17 @@ $primary: #003366; // Change this to your desired primary color
 .flex{
     display: flex; 
 }
+
+::-webkit-scrollbar {
+    width: 2em;
+    height: 2em;
+}
+::-webkit-scrollbar-button {
+    background: #ccc;
+}
+::-webkit-scrollbar-thumb {
+    background: #eee;
+}
+::-webkit-scrollbar-track-piece {
+    background: #888;
+}

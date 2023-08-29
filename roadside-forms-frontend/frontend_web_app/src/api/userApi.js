@@ -30,13 +30,12 @@ export const UserApi = {
             method: "DELETE",
             headers:{...headers},
           }).then ( (response) => {
-            console.log(response)
             return {
                 status: response.status,
                 data: response.data
             }
         }).catch((error) =>{
-            console.log(error)
+            // console.log(error)
             return {
                 status: error.status,
                 data: error.response
@@ -53,13 +52,12 @@ export const UserApi = {
           method: "GET",
           headers:{...headers},
         }).then ( (response) => {
-          console.log(response)
           return {
               status: response.status,
               data: response.data
           }
       }).catch((error) =>{
-          console.log(error)
+          // console.log(error)
           return {
               status: error.status,
               data: error.response
@@ -74,13 +72,12 @@ export const UserApi = {
           headers:{...headers},
           data: {...data},
         }).then ( (response) => {
-          console.log(response)
           return {
               status: response.status,
               data: response.data
           }
       }).catch((error) =>{
-          console.log(error)
+          // console.log(error)
           return {
               status: error.status,
               data: error.response
@@ -95,13 +92,12 @@ export const UserApi = {
             method: "PATCH",
             headers:{...headers},
           }).then ( (response) => {
-            console.log(response)
             return {
                 status: response.status,
                 data: response.data
             }
         }).catch((error) =>{
-            console.log(error)
+            // console.log(error)
             return {
                 status: error.status,
                 data: error.response
@@ -116,13 +112,12 @@ export const UserApi = {
               data: {"role_name": "administrator"},
               headers:{...headers},
             }).then ( (response) => {
-              console.log(response)
               return {
                   status: response.status,
                   data: response.data
               }
           }).catch((error) =>{
-              console.log(error)
+              // console.log(error)
               return {
                   status: error.status,
                   data: error.response
