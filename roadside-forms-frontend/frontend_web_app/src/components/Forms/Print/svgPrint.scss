@@ -2,6 +2,10 @@
     transform: scale(0.2);
   }
 
+.fontMedium {
+  font-size: 3pt;
+}
+
 .fontSmall {
   font-size: 2.5pt;
 }
@@ -16,6 +20,20 @@
 
 .fontText {
   font-size: 3pt;
+}
+
+.fontBarcode{
+  font-family: "barcode",serif;
+  font-weight: normal;
+  font-size: 7.5pt
+}
+
+$font_path: ('../../../assets');
+@font-face {
+  font-family: "barcode";
+  src: local("barcode"), url($font_path + '/libre-barcode-39-v19-latin-regular.woff') format('woff');
+  font-style: normal;
+  font-weight: 400;
 }
 
 @media print {
@@ -57,8 +75,6 @@
     all: unset !important;
   }
 
-  
-
   .svg-wrapper{
     page-break-before:always;
 
@@ -67,7 +83,7 @@
       display: block !important;
     } 
     &--portrait {
-      transform: scale(1.25) translate(0px, 100px);
+      transform: scale(1.25) translate(-25px, 110px);
       display: block !important;
     } 
   }
