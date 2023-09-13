@@ -1,42 +1,48 @@
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import { useFormikContext} from 'formik';
+import PropTypes from 'prop-types';
 import { Radio } from "../../common/Radio/radio"
 import { Input } from "../../common/Input/Input"
 import { SearchableSelect } from "../../common/Select/SearchableSelect"
 import { DatePickerField } from '../../common/DateField/DatePicker';
 import { TimeInputField } from '../../common/Input/TimeInputField';
-import PropTypes from 'prop-types';
 
 export const Prohibition = (props) => {
+    const { values } = useFormikContext();
     const {cities} = props;
     return (
         <div className='border-design-form left text-font'>
-            <h3 >Prohibition</h3>
-            <div className="row">
-                <div className="col">
+            <h3 >{values['24Hour'] && "Prohibition"}{values['VI'] && values['24Hour'] && " & " }{values['VI'] && "Time and Place"}</h3>
+            {values['24Hour'] &&
+            <Row>
+                <Col>
                     <Radio label= "Type of Prohibition (select one)" name="type_of_prohibition" options={[
                     { label: 'Alcohol 215(2)', value: 'alcohol' },
                     { label: 'Drugs 215(3)', value: 'drugs' }
                     ]} required />
-                </div>
-            </div>
-            <div className="row">
-                <div className="col-sm-8">
+                </Col>
+            </Row>
+            }
+            <Row>
+                <Col sm={8}>
                     <Input label="Intersection or Address of Offence" name="intersection_or_address_of_offence"  className="field-height field-width" type="text" required></Input>
-                </div>
-                <div className="col-sm-4">
+                </Col>
+                <Col sm={4}>
                     <SearchableSelect  className='field-height field-width' label="City"  name="offence_city" options={cities} required/>
-                </div>
-            </div>
-            <div className="row">
-                <div className="col-sm-2">
+                </Col>
+            </Row>
+            <Row>
+                <Col sm={2}>
                     <Input label="Agency File #" name="agency_file_no"  className="field-height field-width" type="text" required></Input>
-                </div>
-                <div className='col-sm-5'>
+                </Col>
+                <Col sm={5}>
                     <DatePickerField name="date_of_driving" label="Date of Driving - care or control" className="field-height field-width" required/>
-                </div>
-                <div className='col-sm-5'>
+                </Col>
+                <Col sm={5}>
                     <TimeInputField label="Time of Driving - care or control" className="field-height field-width" name="time_of_driving" required/>
-                </div>
-            </div>
+                </Col>
+            </Row>
         </div>
     )
 }
