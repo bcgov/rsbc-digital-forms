@@ -8,7 +8,16 @@ import { DriverInfo } from '../CommonForm/driverInfo';
 import { InitialValues } from './initialValues';
 import { VehicleInfo } from '../CommonForm/vehicleInfo';
 import { OfficerInfo } from '../CommonForm/officerInfo';
-import { TwentyFourHourForm } from '../Forms/TwentyFourHourForm/twentyFourHourForm';
+import { VehicleImpoundment } from '../Forms/TwentyFourHourForm/vehicleImpoundment';
+import { Prohibition } from '../Forms/TwentyFourHourForm/prohibition';
+import { ReasonableGrounds } from '../Forms/TwentyFourHourForm/reasonableGrounds';
+import { TestAdministered } from '../Forms/TwentyFourHourForm/testAdministered';
+import { VehicleImpoundmentIRP } from '../Forms/VehicleImpoundment/vehicleImpoundmentIRP';
+import { VehicleImpoundmentReason } from '../Forms/VehicleImpoundment/vehicleImpoundmentReason';
+import { Excessive } from '../Forms/VehicleImpoundment/excessive';
+import { Unlicensed } from '../Forms/VehicleImpoundment/unlicensed';
+import { LinkageFactors } from '../Forms/VehicleImpoundment/linkageFactors';
+import {IncidentDetails} from '../Forms/VehicleImpoundment/incidentDetails';
 import { RegisteredOwnerInfo } from '../CommonForm/registeredOwnerInfo';
 import { useRecoilValue } from 'recoil';
 import { useNavigate } from 'react-router-dom';
@@ -116,6 +125,11 @@ export const CreateEvent = () => {
         return years;
       };
 
+    const setNSCVI = (values) => {
+        const nscNumber = values['nsc_no']
+        nscNumber === "" ? values['is_nsc'] = false : values['is_nsc'] = true;
+    }
+
     const onSubmit = (values, { setSubmitting }) => {
         setSubmitting(false);
     };
@@ -141,7 +155,15 @@ export const CreateEvent = () => {
     const handlePrintForms = async () => {
         setIsPrinted(true);
         window.print();
-        nextPage()
+        // handleShow('','','', () => handleFailedPrint)
+        if(isPrinted){
+            nextPage()
+        }
+    }
+
+    const handleFailedPrint = async () => {
+        setIsPrinted(false);
+        handlePrintForms();
     }
 
     const nextPage = () => {
@@ -162,10 +184,11 @@ export const CreateEvent = () => {
         for(const item in forms){
             if (forms[item]) {
                 for (const form in formsPNG[item]) {
-                    if (form === "ILO" && !forms["VI"]){ 
+                    console.log(form, item)
+                    if (form === "ILO" && values['vehicle_impounded'] === 'NO'){ 
                         break
                     }
-                    componentsToRender.push(<SVGprint key={item+form} form={formsPNG[item][form]["png"]} formAspect={formsPNG[item][form]["aspectClass"]} formType={form} values={values}/>)
+                    componentsToRender.push(<SVGprint key={item+form} form={formsPNG[item][form]["png"]} formAspect={formsPNG[item][form]["aspectClass"]} formLayout={item} formType={form} values={values}/>)
                 }
             }
         }
@@ -199,12 +222,35 @@ export const CreateEvent = () => {
             <VehicleInfo vehicleColours={vehicleColours} years={generateYearOptions()} provinces={provinces} jurisdictions={jurisdictions} vehicles={vehicles} vehicleStyles={vehicleStyles}/>
             <RegisteredOwnerInfo provinces={provinces}/>
         </div>
-        { values['24Hour'] &&  <TwentyFourHourForm cities={cities} impoundLotOperators={impoundLotOperators}/> }
+        { (values['24Hour'] || values['VI']) && <>
+            <VehicleImpoundment impoundLotOperators={impoundLotOperators}/>
+            <Prohibition cities={cities}/>
+            
+        </> }
+        {values['VI'] && 
+        <>
+            <VehicleImpoundmentIRP/>
+            <VehicleImpoundmentReason/>
+            {values['excessive_speed'] && <Excessive/>}
+            {values['unlicensed'] && <Unlicensed/>}
+            <LinkageFactors/>
+            <IncidentDetails/>
+        </>
+        }
+        {values['24Hour'] &&
+        <>
+            <ReasonableGrounds/>
+            <TestAdministered/>
+        </>
+        }
         <OfficerInfo/>
         </>
                 
             );
           case 1:
+            if(values["VI"]){
+                setNSCVI(values)
+            }
             return(
                 <div>
                     {renderSVGForm(values)}
