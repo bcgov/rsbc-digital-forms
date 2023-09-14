@@ -155,7 +155,7 @@ export const CreateEvent = () => {
     const handlePrintForms = async () => {
         setIsPrinted(true);
         window.print();
-        handleShow('','','', () => handleFailedPrint)
+        // handleShow('','','', () => handleFailedPrint)
         if(isPrinted){
             nextPage()
         }
