@@ -2,8 +2,8 @@ import moment from "moment-timezone"
 
 import * as staticData from "../atoms/staticData"
 import twentyFourHourDriverform from '../assets/MV2634_102018_driver.png';
+import viDriverForm from '../assets/MV2721_201502.png'
 import appealsForm from '../assets/MV2721_201502_appeal.png'
-import twentyFourHourOfficerform from '../assets/MV2634_102018_police.png';
 
 const eventValueKeys = ["event_id", "icbc_sent_status", "drivers_licence_no", "drivers_licence_jurisdiction",
  "driver_last_name", "driver_given_name", "driver_dob", "driver_address", "driver_city", "driver_prov_state",
@@ -49,10 +49,10 @@ export const formTypes = (form) => {
     return (forms)   
 }
 
-export const formsPNG = {"TwentyFourHour":{"driver":{"png":twentyFourHourDriverform, "aspectClass":'--landscape'},"APPEAL": {"png":appealsForm, "aspectClass":"--portrait"}, "ILO":{"png":twentyFourHourDriverform, "aspectClass":"--landscape"}}}
+export const formsPNG = {"TwentyFourHour":{"DRIVER":{"png":twentyFourHourDriverform, "aspectClass":'--landscape'}, "ILO":{"png":twentyFourHourDriverform, "aspectClass":"--landscape"}},"VI":{"DRIVER":{"png":viDriverForm, "aspectClass":'--portrait'}, "APPEAL":{"png":appealsForm, "aspectClass":'--portrait'}, "ILO":{"png":viDriverForm, "aspectClass":"--portrait"}}}
 
 const fieldsToSplit = {"VEHICLE_MAKE":0, "VEHICLE_MODEL":1}
-const dateFieldSplit = ["date_of_driving"]
+const dateFieldSplit = ["date_of_driving", "driver_licence_expiry"]
 
 
 export const printFormatHelper = (values, data, key) => {

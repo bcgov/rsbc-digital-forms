@@ -16,10 +16,10 @@ export const ConfirmationStep = () => {
   const certifyNoticeDelivery = values['certify-notice-delivery'];
   const twentyFourHourForm = values['24Hour']
   const vi = values['VI']
-  const driverGivenName = values['given-name']
-  const driverLastName = values['last-name']
-  const dateOfDriving = values['date-of-driving']
-  const timeOfDriving = values['time-of-driving']
+  const driverGivenName = values['driver_given_name']
+  const driverLastName = values['driver_last_name']
+  const dateOfDriving = values['date_of_driving']
+  const timeOfDriving = values['time_of_driving']
   const officerName = values[''] + ', ' + values['']
 
   const generateLabel = () => {
