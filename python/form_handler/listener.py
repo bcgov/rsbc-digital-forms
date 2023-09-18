@@ -63,17 +63,27 @@ class DFListener:
         channel.basic_qos(prefetch_count=1)
         print('this is the queue name: {}'.format('dfevents'))
         channel.basic_consume(on_message_callback=self.callback,queue='dfevents',auto_ack=False)
-        print(' [*] Waiting for logs. To exit press CTRL+C')
-        channel.start_consuming()
+        # print(' [*] Waiting for logs. To exit press CTRL+C')
+        # channel.start_consuming()
+        self.channel=channel
 
     @staticmethod
     def callback(ch, method, properties, body):
         print(body)
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
+    
+    def consume(self):
+        """
+            Start listening for messages on the WATCH_QUEUE
+            when a message arrives invoke the callback()
+        """
+        print(' [*] Waiting for logs. To exit press CTRL+C')
+        self.channel.start_consuming()
+
 
 if __name__ == "__main__":
-    DFListener()
+    DFListener().consume()
     # Listener(
     #     Config(),
     #     RabbitMQ(Config()),
