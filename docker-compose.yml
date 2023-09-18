@@ -2,26 +2,37 @@ version: '3'
  
 services:
  
-    # rabbitmq:
-    #   build: ./rabbitmq
-    #   environment:
-    #       # The RABBITMQ_DEFAULT_USER is used
-    #       # to connect to the web admin
-    #       RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
-    #       RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
-    #       RABBITMQ_LOGS: "WARNING"
-    #   networks:
-    #     - docker-network
-    #   ports:
-    #       - "15672:15672" # Web admin port
-    #       - "5672:5672"   # Do not expose this port in production
+    rabbitmq:
+      build: ./rabbitmq
+      environment:
+          # The RABBITMQ_DEFAULT_USER is used
+          # to connect to the web admin
+          RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
+          RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
+          RABBITMQ_LOGS: "DEBUG"
+      networks:
+        - docker-network
+      healthcheck:
+        # test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+        test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+        interval: 5s
+        timeout: 15s
+        retries: 5
+      ports:
+          - "15672:15672" # Web admin port
+          - "5672:5672"   # Do not expose this port in production
 
     # form_handler:
     #   build:
     #     context: python
     #     dockerfile: form_handler/Dockerfile-local
     #   depends_on:
-    #     - rabbitmq
+    #     rabbitmq:
+    #       condition: service_healthy
+    #   restart: on-failure:20
+
+    #   networks:
+    #     - docker-network
     #   environment:
     #     RABBITMQ_URL: "${RABBITMQ_URL}"
     #     RABBITMQ_USER: "${RABBITMQ_USER}"
@@ -65,9 +76,12 @@ services:
       environment:
         MINIO_ROOT_USER: 'root'
         MINIO_ROOT_PASSWORD: 'password'
+        BITNAMI_DEBUG: "true"
       volumes:
         - 'minio:/data/minio'
       command: minio server /data/minio --console-address ":9090"
+      networks:
+        - docker-network
 
 
     roadside-forms-api:
