@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3'
  
 services:
  
@@ -10,9 +10,13 @@ services:
           RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
           RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
           RABBITMQ_LOGS: "DEBUG"
+      # volumes:
+      #     - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      #     - ./definitions.json:/etc/rabbitmq/definitions.json
       networks:
         - docker-network
       healthcheck:
+        # test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
         test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
         interval: 5s
         timeout: 15s
