@@ -7,6 +7,11 @@ import logging
 import logging.config
 import json
 import pika
+# from form_handler.config import Config
+# import common.helper as helper
+# import form_handler.business as business
+# from common.rabbitmq import RabbitMQ
+# from common.message import decode_message
 
 logging.config.dictConfig(Config.LOGGING)
 
@@ -36,10 +41,10 @@ class Listener:
         message_dict = decode_message(body, self.config.ENCRYPT_KEY)
 
         logging.info("callback() invoked: {}".format(json.dumps(message_dict)))
-        helper.middle_logic(helper.get_listeners(business.process_incoming_form(), message_dict['event_type']),
-                            message=message_dict,
-                            config=self.config,
-                            writer=self.writer)
+        # helper.middle_logic(helper.get_listeners(business.process_incoming_form(), message_dict['event_type']),
+        #                     message=message_dict,
+        #                     config=self.config,
+        #                     writer=self.writer)
 
         # Regardless of whether the process above follows the happy path or not,
         # we need to acknowledge receipt of the message to RabbitMQ below. This
