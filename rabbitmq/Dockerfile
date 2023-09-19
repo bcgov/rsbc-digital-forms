@@ -28,4 +28,13 @@ RUN set -eux; \
 
 RUN rabbitmq-plugins enable rabbitmq_shovel
 
+# Copy the create_queue.sh script to the image
+# COPY init.sh /usr/local/bin/init.sh
+# RUN chmod +x /usr/local/bin/init.sh
+
+COPY definitions.json /etc/rabbitmq/definitions.json
+COPY rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
+
 EXPOSE 15671 15672
+
+# CMD ["/usr/local/bin/init.sh"]
