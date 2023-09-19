@@ -10,6 +10,9 @@ services:
           RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
           RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
           RABBITMQ_LOGS: "DEBUG"
+      # volumes:
+      #     - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      #     - ./definitions.json:/etc/rabbitmq/definitions.json
       networks:
         - docker-network
       healthcheck:
