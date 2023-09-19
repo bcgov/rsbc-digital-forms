@@ -80,6 +80,20 @@ services:
         MINIO_ROOT_USER: 'root'
         MINIO_ROOT_PASSWORD: 'password'
         BITNAMI_DEBUG: "true"
+        MINIO_NOTIFY_AMQP_ENABLE_DF_RABBITMQ: "on"
+        MINIO_NOTIFY_AMQP_URL_DF_RABBITMQ: "amqp://admin:password@rabbitmq:5672"
+        MINIO_NOTIFY_AMQP_EXCHANGE_DF_RABBITMQ: "amq.direct"
+        MINIO_NOTIFY_AMQP_EXCHANGE_TYPE_DF_RABBITMQ: "direct"
+        MINIO_NOTIFY_AMQP_ROUTING_KEY_DF_RABBITMQ: "dfevents"
+        MINIO_NOTIFY_AMQP_AUTO_DELETED_DF_RABBITMQ: "off"
+        MINIO_NOTIFY_AMQP_DELIVERY_MODE_DF_RABBITMQ: "2"
+        MINIO_NOTIFY_AMQP_MANDATORY_DF_RABBITMQ: "off"
+        MINIO_NOTIFY_AMQP_IMMEDIATE_DF_RABBITMQ: "off"
+        MINIO_NOTIFY_AMQP_INTERNAL_DF_RABBITMQ: "off"
+        MINIO_NOTIFY_AMQP_NO_WAIT_DF_RABBITMQ: "off"
+        MINIO_NOTIFY_AMQP_DURABLE_DF_RABBITMQ: "on"
+        MINIO_NOTIFY_AMQP_QUEUE_DIR_DF_RABBITMQ: "/opt/events"
+        MINIO_NOTIFY_AMQP_QUEUE_LIMIT_DF_RABBITMQ: "100"
       volumes:
         - 'minio:/data/minio'
       command: minio server /data/minio --console-address ":9090"
