@@ -51,6 +51,7 @@ class Listener:
 class DFListener:
     def __init__(self):
         hostname='amqp://admin:password@rabbitmq:5672'
+        print('changed1')
         print(' [*] Connecting to rabbitmq on {}'.format(hostname))
         credentials = pika.PlainCredentials('admin', 'password')
         connection = pika.BlockingConnection(pika.ConnectionParameters(
@@ -59,10 +60,10 @@ class DFListener:
         channel.exchange_declare(exchange='amq.direct', exchange_type='direct', durable=True)
         # result = channel.queue_declare(exclusive=False, queue='dfevents', durable=True)
         # queue_name = result.method.queue
-        channel.queue_bind(exchange='amq.direct',queue='dfevents')      
+        channel.queue_bind(exchange='amq.direct',queue='df-storage-events')      
         channel.basic_qos(prefetch_count=1)
         print('this is the queue name: {}'.format('dfevents'))
-        channel.basic_consume(on_message_callback=self.callback,queue='dfevents',auto_ack=False)
+        channel.basic_consume(on_message_callback=self.callback,queue='df-storage-events',auto_ack=False)
         # print(' [*] Waiting for logs. To exit press CTRL+C')
         # channel.start_consuming()
         self.channel=channel
