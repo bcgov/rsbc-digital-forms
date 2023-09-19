@@ -29,7 +29,7 @@ class Listener:
             Start listening for messages on the WATCH_QUEUE
             when a message arrives invoke the callback()
         """
-        self.listener.consume(self.config.WATCH_QUEUE, self.callback)
+        self.listener.consume(self.config.STORAGE_WATCH_QUEUE, self.callback)
 
     def callback(self, ch, method, properties, body):
         # convert body (in bytes) to string
@@ -84,9 +84,9 @@ class DFListener:
 
 
 if __name__ == "__main__":
-    DFListener().consume()
-    # Listener(
-    #     Config(),
-    #     RabbitMQ(Config()),
-    #     RabbitMQ(Config())
-    # ).main()
+    # DFListener().consume()
+    Listener(
+        Config(),
+        RabbitMQ(Config()),
+        RabbitMQ(Config())
+    ).main()
