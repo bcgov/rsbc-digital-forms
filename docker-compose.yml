@@ -21,17 +21,17 @@ services:
           - "15672:15672" # Web admin port
           - "5672:5672"   # Do not expose this port in production
 
-    form_handler:
-      build:
-        context: python
-        dockerfile: form_handler/Dockerfile-local
-      depends_on:
-        rabbitmq:
-          condition: service_healthy
-      restart: on-failure:20
+    # form_handler:
+    #   build:
+    #     context: python
+    #     dockerfile: form_handler/Dockerfile-local
+    #   depends_on:
+    #     rabbitmq:
+    #       condition: service_healthy
+    #   restart: on-failure:20
 
-      networks:
-        - docker-network
+    #   networks:
+    #     - docker-network
     #   environment:
     #     RABBITMQ_URL: "${RABBITMQ_URL}"
     #     RABBITMQ_USER: "${RABBITMQ_USER}"

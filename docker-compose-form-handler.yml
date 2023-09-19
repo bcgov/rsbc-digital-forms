@@ -1,0 +1,22 @@
+# version: '3.1'
+ 
+services:
+
+    form_handler_test:
+      build:
+        context: python
+        dockerfile: form_handler/Dockerfile-local
+      x-develop:
+        watch:
+          - action: sync
+            path: ./python
+            target: /home/appuser/python
+          - action: rebuild
+            path: ./python/form_handler/listener.py
+      # depends_on:
+      #   rabbitmq:
+      #     condition: service_healthy
+      restart: on-failure:20
+      # networks:
+      #   - host
+      network_mode: "host"
