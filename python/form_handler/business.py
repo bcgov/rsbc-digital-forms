@@ -20,6 +20,20 @@ def process_incoming_form() -> dict:
             {"try": actions.add_to_failed_queue, "fail": []},
             {"try": rsi_email.admin_unknown_event_type, "fail": []}
         ],
+        "vi_form": [
+            # TODO: query form data and event data using form id from input
+            # TODO: if event retry count is more than 10, add to failed queue
+            # TODO: if form data is not found, add to hold queue
+            # TODO: if event data is not found, add to hold queue
+            # TODO: if form data is found, but event data is not found, add to hold queue
+            # TODO: if form data is found, and event data is found, continue
+            # TODO: Validate form and event data based on payload needed for vips
+            # TODO: if form data is invalid, add to failed queue
+            # TODO: if data is valid prep payload for vips
+            # TODO: if fails to send to vips, add to hold queue and add data retry_count to event table
+            # TODO: if success update vips status on event row on db and retry count to 0
+
+        ],
         "send_disclosure": [
             {"try": actions.is_not_on_hold, "fail": [
                 {"try": actions.add_to_hold_queue, "fail": []}

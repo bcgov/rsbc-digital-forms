@@ -39,6 +39,8 @@ class Listener:
     def callback(self, ch, method, properties, body):
         # convert body (in bytes) to string
         message_dict = decode_message(body, self.config.ENCRYPT_KEY)
+        # TODO: Get event type by querying db
+        # TODO: Pass event type and event to middle logic
 
         logging.info("callback() invoked: {}".format(json.dumps(message_dict)))
         # helper.middle_logic(helper.get_listeners(business.process_incoming_form(), message_dict['event_type']),
