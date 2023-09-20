@@ -3,6 +3,7 @@ import python.common.actions as actions
 import python.common.rsi_email as rsi_email
 import python.common.splunk_application_for_review as splunk
 import python.common.splunk as common_splunk
+from python.form_handler.actions import get_storage_ref_event_type
 
 import python.common.ride_actions as ride_actions
 
@@ -21,7 +22,7 @@ def process_incoming_form() -> dict:
             {"try": rsi_email.admin_unknown_event_type, "fail": []}
         ],
         "vi_form": [
-            # TODO: query form data and event data using form id from input
+            # TODO: query form data and event data using storage key from input
             # TODO: if event retry count is more than 10, add to failed queue
             # TODO: if form data is not found, add to hold queue
             # TODO: if event data is not found, add to hold queue
@@ -32,6 +33,7 @@ def process_incoming_form() -> dict:
             # TODO: if data is valid prep payload for vips
             # TODO: if fails to send to vips, add to hold queue and add data retry_count to event table
             # TODO: if success update vips status on event row on db and retry count to 0
+            {"try": get_storage_ref_event_type, "fail": []}
 
         ],
         "send_disclosure": [

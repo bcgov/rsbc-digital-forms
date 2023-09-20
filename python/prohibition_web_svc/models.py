@@ -282,6 +282,8 @@ class Event(db.Model):
     event_id:int
     icbc_sent_status:str
     vi_sent_status:str
+    icbc_retry_count:int
+    vi_retry_count:int
     driver_licence_no:str
     driver_jurisdiction:str
     driver_last_name: str
@@ -321,6 +323,8 @@ class Event(db.Model):
     event_id = db.Column(db.Integer, primary_key=True)
     icbc_sent_status = db.Column(db.String)
     vi_sent_status = db.Column(db.String)
+    icbc_retry_count = db.Column(db.Integer)
+    vi_retry_count = db.Column(db.Integer)
     driver_licence_no = db.Column(db.String)
     driver_jurisdiction = db.Column(db.String)
     driver_last_name = db.Column(db.String)

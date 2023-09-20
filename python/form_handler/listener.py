@@ -1,6 +1,7 @@
 from python.form_handler.config import Config
 import python.common.helper as helper
 import python.form_handler.business as business
+from python.form_handler.helper import middle_logic, get_listeners
 from python.common.rabbitmq import RabbitMQ
 from python.common.message import decode_message
 import logging
@@ -40,13 +41,15 @@ class Listener:
         # convert body (in bytes) to string
         message_dict = decode_message(body, self.config.ENCRYPT_KEY)
         # TODO: Get event type by querying db
+        # message_dict['event_type'] = get_storage_ref_event_type(message_dict)
+        message_dict['event_type'] = 'vi_form'
         # TODO: Pass event type and event to middle logic
 
         logging.info("callback() invoked: {}".format(json.dumps(message_dict)))
-        # helper.middle_logic(helper.get_listeners(business.process_incoming_form(), message_dict['event_type']),
-        #                     message=message_dict,
-        #                     config=self.config,
-        #                     writer=self.writer)
+        helper.middle_logic(helper.get_listeners(business.process_incoming_form(), message_dict['event_type']),
+                            message=message_dict,
+                            config=self.config,
+                            writer=self.writer)
 
         # Regardless of whether the process above follows the happy path or not,
         # we need to acknowledge receipt of the message to RabbitMQ below. This

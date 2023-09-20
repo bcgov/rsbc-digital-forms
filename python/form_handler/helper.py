@@ -4,8 +4,13 @@ import csv
 import pytz
 import logging
 import logging.config
-import datetime
 from python.common.config import Config
+from cerberus import Validator
+from cerberus import errors
+import logging
+import json
+from datetime import datetime
+from python.prohibition_web_svc.models import db, Event,FormStorageRefs
 
 logging.config.dictConfig(Config.LOGGING)
 
@@ -48,6 +53,7 @@ def middle_logic(functions: list, **args):
     if functions:
         try_fail_node = functions.pop(0)
         logging.debug('calling try function: ' + try_fail_node['try'].__name__)
+        print(try_fail_node['try'](**args))
         flag, args = try_fail_node['try'](**args)
         logging.debug("result from {} is {}".format(try_fail_node['try'].__name__, flag))
         if flag:
@@ -56,3 +62,5 @@ def middle_logic(functions: list, **args):
             logging.debug('calling try function: ' + try_fail_node['try'].__name__)
             args = middle_logic(try_fail_node['fail'], **args)
     return args
+
+
