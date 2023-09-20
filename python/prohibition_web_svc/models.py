@@ -281,6 +281,7 @@ class Event(db.Model):
     
     event_id:int
     icbc_sent_status:str
+    vi_sent_status:str
     driver_licence_no:str
     driver_jurisdiction:str
     driver_last_name: str
@@ -319,6 +320,7 @@ class Event(db.Model):
 
     event_id = db.Column(db.Integer, primary_key=True)
     icbc_sent_status = db.Column(db.String)
+    vi_sent_status = db.Column(db.String)
     driver_licence_no = db.Column(db.String)
     driver_jurisdiction = db.Column(db.String)
     driver_last_name = db.Column(db.String)
@@ -541,5 +543,30 @@ class VIForm(db.Model):
     speed_confirmation_technique=db.Column(db.String)
     incident_details=db.Column(db.String)
     incident_details_extra_page=db.Column(db.Boolean)
+    created_dt = db.Column(db.DateTime)
+    updated_dt = db.Column(db.DateTime)
+
+@dataclass    
+class FormStorageRefs(db.Model):
+    __tablename__ = 'form_storage_refs'
+    
+    form_id_24h:int
+    form_id_irp:int
+    form_id_vi:int
+    form_id_12h:int
+    event_id:int
+    form_type:str
+    storage_key:str
+    created_dt:datetime
+    updated_dt:datetime
+
+
+    storage_key = db.Column(db.String, primary_key=True)
+    form_id_24h=db.Column(db.Integer, db.ForeignKey('twenty_four_hour_form.form_id'))
+    form_id_irp=db.Column(db.Integer, db.ForeignKey('irp_form.form_id'))
+    form_id_vi=db.Column(db.Integer, db.ForeignKey('vi_form.form_id'))
+    form_id_12h=db.Column(db.Integer, db.ForeignKey('twelve_hour_form.form_id'))
+    event_id=db.Column(db.Integer, db.ForeignKey('event.event_id'))
+    form_type=db.Column(db.String)
     created_dt = db.Column(db.DateTime)
     updated_dt = db.Column(db.DateTime)
