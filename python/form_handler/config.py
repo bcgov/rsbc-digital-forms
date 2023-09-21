@@ -10,6 +10,14 @@ class Config(BaseConfig):
     STORAGE_HOLD_QUEUE = os.getenv('STORAGE_HOLD_QUEUE', 'df-storage-events-hold')
     STORAGE_FAIL_QUEUE = os.getenv('STORAGE_FAIL_QUEUE', 'df-storage-events-fail')
 
+    DB_HOST = os.environ.get('DB_HOST', 'db')
+    DB_USER = os.environ.get('DB_USER', 'testuser')
+    DB_PASS = os.environ.get('DB_PASS', 'pass')
+    DB_PORT = os.environ.get('DB_PORT', 5432)
+    DB_NAME = os.environ.get('DB_NAME', 'test')
+    DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    FLASK_SECRET_KEY = "12345"
+
     # DAYS_TO_DELAY_FOR_VIPS_DATA_ENTRY   = os.getenv('DAYS_TO_DELAY_FOR_VIPS_DATA_ENTRY', '8')
     # HOURS_TO_HOLD_BEFORE_TRYING_VIPS    = os.getenv('HOURS_TO_HOLD_BEFORE_TRYING_VIPS', '12')
     #
