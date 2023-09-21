@@ -133,7 +133,7 @@ def get_event_form_data(**args) ->tuple:
 def validate_event_retry_count(**args)->tuple:
     logging.info("inside validate_event_retry_count()")
     logging.debug(args)
-    # TODO: if event retry count is more than 10
+    # DONE: if event retry count is more than 10
     try:
         retry_count=0
         event_type=args.get('event_type')
@@ -158,7 +158,6 @@ def validate_event_retry_count(**args)->tuple:
 def validate_event_data(**args)->tuple:
     logging.debug("inside validate_event_data()")
     logging.debug(args)
-    # TODO: if event retry count is more than 10
     # TODO: validate vips payload
 
     return True,args
