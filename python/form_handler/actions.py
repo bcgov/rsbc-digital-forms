@@ -3,7 +3,7 @@ import csv
 import pytz
 import logging
 import logging.config
-from python.common.config import Config
+from python.form_handler.config import Config
 from cerberus import Validator
 from cerberus import errors
 import logging
@@ -138,13 +138,13 @@ def validate_event_retry_count(**args)->tuple:
         retry_count=0
         event_type=args.get('event_type')
         if event_type=='vi':
-            retry_count=args.get('form_data').get('vi_retry_count')
+            retry_count=args.get('event_data').get('vi_retry_count')
         elif event_type=='irp':
             pass
         elif event_type=='24h':
-            retry_count=args.get('form_data').get('icbc_retry_count')
+            retry_count=args.get('event_data').get('icbc_retry_count')
         elif event_type=='12h':
-            retry_count=args.get('form_data').get('icbc_retry_count')
+            retry_count=args.get('event_data').get('icbc_retry_count')
         else:
             return False,args
         if retry_count >= Config.SYSTEM_RECORD_MAX_RETRIES:
@@ -160,6 +160,35 @@ def validate_event_data(**args)->tuple:
     logging.debug(args)
     # TODO: validate vips payload
 
+    return True,args
+
+
+def update_event_status_processing(**args)->tuple:
+    logging.debug("inside update_event_status_processing()")
+    logging.debug(args)
+    try:
+        application=args.get('app')
+        db=args.get('db')
+        event_id=args.get('event_data').get('event_id')
+        event_type=args.get('event_type')
+        with application.app_context():
+            if event_type=='vi':
+                event = db.session.query(Event) \
+                    .filter(Event.event_id == event_id) \
+                    .one()
+                event.vi_sent_status = 'processing'
+                db.session.commit()
+            elif event_type=='irp':
+                pass
+            elif event_type=='24h' or event_type=='12h':
+                event = db.session.query(Event) \
+                    .filter(Event.event_id == event_id) \
+                    .one()
+                event.icbc_sent_status = 'processing'
+                db.session.commit()
+    except Exception as e:
+        logging.error(e)
+        return False,args
     return True,args
 
 def add_unknown_event_error_to_message(**args)->tuple:
