@@ -8,6 +8,9 @@ import logging
 import logging.config
 import json
 import pika
+
+from flask_api import FlaskAPI
+from python.prohibition_web_svc.models import db
 # from form_handler.config import Config
 # import common.helper as helper
 # import form_handler.business as business
@@ -15,6 +18,14 @@ import pika
 # from common.message import decode_message
 
 logging.config.dictConfig(Config.LOGGING)
+
+application = FlaskAPI(__name__)
+application.config['SECRET_KEY'] = Config.FLASK_SECRET_KEY
+application.config['SQLALCHEMY_DATABASE_URI'] = Config.DATABASE_URI
+application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+application.config["SQLALCHEMY_ECHO"] = False
+
+db.init_app(application)
 
 
 class Listener:
@@ -49,7 +60,9 @@ class Listener:
         helper.middle_logic(helper.get_listeners(business.process_incoming_form(), message_dict['event_type']),
                             message=message_dict,
                             config=self.config,
-                            writer=self.writer)
+                            writer=self.writer,
+                            app=application,
+                            db=db)
 
         # Regardless of whether the process above follows the happy path or not,
         # we need to acknowledge receipt of the message to RabbitMQ below. This
@@ -57,6 +70,12 @@ class Listener:
         # must have saved / handled the message before we get here.
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
+
+# def create_app():
+#     with application.app_context():
+#         logging.warning('inside create_app()')
+#         initialize_app(application)
+#         return application
 
 class DFListener:
     def __init__(self):
