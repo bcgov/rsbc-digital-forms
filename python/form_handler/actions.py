@@ -12,7 +12,7 @@ import json
 from datetime import datetime
 from minio import Minio
 from minio.error import S3Error
-from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm
+from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User
 
 logging.config.dictConfig(Config.LOGGING)
 
@@ -132,6 +132,30 @@ def get_event_form_data(**args) ->tuple:
         logging.error(e)
         return False, args
     return True, args
+
+def get_event_user_data(**args) ->tuple:
+    logging.debug("inside get_form_event_data()")
+    logging.debug(args)
+    try:
+        application = args.get('app')
+        db = args.get('db')
+        event_data = args.get('event_data')
+        user_id = event_data.get('created_by')
+        with application.app_context():
+            # get user data
+            user_data = db.session.query(User) \
+                .filter(User.user_guid == user_id) \
+                .all()
+            if len(user_data) == 0 or len(user_data) > 1:
+                return False, args
+            for u in user_data:
+                user_dict = u.__dict__
+                user_dict.pop('_sa_instance_state', None)
+                args['user_data'] = user_dict
+    except Exception as e:
+        logging.error(e)
+        return False, args
+    return True,args
 
 
 def validate_event_retry_count(**args)->tuple:
