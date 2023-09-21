@@ -1,11 +1,11 @@
-# import python.common.middleware as middleware
+import python.common.middleware as middleware
 import python.form_handler.actions as actions
-# import python.common.rsi_email as rsi_email
-# import python.common.splunk_application_for_review as splunk
-# import python.common.splunk as common_splunk
+import python.common.rsi_email as rsi_email
+import python.common.splunk_application_for_review as splunk
+import python.common.splunk as common_splunk
 from python.form_handler.actions import get_storage_ref_event_type
 
-# import python.common.ride_actions as ride_actions
+import python.common.ride_actions as ride_actions
 
 
 def process_incoming_form() -> dict:

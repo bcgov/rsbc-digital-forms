@@ -76,6 +76,7 @@ services:
         MINIO_ROOT_USER: 'root'
         MINIO_ROOT_PASSWORD: 'password'
         BITNAMI_DEBUG: "true"
+        SSL_ENABLED: "false"
         MINIO_NOTIFY_AMQP_ENABLE_DF_RABBITMQ: "on"
         MINIO_NOTIFY_AMQP_URL_DF_RABBITMQ: "amqp://admin:password@rabbitmq:5672"
         MINIO_NOTIFY_AMQP_EXCHANGE_DF_RABBITMQ: "amq.direct"
@@ -90,6 +91,8 @@ services:
         MINIO_NOTIFY_AMQP_DURABLE_DF_RABBITMQ: "on"
         MINIO_NOTIFY_AMQP_QUEUE_DIR_DF_RABBITMQ: "/opt/events"
         MINIO_NOTIFY_AMQP_QUEUE_LIMIT_DF_RABBITMQ: "100"
+        MINIO_ACCESS_KEY: "minio"
+        MINIO_SECRET_KEY: "minio123"
       volumes:
         - 'minio:/data/minio'
       command: minio server /data/minio --console-address ":9090"

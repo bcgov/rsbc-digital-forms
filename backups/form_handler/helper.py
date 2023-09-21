@@ -4,13 +4,13 @@ import csv
 import pytz
 import logging
 import logging.config
-from python.form_handler.config import Config
+from python.common.config import Config
 from cerberus import Validator
 from cerberus import errors
 import logging
 import json
 from datetime import datetime
-from python.form_handler.models import db, Event,FormStorageRefs
+from python.prohibition_web_svc.models import db, Event,FormStorageRefs
 
 logging.config.dictConfig(Config.LOGGING)
 
