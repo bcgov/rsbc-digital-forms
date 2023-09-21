@@ -242,6 +242,76 @@ def get_storage_file(**args)->tuple:
         file_data.release_conn()
     return True,args
 
+
+def prep_icbc_payload(**args)->tuple:
+    logging.debug("inside prep_icbc_payload()")
+    logging.debug(args)
+
+    try:
+        pdf_data=args.get('file_data')
+        event_data=args.get('event_data')
+        form_data=args.get('form_data')
+        tmp_payload= {
+        "dlNumber":"",
+        "dlJurisdiction": "",
+        "lastName": "",
+        "firstName": "",
+        "birthdate": "",
+        "plateJurisdiction": "",
+        "plateNumber": "",
+        "pujCode": "",
+        "nscNumber": "",
+        "section": "215.2",
+        "violationLocation": "",
+        "noticeNumber": "",
+        "violationDate": "",
+        "violationTime": "",
+        "officerDetachment": "",        
+        "officerNumber": "",
+        "officerName": "",
+        "pdf": pdf_data,        
+        }
+
+        if "driver_licence_no" in event_data: tmp_payload["dlNumber"]=event_data["driver_licence_no"]
+        if "driver_jurisdiction" in event_data:
+            tmp_payload["dlJurisdiction"]=event_data["driver_jurisdiction"]
+        
+        if "driver_last_name" in  event_data: tmp_payload["lastName"]=event_data["driver_last_name"].upper()
+        if "driver_given_name" in event_data: tmp_payload["firstName"]=event_data["driver_given_name"].upper()
+        if "driver_dob" in event_data: tmp_payload["birthdate"]=event_data["driver_dob"]
+
+        if "vehicle_jurisdiction" in event_data : 
+            tmp_payload["plateJurisdiction"]=event_data["vehicle_jurisdiction"]
+
+        if "vehicle_plate_no" in event_data: tmp_payload["plateNumber"]=event_data["vehicle_plate_no"].upper()
+
+        # if "puj_code" in data and "objectCd" in data["puj_code"]: 
+        #     payload["pujCode"]=data["puj_code"]["objectCd"]  
+
+        #Some validation required for NSC-Number. ICBC does not accept all values.
+        if "nsc_no" in event_data: tmp_payload["nscNumber"]=event_data["nsc_no"]
+
+        if "offence_city" in form_data:
+            tmp_payload["violationLocation"]=event_data["offence_city"].upper()
+
+        if "prohibitionStartDate" in data: payload["violationDate"]=data["prohibitionStartDate"]
+        if "prohibitionStartTime" in data: payload["violationTime"]=data["prohibitionStartTime"]
+
+        # TODO: get agency from user table for the event
+        if "agency" in data: payload["officerDetachment"]=data["agency"].upper()
+
+        #TODO -- Need to add agency name abbr to the begining of officerNumber
+        if "badge_number" in data: payload["officerNumber"]="AB"+ data["badge_number"]
+        if "officer_name" in data: payload["officerName"]=data["officer_name"].upper()
+
+
+
+    except Exception as e:
+        logging.error(e)
+        return False,args
+    
+    return True,args
+
 def add_unknown_event_error_to_message(**args)->tuple:
     logging.debug("inside add_unknown_event_error_to_message()")
 
