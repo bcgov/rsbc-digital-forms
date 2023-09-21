@@ -17,6 +17,35 @@ class Config(BaseConfig):
     DB_NAME = os.environ.get('DB_NAME', 'test')
     DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     FLASK_SECRET_KEY = "12345"
+    LOGGERS_IN_USE = os.getenv('LOGGERS_IN_USE', 'console').split()
+    LOG_FORMAT = "%(asctime)s::%(levelname)s::%(name)s::%(message)s"
+    LOG_LEVEL = os.environ.get('LOG_LEVEL', 'DEBUG').upper()
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'json': {
+                '()': 'pythonjsonlogger.jsonlogger.JsonFormatter',
+                'format': '%(asctime)s %(filename)s %(funcName)s %(levelname)s %(lineno)d %(module)s %(message)s %(pathname)s'
+            },
+            'brief': {
+                'format': LOG_FORMAT
+            }
+        },
+        'handlers': {
+            'console': {
+                'level': LOG_LEVEL,
+                'class': 'logging.StreamHandler',
+                'formatter': 'brief'
+            }
+        },
+        'loggers': {
+            '': {
+                'handlers': LOGGERS_IN_USE,
+                'level': LOG_LEVEL
+            }
+        }
+    }
 
     # DAYS_TO_DELAY_FOR_VIPS_DATA_ENTRY   = os.getenv('DAYS_TO_DELAY_FOR_VIPS_DATA_ENTRY', '8')
     # HOURS_TO_HOLD_BEFORE_TRYING_VIPS    = os.getenv('HOURS_TO_HOLD_BEFORE_TRYING_VIPS', '12')

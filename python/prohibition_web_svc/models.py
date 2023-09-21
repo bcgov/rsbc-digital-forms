@@ -560,6 +560,7 @@ class FormStorageRefs(db.Model):
     form_id_12h:int
     event_id:int
     form_type:str
+    # vi, irp, 24h, 12h
     storage_key:str
     created_dt:datetime
     updated_dt:datetime
