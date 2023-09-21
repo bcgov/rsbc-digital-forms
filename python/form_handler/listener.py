@@ -54,7 +54,7 @@ class Listener:
         # convert body (in bytes) to string
         message_dict = decode_message(body, self.config.ENCRYPT_KEY)
         # TODO: Get event type by querying db
-        message_dict['event_type'] = get_storage_ref_event_type(message_dict,application,db)
+        message_dict['event_type'] = get_storage_ref_event_type(message_dict,application,db,Config.EVENT_TYPES)
         logging.info('event type: {}'.format(message_dict['event_type']))
         # message_dict['event_type'] = 'vi_form'
         # TODO: Pass event type and event to middle logic

@@ -17,7 +17,7 @@ def process_incoming_form() -> dict:
     """
     return {
         "unknown_event": [
-            # {"try": actions.add_unknown_event_error_to_message, "fail": []},
+            {"try": actions.add_unknown_event_error_to_message, "fail": []},
             # {"try": actions.add_to_failed_queue, "fail": []},
             # {"try": rsi_email.admin_unknown_event_type, "fail": []}
         ],
