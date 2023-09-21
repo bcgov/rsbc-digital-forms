@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import { ConfirmationStep } from './ConfirmationStep/confirmationStep';
 import { PoliceDetails } from '../Forms/TwentyFourHourForm/policeDetails';
 import { staticResources, getEventDataToSave, formsPNG } from '../../utils/helpers';
+import { FormSubmissionApi } from '../../api/formSubmissionApi'
 import {SVGprint} from '../Forms/Print/svgPrint'
 import {db} from '../../db'
 import './createEvent.scss';
@@ -131,7 +132,12 @@ export const CreateEvent = () => {
     }
 
     const onSubmit = (values, { setSubmitting }) => {
-        setSubmitting(false);
+        console.log("submitting form.")
+        // setSubmitting(true);
+        FormSubmissionApi.post(values).then.then( () => {
+            // setSubmitting(false);
+            // navigate('/')
+        })
     };
 
     const handleGoBackandSave = (values) => {
@@ -144,21 +150,20 @@ export const CreateEvent = () => {
         navigate('/');
     }
 
-    const printForms = async () => {
-        handleShow('Print Form', 'If you print this form you cannot go back and edit it, please confirm you wish to proceed.', 'Print', () => handlePrintForms() )   
+    const printForms = async (values) => {
+        handleShow('Print Form', 'If you print this form you cannot go back and edit it, please confirm you wish to proceed.', 'Print', () => handlePrintForms(values) )   
     }
 
     const handleWithdraw = () => {
         navigate('/');
     };
 
-    const handlePrintForms = async () => {
+    const handlePrintForms = async (values) => {
         setIsPrinted(true);
         window.print();
         // handleShow('','','', () => handleFailedPrint)
-        if(isPrinted){
-            nextPage()
-        }
+        nextPage(values)
+        
     }
 
     const handleFailedPrint = async () => {
@@ -166,8 +171,21 @@ export const CreateEvent = () => {
         handlePrintForms();
     }
 
-    const nextPage = () => {
-        setCurrentStep(currentStep + 1);
+    const nextPage = (values) => {
+        if(values['24Hour']){
+            if(currentStep === 2 && values['prescribed_test_used'] === 'YES'){
+                setCurrentStep(currentStep + 2);
+            }else{
+                setCurrentStep(currentStep + 1);
+            }
+        }else{
+            if(currentStep === 0){
+                setCurrentStep(currentStep + 1);
+            }else{
+                setCurrentStep(4);
+            }
+        }
+        
       };
 
     const prevPage = () => {
@@ -178,17 +196,16 @@ export const CreateEvent = () => {
         handleShow('Confirm Withdraw Prohibition', 'Are you sure you want to withdraw this prohibition.', 'Withdraw', () => handleWithdraw() )   
     };
 
-    const renderSVGForm = (values) => {
+    const renderSVGForm = (values, renderStage) => {
         const forms = {"TwentyFourHour": values["24Hour"], "TwelveHour": values["12Hour"], "IRP": values["IRP"], "VI": values["VI"] }
         const componentsToRender = []
         for(const item in forms){
             if (forms[item]) {
-                for (const form in formsPNG[item]) {
-                    console.log(form, item)
+                for (const form in formsPNG[renderStage][item]) {
                     if (form === "ILO" && values['vehicle_impounded'] === 'NO'){ 
                         break
                     }
-                    componentsToRender.push(<SVGprint key={item+form} form={formsPNG[item][form]["png"]} formAspect={formsPNG[item][form]["aspectClass"]} formLayout={item} formType={form} values={values}/>)
+                    componentsToRender.push(<SVGprint key={item+form} form={formsPNG[renderStage][item][form]["png"]} formAspect={formsPNG[renderStage][item][form]["aspectClass"]} formLayout={item} formType={form} values={values}/>)
                 }
             }
         }
@@ -253,7 +270,7 @@ export const CreateEvent = () => {
             }
             return(
                 <div>
-                    {renderSVGForm(values)}
+                    {renderSVGForm(values, "stageOne")}
                 </div> 
             )
           case 2:
@@ -261,9 +278,14 @@ export const CreateEvent = () => {
                 <ConfirmationStep/>
             )
           case 3:
-            console.log(values)
             return(
-                values['prescribed_test_used'] === 'NO' ? <PoliceDetails/> : null
+                <PoliceDetails/>
+            )
+           case 4:
+            return(
+                <div>
+                    {renderSVGForm(values, "stageTwo")}
+                </div> 
             )
           // Add more cases for each page
           default:
@@ -280,9 +302,9 @@ export const CreateEvent = () => {
             <Formik 
                 innerRef={(formikActions) => (formikActions? setFormValues(formikActions.values) : setFormValues({}))}
                 initialValues={InitialValues()} 
-                validationSchema={validationSchema} 
+                validationSchema={(validationSchema)} 
                 onSubmit={onSubmit}>
-                {({ isSubmitting, values }) => (
+                {({ isSubmitting, values, errors }) => (
                     <Form>
                         <Modal id="popconfirm-modal" show={show} onHide={handleModalClose}>
                             <Modal.Header closeButton>
@@ -317,15 +339,15 @@ export const CreateEvent = () => {
                         <div className='right'>
                             {currentStep <  4 ?   
                                 (currentStep === 1 ? 
-                                    <Button type="button" onClick={() => printForms()}>
+                                    <Button type="button" onClick={() => printForms(values)}>
                                         Print
                                     </Button>
                                     : (    
-                                <Button type="button" onClick={() => nextPage()}>
+                                <Button type="button" onClick={() => nextPage(values)}>
                                     Next
                                 </Button>
                             )) : (
-                                <Button variant="primary" type="submit">Submit</Button>   
+                                <Button variant="primary" type="submit" onClick={() => console.log(errors)}>Submit</Button>   
                             )}
                         </div>
                         </div>
