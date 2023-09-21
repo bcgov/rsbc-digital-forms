@@ -275,6 +275,7 @@ def prep_icbc_payload(**args)->tuple:
         pdf_data=args.get('file_data')
         event_data=args.get('event_data')
         form_data=args.get('form_data')
+        user_data=args.get('user_data')
         tmp_payload= {
         "dlNumber":"",
         "dlJurisdiction": "",
@@ -295,6 +296,8 @@ def prep_icbc_payload(**args)->tuple:
         "officerName": "",
         "pdf": pdf_data,        
         }
+
+        if "form_id" in form_data: tmp_payload["noticeNumber"]=event_data["form_id"]
 
         if "driver_licence_no" in event_data: tmp_payload["dlNumber"]=event_data["driver_licence_no"]
         if "driver_jurisdiction" in event_data:
@@ -318,18 +321,23 @@ def prep_icbc_payload(**args)->tuple:
         if "offence_city" in form_data:
             tmp_payload["violationLocation"]=event_data["offence_city"].upper()
 
-        if "prohibitionStartDate" in data: payload["violationDate"]=data["prohibitionStartDate"]
-        if "prohibitionStartTime" in data: payload["violationTime"]=data["prohibitionStartTime"]
+        # if "prohibitionStartDate" in data: payload["violationDate"]=data["prohibitionStartDate"]
+        # if "prohibitionStartTime" in data: payload["violationTime"]=data["prohibitionStartTime"]
+        if "date_of_driving" in event_data: tmp_payload["violationDate"]=event_data["date_of_driving"]
+        if "time_of_driving" in event_data: tmp_payload["violationTime"]=event_data["time_of_driving"]
 
         # TODO: get agency from user table for the event
-        if "agency" in data: payload["officerDetachment"]=data["agency"].upper()
+        if "agency" in user_data: tmp_payload["officerDetachment"]=user_data["agency"].upper()
 
-        #TODO -- Need to add agency name abbr to the begining of officerNumber
-        if "badge_number" in data: payload["officerNumber"]="AB"+ data["badge_number"]
-        if "officer_name" in data: payload["officerName"]=data["officer_name"].upper()
+        #DONE -- Need to add agency name abbr to the begining of officerNumber
+        # if "badge_number" in user_data: tmp_payload["officerNumber"]="AB"+ data["badge_number"]
+        if "badge_number" in user_data: tmp_payload["officerNumber"]=user_data["badge_number"]
 
+        officer_name=f'{user_data["first_name"]} {user_data["last_name"]}'
+        tmp_payload["officerName"]=officer_name.upper()
+        # if "officer_name" in data: payload["officerName"]=data["officer_name"].upper()
 
-
+        args['icbc_payload']=tmp_payload
     except Exception as e:
         logging.error(e)
         return False,args
