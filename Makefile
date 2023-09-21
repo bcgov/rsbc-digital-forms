@@ -15,13 +15,17 @@ sample_vi_rows_to_db:
 
 
 sample_storage_ref_row:
-	docker exec -it rsbc-digital-forms-db-1 psql -U testuser -d test -c "INSERT INTO form_storage_refs (form_id_vi, event_id, form_type, storage_key, created_dt, updated_dt) VALUES (1, 1, 'vi', 'abcd.pdf', '2022-11-01 12:00:00', '2022-11-01 12:00:00');"
+	docker exec -it rsbc-digital-forms-db-1 psql -U testuser -d test -c "INSERT INTO form_storage_refs (form_id_vi, event_id, form_type, storage_key, created_dt, updated_dt) VALUES (1, 1, 'vi', 'test22/abcd.pdf', '2022-11-01 12:00:00', '2022-11-01 12:00:00');"
 
 populate_test_records: sample_event_rows_to_db sample_24h_rows_to_db sample_vi_rows_to_db sample_storage_ref_row
 
 
 build_start_form_handler:
 	docker compose -f docker-compose-form-handler.yml build --no-cache && docker compose -f docker-compose-form-handler.yml up --force-recreate  $(c)
+start_form_handler_local:
+	docker compose -f docker-compose-form-handler.yml up --force-recreate  $(c)
+down_form_handler:
+	docker compose -f docker-compose-form-handler.yml down $(c)
 
 start_local:
 	docker compose -f docker-compose.yml up -d --force-recreate  $(c)

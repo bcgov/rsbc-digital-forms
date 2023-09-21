@@ -1,9 +1,9 @@
 from python.form_handler.config import Config
-import python.common.helper as helper
+import python.form_handler.helper as helper
 import python.form_handler.business as business
 from python.form_handler.helper import middle_logic, get_listeners
-from python.common.rabbitmq import RabbitMQ
-from python.common.message import decode_message
+from python.form_handler.rabbitmq import RabbitMQ
+from python.form_handler.message import decode_message
 import logging
 import logging.config
 import json
@@ -12,7 +12,7 @@ import pika
 from python.form_handler.helper import get_storage_ref_event_type
 
 from flask_api import FlaskAPI
-from python.prohibition_web_svc.models import db
+from python.form_handler.models import db
 # from form_handler.config import Config
 # import common.helper as helper
 # import form_handler.business as business

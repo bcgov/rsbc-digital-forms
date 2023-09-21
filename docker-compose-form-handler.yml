@@ -6,6 +6,10 @@ services:
       build:
         context: python
         dockerfile: form_handler/Dockerfile-local
+      environment:
+        RABBITMQ_USER: admin
+        RABBITMQ_PASS: password
+        DB_HOST: localhost
       x-develop:
         watch:
           - action: sync
