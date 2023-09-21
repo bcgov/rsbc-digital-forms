@@ -32,6 +32,8 @@ def process_incoming_form() -> dict:
             # TODO: implement add to failed queue
             # TODO: Validate form and event data based on payload needed for vips
             # TODO: if form data is invalid, add to failed queue
+            # DONE: if form and event data is valid update status to processin
+            # TODO: Query pdf object from storage and add to args
             # TODO: if data is valid prep payload for vips
             # TODO: if fails to send to vips, add to hold queue and add data retry_count to event table
             # TODO: if success update vips status on event row on db and retry count to 0
@@ -43,8 +45,9 @@ def process_incoming_form() -> dict:
                 # {"try": actions.add_to_failed_queue, "fail": []}
             ]},
             {"try": actions.validate_event_data, "fail": [
-                # {"try": actions.add_to_error_queue, "fail": []}
-            ]}
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            {"try": actions.update_event_status_processing, "fail": []},
 
         ]
         # "send_disclosure": [
