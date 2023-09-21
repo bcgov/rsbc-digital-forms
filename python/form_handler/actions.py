@@ -5,6 +5,7 @@ import logging
 import logging.config
 from python.form_handler.config import Config
 from cerberus import Validator
+import base64
 from cerberus import errors
 import logging
 import json
@@ -214,11 +215,15 @@ def get_storage_file(**args)->tuple:
         # file_data=file_data.decode('utf-8')
         # print(file_data)
         file_data_content = file_data.data
+        
+
+        # base64 encode string the data
+        file_data_content = base64.b64encode(file_data_content)
         args['file_data']=file_data_content
 
         # You can save the content to a file or process it further
-        with open('downloaded_file.pdf', 'wb') as file:
-            file.write(file_data_content)
+        # with open('downloaded_file.pdf', 'wb') as file:
+        #     file.write(base64.b64decode(file_data_content))
 
 
         # save the data as pdf
