@@ -23,11 +23,13 @@ def process_incoming_form() -> dict:
         ],
         "vi": [
             # DONE: query form data and event data using storage key from input
-            # TODO: if event retry count is more than 10, add to failed queue
-            # TODO: if form data is not found, add to hold queue
-            # TODO: if event data is not found, add to hold queue
-            # TODO: if form data is found, but event data is not found, add to hold queue
+            # DONE: if event retry count is more than 10, add to failed queue
+            # DONE: if form data is not found, add to hold queue
+            # DONE: if event data is not found, add to hold queue
+            # DONE: if form data is found, but event data is not found, add to hold queue
             # DONE: if form data is found, and event data is found, continue
+            # TODO: Implement add to hold queue
+            # TODO: implement add to failed queue
             # TODO: Validate form and event data based on payload needed for vips
             # TODO: if form data is invalid, add to failed queue
             # TODO: if data is valid prep payload for vips
