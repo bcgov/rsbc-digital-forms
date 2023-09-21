@@ -130,9 +130,36 @@ def get_event_form_data(**args) ->tuple:
     return True, args
 
 
+def validate_event_retry_count(**args)->tuple:
+    logging.info("inside validate_event_retry_count()")
+    logging.debug(args)
+    # TODO: if event retry count is more than 10
+    try:
+        retry_count=0
+        event_type=args.get('event_type')
+        if event_type=='vi':
+            retry_count=args.get('form_data').get('vi_retry_count')
+        elif event_type=='irp':
+            pass
+        elif event_type=='24h':
+            retry_count=args.get('form_data').get('icbc_retry_count')
+        elif event_type=='12h':
+            retry_count=args.get('form_data').get('icbc_retry_count')
+        else:
+            return False,args
+        if retry_count >= Config.SYSTEM_RECORD_MAX_RETRIES:
+            return False,args
+    except Exception as e:
+        logging.error(e)
+        return False,args
+    return True,args
+
+
 def validate_event_data(**args)->tuple:
     logging.debug("inside validate_event_data()")
     logging.debug(args)
+    # TODO: if event retry count is more than 10
+    # TODO: validate vips payload
 
     return True,args
 

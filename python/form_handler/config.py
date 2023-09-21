@@ -21,6 +21,7 @@ class Config(BaseConfig):
     LOGGERS_IN_USE = os.getenv('LOGGERS_IN_USE', 'console').split()
     LOG_FORMAT = "%(asctime)s::%(levelname)s::%(name)s::%(message)s"
     LOG_LEVEL = os.environ.get('LOG_LEVEL', 'DEBUG').upper()
+    SYSTEM_RECORD_MAX_RETRIES = os.environ.get('SYSTEM_RECORD_MAX_RETRIES', 10)
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,

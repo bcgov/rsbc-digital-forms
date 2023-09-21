@@ -37,6 +37,9 @@ def process_incoming_form() -> dict:
             {"try": actions.get_event_form_data, "fail": [
                 # {"try": actions.add_to_hold_queue, "fail": []}
             ]},
+            {"try": actions.validate_event_retry_count, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
             {"try": actions.validate_event_data, "fail": [
                 # {"try": actions.add_to_error_queue, "fail": []}
             ]}
