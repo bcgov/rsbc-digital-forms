@@ -136,6 +136,11 @@ def validate_event_data(**args)->tuple:
 
     return True,args
 
+def add_unknown_event_error_to_message(**args)->tuple:
+    logging.debug("inside add_unknown_event_error_to_message()")
+
+    return True,args
+
 
 
 

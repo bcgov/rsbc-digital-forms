@@ -64,7 +64,7 @@ def middle_logic(functions: list, **args):
     return args
 
 
-def get_storage_ref_event_type(message,app,db) -> str:
+def get_storage_ref_event_type(message,app,db,event_types) -> str:
     """
     Get the event type from the message
     """
@@ -86,13 +86,15 @@ def get_storage_ref_event_type(message,app,db) -> str:
             # db.session.commit()
             # print(form)
             if len(form) == 0 or len(form) > 1:
-                return "error"
+                return "unknown_event"
             for f in form:
                 event_type=f.form_type
+        if event_type not in event_types:
+            raise Exception("event type not found")
         # args['event_type']=storage_key
     except Exception as e:
         logging.error(e)
-        return "error"
+        return "unknown_event"
     return event_type
 
 
