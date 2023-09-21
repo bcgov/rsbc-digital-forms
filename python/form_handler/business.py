@@ -34,6 +34,7 @@ def process_incoming_form() -> dict:
             # TODO: if form data is invalid, add to failed queue
             # DONE: if form and event data is valid update status to processin
             # DONE: Query pdf object from storage and add to args
+            # TODO: Query user data for the event (comes from created by)
             # TODO: if data is valid prep payload for vips
             # TODO: if fails to send to vips, add to hold queue and add data retry_count to event table
             # TODO: if success update vips status on event row on db and retry count to 0
