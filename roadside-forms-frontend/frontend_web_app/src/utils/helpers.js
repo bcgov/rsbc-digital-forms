@@ -4,6 +4,7 @@ import * as staticData from "../atoms/staticData"
 import twentyFourHourDriverform from '../assets/MV2634_102018_driver.png';
 import viDriverForm from '../assets/MV2721_201502.png'
 import appealsForm from '../assets/MV2721_201502_appeal.png'
+import viReportForm from '../assets/MV2722_201502.png'
 
 const eventValueKeys = ["event_id", "icbc_sent_status", "drivers_licence_no", "drivers_licence_jurisdiction",
  "driver_last_name", "driver_given_name", "driver_dob", "driver_address", "driver_city", "driver_prov_state",
@@ -49,7 +50,7 @@ export const formTypes = (form) => {
     return (forms)   
 }
 
-export const formsPNG = {"TwentyFourHour":{"DRIVER":{"png":twentyFourHourDriverform, "aspectClass":'--landscape'}, "ILO":{"png":twentyFourHourDriverform, "aspectClass":"--landscape"}},"VI":{"DRIVER":{"png":viDriverForm, "aspectClass":'--portrait'}, "APPEAL":{"png":appealsForm, "aspectClass":'--portrait'}, "ILO":{"png":viDriverForm, "aspectClass":"--portrait"}}}
+export const formsPNG = {"stageOne":{"TwentyFourHour":{"DRIVER":{"png":twentyFourHourDriverform, "aspectClass":'--landscape'}, "ILO":{"png":twentyFourHourDriverform, "aspectClass":"--landscape"}},"VI":{"DRIVER":{"png":viDriverForm, "aspectClass":'--portrait'}, "APPEAL":{"png":appealsForm, "aspectClass":'--portrait'}, "ILO":{"png":viDriverForm, "aspectClass":"--portrait"}}},"stageTwo":{"TwentyFourHour":{"DRIVER":{"png":twentyFourHourDriverform, "aspectClass":'--landscape'}, "ILO":{"png":twentyFourHourDriverform, "aspectClass":"--landscape"}},"VI":{"POLICE":{"png":viDriverForm, "aspectClass":'--portrait'}, "REPORT":{"png":viReportForm, "aspectClass":'--portrait'}}}}
 
 const fieldsToSplit = {"VEHICLE_MAKE":0, "VEHICLE_MODEL":1}
 const dateFieldSplit = ["date_of_driving", "driver_licence_expiry"]
@@ -67,10 +68,12 @@ export const printFormatHelper = (values, data, key) => {
     //if the field on the form is expecting more than one value join them together
     if(Array.isArray(data["field_name"])){
         val = ""
-        for(var field in data["field_name"]){
-            val += typeof values[data["field_name"][field]] === 'object' ? values[data["field_name"][field]]["value"] : values[data["field_name"][field]]
-            val += " "
-        }
+        data["field_name"].forEach((value, index) =>{
+            val += typeof values[data["field_name"][index]] === 'object' ? values[data["field_name"][index]]["value"] : values[data["field_name"][index]]
+            if(data["field_name"].length > index+1){
+                val += ", "
+            }     
+        });
         return val
     }
     //if the value is a date
@@ -98,6 +101,9 @@ export const printFormatHelper = (values, data, key) => {
 export const printCheckHelper = (values, data, key) => {
     //if value is boolean just return it
     if (typeof values[data["field_name"]] === "boolean"){
+        if(data["field_val"] === "false"){
+            return !values[data["field_name"]]
+        }
         return values[data["field_name"]]
     }
     //if value is a string check to see that it matches what is expected
