@@ -64,3 +64,35 @@ def middle_logic(functions: list, **args):
     return args
 
 
+def get_storage_ref_event_type(message,app,db) -> str:
+    """
+    Get the event type from the message
+    """
+    logging.debug("inside get_storage_ref_event_type()")
+    try:
+        application=app
+        db=db
+        # message = args.get('message')
+        event_type="unknown_event"
+        tmp_key=message.get('Key',None)
+        if tmp_key is None:
+            return event_type
+        storage_key=tmp_key.split('/')[1]
+        # print(storage_key)
+        with application.app_context():
+            form = db.session.query(FormStorageRefs) \
+                .filter(FormStorageRefs.storage_key == storage_key) \
+                .all()
+            # db.session.commit()
+            # print(form)
+            if len(form) == 0 or len(form) > 1:
+                return "error"
+            for f in form:
+                event_type=f.form_type
+        # args['event_type']=storage_key
+    except Exception as e:
+        logging.error(e)
+        return "error"
+    return event_type
+
+

@@ -9,6 +9,8 @@ import logging.config
 import json
 import pika
 
+from python.form_handler.helper import get_storage_ref_event_type
+
 from flask_api import FlaskAPI
 from python.prohibition_web_svc.models import db
 # from form_handler.config import Config
@@ -52,8 +54,9 @@ class Listener:
         # convert body (in bytes) to string
         message_dict = decode_message(body, self.config.ENCRYPT_KEY)
         # TODO: Get event type by querying db
-        # message_dict['event_type'] = get_storage_ref_event_type(message_dict)
-        message_dict['event_type'] = 'vi_form'
+        message_dict['event_type'] = get_storage_ref_event_type(message_dict,application,db)
+        logging.info('event type: {}'.format(message_dict['event_type']))
+        # message_dict['event_type'] = 'vi_form'
         # TODO: Pass event type and event to middle logic
 
         logging.info("callback() invoked: {}".format(json.dumps(message_dict)))
