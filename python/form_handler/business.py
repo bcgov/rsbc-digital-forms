@@ -56,6 +56,70 @@ def process_incoming_form() -> dict:
                 # {"try": actions.add_to_failed_queue, "fail": []}
             ]},
 
+        ],
+        "24h": [
+            {"try": actions.get_storage_ref_event_type, "fail": []},
+            {"try": actions.get_event_form_data, "fail": [
+                # {"try": actions.add_to_hold_queue, "fail": []}
+            ]},
+            {"try": actions.get_event_user_data, "fail": [
+                # {"try": actions.add_to_hold_queue, "fail": []}
+            ]},
+            {"try": actions.validate_event_retry_count, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            {"try": actions.validate_event_data, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            {"try": actions.update_event_status_processing, "fail": []},
+            {"try": actions.get_storage_file, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            {"try": actions.prep_icbc_payload, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            {"try": actions.send_to_icbc, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            {"try": actions.update_event_status, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            # {"try": actions.send_email, "fail": [
+            #     # {"try": actions.add_to_failed_queue, "fail": []}
+            # ]},
+            # {"try": actions.add_to_failed_queue, "fail": []},
+        ],
+        "12h": [
+            {"try": actions.get_storage_ref_event_type, "fail": []},
+            {"try": actions.get_event_form_data, "fail": [
+                # {"try": actions.add_to_hold_queue, "fail": []}
+            ]},
+            {"try": actions.get_event_user_data, "fail": [
+                # {"try": actions.add_to_hold_queue, "fail": []}
+            ]},
+            {"try": actions.validate_event_retry_count, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            {"try": actions.validate_event_data, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            {"try": actions.update_event_status_processing, "fail": []},
+            {"try": actions.get_storage_file, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            {"try": actions.prep_icbc_payload, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            {"try": actions.send_to_icbc, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            {"try": actions.update_event_status, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            # {"try": actions.send_email, "fail": [
+            #     # {"try": actions.add_to_failed_queue, "fail": []}
+            # ]},
+            # {"try": actions.add_to_failed_queue, "fail": []},
         ]
         # "send_disclosure": [
         #     {"try": actions.is_not_on_hold, "fail": [

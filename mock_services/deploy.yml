@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roadside-forms-icbc-mock-svc
+spec:
+  selector:
+    matchLabels:
+      app: roadside-forms-icbc-mock-svc
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: roadside-forms-icbc-mock-svc
+    spec:
+      containers:
+        - name: roadside-forms-icbc-mock-svc
+          image: <ICBC_MOCK_SVC_IMAGE>
+          env:
+            - name: FLASK_SECRET_KEY
+              value: "1234"
+            - name: ICBC_API_USERNAME
+              value: "user"
+            - name: ICBC_API_PASSWORD
+              value: "password"
+            - name: LOG_LEVEL
+              value: "DEBUG"
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              memory: "10Mi"
+              cpu: "10m"
+            limits:
+              memory: "20Mi"
+              cpu: "20m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: roadside-forms-icbc-mock-svc
+spec:
+  selector:
+    app: roadside-forms-icbc-mock-svc
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000
