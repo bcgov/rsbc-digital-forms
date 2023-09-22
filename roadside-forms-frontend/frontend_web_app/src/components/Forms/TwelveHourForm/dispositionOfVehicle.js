@@ -30,20 +30,15 @@ export const Disposition = (props) => {
   };
 
   useEffect(() => {
-    if (values["VI"]) {
-      setFieldValue("vehicle_impounded", "YES");
-    }
-    if (values["vehicle_impounded"] === "NO") {
+    if (values["vehicle_location"] !== "private") {
       setFieldValue("key-location", "");
       setFieldValue("ILO-name", "");
       setFieldValue("ILO-address", "");
       setFieldValue("ILO-city", "");
       setFieldValue("ILO-phone", "");
       setFieldValue("ILO-options", "");
-    } else if (values["vehicle_impounded"] === "YES") {
-      setFieldValue("reason_for_not_impounding", "");
     }
-  }, [values["vehicle_impounded"], values["VI"], setFieldValue]);
+  }, [values["vehicle_location"], setFieldValue]);
 
   const dispositionOptions = [
     { label: "Released to other driver", value: "released" },
