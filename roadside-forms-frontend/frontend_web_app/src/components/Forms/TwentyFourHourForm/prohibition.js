@@ -11,10 +11,15 @@ import { TimeInputField } from "../../common/Input/TimeInputField";
 export const Prohibition = (props) => {
   const { values } = useFormikContext();
   const { cities } = props;
+
+  // Do some title work
+  // When it's VI, time & place
+  // When it's 24 hour, prohibition
+  // When it's 12 hour,
   return (
     <div className="border-design-form left text-font">
       <h3>
-        {values["TwentyFourHour"] && "Prohibition"}
+        {(values["TwentyFourHour"] || values["TwelveHour"]) && "Prohibition"}
         {values["VI"] && values["TwentyFourHour"] && " & "}
         {values["VI"] && "Time and Place"}
       </h3>
@@ -27,6 +32,21 @@ export const Prohibition = (props) => {
               options={[
                 { label: "Alcohol 215(2)", value: "alcohol" },
                 { label: "Drugs 215(3)", value: "drugs" },
+              ]}
+              required
+            />
+          </Col>
+        </Row>
+      )}
+      {values["TwelveHour"] && (
+        <Row>
+          <Col>
+            <Radio
+              label="Type of Prohibition (select one)"
+              name="type_of_prohibition"
+              options={[
+                { label: "Alcohol 90.3(2)", value: "alcohol" },
+                { label: "Drugs 90.3(2.1)", value: "drugs" },
               ]}
               required
             />
