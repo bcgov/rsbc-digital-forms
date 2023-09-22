@@ -10,6 +10,7 @@ import { InitialValues } from "./initialValues";
 import { VehicleInfo } from "../CommonForm/vehicleInfo";
 import { OfficerInfo } from "../CommonForm/officerInfo";
 import { VehicleImpoundment } from "../Forms/TwentyFourHourForm/vehicleImpoundment";
+import { Disposition } from "../Forms/TwelveHourForm/dispositionOfVehicle";
 import { Prohibition } from "../Forms/TwentyFourHourForm/prohibition";
 import { ReasonableGrounds } from "../Forms/TwentyFourHourForm/reasonableGrounds";
 import { TestAdministered } from "../Forms/TwentyFourHourForm/testAdministered";
@@ -180,7 +181,7 @@ export const CreateEvent = () => {
       // need a beter solution to this
       eventData["event_id"] = 1;
     }
-    // db.event.put(eventData)
+    db.event.put(eventData);
     navigate("/");
   };
 
@@ -315,11 +316,18 @@ export const CreateEvent = () => {
                 vehicles={vehicles}
                 vehicleStyles={vehicleStyles}
               />
-              <RegisteredOwnerInfo provinces={provinces} />
+              {values["TwentyFourHour"] ||
+                (values["VI"] && <RegisteredOwnerInfo provinces={provinces} />)}
             </div>
             {(values["TwentyFourHour"] || values["VI"]) && (
               <>
                 <VehicleImpoundment impoundLotOperators={impoundLotOperators} />
+                <Prohibition cities={cities} />
+              </>
+            )}
+            {values["TwelveHour"] && !values["VI"] && (
+              <>
+                <Disposition impoundLotOperators={impoundLotOperators} />
                 <Prohibition cities={cities} />
               </>
             )}
@@ -333,7 +341,7 @@ export const CreateEvent = () => {
                 <IncidentDetails />
               </>
             )}
-            {values["TwentyFourHour"] && (
+            {(values["TwentyFourHour"] || values["TwelveHour"]) && (
               <>
                 <ReasonableGrounds />
                 <TestAdministered />
