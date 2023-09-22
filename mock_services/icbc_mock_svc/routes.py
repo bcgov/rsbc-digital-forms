@@ -10,9 +10,6 @@ application = Flask(__name__)
 application.secret = Config.FLASK_SECRET_KEY
 logging.basicConfig(level=Config.LOG_LEVEL)
 logging.warning('*** icbc mock service initialized ***')
-logging.warning('icbc username: {}'.format(Config.ICBC_API_USERNAME))
-logging.warning('icbc password: {}'.format(Config.ICBC_API_PASSWORD))
-logging.warning('flask secret: {}'.format(Config.FLASK_SECRET_KEY))
 
 
 def basic_auth_required(f):
