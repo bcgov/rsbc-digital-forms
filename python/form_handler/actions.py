@@ -13,6 +13,7 @@ from datetime import datetime
 from minio import Minio
 from minio.error import S3Error
 from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User
+from python.form_handler.icbc_service import submit_to_icbc
 
 logging.config.dictConfig(Config.LOGGING)
 
@@ -242,8 +243,15 @@ def get_storage_file(**args)->tuple:
         
 
         # base64 encode string the data
-        file_data_content = base64.b64encode(file_data_content)
+        # file_data_content = base64.b64encode(file_data_content)
+        file_data_content = base64.b64encode(file_data_content).decode('utf-8')
         args['file_data']=file_data_content
+
+        # save the file_data_content to a pdf file  
+        with open('mytest.pdf', 'wb') as file_data1:
+            file_data1.write(base64.b64decode(file_data_content))
+
+
 
         # You can save the content to a file or process it further
         # with open('downloaded_file.pdf', 'wb') as file:
@@ -276,6 +284,7 @@ def prep_icbc_payload(**args)->tuple:
         event_data=args.get('event_data')
         form_data=args.get('form_data')
         user_data=args.get('user_data')
+        form_id=args.get('form_id')
         tmp_payload= {
         "dlNumber":"",
         "dlJurisdiction": "",
@@ -286,9 +295,10 @@ def prep_icbc_payload(**args)->tuple:
         "plateNumber": "",
         "pujCode": "",
         "nscNumber": "",
+        # TODO: get the correct section from form
         "section": "215.2",
         "violationLocation": "",
-        "noticeNumber": "",
+        "noticeNumber": form_id,
         "violationDate": "",
         "violationTime": "",
         "officerDetachment": "",        
@@ -297,7 +307,7 @@ def prep_icbc_payload(**args)->tuple:
         "pdf": pdf_data,        
         }
 
-        if "form_id" in form_data: tmp_payload["noticeNumber"]=event_data["form_id"]
+        # if "form_id" in form_data: tmp_payload["noticeNumber"]=event_data["form_id"]
 
         if "driver_licence_no" in event_data: tmp_payload["dlNumber"]=event_data["driver_licence_no"]
         if "driver_jurisdiction" in event_data:
@@ -305,7 +315,17 @@ def prep_icbc_payload(**args)->tuple:
         
         if "driver_last_name" in  event_data: tmp_payload["lastName"]=event_data["driver_last_name"].upper()
         if "driver_given_name" in event_data: tmp_payload["firstName"]=event_data["driver_given_name"].upper()
-        if "driver_dob" in event_data: tmp_payload["birthdate"]=event_data["driver_dob"]
+
+        # convert birthdate to string
+        birthdate=event_data.get("driver_dob")
+        if birthdate is not None:
+            # birthdate=datetime.strptime(birthdate, '%Y-%m-%d')
+            birthdate= birthdate.strftime('%Y-%m-%d')
+            # birthdate=birthdate.strftime('%Y%m%d')
+            tmp_payload["birthdate"]=birthdate
+            
+
+        # if "driver_dob" in event_data: tmp_payload["birthdate"]=event_data["driver_dob"]
 
         if "vehicle_jurisdiction" in event_data : 
             tmp_payload["plateJurisdiction"]=event_data["vehicle_jurisdiction"]
@@ -319,11 +339,17 @@ def prep_icbc_payload(**args)->tuple:
         if "nsc_no" in event_data: tmp_payload["nscNumber"]=event_data["nsc_no"]
 
         if "offence_city" in form_data:
-            tmp_payload["violationLocation"]=event_data["offence_city"].upper()
+            tmp_payload["violationLocation"]=form_data["offence_city"].upper()
 
         # if "prohibitionStartDate" in data: payload["violationDate"]=data["prohibitionStartDate"]
         # if "prohibitionStartTime" in data: payload["violationTime"]=data["prohibitionStartTime"]
-        if "date_of_driving" in event_data: tmp_payload["violationDate"]=event_data["date_of_driving"]
+        # convert date_of_driving to string
+        date_of_driving=event_data.get("date_of_driving")
+        if date_of_driving is not None:
+            # date_of_driving=datetime.strptime(date_of_driving, '%Y-%m-%d')
+            date_of_driving=date_of_driving.strftime('%Y-%m-%d')
+            tmp_payload["violationDate"]=date_of_driving
+        # if "date_of_driving" in event_data: tmp_payload["violationDate"]=event_data["date_of_driving"]
         if "time_of_driving" in event_data: tmp_payload["violationTime"]=event_data["time_of_driving"]
 
         # TODO: get agency from user table for the event
@@ -342,6 +368,50 @@ def prep_icbc_payload(**args)->tuple:
         logging.error(e)
         return False,args
     
+    return True,args
+
+def send_to_icbc(**args)->tuple:
+    logging.debug("inside send_to_icbc()")
+    logging.debug(args)
+    try:
+        logging.debug(args['icbc_payload'])
+        icbc_payload=args.get('icbc_payload')
+        send_status, icbc_response_txt,icbc_resp_code = submit_to_icbc(icbc_payload)
+        args['icbc_response_txt']=icbc_response_txt
+        args['icbc_resp_code']=icbc_resp_code
+        if send_status is False:
+            return False,args
+    except Exception as e:
+        logging.error(e)
+        return False,args
+    return True,args
+
+def update_event_status(**args)->tuple:
+    logging.debug("inside update_event_status()")
+    logging.debug(args)
+    try:
+        application=args.get('app')
+        db=args.get('db')
+        event_id=args.get('event_data').get('event_id')
+        event_type=args.get('event_type')
+        with application.app_context():
+            if event_type=='vi':
+                event = db.session.query(Event) \
+                    .filter(Event.event_id == event_id) \
+                    .one()
+                event.vi_sent_status = 'sent'
+                db.session.commit()
+            elif event_type=='irp':
+                pass
+            elif event_type=='24h' or event_type=='12h':
+                event = db.session.query(Event) \
+                    .filter(Event.event_id == event_id) \
+                    .one()
+                event.icbc_sent_status = 'sent'
+                db.session.commit()
+    except Exception as e:
+        logging.error(e)
+        return False,args
     return True,args
 
 def add_unknown_event_error_to_message(**args)->tuple:

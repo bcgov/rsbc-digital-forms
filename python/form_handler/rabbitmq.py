@@ -29,7 +29,7 @@ class RabbitMQ:
 
     def consume(self, queue_name: str, callback):
         self._verify_or_create(queue_name)
-        self.channel.basic_qos(prefetch_count=1)
+        # self.channel.basic_qos(prefetch_count=1)
         self.channel.basic_consume(queue=queue_name, on_message_callback=callback)
         try:
             self.channel.start_consuming()

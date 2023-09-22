@@ -1,8 +1,8 @@
 import os
-from python.common.config import Config as BaseConfig
+# from python.common.config import Config as BaseConfig
 
 
-class Config(BaseConfig):
+class Config():
     WATCH_QUEUE                         = os.getenv('WATCH_QUEUE', 'DF.valid')
     HOLD_QUEUE                          = os.getenv('HOLD_QUEUE', 'DF.hold')
     FAIL_QUEUE                          = os.getenv('FAIL_QUEUE', 'DF.fail')
@@ -37,6 +37,11 @@ class Config(BaseConfig):
     RETRY_DELAY                         = os.getenv('RETRY_DELAY', 30)
     RABBITMQ_MESSAGE_ENCODE             = os.getenv('RABBITMQ_MESSAGE_ENCODE', 'utf-8')
     ENCRYPT_KEY                         = os.getenv('ENCRYPT_KEY','aaaa')
+
+
+    ICBC_API_ROOT = os.getenv('ICBC_API_ROOT', 'http://localhost:5003')
+    ICBC_API_USERNAME = os.getenv('ICBC_API_USERNAME', 'user')
+    ICBC_API_PASSWORD = os.getenv('ICBC_API_PASSWORD', 'password')
 
 
 
