@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3'
  
 services:
  
@@ -10,9 +10,13 @@ services:
           RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
           RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
           RABBITMQ_LOGS: "DEBUG"
+      # volumes:
+      #     - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      #     - ./definitions.json:/etc/rabbitmq/definitions.json
       networks:
         - docker-network
       healthcheck:
+        # test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
         test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
         interval: 5s
         timeout: 15s
@@ -21,17 +25,17 @@ services:
           - "15672:15672" # Web admin port
           - "5672:5672"   # Do not expose this port in production
 
-    # form_handler:
-    #   build:
-    #     context: python
-    #     dockerfile: form_handler/Dockerfile-local
-    #   depends_on:
-    #     rabbitmq:
-    #       condition: service_healthy
-    #   restart: on-failure:20
+    form_handler:
+      build:
+        context: python
+        dockerfile: form_handler/Dockerfile-local
+      depends_on:
+        rabbitmq:
+          condition: service_healthy
+      restart: on-failure:20
 
-    #   networks:
-    #     - docker-network
+      networks:
+        - docker-network
     #   environment:
     #     RABBITMQ_URL: "${RABBITMQ_URL}"
     #     RABBITMQ_USER: "${RABBITMQ_USER}"
@@ -76,7 +80,6 @@ services:
         MINIO_ROOT_USER: 'root'
         MINIO_ROOT_PASSWORD: 'password'
         BITNAMI_DEBUG: "true"
-        SSL_ENABLED: "false"
         MINIO_NOTIFY_AMQP_ENABLE_DF_RABBITMQ: "on"
         MINIO_NOTIFY_AMQP_URL_DF_RABBITMQ: "amqp://admin:password@rabbitmq:5672"
         MINIO_NOTIFY_AMQP_EXCHANGE_DF_RABBITMQ: "amq.direct"
@@ -87,12 +90,10 @@ services:
         MINIO_NOTIFY_AMQP_MANDATORY_DF_RABBITMQ: "off"
         MINIO_NOTIFY_AMQP_IMMEDIATE_DF_RABBITMQ: "off"
         MINIO_NOTIFY_AMQP_INTERNAL_DF_RABBITMQ: "off"
-        MINIO_NOTIFY_AMQP_NO_WAIT_DF_RABBITMQ: "on"
+        MINIO_NOTIFY_AMQP_NO_WAIT_DF_RABBITMQ: "off"
         MINIO_NOTIFY_AMQP_DURABLE_DF_RABBITMQ: "on"
         MINIO_NOTIFY_AMQP_QUEUE_DIR_DF_RABBITMQ: "/opt/events"
         MINIO_NOTIFY_AMQP_QUEUE_LIMIT_DF_RABBITMQ: "100"
-        MINIO_ACCESS_KEY: "minio"
-        MINIO_SECRET_KEY: "minio123"
       volumes:
         - 'minio:/data/minio'
       command: minio server /data/minio --console-address ":9090"
@@ -145,20 +146,6 @@ services:
         interval: 5s
         timeout: 5s
         retries: 5
-
-    mock_svcs:
-      build:
-        context: mock_services
-        dockerfile: all_mock_svc/Dockerfile-local
-      environment:
-        FLASK_SECRET_KEY: 1234
-        API_USERNAME: user
-        API_PASSWORD: password
-        LOG_LEVEL: "DEBUG"
-      networks:
-        - docker-network
-      ports:
-        - "5003:5000"
 
 networks:
   docker-network:

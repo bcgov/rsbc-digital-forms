@@ -1,11 +1,11 @@
-# import python.common.middleware as middleware
+import python.common.middleware as middleware
 import python.form_handler.actions as actions
-# import python.common.rsi_email as rsi_email
-# import python.common.splunk_application_for_review as splunk
-# import python.common.splunk as common_splunk
+import python.common.rsi_email as rsi_email
+import python.common.splunk_application_for_review as splunk
+import python.common.splunk as common_splunk
 from python.form_handler.actions import get_storage_ref_event_type
 
-# import python.common.ride_actions as ride_actions
+import python.common.ride_actions as ride_actions
 
 
 def process_incoming_form() -> dict:
@@ -34,7 +34,6 @@ def process_incoming_form() -> dict:
             # TODO: if form data is invalid, add to failed queue
             # DONE: if form and event data is valid update status to processin
             # DONE: Query pdf object from storage and add to args
-            # TODO: Query user data for the event (comes from created by)
             # TODO: if data is valid prep payload for vips
             # TODO: if fails to send to vips, add to hold queue and add data retry_count to event table
             # TODO: if success update vips status on event row on db and retry count to 0
@@ -42,9 +41,6 @@ def process_incoming_form() -> dict:
             {"try": actions.get_event_form_data, "fail": [
                 # {"try": actions.add_to_hold_queue, "fail": []}
             ]},
-            {"try": actions.get_event_user_data, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
-            ]},
             {"try": actions.validate_event_retry_count, "fail": [
                 # {"try": actions.add_to_failed_queue, "fail": []}
             ]},
@@ -53,88 +49,9 @@ def process_incoming_form() -> dict:
             ]},
             {"try": actions.update_event_status_processing, "fail": []},
             {"try": actions.get_storage_file, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            {"try": actions.prep_vips_document_payload, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            {"try": actions.create_vips_document, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
-            ]},
-            {"try": actions.prep_vips_payload, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            {"try": actions.create_vips_impoundment, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
-            ]},
-            {"try": actions.update_event_status, "fail": [
                 # {"try": actions.add_to_failed_queue, "fail": []}
             ]},
 
-        ],
-        "24h": [
-            {"try": actions.get_storage_ref_event_type, "fail": []},
-            {"try": actions.get_event_form_data, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
-            ]},
-            {"try": actions.get_event_user_data, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
-            ]},
-            {"try": actions.validate_event_retry_count, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            {"try": actions.validate_event_data, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            {"try": actions.update_event_status_processing, "fail": []},
-            {"try": actions.get_storage_file, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            {"try": actions.prep_icbc_payload, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            {"try": actions.send_to_icbc, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            {"try": actions.update_event_status, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            # {"try": actions.send_email, "fail": [
-            #     # {"try": actions.add_to_failed_queue, "fail": []}
-            # ]},
-            # {"try": actions.add_to_failed_queue, "fail": []},
-        ],
-        "12h": [
-            {"try": actions.get_storage_ref_event_type, "fail": []},
-            {"try": actions.get_event_form_data, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
-            ]},
-            {"try": actions.get_event_user_data, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
-            ]},
-            {"try": actions.validate_event_retry_count, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            {"try": actions.validate_event_data, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            {"try": actions.update_event_status_processing, "fail": []},
-            {"try": actions.get_storage_file, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            {"try": actions.prep_icbc_payload, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            {"try": actions.send_to_icbc, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            {"try": actions.update_event_status, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
-            # {"try": actions.send_email, "fail": [
-            #     # {"try": actions.add_to_failed_queue, "fail": []}
-            # ]},
-            # {"try": actions.add_to_failed_queue, "fail": []},
         ]
         # "send_disclosure": [
         #     {"try": actions.is_not_on_hold, "fail": [
