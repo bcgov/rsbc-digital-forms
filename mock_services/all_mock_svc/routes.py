@@ -9,7 +9,7 @@ from functools import wraps
 application = Flask(__name__)
 application.secret = Config.FLASK_SECRET_KEY
 logging.basicConfig(level=Config.LOG_LEVEL)
-logging.warning('*** icbc mock service initialized ***')
+logging.warning('*** mock services initialized ***')
 
 
 def basic_auth_required(f):
@@ -20,7 +20,7 @@ def basic_auth_required(f):
     def decorated(*args, **kwargs):
         auth = request.authorization
         if not auth or not _check_credentials(
-                Config.ICBC_API_USERNAME, Config.ICBC_API_PASSWORD, auth.username, auth.password):
+                Config.API_USERNAME, Config.API_PASSWORD, auth.username, auth.password):
             logging.warning("Request denied - unauthorized - IP Address: {}".format(request.remote_addr))
             message = 'Authentication Required'
             resp = jsonify(message)
@@ -95,7 +95,47 @@ def contravention():
                     }
                 }), 404)
         
-
+@application.route('/digitalforms-viirp/v1/documents/CreateDocument', methods=['POST'])
+@basic_auth_required
+def vipsdoc():
+    if request.method == 'POST':
+        logging.debug('request: {}'.format(request.json))
+        try:
+            doc = {
+                "documentId": "123"
+            }
+            return make_response(jsonify(doc), 200)
+        except Exception as e:
+            return make_response(jsonify({
+                    "error": {
+                        "code": 500,
+                        "message": "error",
+                        "description": "error",
+                        "request_uri": "/CreateDocument",
+                        "request_id": "8b1e3c93-b977-463a-b54f-e6e8776c5e15"
+                    }
+                }), 404)
+        
+@application.route('/digitalforms-viirp/v1/impoundments/CreateImpoundment', methods=['POST'])
+@basic_auth_required
+def vipsimp():
+    if request.method == 'POST':
+        logging.debug('request: {}'.format(request.json))
+        try:
+            imp = {
+                "impoundmentId": "123"
+            }
+            return make_response(jsonify(imp), 200)
+        except Exception as e:
+            return make_response(jsonify({
+                    "error": {
+                        "code": 500,
+                        "message": "error",
+                        "description": "error",
+                        "request_uri": "/CreateImpoundment",
+                        "request_id": "8b1e3c93-b977-463a-b54f-e6e8776c5e15"
+                    }
+                }), 404)
 
 
 def _load_json_into_dict(file_name) -> dict:

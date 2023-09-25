@@ -14,6 +14,8 @@ from minio import Minio
 from minio.error import S3Error
 from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User
 from python.form_handler.icbc_service import submit_to_icbc
+from python.form_handler.vips_service import create_vips_doc,create_vips_imp
+from python.form_handler.payloads import vips_payload,vips_document_payload
 
 logging.config.dictConfig(Config.LOGGING)
 
@@ -21,7 +23,7 @@ def get_storage_ref_event_type(**args) -> tuple:
     """
     Get the event type from the message
     """
-    logging.debug("inside get_storage_ref_event_type()")
+    logging.debug("inside actions_get_storage_ref_event_type()")
     try:
         application=args.get('app')
         db=args.get('db')
@@ -248,8 +250,8 @@ def get_storage_file(**args)->tuple:
         args['file_data']=file_data_content
 
         # save the file_data_content to a pdf file  
-        with open('mytest.pdf', 'wb') as file_data1:
-            file_data1.write(base64.b64decode(file_data_content))
+        # with open('mytest.pdf', 'wb') as file_data1:
+        #     file_data1.write(base64.b64decode(file_data_content))
 
 
 
@@ -384,6 +386,262 @@ def send_to_icbc(**args)->tuple:
     except Exception as e:
         logging.error(e)
         return False,args
+    return True,args
+
+
+# {
+#   "notice_subject_code": "PERS",
+#   "file_object": "",
+#   "type_code": "",
+#   "pageCount": 1,
+#   "mime_sub_type": "pdf",
+#   "mime_type": "application",
+#   "notice_type_code": ""
+# }
+
+def prep_vips_document_payload(**args)->tuple:
+    logging.debug("inside prep_vips_document_payload()")
+    logging.debug(args)
+
+    try:
+        pdf_data=args.get('file_data')
+        event_data=args.get('event_data')
+        form_data=args.get('form_data')
+        user_data=args.get('user_data')
+        form_id=args.get('form_id')
+        tmp_payload=vips_document_payload.copy()
+
+        subject_cd="PERS"
+
+        if "owned_by_corp" in event_data and event_data["owned_by_corp"] is True:
+            subject_cd="CORP"
+        tmp_payload["notice_subject_code"]=subject_cd
+
+        tmp_payload["file_object"]=pdf_data
+
+        # TODO: to confirm
+        if "type_cd" in form_data: tmp_payload["type_code"]=form_data["type_cd"]
+
+        tmp_payload["pageCount"]=1
+        tmp_payload["mime_sub_type"]="pdf"
+        tmp_payload["mime_type"]="application"
+
+        # TODO: to confirm
+        tmp_payload["notice_type_code"]="IMP"
+        # if "notice_type_cd" in form_data: tmp_payload["notice_type_code"]=form_data["notice_type_cd"]
+
+        args['vips_document_payload']=tmp_payload
+    except Exception as e:
+        logging.error(e)
+        return False,args
+    return True,args
+
+def create_vips_document(**args)->tuple:
+    logging.debug("inside create_vips_document()")
+    logging.debug(args)
+    try:
+        vips_document_payload=args.get('vips_document_payload')
+        vips_doc_status, vips_doc_response_txt, vips_doc_resp_code = create_vips_doc(vips_document_payload)
+        args['vips_doc_response_txt']=vips_doc_response_txt
+        args['vips_doc_resp_code']=vips_doc_resp_code
+        
+        if vips_doc_status is False:
+            return False,args
+        else:
+            # TODO: get the documentId from the response
+            vips_doc_response_txt=json.loads(vips_doc_response_txt)
+            vips_doc_id=vips_doc_response_txt.get('documentId')
+            args['vips_doc_id']=vips_doc_id
+    except Exception as e:
+        logging.error(e)
+        return False,args
+
+    return True,args
+
+def prep_vips_payload(**args)->tuple:
+    logging.debug("inside prep_vips_payload()")
+    logging.debug(args)
+    try:
+        event_data=args.get('event_data')
+        form_data=args.get('form_data')
+        user_data=args.get('user_data')
+        form_id=args.get('form_id')
+        # copy a dict
+        tmp_payload=vips_payload.copy()
+        logging.debug(tmp_payload)
+
+        # vipsImpoundCreate payload
+        if "driver_jurisdiction" in event_data: tmp_payload["vipsImpoundCreate"]["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
+        if "driver_licence_no" in event_data: tmp_payload["vipsImpoundCreate"]["driverLicenceNo"]=event_data["driver_licence_no"]
+        
+        # TODO: to confirm
+        # if "impound_lot_operator_id" in form_data: tmp_payload["vipsImpoundCreate"]["impoundLotOperatorId"]=form_data["impound_lot_operator_id"]
+
+        # convert impoundment_dt to string
+        impoundment_dt=form_data.get("date_of_impound")
+        if impoundment_dt is not None:
+            # impoundment_dt=datetime.strptime(impoundment_dt, '%Y-%m-%d')
+            impoundment_dt=impoundment_dt.strftime('%Y-%m-%dT%H:%M:%S')
+            tmp_payload["vipsImpoundCreate"]["impoundmentDt"]=impoundment_dt
+        
+
+        if "form_id" in form_data: tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=form_data["form_id"]
+        
+        # TODO: to confirm
+        if "impoundment_release_dt" in form_data: tmp_payload["vipsImpoundCreate"]["impoundmentReleaseDt"]=form_data["impoundment_release_dt"]
+        
+        # TODO: to confirm
+        subject_cd="PERS"
+
+        if "owned_by_corp" in event_data and event_data["owned_by_corp"] is True:
+            subject_cd="CORP"
+        tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]=subject_cd
+        # if "notice_subject_cd" in form_data: tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]=form_data["notice_subject_cd"]
+
+        # TODO: to confirm
+        if "notice_type_cd" in form_data: tmp_payload["vipsImpoundCreate"]["noticeTypeCd"]=form_data["notice_type_cd"]
+
+        # TODO: to confirm (originalCauseCds)  
+
+        # TODO: to confirm
+        if "agency" in user_data: tmp_payload["vipsImpoundCreate"]["policeDetatchmentId"]=user_data["agency"].upper()
+
+
+        officer_name=f'{user_data["first_name"]} {user_data["last_name"]}'
+        tmp_payload["vipsImpoundCreate"]["policeOfficerNm"]=officer_name.upper()
+        
+        if "badge_number" in user_data: tmp_payload["vipsImpoundCreate"]["policeOfficerNo"]=user_data["badge_number"].upper()  
+
+        # TODO: to confirm
+        if "form_id" in form_data: tmp_payload["vipsImpoundCreate"]["policeFileNo"]=form_data["form_id"]  
+        
+        # TODO: to confirm
+        if "projected_release_dt" in form_data: tmp_payload["vipsImpoundCreate"]["projectedReleaseDt"]=form_data["projected_release_dt"]
+
+        # TODO: to confirm
+        if "offence_city" in form_data: tmp_payload["vipsImpoundCreate"]["seizureLocationTxt"]=form_data["offence_city"].upper()
+        
+        # TODO: to confirm
+        if "vehicle_returned_dt" in form_data: tmp_payload["vipsImpoundCreate"]["vehicleReturnedDt"]=form_data["vehicle_returned_dt"]
+
+
+
+        # vipsRegistrationCreateArray payload
+        vipsRegistrationCreateArray=[]
+        vipsRegigCreateObj={}
+        vipsRegigCreateObj["dataSourceCd"]="VIPS"
+
+        
+        if "regist_owner_first_name" in event_data: vipsRegigCreateObj["firstGivenNm"]=event_data["regist_owner_first_name"].upper()
+        
+        if "regist_owner_last_name" in event_data: vipsRegigCreateObj["surnameNm"]=event_data["regist_owner_last_name"].upper()
+        # TODO: to confirm
+        
+        if "regist_owner_middle_name" in event_data: vipsRegigCreateObj["secondGivenNm"]=event_data["regist_owner_middle_name"].upper()
+
+        # TODO: to confirm
+        
+        if "owned_by_corp" in event_data and event_data["owned_by_corp"] is True:
+            if "corporation_name" in event_data and event_data["corporation_name"] is not None: vipsRegigCreateObj["organizationNm"]=event_data["corporation_name"].upper()
+
+        # TODO: to confirm
+        
+        if "icbcEnterpriseId" in event_data: vipsRegigCreateObj["icbcEnterpriseId"]=event_data["icbcEnterpriseId"].upper()
+
+        # TODO: to confirm
+        vipsRegigCreateObj["registrationRoleCd"]="REGOWN"
+        # if "regist_owner_type" in event_data: tmp_payload["vipsRegistrationCreateArray"]["registrationRoleCd"]=event_data["regist_owner_type"].upper()
+
+        vips_address_array=[]
+        vips_addr_obj={}
+        vips_addr_obj["additionalDeliveryLineTxt"]=""
+        if "regist_owner_address" in event_data: vips_addr_obj["addressFirstLineTxt"]=event_data["regist_owner_address"].upper()
+        # if "regist_owner_address2" in event_data: vips_addr_obj["addressSecondLineTxt"]=event_data["regist_owner_address2"].upper()
+        # if "regist_owner_address3" in event_data: vips_addr_obj["addressThirdLineTxt"]=event_data["regist_owner_address3"].upper()
+        if "regist_owner_city" in event_data: vips_addr_obj["cityNm"]=event_data["regist_owner_city"].upper()
+        vips_addr_obj["countryNm"]="CANADA"
+        if "regist_owner_postal" in event_data: vips_addr_obj["postalCodeTxt"]=event_data["regist_owner_postal"].upper()
+        if "regist_owner_prov" in event_data: vips_addr_obj["provinceCd"]=event_data["regist_owner_prov"].upper()
+        # TODO: to confirm
+        vips_addr_obj["registrationAddressTypeCd"]="MAIL"
+        vips_address_array.append(vips_addr_obj)
+        vipsRegigCreateObj["vipsAddressArray"]=vips_address_array
+
+        vips_licence_create_obj={}
+        # convert birthdate to string
+        birthdate=event_data.get("driver_dob")
+        if birthdate is not None:
+            # birthdate=datetime.strptime(birthdate, '%Y-%m-%d')
+            birthdate= birthdate.strftime('%Y-%m-%d')
+            # birthdate=birthdate.strftime('%Y%m%d')
+            vips_licence_create_obj["birthDt"]=birthdate
+
+        if "driver_licence_no" in event_data: vips_licence_create_obj["driverLicenceNo"]=event_data["driver_licence_no"]
+        if "driver_jurisdiction" in event_data: vips_licence_create_obj["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
+        vipsRegigCreateObj["vipsLicenceCreateObj"]=vips_licence_create_obj
+
+        # vipsVehicleCreate payload
+        # TODO: to confirm
+        if "commercial_motor_carrier_id" in event_data: tmp_payload["vipsVehicleCreate"]["commercialMotorCarrierId"]=event_data["commercial_motor_carrier_id"]
+        
+        if "vehicle_plate_no" in event_data: tmp_payload["vipsVehicleCreate"]["licencePlateNo"]=event_data["vehicle_plate_no"].upper()
+
+        # TODO: to confirm
+        if "vehicle_plate_expiry" in event_data: tmp_payload["vipsVehicleCreate"]["lpDecalValidYy"]=event_data["vehicle_plate_expiry"]
+
+        if "vehicle_jurisdiction" in event_data: tmp_payload["vipsVehicleCreate"]["lpJurisdictionCd"]=event_data["vehicle_jurisdiction"]
+
+        if "vehicle_registration_no" in event_data: tmp_payload["vipsVehicleCreate"]["registrationNo"]=event_data["vehicle_registration_no"].upper()
+
+        if "vehicle_year" in event_data: tmp_payload["vipsVehicleCreate"]["manufacturedYy"]=event_data["vehicle_year"]
+
+        if "nsc_prov_state" in event_data: tmp_payload["vipsVehicleCreate"]["nscJurisdictionTxt"]=event_data["nsc_prov_state"].upper()
+
+        if "vehicle_vin_no" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleIdentificationNo"]=event_data["vehicle_vin_no"].upper()  
+
+        if "vehicle_mk_md" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleMakeTxt"]=event_data["vehicle_mk_md"].upper()  
+
+        if "vehicle_mk_md" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleModelTxt"]=event_data["vehicle_mk_md"].upper()  
+
+        if "vehicle_style" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleStyleTxt"]=event_data["vehicle_style"].upper()  
+
+        # TODO: to confirm
+        if "vehicle_type" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=event_data["vehicle_type"].upper()  
+
+        # vipsDocumentIdArray payload
+        vipsDocumentIdArray=[]
+        if "vips_doc_id" in args: vipsDocumentIdArray.append(args["vips_doc_id"])
+        tmp_payload["vipsDocumentIdArray"]=vipsDocumentIdArray
+
+
+        # vipsImpoundmentArray payload
+        vipsImpoundmentArray=[]
+        if "VI_number" in form_data: vipsImpoundmentArray.append(form_data["VI_number"])
+        tmp_payload["vipsImpoundmentArray"]=vipsImpoundmentArray
+
+        args['vips_payload']=tmp_payload
+    except Exception as e:
+        logging.error(e)
+        logging.error(tmp_payload)
+        return False,args
+
+    return True,args
+
+def create_vips_impoundment(**args)->tuple:
+    logging.debug("inside create_vips_impoundment()")
+    logging.debug(args)
+    try:
+        vips_payload=args.get('vips_payload')
+        vips_status, vips_response_txt, vips_resp_code = create_vips_imp(vips_payload)
+        args['vips_response_txt']=vips_response_txt
+        args['vips_resp_code']=vips_resp_code
+        
+        if vips_status is False:
+            return False,args
+    except Exception as e:
+        logging.error(e)
+        return False,args
+
     return True,args
 
 def update_event_status(**args)->tuple:

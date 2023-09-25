@@ -44,6 +44,11 @@ class Config():
     ICBC_API_PASSWORD = os.getenv('ICBC_API_PASSWORD', 'password')
 
 
+    VIPS_ROOT = os.getenv('VIPS_ROOT', 'http://localhost:5003')
+    VIPS_API_USERNAME = os.getenv('VIPS_API_USERNAME', 'user')
+    VIPS_API_PASSWORD = os.getenv('VIPS_API_PASSWORD', 'password')
+
+
 
 
     LOGGING = {
