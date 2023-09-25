@@ -6,7 +6,7 @@ from python.prohibition_web_svc.models import db, migrate, Form, UserRole, User
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.blueprints import static, forms, admin_forms
 from python.prohibition_web_svc.blueprints import icbc
-from python.prohibition_web_svc.blueprints import user_roles, admin_user_roles, admin_users, users,storageevents
+from python.prohibition_web_svc.blueprints import user_roles, admin_user_roles, admin_users, users
 
 
 application = FlaskAPI(__name__)
@@ -23,7 +23,6 @@ application.register_blueprint(icbc.bp)
 application.register_blueprint(static.bp)
 application.register_blueprint(user_roles.bp)
 application.register_blueprint(users.bp)
-application.register_blueprint(storageevents.bp)
 
 db.init_app(application)
 migrate.init_app(application, db)
