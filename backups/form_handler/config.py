@@ -1,8 +1,8 @@
 import os
-# from python.common.config import Config as BaseConfig
+from python.common.config import Config as BaseConfig
 
 
-class Config():
+class Config(BaseConfig):
     WATCH_QUEUE                         = os.getenv('WATCH_QUEUE', 'DF.valid')
     HOLD_QUEUE                          = os.getenv('HOLD_QUEUE', 'DF.hold')
     FAIL_QUEUE                          = os.getenv('FAIL_QUEUE', 'DF.fail')
@@ -17,7 +17,7 @@ class Config():
     DB_PORT = os.environ.get('DB_PORT', 5432)
     DB_NAME = os.environ.get('DB_NAME', 'test')
     DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    FLASK_SECRET_KEY = os.getenv('FLASK_SECRET_KEY', '12345')
+    FLASK_SECRET_KEY = "12345"
     LOGGERS_IN_USE = os.getenv('LOGGERS_IN_USE', 'console').split()
     LOG_FORMAT = "%(asctime)s::%(levelname)s::%(name)s::%(message)s"
     LOG_LEVEL = os.environ.get('LOG_LEVEL', 'DEBUG').upper()
@@ -27,26 +27,6 @@ class Config():
     STORAGE_PORT = os.environ.get('STORAGE_PORT', 9000)
     STORAGE_ACCESS_KEY = os.environ.get('STORAGE_ACCESS_KEY', '4NahK2Km8xCBMaNPD9HN')
     STORAGE_SECRET_KEY= os.environ.get('STORAGE_SECRET_KEY', 'CrMchOp3C3XXCfwnr49CjENrQXKXKukN8RE30itl')
-
-    RABBITMQ_URL                        = os.getenv('RABBITMQ_URL', 'localhost')
-    RABBITMQ_USER                       = os.getenv('RABBITMQ_USER')
-    RABBITMQ_PASS                       = os.getenv('RABBITMQ_PASS')
-    RABBITMQ_PORT                       = os.getenv('RABBITMQ_PORT', '5672')
-    RABBITMQ_EXCHANGE                   = os.getenv('RABBITMQ_EXCHANGE', '')
-    MAX_CONNECTION_RETRIES              = os.getenv('MAX_CONNECTION_RETRIES', 25)
-    RETRY_DELAY                         = os.getenv('RETRY_DELAY', 30)
-    RABBITMQ_MESSAGE_ENCODE             = os.getenv('RABBITMQ_MESSAGE_ENCODE', 'utf-8')
-    ENCRYPT_KEY                         = os.getenv('ENCRYPT_KEY','aaaa')
-
-
-    ICBC_API_ROOT = os.getenv('ICBC_API_ROOT', 'http://localhost:5003')
-    ICBC_API_USERNAME = os.getenv('ICBC_API_USERNAME', 'user')
-    ICBC_API_PASSWORD = os.getenv('ICBC_API_PASSWORD', 'password')
-
-
-    VIPS_ROOT = os.getenv('VIPS_ROOT', 'http://localhost:5003')
-    VIPS_API_USERNAME = os.getenv('VIPS_API_USERNAME', 'user')
-    VIPS_API_PASSWORD = os.getenv('VIPS_API_PASSWORD', 'password')
 
 
 
