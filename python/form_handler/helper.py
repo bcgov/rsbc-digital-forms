@@ -53,7 +53,7 @@ def middle_logic(functions: list, **args):
     if functions:
         try_fail_node = functions.pop(0)
         logging.debug('calling try function: ' + try_fail_node['try'].__name__)
-        print(try_fail_node['try'](**args))
+        # print(try_fail_node['try'](**args))
         flag, args = try_fail_node['try'](**args)
         logging.debug("result from {} is {}".format(try_fail_node['try'].__name__, flag))
         if flag:

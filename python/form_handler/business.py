@@ -55,6 +55,21 @@ def process_incoming_form() -> dict:
             {"try": actions.get_storage_file, "fail": [
                 # {"try": actions.add_to_failed_queue, "fail": []}
             ]},
+            {"try": actions.prep_vips_document_payload, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            {"try": actions.create_vips_document, "fail": [
+                # {"try": actions.add_to_hold_queue, "fail": []}
+            ]},
+            {"try": actions.prep_vips_payload, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
+            {"try": actions.create_vips_impoundment, "fail": [
+                # {"try": actions.add_to_hold_queue, "fail": []}
+            ]},
+            {"try": actions.update_event_status, "fail": [
+                # {"try": actions.add_to_failed_queue, "fail": []}
+            ]},
 
         ],
         "24h": [

@@ -146,14 +146,14 @@ services:
         timeout: 5s
         retries: 5
 
-    icbc_mock_svc:
+    mock_svcs:
       build:
         context: mock_services
-        dockerfile: icbc_mock_svc/Dockerfile-local
+        dockerfile: all_mock_svc/Dockerfile-local
       environment:
         FLASK_SECRET_KEY: 1234
-        ICBC_API_USERNAME: user
-        ICBC_API_PASSWORD: password
+        API_USERNAME: user
+        API_PASSWORD: password
         LOG_LEVEL: "DEBUG"
       networks:
         - docker-network
