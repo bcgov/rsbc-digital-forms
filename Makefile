@@ -27,7 +27,11 @@ populate_test_records: sample_event_rows_to_db sample_24h_rows_to_db sample_vi_r
 build_start_form_handler:
 	docker compose -f docker-compose-form-handler.yml build --no-cache && docker compose -f docker-compose-form-handler.yml up --force-recreate  $(c)
 start_form_handler_local:
-	docker compose -f docker-compose-form-handler.yml up --force-recreate  $(c)
+	docker compose -f docker-compose-form-handler.yml up --force-recreate  && docker compose alpha watch $(c)
+start_form_handler_local_watch:
+	docker compose -f docker-compose-form-handler.yml build --no-cache && docker compose -f docker-compose-form-handler.yml up --force-recreate $(c)
+watch_form_handler:
+	docker compose -f docker-compose-form-handler.yml alpha watch $(c)
 down_form_handler:
 	docker compose -f docker-compose-form-handler.yml down $(c)
 
@@ -40,3 +44,4 @@ down_common:
 
 down_form_handler:
 	docker compose -f docker-compose-form-handler.yml down $(c)
+

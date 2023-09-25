@@ -1,8 +1,8 @@
-# version: '3.1'
+version: '3.8'
  
 services:
 
-    form_handler_test:
+    form_handler:
       build:
         context: python
         dockerfile: form_handler/Dockerfile-local
@@ -10,13 +10,11 @@ services:
         RABBITMQ_USER: admin
         RABBITMQ_PASS: password
         DB_HOST: localhost
+        LOG_LEVEL: "DEBUG"
       x-develop:
         watch:
-          - action: sync
-            path: ./python
-            target: /home/appuser/python
           - action: rebuild
-            path: ./python/form_handler/listener.py
+            path: './python/form_handler'
       # depends_on:
       #   rabbitmq:
       #     condition: service_healthy

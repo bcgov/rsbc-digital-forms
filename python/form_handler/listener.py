@@ -13,11 +13,6 @@ from python.form_handler.helper import get_storage_ref_event_type
 
 from flask_api import FlaskAPI
 from python.form_handler.models import db
-# from form_handler.config import Config
-# import common.helper as helper
-# import form_handler.business as business
-# from common.rabbitmq import RabbitMQ
-# from common.message import decode_message
 
 logging.config.dictConfig(Config.LOGGING)
 
@@ -28,6 +23,7 @@ application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 application.config["SQLALCHEMY_ECHO"] = False
 
 db.init_app(application)
+
 
 
 class Listener:
@@ -53,12 +49,10 @@ class Listener:
     def callback(self, ch, method, properties, body):
         # convert body (in bytes) to string
         message_dict = decode_message(body, self.config.ENCRYPT_KEY)
-        # TODO: Get event type by querying db
+        # DONE: Get event type by querying db
         message_dict['event_type'] = get_storage_ref_event_type(message_dict,application,db,Config.EVENT_TYPES)
         logging.info('event type: {}'.format(message_dict['event_type']))
-        # message_dict['event_type'] = 'vi_form'
-        # TODO: Pass event type and event to middle logic
-
+        # DONE: Pass event type and event to middle logic
         logging.info("callback() invoked: {}".format(json.dumps(message_dict)))
         helper.middle_logic(helper.get_listeners(business.process_incoming_form(), message_dict['event_type']),
                             message=message_dict,
