@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: roadside-forms-icbc-mock-svc
+  name: roadside-forms-mock-svcs
 spec:
   selector:
     matchLabels:
-      app: roadside-forms-icbc-mock-svc
+      app: roadside-forms-mock-svcs
   replicas: 1
   template:
     metadata:
       labels:
-        app: roadside-forms-icbc-mock-svc
+        app: roadside-forms-mock-svcs
     spec:
       containers:
-        - name: roadside-forms-icbc-mock-svc
+        - name: roadside-forms-mock-svcs
           image: <ICBC_MOCK_SVC_IMAGE>
           env:
             - name: FLASK_SECRET_KEY
@@ -37,10 +37,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: roadside-forms-icbc-mock-svc
+  name: roadside-forms-mock-svcs
 spec:
   selector:
-    app: roadside-forms-icbc-mock-svc
+    app: roadside-forms-mock-svcs
   ports:
     - name: http
       port: 5000

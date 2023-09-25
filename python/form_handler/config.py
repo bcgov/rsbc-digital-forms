@@ -17,7 +17,7 @@ class Config():
     DB_PORT = os.environ.get('DB_PORT', 5432)
     DB_NAME = os.environ.get('DB_NAME', 'test')
     DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    FLASK_SECRET_KEY = "12345"
+    FLASK_SECRET_KEY = os.getenv('FLASK_SECRET_KEY', '12345')
     LOGGERS_IN_USE = os.getenv('LOGGERS_IN_USE', 'console').split()
     LOG_FORMAT = "%(asctime)s::%(levelname)s::%(name)s::%(message)s"
     LOG_LEVEL = os.environ.get('LOG_LEVEL', 'DEBUG').upper()
