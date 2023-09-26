@@ -62,6 +62,15 @@
             "arguments": {
                 "x-queue-type": "classic"
             }
+        },
+        {
+            "name": "df-storage-events-fail-persistent",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {
+                "x-queue-type": "classic"
+            }
         }
     ],
     "exchanges": [],
