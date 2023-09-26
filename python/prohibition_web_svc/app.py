@@ -24,7 +24,6 @@ application.register_blueprint(static.bp)
 application.register_blueprint(user_roles.bp)
 application.register_blueprint(users.bp)
 
-logging.debug(Config.DATABASE_URI)
 db.init_app(application)
 migrate.init_app(application, db)
 
