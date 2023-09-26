@@ -18,11 +18,11 @@ on:
       - master
       - main
     paths:
-      - python/*.py
-      - python/common/**
+      # - python/*.py
+      # - python/common/**
       - python/form_handler/**
       - .github/workflows/form_handler-ci.yml
-      - trigger.txt
+      # - trigger.txt
 
 jobs:
   CI:
