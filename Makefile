@@ -45,3 +45,6 @@ down_common:
 down_form_handler:
 	docker compose -f docker-compose-form-handler.yml down $(c)
 
+run_cron_jobs:
+	docker compose -f docker-compose-cron-jobs.yml up $(c)
+

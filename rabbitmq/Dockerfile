@@ -26,7 +26,7 @@ RUN set -eux; \
 	apt-get update; apt-get install -y --no-install-recommends python3; rm -rf /var/lib/apt/lists/*; \
 	rabbitmqadmin --version
 
-RUN rabbitmq-plugins enable rabbitmq_shovel
+RUN rabbitmq-plugins enable rabbitmq_shovel rabbitmq_shovel_management
 
 # Copy the create_queue.sh script to the image
 # COPY init.sh /usr/local/bin/init.sh
