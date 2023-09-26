@@ -3,3 +3,7 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+import Dexie from 'dexie';
+import indexedDB from 'fake-indexeddb';
+
+Dexie.dependencies.indexedDB = indexedDB;
