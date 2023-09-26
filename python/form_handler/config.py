@@ -9,6 +9,7 @@ class Config():
     STORAGE_WATCH_QUEUE = os.getenv('STORAGE_WATCH_QUEUE', 'df-storage-events')
     STORAGE_HOLD_QUEUE = os.getenv('STORAGE_HOLD_QUEUE', 'df-storage-events-hold')
     STORAGE_FAIL_QUEUE = os.getenv('STORAGE_FAIL_QUEUE', 'df-storage-events-fail')
+    STORAGE_FAIL_QUEUE_PERS=os.getenv('STORAGE_FAIL_QUEUE_PERS', 'df-storage-events-fail-persistent')
     EVENT_TYPES                         = os.getenv('EVENT_TYPES', 'vi,24h,12h,irp').split(',')
 
     DB_HOST = os.environ.get('DB_HOST', 'db')

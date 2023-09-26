@@ -18,7 +18,7 @@ def process_incoming_form() -> dict:
     return {
         "unknown_event": [
             {"try": actions.add_unknown_event_error_to_message, "fail": []},
-            # {"try": actions.add_to_failed_queue, "fail": []},
+            {"try": actions.add_to_persistent_failed_queue, "fail": []},
             # {"try": rsi_email.admin_unknown_event_type, "fail": []}
         ],
         "vi": [
@@ -28,109 +28,135 @@ def process_incoming_form() -> dict:
             # DONE: if event data is not found, add to hold queue
             # DONE: if form data is found, but event data is not found, add to hold queue
             # DONE: if form data is found, and event data is found, continue
-            # TODO: Implement add to hold queue
-            # TODO: implement add to failed queue
+            # DONE: Implement add to hold queue
+            # DONE: implement add to failed queue
             # TODO: Validate form and event data based on payload needed for vips
-            # TODO: if form data is invalid, add to failed queue
+            # DONE: if form data is invalid, add to failed queue
             # DONE: if form and event data is valid update status to processin
             # DONE: Query pdf object from storage and add to args
-            # TODO: Query user data for the event (comes from created by)
-            # TODO: if data is valid prep payload for vips
-            # TODO: if fails to send to vips, add to hold queue and add data retry_count to event table
-            # TODO: if success update vips status on event row on db and retry count to 0
-            {"try": actions.get_storage_ref_event_type, "fail": []},
+            # DONE: Query user data for the event (comes from created by)
+            # DONE: if data is valid prep payload for vips
+            # DONE: if fails to send to vips, add to hold queue and add data retry_count to event table
+            # DONE: if success update vips status on event row on db and retry count to 0
+            {"try": actions.get_storage_ref_event_type, "fail": [
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []}
+            ]},
             {"try": actions.get_event_form_data, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []}
             ]},
             {"try": actions.get_event_user_data, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.validate_event_retry_count, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_transient_failed_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.validate_event_data, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_persistent_failed_queue, "fail": []},
+                {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.update_event_status_processing, "fail": []},
             {"try": actions.get_storage_file, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.prep_vips_document_payload, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_persistent_failed_queue, "fail": []},
+                {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.create_vips_document, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.prep_vips_payload, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_persistent_failed_queue, "fail": []},
+                {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.create_vips_impoundment, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
-            {"try": actions.update_event_status, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
+            {"try": actions.update_event_status, "fail": []},
 
         ],
         "24h": [
-            {"try": actions.get_storage_ref_event_type, "fail": []},
+            {"try": actions.get_storage_ref_event_type, "fail": [
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
+            ]},
             {"try": actions.get_event_form_data, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.get_event_user_data, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.validate_event_retry_count, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_transient_failed_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.validate_event_data, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_persistent_failed_queue, "fail": []},
+                {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.update_event_status_processing, "fail": []},
             {"try": actions.get_storage_file, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.prep_icbc_payload, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_persistent_failed_queue, "fail": []},
+                {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.send_to_icbc, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
-            {"try": actions.update_event_status, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
+            {"try": actions.update_event_status, "fail": []},
             # {"try": actions.send_email, "fail": [
             #     # {"try": actions.add_to_failed_queue, "fail": []}
             # ]},
             # {"try": actions.add_to_failed_queue, "fail": []},
         ],
         "12h": [
-            {"try": actions.get_storage_ref_event_type, "fail": []},
+            {"try": actions.get_storage_ref_event_type, "fail": [
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
+            ]},
             {"try": actions.get_event_form_data, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.get_event_user_data, "fail": [
-                # {"try": actions.add_to_hold_queue, "fail": []}
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.validate_event_retry_count, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_transient_failed_queue, "fail": []},
+                {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.validate_event_data, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_persistent_failed_queue, "fail": []},
+                {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.update_event_status_processing, "fail": []},
             {"try": actions.get_storage_file, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.prep_icbc_payload, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_persistent_failed_queue, "fail": []},
+                {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.send_to_icbc, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
-            {"try": actions.update_event_status, "fail": [
-                # {"try": actions.add_to_failed_queue, "fail": []}
-            ]},
+            {"try": actions.update_event_status, "fail": []},
             # {"try": actions.send_email, "fail": [
             #     # {"try": actions.add_to_failed_queue, "fail": []}
             # ]},
