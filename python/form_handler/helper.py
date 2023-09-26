@@ -11,8 +11,13 @@ import logging
 import json
 from datetime import datetime
 from python.form_handler.models import db, Event,FormStorageRefs
+import pyaes, pbkdf2, binascii, os, secrets
+import base64
 
 logging.config.dictConfig(Config.LOGGING)
+
+enc_password = Config.ENCRYPT_KEY
+enc_password_salt = Config.ENCRYPT_KEY_SALT
 
 
 def get_listeners(listeners: dict, key: str) -> list:
@@ -97,5 +102,27 @@ def get_storage_ref_event_type(message,app,db,event_types) -> str:
         logging.error(e)
         return "unknown_event"
     return event_type
+
+
+def method2_decrypt(ciphertext,iv):
+    password = enc_password
+    passwordSalt = bytes(enc_password_salt, 'utf-8')
+    key = pbkdf2.PBKDF2(password, passwordSalt).read(32)
+    iv = int.from_bytes(base64.b64decode(iv), 'big')
+    # iv=base64.b64decode(iv)
+    print(f"iv- {iv}")
+    print(type(iv))
+    # iv = secrets.randbits(256)
+    aes = pyaes.AESModeOfOperationCTR(key, pyaes.Counter(iv))
+    decrypted1 = aes.decrypt(ciphertext)
+    print('Decrypted:', decrypted1)
+    # converrt bytes to string
+    decrypted1 = decrypted1.decode('utf-8')
+    # print(decrypted1)
+    # print(sample_pdf_str)
+    # print(type(decrypted1))
+    # print(type(sample_pdf_str))
+    # print(decrypted1==sample_pdf_str)
+    return decrypted1
 
 

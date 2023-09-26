@@ -18,6 +18,10 @@ from python.form_handler.vips_service import create_vips_doc,create_vips_imp
 from python.form_handler.payloads import vips_payload,vips_document_payload
 from python.form_handler.message import encode_message
 
+import fitz
+import base64
+import os
+
 logging.config.dictConfig(Config.LOGGING)
 
 def get_storage_ref_event_type(**args) -> tuple:
@@ -249,6 +253,9 @@ def get_storage_file(**args)->tuple:
         # file_data_content = base64.b64encode(file_data_content)
         file_data_content = base64.b64encode(file_data_content).decode('utf-8')
         args['file_data']=file_data_content
+        print(type(file_data_content))
+        print(file_data_content)
+        
 
         # save the file_data_content to a pdf file  
         # with open('mytest.pdf', 'wb') as file_data1:
