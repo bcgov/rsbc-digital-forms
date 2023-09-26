@@ -15,6 +15,6 @@ export const FormSubmissionApi = {
           data: {...data},
         })
         console.log(response)
-        return response.json()
+        return response
       },
 };

@@ -81,6 +81,10 @@ services:
         - docker-network
       ports:
         - "5002:5000"
+      x-develop:
+        watch:
+          - action: rebuild
+            path: './python/prohibition_web_svc'
       depends_on: 
         db:
           condition: service_healthy

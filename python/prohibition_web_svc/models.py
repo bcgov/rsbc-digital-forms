@@ -354,6 +354,24 @@ class Event(db.Model):
     updated_by = db.Column(db.String)
     created_dt = db.Column(db.DateTime)
     updated_dt = db.Column(db.DateTime)
+    
+    twenty_four_hour_form = db.relationship(
+        'TwentyFourHourForm',
+        backref='event',
+        lazy='joined',
+        uselist=False)
+    
+    twelve_hour_form = db.relationship(
+        'TwelveHourForm',
+        backref='event',
+        lazy='joined',
+        uselist=False)
+    
+    vi_form = db.relationship(
+        'VIForm',
+        backref='event',
+        lazy='joined',
+        uselist=False)
 
 @dataclass    
 class TwentyFourHourForm(db.Model):
@@ -484,7 +502,7 @@ class VIForm(db.Model):
     irp_impound_duration:str
     IRP_number:str
     VI_number:str
-    excessive_speed:datetime
+    excessive_speed:str
     prohibited:bool
     suspended:bool
     street_racing:bool
@@ -493,7 +511,7 @@ class VIForm(db.Model):
     motorcycle_restrictions:bool
     unlicensed:bool
     linkage_location_of_keys:bool
-    linkage_location_of_keys_explanation:bool
+    linkage_location_of_keys_explanation:str
     linkage_driver_principal:bool
     linkage_owner_in_vehicle:bool
     linkage_owner_aware_possesion:bool
