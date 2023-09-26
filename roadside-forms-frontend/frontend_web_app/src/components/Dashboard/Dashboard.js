@@ -67,7 +67,7 @@ export const Dashboard = () => {
       };
   
        fetchData();
-       db.table("event").toArray().then( (data) => setFormsData(data))
+      //  db.table("event").toArray().then( (data) => setFormsData(data))
     }, [
       setVehicleResource,
       setVehicleColourResource,

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal'
+import { toPng } from 'html-to-image';
 import { Checkbox } from '../common/Checkbox/checkbox';
 import { validationSchema } from './validationSchema';
 import { DriverInfo } from '../CommonForm/driverInfo';
@@ -133,8 +134,21 @@ export const CreateEvent = () => {
 
     const onSubmit = (values, { setSubmitting }) => {
         console.log("submitting form.")
-        // setSubmitting(true);
-        FormSubmissionApi.post(values).then.then( () => {
+        const element = document.getElementById('printdiv');
+        toPng(element).then(blob => {
+            // Do something with your blob
+            console.log(blob)
+            // save the blob as png file in localstorage
+            // localStorage.setItem('image', blob);
+
+            
+            // const link = document.createElement('a');
+            // link.download = 'my-image-name.png';
+            // link.href = blob;
+            // link.click();    
+        });
+        setSubmitting(true);
+        FormSubmissionApi.post(values).then( () => {
             // setSubmitting(false);
             // navigate('/')
         })
@@ -146,7 +160,7 @@ export const CreateEvent = () => {
             // need a beter solution to this
             eventData["event_id"] = 1
         }
-        db.event.put(eventData)
+        // db.event.put(eventData)
         navigate('/');
     }
 
@@ -283,7 +297,7 @@ export const CreateEvent = () => {
             )
            case 4:
             return(
-                <div>
+                <div id="printdiv">
                     {renderSVGForm(values, "stageTwo")}
                 </div> 
             )
