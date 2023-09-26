@@ -37,7 +37,8 @@ class Config():
     MAX_CONNECTION_RETRIES              = os.getenv('MAX_CONNECTION_RETRIES', 25)
     RETRY_DELAY                         = os.getenv('RETRY_DELAY', 30)
     RABBITMQ_MESSAGE_ENCODE             = os.getenv('RABBITMQ_MESSAGE_ENCODE', 'utf-8')
-    ENCRYPT_KEY                         = os.getenv('ENCRYPT_KEY','aaaa')
+    ENCRYPT_KEY                         = os.getenv('ENCRYPT_KEY','secret')
+    ENCRYPT_KEY_SALT = os.getenv('ENCRYPT_KEY_SALT', 'aaaa')
 
 
     ICBC_API_ROOT = os.getenv('ICBC_API_ROOT', 'http://localhost:5003')
