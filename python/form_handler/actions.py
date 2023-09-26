@@ -16,6 +16,7 @@ from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHo
 from python.form_handler.icbc_service import submit_to_icbc
 from python.form_handler.vips_service import create_vips_doc,create_vips_imp
 from python.form_handler.payloads import vips_payload,vips_document_payload
+from python.form_handler.message import encode_message
 
 logging.config.dictConfig(Config.LOGGING)
 
@@ -671,6 +672,112 @@ def update_event_status(**args)->tuple:
         logging.error(e)
         return False,args
     return True,args
+
+def update_event_status_hold(**args)->tuple:
+    logging.debug("inside update_event_status_hold()")
+    logging.debug(args)
+    try:
+        application=args.get('app')
+        db=args.get('db')
+        event_id=args.get('event_data').get('event_id')
+        event_type=args.get('event_type')
+        with application.app_context():
+            if event_type=='vi':
+                event = db.session.query(Event) \
+                    .filter(Event.event_id == event_id) \
+                    .one()
+                event.vi_sent_status = 'retrying'
+                db.session.commit()
+            elif event_type=='irp':
+                pass
+            elif event_type=='24h' or event_type=='12h':
+                event = db.session.query(Event) \
+                    .filter(Event.event_id == event_id) \
+                    .one()
+                event.icbc_sent_status = 'retrying'
+                db.session.commit()
+    except Exception as e:
+        logging.error(e)
+        return False,args
+    return True,args
+
+def update_event_status_error(**args)->tuple:
+    logging.debug("inside update_event_status_error()")
+    logging.debug(args)
+    try:
+        application=args.get('app')
+        db=args.get('db')
+        event_id=args.get('event_data').get('event_id')
+        event_type=args.get('event_type')
+        with application.app_context():
+            if event_type=='vi':
+                event = db.session.query(Event) \
+                    .filter(Event.event_id == event_id) \
+                    .one()
+                event.vi_sent_status = 'error'
+                db.session.commit()
+            elif event_type=='irp':
+                pass
+            elif event_type=='24h' or event_type=='12h':
+                event = db.session.query(Event) \
+                    .filter(Event.event_id == event_id) \
+                    .one()
+                event.icbc_sent_status = 'error'
+                db.session.commit()
+    except Exception as e:
+        logging.error(e)
+        return False,args
+    return True,args
+
+def add_to_persistent_failed_queue(**args)->tuple:
+    logging.debug("inside add_to_persistent_failed_queue()")
+    logging.debug(args)
+    try:
+        config = args.get('config')
+        message = args.get('message')
+        writer = args.get('writer')
+        logging.debug('add_to_hold_queue(): {}'.format(json.dumps(message)))
+        if not writer.publish(config.STORAGE_FAIL_QUEUE_PERS, encode_message(message, config.ENCRYPT_KEY)):
+            logging.critical('unable to write to RabbitMQ {} queue'.format(config.STORAGE_FAIL_QUEUE_PERS))
+            return False, args
+    except Exception as e:
+        logging.error(e)
+        return False, args
+    return True, args
+
+def add_to_transient_failed_queue(**args)->tuple:
+    logging.debug("inside add_to_transient_failed_queue()")
+    logging.debug(args)
+    try:
+        config = args.get('config')
+        message = args.get('message')
+        writer = args.get('writer')
+        logging.debug('add_to_transient_failed_queue(): {}'.format(json.dumps(message)))
+        if not writer.publish(config.STORAGE_FAIL_QUEUE, encode_message(message, config.ENCRYPT_KEY)):
+            logging.critical('unable to write to RabbitMQ {} queue'.format(config.STORAGE_FAIL_QUEUE))
+            return False, args
+    except Exception as e:
+        logging.error(e)
+        return False, args
+    return True, args
+
+def add_to_hold_queue(**args)->tuple:
+    logging.debug("inside add_to_hold_queue()")
+    logging.debug(args)
+    try:
+        config = args.get('config')
+        message = args.get('message')
+        writer = args.get('writer')
+        logging.debug('add_to_hold_queue(): {}'.format(json.dumps(message)))
+        if not writer.publish(config.STORAGE_HOLD_QUEUE, encode_message(message, config.ENCRYPT_KEY)):
+            logging.critical('unable to write to RabbitMQ {} queue'.format(config.STORAGE_HOLD_QUEUE))
+            return False, args
+    except Exception as e:
+        logging.error(e)
+        return False, args
+    return True, args
+
+
 
 def add_unknown_event_error_to_message(**args)->tuple:
     logging.debug("inside add_unknown_event_error_to_message()")
