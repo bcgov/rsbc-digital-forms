@@ -258,7 +258,7 @@
         },
         "DRIVER_DL_NUMBER": {
         "field_type": "text",
-        "field_name": "drivers_licence_no",
+        "field_name": "driver_licence_no",
         "classNames": "fontSmall",
         "start": {
             "x": 7.2,
@@ -733,7 +733,7 @@
             },
             "DRIVER_DL_NUMBER": {
                 "field_type": "text",
-                "field_name": "drivers_licence_no",
+                "field_name": "driver_licence_no",
                 "classNames": "fontSmall",
                 "start": {
                     "x": 53,
@@ -1232,7 +1232,7 @@
               },
               "REPORT_DRIVER_DL_NUMBER": {
                 "field_type": "text",
-                "field_name": "drivers_licence_no",
+                "field_name": "driver_licence_no",
                 "classNames": "fontSmall",
                 "start": {
                   "x": 51.5,

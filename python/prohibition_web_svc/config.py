@@ -37,3 +37,7 @@ class Config(BaseConfig):
 
     MAX_RECORDS_RETURNED                = 1000
     VANCOUVER_TIMEZONE                  = 'America/Vancouver'
+    
+    MINIO_AK                            = os.getenv("MINIO_AK", "test")
+    MINIO_SK                            = os.getenv("MINIO_SK", "test")
+    MINIO_BUCKET_URL                    = os.getenv("MINIO_BUCKET_URL", 'localhost:9090')
