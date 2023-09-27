@@ -2,11 +2,11 @@
 *A minimal browser extension to make filling out roadside digital forms easier.*
 
 ## Description
-When you install this extension in your browser and go to the Digital Forms DEV or TEST environment, a "Fill" button will be added to the top-left corner of the page. Every field will be filled out randomly. Make adjustments to the form selections or values as needed. 
+When you install this extension in your browser and go to the Digital Forms DEV or TEST environment (refresh the page if you already have it open), a "Fill" button will be added to the top-left corner of the page. When you click "Fill", Every selection option and field vallue will be filled at random. It may take a second or two for the fields to fill, depending on your system resources. Make adjustments to the  selections and values as needed. Click the Fill button again to get different selections.
 
-This greatly speeds up intuitive testing, allowing you to focus on the task at hand instead of having to think about which fields you need and which values to enter.
+This greatly speeds up intuitive testing, allowing you to focus on the task at hand instead of having to think about which fields you need and the values to enter. This gives you back time and reduces decision fatige while working with the forms.
 
-The extension works in Edge and Chrome, Windows or macOS.
+The extension works in Edge and Chrome, and on Windows and macOS.
 
 
 ## Installation
@@ -37,4 +37,4 @@ Example of clicking the "Fill" button:
 
 ## Making changes to this extension
 
-If you want to modify this project, see [DEVELOPER.md](DEVELOPER.md) for tips.
+If you want to make changes to this project, see [DEVELOPER.md](DEVELOPER.md) for details.
