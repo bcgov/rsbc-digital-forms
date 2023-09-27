@@ -17,6 +17,7 @@ from python.form_handler.icbc_service import submit_to_icbc
 from python.form_handler.vips_service import create_vips_doc,create_vips_imp
 from python.form_handler.payloads import vips_payload,vips_document_payload
 from python.form_handler.message import encode_message
+from python.form_handler.helper import method2_decrypt
 
 import fitz
 import base64
@@ -233,6 +234,7 @@ def get_storage_file(**args)->tuple:
     logging.debug(args)
     minio_host=f'{Config.STORAGE_HOST}:{Config.STORAGE_PORT}'
     storage_key=args.get('storage_ref').get('storage_key')
+    encryptivkey=args.get('storage_ref').get('encryptiv')
     bucket_name=storage_key.split('/')[0]
     storage_file_name=storage_key.split('/')[1]
     try:
@@ -246,7 +248,20 @@ def get_storage_file(**args)->tuple:
         # convert file_data to utf-8
         # file_data=file_data.decode('utf-8')
         # print(file_data)
+
+
         file_data_content = file_data.data
+        # logging.debug(file_data_content)
+        # logging.debug(type(file_data_content))
+        # bytes to string
+        # file_data_content=base64.b64encode(file_data_content).decode('utf-8')
+        # logging.debug(file_data_content)
+        # logging.debug(type(file_data_content))
+        # logging.debug(args.get('storage_ref'))
+        # logging.debug(encryptivkey)
+        # decrypted_data=method2_decrypt(file_data_content,encryptivkey)
+        # logging.debug(decrypted_data)
+        # logging.debug(type(decrypted_data))
         
 
         # base64 encode string the data
