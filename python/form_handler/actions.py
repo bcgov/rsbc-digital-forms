@@ -251,25 +251,32 @@ def get_storage_file(**args)->tuple:
 
 
         file_data_content = file_data.data
+        # with open("abcd12344.pdf", 'wb') as file_data1:
+        #     file_data1.write(file_data_content)
         # logging.debug(file_data_content)
         # logging.debug(type(file_data_content))
+        # print('encodedfile: ', base64.b64encode(file_data_content))
+
         # bytes to string
         # file_data_content=base64.b64encode(file_data_content).decode('utf-8')
         # logging.debug(file_data_content)
         # logging.debug(type(file_data_content))
         # logging.debug(args.get('storage_ref'))
         # logging.debug(encryptivkey)
-        # decrypted_data=method2_decrypt(file_data_content,encryptivkey)
+        decrypted_data=method2_decrypt(file_data_content,encryptivkey)
         # logging.debug(decrypted_data)
         # logging.debug(type(decrypted_data))
+        # with open("abcd125554.pdf", 'wb') as file_data1:
+        #     file_data1.write(base64.b64decode(decrypted_data))
         
 
         # base64 encode string the data
         # file_data_content = base64.b64encode(file_data_content)
-        file_data_content = base64.b64encode(file_data_content).decode('utf-8')
-        args['file_data']=file_data_content
-        print(type(file_data_content))
-        print(file_data_content)
+        # file_data_content = base64.b64encode(file_data_content).decode('utf-8')
+        # args['file_data']=file_data_content
+        # print(type(file_data_content))
+        # print(file_data_content)
+        args['file_data'] = decrypted_data
         
 
         # save the file_data_content to a pdf file  
