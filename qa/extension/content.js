@@ -105,7 +105,7 @@ function FillOwnerSection() {
     SetField('regist_owner_address', GenerateStreetAddress());
     SetField('regist_owner_phone', GeneratePhoneNumber());
     SetField('regist_owner_city', GenerateCity());
-    SetMultiSelect('regist_owner_prov_state-select', "BRITISH COLUMBIA");
+    SetCustomSelect('regist_owner_prov_state-select', "BRITISH COLUMBIA");
     SetSelect('regist_owner_postal', GeneratePostalCode());
 }
 
@@ -121,7 +121,7 @@ function FillVehicleImpoundmentSection() {
 function FillProhibitionSection() {
     RandomlyChooseRadio('type_of_prohibition-alcohol','type_of_prohibition-drugs');
     SetField('intersection_or_address_of_offence', GenerateStreetAddress());
-    SetMultiSelect('offence_city-select', GenerateCity())
+    SetCustomSelect('offence_city-select', GenerateCity())
     SetField('agency_file_no', "RSI" + GenerateRandomNumberLength(4));
     SetField('date_of_driving', GetCurrentDate());
     SetField('time_of_driving', GetTimeFiveMinutesAgo());
