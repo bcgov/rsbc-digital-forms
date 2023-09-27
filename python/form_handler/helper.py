@@ -107,6 +107,8 @@ def get_storage_ref_event_type(message,app,db,event_types) -> str:
 def method2_decrypt(ciphertext,iv):
     password = enc_password
     passwordSalt = bytes(enc_password_salt, 'utf-8')
+    print('prints')
+    print('cipher: ',ciphertext)
     key = pbkdf2.PBKDF2(password, passwordSalt).read(32)
     iv = int.from_bytes(base64.b64decode(iv), 'big')
     # iv=base64.b64decode(iv)
@@ -123,6 +125,7 @@ def method2_decrypt(ciphertext,iv):
     # print(type(decrypted1))
     # print(type(sample_pdf_str))
     # print(decrypted1==sample_pdf_str)
+    print('Decrypted:', decrypted1)
     return decrypted1
 
 
