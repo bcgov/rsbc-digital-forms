@@ -134,37 +134,6 @@ export const Disposition = (props) => {
                   />
                 </Col>
               </Row>
-              <Row>
-                <Col sm={4}>
-                  <Input
-                    value={values["ILO-address"]}
-                    label="Public Lot Address"
-                    name="ILO-address"
-                    className="field-height field-width"
-                    type="text"
-                    required
-                  />
-                </Col>
-                <Col sm={4}>
-                  <Input
-                    value={values["ILO-city"]}
-                    label="City"
-                    name="ILO-city"
-                    className="field-height field-width"
-                    type="text"
-                    required
-                  />
-                </Col>
-                <Col sm={4}>
-                  <PhoneField
-                    value={values["ILO-phone"]}
-                    className="field-height field-width"
-                    label="Public Phone Number"
-                    name="ILO-phone"
-                    required
-                  />
-                </Col>
-              </Row>
             </div>
           </div>
         </>
