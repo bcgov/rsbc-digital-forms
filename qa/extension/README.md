@@ -19,6 +19,7 @@ Installation steps:
  2. Enable developer mode.
  3. Select "Load Unpacked" on the extensions page.
  4. Enable the extension, if it was not enabled automatically.
+ 5. Go to the DEV, TEST, or local environments and you should see a yellow "Fill" button in the top-left corner of the page. If you do not see the button, refresh the page.
 
 <img src="images/installation.png" width="1000"/>
 
