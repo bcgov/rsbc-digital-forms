@@ -30,7 +30,7 @@ export const DriverInfo = (props) => {
                 <h3 >Driver's Information</h3>
                 <div>
                     <Row style={{ minHeight: '85px' }}>
-                        <Col sm={4}><Input className='field-height field-width' label="Driver's Licence Number" name="drivers_licence_no" type="text"/></Col>
+                        <Col sm={4}><Input className='field-height field-width' label="Driver's Licence Number" name="driver_licence_no" type="text"/></Col>
                         <Col sm={1} className="mt-4 pr-2"><Button className="slim-button" variant="primary" disabled={disableBtn}>ICBC Prefill</Button></Col>
                         <Col sm={1} className="mt-4 left" ><Button className="slim-button" variant="primary" disabled={disableBtn}>Scan DL</Button></Col>
                         <Col sm={6} ><SearchableSelect  className='field-height field-width' label="Province / State/ International"  name="drivers_licence_jurisdiction" options={jurisdictions} /></Col>

@@ -14,7 +14,7 @@ export const ConfirmationStep = () => {
   const userData = useRecoilValue(userAtom);
   const documentServed = values['document-served'];
   const certifyNoticeDelivery = values['certify-notice-delivery'];
-  const twentyFourHourForm = values['24Hour']
+  const twentyFourHourForm = values["TwentyFourHour"]
   const vi = values['VI']
   const driverGivenName = values['driver_given_name']
   const driverLastName = values['driver_last_name']

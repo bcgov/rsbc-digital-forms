@@ -8,7 +8,6 @@ export const SVGprint = ({form, formAspect, formLayout, formType, values}) => {
     const formFields = formFieldLayout[formLayout][formType]
     const allFormFields = formFieldLayout[formLayout]['fields']
     const viewBox = formFieldLayout[formLayout]['viewbox']
-    console.log(values)
     return (
         <div>
             <svg viewBox={viewBox} xmlns='http://www.w3.org/2000/svg' className={'svg-wrapper' + formAspect}>

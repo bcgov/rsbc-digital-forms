@@ -93,8 +93,8 @@ const validateRequiredDateWithMax = (selectedValue, errorPath, maxDate) => {
 export const validationSchema = Yup.object().shape({
   //common form fields validation
   "VI": Yup.boolean(),
-  "12Hour":Yup.boolean(),
-  "24Hour": Yup.boolean(),
+  "TwelveHour":Yup.boolean(),
+  "TwentyFourHour": Yup.boolean(),
   "IRP":Yup.boolean(),
   "driver_last_name": Yup.string().required('Last Name is required'),
   "driver_address": Yup.string().required('Address is required'),
@@ -150,7 +150,7 @@ export const validationSchema = Yup.object().shape({
   "nsc_no": Yup.string().max(14, 'NSC no. must be 14 characters or less'),
   //24 Hour Fields validation
   'vehicle_impounded': Yup.string().test('vehicleImpoundment', 'Vehicle impoundment is required when 24-hour is selected', function (value) {
-    const twentyFourHourValue = this.parent['24Hour'];
+    const twentyFourHourValue = this.parent["TwentyFourHour"];
     
     if (twentyFourHourValue && !value) {
       return this.createError({
@@ -162,7 +162,7 @@ export const validationSchema = Yup.object().shape({
     return true;
   }),
   'location_of_keys': Yup.string()
-  						 .when("24Hour", {
+  						 .when("TwentyFourHour", {
   									is:true,
                                 	then: () => vehicleImpoundedValidation(Yup.ref('vehicle_impounded'))
 									}),
@@ -183,21 +183,21 @@ export const validationSchema = Yup.object().shape({
 
     return true;
   }),
-  "type_of_prohibition": Yup.mixed().when('24Hour', {
+  "type_of_prohibition": Yup.mixed().when("TwentyFourHour", {
 	is: true,
-	then:( ) => prohibitionValidation(Yup.ref('24Hour'))
+	then:( ) => prohibitionValidation(Yup.ref("TwentyFourHour"))
   }),
-  "intersection_or_address_of_offence": prohibitionValidation(Yup.ref('24Hour')),
-  "offence_city": prohibitionValidation(Yup.ref('24Hour')),
-  "agency_file_no": prohibitionValidation(Yup.ref('24Hour')),
+  "intersection_or_address_of_offence": prohibitionValidation(Yup.ref("TwentyFourHour")),
+  "offence_city": prohibitionValidation(Yup.ref("TwentyFourHour")),
+  "agency_file_no": prohibitionValidation(Yup.ref("TwentyFourHour")),
   'date_of_driving': Yup.date()
   .max(new Date(), 'Date of driving cannot be a future date')
   .nullable()
-  .test('prohibition', 'Date of driving is required when 24-hour is selected', validateRequiredDateWithMax(Yup.ref('24Hour'), 'date_of_driving', new Date())),
+  .test('prohibition', 'Date of driving is required when 24-hour is selected', validateRequiredDateWithMax(Yup.ref("TwentyFourHour"), 'date_of_driving', new Date())),
   "time_of_driving": Yup.string()
   .matches(/^([01]\d|2[0-3])[0-5]\d$/, 'Invalid time format')
   .test('required', 'Time of driving is required when 24-hour is selected', function(value) {
-    const twentyFourHourValue = this.parent['24Hour'];
+    const twentyFourHourValue = this.parent["TwentyFourHour"];
 
     if (twentyFourHourValue && !value) {
       return this.createError({
@@ -212,7 +212,7 @@ export const validationSchema = Yup.object().shape({
   "date_released": Yup.date()
    .max(new Date(), 'Date of release cannot be a future date')
    .nullable()
-   .when("24Hour", {
+   .when("TwentyFourHour", {
 	is: true,
 	then: () => Yup.date().test('released', 'Date of release is required when release is selected', validateRequiredDateWithMax(Yup.ref('reason-for-not-impounding'), 'date_released', new Date()))
    }),

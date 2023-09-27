@@ -2,6 +2,7 @@ import logging
 import json
 import pytz
 import iso8601
+from minio import Minio
 from datetime import datetime
 from cerberus import Validator
 from flask import jsonify, make_response
@@ -12,56 +13,11 @@ from python.prohibition_web_svc.config import Config
 def validate_update(**kwargs) -> tuple:
     return True, kwargs
 
-
 def log_payload_to_splunk(**kwargs) -> tuple:
     request = kwargs.get('request')
     # TODO - log to Splunk
     logging.debug("payload: | {}".format(request.get_data()))
     return True, kwargs
-
-
-def lease_a_form_id(**kwargs) -> tuple:
-    logging.debug('inside lease_a_form_id()')
-    form_type = kwargs.get('form_type')
-    user_guid = kwargs.get('user_guid')
-    form = db.session.query(Form) \
-        .filter(Form.form_type == form_type) \
-        .filter(Form.user_guid == None) \
-        .first()
-    if form is None:
-        logging.warning('Insufficient unique ids available for {}'.format(form_type))
-        return False, kwargs
-    form.lease(user_guid)
-    try:
-        db.session.commit()
-    except Exception as e:
-        return False, kwargs
-    kwargs['response_dict'] = Form.serialize(form)
-    return True, kwargs
-
-
-def renew_form_id_lease(**kwargs) -> tuple:
-    logging.debug('inside renew_form_id_lease()')
-    form_type = kwargs.get('form_type')
-    user_guid = kwargs.get('user_guid')
-    form_id = kwargs.get('form_id')
-    form = db.session.query(Form) \
-        .filter(Form.form_type == form_type) \
-        .filter(Form.user_guid == user_guid) \
-        .filter(Form.printed_timestamp == None) \
-        .filter(Form.id == form_id) \
-        .first()
-    if form is None:
-        logging.warning('User, {}, cannot renew the lease on {} form'.format(user_guid, form_id))
-        return False, kwargs
-    form.lease(user_guid)
-    try:
-        db.session.commit()
-    except Exception as e:
-        return False, kwargs
-    kwargs['response_dict'] = Form.serialize(form)
-    return True, kwargs
-
 
 def save_event_data(**kwargs) -> tuple:
     logging.debug('inside save_event_data()')
@@ -69,7 +25,7 @@ def save_event_data(**kwargs) -> tuple:
     try:
         date_created=datetime.now()
         event = Event(
-            driver_licence_no=data.get('drivers_licence_no'),
+            driver_licence_no=data.get('driver_licence_no'),
             driver_jurisdiction=data.get('drivers_licence_jurisdiction').get('value'),
             driver_last_name=data.get('driver_last_name'),
             driver_given_name=data.get('driver_given_name'),
@@ -139,9 +95,9 @@ def save_event_data(**kwargs) -> tuple:
                 updated_dt=date_created,
             )
             event.vi_form = vi_form    
-        if data.get('24Hour'):
+        if data.get('TwentyFourHour'):
             return
-        if data.get('12Hour'):
+        if data.get('TwelveHour'):
             return    
         if data.get('IRP'):
             return    
@@ -154,6 +110,24 @@ def save_event_data(**kwargs) -> tuple:
     kwargs['response_dict'] = jsonify(event)
     return True, kwargs
 
+def save_event_pdf(**kwargs) -> tuple:
+    client = Minio(
+        Config.MINIO_BUCKET_URL,
+        access_key=Config.MINIO_AK,
+        secret_key=Config.MINIO_SK,
+    )
+
+    # Make 'asiatrip' bucket if not exist.
+    found = client.bucket_exists("test")
+    if not found:
+        client.make_bucket("test")
+    else:
+        print("Bucket 'test' already exists")
+
+    client.fput_object(
+        "test", "file-name.pdf", "/home/user/Photos/asiaphotos.zip",
+    )
+    
 
 def request_contains_a_payload(**kwargs) -> tuple:
     request = kwargs.get('request')
@@ -166,22 +140,6 @@ def request_contains_a_payload(**kwargs) -> tuple:
     return payload is not None, kwargs
 
 
-def list_all_users_forms(**kwargs) -> tuple:
-    form_type = kwargs.get('form_type')
-    user_guid = kwargs.get('user_guid')
-    logging.debug("inside list_all_forms() {} {}".format(user_guid, form_type))
-    try:
-        all_forms = db.session.query(Form) \
-            .filter(Form.form_type == form_type) \
-            .filter(Form.user_guid == kwargs['username']) \
-            .all()
-        kwargs['response'] = make_response(jsonify(Form.collection_to_dict(all_forms)))
-    except Exception as e:
-        logging.warning(str(e))
-        return False, kwargs
-    return True, kwargs
-
-
 def get_a_form(**kwargs) -> tuple:
     form_type = kwargs.get('form_type')
     form_id = kwargs.get('form_id')
@@ -192,20 +150,6 @@ def get_a_form(**kwargs) -> tuple:
             .filter(Form.user_guid == kwargs['username']) \
             .first()
         kwargs['response'] = make_response(jsonify(form), 200)
-    except Exception as e:
-        logging.warning(str(e))
-        return False, kwargs
-    return True, kwargs
-
-
-def admin_list_all_forms_by_type(**kwargs) -> tuple:
-    logging.debug("inside admin_list_all_forms()")
-    form_type = kwargs.get('form_type')
-    try:
-        all_forms = db.session.query(Form) \
-            .filter(Form.form_type == form_type) \
-            .limit(Config.MAX_RECORDS_RETURNED).all()
-        kwargs['response'] = make_response(jsonify(Form.collection_to_dict(all_forms)))
     except Exception as e:
         logging.warning(str(e))
         return False, kwargs
@@ -245,21 +189,6 @@ def validate_form_payload(**kwargs) -> tuple:
     logging.warning("validation error: " + json.dumps(v.errors))
     kwargs['validation_errors'] = v.errors
     return False, kwargs
-
-
-def admin_create_form(**kwargs) -> tuple:
-    logging.debug("inside admin_create_form()")
-    payload = kwargs.get('payload')
-    logging.warning(str(payload))
-    try:
-        new_form = Form(form_id=payload.get('form_id'), form_type=payload.get('form_type'))
-        db.session.add(new_form)
-        db.session.commit()
-        kwargs['response'] = make_response({"success": True}, 201)
-    except Exception as e:
-        logging.warning(str(e))
-        return False, kwargs
-    return True, kwargs
 
 
 def convert_vancouver_to_utc(iso_datetime_string: str) -> datetime:

@@ -136,21 +136,14 @@ export const CreateEvent = () => {
         console.log("submitting form.")
         const element = document.getElementById('printdiv');
         toPng(element).then(blob => {
-            // Do something with your blob
-            console.log(blob)
-            // save the blob as png file in localstorage
-            // localStorage.setItem('image', blob);
-
-            
-            // const link = document.createElement('a');
-            // link.download = 'my-image-name.png';
-            // link.href = blob;
-            // link.click();    
+            values['form_png'] = blob 
         });
         setSubmitting(true);
-        FormSubmissionApi.post(values).then( () => {
-            // setSubmitting(false);
-            // navigate('/')
+        FormSubmissionApi.post(values).then( (resp) => {
+            values['event_id'] = resp.data['event_id']
+            setSubmitting(false);
+            console.log(values)
+            db.event.put(values).then(() => navigate('/'))
         })
     };
 
@@ -186,7 +179,7 @@ export const CreateEvent = () => {
     }
 
     const nextPage = (values) => {
-        if(values['24Hour']){
+        if(values['TwentyFourHour']){
             if(currentStep === 2 && values['prescribed_test_used'] === 'YES'){
                 setCurrentStep(currentStep + 2);
             }else{
@@ -211,7 +204,7 @@ export const CreateEvent = () => {
     };
 
     const renderSVGForm = (values, renderStage) => {
-        const forms = {"TwentyFourHour": values["24Hour"], "TwelveHour": values["12Hour"], "IRP": values["IRP"], "VI": values["VI"] }
+        const forms = {"TwentyFourHour": values["TwentyFourHour"], "TwelveHour": values["TwelveHour"], "IRP": values["IRP"], "VI": values["VI"] }
         const componentsToRender = []
         for(const item in forms){
             if (forms[item]) {
@@ -234,10 +227,10 @@ export const CreateEvent = () => {
             <div className='row mt-2'>
             <div className='col-sm-4 left checkboxs'>
                 <h4>Documents to Generate</h4>
-                <Checkbox name="IRP" disabled={values['24Hour'] || values['12Hour']} >Immediate Roadside Prohibition</Checkbox>
+                <Checkbox name="IRP" disabled={values["TwentyFourHour"] || values["TwelveHour"]} >Immediate Roadside Prohibition</Checkbox>
                 <Checkbox name="VI" >Vehicle Impound</Checkbox>
-                <Checkbox name="24Hour" disabled={values['IRP'] || values['12Hour']} >24-hour Driving Prohibition</Checkbox>
-                <Checkbox name="12Hour" disabled={values['24Hour'] || values['IRP']} >12-hour Driving Prohibition</Checkbox>
+                <Checkbox name="TwentyFourHour" disabled={values['IRP'] || values["TwelveHour"]} >24-hour Driving Prohibition</Checkbox>
+                <Checkbox name="TwelveHour" disabled={values["TwentyFourHour"] || values['IRP']} >12-hour Driving Prohibition</Checkbox>
             </div>
             <div className='col-sm-4 form-id-border'>
                 <h5>IRP number: 21-9876540</h5>
@@ -253,7 +246,7 @@ export const CreateEvent = () => {
             <VehicleInfo vehicleColours={vehicleColours} years={generateYearOptions()} provinces={provinces} jurisdictions={jurisdictions} vehicles={vehicles} vehicleStyles={vehicleStyles}/>
             <RegisteredOwnerInfo provinces={provinces}/>
         </div>
-        { (values['24Hour'] || values['VI']) && <>
+        { (values["TwentyFourHour"] || values['VI']) && <>
             <VehicleImpoundment impoundLotOperators={impoundLotOperators}/>
             <Prohibition cities={cities}/>
             
@@ -268,7 +261,7 @@ export const CreateEvent = () => {
             <IncidentDetails/>
         </>
         }
-        {values['24Hour'] &&
+        {values["TwentyFourHour"] &&
         <>
             <ReasonableGrounds/>
             <TestAdministered/>
