@@ -2,43 +2,38 @@
 *A minimal browser extension to make filling out roadside digital forms easier.*
 
 ## Description
-When you install this extension in your browser and go to the Digital Forms DEV or TEST environment, a "Fill" button will be added to the top-left corner of the page. After you have selected a 24-hour form, click the Fill button to fill out the fields quickly.
+When you install this extension in your browser and go to the Digital Forms DEV or TEST environment, a "Fill" button will be added to the top-left corner of the page. Every field will be filled out randomly. Make adjustments to the form selections or values as needed. 
+
+This greatly speeds up intuitive testing, allowing you to focus on the task at hand instead of having to think about which fields you need and which values to enter.
+
+The extension works in Edge and Chrome, Windows or macOS.
+
 
 ## Installation
-To install this extension, you must be using a Chromium-based browser like Edge or Chrome. Go to Settings > Extensions and enable developer mode. After enabling developer mode, you should see the option "Load Unpacked" appear. Click "Load Unpacked" and select the folder where this file is located. 
+Go to **Settings** > **Extensions** and enable developer mode. After enabling developer mode, you should see the option **Load Unpacked** appear. Click it and select the folder where this file is located. The extension should appear in your extensions.
 
-You may wish to pin the extension so it is always visible. The icon will show in colour and the Fill button will appear only when the DEV or TEST environments are loaded.
+The extension activates automatically when you go to the DEV, TEST, or local development environments. When the extension is active, its icon changes from grey to gold, and a yellow Fill button overlay will appear.
 
-Steps:
+Installation steps:
  1. Go to Extensions.
  2. Enable developer mode.
  3. Select "Load Unpacked" on the extensions page.
- 4. Enable the extension.
+ 4. Enable the extension, if it was not enabled automatically.
 
-![Steps to install this extension](images/installation.png)
+<img src="images/installation.png" width="1000"/>
+
 
 ## Usage
 
-When in the DEV or TEST environment, click the "Fill" button in the top-left corner of the page:
+When in the DEV, TEST, or local environments, create a new event and select click the forms you want (for example: 24-hour and VI). Click "Fill" button in the top-left corner of the page and after a short delay the fields will fill random selections and values. Click the Fill button again to refresh the random data.
 
-![This is what the button looks like](images/usage.png)
+<img src="images/usage.png" width="600"/>
 
-Example of the form after clicking the "Fill" button:
+Example of clicking the "Fill" button:
 
-![Filled form](example.png)
+![Filling a form](images/example.gif)
+
 
 ## Making changes to this extension
-If you want to modify this project, here is a description of what each file does:
 
-- icons/: folder for icon images shown in the extension bar.
-- chance.min.js: copy of the open-source chance.js library, for generating field values.
-- content.js: the primary script, which gets called when the Fill button is pressed.
-- helper-functions.js: helper functions called from content.js.
-- tables.js: data used from content.js (e.g. a table of towns and cities in BC).
-- manifest.json: the file that the browser uses to get information about this extension
-- README.md: this file
-
-## Notes
-This extension works by injecting JavaScript onto pages that load from the DEV and TEST environment. The JavaScript accesses the form elements (fields, buttons, checkboxes) and adds values to the fields. The custom React fields may not work as expected until you click on the selected values. This should be fixable in the near future if we can figure out how these custom elements work.
-
-The extension should work in any Chromium-based browser. It will not work in Firefox unless you change the manifest to v2.
+If you want to modify this project, see [DEVELOPER.md](DEVELOPER.md) for tips.

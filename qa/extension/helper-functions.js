@@ -1,91 +1,5 @@
-// Constants and helper functions for the automation scripts
-
-
-// Tweak this if it's taking too long to load drop-downs to populate?
+// Tweak this if it's taking too long to load drop-downs to populate
 const secondsToWaitForDropdownsToAppear = 25;
-
-const vehicleStyles = [
-    "2-DOOR SEDAN",
-    "3-DOOR HATCH",
-    "4-DOOR SEDAN",
-    "5-DOOR HATCH",
-    "CAMPER INCL:CAMPER VANS & MOTORIZED HOMES",
-    "CARGO (VAN)",
-    "CONVERTIBLE",
-    "DUMP",
-    "MOTOR SCOOTER",
-    "OTHER",
-    "PASSENGER (VAN)",
-    "PICKUP (CREW CAB)",
-    "PICKUP (FLAT BED)",
-    "PICKUP (EXT. CAB)",
-    "STAKE",
-    "STATION WAGON",
-    "TANKER",
-    "TRACTOR"
-];
-
-const vehicleColours = [
-    "BEIGE",
-    "BLACK",
-    "BROWN",
-    "BRONZE",
-    "BURGUNDY",
-    "COPPER",
-    "CREAM/IVORY",
-    "DARK BLUE",
-    "DARK GREEN",
-    "GOLD",
-    "GREY",
-    "LIGHT BLUE",
-    "LIGHT GREEN",
-    "MAROON",
-    "ORANGE",
-    "OTHER",
-    "PURPLE",
-    "PINK",
-    "PRIMER",
-    "RED",
-    "SILVER",
-    "TAN",
-    "TURQUOISE",
-    "WHITE",
-    "YELLOW"
-];
-
-const worstVehicles = [
-    "AMERICAN MOTORS - PACER",
-    "CADILLAC - ESCALADE",
-    "CHEVROLET - CAMARO",
-    "CHEVROLET - CHEVETTE",
-    "CHEVROLET - SSR",
-    "CHRYSLER - PT CRUISER",
-    "FORD - ASPIRE",
-    "FORD - PINTO",
-    "PLYMOUTH - CARAVELLE",
-    "PONTIAC - AZTEK",
-    "RENAULT - DAUPHINE",
-    "STERLING - 825",
-    "SUZUKI - X90",
-    "ZASTAVIA (ZCZ-YUGOSLAVIA) - YUGO (SERIES)"
-];
-
-const ilos = [
-    "ALBERNI TOWING, 2490 TIMBERLANE RD, PORT ALBERNI, 250-724-4050",
-    "BOWSER TOWING, 6970 ISLAND HWY W, BOWSER, 250-757-8341",
-    "COLD COUNTRY TOWING (CRANBROOK), 3584 COLLINSON RD, CRANBROOK, 250-426-3680",
-    "EAGLE ROCK TOWING (ARMSTRONG), 1645 EAGLE ROCK RD, ARMSTRONG, 250-546-8290",
-    "ENCORE TOWING & SERVICE, 38926 PRODUCTION WAY, SQUAMISH, 604-892-5051",
-    "GRASS CREEK VENTURES, 415 HWY 37, ISKUT, 250-234-3434",
-    "JACK'S TOWING (ABBOTSFORD), 63 WEST RAILWAY, ABBOTSFORD, 604-607-0772",
-    "MAC'S TOWING (MISSION), 33201 LONDON AVE, MISSION, 604-826-9076",
-    "MUNDIE'S TOWING (SURREY), 19511 92 AVE, SURREY, 604-888-9633",
-    "REZILLIANT TOWING (FORT NELSON), 4900 44 AVE, FORT NELSON, 250-774-8697",
-    "TLC AUTOMOTIVE SERVICES, 1981 COLLISION AVE, MASSET, 250-626-3756",
-    "USHER'S TOWING, 101 11129 115 AVE, OSOYOOS, 250-495-7752",
-    "WESTSHORE TOWING, 1247 PARKDALE DR, VICTORIA, 250-474-1369",
-    "ZIGGY'S TOWING, 3558 VICTORIA DR, SMITHERS, 250-877-8687"
-];
 
 // Helper function to set the value of a text field 
 function SetField(id, value) {
@@ -112,19 +26,19 @@ function SetSelect(id, value) {
 function SelectRandomVehicleStyle(id) {
     // Select a random vehicle style
     const vehicleStyle = vehicleStyles[Math.floor(Math.random() * vehicleStyles.length)];
-    SetMultiSelect(id, vehicleStyle);
+    SetCustomSelect(id, vehicleStyle);
 }
 
 function SelectRandomVehicleColour(id) {
     // Select a random vehicle style
     const vehicleColour = vehicleColours[Math.floor(Math.random() * vehicleColours.length)];
-    SetMultiSelect(id, vehicleColour);
+    SetCustomSelect(id, vehicleColour);
 }
 
 function SelectRandomVehicle(id) {
     // Select a random vehicle style
     const vehicle = worstVehicles[Math.floor(Math.random() * worstVehicles.length)];
-    SetMultiSelect(id, vehicle);
+    SetCustomSelect(id, vehicle);
 }
 
 function SelectRandomVehicleYear(id){
@@ -133,17 +47,17 @@ function SelectRandomVehicleYear(id){
     const min = currentYear - 100;
     const max = currentYear + 1;
     const randomYear = Math.floor(Math.random() * (max - min + 1)) + min;
-    SetMultiSelect(id, randomYear.toString());
+    SetCustomSelect(id, randomYear.toString());
 }
 
 function SelectRandomIlo(id){
     // Select a random ILO
     const ilo = ilos[Math.floor(Math.random() * ilos.length)];
-    SetMultiSelect(id, ilo);
+    SetCustomSelect(id, ilo);
 }
 
 // Helper function to randomly select a value from a populated custom drop-down)
-function SetMultiSelect(id, value) {
+function SetCustomSelect(id, value) {
     SetSelect(id, value);
     const inputElement = document.getElementById(id);
     if (inputElement !== null) {
