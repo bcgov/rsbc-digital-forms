@@ -1,21 +1,175 @@
+// Constants and helper functions for the automation scripts
+
+
+// Tweak this if it's taking too long to load drop-downs to populate?
+const secondsToWaitForDropdownsToAppear = 25;
+
+const vehicleStyles = [
+    "2-DOOR SEDAN",
+    "3-DOOR HATCH",
+    "4-DOOR SEDAN",
+    "5-DOOR HATCH",
+    "CAMPER INCL:CAMPER VANS & MOTORIZED HOMES",
+    "CARGO (VAN)",
+    "CONVERTIBLE",
+    "DUMP",
+    "MOTOR SCOOTER",
+    "OTHER",
+    "PASSENGER (VAN)",
+    "PICKUP (CREW CAB)",
+    "PICKUP (FLAT BED)",
+    "PICKUP (EXT. CAB)",
+    "STAKE",
+    "STATION WAGON",
+    "TANKER",
+    "TRACTOR"
+];
+
+const vehicleColours = [
+    "BEIGE",
+    "BLACK",
+    "BROWN",
+    "BRONZE",
+    "BURGUNDY",
+    "COPPER",
+    "CREAM/IVORY",
+    "DARK BLUE",
+    "DARK GREEN",
+    "GOLD",
+    "GREY",
+    "LIGHT BLUE",
+    "LIGHT GREEN",
+    "MAROON",
+    "ORANGE",
+    "OTHER",
+    "PURPLE",
+    "PINK",
+    "PRIMER",
+    "RED",
+    "SILVER",
+    "TAN",
+    "TURQUOISE",
+    "WHITE",
+    "YELLOW"
+];
+
+const worstVehicles = [
+    "AMERICAN MOTORS - PACER",
+    "CADILLAC - ESCALADE",
+    "CHEVROLET - CAMARO",
+    "CHEVROLET - CHEVETTE",
+    "CHEVROLET - SSR",
+    "CHRYSLER - PT CRUISER",
+    "FORD - ASPIRE",
+    "FORD - PINTO",
+    "PLYMOUTH - CARAVELLE",
+    "PONTIAC - AZTEK",
+    "RENAULT - DAUPHINE",
+    "STERLING - 825",
+    "SUZUKI - X90",
+    "ZASTAVIA (ZCZ-YUGOSLAVIA) - YUGO (SERIES)"
+];
+
+const ilos = [
+    "ALBERNI TOWING, 2490 TIMBERLANE RD, PORT ALBERNI, 250-724-4050",
+    "BOWSER TOWING, 6970 ISLAND HWY W, BOWSER, 250-757-8341",
+    "COLD COUNTRY TOWING (CRANBROOK), 3584 COLLINSON RD, CRANBROOK, 250-426-3680",
+    "EAGLE ROCK TOWING (ARMSTRONG), 1645 EAGLE ROCK RD, ARMSTRONG, 250-546-8290",
+    "ENCORE TOWING & SERVICE, 38926 PRODUCTION WAY, SQUAMISH, 604-892-5051",
+    "GRASS CREEK VENTURES, 415 HWY 37, ISKUT, 250-234-3434",
+    "JACK'S TOWING (ABBOTSFORD), 63 WEST RAILWAY, ABBOTSFORD, 604-607-0772",
+    "MAC'S TOWING (MISSION), 33201 LONDON AVE, MISSION, 604-826-9076",
+    "MUNDIE'S TOWING (SURREY), 19511 92 AVE, SURREY, 604-888-9633",
+    "REZILLIANT TOWING (FORT NELSON), 4900 44 AVE, FORT NELSON, 250-774-8697",
+    "TLC AUTOMOTIVE SERVICES, 1981 COLLISION AVE, MASSET, 250-626-3756",
+    "USHER'S TOWING, 101 11129 115 AVE, OSOYOOS, 250-495-7752",
+    "WESTSHORE TOWING, 1247 PARKDALE DR, VICTORIA, 250-474-1369",
+    "ZIGGY'S TOWING, 3558 VICTORIA DR, SMITHERS, 250-877-8687"
+];
+
 // Helper function to set the value of a text field 
 function SetField(id, value) {
     const inputElement = document.getElementById(id);
-    inputElement.value = value;
-    const event = new Event('input', {bubbles: true});
-    inputElement.dispatchEvent(event);
+    if (inputElement !== null) {
+        inputElement.value = value;
+        const event = new Event('input', {bubbles: true});
+        inputElement.dispatchEvent(event);
+    }
 }
 
 // Helper function to set the value of a drop-down field
 function SetSelect(id, value) {
     const inputElement = document.getElementById(id);
-    inputElement.value = value;
-    
-    const enterKeyEvent = new KeyboardEvent('keydown', { key: 'Enter' });
-    const event = new Event('input', {bubbles: true});
+    if (inputElement !== null) {
+        inputElement.value = value;
+        const enterKeyEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+        const event = new Event('input', {bubbles: true});
+        inputElement.dispatchEvent(enterKeyEvent);
+        inputElement.dispatchEvent(event);
+    }
+}
 
-    inputElement.dispatchEvent(enterKeyEvent);
-    inputElement.dispatchEvent(event);
+function SelectRandomVehicleStyle(id) {
+    // Select a random vehicle style
+    const vehicleStyle = vehicleStyles[Math.floor(Math.random() * vehicleStyles.length)];
+    SetMultiSelect(id, vehicleStyle);
+}
+
+function SelectRandomVehicleColour(id) {
+    // Select a random vehicle style
+    const vehicleColour = vehicleColours[Math.floor(Math.random() * vehicleColours.length)];
+    SetMultiSelect(id, vehicleColour);
+}
+
+function SelectRandomVehicle(id) {
+    // Select a random vehicle style
+    const vehicle = worstVehicles[Math.floor(Math.random() * worstVehicles.length)];
+    SetMultiSelect(id, vehicle);
+}
+
+function SelectRandomVehicleYear(id){
+    // Pick a year any time between the current year plus one and 100 years ago
+    const currentYear = new Date().getFullYear();
+    const min = currentYear - 100;
+    const max = currentYear + 1;
+    const randomYear = Math.floor(Math.random() * (max - min + 1)) + min;
+    SetMultiSelect(id, randomYear.toString());
+}
+
+function SelectRandomIlo(id){
+    // Select a random ILO
+    const ilo = ilos[Math.floor(Math.random() * ilos.length)];
+    SetMultiSelect(id, ilo);
+}
+
+// Helper function to randomly select a value from a populated custom drop-down)
+function SetMultiSelect(id, value) {
+    SetSelect(id, value);
+    const inputElement = document.getElementById(id);
+    if (inputElement !== null) {
+
+        // Now we have to send a click event to confirm the selected value
+        //el.parentElement.parentElement.parentElement.parentElement.getElementsByTagName('div')[7].click()
+        
+        // Wait 'secondsToWaitForDropdownsToAppear' seconds for the drop-down to populate. It can be slow.
+        let count = 0;
+        let interval = setInterval(function() {
+            count++;
+            if (count >= secondsToWaitForDropdownsToAppear) {
+                clearInterval(interval);
+            }
+            else {
+                var arrayOfDivs = inputElement.parentElement.parentElement.parentElement.parentElement.getElementsByTagName('div');
+                var div = arrayOfDivs[arrayOfDivs.length - 1];
+        
+                if (div.innerText === value) {
+                    clearInterval(interval);
+                    // Now we can click the child element
+                    div.click();
+                }
+            }
+        }, 1000);
+    }
 }
 
 // Helper function to generate an eight-digit drivers licence number
@@ -77,6 +231,31 @@ function GenerateDateOfBirth() {
     return dateToYMD(chance.birthday({type: "adult"}));
 }
 
+function GenerateDLExpiryDate() {
+    const date = new Date();
+
+    // pick a number from 1 to 4
+    const randomNum = Math.floor(Math.random() * 4) + 1;
+
+    date.setFullYear(date.getFullYear() + randomNum);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const formattedDate = `${year}${month}${day}`;
+    return formattedDate;
+}
+
+function RandomGender() {
+    const genders = ["M", "F", "X", "U"];
+    return genders[Math.floor(Math.random() * genders.length)];
+}
+
+function GenerateRandomDlClass()
+{
+    const dlClasses = ["1", "2", "3", "4", "5", "6", "7", "8", "5L", "5N", "5 + 7L", "5 + 8N", "4 + 7N"];
+    return dlClasses[Math.floor(Math.random() * dlClasses.length)];
+}
+
 // Helper function to generate a street address at random
 function GenerateStreetAddress() {
     return chance.address({ short_suffix: false });
@@ -114,11 +293,15 @@ function GenerateCity() {
 // Helper function to get values from a drop-down field
 function ValuesFromDropdownField(id) {
     let field = document.getElementById(id);
-    let values = [];
-    for (const option of field.options) {
-        values.push(option.value);
+    if (field !== null) {
+
+        let values = [];
+        for (const option of field.options) {
+            values.push(option.value);
+        }
+        return values;
     }
-    return values;
+    return [];
 }
 
 // Helper function to generate a BC licence plate
@@ -155,17 +338,50 @@ function GenerateNSC() {
 // Helper function to randomly select a value from a populated drop-down
 function setSelectValue(className, value) {
     const selectElement = document.querySelector(`.${className}`);
-    console.log("Setting value of " + className + " to " + value);
+    if (selectElement !== null) {
+        console.log("Setting value of " + className + " to " + value);
 
-    //selectElement.dispatchEvent(new Event("onClick", { bubbles: true }));
-    //selectElement.value = value;
-    const event = new Event('onChange', {bubbles: true});
-    selectElement.dispatchEvent(event);
+        //selectElement.dispatchEvent(new Event("onClick", { bubbles: true }));
+        //selectElement.value = value;
+        const event = new Event('onChange', {bubbles: true});
+        selectElement.dispatchEvent(event);
+    }
 }
 
 function SelectRadioButton(id) {
     var el = document.getElementById(id);
-    el.click();
+    if (el !== null) {
+        el.click();
+    }
+}
+
+function RandomlySelectRadioButton(id) {
+    // 50% chance of clicking the button
+    if (Math.floor(Math.random() * 100) + 1 > 50) {
+        var el = document.getElementById(id);
+        if (el !== null) {
+            el.click();
+        }
+    }
+}
+
+function RandomlyChooseRadio(...params) {
+    // randomly select one of the values in params
+    var randomIndex = Math.floor(Math.random() * params.length);
+    var id = params[randomIndex];
+    el = document.getElementById(id);
+    if (el !== null) {
+        el.click();
+    }
+}
+
+function GenerateRandomText(length) {
+    return chance.string({length: length});
+}
+
+function RandomlySpeedLimit(){
+    const speedLimits = ["10", "20", "30", "40", "50", "60", "70", "80", "90", "100", "110"];
+    return speedLimits[Math.floor(Math.random() * speedLimits.length)];
 }
 
 function GetDateFiveMinutesAgo() {
@@ -187,9 +403,29 @@ function GetCurrentDate() {
     return formattedDate;
 }
 
+function GetDateInFiveFiveDays() {
+    // Add five days to the current date
+    let date = new Date();  // Get the current date
+    date.setDate(date.getDate() + 5);  // Add five days to the current date
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const formattedDate = `${year}${month}${day}`;
+    return formattedDate;
+}
+
 function GetTimeFiveMinutesAgo() {
     const date = new Date();
     date.setMinutes(date.getMinutes() - 5);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const formattedTime = `${hours}${minutes}`;
+    return formattedTime;
+}
+
+function GetTimeOneMinuteAgo() {
+    const date = new Date();
+    date.setMinutes(date.getMinutes() - 1);
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
     const formattedTime = `${hours}${minutes}`;

@@ -18,8 +18,8 @@
             "matches": [
                 "*://rsbc-roadside-forms-app-frontend-dev.apps.silver.devops.gov.bc.ca/*",
                 "*://rsbc-roadside-forms-app-frontend-test.apps.silver.devops.gov.bc.ca/*",
-                "*://localhost/*",
-                "*://127.0.0.1/*"
+                "*://localhost:*/*",
+                "*://127.0.0.1:*/*"
             ],
             "js": [
                 "chance.min.js",
