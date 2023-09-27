@@ -11,6 +11,8 @@ services:
         RABBITMQ_PASS: password
         DB_HOST: localhost
         LOG_LEVEL: "DEBUG"
+        ENCRYPT_KEY: "${ENCRYPT_KEY}"
+        ENCRYPT_KEY_SALT: "${ENCRYPT_KEY_SALT}"
       x-develop:
         watch:
           - action: rebuild
