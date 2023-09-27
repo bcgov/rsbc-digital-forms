@@ -316,8 +316,9 @@ export const CreateEvent = () => {
                 vehicles={vehicles}
                 vehicleStyles={vehicleStyles}
               />
-              {values["TwentyFourHour"] ||
-                (values["VI"] && <RegisteredOwnerInfo provinces={provinces} />)}
+              {(values["TwentyFourHour"] || values["VI"]) && (
+                <RegisteredOwnerInfo provinces={provinces} />
+              )}
             </div>
             {(values["TwentyFourHour"] || values["VI"]) && (
               <>
