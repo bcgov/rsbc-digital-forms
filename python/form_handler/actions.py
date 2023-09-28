@@ -174,6 +174,11 @@ def validate_event_retry_count(**args)->tuple:
     try:
         retry_count=0
         event_type=args.get('event_type')
+        message = args.get('message')
+        queue_name = message.get('queue_name', None)
+        max_retries=Config.SYSTEM_RECORD_MAX_RETRIES
+        if queue_name == Config.STORAGE_FAIL_QUEUE:
+            max_retries=max_retries+10
         if event_type=='vi':
             retry_count=args.get('event_data').get('vi_retry_count')
         elif event_type=='irp':
@@ -184,8 +189,9 @@ def validate_event_retry_count(**args)->tuple:
             retry_count=args.get('event_data').get('icbc_retry_count')
         else:
             return False,args
-        if retry_count >= Config.SYSTEM_RECORD_MAX_RETRIES:
+        if retry_count >= max_retries:
             return False,args
+    #     TODO: Update retry count in event table
     except Exception as e:
         logging.error(e)
         return False,args
@@ -716,6 +722,7 @@ def add_to_persistent_failed_queue(**args)->tuple:
     try:
         config = args.get('config')
         message = args.get('message')
+        message['queue_name'] = config.STORAGE_FAIL_QUEUE_PERS
         writer = args.get('writer')
         logging.debug('add_to_hold_queue(): {}'.format(json.dumps(message)))
         if not writer.publish(config.STORAGE_FAIL_QUEUE_PERS, encode_message(message, config.ENCRYPT_KEY)):
@@ -732,6 +739,7 @@ def add_to_transient_failed_queue(**args)->tuple:
     try:
         config = args.get('config')
         message = args.get('message')
+        message['queue_name'] = config.STORAGE_FAIL_QUEUE
         writer = args.get('writer')
         logging.debug('add_to_transient_failed_queue(): {}'.format(json.dumps(message)))
         if not writer.publish(config.STORAGE_FAIL_QUEUE, encode_message(message, config.ENCRYPT_KEY)):
@@ -748,6 +756,7 @@ def add_to_hold_queue(**args)->tuple:
     try:
         config = args.get('config')
         message = args.get('message')
+        message['queue_name'] = config.STORAGE_HOLD_QUEUE
         writer = args.get('writer')
         logging.debug('add_to_hold_queue(): {}'.format(json.dumps(message)))
         if not writer.publish(config.STORAGE_HOLD_QUEUE, encode_message(message, config.ENCRYPT_KEY)):
