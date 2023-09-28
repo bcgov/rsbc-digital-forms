@@ -762,9 +762,14 @@ def add_to_hold_queue(**args)->tuple:
 
 def add_unknown_event_error_to_message(**args)->tuple:
     logging.debug("inside add_unknown_event_error_to_message()")
-
-
-
+    logging.debug(args)
+    try:
+        message = args.get('message')
+        tmp_key = message.get('Key', None)
+        args['storage_key'] = tmp_key
+    except Exception as e:
+        logging.error(e)
+        return False, args
     return True,args
 
 
