@@ -30,7 +30,7 @@ def process_incoming_form() -> dict:
             # DONE: if form data is found, and event data is found, continue
             # DONE: Implement add to hold queue
             # DONE: implement add to failed queue
-            # TODO: Validate form and event data based on payload needed for vips
+            # DONE: Validate form and event data based on payload needed for vips
             # DONE: if form data is invalid, add to failed queue
             # DONE: if form and event data is valid update status to processin
             # DONE: Query pdf object from storage and add to args
