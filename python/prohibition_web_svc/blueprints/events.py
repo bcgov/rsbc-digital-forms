@@ -66,6 +66,7 @@ def create():
                 {"try": event_middleware.save_event_data, "fail": [ 
                     {"try": http_responses.bad_request_response, "fail": []}
                 ]},
+                {"try": event_middleware.save_event_pdf, "fail": []},
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": http_responses.successful_create_response, "fail": []},
             ],

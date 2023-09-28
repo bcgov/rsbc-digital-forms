@@ -104,6 +104,8 @@ services:
       build:
         context: python
         dockerfile: prohibition_web_svc/Dockerfile-local
+      env_file:
+        - .env
       environment:
         FLASK_SECRET_KEY: "${FLASK_SECRET_KEY}"
         ICBC_API_ROOT: "http://icbc_mock_svc:5000/vips/icbc"
@@ -118,11 +120,12 @@ services:
         ADMIN_USERNAME: "${ADMIN_USERNAME}"
         FLASK_BASIC_AUTH_USER: "${FLASK_BASIC_AUTH_USER}"
         FLASK_BASIC_AUTH_PASS: "${FLASK_BASIC_AUTH_PASS}"
-        MINIO_SK: "${MINIO_AK}"
-        MINIO_AK: "${MINIO_SK}"
+        MINIO_SK: "${MINIO_SK}"
+        MINIO_AK: "${MINIO_AK}"
       command: bash -c "cd /home/appuser/python/prohibition_web_svc && flask db upgrade && gunicorn --bind 0.0.0.0:5000 --pythonpath /home/appuser/python/prohibition_web_svc 'app:create_app()'"
       networks:
         - docker-network
+      # network_mode: "host"
       ports:
         - "5002:5000"
       x-develop:
@@ -152,19 +155,19 @@ services:
         timeout: 5s
         retries: 5
 
-    mock_svcs:
-      build:
-        context: mock_services
-        dockerfile: all_mock_svc/Dockerfile-local
-      environment:
-        FLASK_SECRET_KEY: 1234
-        API_USERNAME: user
-        API_PASSWORD: password
-        LOG_LEVEL: "DEBUG"
-      networks:
-        - docker-network
-      ports:
-        - "5003:5000"
+    # mock_svcs:
+    #   build:
+    #     context: mock_services
+    #     dockerfile: all_mock_svc/Dockerfile-local
+    #   environment:
+    #     FLASK_SECRET_KEY: 1234
+    #     API_USERNAME: user
+    #     API_PASSWORD: password
+    #     LOG_LEVEL: "DEBUG"
+    #   networks:
+    #     - docker-network
+    #   ports:
+    #     - "5003:5000"
 
 networks:
   docker-network:

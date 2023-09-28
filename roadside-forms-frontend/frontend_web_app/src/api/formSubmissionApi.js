@@ -7,12 +7,11 @@ export const FormSubmissionApi = {
       const headers = {
         ...createRequestHeader(),
       };
-      console.log(data)
         const response = await api.request({
           url: "/api/v1/event",
           method: "POST",
           headers: {...headers},
-          data: {...data},
+          data: {...data}
         })
         console.log(response)
         return response
