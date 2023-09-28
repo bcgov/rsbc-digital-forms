@@ -2,9 +2,13 @@ import logging
 import json
 import pytz
 import iso8601
+import os
+from PIL import Image
+from io import BytesIO
 from minio import Minio
 from datetime import datetime
 from cerberus import Validator
+from base64 import b64decode
 from flask import jsonify, make_response
 from python.prohibition_web_svc.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, IRPForm
 from python.prohibition_web_svc.config import Config
@@ -22,6 +26,7 @@ def log_payload_to_splunk(**kwargs) -> tuple:
 def save_event_data(**kwargs) -> tuple:
     logging.debug('inside save_event_data()')
     data = kwargs.get('payload')
+    logging.debug(type(data.get('VI_form_png')))
     try:
         date_created=datetime.now()
         event = Event(
@@ -94,14 +99,13 @@ def save_event_data(**kwargs) -> tuple:
                 created_dt=date_created,
                 updated_dt=date_created,
             )
-            event.vi_form = vi_form    
+            event.vi_form = vi_form   
         if data.get('TwentyFourHour'):
             return
         if data.get('TwelveHour'):
             return    
         if data.get('IRP'):
             return    
-        
         db.session.add(event)
         db.session.commit()
     except Exception as e:
@@ -111,22 +115,32 @@ def save_event_data(**kwargs) -> tuple:
     return True, kwargs
 
 def save_event_pdf(**kwargs) -> tuple:
-    client = Minio(
-        Config.MINIO_BUCKET_URL,
-        access_key=Config.MINIO_AK,
-        secret_key=Config.MINIO_SK,
-    )
+    logging.debug('save event pdf')
+    try:
+        data = kwargs.get('payload')
+        client = Minio(
+            Config.MINIO_BUCKET_URL,
+            access_key=Config.MINIO_AK,
+            secret_key=Config.MINIO_SK,
+            secure=Config.MINIO_SECURE,
+        )
 
-    # Make 'asiatrip' bucket if not exist.
-    found = client.bucket_exists("test")
-    if not found:
-        client.make_bucket("test")
-    else:
-        print("Bucket 'test' already exists")
+        # Make 'asiatrip' bucket if not exist.
+        found = client.bucket_exists("test")
+        if not found:
+            client.make_bucket("test")
+        else:
+            print("Bucket 'test' already exists")
 
-    client.fput_object(
-        "test", "file-name.pdf", "/home/user/Photos/asiaphotos.zip",
-    )
+        if(data.get('VI')):
+            pdf_filename = "/tmp/VI_test_PDF.pdf"
+            img = Image.open(BytesIO(b64decode(data.get("VI_form_png").split(",")[1:2][0])))
+            img.save(pdf_filename, "PDF", resolution=100.0, save_all=True)
+            client.fput_object("test", "VI_test_file.pdf", "/tmp/VI_test_PDF.pdf")
+    except Exception as e:
+        logging.warning(str(e))
+        return False, kwargs
+    return True, kwargs
     
 
 def request_contains_a_payload(**kwargs) -> tuple:
@@ -134,7 +148,7 @@ def request_contains_a_payload(**kwargs) -> tuple:
     try:
         payload = request.get_json()
         kwargs['payload'] = payload
-        logging.debug("payload: " + json.dumps(payload))
+        # logging.debug("payload: " + json.dumps(payload))
     except Exception as e:
         return False, kwargs
     return payload is not None, kwargs

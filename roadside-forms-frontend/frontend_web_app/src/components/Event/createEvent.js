@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal'
-import { toPng } from 'html-to-image';
+import { toPng, toBlob } from 'html-to-image';
 import { Checkbox } from '../common/Checkbox/checkbox';
 import { validationSchema } from './validationSchema';
 import { DriverInfo } from '../CommonForm/driverInfo';
@@ -132,18 +132,18 @@ export const CreateEvent = () => {
         nscNumber === "" ? values['is_nsc'] = false : values['is_nsc'] = true;
     }
 
-    const onSubmit = (values, { setSubmitting }) => {
+    const onSubmit = async (values, { setSubmitting }) => {
         console.log("submitting form.")
         const element = document.getElementById('printdiv');
-        toPng(element).then(blob => {
-            values['form_png'] = blob 
-        });
+        const base64_png = await toPng(element)
+        values['VI_form_png'] = base64_png
         setSubmitting(true);
         FormSubmissionApi.post(values).then( (resp) => {
             values['event_id'] = resp.data['event_id']
             setSubmitting(false);
-            console.log(values)
-            db.event.put(values).then(() => navigate('/'))
+            db.event.put(values).then()
+            // () => navigate('/')
+
         })
     };
 
