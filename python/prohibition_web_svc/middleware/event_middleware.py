@@ -8,10 +8,11 @@ from io import BytesIO
 from minio import Minio
 from datetime import datetime
 from cerberus import Validator
-from base64 import b64decode
+from base64 import b64decode, b64encode
 from flask import jsonify, make_response
 from python.prohibition_web_svc.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, IRPForm
 from python.prohibition_web_svc.config import Config
+from python.prohibition_web_svc.business.cryptography_logic import method2_encrypt
 
 
 def validate_update(**kwargs) -> tuple:
@@ -135,8 +136,20 @@ def save_event_pdf(**kwargs) -> tuple:
         if(data.get('VI')):
             pdf_filename = "/tmp/VI_test_PDF.pdf"
             img = Image.open(BytesIO(b64decode(data.get("VI_form_png").split(",")[1:2][0])))
-            img.save(pdf_filename, "PDF", resolution=100.0, save_all=True)
-            client.fput_object("test", "VI_test_file.pdf", "/tmp/VI_test_PDF.pdf")
+            img.save(pdf_filename, "PDF", resolution=100.0, save_all=True, compress_level=3)
+            logging.debug('File saved')
+            with open(pdf_filename, "rb") as pdf_file:
+                encoded_string = b64encode(pdf_file.read())
+                logging.debug('Starting encrypt')
+                ciphertext, iv = method2_encrypt(encoded_string)        
+                logging.debug('Encrypted')
+                base64encoded=b64encode(ciphertext)
+                encoded_file_name = "encoded_VI_test_PDF.pdf"
+                encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
+                with open(encoded_pdf_filepath, 'wb') as file_data1:
+                    file_data1.write(b64decode(base64encoded))
+                    client.fput_object("test", encoded_file_name, encoded_pdf_filepath)
+                    
     except Exception as e:
         logging.warning(str(e))
         return False, kwargs
