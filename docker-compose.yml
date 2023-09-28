@@ -1,27 +1,37 @@
-version: '3'
+version: '3.1'
  
 services:
  
-    # rabbitmq:
-    #   build: ./rabbitmq
-    #   environment:
-    #       # The RABBITMQ_DEFAULT_USER is used
-    #       # to connect to the web admin
-    #       RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
-    #       RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
-    #       RABBITMQ_LOGS: "WARNING"
-    #   networks:
-    #     - docker-network
-    #   ports:
-    #       - "15672:15672" # Web admin port
-    #       - "5672:5672"   # Do not expose this port in production
+    rabbitmq:
+      build: ./rabbitmq
+      environment:
+          # The RABBITMQ_DEFAULT_USER is used
+          # to connect to the web admin
+          RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
+          RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
+          RABBITMQ_LOGS: "DEBUG"
+      networks:
+        - docker-network
+      healthcheck:
+        test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+        interval: 5s
+        timeout: 15s
+        retries: 5
+      ports:
+          - "15672:15672" # Web admin port
+          - "5672:5672"   # Do not expose this port in production
 
     # form_handler:
     #   build:
     #     context: python
     #     dockerfile: form_handler/Dockerfile-local
     #   depends_on:
-    #     - rabbitmq
+    #     rabbitmq:
+    #       condition: service_healthy
+    #   restart: on-failure:20
+
+    #   networks:
+    #     - docker-network
     #   environment:
     #     RABBITMQ_URL: "${RABBITMQ_URL}"
     #     RABBITMQ_USER: "${RABBITMQ_USER}"
@@ -40,22 +50,54 @@ services:
     #     ENCRYPT_KEY: "${ENCRYPT_KEY}"
 
 
-    web_app:
-      build:
-        context: roadside-forms-frontend/frontend_web_app
-        dockerfile: Dockerfile-local
-        args: 
-          REACT_APP_BASE_URL: "${REACT_APP_BASE_URL_DEV}"
-          REACT_APP_KEYCLOAK_URL: "${KEYCLOAK_AUTH_URL}"
-          REACT_APP_KEYCLOAK_REALM: "${KEYCLOAK_REALM}"
-          REACT_APP_KEYCLOAK_CLIENT_ID: "${KEYCLOAK_CLIENT_ID}"
-          REACT_APP_API_BASE_URL: "${REACT_APP_API_BASE_URL}"
-      depends_on:
-        - roadside-forms-api
+    # web_app:
+    #   build:
+    #     context: roadside-forms-frontend/frontend_web_app
+    #     dockerfile: Dockerfile-local
+    #     args: 
+    #       REACT_APP_BASE_URL: "${REACT_APP_BASE_URL_DEV}"
+    #       REACT_APP_KEYCLOAK_URL: "${KEYCLOAK_AUTH_URL}"
+    #       REACT_APP_KEYCLOAK_REALM: "${KEYCLOAK_REALM}"
+    #       REACT_APP_KEYCLOAK_CLIENT_ID: "${KEYCLOAK_CLIENT_ID}"
+    #       REACT_APP_API_BASE_URL: "${REACT_APP_API_BASE_URL}"
+    #   depends_on:
+    #     - roadside-forms-api
+    #   networks:
+    #     - docker-network
+    #   ports:
+    #     - "8080:5000"
+
+    minio:
+      image: 'minio/minio:latest'
+      ports:
+        - '${FORWARD_MINIO_PORT:-9000}:9000'
+        - '${FORWARD_MINIO_CONSOLE_PORT:-9090}:9090'
+      environment:
+        MINIO_ROOT_USER: 'root'
+        MINIO_ROOT_PASSWORD: 'password'
+        BITNAMI_DEBUG: "true"
+        SSL_ENABLED: "false"
+        MINIO_NOTIFY_AMQP_ENABLE_DF_RABBITMQ: "on"
+        MINIO_NOTIFY_AMQP_URL_DF_RABBITMQ: "amqp://admin:password@rabbitmq:5672"
+        MINIO_NOTIFY_AMQP_EXCHANGE_DF_RABBITMQ: "amq.direct"
+        MINIO_NOTIFY_AMQP_EXCHANGE_TYPE_DF_RABBITMQ: "direct"
+        MINIO_NOTIFY_AMQP_ROUTING_KEY_DF_RABBITMQ: "dfevents"
+        MINIO_NOTIFY_AMQP_AUTO_DELETED_DF_RABBITMQ: "off"
+        MINIO_NOTIFY_AMQP_DELIVERY_MODE_DF_RABBITMQ: "2"
+        MINIO_NOTIFY_AMQP_MANDATORY_DF_RABBITMQ: "off"
+        MINIO_NOTIFY_AMQP_IMMEDIATE_DF_RABBITMQ: "off"
+        MINIO_NOTIFY_AMQP_INTERNAL_DF_RABBITMQ: "off"
+        MINIO_NOTIFY_AMQP_NO_WAIT_DF_RABBITMQ: "on"
+        MINIO_NOTIFY_AMQP_DURABLE_DF_RABBITMQ: "on"
+        MINIO_NOTIFY_AMQP_QUEUE_DIR_DF_RABBITMQ: "/opt/events"
+        MINIO_NOTIFY_AMQP_QUEUE_LIMIT_DF_RABBITMQ: "100"
+        MINIO_ACCESS_KEY: "minio"
+        MINIO_SECRET_KEY: "minio123"
+      volumes:
+        - 'minio:/data/minio'
+      command: minio server /data/minio --console-address ":9090"
       networks:
         - docker-network
-      ports:
-        - "8080:5000"
 
 
     roadside-forms-api:
@@ -104,9 +146,25 @@ services:
         timeout: 5s
         retries: 5
 
+    mock_svcs:
+      build:
+        context: mock_services
+        dockerfile: all_mock_svc/Dockerfile-local
+      environment:
+        FLASK_SECRET_KEY: 1234
+        API_USERNAME: user
+        API_PASSWORD: password
+        LOG_LEVEL: "DEBUG"
+      networks:
+        - docker-network
+      ports:
+        - "5003:5000"
+
 networks:
   docker-network:
 
 volumes:
   db: {}
+  minio:
+    driver: local
 
