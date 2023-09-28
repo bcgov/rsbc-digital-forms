@@ -24,3 +24,4 @@ build
 .coverage
 coverage.xml
 htmlcov/
+encryptDecryptPdf
