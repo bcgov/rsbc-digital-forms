@@ -50,6 +50,15 @@ class Config():
     VIPS_API_USERNAME = os.getenv('VIPS_API_USERNAME', 'user')
     VIPS_API_PASSWORD = os.getenv('VIPS_API_PASSWORD', 'password')
 
+    COMM_SERV_AUTH_URL = os.getenv('COMM_SERV_AUTH_URL', 'http://localhost')
+    COMM_SERV_API_ROOT_URL = os.getenv('COMM_SERV_API_ROOT_URL', 'http://localhost')
+    COMM_SERV_REALM = os.getenv('COMM_SERV_REALM', 'realm')
+    COMM_SERV_CLIENT_ID = os.getenv('COMM_SERV_CLIENT_ID', '')
+    COMM_SERV_CLIENT_SECRET = os.getenv('COMM_SERV_CLIENT_SECRET', '')
+
+    RSIOPS_EMAIL_ADDRESS = os.getenv('RSIOPS_EMAIL_ADDRESS')
+    REPLY_EMAIL_ADDRESS = os.getenv('REPLY_EMAIL_ADDRESS', 'do-not-reply-rsi@gov.bc.ca')
+
 
 
 
