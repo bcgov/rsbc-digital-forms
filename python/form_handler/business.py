@@ -1,6 +1,6 @@
 # import python.common.middleware as middleware
 import python.form_handler.actions as actions
-# import python.common.rsi_email as rsi_email
+import python.form_handler.rsi_email as rsi_email
 # import python.common.splunk_application_for_review as splunk
 # import python.common.splunk as common_splunk
 from python.form_handler.actions import get_storage_ref_event_type
@@ -19,7 +19,7 @@ def process_incoming_form() -> dict:
         "unknown_event": [
             {"try": actions.add_unknown_event_error_to_message, "fail": []},
             {"try": actions.add_to_persistent_failed_queue, "fail": []},
-            # {"try": rsi_email.admin_unknown_event_type, "fail": []}
+            {"try": rsi_email.rsiops_unknown_event_type, "fail": []}
         ],
         "vi": [
             # DONE: query form data and event data using storage key from input
@@ -55,6 +55,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.validate_event_data, "fail": [
+                {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
                 {"try": actions.add_to_persistent_failed_queue, "fail": []},
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
@@ -64,6 +65,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.prep_vips_document_payload, "fail": [
+                {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
                 {"try": actions.add_to_persistent_failed_queue, "fail": []},
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
@@ -72,6 +74,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.prep_vips_payload, "fail": [
+                {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
                 {"try": actions.add_to_persistent_failed_queue, "fail": []},
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
@@ -100,6 +103,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.validate_event_data, "fail": [
+                {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
                 {"try": actions.add_to_persistent_failed_queue, "fail": []},
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
@@ -109,6 +113,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.prep_icbc_payload, "fail": [
+                {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
                 {"try": actions.add_to_persistent_failed_queue, "fail": []},
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
@@ -140,6 +145,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.validate_event_data, "fail": [
+                {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
                 {"try": actions.add_to_persistent_failed_queue, "fail": []},
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
@@ -149,6 +155,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.prep_icbc_payload, "fail": [
+                {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
                 {"try": actions.add_to_persistent_failed_queue, "fail": []},
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
