@@ -580,6 +580,7 @@ class FormStorageRefs(db.Model):
     form_type:str
     # vi, irp, 24h, 12h
     storage_key:str
+    encryptiv:str
     created_dt:datetime
     updated_dt:datetime
 
@@ -591,5 +592,6 @@ class FormStorageRefs(db.Model):
     form_id_12h=db.Column(db.Integer, db.ForeignKey('twelve_hour_form.form_id'))
     event_id=db.Column(db.Integer, db.ForeignKey('event.event_id'))
     form_type=db.Column(db.String)
+    encryptiv=db.Column(db.String)
     created_dt = db.Column(db.DateTime)
     updated_dt = db.Column(db.DateTime)
