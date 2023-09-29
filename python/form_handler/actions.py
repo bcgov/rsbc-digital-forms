@@ -171,27 +171,29 @@ def validate_event_retry_count(**args)->tuple:
     logging.info("inside validate_event_retry_count()")
     logging.debug(args)
     # DONE: if event retry count is more than 10
+    # DONE: Update retry count in event table
     try:
-        retry_count=0
         event_type=args.get('event_type')
         message = args.get('message')
         queue_name = message.get('queue_name', None)
+        retry_count=message.get('retry_count',0)
+        retry_count=retry_count+1
+        args['retry_count']=retry_count
+        args['message']['retry_count']=retry_count
+        put_to_queue_name=Config.STORAGE_HOLD_QUEUE
         max_retries=Config.SYSTEM_RECORD_MAX_RETRIES
         if queue_name == Config.STORAGE_FAIL_QUEUE:
-            max_retries=max_retries+10
-        if event_type=='vi':
-            retry_count=args.get('event_data').get('vi_retry_count')
-        elif event_type=='irp':
-            pass
-        elif event_type=='24h':
-            retry_count=args.get('event_data').get('icbc_retry_count')
-        elif event_type=='12h':
-            retry_count=args.get('event_data').get('icbc_retry_count')
-        else:
-            return False,args
+            max_retries=max_retries+Config.SYSTEM_RECORD_MAX_TRANSIENT_RETRIES
+            put_to_queue_name=Config.STORAGE_FAIL_QUEUE
+        args['put_to_queue_name']=put_to_queue_name
         if retry_count >= max_retries:
+            if put_to_queue_name == Config.STORAGE_HOLD_QUEUE:
+                put_to_queue_name=Config.STORAGE_FAIL_QUEUE
+            elif put_to_queue_name == Config.STORAGE_FAIL_QUEUE:
+                put_to_queue_name=Config.STORAGE_FAIL_QUEUE_PERS
+            args['put_to_queue_name']=put_to_queue_name
             return False,args
-    #     TODO: Update retry count in event table
+    
     except Exception as e:
         logging.error(e)
         return False,args
@@ -761,6 +763,29 @@ def add_to_hold_queue(**args)->tuple:
         logging.debug('add_to_hold_queue(): {}'.format(json.dumps(message)))
         if not writer.publish(config.STORAGE_HOLD_QUEUE, encode_message(message, config.ENCRYPT_KEY)):
             logging.critical('unable to write to RabbitMQ {} queue'.format(config.STORAGE_HOLD_QUEUE))
+            return False, args
+    except Exception as e:
+        logging.error(e)
+        return False, args
+    return True, args
+
+
+def add_to_retry_queue(**args)->tuple:
+    logging.debug("inside add_to_retry_queue()")
+    logging.debug(args)
+    try:
+        config = args.get('config')
+        message = args.get('message')
+        put_to_queue_name=args.get('put_to_queue_name',None)
+        writer = args.get('writer')
+        logging.debug('add_to_retry_queue(): {}'.format(json.dumps(message)))
+        if put_to_queue_name is None:
+            put_to_queue_name=config.STORAGE_HOLD_QUEUE
+            args['message']['queue_name']=config.STORAGE_HOLD_QUEUE
+        else:
+            args['message']['queue_name']=put_to_queue_name         
+        if not writer.publish(put_to_queue_name, encode_message(message, config.ENCRYPT_KEY)):
+            logging.critical('unable to write to RabbitMQ {} queue'.format(put_to_queue_name))
             return False, args
     except Exception as e:
         logging.error(e)
