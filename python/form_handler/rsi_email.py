@@ -46,6 +46,25 @@ def rsiops_event_to_error_queue(**args) -> tuple:
     logging.critical('sent to persistent error queue: {}'.format(storage_key))
     return send_email_to_rsiops(config=config, title=title, body=body_text,eventid=storage_key,message=message), args
 
+def rsiops_event_to_retry_queue(**args) -> tuple:
+    # message = args.get('message')
+    # config = args.get('config')
+    config = args.get('config')
+    event_type = args.get('event_type')
+    storage_key = args.get('storage_key')
+    message = args.get('message')
+    put_to_queue_name=args.get('put_to_queue_name',None)
+    if put_to_queue_name is None:
+        return False, args
+    elif put_to_queue_name==Config.STORAGE_FAIL_QUEUE_PERS:
+        title = 'Critical Error: Event sent to error queue after max retries'
+        body_text = f"An event has been sent to persistent error queue after max retries: {event_type} for storage key: {storage_key} "
+        logging.critical('sent to persistent error queue: {}'.format(storage_key))
+        send_email_to_rsiops(config=config, title=title, body=body_text, eventid=storage_key,message=message)
+        return False, args
+    return False, args
+
+
 
 
 def send_email_to_rsiops(**args):

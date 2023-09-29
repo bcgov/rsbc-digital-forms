@@ -125,7 +125,7 @@ def vipsimp():
             imp = {
                 "impoundmentId": "123"
             }
-            return make_response(jsonify(imp), 200)
+            return make_response(jsonify(imp), 500)
         except Exception as e:
             return make_response(jsonify({
                     "error": {
