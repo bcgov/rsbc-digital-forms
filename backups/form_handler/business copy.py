@@ -38,20 +38,20 @@ def process_incoming_form() -> dict:
             # DONE: if data is valid prep payload for vips
             # DONE: if fails to send to vips, add to hold queue and add data retry_count to event table
             # DONE: if success update vips status on event row on db and retry count to 0
-            {"try": actions.validate_event_retry_count, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
-                {"try": rsi_email.rsiops_event_to_retry_queue, "fail": []}
-            ]},
             {"try": actions.get_storage_ref_event_type, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []}
             ]},
             {"try": actions.get_event_form_data, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []}
             ]},
             {"try": actions.get_event_user_data, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
+            ]},
+            {"try": actions.validate_event_retry_count, "fail": [
+                {"try": actions.add_to_transient_failed_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.validate_event_data, "fail": [
@@ -61,7 +61,7 @@ def process_incoming_form() -> dict:
             ]},
             {"try": actions.update_event_status_processing, "fail": []},
             {"try": actions.get_storage_file, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.prep_vips_document_payload, "fail": [
@@ -70,7 +70,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.create_vips_document, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.prep_vips_payload, "fail": [
@@ -79,27 +79,27 @@ def process_incoming_form() -> dict:
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.create_vips_impoundment, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.update_event_status, "fail": []},
 
         ],
         "24h": [
-            {"try": actions.validate_event_retry_count, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
-                {"try": rsi_email.rsiops_event_to_retry_queue, "fail": []}
-            ]},
             {"try": actions.get_storage_ref_event_type, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.get_event_form_data, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.get_event_user_data, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
+            ]},
+            {"try": actions.validate_event_retry_count, "fail": [
+                {"try": actions.add_to_transient_failed_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.validate_event_data, "fail": [
@@ -109,7 +109,7 @@ def process_incoming_form() -> dict:
             ]},
             {"try": actions.update_event_status_processing, "fail": []},
             {"try": actions.get_storage_file, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.prep_icbc_payload, "fail": [
@@ -118,7 +118,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.send_to_icbc, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.update_event_status, "fail": []},
@@ -128,21 +128,21 @@ def process_incoming_form() -> dict:
             # {"try": actions.add_to_failed_queue, "fail": []},
         ],
         "12h": [
-            {"try": actions.validate_event_retry_count, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
-                {"try": rsi_email.rsiops_event_to_retry_queue, "fail": []}
-            ]},
             {"try": actions.get_storage_ref_event_type, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.get_event_form_data, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.get_event_user_data, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
+            ]},
+            {"try": actions.validate_event_retry_count, "fail": [
+                {"try": actions.add_to_transient_failed_queue, "fail": []},
+                {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.validate_event_data, "fail": [
                 {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
@@ -151,7 +151,7 @@ def process_incoming_form() -> dict:
             ]},
             {"try": actions.update_event_status_processing, "fail": []},
             {"try": actions.get_storage_file, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.prep_icbc_payload, "fail": [
@@ -160,7 +160,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.send_to_icbc, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.add_to_hold_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.update_event_status, "fail": []},
