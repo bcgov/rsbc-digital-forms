@@ -176,22 +176,24 @@ def validate_event_retry_count(**args)->tuple:
         event_type=args.get('event_type')
         message = args.get('message')
         queue_name = message.get('queue_name', None)
+        retry_count=message.get('retry_count',0)
+        retry_count=retry_count+1
+        args['retry_count']=retry_count
+        args['message']['retry_count']=retry_count
+        put_to_queue_name=Config.STORAGE_HOLD_QUEUE
         max_retries=Config.SYSTEM_RECORD_MAX_RETRIES
         if queue_name == Config.STORAGE_FAIL_QUEUE:
-            max_retries=max_retries+10
-        if event_type=='vi':
-            retry_count=args.get('event_data').get('vi_retry_count')
-        elif event_type=='irp':
-            pass
-        elif event_type=='24h':
-            retry_count=args.get('event_data').get('icbc_retry_count')
-        elif event_type=='12h':
-            retry_count=args.get('event_data').get('icbc_retry_count')
-        else:
-            return False,args
+            max_retries=max_retries+Config.SYSTEM_RECORD_MAX_TRANSIENT_RETRIES
+            put_to_queue_name=Config.STORAGE_FAIL_QUEUE
+        args['put_to_queue_name']=put_to_queue_name
         if retry_count >= max_retries:
+            if put_to_queue_name == Config.STORAGE_HOLD_QUEUE:
+                put_to_queue_name=Config.STORAGE_FAIL_QUEUE
+            elif put_to_queue_name == Config.STORAGE_FAIL_QUEUE:
+                put_to_queue_name=Config.STORAGE_FAIL_QUEUE_PERS
+            args['put_to_queue_name']=put_to_queue_name
             return False,args
-    #     TODO: Update retry count in event table
+    
     except Exception as e:
         logging.error(e)
         return False,args
