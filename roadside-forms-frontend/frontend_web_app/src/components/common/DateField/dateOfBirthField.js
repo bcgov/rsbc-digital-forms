@@ -1,24 +1,19 @@
 import React from 'react';
 import { useField } from 'formik';
+import { DatePickerField } from './DatePicker';
 
 export const DateOfBirthField = ({ label, required, ...props }) => {
   const [field, meta] = useField(props);
-
-  const handleChange = (event) => {
-    const { value } = event.target;
-    const formattedValue = value.replace(/[^0-9]/g, '');
-
-    if (formattedValue.length <= 8) {
-      field.onChange(event);
-    }
-  };
-
   const calculateAge = (dateOfBirth) => {
-    if (!dateOfBirth) return '';
+    if (!dateOfBirth ) return '';
   
-    const year = Number(dateOfBirth.substring(0, 4));
-    const month = Number(dateOfBirth.substring(4, 6));
-    const day = Number(dateOfBirth.substring(6, 8));
+    const date = new Date(dateOfBirth);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+  
+    if (isNaN(year) || isNaN(month) || isNaN(day)) return '';
   
     const today = new Date();
     const birthDate = new Date(year, month - 1, day);
@@ -33,25 +28,21 @@ export const DateOfBirthField = ({ label, required, ...props }) => {
     return age;
   };
 
-  const formatAge =(value) =>{
+  const formatAge = (value) => {
     const age = calculateAge(value);
-    if (age) {
-      return ' (' +age +' yrs)'
+    if (value && age !== '') {
+      return ' (' + age + ' yrs)';
     }
-    return '( 0 yrs )'
-  }
+    return '( 0 yrs )';
+  };
+
 
   return (
     <div>
-      <label htmlFor={props.id || props.name}>{label +  formatAge(field.value)}{required && <span className="required-asterisk">*</span>}</label>
-      <input
-        type="text"
-        name={field.name}
-        id={field.name}
-        value={field.value}
-        onChange={handleChange}
-        onBlur={field.onBlur}
-        placeholder="YYYYMMDD"
+      <DatePickerField
+        {...field}
+        {...props}
+        label={label + formatAge(field.value)}
         className={`form-control ${
           meta.touched && meta.error ? 'is-invalid' : ''
         }`}

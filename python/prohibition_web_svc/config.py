@@ -37,3 +37,7 @@ class Config(BaseConfig):
 
     MAX_RECORDS_RETURNED                = 1000
     VANCOUVER_TIMEZONE                  = 'America/Vancouver'
+
+    ENCRYPT_KEY = os.getenv('ENCRYPT_KEY')
+    ENCRYPT_KEY_SALT = os.getenv('ENCRYPT_KEY_SALT')
+
