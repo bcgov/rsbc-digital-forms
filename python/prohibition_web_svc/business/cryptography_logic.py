@@ -30,3 +30,20 @@ def method2_decrypt(ciphertext,iv):
     # converrt bytes to string
     decrypted = decrypted.decode('utf-8')
     return decrypted
+
+
+def encryptPdf_method1(pdfPath, password,outfile):
+    doc = fitz.open(pdfPath)
+    doc.save(outfile, encryption=fitz.PDF_ENCRYPT_AES_256, owner_pw=password, user_pw=password)
+    doc.close()
+
+def decryptPdf_method1(pdfPath, password,outfile):
+    doc = fitz.open(pdfPath)
+    if doc.authenticate(password):
+        doc.save('decrypted.pdf')
+
+        if doc.save:
+            print("PDF decrypted")
+    else:
+        print('Incorrect Password')
+    doc.close()

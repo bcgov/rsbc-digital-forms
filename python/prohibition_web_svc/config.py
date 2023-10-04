@@ -42,6 +42,7 @@ class Config(BaseConfig):
     MINIO_SK                            = os.environ.get("MINIO_SK", "test")
     MINIO_BUCKET_URL                    = os.environ.get("MINIO_BUCKET_URL", 'minio:9000')
     MINIO_SECURE                        = os.environ.get("MINIO_SECURE", False)
+    STORAGE_BUCKET_NAME                 = os.environ.get("STORAGE_BUCKET_NAME", "test")
 
     ENCRYPT_KEY = os.getenv('ENCRYPT_KEY')
     ENCRYPT_KEY_SALT = os.getenv('ENCRYPT_KEY_SALT')
