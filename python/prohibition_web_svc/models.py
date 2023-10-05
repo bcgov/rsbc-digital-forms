@@ -378,6 +378,12 @@ class Event(db.Model):
         backref='event',
         lazy='joined',
         uselist=False)
+    
+    irp_form = db.relationship(
+        'IRPForm',
+        backref='event',
+        lazy='joined',
+        uselist=False)
 
 @dataclass    
 class TwentyFourHourForm(db.Model):

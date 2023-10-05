@@ -1,16 +1,18 @@
 import fitz
+import logging
 import base64
 import os
 import pyaes, pbkdf2, binascii, os, secrets
 from python.prohibition_web_svc.config import Config
 
-enc_password_salt = Config.ENCRYPT_KEY
-enc_password = Config.ENCRYPT_KEY_SALT
+enc_password_salt = Config.ENCRYPT_KEY_SALT
+enc_password = Config.ENCRYPT_KEY
 
 
 
 
 def method2_encrypt(plaintext):
+    logging.debug(f'salt: {enc_password_salt}')
     password = enc_password
     passwordsalt = bytes(enc_password_salt, 'utf-8')
     key = pbkdf2.PBKDF2(password, passwordsalt).read(32)
