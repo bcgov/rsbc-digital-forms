@@ -143,7 +143,6 @@ export const CreateEvent = () => {
             setSubmitting(false);
             db.event.put(values).then()
             // () => navigate('/')
-
         })
     };
 

@@ -30,8 +30,8 @@ def save_event_data(**kwargs) -> tuple:
     logging.debug('inside save_event_data()')
     data = kwargs.get('payload')
     user_guid = kwargs.get('user_guid')
-    logging.debug(type(data.get('VI_form_png')))
     try:
+        logging.debug('Creating Event')
         date_created=datetime.now()
         event = Event(
             driver_licence_no=data.get('driver_licence_no'),
@@ -111,7 +111,8 @@ def save_event_data(**kwargs) -> tuple:
         if data.get('TwelveHour'):
             return    
         if data.get('IRP'):
-            return    
+            return 
+        logging.debug('Saving Event')   
         db.session.add(event)
         db.session.commit()
     except Exception as e:
@@ -142,68 +143,39 @@ def save_event_pdf(**kwargs) -> tuple:
             print("Bucket 'test' already exists")
 
         if(data.get('VI')):
-            pdf_filename = "/tmp/VI_test_PDF.pdf"
-            img = Image.open(BytesIO(b64decode(data.get("VI_form_png").split(",")[1:2][0])))
-            img.save(pdf_filename, "PDF", resolution=100.0, save_all=True)
-            logging.debug('File saved')
-            with open(pdf_filename, "rb") as pdf_file:
-                encoded_string = b64encode(pdf_file.read())
-                logging.debug('Starting encrypt')
-                logging.debug(encoded_string)
-                ciphertext, iv = method2_encrypt(encoded_string)        
-                logging.debug('Encrypted')
-                base64encoded=b64encode(ciphertext)
-                encoded_file_name = "encoded_VI_test_PDF.pdf"
-                encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
-                with open(encoded_pdf_filepath, 'wb') as file_data1:
-                    file_data1.write(b64decode(base64encoded))
-            client.fput_object("test", encoded_file_name, file_data1)
+            filename = str(uuid.uuid4().hex)            
+            pdf_filename = f"/tmp/{filename}.pdf"
+            encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
+            b64encoded=data.get("VI_form_png").split(",")[1]
+            with open(f"/tmp/{filename}.png", "wb") as fh:
+                fh.write(b64decode(b64encoded))
+            pdf_bytes = img2pdf.convert(f"/tmp/{filename}.png")
+            with open(pdf_filename, "wb") as file:
+                file.write(pdf_bytes)
+            encryptPdf_method1(pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)  
+            logging.debug('File encrypted')
+            encoded_file_name = f"{filename}_encrypted.pdf"
+            encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
+            with open(encoded_pdf_filepath, 'rb') as file_data:
+                client.fput_object(Config.STORAGE_BUCKET_NAME, encoded_file_name, encoded_pdf_filepath)
+            logging.debug('File uploaded')
+            
             form_storage = FormStorageRefs(
                 form_id_vi=event.vi_form.form_id,
                 event_id=event.event_id,
-                form_type='vi',
+                form_type='VI',
                 storage_key=f'test/{encoded_file_name}',
-                encryptiv=iv,
                 created_dt=date_created,
                 updated_dt=date_created,
             )
             db.session.add(form_storage)
             db.session.commit()
-            
-        if(data.get('TwentyFourHour')):
-            pdf_filename = "/tmp/TwentyFourHour_test_PDF.pdf"
-            img = Image.open(BytesIO(b64decode(data.get("VI_form_png").split(",")[1:2][0])))
-            img.save(pdf_filename, "PDF", resolution=100.0, save_all=True)
-            logging.debug('File saved')
-            with open(pdf_filename, "rb") as pdf_file:
-                encoded_string = b64encode(pdf_file.read())
-                logging.debug('Starting encrypt')
-                logging.debug(encoded_string)
-                ciphertext, iv = method2_encrypt(encoded_string)        
-                logging.debug('Encrypted')
-                base64encoded=b64encode(ciphertext)
-                encoded_file_name = "encoded_VI_test_PDF.pdf"
-                encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
-                with open(encoded_pdf_filepath, 'wb') as file_data1:
-                    file_data1.write(b64decode(base64encoded))
-            client.fput_object("test", encoded_file_name, file_data1)
-            form_storage = FormStorageRefs(
-                form_id_24h=event.vi_form.form_id,
-                event_id=event.event_id,
-                form_type='24h',
-                # TODO: enter the correct value
-                storage_key=f'test/{encoded_file_name}',
-                encryptiv=iv,
-                created_dt=date_created,
-                updated_dt=date_created,
-            )
-            db.session.add(form_storage)
-            db.session.commit()
+                    
     except Exception as e:
         logging.warning(str(e))
         return False, kwargs
     return True, kwargs
-
+    
 
 def request_contains_a_payload(**kwargs) -> tuple:
     request = kwargs.get('request')
@@ -214,6 +186,7 @@ def request_contains_a_payload(**kwargs) -> tuple:
     except Exception as e:
         return False, kwargs
     return payload is not None, kwargs
+
 
 def get_a_form(**kwargs) -> tuple:
     form_type = kwargs.get('form_type')
