@@ -187,23 +187,6 @@ def request_contains_a_payload(**kwargs) -> tuple:
         return False, kwargs
     return payload is not None, kwargs
 
-
-def get_a_form(**kwargs) -> tuple:
-    form_type = kwargs.get('form_type')
-    form_id = kwargs.get('form_id')
-    try:
-        form = db.session.query(Form) \
-            .filter(Form.form_type == form_type) \
-            .filter(Form.id == form_id) \
-            .filter(Form.user_guid == kwargs['username']) \
-            .first()
-        kwargs['response'] = make_response(jsonify(form), 200)
-    except Exception as e:
-        logging.warning(str(e))
-        return False, kwargs
-    return True, kwargs
-
-
 def get_json_payload(**kwargs) -> tuple:
     logging.debug("inside get_json_payload()")
     try:
@@ -217,34 +200,8 @@ def get_json_payload(**kwargs) -> tuple:
 
 def validate_form_payload(**kwargs) -> tuple:
     logging.debug("inside validate_form_payload()")
-    schema = {
-        "form_id": {
-            'type': 'string',
-            'empty': False,
-            'required': True
-        },
-        "form_type": {
-            'type': 'string',
-            'allowed': ['12Hour', '24Hour', 'IRP', 'VI'],
-            'empty': False,
-            'required': True
-        }
-    }
-    v = Validator(schema)
-    v.allow_unknown = False
-    if v.validate(kwargs.get('payload')):
+    
+    if(kwargs.get('payload')):
         return True, kwargs
-    logging.warning("validation error: " + json.dumps(v.errors))
-    kwargs['validation_errors'] = v.errors
+    logging.warning("validation error: " + json.dumps(''))
     return False, kwargs
-
-
-def convert_vancouver_to_utc(iso_datetime_string: str) -> datetime:
-    """
-    The datetime string we receive from the web app has a Vancouver
-    timezone, but the API database field is not timezone aware. We
-    convert the Vancouver timezone to UTC.
-    """
-    utc_timezone = pytz.timezone("UTC")
-    printed = iso8601.parse_date(iso_datetime_string)
-    return printed.astimezone(utc_timezone).replace(tzinfo=None)
