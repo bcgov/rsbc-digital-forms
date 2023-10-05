@@ -74,7 +74,7 @@ export const VehicleImpoundment = (props) => {
             </Col>
         </Row>
         }
-        {values['24Hour'] && values['vehicle_impounded'] === 'YES' && (<>
+        {values["TwentyFourHour"] && values['vehicle_impounded'] === 'YES' && (<>
             <Row>
                 <Col>
                     <Radio label="Location of Keys?" name="location_of_keys" options={[
@@ -84,7 +84,7 @@ export const VehicleImpoundment = (props) => {
                 </Col>
             </Row>
             </>)}
-        {((values['24Hour'] && values['vehicle_impounded'] === 'YES') || values['VI'])  && (<>
+        {((values["TwentyFourHour"] && values['vehicle_impounded'] === 'YES') || values['VI'])  && (<>
             <div className='impound-lot-operator'>
                 <Row>
                     <Col sm={12}>

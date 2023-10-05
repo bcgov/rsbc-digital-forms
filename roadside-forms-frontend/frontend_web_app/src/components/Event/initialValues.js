@@ -8,10 +8,10 @@ export const InitialValues = () => {
         //common fields
         "IRP": false,
         "VI": false,
-        "24Hour": false,
-        "12Hour": false,
+        "TwentyFourHour": false,
+        "TwelveHour": false,
         "drivers_licence_jurisdiction":{ value: 'BC', label: 'BRITISH COLUMBIA' },
-        "drivers_licence_no":'',
+        "driver_licence_no":'',
         "driver_last_name":'',
         "driver_given_name":'',
         "driver_dob": '',

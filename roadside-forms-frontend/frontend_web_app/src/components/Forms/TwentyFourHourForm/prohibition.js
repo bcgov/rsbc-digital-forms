@@ -13,8 +13,8 @@ export const Prohibition = (props) => {
     const {cities} = props;
     return (
         <div className='border-design-form left text-font'>
-            <h3 >{values['24Hour'] && "Prohibition"}{values['VI'] && values['24Hour'] && " & " }{values['VI'] && "Time and Place"}</h3>
-            {values['24Hour'] &&
+            <h3 >{values["TwentyFourHour"] && "Prohibition"}{values['VI'] && values["TwentyFourHour"] && " & " }{values['VI'] && "Time and Place"}</h3>
+            {values["TwentyFourHour"] &&
             <Row>
                 <Col>
                     <Radio label= "Type of Prohibition (select one)" name="type_of_prohibition" options={[

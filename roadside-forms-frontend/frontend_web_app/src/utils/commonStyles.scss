@@ -74,6 +74,12 @@ $primary: #003366; // Change this to your desired primary color
     display: flex; 
 }
 
+.textArea{
+    width: 120px;
+    height:25px;
+    text-align: left;
+}
+
 ::-webkit-scrollbar {
     width: 2em;
     height: 2em;
