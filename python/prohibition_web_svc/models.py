@@ -280,10 +280,10 @@ class Event(db.Model):
     __tablename__ = 'event'
     
     event_id:int
-    icbc_sent_status:str
-    vi_sent_status:str
-    icbc_retry_count:int
-    vi_retry_count:int
+    icbc_sent_status:str = ''
+    vi_sent_status:str = ''
+    icbc_retry_count:int = 0
+    vi_retry_count:int = 0
     driver_licence_no:str
     driver_jurisdiction:str
     driver_last_name: str
@@ -293,7 +293,7 @@ class Event(db.Model):
     driver_city:str
     driver_prov: str
     driver_postal: str
-    driver_phone:int
+    driver_phone:str
     vehicle_jurisdiction:str
     vehicle_plate_no:str   
     vehicle_registration_no: str
@@ -302,18 +302,18 @@ class Event(db.Model):
     vehicle_style:str 
     vehicle_colour:str
     vehicle_vin_no:str
-    nsc_prov_state:str
+    nsc_prov_state:str = ''
     nsc_no:str
     owned_by_corp:bool
-    corporation_name:str
-    regist_owner_last_name:str
-    regist_owner_first_name:str
+    corporation_name:str = ''
+    regist_owner_last_name:str = ''
+    regist_owner_first_name:str = ''
     regist_owner_address:str
     regist_owner_dob:datetime
     regist_owner_city:str
     regist_owner_prov:str
     regist_owner_postal:str
-    regist_owner_phone:int
+    regist_owner_phone:str = ''
     printed:bool
     created_dt:datetime
     updated_dt:datetime
@@ -355,7 +355,7 @@ class Event(db.Model):
     regist_owner_city=db.Column(db.String)
     regist_owner_prov=db.Column(db.String)
     regist_owner_postal=db.Column(db.String)
-    regist_owner_phone=db.Column(db.Integer)
+    regist_owner_phone=db.Column(db.String)
     created_by = db.Column(db.String, db.ForeignKey('user.user_guid'))
     updated_by = db.Column(db.String)
     created_dt = db.Column(db.DateTime)

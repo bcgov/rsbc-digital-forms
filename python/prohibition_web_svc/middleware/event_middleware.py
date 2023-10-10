@@ -182,12 +182,11 @@ def get_events_for_user(**kwargs) -> tuple:
     user_guid = kwargs.get('user_guid')
     try:
         events = db.session.query(Event).filter(Event.created_by == user_guid).all()
-        logging.debug([asdict(x) for x in events])
-        for x in events:
-            logging.debug(f'--------------------/n{asdict(x)}/n-----------------------------')
+        logging.debug(f'--------------------/n{events}/n-----------------------------')
         kwargs['response'] = make_response(jsonify([asdict(x) for x in events]), 200)
     except Exception as e:
         return False, kwargs
+    return True, kwargs
 
 def request_contains_a_payload(**kwargs) -> tuple:
     request = kwargs.get('request')
