@@ -174,7 +174,7 @@ export const CreateEvent = () => {
       // () => navigate('/')
     });
   };
-
+  
   const handleGoBackandSave = (values) => {
     const eventData = getEventDataToSave(values);
     if (eventData["event_id"] === undefined) {
@@ -197,6 +197,7 @@ export const CreateEvent = () => {
   const handleWithdraw = () => {
     navigate("/");
   };
+
 
   const handlePrintForms = async (values) => {
     setIsPrinted(true);
@@ -238,6 +239,7 @@ export const CreateEvent = () => {
       () => handleWithdraw()
     );
   };
+
 
   const renderSVGForm = (values, renderStage) => {
     const forms = {
@@ -362,7 +364,7 @@ export const CreateEvent = () => {
         return <PoliceDetails />;
       case 4:
         return <div id="printdiv">{renderSVGForm(values, "stageTwo")}</div>;
-      // Add more cases for each page
+// Add more cases for each page
       default:
         return null;
     }
