@@ -137,7 +137,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 >
                   <div>
                     <label
-                      for="driver_licence_no"
+                      for="drivers_licence_no"
                     >
                       Driver's Licence Number
                     </label>
