@@ -3,6 +3,7 @@ import json
 import pytz
 import iso8601
 import os
+from dataclasses import asdict
 from PIL import Image
 from io import BytesIO
 from minio import Minio
@@ -181,8 +182,10 @@ def get_events_for_user(**kwargs) -> tuple:
     user_guid = kwargs.get('user_guid')
     try:
         events = db.session.query(Event).filter(Event.created_by == user_guid).all()
-        logging.debug(jsonify(events))
-        kwargs['response'] = make_response(jsonify(events), 200)
+        logging.debug([asdict(x) for x in events])
+        for x in events:
+            logging.debug(f'--------------------/n{asdict(x)}/n-----------------------------')
+        kwargs['response'] = make_response(jsonify([asdict(x) for x in events]), 200)
     except Exception as e:
         return False, kwargs
 
