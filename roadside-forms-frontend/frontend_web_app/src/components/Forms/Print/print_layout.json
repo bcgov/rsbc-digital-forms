@@ -1828,6 +1828,7 @@
       "VEHICLE_MAKE",
       "VEHICLE_MODEL",
       "VEHICLE_COLOR",
+      "VEHICLE_JURISDICTION",
       "VEHICLE_NSC_PUJ",
       "VEHICLE_NSC_NUMBER",
       "RELEASE_LOCATION_KEYS",
@@ -2035,6 +2036,15 @@
         "classNames": "fontXSmall",
         "start": {
           "x": 53,
+          "y": 149
+        }
+      },
+      "VEHICLE_JURISDICTION": {
+        "field_type": "text",
+        "field_name": "vehicle_jurisdiction",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 70,
           "y": 149
         }
       },
