@@ -68,8 +68,8 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
               <label>
                 <input
                   class="mr-1"
-                  id="24Hour"
-                  name="24Hour"
+                  id="TwentyFourHour"
+                  name="TwentyFourHour"
                   type="checkbox"
                   value="false"
                 />
@@ -84,8 +84,8 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
               <label>
                 <input
                   class="mr-1"
-                  id="12Hour"
-                  name="12Hour"
+                  id="TwelveHour"
+                  name="TwelveHour"
                   type="checkbox"
                   value="false"
                 />
@@ -133,25 +133,25 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 style="min-height: 85px;"
               >
                 <div
-                  class=" col-sm-4"
+                  class="col-sm-4"
                 >
                   <div>
                     <label
-                      for="drivers_licence_no"
+                      for="driver_licence_no"
                     >
                       Driver's Licence Number
                     </label>
                     <input
-                      class="field-height field-width"
-                      id="drivers_licence_no"
-                      name="drivers_licence_no"
+                      class="form-control"
+                      id="driver_licence_no"
+                      name="driver_licence_no"
                       type="text"
                       value=""
                     />
                   </div>
                 </div>
                 <div
-                  class=" col-sm-1 mt-4 pr-2"
+                  class="mt-4 pr-2 col-sm-1"
                 >
                   <button
                     class="slim-button btn btn-primary"
@@ -161,7 +161,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   </button>
                 </div>
                 <div
-                  class=" col-sm-1 mt-4 left"
+                  class="mt-4 left col-sm-1"
                 >
                   <button
                     class="slim-button btn btn-primary"
@@ -270,7 +270,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 style="min-height: 85px;"
               >
                 <div
-                  class=" col-sm-4"
+                  class="col-sm-4"
                 >
                   <div>
                     <label
@@ -284,7 +284,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       </span>
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="driver_last_name"
                       name="driver_last_name"
                       type="text"
@@ -293,7 +293,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class=" col-sm-4"
+                  class="col-sm-4"
                 >
                   <div>
                     <label
@@ -302,7 +302,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       Given Name
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="driver_given_name"
                       name="driver_given_name"
                       type="text"
@@ -311,7 +311,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class=" col-sm-4"
+                  class="col-sm-4"
                 >
                   <div>
                     <div>
@@ -362,7 +362,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 style="min-height: 85px;"
               >
                 <div
-                  class=" col-sm-9"
+                  class="col-sm-9"
                 >
                   <div>
                     <label
@@ -376,7 +376,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       </span>
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="driver_address"
                       name="driver_address"
                       type="text"
@@ -385,7 +385,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class=" col-sm-3"
+                  class="col-sm-3"
                 >
                   <div>
                     <label
@@ -411,7 +411,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 style="min-height: 85px;"
               >
                 <div
-                  class=" col-sm-4"
+                  class="col-sm-4"
                 >
                   <div>
                     <label
@@ -425,7 +425,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       </span>
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="driver_city"
                       name="driver_city"
                       type="text"
@@ -434,7 +434,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class=" col-sm-4"
+                  class="col-sm-4"
                 >
                   <div>
                     <label
@@ -533,7 +533,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class=" col-sm-4"
+                  class="col-sm-4"
                 >
                   <div>
                     <label
@@ -542,7 +542,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       Postal / Zip
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="driver_postal"
                       name="driver_postal"
                       value=""
@@ -667,7 +667,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       Plate Number
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="vehicle_plate_no"
                       name="vehicle_plate_no"
                       type="text"
@@ -700,7 +700,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       Registration Number
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="vehicle_registration_no"
                       name="vehicle_registration_no"
                       type="text"
@@ -1106,7 +1106,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       VIN Number
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="vehicle_vin_no"
                       name="vehicle_vin_no"
                       type="text"
@@ -1218,7 +1218,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       NSC Number
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="nsc_no"
                       name="nsc_no"
                       type="text"
@@ -1293,7 +1293,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     Owner's Last Name
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="regist_owner_last_name"
                     name="regist_owner_last_name"
                     value=""
@@ -1310,7 +1310,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     Owner's First Name
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="regist_owner_first_name"
                     name="regist_owner_first_name"
                     value=""
@@ -1332,7 +1332,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     Address
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="regist_owner_address"
                     name="regist_owner_address"
                     type="text"
@@ -1376,7 +1376,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     City
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="regist_owner_city"
                     name="regist_owner_city"
                     type="text"
@@ -1486,7 +1486,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     Postal / Zip
                   </label>
                   <input
-                    class="field-height field-width"
+                    class="form-control"
                     id="regist_owner_postal"
                     name="regist_owner_postal"
                     value=""
