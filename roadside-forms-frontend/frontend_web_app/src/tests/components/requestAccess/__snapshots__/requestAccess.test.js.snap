@@ -45,7 +45,7 @@ exports[`RequestAccess component should match snapshot 1`] = `
                   SURNAME
                 </label>
                 <input
-                  class="field-width field-height"
+                  class="form-control"
                   id="last_name"
                   name="last_name"
                   type="text"
@@ -63,7 +63,7 @@ exports[`RequestAccess component should match snapshot 1`] = `
                   Given
                 </label>
                 <input
-                  class="field-width field-height"
+                  class="form-control"
                   id="first_name"
                   name="first_name"
                   type="text"
@@ -177,7 +177,7 @@ exports[`RequestAccess component should match snapshot 1`] = `
                   PRIME ID
                 </label>
                 <input
-                  class="field-width field-height"
+                  class="form-control"
                   id="badge_number"
                   maxlength="6"
                   name="badge_number"

@@ -133,7 +133,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 style="min-height: 85px;"
               >
                 <div
-                  class=" col-sm-4"
+                  class="col-sm-4"
                 >
                   <div>
                     <label
@@ -142,7 +142,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       Driver's Licence Number
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="drivers_licence_no"
                       name="drivers_licence_no"
                       type="text"
@@ -151,7 +151,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class=" col-sm-1 mt-4 pr-2"
+                  class="mt-4 pr-2 col-sm-1"
                 >
                   <button
                     class="slim-button btn btn-primary"
@@ -161,7 +161,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   </button>
                 </div>
                 <div
-                  class=" col-sm-1 mt-4 left"
+                  class="mt-4 left col-sm-1"
                 >
                   <button
                     class="slim-button btn btn-primary"
@@ -270,7 +270,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 style="min-height: 85px;"
               >
                 <div
-                  class=" col-sm-4"
+                  class="col-sm-4"
                 >
                   <div>
                     <label
@@ -284,7 +284,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       </span>
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="driver_last_name"
                       name="driver_last_name"
                       type="text"
@@ -293,7 +293,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class=" col-sm-4"
+                  class="col-sm-4"
                 >
                   <div>
                     <label
@@ -302,7 +302,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       Given Name
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="driver_given_name"
                       name="driver_given_name"
                       type="text"
@@ -311,7 +311,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class=" col-sm-4"
+                  class="col-sm-4"
                 >
                   <div>
                     <div>
@@ -362,7 +362,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 style="min-height: 85px;"
               >
                 <div
-                  class=" col-sm-9"
+                  class="col-sm-9"
                 >
                   <div>
                     <label
@@ -376,7 +376,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       </span>
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="driver_address"
                       name="driver_address"
                       type="text"
@@ -385,7 +385,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class=" col-sm-3"
+                  class="col-sm-3"
                 >
                   <div>
                     <label
@@ -411,7 +411,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 style="min-height: 85px;"
               >
                 <div
-                  class=" col-sm-4"
+                  class="col-sm-4"
                 >
                   <div>
                     <label
@@ -425,7 +425,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       </span>
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="driver_city"
                       name="driver_city"
                       type="text"
@@ -434,7 +434,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class=" col-sm-4"
+                  class="col-sm-4"
                 >
                   <div>
                     <label
@@ -533,7 +533,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class=" col-sm-4"
+                  class="col-sm-4"
                 >
                   <div>
                     <label
@@ -542,7 +542,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       Postal / Zip
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="driver_postal"
                       name="driver_postal"
                       value=""
@@ -667,7 +667,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       Plate Number
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="vehicle_plate_no"
                       name="vehicle_plate_no"
                       type="text"
@@ -684,29 +684,6 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                   >
                     ICBC Prefill
                   </button>
-                </div>
-              </div>
-              <div
-                class="row"
-                style="min-height: 85px;"
-              >
-                <div
-                  class=" col-sm-5"
-                >
-                  <div>
-                    <label
-                      for="vehicle_registration_no"
-                    >
-                      Registration Number
-                    </label>
-                    <input
-                      class="field-height field-width"
-                      id="vehicle_registration_no"
-                      name="vehicle_registration_no"
-                      type="text"
-                      value=""
-                    />
-                  </div>
                 </div>
               </div>
               <div
@@ -1097,24 +1074,6 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                 style="min-height: 85px;"
               >
                 <div
-                  class=" col-sm-5"
-                >
-                  <div>
-                    <label
-                      for="vehicle_vin_no"
-                    >
-                      VIN Number
-                    </label>
-                    <input
-                      class="field-height field-width"
-                      id="vehicle_vin_no"
-                      name="vehicle_vin_no"
-                      type="text"
-                      value=""
-                    />
-                  </div>
-                </div>
-                <div
                   class=" col-sm-3"
                 >
                   <div>
@@ -1218,279 +1177,13 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                       NSC Number
                     </label>
                     <input
-                      class="field-height field-width"
+                      class="form-control"
                       id="nsc_no"
                       name="nsc_no"
                       type="text"
                       value=""
                     />
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="registered-owner-info border-design-form left"
-          >
-            <div
-              class="row"
-              style="min-height: 40px;"
-            >
-              <div
-                class="col-sm-10"
-              >
-                <h3>
-                  Registered Owner
-                </h3>
-              </div>
-              <div
-                class="col-sm-2 right"
-              >
-                <button
-                  class="slim-button btn btn-primary"
-                  type="button"
-                >
-                  Fill from driver
-                </button>
-              </div>
-            </div>
-            <div
-              class="row"
-              style="min-height: 85px;"
-            >
-              <div
-                class="col-sm-12 mt-4"
-              >
-                <div>
-                  <label>
-                    <input
-                      class="mr-1"
-                      id="owned_by_corp"
-                      name="owned_by_corp"
-                      type="checkbox"
-                      value="false"
-                    />
-                    <span
-                      style="margin-left: 5px;"
-                    >
-                      Owned by Corporate Entity
-                    </span>
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div
-              class="row"
-              style="min-height: 85px;"
-            >
-              <div
-                class="col-sm-6"
-              >
-                <div>
-                  <label
-                    for="regist_owner_last_name"
-                  >
-                    Owner's Last Name
-                  </label>
-                  <input
-                    class="field-height field-width"
-                    id="regist_owner_last_name"
-                    name="regist_owner_last_name"
-                    value=""
-                  />
-                </div>
-              </div>
-              <div
-                class="col-sm-6"
-              >
-                <div>
-                  <label
-                    for="regist_owner_first_name"
-                  >
-                    Owner's First Name
-                  </label>
-                  <input
-                    class="field-height field-width"
-                    id="regist_owner_first_name"
-                    name="regist_owner_first_name"
-                    value=""
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              class="row"
-              style="min-height: 85px;"
-            >
-              <div
-                class=" col-sm-9"
-              >
-                <div>
-                  <label
-                    for="regist_owner_address"
-                  >
-                    Address
-                  </label>
-                  <input
-                    class="field-height field-width"
-                    id="regist_owner_address"
-                    name="regist_owner_address"
-                    type="text"
-                    value=""
-                  />
-                </div>
-              </div>
-              <div
-                class=" col-sm-3"
-              >
-                <div>
-                  <label
-                    for="regist_owner_phone"
-                  >
-                    Phone number
-                  </label>
-                  <input
-                    class="field-height field-width"
-                    id="regist_owner_phone"
-                    maxlength="12"
-                    name="regist_owner_phone"
-                    pattern="\\\\d{3}-\\\\d{3}-\\\\d{4}"
-                    placeholder="###-###-####"
-                    type="tel"
-                    value=""
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              class="row"
-              style="min-height: 85px;"
-            >
-              <div
-                class=" col-sm-4"
-              >
-                <div>
-                  <label
-                    for="regist_owner_city"
-                  >
-                    City
-                  </label>
-                  <input
-                    class="field-height field-width"
-                    id="regist_owner_city"
-                    name="regist_owner_city"
-                    type="text"
-                    value=""
-                  />
-                </div>
-              </div>
-              <div
-                class=" col-sm-4"
-              >
-                <div>
-                  <label
-                    for="regist_owner_prov_state"
-                  >
-                    Province / State
-                  </label>
-                  <div
-                    class="field-height field-width css-b62m3t-container"
-                  >
-                    <span
-                      class="css-1f43avz-a11yText-A11yText"
-                      id="react-select-10-live-region"
-                    />
-                    <span
-                      aria-atomic="false"
-                      aria-live="polite"
-                      aria-relevant="additions text"
-                      class="css-1f43avz-a11yText-A11yText"
-                    />
-                    <div
-                      class=" css-13cymwt-control"
-                    >
-                      <div
-                        class=" css-1fdsijx-ValueContainer"
-                      >
-                        <div
-                          class=" css-1dimb5e-singleValue"
-                        />
-                        <div
-                          class=" css-qbdosj-Input"
-                          data-value=""
-                        >
-                          <input
-                            aria-autocomplete="list"
-                            aria-expanded="false"
-                            aria-haspopup="true"
-                            autocapitalize="none"
-                            autocomplete="off"
-                            autocorrect="off"
-                            class=""
-                            id="regist_owner_prov_state-select"
-                            role="combobox"
-                            spellcheck="false"
-                            style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
-                            tabindex="0"
-                            type="text"
-                            value=""
-                          />
-                        </div>
-                      </div>
-                      <div
-                        class=" css-1hb7zxy-IndicatorsContainer"
-                      >
-                        <span
-                          class=" css-1u9des2-indicatorSeparator"
-                        />
-                        <div
-                          aria-hidden="true"
-                          class=" css-1xc3v61-indicatorContainer"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            class="css-tj5bde-Svg"
-                            focusable="false"
-                            height="20"
-                            viewBox="0 0 20 20"
-                            width="20"
-                          >
-                            <path
-                              d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                    <input
-                      name="regist_owner_prov_state"
-                      type="hidden"
-                      value=""
-                    />
-                  </div>
-                  <input
-                    id="regist_owner_prov_state"
-                    name="regist_owner_prov_state"
-                    type="hidden"
-                    value="{}"
-                  />
-                </div>
-              </div>
-              <div
-                class=" col-sm-4"
-              >
-                <div>
-                  <label
-                    for="regist_owner_postal"
-                  >
-                    Postal / Zip
-                  </label>
-                  <input
-                    class="field-height field-width"
-                    id="regist_owner_postal"
-                    name="regist_owner_postal"
-                    value=""
-                  />
                 </div>
               </div>
             </div>
