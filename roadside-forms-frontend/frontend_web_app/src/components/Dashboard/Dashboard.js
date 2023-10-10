@@ -6,6 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Table from 'react-bootstrap/Table';
 import { useSetRecoilState} from 'recoil';
 import { staticResources, formTypes } from '../../utils/helpers';
+import { FormSubmissionApi } from '../../api/formSubmissionApi'
 import { StaticDataApi } from '../../api/staticDataApi';
 import { Button } from '../common/Button/Button';
 import { useNavigate} from 'react-router-dom';
@@ -37,6 +38,7 @@ export const Dashboard = () => {
           const vehicleStyleData = await StaticDataApi.get("vehicle_styles")
           const vehicleColourData = await StaticDataApi.get("vehicle_colours")
           const vehicleData = await StaticDataApi.get("vehicles")
+          const eventData = await FormSubmissionApi.get()
           
           setVehicleResource(vehicleData.data)
           setVehicleStyleResource(vehicleStyleData.data)
@@ -47,6 +49,8 @@ export const Dashboard = () => {
           setCountryResource(countryData.data)
           setCityResource(cityData.data)
           setAgencyResource(agencyData.data)
+
+          // console.log(eventData)
 
           try {
             db.vehicles.bulkPut(vehicleData.data);
