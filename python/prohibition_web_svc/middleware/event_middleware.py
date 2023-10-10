@@ -164,7 +164,7 @@ def save_event_pdf(**kwargs) -> tuple:
                 form_id_vi=event.vi_form.form_id,
                 event_id=event.event_id,
                 form_type='VI',
-                storage_key=f'test/{encoded_file_name}',
+                storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
                 created_dt=date_created,
                 updated_dt=date_created,
             )
