@@ -17,7 +17,7 @@ export const IncidentDetails = (props) => {
                 <Col className="left checkboxs">
                     <Checkbox name="incident_details_extra_page" >Will a seperate document be attached?</Checkbox>
                     <span>{input.length + "/2000"}</span>
-                    <TextAreaInput  name="incident_details"  className="text-area-height field-width" maxLength="2000" value={input} placeholder="Enter details here..." onChange={handleChange}/>
+                    <TextAreaInput  name="incident_details"  className="text-area-height field-width" maxLength="2000" onChange={handleChange} value={input} placeholder="Enter details here..." onChange={handleChange}/>
                 </Col>
             </Row>
         </div>

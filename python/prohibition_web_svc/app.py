@@ -4,9 +4,7 @@ import pytz
 from datetime import datetime
 from python.prohibition_web_svc.models import db, migrate, Form, UserRole, User
 from python.prohibition_web_svc.config import Config
-from python.prohibition_web_svc.blueprints import static, forms, admin_forms
-from python.prohibition_web_svc.blueprints import icbc
-from python.prohibition_web_svc.blueprints import user_roles, admin_user_roles, admin_users, users
+from python.prohibition_web_svc.blueprints import static, forms, admin_forms, icbc, user_roles, admin_user_roles, admin_users, users, events
 
 
 application = FlaskAPI(__name__)
@@ -23,6 +21,7 @@ application.register_blueprint(icbc.bp)
 application.register_blueprint(static.bp)
 application.register_blueprint(user_roles.bp)
 application.register_blueprint(users.bp)
+application.register_blueprint(events.bp)
 
 db.init_app(application)
 migrate.init_app(application, db)

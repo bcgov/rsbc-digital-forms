@@ -68,8 +68,8 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
               <label>
                 <input
                   class="mr-1"
-                  id="24Hour"
-                  name="24Hour"
+                  id="TwentyFourHour"
+                  name="TwentyFourHour"
                   type="checkbox"
                   value="false"
                 />
@@ -84,8 +84,8 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
               <label>
                 <input
                   class="mr-1"
-                  id="12Hour"
-                  name="12Hour"
+                  id="TwelveHour"
+                  name="TwelveHour"
                   type="checkbox"
                   value="false"
                 />
