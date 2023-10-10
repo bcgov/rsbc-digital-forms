@@ -81,7 +81,7 @@ export const VehicleImpoundment = (props) => {
           </Col>
         </Row>
       )}
-      {values["24Hour"] && values["vehicle_impounded"] === "YES" && (
+      {values["TwentyFourHour"] && values["vehicle_impounded"] === "YES" && (
         <>
           <Row>
             <Col>
@@ -98,7 +98,7 @@ export const VehicleImpoundment = (props) => {
           </Row>
         </>
       )}
-      {((values["24Hour"] && values["vehicle_impounded"] === "YES") ||
+      {((values["TwentyFourHour"] && values["vehicle_impounded"] === "YES") ||
         values["VI"]) && (
         <>
           <div className="impound-lot-operator">

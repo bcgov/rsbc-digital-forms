@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Formik, Form } from "formik";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { toPng, toBlob } from "html-to-image";
 import { Checkbox } from "../common/Checkbox/checkbox";
 import { validationSchema } from "./validationSchema";
 import { DriverInfo } from "../CommonForm/driverInfo";
@@ -29,6 +30,7 @@ import {
   getEventDataToSave,
   formsPNG,
 } from "../../utils/helpers";
+import { FormSubmissionApi } from "../../api/formSubmissionApi";
 import { SVGprint } from "../Forms/Print/svgPrint";
 import { db } from "../../db";
 import "./createEvent.scss";
@@ -159,8 +161,17 @@ export const CreateEvent = () => {
     nscNumber === "" ? (values["is_nsc"] = false) : (values["is_nsc"] = true);
   };
 
-  const onSubmit = (values, { setSubmitting }) => {
-    setSubmitting(false);
+  const onSubmit = async (values, { setSubmitting }) => {
+    console.log("submitting form.");
+    const element = document.getElementById("printdiv");
+    const base64_png = await toPng(element);
+    values["VI_form_png"] = base64_png;
+    setSubmitting(true);
+    FormSubmissionApi.post(values).then((resp) => {
+      values["event_id"] = resp.data["event_id"];
+      setSubmitting(false);
+      db.event.put(values).then(() => navigate("/"));
+    });
   };
 
   const handleGoBackandSave = (values) => {
@@ -173,12 +184,12 @@ export const CreateEvent = () => {
     navigate("/");
   };
 
-  const printForms = async () => {
+  const printForms = async (values) => {
     handleShow(
       "Print Form",
       "If you print this form you cannot go back and edit it, please confirm you wish to proceed.",
       "Print",
-      () => handlePrintForms()
+      () => handlePrintForms(values)
     );
   };
 
@@ -186,13 +197,11 @@ export const CreateEvent = () => {
     navigate("/");
   };
 
-  const handlePrintForms = async () => {
+  const handlePrintForms = async (values) => {
     setIsPrinted(true);
     window.print();
     // handleShow('','','', () => handleFailedPrint)
-    if (isPrinted) {
-      nextPage();
-    }
+    nextPage(values);
   };
 
   const handleFailedPrint = async () => {
@@ -200,8 +209,20 @@ export const CreateEvent = () => {
     handlePrintForms();
   };
 
-  const nextPage = () => {
-    setCurrentStep(currentStep + 1);
+  const nextPage = (values) => {
+    if (values["TwentyFourHour"]) {
+      if (currentStep === 2 && values["prescribed_test_used"] === "YES") {
+        setCurrentStep(currentStep + 2);
+      } else {
+        setCurrentStep(currentStep + 1);
+      }
+    } else {
+      if (currentStep === 0) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        setCurrentStep(4);
+      }
+    }
   };
 
   const prevPage = () => {
@@ -217,26 +238,25 @@ export const CreateEvent = () => {
     );
   };
 
-  const renderSVGForm = (values) => {
+  const renderSVGForm = (values, renderStage) => {
     const forms = {
-      TwentyFourHour: values["24Hour"],
-      TwelveHour: values["12Hour"],
+      TwentyFourHour: values["TwentyFourHour"],
+      TwelveHour: values["TwelveHour"],
       IRP: values["IRP"],
       VI: values["VI"],
     };
     const componentsToRender = [];
     for (const item in forms) {
       if (forms[item]) {
-        for (const form in formsPNG[item]) {
-          console.log(form, item);
+        for (const form in formsPNG[renderStage][item]) {
           if (form === "ILO" && values["vehicle_impounded"] === "NO") {
             break;
           }
           componentsToRender.push(
             <SVGprint
               key={item + form}
-              form={formsPNG[item][form]["png"]}
-              formAspect={formsPNG[item][form]["aspectClass"]}
+              form={formsPNG[renderStage][item][form]["png"]}
+              formAspect={formsPNG[renderStage][item][form]["aspectClass"]}
               formLayout={item}
               formType={form}
               values={values}
@@ -258,20 +278,20 @@ export const CreateEvent = () => {
                 <h4>Documents to Generate</h4>
                 <Checkbox
                   name="IRP"
-                  disabled={values["24Hour"] || values["12Hour"]}
+                  disabled={values["TwentyFourHour"] || values["TwelveHour"]}
                 >
                   Immediate Roadside Prohibition
                 </Checkbox>
                 <Checkbox name="VI">Vehicle Impound</Checkbox>
                 <Checkbox
-                  name="24Hour"
-                  disabled={values["IRP"] || values["12Hour"]}
+                  name="TwentyFourHour"
+                  disabled={values["IRP"] || values["TwelveHour"]}
                 >
                   24-hour Driving Prohibition
                 </Checkbox>
                 <Checkbox
-                  name="12Hour"
-                  disabled={values["24Hour"] || values["IRP"]}
+                  name="TwelveHour"
+                  disabled={values["TwentyFourHour"] || values["IRP"]}
                 >
                   12-hour Driving Prohibition
                 </Checkbox>
@@ -295,17 +315,17 @@ export const CreateEvent = () => {
                 vehicles={vehicles}
                 vehicleStyles={vehicleStyles}
               />
-              {(values["24Hour"] || values["VI"]) && (
+              {(values["TwentyFourHour"] || values["VI"]) && (
                 <RegisteredOwnerInfo provinces={provinces} />
               )}
             </div>
-            {(values["24Hour"] || values["VI"]) && (
+            {(values["TwentyFourHour"] || values["VI"]) && (
               <>
                 <VehicleImpoundment impoundLotOperators={impoundLotOperators} />
                 <Prohibition cities={cities} />
               </>
             )}
-            {values["12Hour"] && !values["VI"] && (
+            {values["TwelveHour"] && !values["VI"] && (
               <>
                 <Disposition impoundLotOperators={impoundLotOperators} />
                 <Prohibition cities={cities} />
@@ -321,7 +341,7 @@ export const CreateEvent = () => {
                 <IncidentDetails />
               </>
             )}
-            {(values["24Hour"] || values["12Hour"]) && (
+            {(values["TwentyFourHour"] || values["TwelveHour"]) && (
               <>
                 <ReasonableGrounds />
                 <TestAdministered />
@@ -334,14 +354,13 @@ export const CreateEvent = () => {
         if (values["VI"]) {
           setNSCVI(values);
         }
-        return <div>{renderSVGForm(values)}</div>;
+        return <div>{renderSVGForm(values, "stageOne")}</div>;
       case 2:
         return <ConfirmationStep />;
       case 3:
-        console.log(values);
-        return values["prescribed_test_used"] === "NO" ? (
-          <PoliceDetails />
-        ) : null;
+        return <PoliceDetails />;
+      case 4:
+        return <div id="printdiv">{renderSVGForm(values, "stageTwo")}</div>;
       // Add more cases for each page
       default:
         return null;
@@ -369,7 +388,7 @@ export const CreateEvent = () => {
           validationSchema={validationSchema}
           onSubmit={onSubmit}
         >
-          {({ isSubmitting, values }) => (
+          {({ isSubmitting, values, errors }) => (
             <Form>
               <Modal
                 id="popconfirm-modal"
@@ -409,16 +428,20 @@ export const CreateEvent = () => {
                 <div className="right">
                   {currentStep < 4 ? (
                     currentStep === 1 ? (
-                      <Button type="button" onClick={() => printForms()}>
+                      <Button type="button" onClick={() => printForms(values)}>
                         Print
                       </Button>
                     ) : (
-                      <Button type="button" onClick={() => nextPage()}>
+                      <Button type="button" onClick={() => nextPage(values)}>
                         Next
                       </Button>
                     )
                   ) : (
-                    <Button variant="primary" type="submit">
+                    <Button
+                      variant="primary"
+                      type="submit"
+                      onClick={() => console.log(errors)}
+                    >
                       Submit
                     </Button>
                   )}

@@ -19,11 +19,11 @@ export const Prohibition = (props) => {
   return (
     <div className="border-design-form left text-font">
       <h3>
-        {(values["24Hour"] || values["12Hour"]) && "Prohibition"}
-        {values["VI"] && values["24Hour"] && " & "}
+        {(values["TwentyFourHour"] || values["TwelveHour"]) && "Prohibition"}
+        {values["VI"] && values["TwentyFourHour"] && " & "}
         {values["VI"] && "Time and Place"}
       </h3>
-      {values["24Hour"] && (
+      {values["TwentyFourHour"] && (
         <Row>
           <Col>
             <Radio
@@ -38,7 +38,7 @@ export const Prohibition = (props) => {
           </Col>
         </Row>
       )}
-      {values["12Hour"] && (
+      {values["TwelveHour"] && (
         <Row>
           <Col>
             <Radio
