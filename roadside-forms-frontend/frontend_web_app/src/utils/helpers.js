@@ -202,7 +202,7 @@ export const printFormatHelper = (values, data, key) => {
     val = values[data["field_name"]]["value"];
     return val;
   }
-  return val;
+  return val.toUpperCase();
 };
 
 export const printCheckHelper = (values, data, key) => {
