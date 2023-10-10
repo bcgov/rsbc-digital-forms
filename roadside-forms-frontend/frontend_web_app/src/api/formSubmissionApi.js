@@ -16,4 +16,17 @@ export const FormSubmissionApi = {
         console.log(response)
         return response
       },
+
+    get: async function () {
+      const headers = {
+        ...createRequestHeader(),
+      };
+        const response = await api.request({
+          url: "/api/v1/event",
+          method: "GET",
+          headers: {...headers}
+        })
+        console.log(response)
+        return response
+      },
 };

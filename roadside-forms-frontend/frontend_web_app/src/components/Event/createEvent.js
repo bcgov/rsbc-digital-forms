@@ -141,8 +141,8 @@ export const CreateEvent = () => {
         FormSubmissionApi.post(values).then( (resp) => {
             values['event_id'] = resp.data['event_id']
             setSubmitting(false);
-            db.event.put(values).then()
-            // () => navigate('/')
+            db.event.put(values).then(() => navigate('/'))
+
         })
     };
 

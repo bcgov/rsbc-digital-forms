@@ -126,6 +126,7 @@ def save_event_pdf(**kwargs) -> tuple:
     date_created=datetime.now()
     logging.debug('save event pdf')
     try:
+        logging.debug('-------------------Made it to 0--------------------')
         data = kwargs.get('payload')
         event = kwargs.get('event')
         client = Minio(
@@ -134,14 +135,14 @@ def save_event_pdf(**kwargs) -> tuple:
             secret_key=Config.MINIO_SK,
             secure=Config.MINIO_SECURE,
         )
-
+        logging.debug('-------------------Made it to 1--------------------')
         # Make 'asiatrip' bucket if not exist.
         found = client.bucket_exists("test")
         if not found:
             client.make_bucket("test")
         else:
             print("Bucket 'test' already exists")
-
+        logging.debug('-------------------Made it to 2--------------------')
         if(data.get('VI')):
             filename = str(uuid.uuid4().hex)            
             pdf_filename = f"/tmp/{filename}.pdf"
@@ -175,7 +176,15 @@ def save_event_pdf(**kwargs) -> tuple:
         logging.warning(str(e))
         return False, kwargs
     return True, kwargs
-    
+
+def get_events_for_user(**kwargs) -> tuple:
+    user_guid = kwargs.get('user_guid')
+    try:
+        events = db.session.query(Event).filter(Event.created_by == user_guid).all()
+        logging.debug(jsonify(events))
+        kwargs['response'] = make_response(jsonify(events), 200)
+    except Exception as e:
+        return False, kwargs
 
 def request_contains_a_payload(**kwargs) -> tuple:
     request = kwargs.get('request')
