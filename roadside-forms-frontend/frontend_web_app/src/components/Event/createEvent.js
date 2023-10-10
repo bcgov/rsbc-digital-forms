@@ -104,7 +104,10 @@ export const CreateEvent = () => {
       }))
     );
     setVehicles(
-      vehiclesAtom.map((each) => ({ label: each.search, value: each.search }))
+      vehiclesAtom.map((each) => ({
+        label: each.search,
+        value: each.mk + " - " + each.md,
+      }))
     );
     setCities(
       cityAtom.map((each) => ({ label: each.objectDsc, value: each.objectCd }))

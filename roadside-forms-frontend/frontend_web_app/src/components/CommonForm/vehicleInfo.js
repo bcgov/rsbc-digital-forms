@@ -30,6 +30,7 @@ export const VehicleInfo = (props) => {
       setdisableBtn(true);
     }
   }, [driversLicenceJurisdiction]);
+
   return (
     <div className="vehicle-info border-design-form left">
       <h3>Vehicle Information</h3>
