@@ -68,7 +68,7 @@ services:
         - docker-network
       ports:
         - "3000:5000"
-        
+
 
     minio:
       image: 'minio/minio:latest'
@@ -101,6 +101,7 @@ services:
       command: minio server /data/minio --console-address ":9090"
       networks:
         - docker-network
+        
 
 
     roadside-forms-api:
