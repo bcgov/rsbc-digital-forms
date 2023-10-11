@@ -1,0 +1,101 @@
+name: run-ui-test-scenarios
+
+on:
+  workflow_call:
+    inputs:
+      BUILD_CONTEXT:
+        required: true
+        type: string
+      NODE_VERSION:
+        required: true
+        type: string
+    secrets:
+      REACT_APP_KEYCLOAK_URL:
+        required: true
+      REACT_APP_KEYCLOAK_REALM:
+        required: true
+      REACT_APP_KEYCLOAK_CLIENT_ID:
+        required: true
+      REACT_APP_BASE_URL_DEV:
+        required: true
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.NODE_VERSION }}
+
+      - name: Cypress install
+        uses: cypress-io/github-action@v5
+        with:
+          runTests: false
+          working-directory: ${{ inputs.BUILD_CONTEXT }}
+
+      - run: node --version
+      - name: Build the app
+        env:
+          CI: ""
+          REACT_APP_KEYCLOAK_URL: ${{ secrets.REACT_APP_KEYCLOAK_URL }}
+          REACT_APP_KEYCLOAK_REALM: ${{ secrets.REACT_APP_KEYCLOAK_REALM }}
+          REACT_APP_KEYCLOAK_CLIENT_ID: ${{ secrets.REACT_APP_KEYCLOAK_CLIENT_ID }}
+          REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL_DEV }}
+          BUILD_FOLDER: ${{ inputs.BUILD_CONTEXT }}
+        run: |          
+          cd $BUILD_FOLDER
+          npm run build:ci
+
+      - name: Save build folder
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          if-no-files-found: error
+          path: ${{ inputs.BUILD_CONTEXT }}/build
+ 
+  ui-chrome-tests:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    container:
+      image: cypress/browsers:node16.16.0-chrome105-ff104-edge
+      options: --user 1001
+    needs: install
+    strategy:
+      fail-fast: false
+      matrix:
+        # run copies of the current job in parallel
+        # containers: [1, 2, 3, 4, 5]
+        containers: [1]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download the build folders
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: ${{ inputs.BUILD_CONTEXT }}/build
+
+      - name: Cypress info
+        run: npx cypress info
+
+      - name: Node info
+        run: node -v
+
+      - name: "UI Tests - Chrome"
+        uses: cypress-io/github-action@v5
+        with:
+          start: npm run start:ci
+          working-directory: ${{ inputs.BUILD_CONTEXT }}
+          wait-on: "http://localhost:3000"
+          wait-on-timeout: 120
+          browser: chrome
+          record: false
+          spec: cypress/e2e/*
+          config-file: cypress.config.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG: "cypress:server:args"

@@ -1,6 +1,5 @@
 __pycache__/
 .DS_Store
-.env
 .venv/
 .idea/
 .vscode/
@@ -19,3 +18,9 @@ env/
 dist_old/
 build
 .idea
+
+*,cover
+.coverage
+coverage.xml
+htmlcov/
+encryptDecryptPdf

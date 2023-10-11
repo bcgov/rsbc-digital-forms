@@ -31,20 +31,13 @@ on:
         required: true
       REACT_APP_BASE_URL_DEV:
         required: true
+      PUBLIC_URL:
+        required: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-      pull-requests: read
-      checks: write
-      issues: write
-      statuses: write
-      deployments: write
-      id-token: write
+    permissions: write-all
     # if: ${{ !(
     #     github.event.pull_request.head.ref =~ '^hotfixrelease/' ||
     #     github.event.pull_request.head.ref =~ '^hotfix/' ||
@@ -83,6 +76,7 @@ jobs:
           REACT_APP_KEYCLOAK_REALM: ${{ secrets.REACT_APP_KEYCLOAK_REALM }}
           REACT_APP_KEYCLOAK_CLIENT_ID: ${{ secrets.REACT_APP_KEYCLOAK_CLIENT_ID }}
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL_DEV }}
+          PUBLIC_URL: ${{ secrets.PUBLIC_URL }}
         uses: docker/build-push-action@v3
         with:
           context: ${{ inputs.DOCKER_CONTEXT }}
@@ -94,6 +88,7 @@ jobs:
             REACT_APP_KEYCLOAK_REALM=${{ secrets.REACT_APP_KEYCLOAK_REALM }}
             REACT_APP_KEYCLOAK_CLIENT_ID=${{ secrets.REACT_APP_KEYCLOAK_CLIENT_ID }}
             REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL_DEV }}
+            PUBLIC_URL: ${{ secrets.PUBLIC_URL }}
           tags: ${{ secrets.DOCKER_REGISTRY }}/dbe7-images/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_IMAGE_TAG }}
       - name: Authenticate and set context for tools namespace
         uses: redhat-actions/oc-login@v1.1.2
