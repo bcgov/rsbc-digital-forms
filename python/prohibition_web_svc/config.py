@@ -46,4 +46,5 @@ class Config(BaseConfig):
 
     ENCRYPT_KEY = os.environ.get('ENCRYPT_KEY')
     ENCRYPT_KEY_SALT = os.environ.get('ENCRYPT_KEY_SALT')
+    
 
