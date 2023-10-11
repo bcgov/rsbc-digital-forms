@@ -12,7 +12,7 @@ import { SVGprint } from '../components/Forms/Print/svgPrint';
 class AppRouter extends Component {
     render() {
     return (
-        <Router basename="/roadside-forms">
+        <Router >
             <Header/>
             <Routes>
                 <Route path="/login" element={<Login />} />
