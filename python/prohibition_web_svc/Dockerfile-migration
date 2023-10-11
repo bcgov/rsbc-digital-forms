@@ -17,7 +17,8 @@ WORKDIR ${APP_ROOT}/src/python/prohibition_web_svc
 
 # RUN ["python", "-m", "pytest", "python/prohibition_web_svc"]
 # CMD ["python", "-m", "pytest", "python/prohibition_web_svc"]
-CMD ["flask", "db", "migrate"]
+# CMD ["flask", "db", "migrate"]
+CMD ["flask", "db", "upgrade"]
 
 # CMD [ "gunicorn", "--error-logfile", "-", "--bind", "0.0.0.0:5000", "--pythonpath", "python/prohibition_web_svc", "app:create_app()" ]
 
