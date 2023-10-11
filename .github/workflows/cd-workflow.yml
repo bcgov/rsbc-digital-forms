@@ -31,6 +31,8 @@ on:
         required: true
       REACT_APP_BASE_URL_DEV:
         required: true
+      PUBLIC_URL:
+        required: true
 
 jobs:
   build:
@@ -74,6 +76,7 @@ jobs:
           REACT_APP_KEYCLOAK_REALM: ${{ secrets.REACT_APP_KEYCLOAK_REALM }}
           REACT_APP_KEYCLOAK_CLIENT_ID: ${{ secrets.REACT_APP_KEYCLOAK_CLIENT_ID }}
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL_DEV }}
+          PUBLIC_URL: ${{ secrets.PUBLIC_URL }}
         uses: docker/build-push-action@v3
         with:
           context: ${{ inputs.DOCKER_CONTEXT }}
@@ -85,6 +88,7 @@ jobs:
             REACT_APP_KEYCLOAK_REALM=${{ secrets.REACT_APP_KEYCLOAK_REALM }}
             REACT_APP_KEYCLOAK_CLIENT_ID=${{ secrets.REACT_APP_KEYCLOAK_CLIENT_ID }}
             REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL_DEV }}
+            PUBLIC_URL: ${{ secrets.PUBLIC_URL }}
           tags: ${{ secrets.DOCKER_REGISTRY }}/dbe7-images/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_IMAGE_TAG }}
       - name: Authenticate and set context for tools namespace
         uses: redhat-actions/oc-login@v1.1.2
