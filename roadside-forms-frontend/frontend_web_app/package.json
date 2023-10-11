@@ -1,6 +1,7 @@
 {
   "name": "frontend_web_app",
   "version": "0.1.0",
+  "homepage": "/roadside-forms/",
   "private": true,
   "dependencies": {
     "@react-keycloak/web": "^3.4.0",
