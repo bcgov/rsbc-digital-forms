@@ -18,7 +18,7 @@ precacheAndRoute(manifest);
 // Define the URLs to pre-cache
 const precacheUrls = [
   '/',
-  '/createEvent',
+  '/roadside-forms/createEvent',
   '/svg-test',
   // Add more URLs as needed
 ];
