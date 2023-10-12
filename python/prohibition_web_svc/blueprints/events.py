@@ -17,25 +17,20 @@ bp = Blueprint('event', __name__, url_prefix=Config.URL_PREFIX + '/api/v1')
 CORS(bp, resources={Config.URL_PREFIX + "/api/v1/event/*": {"origins": Config.ACCESS_CONTROL_ALLOW_ORIGIN}})
 
 
-@bp.route('', methods=['GET'])
-def index(form_type):
-    """
-    List all forms for a user
-    """
-    # if request.method == 'GET':
-    #     kwargs = helper.middle_logic(
-    #         get_authorized_keycloak_user() + [
-    #             {"try": splunk_middleware.log_form_index, "fail": []},
-    #             {"try": form_middleware.list_all_users_forms, "fail": [
-    #                 {"try": http_responses.server_error_response, "fail": []},
-    #             ]},
-    #             {"try": splunk.log_to_splunk, "fail": []}
-    #         ],
-    #         required_permission='forms-index',
-    #         request=request,
-    #         form_type=form_type,
-    #         config=Config)
-    #     return kwargs.get('response')
+@bp.route('/event', methods=['GET'])
+def index():
+    if request.method == 'GET':
+        kwargs = middle_logic(
+            get_authorized_keycloak_user() + [
+                {"try": splunk.log_to_splunk, "fail": []},
+                {"try": event_middleware.get_events_for_user, "fail": [
+                    {"try": http_responses.server_error_response, "fail": []}
+                ]}
+            ],
+            required_permission='forms-get',
+            request=request,
+            config=Config)
+        return kwargs.get('response')
 
 
 @bp.route('', methods=['GET'])

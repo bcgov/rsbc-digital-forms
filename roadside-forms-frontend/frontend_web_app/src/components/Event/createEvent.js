@@ -78,14 +78,7 @@ export const CreateEvent = () => {
           each.city +
           ", " +
           each.phone,
-        value:
-          each.name +
-          ", " +
-          each.lot_address +
-          ", " +
-          each.city +
-          ", " +
-          each.phone,
+        value: each.id,
       }))
     );
     setProvinces(
@@ -167,6 +160,7 @@ export const CreateEvent = () => {
     const base64_png = await toPng(element);
     values["VI_form_png"] = base64_png;
     setSubmitting(true);
+    console.log(values);
     FormSubmissionApi.post(values).then((resp) => {
       values["event_id"] = resp.data["event_id"];
       setSubmitting(false);
@@ -252,6 +246,7 @@ export const CreateEvent = () => {
           if (form === "ILO" && values["vehicle_impounded"] === "NO") {
             break;
           }
+
           componentsToRender.push(
             <SVGprint
               key={item + form}

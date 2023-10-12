@@ -16,7 +16,7 @@ export const VehicleImpoundment = (props) => {
 
   const handleILOChange = (selectedOption) => {
     if (selectedOption) {
-      const [name, address, city, phone] = selectedOption.value.split(", ");
+      const [name, address, city, phone] = selectedOption.label.split(", ");
       setFieldValue("ILO-name", name);
       setFieldValue("ILO-address", address);
       setFieldValue("ILO-city", city);

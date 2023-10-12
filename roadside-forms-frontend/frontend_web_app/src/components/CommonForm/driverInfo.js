@@ -38,7 +38,7 @@ export const DriverInfo = (props) => {
             <Input
               className="field-height field-width"
               label="Driver's Licence Number"
-              name="drivers_licence_no"
+              name="driver_licence_no"
               type="text"
             />
           </Col>
