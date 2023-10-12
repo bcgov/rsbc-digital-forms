@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '../common/Button/Button';
+import Button from 'react-bootstrap/Button';
 import { Formik, Form} from 'formik';
 import { validate } from './validate';
 import WarningIcon from '@mui/icons-material/Warning';
@@ -10,7 +10,8 @@ import { staticResources } from '../../utils/helpers';
 import { useRecoilState } from 'recoil';
 import { StaticDataApi } from '../../api/staticDataApi';
 import { useRecoilValue } from 'recoil';
-import { userAtom } from '../../atoms/users';
+import { userRolesAtom } from '../../atoms/userRoles';
+import { loginCompletedAtom } from '../../atoms/loginCompleted';
 import { useNavigate} from 'react-router-dom';
 
 export const RequestAccess= () => {
@@ -18,10 +19,10 @@ export const RequestAccess= () => {
   const [options, setOptions] = useState([])
   const [showApplicationReceived, setShowApplicationReceived] = useState(false)
   const [agencies, setAgency] = useRecoilState(staticResources["agencies"])
-  const user = useRecoilValue(userAtom);
+  const userRoles = useRecoilValue(userRolesAtom);
+  const loginComplete = useRecoilValue(loginCompletedAtom);
   const navigate = useNavigate();
   
-
   const initialValues = {
     last_name: '',
     first_name: '',
@@ -30,10 +31,14 @@ export const RequestAccess= () => {
   };
  
   const onSubmit = (values, { setSubmitting }) => {
-    const data = values;
+    const data = {
+      agency: values.agency.value,
+      badge_number: values.badge_number,
+      first_name: values.first_name,
+      last_name: values.last_name,
+    };
     UserApi.post(data)
       .then((data) => {
-        console.log("Success", data);
         setSubmitting(false);
         setShowApplication(false);
         setShowApplicationReceived(true);
@@ -45,7 +50,7 @@ export const RequestAccess= () => {
 
   const handleClick = () => {
     setShowApplication(true);
-    if (agencies === undefined || agencies.length === 0){
+    if (agencies === undefined || (agencies && agencies.length === 0)){
       StaticDataApi.get("agencies").then((resp) => {
         setAgency(resp.data)
         setOptions(resp.data.map((item) => { return ({"label":item.agency_name,"value":item.agency_name})}))
@@ -57,13 +62,14 @@ export const RequestAccess= () => {
   }
 
   useEffect(() => {
-    if (user.length !== 0) {
+    if (userRoles && userRoles.length !== 0) {
       navigate("/");
     }
-  }, [user, navigate]);
+  }, [userRoles, navigate]);
 
-  return (
-    <div className='border-design text-font'>
+  return (<>
+    {userRoles && userRoles.length === 0 && loginComplete && 
+    (<div className='border-design text-font'>
       {!showApplicationReceived && (<div>
         <p>
           <span className="fw-bold">Welcome to the Digital Forms system</span>
@@ -78,7 +84,7 @@ export const RequestAccess= () => {
           Please apply for access after completing the training course and with the approval of your unit commander.
         </p>
       </div>)}
-      {!showApplication && !showApplicationReceived && <Button primary size="large" label="Apply for Access" onClick={handleClick}/>}
+      {!showApplication && !showApplicationReceived && <Button variant="primary" onClick={handleClick}>Apply for Access</Button>}
       {showApplication && ( <div>
         <div className=' d-flex justify-content-center mt-2'>
           <Formik initialValues={initialValues} validate={validate} onSubmit={onSubmit}>
@@ -113,7 +119,7 @@ export const RequestAccess= () => {
                   <div className="col" />
                 </div>
               </div>
-              <Button primary size='large' label="Apply for Access" type="submit" disabled={isSubmitting}/>
+              <Button variant="primary" type="submit" disabled={isSubmitting}>Apply for Access</Button>
             </Form>
           )}
           </Formik>
@@ -127,6 +133,8 @@ export const RequestAccess= () => {
           Your application will be reviewed and approved within 24 business hours.
         </p>
       </div>)}
-    </div>
+      
+    </div>)
+}</>
   );
 }
