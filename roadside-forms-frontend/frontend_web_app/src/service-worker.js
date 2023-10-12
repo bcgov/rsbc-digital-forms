@@ -19,7 +19,7 @@ precacheAndRoute(manifest);
 const precacheUrls = [
   '/',
   '/roadside-forms/createEvent',
-  '/svg-test',
+  '/roadside-forms/svg-test',
   // Add more URLs as needed
 ];
 
