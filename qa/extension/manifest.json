@@ -17,6 +17,7 @@
         {
             "matches": [
                 "*://rsbc-roadside-forms-app-frontend-dev.apps.silver.devops.gov.bc.ca/*",
+                "*://dev.jag.gov.bc.ca/roadside-forms/*",
                 "*://rsbc-roadside-forms-app-frontend-test.apps.silver.devops.gov.bc.ca/*",
                 "*://localhost:*/*",
                 "*://127.0.0.1:*/*"
