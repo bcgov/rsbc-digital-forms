@@ -24,7 +24,7 @@ const precacheUrls = [
 ];
 
 // Configure Workbox to pre-cache the URLs
-precacheAndRoute(precacheUrls);
+precacheAndRoute(precacheUrls,{revision: null});
 
 // Set up App Shell-style routing, so that all navigation requests
 // are fulfilled with your index.html shell. Learn more at
