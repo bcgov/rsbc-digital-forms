@@ -1,5 +1,6 @@
 # FROM python:3.7.3-stretch
 FROM python:3.9-slim
+# FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python38:1-127.1684740820
 
 COPY form_handler/requirements.txt /tmp/
 
