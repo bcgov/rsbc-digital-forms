@@ -13,6 +13,7 @@ from datetime import datetime
 from python.form_handler.models import db, Event,FormStorageRefs
 import pyaes, pbkdf2, binascii, os, secrets
 import base64
+import fitz
 
 logging.config.dictConfig(Config.LOGGING)
 
@@ -90,7 +91,7 @@ def get_storage_ref_event_type(message,app,db,event_types) -> str:
                 .filter(FormStorageRefs.storage_key == storage_key) \
                 .all()
             # db.session.commit()
-            # print(form)
+            print(form)
             if len(form) == 0 or len(form) > 1:
                 return "unknown_event"
             for f in form:
@@ -114,5 +115,33 @@ def method2_decrypt(ciphertext,iv):
     # converrt bytes to string
     decrypted1 = decrypted1.decode('utf-8')
     return decrypted1
+
+
+def encryptPdf_method1(pdfPath, password,outfile):
+    doc = fitz.open(pdfPath)
+    doc.save(outfile, encryption=fitz.PDF_ENCRYPT_AES_256, owner_pw=password, user_pw=password)
+    doc.close()
+
+def decryptPdf_method1(pdfPath, password,outfile):
+    try:
+        doc = fitz.open(pdfPath)
+        if doc.authenticate(password):
+            doc.save(outfile)
+            if doc.save:
+                logging.debug("PDF decrypted")
+        else:
+            # print('Incorrect Password')
+            logging.critical("Incorrect Password")
+            doc.close()
+            raise Exception("Incorrect Password")
+        doc.close()
+        with open(outfile, "rb") as pdf_file:
+            encoded_string = base64.b64encode(pdf_file.read())
+        # delete the outfile
+        os.remove(outfile)
+        return True,encoded_string.decode('utf-8')
+    except Exception as e:
+        logging.error(e)
+        return False,None
 
 

@@ -59,6 +59,7 @@ class Config():
 
     RSIOPS_EMAIL_ADDRESS = os.getenv('RSIOPS_EMAIL_ADDRESS')
     REPLY_EMAIL_ADDRESS = os.getenv('REPLY_EMAIL_ADDRESS', 'do-not-reply-rsi@gov.bc.ca')
+    TMP_STORAGE_LOCAL=os.getenv('TMP_STORAGE_LOCAL')
 
 
 
