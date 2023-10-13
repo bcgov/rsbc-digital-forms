@@ -113,8 +113,8 @@ export const formTypes = (form) => {
   const forms =
     (form["IRP"] ? "IRP," : " ") +
     (form["VI"] ? "VI," : " ") +
-    (form["24Hour"] ? "24Hour," : " ") +
-    (form["12Hour"] ? "12Hour" : " ");
+    (form["TwentyFourHour"] ? "TwentyFourHour," : " ") +
+    (form["TwelveHour"] ? "TwelveHour" : " ");
   return forms;
 };
 

@@ -62,7 +62,7 @@ export const VehicleInfo = (props) => {
             </Button>
           </div>
         </div>
-        {(values["24Hour"] || values["VI"]) && (
+        {(values["TwentyFourHour"] || values["VI"]) && (
           <div className="row" style={{ minHeight: "85px" }}>
             <div className=" col-sm-5">
               <Input
@@ -109,7 +109,7 @@ export const VehicleInfo = (props) => {
           </div>
         </div>
         <div className="row" style={{ minHeight: "85px" }}>
-          {(values["24Hour"] || values["VI"]) && (
+          {(values["TwentyFourHour"] || values["VI"]) && (
             <div className=" col-sm-5">
               <Input
                 label="VIN Number"
