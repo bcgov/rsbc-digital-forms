@@ -219,6 +219,8 @@ export const CreateEvent = () => {
       } else {
         setCurrentStep(currentStep + 1);
       }
+    } else if (values["TwelveHour"]) {
+      setCurrentStep(currentStep + 1);
     } else {
       if (currentStep === 0) {
         setCurrentStep(currentStep + 1);
