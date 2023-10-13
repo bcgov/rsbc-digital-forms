@@ -220,7 +220,11 @@ export const CreateEvent = () => {
         setCurrentStep(currentStep + 1);
       }
     } else if (values["TwelveHour"]) {
-      setCurrentStep(currentStep + 1);
+      if (currentStep === 2) {
+        setCurrentStep(currentStep + 2);
+      } else {
+        setCurrentStep(currentStep + 1);
+      }
     } else {
       if (currentStep === 0) {
         setCurrentStep(currentStep + 1);
@@ -395,6 +399,7 @@ export const CreateEvent = () => {
         >
           {({ isSubmitting, values, errors }) => (
             <Form>
+              {/* TODO: Fix race condition with modal on print */}
               <Modal
                 id="popconfirm-modal"
                 show={show}

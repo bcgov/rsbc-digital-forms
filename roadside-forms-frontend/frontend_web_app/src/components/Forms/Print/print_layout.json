@@ -1841,7 +1841,7 @@
     "fields": {
       "DRIVER_NAME": {
         "field_type": "text",
-        "field_name": ["driver_given_name", "driver_last_name"],
+        "field_name": ["driver_last_name", "driver_given_name"],
         "classNames": "fontSmall",
         "start": {
           "x": 10,
