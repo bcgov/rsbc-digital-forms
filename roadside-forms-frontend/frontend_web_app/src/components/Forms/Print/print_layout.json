@@ -1829,6 +1829,7 @@
       "VEHICLE_MODEL",
       "VEHICLE_COLOR",
       "VEHICLE_JURISDICTION",
+      "VEHICLE_PLATE_NUMBER",
       "VEHICLE_NSC_PUJ",
       "VEHICLE_NSC_NUMBER",
       "RELEASE_LOCATION_KEYS",
@@ -1844,7 +1845,7 @@
         "classNames": "fontSmall",
         "start": {
           "x": 10,
-          "y": 35.5
+          "y": 25
         }
       },
       "DRIVER_DL_NUMBER": {
@@ -1853,7 +1854,7 @@
         "classNames": "fontSmall",
         "start": {
           "x": 10,
-          "y": 42.5
+          "y": 32.5
         }
       },
       "DRIVER_DOB": {
@@ -1862,7 +1863,7 @@
         "classNames": "fontSmall",
         "start": {
           "x": 77,
-          "y": 42.5
+          "y": 32.5
         }
       },
       "DRIVER_ADDRESS": {
@@ -1876,7 +1877,7 @@
         "classNames": "fontSmall",
         "start": {
           "x": 10,
-          "y": 49.8
+          "y": 40
         }
       },
       "DRIVER_PHONE": {
@@ -1885,7 +1886,7 @@
         "classNames": "fontSmall",
         "start": {
           "x": 20,
-          "y": 56.9
+          "y": 48
         }
       },
       "VEHICLE_NSC_PUJ": {
@@ -1893,8 +1894,8 @@
         "field_name": "nsc_prov_state",
         "classNames": "fontSmall",
         "start": {
-          "x": 51,
-          "y": 56.9
+          "x": 54,
+          "y": 48
         }
       },
       "VEHICLE_NSC_NUMBER": {
@@ -1902,8 +1903,8 @@
         "field_name": "nsc_no",
         "classNames": "fontSmall",
         "start": {
-          "x": 60,
-          "y": 56.9
+          "x": 64,
+          "y": 48
         }
       },
       "REASON_ALCOHOL_90": {
@@ -1912,8 +1913,8 @@
         "field_val": "alcohol",
         "classNames": "fontSmall",
         "start": {
-          "x": 22.8,
-          "y": 64.8
+          "x": 22.5,
+          "y": 53.5
         }
       },
       "REASON_DRUGS_90": {
@@ -1922,8 +1923,8 @@
         "field_val": "drugs",
         "classNames": "fontSmall",
         "start": {
-          "x": 53.7,
-          "y": 64.8
+          "x": 51,
+          "y": 53.5
         }
       },
       "NOTICE_TIME": {
@@ -1931,8 +1932,8 @@
         "field_name": "time_of_driving",
         "classNames": "fontSmall",
         "start": {
-          "x": 11,
-          "y": 99.4
+          "x": 10,
+          "y": 89
         }
       },
       "NOTICE_DAY": {
@@ -1941,8 +1942,8 @@
         "date_val": "Do",
         "classNames": "fontSmall",
         "start": {
-          "x": 43,
-          "y": 99.4
+          "x": 46,
+          "y": 89
         }
       },
       "NOTICE_MONTH": {
@@ -1951,8 +1952,8 @@
         "date_val": "MMMM",
         "classNames": "fontSmall",
         "start": {
-          "x": 65,
-          "y": 99.4
+          "x": 66,
+          "y": 89
         }
       },
       "NOTICE_YEAR": {
@@ -1961,8 +1962,8 @@
         "date_val": "YYYY",
         "classNames": "fontSmall",
         "start": {
-          "x": 88.5,
-          "y": 99.4
+          "x": 95,
+          "y": 89
         }
       },
       "DL_SURRENDER_LOCATION": {
@@ -1970,8 +1971,8 @@
         "field_name": "intersection_or_address_of_offence",
         "classNames": "fontSmall",
         "start": {
-          "x": 8,
-          "y": 121
+          "x": 6,
+          "y": 102
         }
       },
       "OFFICER_BADGE_NUMBER": {
@@ -1979,8 +1980,8 @@
         "field_name": "officer-prime-id",
         "classNames": "fontSmall",
         "start": {
-          "x": 79.5,
-          "y": 129
+          "x": 83,
+          "y": 110
         }
       },
       "AGENCY_NAME": {
@@ -1988,8 +1989,8 @@
         "field_name": "officer-agency",
         "classNames": "fontSmall",
         "start": {
-          "x": 8,
-          "y": 137
+          "x": 6,
+          "y": 117
         }
       },
       "AGENCY_FILE_NUMBER": {
@@ -1997,8 +1998,8 @@
         "field_name": "agency_file_no",
         "classNames": "fontSmall",
         "start": {
-          "x": 66.2,
-          "y": 137
+          "x": 68,
+          "y": 117
         }
       },
       "VEHICLE_YEAR": {
@@ -2006,8 +2007,8 @@
         "field_name": "vehicle_year",
         "classNames": "fontSmall",
         "start": {
-          "x": 8,
-          "y": 149
+          "x": 6,
+          "y": 131
         }
       },
       "VEHICLE_MAKE": {
@@ -2017,7 +2018,7 @@
         "classNames": "fontSmall",
         "start": {
           "x": 18.2,
-          "y": 149
+          "y": 131
         }
       },
       "VEHICLE_MODEL": {
@@ -2026,8 +2027,8 @@
         "delimeter": "-",
         "classNames": "fontSmall",
         "start": {
-          "x": 35,
-          "y": 149
+          "x": 36,
+          "y": 131
         }
       },
       "VEHICLE_COLOR": {
@@ -2036,7 +2037,7 @@
         "classNames": "fontXSmall",
         "start": {
           "x": 53,
-          "y": 149
+          "y": 131
         }
       },
       "VEHICLE_JURISDICTION": {
@@ -2044,26 +2045,35 @@
         "field_name": "vehicle_jurisdiction",
         "classNames": "fontSmall",
         "start": {
-          "x": 70,
-          "y": 149
+          "x": 73,
+          "y": 131
+        }
+      },
+      "VEHICLE_PLATE_NUMBER": {
+        "field_type": "text",
+        "field_name": "vehicle_plate_no",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 86,
+          "y": 131
         }
       },
       "RELEASE_LOCATION_KEYS": {
         "field_type": "text",
         "field_name": "location_of_keys",
-        "classNames": "fontSmall",
+        "classNames": "fontXSmall",
         "start": {
-          "x": 8,
-          "y": 156.8
+          "x": 6,
+          "y": 138.5
         }
       },
       "RELEASE_LOCATION_VEHICLE": {
         "field_type": "text",
         "field_name": "vehicle_location",
-        "classNames": "fontSmall",
+        "classNames": "fontXSmall",
         "start": {
-          "x": 8,
-          "y": 163
+          "x": 58,
+          "y": 138.5
         }
       },
       "RELEASE_PERSON": {
@@ -2071,8 +2081,8 @@
         "field_name": "vehicle_released_to",
         "classNames": "fontXSmall",
         "start": {
-          "x": 8,
-          "y": 170
+          "x": 6,
+          "y": 146
         }
       },
       "RELEASE_DATE": {
@@ -2080,8 +2090,8 @@
         "field_name": "date_released",
         "classNames": "fontSmall",
         "start": {
-          "x": 58,
-          "y": 177
+          "x": 48,
+          "y": 146
         }
       },
       "RELEASE_TIME": {
@@ -2089,8 +2099,8 @@
         "field_name": "time_released",
         "classNames": "fontSmall",
         "start": {
-          "x": 90,
-          "y": 177
+          "x": 79,
+          "y": 146
         }
       }
     },

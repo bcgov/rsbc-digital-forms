@@ -5,7 +5,8 @@ import twentyFourHourDriverform from "../assets/MV2634_102018_driver.png";
 import viDriverForm from "../assets/MV2721_201502.png";
 import appealsForm from "../assets/MV2721_201502_appeal.png";
 import viReportForm from "../assets/MV2722_201502.png";
-import twelveHourDriverForm from "../assets/MV2906_102018.png";
+import twelveHourDriverForm from "../assets/TwelveHourDriverCopy.png";
+import twelveHourICBCForm from "../assets/TwelveHourICBCCopy.png";
 
 const eventValueKeys = [
   "event_id",
@@ -139,7 +140,7 @@ export const formsPNG = {
       ILO: { png: twentyFourHourDriverform, aspectClass: "--landscape" },
     },
     TwelveHour: {
-      DRIVER: { png: twelveHourDriverForm, aspectClass: "--landscape" },
+      POLICE: { png: twelveHourICBCForm, aspectClass: "--landscape" },
     },
     VI: {
       POLICE: { png: viDriverForm, aspectClass: "--portrait" },
@@ -152,7 +153,11 @@ const fieldsToSplit = { VEHICLE_MAKE: 0, VEHICLE_MODEL: 1 };
 const dateFieldSplit = ["date_of_driving", "driver_licence_expiry"];
 
 export const printFormatHelper = (values, data, key) => {
+  console.log("VALUES: ", values);
+  console.log("DATA: ", data);
+  console.log("KEY: ", key);
   let val = values[data["field_name"]];
+  console.log("VAL: ", val);
   // if the value needs to be split into to fields
   if (key in fieldsToSplit) {
     const splitData =
@@ -164,7 +169,7 @@ export const printFormatHelper = (values, data, key) => {
       typeof fieldsToSplit[key] === "number"
         ? splitData[fieldsToSplit[key]]
         : splitData.splice(1).join(data["delimeter"]);
-    return val;
+    return val.toUpperCase();
   }
   //if the field on the form is expecting more than one value join them together
   if (Array.isArray(data["field_name"])) {
@@ -178,7 +183,7 @@ export const printFormatHelper = (values, data, key) => {
         val += ", ";
       }
     });
-    return val;
+    return val.toUpperCase();
   }
   //if the value is a date
   if (
@@ -188,9 +193,9 @@ export const printFormatHelper = (values, data, key) => {
     if (dateFieldSplit.includes(data["field_name"])) {
       val = moment(values[data["field_name"]]).format(data["date_val"]);
     } else {
-      val = moment(values[data["field_name"]]).format("YYYYMMDD");
+      val = moment(values[data["field_name"]]).format("YYYY-MM-DD");
     }
-    return val;
+    return val.toUpperCase();
   }
   //if the value is a list join them into a single string
   if (Array.isArray(values[data["field_name"]])) {
@@ -201,6 +206,54 @@ export const printFormatHelper = (values, data, key) => {
   if (typeof values[data["field_name"]] === "object") {
     val = values[data["field_name"]]["value"];
     return val;
+  }
+
+  if (key === "RELEASE_LOCATION_VEHICLE") {
+    switch (values["vehicle_location"]) {
+      case "released":
+        val = "RELEASED TO OTHER DRIVER";
+        break;
+      case "private":
+        val = "PRIVATE TOW";
+        break;
+      case "roadside":
+        val = "LEFT AT ROADSIDE";
+        break;
+      default:
+        val = "";
+    }
+  }
+
+  if (key === "RELEASE_LOCATION_KEYS") {
+    switch (values["vehicle_location"]) {
+      case "released":
+        val = "WITH OTHER DRIVER";
+        break;
+      case "private":
+        val = "WITH VEHICLE";
+        break;
+      case "roadside":
+        val = values["location_of_keys"];
+        break;
+      default:
+        val = "";
+    }
+  }
+
+  if (key === "RELEASE_PERSON") {
+    switch (values["vehicle_location"]) {
+      case "released":
+        val = values["vehicle_released_to"];
+        break;
+      case "private":
+        val = values["ILO-name"];
+        break;
+      case "roadside":
+        val = "";
+        break;
+      default:
+        val = "";
+    }
   }
   return val.toUpperCase();
 };
