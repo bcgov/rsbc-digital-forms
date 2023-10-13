@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "../common/Button/Button";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
+import Select from "react-select";
 import { useLocation } from "react-router-dom";
 import { SVGprint } from "../Forms/Print/svgPrint";
 import { formsPNG } from "../../utils/helpers";
@@ -8,6 +11,7 @@ import { db } from "../../db";
 export const ViewPastEvent = () => {
   const location = useLocation();
   const [event, setEvent] = useState({});
+  const [selected, setSelected] = useState("stageTwo");
   const state = location.state;
 
   useEffect(() => {
@@ -21,7 +25,11 @@ export const ViewPastEvent = () => {
       console.log(error);
     }
   }, [setEvent, state]);
-  console.log(event);
+
+  const options = [
+    { value: "stageTwo", label: "Police/ICBC" },
+    { value: "stageOne", label: "Driver/ILO" },
+  ];
 
   const renderSVGForm = (values, renderStage) => {
     const forms = {
@@ -52,6 +60,26 @@ export const ViewPastEvent = () => {
     }
     return componentsToRender;
   };
-
-  return <div>{renderSVGForm(event, "stageOne")}</div>;
+  return (
+    <div>
+      <Row id="history-button-container">
+        <Col sm={{ span: 4, offset: 4 }}>
+          <Select
+            defaultValue={options[0]}
+            name="Print"
+            options={options}
+            onChange={(e) => {
+              setSelected(e.value);
+            }}
+          />
+        </Col>
+        <Col sm={4}>
+          <Button variant="primary" onClick={() => window.print()}>
+            Print
+          </Button>
+        </Col>
+      </Row>
+      {renderSVGForm(event, selected)}
+    </div>
+  );
 };
