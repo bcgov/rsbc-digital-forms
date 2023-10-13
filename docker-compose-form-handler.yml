@@ -13,6 +13,7 @@ services:
         LOG_LEVEL: "DEBUG"
         ENCRYPT_KEY: "${ENCRYPT_KEY}"
         ENCRYPT_KEY_SALT: "${ENCRYPT_KEY_SALT}"
+        TMP_STORAGE_LOCAL: "${TMP_STORAGE_LOCAL}"
       x-develop:
         watch:
           - action: rebuild
