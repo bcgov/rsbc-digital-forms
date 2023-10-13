@@ -169,7 +169,7 @@ export const printFormatHelper = (values, data, key) => {
       typeof fieldsToSplit[key] === "number"
         ? splitData[fieldsToSplit[key]]
         : splitData.splice(1).join(data["delimeter"]);
-    return val.toUpperCase();
+    return val;
   }
   //if the field on the form is expecting more than one value join them together
   if (Array.isArray(data["field_name"])) {
@@ -183,7 +183,7 @@ export const printFormatHelper = (values, data, key) => {
         val += ", ";
       }
     });
-    return val.toUpperCase();
+    return val;
   }
   //if the value is a date
   if (
@@ -195,7 +195,7 @@ export const printFormatHelper = (values, data, key) => {
     } else {
       val = moment(values[data["field_name"]]).format("YYYY-MM-DD");
     }
-    return val.toUpperCase();
+    return val;
   }
   //if the value is a list join them into a single string
   if (Array.isArray(values[data["field_name"]])) {
@@ -230,7 +230,7 @@ export const printFormatHelper = (values, data, key) => {
         val = "WITH OTHER DRIVER";
         break;
       case "private":
-        val = "WITH VEHICLE";
+        val = values["location_of_keys"];
         break;
       case "roadside":
         val = values["location_of_keys"];
@@ -255,7 +255,8 @@ export const printFormatHelper = (values, data, key) => {
         val = "";
     }
   }
-  return val.toUpperCase();
+
+  return val;
 };
 
 export const printCheckHelper = (values, data, key) => {
