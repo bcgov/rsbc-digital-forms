@@ -209,50 +209,68 @@ export const printFormatHelper = (values, data, key) => {
   }
 
   if (key === "RELEASE_LOCATION_VEHICLE") {
-    switch (values["vehicle_location"]) {
-      case "released":
-        val = "RELEASED TO OTHER DRIVER";
-        break;
-      case "private":
-        val = "PRIVATE TOW";
-        break;
-      case "roadside":
-        val = "LEFT AT ROADSIDE";
-        break;
-      default:
-        val = "";
+    if (values["VI"]) {
+      val = values["ILO-name"];
+    } else {
+      switch (values["vehicle_location"]) {
+        case "released":
+          val = "RELEASED TO OTHER DRIVER";
+          break;
+        case "private":
+          val = "PRIVATE TOW";
+          break;
+        case "roadside":
+          val = "LEFT AT ROADSIDE";
+          break;
+        default:
+          val = "";
+      }
     }
   }
 
   if (key === "RELEASE_LOCATION_KEYS") {
-    switch (values["vehicle_location"]) {
-      case "released":
-        val = "WITH OTHER DRIVER";
-        break;
-      case "private":
-        val = values["location_of_keys"];
-        break;
-      case "roadside":
-        val = values["location_of_keys"];
-        break;
-      default:
-        val = "";
+    if (values["VI"]) {
+      val = values["location_of_keys"];
+    } else {
+      switch (values["vehicle_location"]) {
+        case "released":
+          val = "WITH OTHER DRIVER";
+          break;
+        case "private":
+          val = values["location_of_keys"];
+          break;
+        case "roadside":
+          val = values["location_of_keys"];
+          break;
+        default:
+          val = "";
+      }
     }
   }
 
   if (key === "RELEASE_PERSON") {
-    switch (values["vehicle_location"]) {
-      case "released":
-        val = values["vehicle_released_to"];
-        break;
-      case "private":
-        val = values["ILO-name"];
-        break;
-      case "roadside":
-        val = "";
-        break;
-      default:
-        val = "";
+    if (values["VI"]) {
+      val = values["ILO-name"];
+    } else {
+      switch (values["vehicle_location"]) {
+        case "released":
+          val = values["vehicle_released_to"];
+          break;
+        case "private":
+          val = values["ILO-name"];
+          break;
+        case "roadside":
+          val = "";
+          break;
+        default:
+          val = "";
+      }
+    }
+  }
+
+  if (key === "RELEASE_DATE") {
+    if (values["VI"]) {
+      val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
     }
   }
 
