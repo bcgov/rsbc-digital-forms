@@ -21,13 +21,13 @@ export const MultiSelectField = ({ label, name, options }) => {
 
   return (
     <>
-      <label>{label}</label>{' '}<Button variant="primary" className="slim-button" onClick={handleToggleModal}>
+      <label htmlFor={name}>{label}</label>{' '}<Button variant="primary" className="slim-button" onClick={handleToggleModal}>
             Edit
           </Button>
       <Select
         isMulti
         options={options}
-        id={name}
+        inputId={name}
         value={options.filter((option) => field.value.includes(option.value))}
         onChange={(selectedOptions) => {
           const selectedValues = selectedOptions.map((option) => option.value);
