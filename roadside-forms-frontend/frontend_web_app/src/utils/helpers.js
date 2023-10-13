@@ -282,8 +282,5 @@ export const printCheckHelper = (values, data, key) => {
     return values[data["field_name"]];
   }
   //if value is a string check to see that it matches what is expected
-  if (values[data["field_name"]] === data["field_val"]) {
-    return true;
-  }
-  return false;
+  return values[data["field_name"]] === data["field_val"];
 };

@@ -3,16 +3,35 @@ import { useFormikContext } from "formik";
 import { Checkbox } from "../../common/Checkbox/checkbox";
 import { Radio } from "../../common/Radio/radio";
 import { DatePickerField } from "../../common/DateField/DatePicker";
+import { useEffect, useState } from "react";
 export const TestAdministered = (props) => {
   const { values } = useFormikContext();
-  const typeOfProhibition =
-    values["type_of_prohibition"] === "alcohol" && values["TwentyFourHour"]
-      ? "Alcohol 215(2)"
-      : values["type_of_prohibition"] === "drugs" && values["TwentyFourHour"]
-      ? " Drugs 215(3)"
-      : values["type_of_prohibition"] === "alcohol" && values["TwelveHour"]
-      ? "Alcohol 90.3(2)"
-      : "Drugs 90.3(2.1)";
+
+  const [typeOfProhibition, setTypeOfProhibition] = useState("");
+
+  useEffect(() => {
+    if (values["TwentyFourHour"]) {
+      if (values["type_of_prohibition"] === "alcohol") {
+        setTypeOfProhibition("Alcohol 215(2)");
+      }
+      if (values["type_of_prohibition"] === "drugs") {
+        setTypeOfProhibition("Drugs 215(2.1)");
+      }
+    }
+    if (values["TwelveHour"]) {
+      if (values["type_of_prohibition"] === "alcohol") {
+        setTypeOfProhibition("Alcohol 90.3(2)");
+      }
+      if (values["type_of_prohibition"] === "drugs") {
+        setTypeOfProhibition("Drugs 90.3(2.1)");
+      }
+    }
+  }, [
+    values["TwentyFourHour"],
+    values["TwelveHour"],
+    values["type_of_prohibition"],
+  ]);
+
   return (
     <>
       {values["prescribed_test_used"] === "YES" && (

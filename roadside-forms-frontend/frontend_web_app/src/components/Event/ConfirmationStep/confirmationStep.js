@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -21,7 +21,6 @@ export const ConfirmationStep = () => {
   const driverLastName = values["driver_last_name"];
   const dateOfDriving = values["date_of_driving"];
   const timeOfDriving = values["time_of_driving"];
-  const officerName = values[""] + ", " + values[""];
 
   const generateLabel = () => {
     let formNames = [];
