@@ -153,11 +153,7 @@ const fieldsToSplit = { VEHICLE_MAKE: 0, VEHICLE_MODEL: 1 };
 const dateFieldSplit = ["date_of_driving", "driver_licence_expiry"];
 
 export const printFormatHelper = (values, data, key) => {
-  console.log("VALUES: ", values);
-  console.log("DATA: ", data);
-  console.log("KEY: ", key);
   let val = values[data["field_name"]];
-  console.log("VAL: ", val);
   // if the value needs to be split into to fields
   if (key in fieldsToSplit) {
     const splitData =
