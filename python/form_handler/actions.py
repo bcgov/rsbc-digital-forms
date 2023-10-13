@@ -17,7 +17,7 @@ from python.form_handler.icbc_service import submit_to_icbc
 from python.form_handler.vips_service import create_vips_doc,create_vips_imp
 from python.form_handler.payloads import vips_payload,vips_document_payload
 from python.form_handler.message import encode_message
-from python.form_handler.helper import method2_decrypt
+from python.form_handler.helper import method2_decrypt,decryptPdf_method1
 
 import fitz
 import base64
@@ -245,6 +245,7 @@ def get_storage_file(**args)->tuple:
     encryptivkey=args.get('storage_ref').get('encryptiv')
     bucket_name=storage_key.split('/')[0]
     storage_file_name=storage_key.split('/')[1]
+    tmp_storage_local=Config.TMP_STORAGE_LOCAL
     try:
         client = Minio(
             minio_host,
@@ -254,10 +255,21 @@ def get_storage_file(**args)->tuple:
         )
         file_data=client.get_object(bucket_name,storage_file_name)
         file_data_content = file_data.data
-        decrypted_data=method2_decrypt(file_data_content,encryptivkey)
+        # save file to local
+        with open(f'{tmp_storage_local}{storage_file_name}', 'wb') as file_data_c:
+            file_data_c.write(file_data_content)
+        decrypted_status,decrypted_data=decryptPdf_method1(f'{tmp_storage_local}{storage_file_name}',Config.ENCRYPT_KEY,f'{tmp_storage_local}{storage_file_name}_decrypted.pdf')
+        if decrypted_status is False or decrypted_data is None:
+            raise Exception("decryption failed")
         args['file_data'] = decrypted_data
-       
         logging.debug(file_data)
+        os.remove(f'{tmp_storage_local}{storage_file_name}')
+
+        # stpre decrypted_data base64 string to local file
+        # with open(f'{tmp_storage_local}{storage_file_name}_decrypted1.pdf', 'wb') as file_data_c1:
+        #     file_data_c1.write(base64.b64decode(decrypted_data))
+
+        # decrypted_data=method2_decrypt(file_data_content,encryptivkey)
     except Exception as e:
         logging.error(e)
         return False,args
