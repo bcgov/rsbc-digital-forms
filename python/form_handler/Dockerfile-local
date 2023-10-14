@@ -1,4 +1,6 @@
-FROM python:3.7.3-stretch
+# FROM python:3.7.3-stretch
+FROM python:3.9-slim
+# FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python38:1-127.1684740820
 
 COPY form_handler/requirements.txt /tmp/
 
@@ -13,6 +15,7 @@ ENV PYTHONPATH /home/appuser/
 
 COPY common /home/appuser/python/common
 COPY form_handler /home/appuser/python/form_handler
+COPY prohibition_web_svc/models.py /home/appuser/python/form_handler/models.py
 
 # RUN ["python", "-m", "pytest"]
 
