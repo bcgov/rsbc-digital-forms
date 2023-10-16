@@ -47,7 +47,7 @@ services:
   #     BCC_EMAIL_ADDRESSES: "${BCC_EMAIL_ADDRESSES}"
   #     LOG_LEVEL: "INFO"
   #     ENCRYPT_KEY: "${ENCRYPT_KEY}"
-
+  
   # web_app:
   #   build:
   #     context: roadside-forms-frontend/frontend_web_app
