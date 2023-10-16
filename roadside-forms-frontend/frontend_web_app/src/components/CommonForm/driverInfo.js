@@ -60,7 +60,7 @@ export const DriverInfo = (props) => {
               Scan DL
             </Button>
           </Col>
-          {!values["12Hour"] && (
+          {!values["TwelveHour"] && (
             <Col sm={6}>
               <SearchableSelect
                 className="field-height field-width"

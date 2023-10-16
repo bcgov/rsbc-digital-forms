@@ -81,24 +81,26 @@ export const VehicleImpoundment = (props) => {
           </Col>
         </Row>
       )}
-      {values["TwentyFourHour"] && values["vehicle_impounded"] === "YES" && (
-        <>
-          <Row>
-            <Col>
-              <Radio
-                label="Location of Keys?"
-                name="location_of_keys"
-                options={[
-                  { value: "WITH VEHICLE", label: "With vehicle" },
-                  { value: "WITH DRIVER", label: "With driver" },
-                ]}
-                required
-              />
-            </Col>
-          </Row>
-        </>
-      )}
-      {((values["TwentyFourHour"] && values["vehicle_impounded"] === "YES") ||
+      {(values["TwentyFourHour"] || values["TwelveHour"]) &&
+        values["vehicle_impounded"] === "YES" && (
+          <>
+            <Row>
+              <Col>
+                <Radio
+                  label="Location of Keys?"
+                  name="location_of_keys"
+                  options={[
+                    { value: "WITH VEHICLE", label: "With vehicle" },
+                    { value: "WITH DRIVER", label: "With driver" },
+                  ]}
+                  required
+                />
+              </Col>
+            </Row>
+          </>
+        )}
+      {(((values["TwentyFourHour"] || values["TwelveHour"]) &&
+        values["vehicle_impounded"] === "YES") ||
         values["VI"]) && (
         <>
           <div className="impound-lot-operator">
