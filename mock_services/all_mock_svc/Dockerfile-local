@@ -1,0 +1,18 @@
+# FROM python:3.6
+FROM python:3.9.18-slim-bullseye
+# FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python38:1-127.1684740820
+
+COPY all_mock_svc/requirements.txt /tmp/
+
+RUN pip install --upgrade pip
+RUN pip install -r /tmp/requirements.txt
+
+RUN useradd --create-home appuser
+WORKDIR /home/appuser
+USER appuser
+
+COPY all_mock_svc /home/appuser/mock_services/all_mock_svc
+WORKDIR /home/appuser/mock_services/all_mock_svc
+
+# CMD [ "gunicorn", "--bind", "0.0.0.0:5000", "--pythonpath", "/home/appuser/mock_services/icbc_mock_svc", "wsgi" ]
+CMD [ "gunicorn", "--bind", "0.0.0.0:5000",  "wsgi" ]

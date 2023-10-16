@@ -6,7 +6,8 @@ import './login.scss';
 
 export const Login = () => {
     const { keycloak, initialized} = useKeycloak();
-    const redirectUri = `${process.env.REACT_APP_BASE_URL}/requestAccess`;
+    // const redirectUri = `${process.env.REACT_APP_BASE_URL}/requestAccess`;
+    const redirectUri = `${process.env.REACT_APP_BASE_URL}/`;
 
     const handleClick = async () => {
         await keycloak.login({redirectUri: redirectUri});
