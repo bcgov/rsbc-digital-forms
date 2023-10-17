@@ -9,3 +9,21 @@ export const getCurrentDateTime = () => {
   const timeString = pacificTime.substr(0, 5);
   return { dateString, dayString, timeString };
 };
+
+export const convertToPST = (datetime) => {
+  var myDate = new Date(datetime);
+  var pstDate = myDate.toLocaleString("en-US", {
+    timeZone: "America/Los_Angeles",
+  });
+  return pstDate;
+};
+
+export const pstDate = (datetime) => {
+  var myDate = new Date(datetime);
+  var pstDate = new Date(
+    myDate.toLocaleString("en-US", {
+      timeZone: "America/Los_Angeles",
+    })
+  );
+  return pstDate;
+};

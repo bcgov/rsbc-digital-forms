@@ -1,20 +1,18 @@
-import React from 'react';
+import React from "react";
 // import ReactDOM from 'react-dom/client';
-import ReactDOM from 'react-dom'
+import ReactDOM from "react-dom";
 import { RecoilRoot } from "recoil";
-import 'bootstrap/dist/css/bootstrap.css';
-import App from './App';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import reportWebVitals from './reportWebVitals';
-
-
+import "bootstrap/dist/css/bootstrap.css";
+import App from "./App";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import reportWebVitals from "./reportWebVitals";
 
 // const root = ReactDOM.createRoot(document.getElementById('root'));
 ReactDOM.render(
-    <RecoilRoot>
-      <App />
-    </RecoilRoot>,
-  document.getElementById('root')
+  <RecoilRoot>
+    <App />
+  </RecoilRoot>,
+  document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change

@@ -3,6 +3,7 @@ import json
 import pytz
 import iso8601
 import os
+from dataclasses import asdict
 from PIL import Image
 from io import BytesIO
 from minio import Minio
@@ -52,7 +53,13 @@ def save_event_data(**kwargs) -> tuple:
             vehicle_style=data.get('vehicle_style').get('value'),
             vehicle_colour=data.get('vehicle_colour'),
             vehicle_vin_no=data.get('vehicle_vin_no'),
+            intersection_or_address_of_offence=data.get('intersection_or_address_of_offence'),
+            impound_lot_operator=data.get('ILO-options').get('value'),
+            offence_city=data.get('offence_city').get('value'),
+            date_of_driving=data.get('date_of_driving'),
+            time_of_driving=data.get('time_of_driving'),
             nsc_no=data.get('nsc_no'),
+            nsc_prov_state = data.get('nsc_no').get('value'),
             owned_by_corp=data.get('owned_by_corp'),
             corporation_name=data.get('corporation_name'),
             regist_owner_last_name=data.get('regist_owner_last_name'),
@@ -62,6 +69,8 @@ def save_event_data(**kwargs) -> tuple:
             regist_owner_city=data.get('regist_owner_city'),
             regist_owner_prov=data.get('regist_owner_prov_state').get('value'),
             regist_owner_postal=data.get('regist_owner_postal'),
+            regist_owner_phone=data.get('regist_owner_phone'),
+            submitted=True,
             created_dt=date_created,
             updated_dt=date_created,
             created_by=user_guid,
@@ -173,6 +182,23 @@ def save_event_pdf(**kwargs) -> tuple:
                     
     except Exception as e:
         logging.warning(str(e))
+        return False, kwargs
+    return True, kwargs
+
+def get_events_for_user(**kwargs) -> tuple:
+    user_guid = kwargs.get('user_guid')
+    try:
+        events = db.session.query(Event).filter(Event.created_by == user_guid).all()
+        event_dict = []
+        for event in events:
+            event_obj = asdict(event)
+            event_obj['vi_form'] = asdict(event.vi_form) if event.vi_form else {}
+            event_obj['twelve_hour_form'] = asdict(event.twelve_hour_form) if event.twelve_hour_form else {}
+            event_obj['irp_form'] = asdict(event.irp_form) if event.irp_form else {}
+            event_obj['twenty_four_hour_form'] = asdict(event.twenty_four_hour_form) if event.twenty_four_hour_form else {}
+            event_dict.append(event_obj)           
+        kwargs['response'] = make_response(jsonify(event_dict), 200)
+    except Exception as e:
         return False, kwargs
     return True, kwargs
     
