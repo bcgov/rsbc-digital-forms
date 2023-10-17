@@ -7,20 +7,26 @@ export const PhoneField = ({ label, required, ...props }) => {
 
     const handlePhoneChange = (event) => {
       const phone = event.target.value;
+      const formattedPhone = formatPhoneNumber(phone);
     
-      if (phone.includes('-')) {
-        field.onChange(event.target.name)(phone); // Already formatted value
-      } else {
-        const formattedPhone = formatPhoneNumber(phone); // Format the phone number
-        field.onChange(event.target.name)(formattedPhone);
-      }
+      field.onChange({
+        target: {
+          name: event.target.name,
+          value: formattedPhone,
+        },
+      });
     };
     
       const formatPhoneNumber = (phone) => {
         // Example: Format as ###-###-####
         const cleaned = phone.replace(/[^0-9]/g, '');
         const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
-        return !match ? '' : [match[1], match[2], match[3]].filter((group) => !!group).join('-');
+        if (!match) {
+          return '';
+        }
+      
+        const formatted = [match[1], match[2], match[3]].filter((group) => !!group).join('-');
+        return formatted;
       };
   
     return (
