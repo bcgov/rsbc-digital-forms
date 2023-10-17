@@ -1838,6 +1838,44 @@
       "RELEASE_DATE",
       "RELEASE_TIME"
     ],
+    "POLICE": [
+      "DRIVER_NAME",
+      "DRIVER_DL_NUMBER",
+      "DRIVER_DOB",
+      "DRIVER_ADDRESS",
+      "DRIVER_PHONE",
+      "REASON_ALCOHOL_90",
+      "REASON_DRUGS_90",
+      "NOTICE_TIME",
+      "NOTICE_DAY",
+      "NOTICE_MONTH",
+      "NOTICE_YEAR",
+      "DL_SURRENDER_LOCATION",
+      "OFFICER_BADGE_NUMBER",
+      "AGENCY_NAME",
+      "AGENCY_FILE_NUMBER",
+      "VEHICLE_YEAR",
+      "VEHICLE_MAKE",
+      "VEHICLE_MODEL",
+      "VEHICLE_COLOR",
+      "VEHICLE_JURISDICTION",
+      "VEHICLE_PLATE_NUMBER",
+      "VEHICLE_NSC_PUJ",
+      "VEHICLE_NSC_NUMBER",
+      "RELEASE_LOCATION_KEYS",
+      "RELEASE_LOCATION_VEHICLE",
+      "RELEASE_PERSON",
+      "RELEASE_DATE",
+      "RELEASE_TIME",
+      "ECOS_NOTICE_DAY",
+      "ECOS_NOTICE_MONTH",
+      "ECOS_NOTICE_YEAR",
+      "ECOS_DRIVER_NAME",
+      "ECOS_OFFICER_NAME",
+      "ECOS_OFFICER_BADGE_NUMBER",
+      "ECOS_AGENCY_NAME",
+      "ECOS_DATE_CERTIFIED"
+    ],
     "fields": {
       "DRIVER_NAME": {
         "field_type": "text",
@@ -2101,6 +2139,82 @@
         "start": {
           "x": 79,
           "y": 146
+        }
+      },
+      "ECOS_NOTICE_DAY": {
+        "field_type": "text",
+        "field_name": "date_of_driving",
+        "date_val": "Do",
+        "classNames": "fontXSmall",
+        "start": {
+          "x": 173,
+          "y": 13
+        }
+      },
+      "ECOS_NOTICE_MONTH": {
+        "field_type": "text",
+        "field_name": "date_of_driving",
+        "date_val": "MM /",
+        "classNames": "fontXSmall",
+        "start": {
+          "x": 187,
+          "y": 13
+        }
+      },
+      "ECOS_NOTICE_YEAR": {
+        "field_type": "text",
+        "field_name": "date_of_driving",
+        "date_val": "YYYY",
+        "classNames": "fontXSmall",
+        "start": {
+          "x": 192,
+          "y": 13
+        }
+      },
+      "ECOS_DRIVER_NAME": {
+        "field_type": "text",
+        "field_name": ["driver_last_name", "driver_given_name"],
+        "classNames": "fontXSmall",
+        "start": {
+          "x": 122,
+          "y": 20.7
+        }
+      },
+      "ECOS_OFFICER_NAME": {
+        "field_type": "text",
+        "field_name": "officer-lastname",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 120,
+          "y": 32
+        }
+      },
+      "ECOS_OFFICER_BADGE_NUMBER": {
+        "field_type": "text",
+        "field_name": "officer-prime-id",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 185,
+          "y": 32
+        }
+      },
+      "ECOS_AGENCY_NAME": {
+        "field_type": "text",
+        "field_name": "officer-agency",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 120,
+          "y": 40
+        }
+      },
+      "ECOS_DATE_CERTIFIED": {
+        "field_type": "text",
+        "field_name": "date_of_driving",
+        "date_val": "YYYY-MM-DD",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 185,
+          "y": 40
         }
       }
     },
