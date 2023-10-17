@@ -59,6 +59,7 @@ def save_event_data(**kwargs) -> tuple:
             date_of_driving=data.get('date_of_driving'),
             time_of_driving=data.get('time_of_driving'),
             nsc_no=data.get('nsc_no'),
+            nsc_prov_state = data.get('nsc_no').get('value'),
             owned_by_corp=data.get('owned_by_corp'),
             corporation_name=data.get('corporation_name'),
             regist_owner_last_name=data.get('regist_owner_last_name'),

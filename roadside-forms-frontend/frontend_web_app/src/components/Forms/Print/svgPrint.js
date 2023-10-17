@@ -82,4 +82,4 @@ export const SVGprint = ({
     );
   }
   return <div />;
-  
+};
