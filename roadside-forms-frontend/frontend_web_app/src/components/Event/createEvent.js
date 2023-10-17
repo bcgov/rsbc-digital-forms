@@ -167,7 +167,8 @@ export const CreateEvent = () => {
     FormSubmissionApi.post(values).then((resp) => {
       values["event_id"] = resp.data["event_id"];
       setSubmitting(false);
-      db.event.put(values).then(() => navigate("/"));
+      //TODO: REVERT THIS
+      // db.event.put(values).then(() => navigate("/"));
     });
   };
 
@@ -206,6 +207,11 @@ export const CreateEvent = () => {
     handlePrintForms();
   };
 
+  // Step 0: data entry
+  // Step 1: driver copy preview / print
+  // Step 2: eCOS (12 & 24h only)
+  // Step 3: Police details (24h only)
+  // Step 4: Police copy preview / print
   const nextPage = (values) => {
     if (values["TwentyFourHour"]) {
       if (currentStep === 2 && values["prescribed_test_used"] === "YES") {
@@ -345,7 +351,7 @@ export const CreateEvent = () => {
                 <IncidentDetails />
               </>
             )}
-            {(values["TwentyFourHour"] || values["TwelveHour"]) && (
+            {values["TwentyFourHour"] && (
               <>
                 <ReasonableGrounds />
                 <TestAdministered />
