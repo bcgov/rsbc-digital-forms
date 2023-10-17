@@ -1888,7 +1888,7 @@
       },
       "DRIVER_DL_NUMBER": {
         "field_type": "text",
-        "field_name": "drivers_licence_no",
+        "field_name": "driver_licence_no",
         "classNames": "fontSmall",
         "start": {
           "x": 10,

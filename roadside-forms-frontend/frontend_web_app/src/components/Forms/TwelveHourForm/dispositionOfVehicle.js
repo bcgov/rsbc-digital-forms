@@ -36,7 +36,7 @@ export const Disposition = (props) => {
       setFieldValue("ILO-address", "");
       setFieldValue("ILO-city", "");
       setFieldValue("ILO-phone", "");
-      setFieldValue("ILO-options", "");
+      setFieldValue("ILO-options", {});
     }
   }, [values["vehicle_location"], setFieldValue]);
 
