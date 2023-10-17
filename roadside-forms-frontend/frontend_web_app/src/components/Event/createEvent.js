@@ -97,7 +97,10 @@ export const CreateEvent = () => {
       }))
     );
     setVehicles(
-      vehiclesAtom.map((each) => ({ label: each.search, value: each.search }))
+      vehiclesAtom.map((each) => ({
+        label: each.search,
+        value: each.mk + " - " + each.md,
+      }))
     );
     setCities(
       cityAtom.map((each) => ({ label: each.objectDsc, value: each.objectCd }))
@@ -206,6 +209,12 @@ export const CreateEvent = () => {
   const nextPage = (values) => {
     if (values["TwentyFourHour"]) {
       if (currentStep === 2 && values["prescribed_test_used"] === "YES") {
+        setCurrentStep(currentStep + 2);
+      } else {
+        setCurrentStep(currentStep + 1);
+      }
+    } else if (values["TwelveHour"]) {
+      if (currentStep === 2) {
         setCurrentStep(currentStep + 2);
       } else {
         setCurrentStep(currentStep + 1);
@@ -385,6 +394,7 @@ export const CreateEvent = () => {
         >
           {({ isSubmitting, values, errors }) => (
             <Form>
+              {/* TODO: Fix race condition with modal on print */}
               <Modal
                 id="popconfirm-modal"
                 show={show}

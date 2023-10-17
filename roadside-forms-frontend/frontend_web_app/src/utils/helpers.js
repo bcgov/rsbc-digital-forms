@@ -1,6 +1,7 @@
 import moment from "moment-timezone";
 
 import * as staticData from "../atoms/staticData";
+
 import { pstDate } from "./dateTime";
 import twentyFourHourDriverform from "../assets/MV2634E_101223_driver.png";
 import twentyFourHourILOform from "../assets/MV2634E_101223_ilo.png";
@@ -8,6 +9,8 @@ import twentyFourHourPoliceform from "../assets/MV2634E_101223_police.png";
 import viDriverForm from "../assets/MV2721_201502.png";
 import appealsForm from "../assets/MV2721_201502_appeal.png";
 import viReportForm from "../assets/MV2722_201502.png";
+import twelveHourDriverForm from "../assets/TwelveHourDriverCopy.png";
+import twelveHourICBCForm from "../assets/TwelveHourICBCCopy.png";
 
 const eventValueKeys = [
   "event_id",
@@ -126,6 +129,9 @@ export const formsPNG = {
       DRIVER: { png: twentyFourHourDriverform, aspectClass: "--landscape" },
       ILO: { png: twentyFourHourILOform, aspectClass: "--landscape" },
     },
+    TwelveHour: {
+      DRIVER: { png: twelveHourDriverForm, aspectClass: "--landscape" },
+    },
     VI: {
       DRIVER: { png: viDriverForm, aspectClass: "--portrait" },
       APPEAL: { png: appealsForm, aspectClass: "--portrait" },
@@ -135,6 +141,9 @@ export const formsPNG = {
   stageTwo: {
     TwentyFourHour: {
       DRIVER: { png: twentyFourHourPoliceform, aspectClass: "--landscape" },
+    },
+    TwelveHour: {
+      POLICE: { png: twelveHourICBCForm, aspectClass: "--landscape" },
     },
     VI: {
       POLICE: { png: viDriverForm, aspectClass: "--portrait" },
@@ -183,7 +192,7 @@ export const printFormatHelper = (values, data, key) => {
     if (dateFieldSplit.includes(data["field_name"])) {
       val = moment(values[data["field_name"]]).format(data["date_val"]);
     } else {
-      val = moment(values[data["field_name"]]).format("YYYYMMDD");
+     val = moment(values[data["field_name"]]).format("YYYY-MM-DD");
     }
     return val;
   }
@@ -193,13 +202,77 @@ export const printFormatHelper = (values, data, key) => {
     return val;
   }
   //temp: if the value is an object then take its value
-  if (
-    values[data["field_name"]] &&
-    typeof values[data["field_name"]] === "object"
-  ) {
+  if (typeof values[data["field_name"]] === "object") {
     val = values[data["field_name"]]["value"];
     return val;
   }
+
+  if (key === "RELEASE_LOCATION_VEHICLE") {
+    if (values["VI"]) {
+      val = values["ILO-name"];
+    } else {
+      switch (values["vehicle_location"]) {
+        case "released":
+          val = "RELEASED TO OTHER DRIVER";
+          break;
+        case "private":
+          val = "PRIVATE TOW";
+          break;
+        case "roadside":
+          val = "LEFT AT ROADSIDE";
+          break;
+        default:
+          val = "";
+      }
+    }
+  }
+
+  if (key === "RELEASE_LOCATION_KEYS") {
+    if (values["VI"]) {
+      val = values["location_of_keys"];
+    } else {
+      switch (values["vehicle_location"]) {
+        case "released":
+          val = "WITH OTHER DRIVER";
+          break;
+        case "private":
+          val = values["location_of_keys"];
+          break;
+        case "roadside":
+          val = values["location_of_keys"];
+          break;
+        default:
+          val = "";
+      }
+    }
+  }
+
+  if (key === "RELEASE_PERSON") {
+    if (values["VI"]) {
+      val = values["ILO-name"];
+    } else {
+      switch (values["vehicle_location"]) {
+        case "released":
+          val = values["vehicle_released_to"];
+          break;
+        case "private":
+          val = values["ILO-name"];
+          break;
+        case "roadside":
+          val = "";
+          break;
+        default:
+          val = "";
+      }
+    }
+  }
+
+  if (key === "RELEASE_DATE") {
+    if (values["VI"]) {
+      val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
+    }
+  }
+
   return val;
 };
 
@@ -354,4 +427,5 @@ export const eventDataFormatter = (
     eventData.push(event);
   }
   return eventData;
+
 };

@@ -14,6 +14,7 @@ export const SVGprint = ({
   const formFields = formFieldLayout[formLayout][formType];
   const allFormFields = formFieldLayout[formLayout]["fields"];
   const viewBox = formFieldLayout[formLayout]["viewbox"];
+
   if (Object.keys(values).length) {
     return (
       <div>
@@ -81,4 +82,4 @@ export const SVGprint = ({
     );
   }
   return <div />;
-};
+  
