@@ -4,34 +4,54 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import AddIcon from "@mui/icons-material/Add";
 import Table from "react-bootstrap/Table";
-import { useSetRecoilState } from "recoil";
-import { staticResources, formTypes } from "../../utils/helpers";
+import { useRecoilState } from "recoil";
+import { FormSubmissionApi } from "../../api/formSubmissionApi";
+import {
+  staticResources,
+  formTypes,
+  eventObjectFlatener,
+  eventDataFormatter,
+} from "../../utils/helpers";
+import { eventDataUpsert } from "../../utils/dbHelpers";
+import { convertToPST } from "../../utils/dateTime";
 import { StaticDataApi } from "../../api/staticDataApi";
 import { Button } from "../common/Button/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { db } from "../../db";
 import "./dashboard.scss";
 
 export const Dashboard = () => {
-  const [formsData, setFormsData] = useState([]);
   const navigate = useNavigate();
-  const setAgencyResource = useSetRecoilState(staticResources["agencies"]);
-  const setCityResource = useSetRecoilState(staticResources["cities"]);
-  const setCountryResource = useSetRecoilState(staticResources["countries"]);
-  const setJurisdictionResource = useSetRecoilState(
+  const [formsData, setFormsData] = useState([]);
+  const [staticDataLoaded, setStaticDataLoaded] = useState(false);
+
+  const [agencyResource, setAgencyResource] = useRecoilState(
+    staticResources["agencies"]
+  );
+  const [cityResource, setCityResource] = useRecoilState(
+    staticResources["cities"]
+  );
+  const [countryResource, setCountryResource] = useRecoilState(
+    staticResources["countries"]
+  );
+  const [jusrisdictionResource, setJurisdictionResource] = useRecoilState(
     staticResources["jurisdictions"]
   );
-  const setImpoundResource = useSetRecoilState(
+  const [impoundResource, setImpoundResource] = useRecoilState(
     staticResources["impound_lot_operators"]
   );
-  const setProvinceResource = useSetRecoilState(staticResources["provinces"]);
-  const setVehicleStyleResource = useSetRecoilState(
+  const [provinceResource, setProvinceResource] = useRecoilState(
+    staticResources["provinces"]
+  );
+  const [vehicleStyleResource, setVehicleStyleResource] = useRecoilState(
     staticResources["vehicle_styles"]
   );
-  const setVehicleColourResource = useSetRecoilState(
+  const [vehicleColourResource, setVehicleColourResource] = useRecoilState(
     staticResources["vehicle_colours"]
   );
-  const setVehicleResource = useSetRecoilState(staticResources["vehicles"]);
+  const [vehicleResource, setVehicleResource] = useRecoilState(
+    staticResources["vehicles"]
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,6 +75,7 @@ export const Dashboard = () => {
         setCountryResource(countryData.data);
         setCityResource(cityData.data);
         setAgencyResource(agencyData.data);
+        setStaticDataLoaded(true);
 
         try {
           db.vehicles.bulkPut(vehicleData.data);
@@ -75,9 +96,6 @@ export const Dashboard = () => {
     };
 
     fetchData();
-    db.table("event")
-      .toArray()
-      .then((data) => setFormsData(data));
   }, [
     setVehicleResource,
     setVehicleColourResource,
@@ -89,6 +107,38 @@ export const Dashboard = () => {
     setCityResource,
     setAgencyResource,
     setFormsData,
+    setStaticDataLoaded,
+  ]);
+
+  useEffect(() => {
+    const fetchEventData = async () => {
+      const eventData = await FormSubmissionApi.get();
+      const flattenedEventData = eventDataFormatter(
+        eventObjectFlatener(eventData),
+        provinceResource,
+        vehicleResource,
+        vehicleStyleResource,
+        jusrisdictionResource,
+        cityResource,
+        impoundResource
+      );
+      if (flattenedEventData.length) {
+        db.event.bulkPut(flattenedEventData);
+        console.log(flattenedEventData);
+        setFormsData(flattenedEventData);
+      }
+    };
+    if (staticDataLoaded) {
+      fetchEventData();
+    }
+  }, [
+    provinceResource,
+    vehicleResource,
+    vehicleStyleResource,
+    jusrisdictionResource,
+    cityResource,
+    impoundResource,
+    staticDataLoaded,
   ]);
 
   const handleClick = () => {
@@ -124,9 +174,13 @@ export const Dashboard = () => {
           </thead>
           <tbody>
             {formsData.map((data, index) => {
-              return !data["printed"] ? (
+              return !data["submitted"] ? (
                 <tr key={data["vehicle_vin_no"]}>
-                  <td>{data["created_dt"] ? data["created_dt"] : "N/A"}</td>
+                  <td>
+                    {data["created_dt"]
+                      ? convertToPST(data["created_dt"])
+                      : "N/A"}
+                  </td>
                   <td>{formTypes(data)}</td>
                   <td>
                     {data["intersection_or_address_of_offence"]
@@ -192,6 +246,41 @@ export const Dashboard = () => {
               <th>Plate #</th>
             </tr>
           </thead>
+          <tbody>
+            {formsData.map((data, index) => {
+              return data["submitted"] ? (
+                <tr key={data["vehicle_vin_no"]}>
+                  <td>
+                    <Link
+                      to="/view-previous"
+                      state={{ eventId: data["event_id"] }}
+                    >
+                      {data["created_dt"]
+                        ? convertToPST(data["created_dt"])
+                        : "N/A"}
+                    </Link>
+                  </td>
+                  <td>{data["VI_number"]}</td>
+                  <td>{formTypes(data)}</td>
+                  <td>
+                    {data["intersection_or_address_of_offence"]
+                      ? data["intersection_or_address_of_offence"]
+                      : "N/A"}
+                  </td>
+                  <td>
+                    {data["driver_last_name"]
+                      ? data["driver_last_name"]
+                      : "N/A"}
+                  </td>
+                  <td>
+                    {data["vehicle_plate_no"]
+                      ? data["vehicle_plate_no"]
+                      : "N/A"}
+                  </td>
+                </tr>
+              ) : null;
+            })}
+          </tbody>
         </Table>
       </div>
     </>

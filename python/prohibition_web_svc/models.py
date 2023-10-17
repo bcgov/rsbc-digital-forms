@@ -293,7 +293,9 @@ class Event(db.Model):
     driver_city:str
     driver_prov: str
     driver_postal: str
-    driver_phone:int
+    driver_phone:str
+    date_of_driving:datetime
+    time_of_driving:str
     vehicle_jurisdiction:str
     vehicle_plate_no:str   
     vehicle_registration_no: str
@@ -305,6 +307,8 @@ class Event(db.Model):
     nsc_prov_state:str
     nsc_no:str
     owned_by_corp:bool
+    intersection_or_address_of_offence:str
+    offence_city:str
     corporation_name:str
     regist_owner_last_name:str
     regist_owner_first_name:str
@@ -313,8 +317,9 @@ class Event(db.Model):
     regist_owner_city:str
     regist_owner_prov:str
     regist_owner_postal:str
-    regist_owner_phone:int
-    printed:bool
+    regist_owner_phone:str
+    submitted:bool
+    impound_lot_operator:int
     created_dt:datetime
     updated_dt:datetime
     created_by:str
@@ -335,6 +340,8 @@ class Event(db.Model):
     driver_prov = db.Column(db.String)
     driver_postal = db.Column(db.String)
     driver_phone = db.Column(db.String)
+    date_of_driving=db.Column(db.DateTime)
+    time_of_driving=db.Column(db.String)
     vehicle_jurisdiction = db.Column(db.String)
     vehicle_plate_no = db.Column(db.String)
     vehicle_registration_no = db.Column(db.String)
@@ -345,8 +352,10 @@ class Event(db.Model):
     vehicle_vin_no = db.Column(db.String)
     nsc_prov_state = db.Column(db.String)
     nsc_no = db.Column(db.String)
-    printed = db.Column(db.Boolean)
+    submitted = db.Column(db.Boolean)
     owned_by_corp = db.Column(db.Boolean)
+    intersection_or_address_of_offence=db.Column(db.String)
+    offence_city=db.Column(db.String)
     corporation_name = db.Column(db.String)
     regist_owner_last_name=db.Column(db.String)
     regist_owner_first_name=db.Column(db.String)
@@ -355,7 +364,8 @@ class Event(db.Model):
     regist_owner_city=db.Column(db.String)
     regist_owner_prov=db.Column(db.String)
     regist_owner_postal=db.Column(db.String)
-    regist_owner_phone=db.Column(db.Integer)
+    regist_owner_phone=db.Column(db.String)
+    impound_lot_operator=db.Column(db.Integer, db.ForeignKey('impound_lot_operator.id'))
     created_by = db.Column(db.String, db.ForeignKey('user.user_guid'))
     updated_by = db.Column(db.String)
     created_dt = db.Column(db.DateTime)
@@ -399,11 +409,7 @@ class TwentyFourHourForm(db.Model):
     location_of_keys:str
     impound_lot_operator:str
     type_of_prohibition:str
-    intersection_or_address_of_offence:str
-    offence_city:str
     agency_file_no:str
-    date_of_driving:datetime
-    time_of_driving:str
     reasonable_ground:str
     reasonable_ground_other:str
     prescribed_test_used:bool
@@ -437,11 +443,7 @@ class TwentyFourHourForm(db.Model):
     location_of_keys=db.Column(db.String)
     impound_lot_operator=db.Column(db.String)
     type_of_prohibition=db.Column(db.String)
-    intersection_or_address_of_offence=db.Column(db.String)
-    offence_city=db.Column(db.String)
     agency_file_no=db.Column(db.String)
-    date_of_driving=db.Column(db.DateTime)
-    time_of_driving=db.Column(db.String)
     reasonable_ground=db.Column(db.String)
     reasonable_ground_other=db.Column(db.String)
     prescribed_test_used=db.Column(db.Boolean)
