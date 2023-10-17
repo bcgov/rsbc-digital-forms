@@ -151,7 +151,6 @@ def save_event_data(**kwargs) -> tuple:
         if data.get('TwentyFourHour'):
             return
         if data.get('TwelveHour'):
-            logging.debug("made it here!")
             twelve_hour_form = TwelveHourForm(
                 driver_phone=data.get('driver_phone'),
                 form_id=data.get('form_id'),
@@ -219,6 +218,37 @@ def save_event_pdf(**kwargs) -> tuple:
                 form_id_vi=event.vi_form.form_id,
                 event_id=event.event_id,
                 form_type='VI',
+                storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
+                created_dt=date_created,
+                updated_dt=date_created,
+            )
+            db.session.add(form_storage)
+            db.session.commit()
+
+        if(data.get('TwelveHour')):
+            filename = str(uuid.uuid4().hex)
+            pdf_filename = f"/tmp/{filename}.pdf"
+            encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
+            b64encoded = data.get("TwelveHour_form_png").split(",")[1]
+            with open(f"/tmp/{filename}.png", "wb") as fh:
+                fh.write(b64decode(b64encoded))
+            pdf_bytes = img2pdf.convert(f"/tmp/{filename}.png")
+            with open(pdf_filename, "wb") as file:
+                file.write(pdf_bytes)
+            encryptPdf_method1(
+                pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
+            logging.debug('File encrypted')
+            encoded_file_name = f"{filename}_encrypted.pdf"
+            encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
+            with open(encoded_pdf_filepath, 'rb') as file_data:
+                client.fput_object(Config.STORAGE_BUCKET_NAME,
+                                   encoded_file_name, encoded_pdf_filepath)
+            logging.debug('File uploaded')
+
+            form_storage = FormStorageRefs(
+                form_id_12h=event.twelve_hour_form.form_id,
+                event_id=event.event_id,
+                form_type='12h',
                 storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
                 created_dt=date_created,
                 updated_dt=date_created,

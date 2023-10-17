@@ -99,7 +99,7 @@ export const CreateEvent = () => {
     setVehicles(
       vehiclesAtom.map((each) => ({
         label: each.search,
-        value: each.mk + " - " + each.md,
+        value: each.mk + "-" + each.md,
       }))
     );
     setCities(
@@ -158,17 +158,31 @@ export const CreateEvent = () => {
   };
 
   const onSubmit = async (values, { setSubmitting }) => {
-    console.log("submitting form.");
-    const element = document.getElementById("printdiv");
-    const base64_png = await toPng(element);
-    values["VI_form_png"] = base64_png;
+    if (values["VI"]) {
+      const element = document.getElementById("VI");
+      const base64_png = await toPng(element);
+      values["VI_form_png"] = base64_png;
+    }
+    if (values["TwentyFourHour"]) {
+      const element = document.getElementById("TwentyFourHour");
+      const base64_png = await toPng(element);
+      values["TwentyFourHour_form_png"] = base64_png;
+    }
+    if (values["IRP"]) {
+      const element = document.getElementById("IRP");
+      const base64_png = await toPng(element);
+      values["IRP_form_png"] = base64_png;
+    }
+    if (values["TwelveHour"]) {
+      const element = document.getElementById("TwelveHour");
+      const base64_png = await toPng(element);
+      values["TwelveHour_form_png"] = base64_png;
+    }
     setSubmitting(true);
-    console.log(values);
     FormSubmissionApi.post(values).then((resp) => {
       values["event_id"] = resp.data["event_id"];
       setSubmitting(false);
-      //TODO: REVERT THIS
-      // db.event.put(values).then(() => navigate("/"));
+      db.event.put(values).then(() => navigate("/"));
     });
   };
 
@@ -255,6 +269,7 @@ export const CreateEvent = () => {
       VI: values["VI"],
     };
     const componentsToRender = [];
+    let components = [];
     for (const item in forms) {
       if (forms[item]) {
         for (const form in formsPNG[renderStage][item]) {
@@ -262,7 +277,7 @@ export const CreateEvent = () => {
             break;
           }
 
-          componentsToRender.push(
+          components.push(
             <SVGprint
               key={item + form}
               form={formsPNG[renderStage][item][form]["png"]}
@@ -273,6 +288,8 @@ export const CreateEvent = () => {
             />
           );
         }
+        componentsToRender.push(<div id={item}>{components}</div>);
+        components = [];
       }
     }
     return componentsToRender;
@@ -370,7 +387,7 @@ export const CreateEvent = () => {
       case 3:
         return <PoliceDetails />;
       case 4:
-        return <div id="printdiv">{renderSVGForm(values, "stageTwo")}</div>;
+        return renderSVGForm(values, "stageTwo");
       // Add more cases for each page
       default:
         return null;
