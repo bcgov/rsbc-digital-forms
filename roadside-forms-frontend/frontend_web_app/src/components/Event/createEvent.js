@@ -396,6 +396,7 @@ export const CreateEvent = () => {
         if (values["VI"]) {
           setNSCVI(values);
         }
+        console.log(values);
         return <div>{renderSVGForm(values, "stageOne")}</div>;
       case 2:
         return <ConfirmationStep />;

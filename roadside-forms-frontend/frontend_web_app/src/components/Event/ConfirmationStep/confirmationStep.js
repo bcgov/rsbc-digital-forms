@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -10,7 +10,7 @@ import { Checkbox } from "../../common/Checkbox/checkbox";
 import "./conformationStep.scss";
 
 export const ConfirmationStep = () => {
-  const { values } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext();
   const userData = useRecoilValue(userAtom);
   const documentServed = values["document-served"];
   const certifyNoticeDelivery = values["certify-notice-delivery"];
@@ -21,6 +21,10 @@ export const ConfirmationStep = () => {
   const driverLastName = values["driver_last_name"];
   const dateOfDriving = values["date_of_driving"];
   const timeOfDriving = values["time_of_driving"];
+
+  useEffect(() => {
+    setFieldValue["conformation_date"] = new Date();
+  }, [values["certify-notice-delivery"], setFieldValue]);
 
   const generateLabel = () => {
     let formNames = [];

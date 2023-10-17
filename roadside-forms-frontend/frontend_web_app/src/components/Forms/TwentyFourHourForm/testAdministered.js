@@ -1,5 +1,8 @@
-import { NumericInput } from "../../common/Input/NumericInput";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import { useFormikContext } from "formik";
+import { Input } from "../../common/Input/Input";
+import { NumericInput } from "../../common/Input/NumericInput";
 import { Checkbox } from "../../common/Checkbox/checkbox";
 import { Radio } from "../../common/Radio/radio";
 import { DatePickerField } from "../../common/DateField/DatePicker";
@@ -39,64 +42,72 @@ export const TestAdministered = (props) => {
           <h3>Test Administered - {typeOfProhibition}</h3>
           {values["type_of_prohibition"] === "alcohol" && (
             <div className="test-admin-alcohol">
-              <div className="row">
-                <div className="col">
+              <Row>
+                <Col>
                   <Radio
                     label="Which test was used?"
-                    name="test_used_alcohol"
+                    name="resonable_test_used_alcohol"
                     options={[
                       { label: "Alco-Sensor FST(ASD)", value: "alco-sensor" },
                       { label: "Approved Instrument", value: "instrument" },
                       {
-                        label: "Prescribed Physical Coordination Test (SFST)",
-                        value: "physical-cordination-test",
+                        label: "Prescribed Physical Coordination Test",
+                        value: "PPCT",
                       },
                     ]}
                     required
                   />
-                </div>
-              </div>
-              {values["test_used_alcohol"] === "alco-sensor" && (
-                <div className="row">
-                  <div className="col-sm-12">
+                </Col>
+              </Row>
+              {values["resonable_test_used_alcohol"] === "alco-sensor" && (
+                <Row>
+                  <Col sm={12}>
                     <DatePickerField
-                      name="asd_expiry_date"
+                      name="reasonable_asd_expiry_date"
                       label="ASD Expiry Date"
                       className="field-height field-width"
                       required
                     />
                     <Radio
                       label="Result"
-                      name="result_alcohol"
+                      name="reasonable_result_alcohol"
                       options={[
-                        { label: "51-99 mg%", value: "51-99 mg%" },
-                        { label: "Over 99 mg%", value: "Over 99 mg%" },
+                        { label: "51-59 mg%", value: "51-59" },
+                        { label: "Warn", value: "WARN" },
+                        { label: "Fail", value: "FAIL" },
                       ]}
                       required
                     />
-                  </div>
-                </div>
+                  </Col>
+                </Row>
               )}
-              {values["test_used_alcohol"] === "instrument" && (
-                <div className="row">
-                  <div className="col-sm-12 mt-2">
+              {values["resonable_test_used_alcohol"] === "instrument" && (
+                <Row>
+                  <Col sm={4}>
                     <NumericInput
                       label="BAC Result(mg%)"
-                      name="bac_result_mg"
+                      name="reasonable_bac_result_mg"
                       required
                     />
-                  </div>
-                </div>
+                  </Col>
+                  <Col sm={4}>
+                    <Input
+                      label="Approved Instrument used"
+                      name="resonable_approved_instrument_used"
+                      required
+                    />
+                  </Col>
+                </Row>
               )}
             </div>
           )}
           {values["type_of_prohibition"] === "drugs" && (
             <div className="test-admin-drug">
-              <div className="row">
-                <div className="col-sm-12">
+              <Row>
+                <Col sm={12}>
                   <Radio
                     label="Which test was used?"
-                    name="test_used_drugs"
+                    name="reasonable_test_used_drugs"
                     options={[
                       { label: "Approved Drug", value: "approved-drug" },
                       {
@@ -104,28 +115,43 @@ export const TestAdministered = (props) => {
                         value: "screening-equipment",
                       },
                       {
-                        label: "Prescribed Physical Coordination Test (SFST)",
-                        value: "physical-cordination-test-sfts",
-                      },
-                      {
-                        label: "Prescribed Physical Coordination Test (DRE)",
-                        value: "physical-cordination-test-dre",
+                        label: "Prescribed Physical Coordination Test",
+                        value: "PPCT",
                       },
                     ]}
                     required
                   />
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-sm-12">
+                </Col>
+              </Row>
+              <Row>
+                <Col sm={12}>
                   <span> Test Result </span>
-                </div>
-                <div className="col-sm-12">
+                </Col>
+                <Col sm={12}>
                   <Checkbox name="THC">THC</Checkbox>
                   <Checkbox name="Cocaine">Cocaine</Checkbox>
-                </div>
-              </div>
+                </Col>
+              </Row>
             </div>
+          )}
+          {values["reasonable_test_used_drugs"] === "PPCT" && (
+            <Row>
+              <Col sm={4}>
+                <Checkbox name="reasonable_can_drive_drug">
+                  Ability to drive affected by a drug?
+                </Checkbox>
+              </Col>
+            </Row>
+          )}
+          {values["resonable_test_used_alcohol"] === "PPCT" && (
+            <Row>
+              <Col sm={6}>
+                <Checkbox name="reasonable_can_drive_alcohol">
+                  Ability to drive affected by alcohol?(only select if PPCT test
+                  used)
+                </Checkbox>
+              </Col>
+            </Row>
           )}
         </div>
       )}
