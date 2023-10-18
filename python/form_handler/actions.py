@@ -242,16 +242,19 @@ def get_storage_file(**args)->tuple:
     logging.debug(args)
     minio_host=f'{Config.STORAGE_HOST}:{Config.STORAGE_PORT}'
     storage_key=args.get('storage_ref').get('storage_key')
-    encryptivkey=args.get('storage_ref').get('encryptiv')
+    # encryptivkey=args.get('storage_ref').get('encryptiv')
     bucket_name=storage_key.split('/')[0]
     storage_file_name=storage_key.split('/')[1]
     tmp_storage_local=Config.TMP_STORAGE_LOCAL
     try:
+        cert_path=Config.MINIO_CERT_FILE
+        os.environ['SSL_CERT_FILE'] = cert_path
+        file_data=None
         client = Minio(
             minio_host,
             access_key=Config.STORAGE_ACCESS_KEY,
             secret_key=Config.STORAGE_SECRET_KEY,
-            secure=False
+            secure=Config.MINIO_SECURE,
         )
         file_data=client.get_object(bucket_name,storage_file_name)
         file_data_content = file_data.data
@@ -272,10 +275,14 @@ def get_storage_file(**args)->tuple:
         # decrypted_data=method2_decrypt(file_data_content,encryptivkey)
     except Exception as e:
         logging.error(e)
+        if file_data is not None:
+            file_data.close()
+            file_data.release_conn()
         return False,args
     finally:
-        file_data.close()
-        file_data.release_conn()
+        if file_data is not None:
+            file_data.close()
+            file_data.release_conn()
     return True,args
 
 

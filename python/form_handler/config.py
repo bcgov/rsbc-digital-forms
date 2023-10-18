@@ -61,6 +61,9 @@ class Config():
     REPLY_EMAIL_ADDRESS = os.getenv('REPLY_EMAIL_ADDRESS', 'do-not-reply-rsi@gov.bc.ca')
     TMP_STORAGE_LOCAL=os.getenv('TMP_STORAGE_LOCAL')
 
+    MINIO_SECURE                        = os.environ.get("MINIO_SECURE", False)
+    MINIO_CERT_FILE                     = os.environ.get("MINIO_CERT_FILE", "/opt/app-root/src/ca.crt")
+
 
 
 
