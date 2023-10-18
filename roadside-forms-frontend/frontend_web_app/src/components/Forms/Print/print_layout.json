@@ -1821,6 +1821,7 @@
       "NOTICE_MONTH",
       "NOTICE_YEAR",
       "DL_SURRENDER_LOCATION",
+      "OFFICER_SIGNATURE",
       "OFFICER_BADGE_NUMBER",
       "AGENCY_NAME",
       "AGENCY_FILE_NUMBER",
@@ -1851,6 +1852,7 @@
       "NOTICE_MONTH",
       "NOTICE_YEAR",
       "DL_SURRENDER_LOCATION",
+      "OFFICER_SIGNATURE",
       "OFFICER_BADGE_NUMBER",
       "AGENCY_NAME",
       "AGENCY_FILE_NUMBER",
@@ -2006,11 +2008,20 @@
       },
       "DL_SURRENDER_LOCATION": {
         "field_type": "text",
-        "field_name": "intersection_or_address_of_offence",
+        "field_name": ["intersection_or_address_of_offence", "offence_city"],
         "classNames": "fontSmall",
         "start": {
           "x": 6,
           "y": 102
+        }
+      },
+      "OFFICER_SIGNATURE": {
+        "field_type": "text",
+        "field_name": "officer-lastname",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 6,
+          "y": 110
         }
       },
       "OFFICER_BADGE_NUMBER": {

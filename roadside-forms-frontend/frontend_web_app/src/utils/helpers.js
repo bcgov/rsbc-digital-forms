@@ -183,6 +183,9 @@ export const printFormatHelper = (values, data, key) => {
           val += ", ";
         }
       });
+      if (key === "DL_SURRENDER_LOCATION") {
+        val = val + ", BC";
+      }
       return val;
     }
     //if the value is a date
@@ -195,7 +198,7 @@ export const printFormatHelper = (values, data, key) => {
       } else {
         val = moment(values[data["field_name"]]).format("YYYY-MM-DD");
       }
-      return val;
+      return val.toUpperCase();
     }
     //if the value is a list join them into a single string
     if (Array.isArray(values[data["field_name"]])) {
@@ -272,6 +275,10 @@ export const printFormatHelper = (values, data, key) => {
       if (values["VI"]) {
         val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
       }
+    }
+
+    if (key === "AGENCY_NAME") {
+      val = val.toUpperCase();
     }
 
     return val;
