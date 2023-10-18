@@ -175,10 +175,15 @@ export const printFormatHelper = (values, data, key) => {
     if (Array.isArray(data["field_name"])) {
       val = "";
       data["field_name"].forEach((value, index) => {
-        val +=
-          typeof values[data["field_name"][index]] === "object"
-            ? values[data["field_name"][index]]["value"]
-            : values[data["field_name"][index]];
+        if (typeof values[data["field_name"][index]] === "object") {
+          if (value === "offence_city") {
+            val += values[data["field_name"][index]]["label"];
+          } else {
+            val += values[data["field_name"][index]]["value"];
+          }
+        } else {
+          val += values[data["field_name"][index]];
+        }
         if (data["field_name"].length > index + 1) {
           val += ", ";
         }
