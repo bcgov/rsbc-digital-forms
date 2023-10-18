@@ -19,6 +19,7 @@ RUN source /opt/app-root/etc/scl_enable && \
 COPY __init__.py ${APP_ROOT}/src/python/
 COPY common ${APP_ROOT}/src/python/common
 COPY form_handler ${APP_ROOT}/src/python/form_handler
+COPY prohibition_web_svc/models.py ${APP_ROOT}/src/python/form_handler/models.py
 
 # RUN ["python", "-m", "pytest", "backend/form_handler"]
 
