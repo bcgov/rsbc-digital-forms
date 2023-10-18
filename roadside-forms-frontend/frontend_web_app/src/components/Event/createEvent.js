@@ -157,7 +157,7 @@ export const CreateEvent = () => {
     nscNumber === "" ? (values["is_nsc"] = false) : (values["is_nsc"] = true);
   };
 
-  const onSubmit = async (values, { setSubmitting }) => {
+  const onSubmit = async (values) => {
     if (values["VI"]) {
       const element = document.getElementById("VI");
       const base64_png = await toPng(element);
@@ -178,10 +178,8 @@ export const CreateEvent = () => {
       const base64_png = await toPng(element);
       values["TwelveHour_form_png"] = base64_png;
     }
-    setSubmitting(true);
     FormSubmissionApi.post(values).then((resp) => {
       values["event_id"] = resp.data["event_id"];
-      setSubmitting(false);
       db.event.put(values).then(() => navigate("/"));
     });
   };
@@ -413,7 +411,6 @@ export const CreateEvent = () => {
           }
           initialValues={InitialValues()}
           validationSchema={validationSchema}
-          onSubmit={onSubmit}
         >
           {({ isSubmitting, values, errors }) => (
             <Form>
@@ -467,8 +464,11 @@ export const CreateEvent = () => {
                   ) : (
                     <Button
                       variant="primary"
-                      type="submit"
-                      onClick={() => console.log(errors)}
+                      onClick={() => {
+                        console.log("I AM SUBMITTING!!!");
+                        console.log(errors);
+                        onSubmit(values);
+                      }}
                     >
                       Submit
                     </Button>
