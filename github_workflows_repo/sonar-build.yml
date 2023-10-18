@@ -1,0 +1,65 @@
+name: sonar-scan
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches-ignore:
+      - master
+      - main
+permissions:
+  contents: read
+jobs:
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    # permissions: write-all
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - name: Install dependencies
+        run: |
+          cd roadside-forms-frontend/frontend_web_app
+          npm ci
+      # - name: Build the app
+      #   env:
+      #     CI: ""
+      #     REACT_APP_KEYCLOAK_URL: ${{ secrets.REACT_APP_KEYCLOAK_URL }}
+      #     REACT_APP_KEYCLOAK_REALM: ${{ secrets.REACT_APP_KEYCLOAK_REALM }}
+      #     REACT_APP_KEYCLOAK_CLIENT_ID: ${{ secrets.REACT_APP_KEYCLOAK_CLIENT_ID }}
+      #     REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL_DEV }}
+      #   run: |          
+      #     cd roadside-forms-frontend/frontend_web_app
+      #     npm run build:ci
+      - name: Run Tests
+        run: |
+          cd roadside-forms-frontend/frontend_web_app
+          npm run coverage
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: roadside-forms-frontend/frontend_web_app            
+            # -Dsonar.coverage.exclusions=src/setupTests.js
+            # -Dsonar.tests=src/tests/
+            # -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            # -Dsonar.tests=src/tests/
+            # -Dsonar.verbose=true
+            # -Dsonar.test.exclusions=src/tests/**
+
+          # projectKey: ${{ secrets.SONAR_PROJECT_KEY }}
+          # projectName: ${{ secrets.SONAR_PROJECT_NAME }}
+          # extraProperties: |
+          #   sonar.javascript.lcov.reportPaths=coverage/lcov.info
+          #   sonar.exclusions=**/*.test.js,**/*.spec.js
+          #   sonar.coverage.exclusions=**/*.test.js,**/*.spec.js
+          #   sonar.test.inclusions=**/*.test.js,**/*.spec.js
+            # sonar.javascript.lcov.reportPaths=coverage/lcov.info
+          #   sonar.testExecutionReportPaths=test-report.xml
