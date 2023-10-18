@@ -22,8 +22,8 @@ class Config():
     LOGGERS_IN_USE = os.getenv('LOGGERS_IN_USE', 'console').split()
     LOG_FORMAT = "%(asctime)s::%(levelname)s::%(name)s::%(message)s"
     LOG_LEVEL = os.environ.get('LOG_LEVEL', 'DEBUG').upper()
-    SYSTEM_RECORD_MAX_RETRIES = os.environ.get('SYSTEM_RECORD_MAX_RETRIES', 2)
-    SYSTEM_RECORD_MAX_TRANSIENT_RETRIES = os.environ.get('SYSTEM_RECORD_MAX_TRANSIENT_RETRIES', 2)
+    SYSTEM_RECORD_MAX_RETRIES = int(os.environ.get('SYSTEM_RECORD_MAX_RETRIES', 2))
+    SYSTEM_RECORD_MAX_TRANSIENT_RETRIES = int(os.environ.get('SYSTEM_RECORD_MAX_TRANSIENT_RETRIES', 2))
 
     STORAGE_HOST = os.environ.get('STORAGE_HOST', 'localhost')
     STORAGE_PORT = os.environ.get('STORAGE_PORT', 9000)
