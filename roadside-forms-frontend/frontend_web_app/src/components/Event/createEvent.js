@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Formik, Form } from "formik";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import Spinner from "react-bootstrap/Spinner";
 import { toPng, toBlob } from "html-to-image";
 import { Checkbox } from "../common/Checkbox/checkbox";
 import { validationSchema } from "./validationSchema";
@@ -58,6 +59,7 @@ export const CreateEvent = () => {
   const [modalButtonText, setModalButtonText] = useState("");
   const [isPrinted, setIsPrinted] = useState(false);
   const [modalCloseFunc, setmodalCloseFunc] = useState(() => () => null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -158,6 +160,7 @@ export const CreateEvent = () => {
   };
 
   const onSubmit = async (values) => {
+    setIsSubmitting(true);
     if (values["VI"]) {
       const element = document.getElementById("VI");
       const base64_png = await toPng(element);
@@ -178,10 +181,24 @@ export const CreateEvent = () => {
       const base64_png = await toPng(element);
       values["TwelveHour_form_png"] = base64_png;
     }
-    FormSubmissionApi.post(values).then((resp) => {
-      values["event_id"] = resp.data["event_id"];
-      db.event.put(values).then(() => navigate("/"));
-    });
+    FormSubmissionApi.post(values)
+      .then((resp) => {
+        values["event_id"] = resp.data["event_id"];
+        db.event
+          .put(values)
+          .then(() => {
+            setIsSubmitting(false);
+            navigate("/");
+          })
+          .catch((err) => {
+            console.error(err);
+            setIsSubmitting(false);
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsSubmitting(false);
+      });
   };
 
   const handleGoBackandSave = (values) => {
@@ -394,6 +411,19 @@ export const CreateEvent = () => {
 
   return (
     <div id="event-container" className="text-font">
+      <Modal
+        id="spinner-modal"
+        show={isSubmitting}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Body>
+          <div className="center">
+            <h5>Submitting...</h5>
+            <Spinner style={{ marginTop: "10px" }} animation="border" />
+          </div>
+        </Modal.Body>
+      </Modal>
       <div id="button-container" className="m-4">
         <Button
           variant="primary"
@@ -412,7 +442,7 @@ export const CreateEvent = () => {
           initialValues={InitialValues()}
           validationSchema={validationSchema}
         >
-          {({ isSubmitting, values, errors }) => (
+          {({ values, errors }) => (
             <Form>
               {/* TODO: Fix race condition with modal on print */}
               <Modal
@@ -465,7 +495,6 @@ export const CreateEvent = () => {
                     <Button
                       variant="primary"
                       onClick={() => {
-                        console.log("I AM SUBMITTING!!!");
                         console.log(errors);
                         onSubmit(values);
                       }}
