@@ -18,13 +18,14 @@ import { StaticDataApi } from "../../api/staticDataApi";
 import { Button } from "../common/Button/Button";
 import { useNavigate, Link } from "react-router-dom";
 import { db } from "../../db";
+import { userAtom } from "../../atoms/users";
 import "./dashboard.scss";
 
 export const Dashboard = () => {
   const navigate = useNavigate();
   const [formsData, setFormsData] = useState([]);
   const [staticDataLoaded, setStaticDataLoaded] = useState(false);
-
+  const [userResource, setUserResource] = useRecoilState(userAtom);
   const [agencyResource, setAgencyResource] = useRecoilState(
     staticResources["agencies"]
   );
@@ -115,6 +116,7 @@ export const Dashboard = () => {
       const eventData = await FormSubmissionApi.get();
       const flattenedEventData = eventDataFormatter(
         eventObjectFlatener(eventData),
+        userResource,
         provinceResource,
         vehicleResource,
         vehicleStyleResource,
@@ -132,6 +134,7 @@ export const Dashboard = () => {
       fetchEventData();
     }
   }, [
+    userResource,
     provinceResource,
     vehicleResource,
     vehicleStyleResource,

@@ -175,14 +175,22 @@ export const printFormatHelper = (values, data, key) => {
     if (Array.isArray(data["field_name"])) {
       val = "";
       data["field_name"].forEach((value, index) => {
-        val +=
-          typeof values[data["field_name"][index]] === "object"
-            ? values[data["field_name"][index]]["value"]
-            : values[data["field_name"][index]];
+        if (typeof values[data["field_name"][index]] === "object") {
+          if (value === "offence_city") {
+            val += values[data["field_name"][index]]["label"];
+          } else {
+            val += values[data["field_name"][index]]["value"];
+          }
+        } else {
+          val += values[data["field_name"][index]];
+        }
         if (data["field_name"].length > index + 1) {
           val += ", ";
         }
       });
+      if (key === "DL_SURRENDER_LOCATION") {
+        val = val + ", BC";
+      }
       return val;
     }
     //if the value is a date
@@ -325,6 +333,7 @@ export const eventObjectFlatener = (data) => {
 
 export const eventDataFormatter = (
   data,
+  user,
   provinces,
   vehicles,
   vehicleStyles,
@@ -374,13 +383,16 @@ export const eventDataFormatter = (
         label: nscProvState.objectDsc,
       };
     }
-    const registOwnerProvState = provinces.filter(
-      (x) => x["objectCd"] === event["regist_owner_prov"]
-    )[0];
-    event["regist_owner_prov_state"] = {
-      value: registOwnerProvState.objectCd,
-      label: registOwnerProvState.objectDsc,
-    };
+
+    if (!event["TwelveHour"] || (event["TwelveHour"] && event["VI"])) {
+      const registOwnerProvState = provinces.filter(
+        (x) => x["objectCd"] === event["regist_owner_prov"]
+      )[0];
+      event["regist_owner_prov_state"] = {
+        value: registOwnerProvState.objectCd,
+        label: registOwnerProvState.objectDsc,
+      };
+    }
     delete event["regist_owner_prov"];
     const offenceCity = cities.filter(
       (x) => x["objectCd"] === event["offence_city"]
@@ -389,13 +401,25 @@ export const eventDataFormatter = (
       value: offenceCity.objectCd,
       label: offenceCity.objectDsc,
     };
+    const mk_md_split = event["vehicle_mk_md"].split("-");
     const vehicle = vehicles.filter(
-      (x) => x["search"] === event["vehicle_mk_md"]
+      (x) => x["mk"] === mk_md_split[0] && x["md"] === mk_md_split[1]
     )[0];
     event["vehicle_mk_md"] = {
-      value: vehicle.search,
+      value: vehicle.mk + "-" + vehicle.md,
       label: vehicle.search,
     };
+
+    event["officer-lastname"] = user.last_name;
+    event["officer-prime-id"] = user.badge_number;
+    event["officer-agency"] = user.agency;
+
+    if (event["VI"]) {
+      event["nsc_no"] === ""
+        ? (event["is_nsc"] = false)
+        : (event["is_nsc"] = true);
+    }
+
     const vehicleStyl = vehicleStyles.filter(
       (x) => x["code"] === event["vehicle_style"]
     )[0];

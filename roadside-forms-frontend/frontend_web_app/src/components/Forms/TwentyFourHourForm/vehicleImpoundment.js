@@ -39,7 +39,7 @@ export const VehicleImpoundment = (props) => {
       setFieldValue("ILO-address", "");
       setFieldValue("ILO-city", "");
       setFieldValue("ILO-phone", "");
-      setFieldValue("ILO-options", "");
+      setFieldValue("ILO-options", {});
     } else if (values["vehicle_impounded"] === "YES") {
       setFieldValue("reason_for_not_impounding", "");
     }
