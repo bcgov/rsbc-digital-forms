@@ -102,15 +102,14 @@ def save_event_data(**kwargs) -> tuple:
                 driver_licence_class=data.get('driver_licence_class'),
                 unlicenced_prohibition_number=data.get(
                     'unlicenced_prohibition_number'),
-                belief_driver_bc_resident=None if not data.get(
-                    'belief_driver_bc_resident') else data.get('belief_driver_bc_resident'),
+                belief_driver_bc_resident=data.get(
+                    'belief_driver_bc_resident'),
                 out_of_province_dl=data.get('out_of_province_dl'),
                 out_of_province_dl_number=data.get(
                     'out_of_province_dl_number'),
                 date_of_impound=datetime.strptime(
                     data.get('date_of_impound'), "%Y-%m-%dT%H:%M:%S.%f%z"),
-                irp_impound=True if data.get(
-                    'irp_impound') == 'YES' else False,
+                irp_impound=data.get('irp_impound'),
                 irp_impound_duration=data.get('irp_impound_duration'),
                 IRP_number=data.get('IRP_number'),
                 VI_number=data.get('VI_number'),

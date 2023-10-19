@@ -526,11 +526,11 @@ class VIForm(db.Model):
     driver_licence_expiry: datetime
     driver_licence_class: str
     unlicenced_prohibition_number: str
-    belief_driver_bc_resident: bool
+    belief_driver_bc_resident: str
     out_of_province_dl: str
     out_of_province_dl_number: str
     date_of_impound: datetime
-    irp_impound: bool
+    irp_impound: str
     irp_impound_duration: str
     IRP_number: str
     VI_number: str
@@ -562,11 +562,11 @@ class VIForm(db.Model):
     driver_licence_expiry = db.Column(db.DateTime)
     driver_licence_class = db.Column(db.String)
     unlicenced_prohibition_number = db.Column(db.String)
-    belief_driver_bc_resident = db.Column(db.Boolean)
+    belief_driver_bc_resident = db.Column(db.String)
     out_of_province_dl = db.Column(db.String)
     out_of_province_dl_number = db.Column(db.String)
     date_of_impound = db.Column(db.DateTime)
-    irp_impound = db.Column(db.Boolean)
+    irp_impound = db.Column(db.String)
     irp_impound_duration = db.Column(db.String)
     IRP_number = db.Column(db.String)
     VI_number = db.Column(db.String)
