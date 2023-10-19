@@ -6,7 +6,8 @@ import { useSetRecoilState} from 'recoil';
 import { Link } from 'react-router-dom';
 
 import { userAtom } from '../../../atoms/users';
-import { userRolesAtom } from '../../../atoms/userRoles';
+import {  userRolesAtom } from '../../../atoms/userRoles';
+import { loginCompletedAtom } from '../../../atoms/loginCompleted';
 import { getCurrentDateTime } from '../../../utils/dateTime';
 import { UserApi } from '../../../api/userApi';
 import { UserRolesApi } from '../../../api/userRolesApi';
@@ -25,6 +26,7 @@ export const Header = () => {
   const [userId, setUserId] = useState(null);
   const setUserData = useSetRecoilState(userAtom);
   const setUserRoleData = useSetRecoilState(userRolesAtom);
+  const setLoginCompleted = useSetRecoilState(loginCompletedAtom);
 
 
   useEffect(() => {
@@ -33,6 +35,8 @@ export const Header = () => {
       if (keycloak.tokenParsed.identity_provider === 'idir') {
         setUserId(keycloak.tokenParsed.idir_user_guid);
       } else  if(keycloak.tokenParsed.identity_provider === 'bceid') {
+        setUserId(keycloak.tokenParsed.bceid_user_guid);
+      }else{
         setUserId(keycloak.tokenParsed.bceid_user_guid);
       }
     }
@@ -51,12 +55,10 @@ export const Header = () => {
           }
           else {
             setUserData([]);
-            console.log(response.data.error);
           }
         })
         .catch((error) => {
           setUserData([]);
-          console.log("Error", error.response.data.error);
         })
         UserRolesApi.get().then((resp) =>{
           if (resp && (resp.status === 201 || resp.status === 200)) {
@@ -66,10 +68,11 @@ export const Header = () => {
             }
             setUserRoleData(data);
             setuserAdminInfo(data.some( role => role['role_name'] === 'administrator' ))
+            setLoginCompleted(true);
           }
           else {
             setUserRoleData([]);
-            console.log(resp.data.error);
+            setLoginCompleted(true);
           }
         })
      }
@@ -102,10 +105,12 @@ export const Header = () => {
 
   return (
   <header>
-    <div id="roadsafety-header" className='container text-font' style={{maxWidth: "100%"}}>
+    <div id="roadsafety-header" data-testid="roadsafety-header" className='container text-font' style={{maxWidth: "100%"}}>
       <div className='row'> 
         <div className="col-sm-3" >
+        <Link to="/">
           <div className='brand-logo'></div>
+        </Link>
         </div>
         { keycloak.authenticated && !isLoading && (<div className='col-sm-9'>
         <div className="row">
