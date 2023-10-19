@@ -1160,6 +1160,15 @@
           "y": 172
         }
       },
+      "OFFICER_SIGNATURE": {
+        "field_type": "text",
+        "field_name": "officer-lastname",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 98,
+          "y": 172
+        }
+      },
       "OFFICER_BADGE_NUMBER": {
         "field_type": "text",
         "field_name": "officer-prime-id",
@@ -1552,16 +1561,25 @@
       "REPORT_OFFICER_LAST_NAME": {
         "field_type": "text",
         "field_name": "officer-lastname",
-        "classNames": "fontSmall",
+        "classNames": "fontXSmall",
         "start": {
           "x": 52.75,
+          "y": 173.75
+        }
+      },
+      "REPORT_OFFICER_SIGNATURE": {
+        "field_type": "text",
+        "field_name": "officer-lastname",
+        "classNames": "fontXSmall",
+        "start": {
+          "x": 96,
           "y": 173.75
         }
       },
       "REPORT_OFFICER_BADGE_NUMBER": {
         "field_type": "text",
         "field_name": "officer-prime-id",
-        "classNames": "fontSmall",
+        "classNames": "fontXSmall",
         "start": {
           "x": 143,
           "y": 173.75
@@ -1570,7 +1588,7 @@
       "REPORT_AGENCY_NAME": {
         "field_type": "text",
         "field_name": "officer-agency",
-        "classNames": "fontSmall",
+        "classNames": "fontXSmall",
         "start": {
           "x": 52.75,
           "y": 178.5
@@ -1579,19 +1597,10 @@
       "REPORT_AGENCY_FILE_NUMBER": {
         "field_type": "text",
         "field_name": "agency_file_no",
-        "classNames": "fontSmall",
+        "classNames": "fontXSmall",
         "start": {
           "x": 130,
           "y": 178.5
-        }
-      },
-      "OFFICER_SIGNATURE": {
-        "field_type": "text",
-        "field_name": "",
-        "classNames": "fontSmall",
-        "start": {
-          "x": 87,
-          "y": 254
         }
       }
     },
@@ -1647,6 +1656,7 @@
       "IMPOUND_LOT_PHONE",
       "OFFICER_BADGE_NUMBER",
       "OFFICER_LAST_NAME",
+      "OFFICER_SIGNATURE",
       "AGENCY_NAME",
       "AGENCY_FILE_NUMBER",
       "DRIVER_COPY"
@@ -1703,6 +1713,7 @@
       "IMPOUND_LOT_PHONE",
       "OFFICER_BADGE_NUMBER",
       "OFFICER_LAST_NAME",
+      "OFFICER_SIGNATURE",
       "AGENCY_NAME",
       "AGENCY_FILE_NUMBER",
       "ILO_COPY"
@@ -1759,6 +1770,7 @@
       "IMPOUND_LOT_PHONE",
       "OFFICER_BADGE_NUMBER",
       "OFFICER_LAST_NAME",
+      "OFFICER_SIGNATURE",
       "AGENCY_NAME",
       "AGENCY_FILE_NUMBER",
       "POLICE_COPY"
@@ -1797,6 +1809,7 @@
       "REPORT_REASON_UNLICENSED",
       "REPORT_OFFICER_BADGE_NUMBER",
       "REPORT_OFFICER_LAST_NAME",
+      "REPORT_OFFICER_SIGNATURE",
       "REPORT_AGENCY_NAME",
       "REPORT_AGENCY_FILE_NUMBER",
       "INCIDENT_DETAILS_EXPLAINED_BELOW",
