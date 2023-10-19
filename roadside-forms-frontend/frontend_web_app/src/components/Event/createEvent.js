@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Formik, Form } from "formik";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import Spinner from "react-bootstrap/Spinner";
 import { toPng, toBlob } from "html-to-image";
 import { Checkbox } from "../common/Checkbox/checkbox";
 import { validationSchema } from "./validationSchema";
@@ -58,6 +59,7 @@ export const CreateEvent = () => {
   const [modalButtonText, setModalButtonText] = useState("");
   const [isPrinted, setIsPrinted] = useState(false);
   const [modalCloseFunc, setmodalCloseFunc] = useState(() => () => null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -99,7 +101,7 @@ export const CreateEvent = () => {
     setVehicles(
       vehiclesAtom.map((each) => ({
         label: each.search,
-        value: each.mk + " - " + each.md,
+        value: each.mk + "-" + each.md,
       }))
     );
     setCities(
@@ -157,18 +159,46 @@ export const CreateEvent = () => {
     nscNumber === "" ? (values["is_nsc"] = false) : (values["is_nsc"] = true);
   };
 
-  const onSubmit = async (values, { setSubmitting }) => {
-    console.log("submitting form.");
-    const element = document.getElementById("printdiv");
-    const base64_png = await toPng(element);
-    values["VI_form_png"] = base64_png;
-    setSubmitting(true);
-    console.log(values);
-    FormSubmissionApi.post(values).then((resp) => {
-      values["event_id"] = resp.data["event_id"];
-      setSubmitting(false);
-      db.event.put(values).then(() => navigate("/"));
-    });
+  const onSubmit = async (values) => {
+    setIsSubmitting(true);
+    if (values["VI"]) {
+      const element = document.getElementById("VI");
+      const base64_png = await toPng(element);
+      values["VI_form_png"] = base64_png;
+    }
+    if (values["TwentyFourHour"]) {
+      const element = document.getElementById("TwentyFourHour");
+      const base64_png = await toPng(element);
+      values["TwentyFourHour_form_png"] = base64_png;
+    }
+    if (values["IRP"]) {
+      const element = document.getElementById("IRP");
+      const base64_png = await toPng(element);
+      values["IRP_form_png"] = base64_png;
+    }
+    if (values["TwelveHour"]) {
+      const element = document.getElementById("TwelveHour");
+      const base64_png = await toPng(element);
+      values["TwelveHour_form_png"] = base64_png;
+    }
+    FormSubmissionApi.post(values)
+      .then((resp) => {
+        values["event_id"] = resp.data["event_id"];
+        db.event
+          .put(values)
+          .then(() => {
+            setIsSubmitting(false);
+            navigate("/");
+          })
+          .catch((err) => {
+            console.error(err);
+            setIsSubmitting(false);
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsSubmitting(false);
+      });
   };
 
   const handleGoBackandSave = (values) => {
@@ -206,6 +236,11 @@ export const CreateEvent = () => {
     handlePrintForms();
   };
 
+  // Step 0: data entry
+  // Step 1: driver copy preview / print
+  // Step 2: eCOS (12 & 24h only)
+  // Step 3: Police details (24h only)
+  // Step 4: Police copy preview / print
   const nextPage = (values) => {
     if (values["TwentyFourHour"]) {
       if (currentStep === 2 && values["prescribed_test_used"] === "YES") {
@@ -249,6 +284,7 @@ export const CreateEvent = () => {
       VI: values["VI"],
     };
     const componentsToRender = [];
+    let components = [];
     for (const item in forms) {
       if (forms[item]) {
         for (const form in formsPNG[renderStage][item]) {
@@ -256,7 +292,7 @@ export const CreateEvent = () => {
             break;
           }
 
-          componentsToRender.push(
+          components.push(
             <SVGprint
               key={item + form}
               form={formsPNG[renderStage][item][form]["png"]}
@@ -267,6 +303,8 @@ export const CreateEvent = () => {
             />
           );
         }
+        componentsToRender.push(<div id={item}>{components}</div>);
+        components = [];
       }
     }
     return componentsToRender;
@@ -345,7 +383,7 @@ export const CreateEvent = () => {
                 <IncidentDetails />
               </>
             )}
-            {(values["TwentyFourHour"] || values["TwelveHour"]) && (
+            {values["TwentyFourHour"] && (
               <>
                 <ReasonableGrounds />
                 <TestAdministered />
@@ -364,7 +402,7 @@ export const CreateEvent = () => {
       case 3:
         return <PoliceDetails />;
       case 4:
-        return <div id="printdiv">{renderSVGForm(values, "stageTwo")}</div>;
+        return renderSVGForm(values, "stageTwo");
       // Add more cases for each page
       default:
         return null;
@@ -373,6 +411,19 @@ export const CreateEvent = () => {
 
   return (
     <div id="event-container" className="text-font">
+      <Modal
+        id="spinner-modal"
+        show={isSubmitting}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Body>
+          <div className="center">
+            <h5>Submitting...</h5>
+            <Spinner style={{ marginTop: "10px" }} animation="border" />
+          </div>
+        </Modal.Body>
+      </Modal>
       <div id="button-container" className="m-4">
         <Button
           variant="primary"
@@ -390,9 +441,8 @@ export const CreateEvent = () => {
           }
           initialValues={InitialValues()}
           validationSchema={validationSchema}
-          onSubmit={onSubmit}
         >
-          {({ isSubmitting, values, errors }) => (
+          {({ values, errors }) => (
             <Form>
               {/* TODO: Fix race condition with modal on print */}
               <Modal
@@ -444,8 +494,10 @@ export const CreateEvent = () => {
                   ) : (
                     <Button
                       variant="primary"
-                      type="submit"
-                      onClick={() => console.log(errors)}
+                      onClick={() => {
+                        console.log(errors);
+                        onSubmit(values);
+                      }}
                     >
                       Submit
                     </Button>
