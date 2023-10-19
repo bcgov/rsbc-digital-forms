@@ -319,7 +319,9 @@ class Event(db.Model):
     vehicle_colour: str
     vehicle_vin_no: str
     nsc_prov_state: str
+    location_of_keys: str
     nsc_no: str
+    type_of_prohibition: str
     owned_by_corp: bool
     intersection_or_address_of_offence: str
     offence_city: str
@@ -332,6 +334,7 @@ class Event(db.Model):
     regist_owner_prov: str
     regist_owner_postal: str
     regist_owner_phone: str
+    agency_file_no: str
     submitted: bool
     impound_lot_operator: int
     created_dt: datetime
@@ -344,6 +347,7 @@ class Event(db.Model):
     vi_sent_status = db.Column(db.String)
     icbc_retry_count = db.Column(db.Integer)
     vi_retry_count = db.Column(db.Integer)
+    type_of_prohibition = db.Column(db.String)
     driver_licence_no = db.Column(db.String)
     driver_jurisdiction = db.Column(db.String)
     driver_last_name = db.Column(db.String)
@@ -354,6 +358,7 @@ class Event(db.Model):
     driver_prov = db.Column(db.String)
     driver_postal = db.Column(db.String)
     driver_phone = db.Column(db.String)
+    agency_file_no = db.Column(db.String)
     date_of_driving = db.Column(db.DateTime)
     time_of_driving = db.Column(db.String)
     vehicle_jurisdiction = db.Column(db.String)
@@ -365,6 +370,7 @@ class Event(db.Model):
     vehicle_colour = db.Column(db.String)
     vehicle_vin_no = db.Column(db.String)
     nsc_prov_state = db.Column(db.String)
+    location_of_keys = db.Column(db.String)
     nsc_no = db.Column(db.String)
     submitted = db.Column(db.Boolean)
     owned_by_corp = db.Column(db.Boolean)
@@ -422,10 +428,7 @@ class TwentyFourHourForm(db.Model):
     vehicle_released_to: str
     date_released: datetime
     time_released: str
-    location_of_keys: str
     impound_lot_operator: str
-    type_of_prohibition: str
-    agency_file_no: str
     reasonable_ground: str
     reasonable_ground_other: str
     prescribed_test_used: bool
@@ -455,10 +458,7 @@ class TwentyFourHourForm(db.Model):
     vehicle_released_to = db.Column(db.String)
     date_released = db.Column(db.DateTime)
     time_released = db.Column(db.String)
-    location_of_keys = db.Column(db.String)
     impound_lot_operator = db.Column(db.String)
-    type_of_prohibition = db.Column(db.String)
-    agency_file_no = db.Column(db.String)
     reasonable_ground = db.Column(db.String)
     reasonable_ground_other = db.Column(db.String)
     prescribed_test_used = db.Column(db.Boolean)

@@ -203,7 +203,7 @@ export const printFormatHelper = (values, data, key) => {
       } else {
         val = moment(values[data["field_name"]]).format("YYYY-MM-DD");
       }
-      return val.toUpperCase();
+      return val;
     }
     //if the value is a list join them into a single string
     if (Array.isArray(values[data["field_name"]])) {
@@ -282,10 +282,6 @@ export const printFormatHelper = (values, data, key) => {
       }
     }
 
-    if (key === "AGENCY_NAME") {
-      val = val.toUpperCase();
-    }
-
     return val;
   }
 };
@@ -337,6 +333,7 @@ export const eventObjectFlatener = (data) => {
 
 export const eventDataFormatter = (
   data,
+  user,
   provinces,
   vehicles,
   vehicleStyles,
@@ -412,6 +409,10 @@ export const eventDataFormatter = (
       value: vehicle.mk + "-" + vehicle.md,
       label: vehicle.search,
     };
+
+    event["officer-lastname"] = user.last_name;
+    event["officer-prime-id"] = user.badge_number;
+    event["officer-agency"] = user.agency;
 
     const vehicleStyl = vehicleStyles.filter(
       (x) => x["code"] === event["vehicle_style"]
