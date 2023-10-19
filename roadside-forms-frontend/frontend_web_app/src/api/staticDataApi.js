@@ -12,13 +12,12 @@ export const StaticDataApi = {
           method: "GET",
           headers:{...headers},
         }).then ( (response) => {
-          console.log(response)
           return {
               status: response.status,
               data: response.data
           }
       }).catch((error) =>{
-          console.log(error)
+          // console.log(error)
           return {
               status: error.status,
               data: error.response
