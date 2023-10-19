@@ -414,6 +414,12 @@ export const eventDataFormatter = (
     event["officer-prime-id"] = user.badge_number;
     event["officer-agency"] = user.agency;
 
+    if (event["VI"]) {
+      event["nsc_no"] === ""
+        ? (event["is_nsc"] = false)
+        : (event["is_nsc"] = true);
+    }
+
     const vehicleStyl = vehicleStyles.filter(
       (x) => x["code"] === event["vehicle_style"]
     )[0];
