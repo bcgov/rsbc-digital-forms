@@ -215,12 +215,17 @@ export const printFormatHelper = (values, data, key) => {
       val = values[data["field_name"]]["value"];
       return val;
     }
-
+    let released_val = "";
+    if (values["TwelveHour"]) {
+      released_val = "vehicle_location";
+    } else if (values["TwentyFourHour"]) {
+      released_val = "reason_for_not_impounding";
+    }
     if (key === "RELEASE_LOCATION_VEHICLE") {
       if (values["VI"]) {
         val = values["ILO-name"];
       } else {
-        switch (values["vehicle_location"]) {
+        switch (values[released_val]) {
           case "released":
             val = "RELEASED TO OTHER DRIVER";
             break;
@@ -230,6 +235,9 @@ export const printFormatHelper = (values, data, key) => {
           case "roadside":
             val = "LEFT AT ROADSIDE";
             break;
+          case "investigation":
+            val = "SEIZED FOR INVESTIGATION";
+            break;
           default:
             val = "";
         }
@@ -237,10 +245,13 @@ export const printFormatHelper = (values, data, key) => {
     }
 
     if (key === "RELEASE_LOCATION_KEYS") {
-      if (values["VI"]) {
+      if (
+        values["VI"] ||
+        (values["TwentyFourHour"] && values["vehicle_impounded"] === "YES")
+      ) {
         val = values["location_of_keys"];
       } else {
-        switch (values["vehicle_location"]) {
+        switch (values[released_val]) {
           case "released":
             val = "WITH OTHER DRIVER";
             break;
@@ -260,7 +271,7 @@ export const printFormatHelper = (values, data, key) => {
       if (values["VI"]) {
         val = values["ILO-name"];
       } else {
-        switch (values["vehicle_location"]) {
+        switch (values[released_val]) {
           case "released":
             val = values["vehicle_released_to"];
             break;

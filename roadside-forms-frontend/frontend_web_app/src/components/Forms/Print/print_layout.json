@@ -491,8 +491,8 @@
         "field_val": "NO",
         "classNames": "fontText",
         "start": {
-          "x": 4.5,
-          "y": 139.3
+          "x": 7.25,
+          "y": 141
         }
       },
       "IMPOUNDED": {
@@ -510,8 +510,8 @@
         "field_name": "reason_for_not_impounding",
         "classNames": "fontSmall",
         "start": {
-          "x": 42.5,
-          "y": 139.3
+          "x": 44.5,
+          "y": 141
         }
       },
       "IMPOUNDED_LOT": {
@@ -555,8 +555,8 @@
         "field_name": "reason_for_not_impounding",
         "classNames": "fontSmall",
         "start": {
-          "x": 54.8,
-          "y": 168.7
+          "x": 60,
+          "y": 172
         }
       },
       "RELEASE_PERSON": {
@@ -564,8 +564,8 @@
         "field_name": "vehicle_released_to",
         "classNames": "fontXSmall",
         "start": {
-          "x": 4.5,
-          "y": 173.5
+          "x": 7.25,
+          "y": 178.5
         }
       },
       "RELEASE_DATE": {
@@ -573,8 +573,8 @@
         "field_name": "date_released",
         "classNames": "fontSmall",
         "start": {
-          "x": 79,
-          "y": 173.5
+          "x": 81.5,
+          "y": 178.5
         }
       },
       "RELEASE_TIME": {
@@ -582,8 +582,8 @@
         "field_name": "time_released",
         "classNames": "fontSmall",
         "start": {
-          "x": 95,
-          "y": 173.5
+          "x": 99.5,
+          "y": 178.5
         }
       },
       "REASONABLE_GROUNDS_YES": {

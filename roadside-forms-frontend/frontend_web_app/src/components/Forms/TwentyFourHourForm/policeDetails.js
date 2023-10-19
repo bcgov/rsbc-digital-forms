@@ -4,6 +4,7 @@ import { useFormikContext } from "formik";
 import { NumericInput } from "../../common/Input/NumericInput";
 import { Input } from "../../common/Input/Input";
 import { Radio } from "../../common/Radio/radio";
+import { Checkbox } from "../../common/Checkbox/checkbox";
 import { TimeInputField } from "../../common/Input/TimeInputField";
 import { DatePickerField } from "../../common/DateField/DatePicker";
 
@@ -32,7 +33,7 @@ export const PoliceDetails = (props) => {
               <Col>
                 <Radio
                   label="If yes, what test was administered?"
-                  name="requested_test_used"
+                  name="requested_test_used_alcohol"
                   options={[
                     {
                       label: "Yes, Alco-Sensor FST(ASD)",
@@ -40,9 +41,8 @@ export const PoliceDetails = (props) => {
                     },
                     { label: "Yes, Approved Instrument", value: "instrument" },
                     {
-                      label:
-                        "Yes, Prescribed Physical Coordination Test (SFST)",
-                      value: "physical-cordination-test",
+                      label: "Yes, Prescribed Physical Coordination Test ",
+                      value: "PPCT",
                     },
                     {
                       label:
@@ -53,9 +53,9 @@ export const PoliceDetails = (props) => {
                   required
                 />
               </Col>
-              {(values["requested_test_used"] === "instrument" ||
-                values["requested_test_used"] === "physical-cordination-test" ||
-                values["requested_test_used"] === "alco-sensor") && (
+              {(values["requested_test_used_alcohol"] === "instrument" ||
+                values["requested_test_used_alcohol"] === "PPCT" ||
+                values["requested_test_used_alcohol"] === "alco-sensor") && (
                 <Col sm={4}>
                   <TimeInputField
                     label="Time the test was administered"
@@ -66,7 +66,7 @@ export const PoliceDetails = (props) => {
                 </Col>
               )}
             </Row>
-            {values["requested_test_used"] === "alco-sensor" && (
+            {values["requested_test_used_alcohol"] === "alco-sensor" && (
               <Row>
                 <Col sm={12}>
                   <DatePickerField
@@ -79,8 +79,9 @@ export const PoliceDetails = (props) => {
                     label="Result"
                     name="requested_alcohol_test_result"
                     options={[
-                      { label: "51-99 mg%", value: "51-99 mg%" },
-                      { label: "Over 99 mg%", value: "Over 99 mg%" },
+                      { label: "51-59 mg%", value: "51-59" },
+                      { label: "Warn", value: "WARN" },
+                      { label: "Fail", value: "FAIL" },
                     ]}
                     required
                   />
@@ -88,7 +89,7 @@ export const PoliceDetails = (props) => {
               </Row>
             )}
 
-            {values["requested_test_used"] === "instrument" && (
+            {values["requested_test_used_alcohol"] === "instrument" && (
               <Row>
                 <Col sm={4}>
                   <NumericInput
@@ -106,9 +107,28 @@ export const PoliceDetails = (props) => {
                 </Col>
               </Row>
             )}
+            {values["requested_test_used_drugs"] === "PPCT" && (
+              <Row>
+                <Col sm={4}>
+                  <Checkbox name="reasonable_can_drive_drug">
+                    Ability to drive affected by a drug?
+                  </Checkbox>
+                </Col>
+              </Row>
+            )}
+            {values["requested_test_used_alcohol"] === "PPCT" && (
+              <Row>
+                <Col sm={6}>
+                  <Checkbox name="reasonable_can_drive_alcohol">
+                    Ability to drive affected by alcohol?(only select if PPCT
+                    test used)
+                  </Checkbox>
+                </Col>
+              </Row>
+            )}
           </div>
         </div>
-      )}{" "}
+      )}
     </div>
   );
 };
