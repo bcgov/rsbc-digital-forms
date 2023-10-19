@@ -137,6 +137,8 @@ def save_event_pdf(**kwargs) -> tuple:
     try:
         data = kwargs.get('payload')
         event = kwargs.get('event')
+        cert_path=Config.MINIO_CERT_FILE
+        os.environ['SSL_CERT_FILE'] = cert_path
         client = Minio(
             Config.MINIO_BUCKET_URL,
             access_key=Config.MINIO_AK,
@@ -144,12 +146,12 @@ def save_event_pdf(**kwargs) -> tuple:
             secure=Config.MINIO_SECURE,
         )
 
-        # Make 'asiatrip' bucket if not exist.
-        found = client.bucket_exists("test")
-        if not found:
-            client.make_bucket("test")
-        else:
-            print("Bucket 'test' already exists")
+        
+        # found = client.bucket_exists("test")
+        # if not found:
+        #     client.make_bucket("test")
+        # else:
+        #     print("Bucket 'test' already exists")
 
         if(data.get('VI')):
             filename = str(uuid.uuid4().hex)            
