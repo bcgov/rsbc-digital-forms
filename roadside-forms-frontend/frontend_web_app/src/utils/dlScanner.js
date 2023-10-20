@@ -28,7 +28,7 @@ export const dlScanner = {
       scanner = await this.requestAccessToScanner();
     }
 
-    if (scanner.opened) {
+    if (scanner && scanner.opened) {
       return scanner;
     } else {
       await scanner.open();

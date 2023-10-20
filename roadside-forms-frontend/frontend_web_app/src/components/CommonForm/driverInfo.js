@@ -123,6 +123,7 @@ export const DriverInfo = (props) => {
                 className="slim-button"
                 variant="primary"
                 disabled={disableBtn}
+                onClick={launchDlScanner}
               >
                 Scan DL
               </Button>
