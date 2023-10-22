@@ -123,7 +123,7 @@ export const TestAdministered = (props) => {
                   />
                 </Col>
               </Row>
-              <Row>
+              {/* <Row>
                 <Col sm={12}>
                   <span> Test Result </span>
                 </Col>
@@ -131,7 +131,7 @@ export const TestAdministered = (props) => {
                   <Checkbox name="THC">THC</Checkbox>
                   <Checkbox name="Cocaine">Cocaine</Checkbox>
                 </Col>
-              </Row>
+              </Row> */}
             </div>
           )}
           {values["reasonable_test_used_drugs"] === "PPCT" && (

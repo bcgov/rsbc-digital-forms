@@ -25,7 +25,6 @@ export const SVGprint = ({
         >
           <image href={form} width="223" height="202" />
           {formFields?.map((item) => {
-            console.log(item);
             if (allFormFields[item]["field_type"] === "text") {
               return (
                 <text

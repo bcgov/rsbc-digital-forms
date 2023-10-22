@@ -20,10 +20,9 @@ export const ReasonableGrounds = () => {
           </span>
         </div>
         <div className="col-sm-12 left checkboxs">
-          <Checkbox name="witnessed-by-officer">Witnessed by Officer</Checkbox>
-          <Checkbox name="admission-by-driver">Admission by Driver</Checkbox>
-          <Checkbox name="independent-witness">Independent witness</Checkbox>
-          {/* <Checkbox name="video-surveillance" >Video surveillance</Checkbox> */}
+          <Checkbox name="witnessed_by_officer">Witnessed by Officer</Checkbox>
+          <Checkbox name="admission_by_driver">Admission by Driver</Checkbox>
+          <Checkbox name="independent_witness">Independent witness</Checkbox>
           <Checkbox name="reasonable_ground_other">Other</Checkbox>
         </div>
         {values["reasonable_ground_other"] && (

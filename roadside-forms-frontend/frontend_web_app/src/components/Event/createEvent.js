@@ -285,6 +285,7 @@ export const CreateEvent = () => {
     };
     const componentsToRender = [];
     let components = [];
+    console.log(values);
     for (const item in forms) {
       if (forms[item]) {
         for (const form in formsPNG[renderStage][item]) {
