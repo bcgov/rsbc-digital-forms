@@ -156,7 +156,6 @@ const fieldsToSplit = { VEHICLE_MAKE: 0, VEHICLE_MODEL: 1 };
 const dateFieldSplit = ["date_of_driving", "driver_licence_expiry"];
 
 export const printFormatHelper = (values, data, key) => {
-  console.log(key);
   let val = values[data["field_name"]];
   // if the value needs to be split into to fields
 
@@ -176,7 +175,6 @@ export const printFormatHelper = (values, data, key) => {
   if (Array.isArray(data["field_name"])) {
     val = "";
     data["field_name"].forEach((value, index) => {
-      console.log(data, values[data["field_name"][index]]);
       if (values[data["field_name"][index]]) {
         if (typeof values[data["field_name"][index]] === "object") {
           if (value === "offence_city") {
@@ -229,7 +227,6 @@ export const printFormatHelper = (values, data, key) => {
     released_val = "reason_for_not_impounding";
   }
   if (key === "RELEASE_LOCATION_VEHICLE") {
-    console.log("release location");
     if (values["VI"]) {
       val = values["ILO-name"];
     } else {
@@ -253,14 +250,12 @@ export const printFormatHelper = (values, data, key) => {
   }
 
   if (key === "RELEASE_LOCATION_KEYS") {
-    console.log("made it here");
     if (
       values["VI"] ||
       (values["TwentyFourHour"] && values["vehicle_impounded"] === "YES")
     ) {
       val = values["location_of_keys"];
     } else {
-      console.log("Location of keys", values[released_val]);
       switch (values[released_val]) {
         case "released":
           val = "WITH OTHER DRIVER";
@@ -452,7 +447,6 @@ export const eventDataFormatter = (
       label: vehicleStyl.name,
     };
     if (event["impound_lot_operator"]) {
-      console.log("impound lot operator", event["impound_lot_operator"]);
       const impound = impoundLots.filter(
         (x) => x["id"] === event["impound_lot_operator"]
       )[0];
@@ -478,4 +472,26 @@ export const eventDataFormatter = (
     eventData.push(event);
   }
   return eventData;
+};
+
+export const formNumberChecksum = (formNumber) => {
+  const timesTwo = (num) => {
+    let newNum = num * 2;
+    if (newNum > 9) {
+      newNum = 1;
+    }
+    return newNum;
+  };
+  let [calc1, calc2, calc3, calc4, calc5, calc6, calc7, calc8] = formNumber
+    .toString()
+    .split("")
+    .map(Number);
+
+  calc4 = timesTwo(calc4);
+  calc6 = timesTwo(calc6);
+  calc8 = timesTwo(calc8);
+
+  const digit = (calc3 + calc4 + calc5 + calc6 + calc7 + calc8) % 10;
+
+  return +("" + formNumber + digit);
 };

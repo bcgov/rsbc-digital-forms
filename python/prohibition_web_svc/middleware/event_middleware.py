@@ -46,7 +46,7 @@ def save_event_data(**kwargs) -> tuple:
             driver_last_name=data.get('driver_last_name'),
             driver_given_name=data.get('driver_given_name'),
             driver_dob=datetime.strptime(
-                data.get('driver_dob'), "%Y-%m-%dT%H:%M:%S.%f%z"),
+                data.get('driver_dob'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_dob') else None,
             driver_address=data.get('driver_address'),
             driver_city=data.get('driver_city'),
             driver_prov=data.get('driver_prov_state', {
@@ -83,7 +83,7 @@ def save_event_data(**kwargs) -> tuple:
             regist_owner_first_name=data.get('regist_owner_first_name'),
             regist_owner_address=data.get('regist_owner_address'),
             regist_owner_dob=datetime.strptime(
-                data.get('driver_dob'), "%Y-%m-%dT%H:%M:%S.%f%z"),
+                data.get('driver_dob'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_dob') else None,
             regist_owner_city=data.get('regist_owner_city'),
             regist_owner_prov=data.get('regist_owner_prov_state', {
                 'value': None, 'label': None}).get('value'),
@@ -91,7 +91,7 @@ def save_event_data(**kwargs) -> tuple:
             regist_owner_phone=data.get('regist_owner_phone'),
             vehicle_released_to = data.get("vehicle_released_to"),
             date_released = datetime.strptime(
-                data.get('date_released'), "%Y-%m-%dT%H:%M:%S.%f%z"),
+                data.get('date_released'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('date_released') else None,
             time_released = data.get("time_released"),
             submitted=True,
             confirmation_of_service=data.get('confirmation_of_service'),
@@ -106,7 +106,7 @@ def save_event_data(**kwargs) -> tuple:
             vi_form = VIForm(
                 gender=data.get('gender'),
                 driver_licence_expiry=datetime.strptime(
-                    data.get('driver_licence_expiry'), "%Y-%m-%dT%H:%M:%S.%f%z"),
+                    data.get('driver_licence_expiry'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_licence_expiry') else None,
                 driver_licence_class=data.get('driver_licence_class'),
                 unlicenced_prohibition_number=data.get(
                     'unlicenced_prohibition_number'),
@@ -116,7 +116,7 @@ def save_event_data(**kwargs) -> tuple:
                 out_of_province_dl_number=data.get(
                     'out_of_province_dl_number'),
                 date_of_impound=datetime.strptime(
-                    data.get('date_of_impound'), "%Y-%m-%dT%H:%M:%S.%f%z"),
+                    data.get('date_of_impound'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('date_of_impound') else None,
                 irp_impound=data.get('irp_impound'),
                 irp_impound_duration=data.get('irp_impound_duration'),
                 IRP_number=data.get('IRP_number'),
@@ -230,14 +230,6 @@ def save_event_pdf(**kwargs) -> tuple:
             secret_key=Config.MINIO_SK,
             secure=Config.MINIO_SECURE,
         )
-
-        
-        # found = client.bucket_exists("test")
-        # if not found:
-        #     client.make_bucket("test")
-        # else:
-        #     print("Bucket 'test' already exists")
-
         if(data.get('VI')):
             filename = str(uuid.uuid4().hex)
             pdf_filename = f"/tmp/{filename}.pdf"
@@ -262,6 +254,36 @@ def save_event_pdf(**kwargs) -> tuple:
                 form_id_vi=event.vi_form.form_id,
                 event_id=event.event_id,
                 form_type='VI',
+                storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
+                created_dt=date_created,
+                updated_dt=date_created,
+            )
+            db.session.add(form_storage)
+            db.session.commit()
+        if(data.get('TwentyFourHour')):
+            filename = str(uuid.uuid4().hex)
+            pdf_filename = f"/tmp/{filename}.pdf"
+            encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
+            b64encoded = data.get("TwentyFourHour_form_png").split(",")[1]
+            with open(f"/tmp/{filename}.png", "wb") as fh:
+                fh.write(b64decode(b64encoded))
+            pdf_bytes = img2pdf.convert(f"/tmp/{filename}.png")
+            with open(pdf_filename, "wb") as file:
+                file.write(pdf_bytes)
+            encryptPdf_method1(
+                pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
+            logging.debug('File encrypted')
+            encoded_file_name = f"{filename}_encrypted.pdf"
+            encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
+            with open(encoded_pdf_filepath, 'rb') as file_data:
+                client.fput_object(Config.STORAGE_BUCKET_NAME,
+                                   encoded_file_name, encoded_pdf_filepath)
+            logging.debug('File uploaded')
+
+            form_storage = FormStorageRefs(
+                form_id_24h=event.twenty_four_hour_form.form_id,
+                event_id=event.event_id,
+                form_type='24h',
                 storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
                 created_dt=date_created,
                 updated_dt=date_created,
