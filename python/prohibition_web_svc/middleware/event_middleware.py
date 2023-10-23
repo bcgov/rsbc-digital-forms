@@ -9,7 +9,7 @@ from io import BytesIO
 from minio import Minio
 from datetime import datetime
 from cerberus import Validator
-from base64 import b64decode, b64encode
+from base64 import b64decode
 from flask import jsonify, make_response
 from python.prohibition_web_svc.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, IRPForm, FormStorageRefs
 from python.prohibition_web_svc.config import Config
@@ -46,13 +46,14 @@ def save_event_data(**kwargs) -> tuple:
             driver_last_name=data.get('driver_last_name'),
             driver_given_name=data.get('driver_given_name'),
             driver_dob=datetime.strptime(
-                data.get('driver_dob'), "%Y-%m-%dT%H:%M:%S.%f%z"),
+                data.get('driver_dob'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_dob') else None,
             driver_address=data.get('driver_address'),
             driver_city=data.get('driver_city'),
             driver_prov=data.get('driver_prov_state', {
                 'value': None, 'label': None}).get('value'),
             driver_postal=data.get('driver_postal'),
             driver_phone=data.get('driver_phone'),
+            type_of_prohibition=data.get('type_of_prohibition'),
             vehicle_jurisdiction=data.get('vehicle_jurisdiction', {
                 'value': None, 'label': None}).get('value'),
             vehicle_plate_no=data.get('vehicle_plate_no'),
@@ -82,13 +83,20 @@ def save_event_data(**kwargs) -> tuple:
             regist_owner_first_name=data.get('regist_owner_first_name'),
             regist_owner_address=data.get('regist_owner_address'),
             regist_owner_dob=datetime.strptime(
-                data.get('driver_dob'), "%Y-%m-%dT%H:%M:%S.%f%z"),
+                data.get('driver_dob'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_dob') else None,
             regist_owner_city=data.get('regist_owner_city'),
             regist_owner_prov=data.get('regist_owner_prov_state', {
                 'value': None, 'label': None}).get('value'),
             regist_owner_postal=data.get('regist_owner_postal'),
             regist_owner_phone=data.get('regist_owner_phone'),
+            vehicle_released_to = data.get("vehicle_released_to"),
+            date_released = datetime.strptime(
+                data.get('date_released'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('date_released') else None,
+            time_released = data.get("time_released"),
             submitted=True,
+            confirmation_of_service=data.get('confirmation_of_service'),
+            confirmation_of_service_date=data.get('confirmation_of_service_date'),
+            agency_file_no=data.get('agency_file_no'),
             created_dt=date_created,
             updated_dt=date_created,
             created_by=user_guid,
@@ -98,7 +106,7 @@ def save_event_data(**kwargs) -> tuple:
             vi_form = VIForm(
                 gender=data.get('gender'),
                 driver_licence_expiry=datetime.strptime(
-                    data.get('driver_licence_expiry'), "%Y-%m-%dT%H:%M:%S.%f%z"),
+                    data.get('driver_licence_expiry'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_licence_expiry') else None,
                 driver_licence_class=data.get('driver_licence_class'),
                 unlicenced_prohibition_number=data.get(
                     'unlicenced_prohibition_number'),
@@ -108,7 +116,7 @@ def save_event_data(**kwargs) -> tuple:
                 out_of_province_dl_number=data.get(
                     'out_of_province_dl_number'),
                 date_of_impound=datetime.strptime(
-                    data.get('date_of_impound'), "%Y-%m-%dT%H:%M:%S.%f%z"),
+                    data.get('date_of_impound'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('date_of_impound') else None,
                 irp_impound=data.get('irp_impound'),
                 irp_impound_duration=data.get('irp_impound_duration'),
                 IRP_number=data.get('IRP_number'),
@@ -148,7 +156,44 @@ def save_event_data(**kwargs) -> tuple:
             )
             event.vi_form = vi_form
         if data.get('TwentyFourHour'):
-            return
+            twenty_four_hour_form = TwentyFourHourForm(
+                    vehicle_impounded = data.get('vehicle_impounded'),
+                    reason_for_not_impounding = data.get('reason_for_not_impounding'),
+                    reasonable_ground_other_reason = data.get('reasonable_ground_other_reason'),
+                    prescribed_test_used = data.get('prescribed_test_used'),
+                    reasonable_date_of_test=datetime.strptime(
+                    data.get('reasonable_date_of_test'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('reasonable_date_of_test') else None,
+                    reasonable_time_of_test= data.get('reasonable_time_of_test'),
+                    reason_for_not_using_prescribed_test= data.get('reason_for_not_using_prescribed_test'),
+                    resonable_test_used_alcohol= data.get('resonable_test_used_alcohol'),
+                    reasonable_asd_expiry_date= datetime.strptime(
+                    data.get('reasonable_asd_expiry_date'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('reasonable_asd_expiry_date') else None,
+                    reasonable_result_alcohol= data.get('reasonable_result_alcohol'),
+                    reasonable_bac_result_mg= data.get('reasonable_bac_result_mg'),
+                    resonable_approved_instrument_used= data.get('resonable_approved_instrument_used'),
+                    reasonable_test_used_drugs= data.get('reasonable_test_used_drugs'),
+                    reasonable_can_drive_drug= data.get('reasonable_can_drive_drug'),
+                    reasonable_can_drive_alcohol= data.get('reasonable_can_drive_alcohol'),
+                    requested_can_drive_alcohol= data.get('requested_can_drive_alcohol'),
+                    requested_can_drive_drug= data.get('requested_can_drive_drug'),
+                    requested_approved_instrument_used= data.get('requested_approved_instrument_used'),
+                    requested_BAC_result= data.get('requested_BAC_result'),
+                    requested_alcohol_test_result= data.get('requested_alcohol_test_result'),
+                    requested_ASD_expiry_date= datetime.strptime(
+                    data.get('requested_ASD_expiry_date'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('requested_ASD_expiry_date') else None,
+                    time_of_requested_test= data.get('time_of_requested_test'),
+                    requested_test_used_alcohol= data.get('requested_test_used_alcohol'),
+                    requested_test_used_drug= data.get('requested_test_used_drug'),
+                    requested_prescribed_test= data.get('requested_prescribed_test'),
+                    witnessed_by_officer=data.get("witnessed_by_officer"),
+                    admission_by_driver=data.get("admission_by_driver"),
+                    independent_witness=data.get("independent_witness"),
+                    reasonable_ground_other=data.get("reasonable_ground_other"),
+                    created_dt=date_created,
+                    updated_dt=date_created,
+                
+            )
+            event.twenty_four_hour_form = twenty_four_hour_form
         if data.get('TwelveHour'):
             twelve_hour_form = TwelveHourForm(
                 driver_phone=data.get('driver_phone'),
@@ -185,14 +230,6 @@ def save_event_pdf(**kwargs) -> tuple:
             secret_key=Config.MINIO_SK,
             secure=Config.MINIO_SECURE,
         )
-
-        
-        # found = client.bucket_exists("test")
-        # if not found:
-        #     client.make_bucket("test")
-        # else:
-        #     print("Bucket 'test' already exists")
-
         if(data.get('VI')):
             filename = str(uuid.uuid4().hex)
             pdf_filename = f"/tmp/{filename}.pdf"
@@ -217,6 +254,36 @@ def save_event_pdf(**kwargs) -> tuple:
                 form_id_vi=event.vi_form.form_id,
                 event_id=event.event_id,
                 form_type='VI',
+                storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
+                created_dt=date_created,
+                updated_dt=date_created,
+            )
+            db.session.add(form_storage)
+            db.session.commit()
+        if(data.get('TwentyFourHour')):
+            filename = str(uuid.uuid4().hex)
+            pdf_filename = f"/tmp/{filename}.pdf"
+            encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
+            b64encoded = data.get("TwentyFourHour_form_png").split(",")[1]
+            with open(f"/tmp/{filename}.png", "wb") as fh:
+                fh.write(b64decode(b64encoded))
+            pdf_bytes = img2pdf.convert(f"/tmp/{filename}.png")
+            with open(pdf_filename, "wb") as file:
+                file.write(pdf_bytes)
+            encryptPdf_method1(
+                pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
+            logging.debug('File encrypted')
+            encoded_file_name = f"{filename}_encrypted.pdf"
+            encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
+            with open(encoded_pdf_filepath, 'rb') as file_data:
+                client.fput_object(Config.STORAGE_BUCKET_NAME,
+                                   encoded_file_name, encoded_pdf_filepath)
+            logging.debug('File uploaded')
+
+            form_storage = FormStorageRefs(
+                form_id_24h=event.twenty_four_hour_form.form_id,
+                event_id=event.event_id,
+                form_type='24h',
                 storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
                 created_dt=date_created,
                 updated_dt=date_created,

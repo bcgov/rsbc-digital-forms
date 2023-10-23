@@ -1,19 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+
 import { Radio } from "../../common/Radio/radio";
 import { useFormikContext } from "formik";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "../../../atoms/users";
 import { Checkbox } from "../../common/Checkbox/checkbox";
-import "./conformationStep.scss";
+import "./confirmationStep.scss";
+import { pstDate } from "../../../utils/dateTime";
 
 export const ConfirmationStep = () => {
-  const { values } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext();
   const userData = useRecoilValue(userAtom);
   const documentServed = values["document-served"];
-  const certifyNoticeDelivery = values["certify-notice-delivery"];
+  const certifyNoticeDelivery = values["confirmation_of_service"];
   const twentyFourHourForm = values["TwentyFourHour"];
   const twelveHourForm = values["TwelveHour"];
   const vi = values["VI"];
@@ -21,6 +23,13 @@ export const ConfirmationStep = () => {
   const driverLastName = values["driver_last_name"];
   const dateOfDriving = values["date_of_driving"];
   const timeOfDriving = values["time_of_driving"];
+
+  useEffect(() => {
+    if (values["confirmation_of_service"]) {
+      setFieldValue("confirmation_of_service_date", pstDate(new Date()));
+    }
+    console.log("set value");
+  }, [values["confirmation_of_service"], setFieldValue]);
 
   const generateLabel = () => {
     let formNames = [];
@@ -90,7 +99,7 @@ export const ConfirmationStep = () => {
       {documentServed === "YES" && (
         <div className="row">
           <div className="col">
-            <Checkbox name="certify-notice-delivery">
+            <Checkbox name="confirmation_of_service">
               {" "}
               {certifyNoticeText}
             </Checkbox>

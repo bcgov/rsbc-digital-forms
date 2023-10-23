@@ -26,7 +26,6 @@
       "VEHICLE_PROVINCE",
       "VEHICLE_LICENSE_YEAR",
       "VEHICLE_TAG_NUMBER",
-      "VEHICLE_REGISTRATION_NUMBER",
       "VEHICLE_TYPE",
       "VEHICLE_MAKE",
       "VEHICLE_MODEL",
@@ -46,18 +45,10 @@
       "RELEASE_LOCATION_VEHICLE",
       "RELEASE_PERSON",
       "RELEASE_DATE",
-      "RELEASE_TIME",
-      "DRIVER_COPY"
+      "RELEASE_TIME"
     ],
     "ILO": [
       "VIOLATION_NUMBER",
-      "DRIVER_NAME",
-      "DRIVER_DL_NUMBER",
-      "DRIVER_DL_PROVINCE",
-      "DRIVER_DOB",
-      "DRIVER_ADDRESS",
-      "REASON_ALCOHOL_215",
-      "REASON_DRUGS_215",
       "NOTICE_TIME",
       "NOTICE_DAY",
       "NOTICE_MONTH",
@@ -75,7 +66,6 @@
       "VEHICLE_PROVINCE",
       "VEHICLE_LICENSE_YEAR",
       "VEHICLE_TAG_NUMBER",
-      "VEHICLE_REGISTRATION_NUMBER",
       "VEHICLE_TYPE",
       "VEHICLE_MAKE",
       "VEHICLE_MODEL",
@@ -95,8 +85,7 @@
       "RELEASE_LOCATION_VEHICLE",
       "RELEASE_PERSON",
       "RELEASE_DATE",
-      "RELEASE_TIME",
-      "ILO_COPY"
+      "RELEASE_TIME"
     ],
     "POLICE": [
       "VIOLATION_NUMBER",
@@ -124,7 +113,6 @@
       "VEHICLE_PROVINCE",
       "VEHICLE_LICENSE_YEAR",
       "VEHICLE_TAG_NUMBER",
-      "VEHICLE_REGISTRATION_NUMBER",
       "VEHICLE_TYPE",
       "VEHICLE_MAKE",
       "VEHICLE_MODEL",
@@ -158,85 +146,32 @@
       "REASONABLE_GROUNDS_TEST_APPROVED_INSTRUMENT_SPECIFY",
       "REASONABLE_GROUNDS_TEST_PHYSICAL_COORDINATION",
       "REASONABLE_GROUNDS_TEST_TIME",
-      "REASONABLE_GROUNDS_ALCOHOL_51-99",
-      "REASONABLE_GROUNDS_ALCOHOL_OVER_99",
+      "REASONABLE_GROUNDS_ALCOHOL_51-59",
+      "REASONABLE_GROUNDS_ALCOHOL_WARN",
+      "REASONABLE_GROUNDS_ALCOHOL_FAIL",
       "REASONABLE_GROUNDS_ALCOHOL_BAC",
       "REASONABLE_GROUNDS_ALCOHOL_BAC_VALUE",
       "REASONABLE_GROUNDS_DRUG_ABILITY_TO_DRIVE_AFFECTED",
-      "REASON_PRESCRIBED_TEST_NOT_USED",
-      "ADSE_RESULTS_THC",
-      "PHYSICAL_TEST_SPECIFICS_SFST",
-      "PHYSICAL_TEST_SPECIFICS_DRE"
-    ],
-    "ICBC": [
-      "VIOLATION_NUMBER",
-      "DRIVER_NAME",
-      "DRIVER_DL_NUMBER",
-      "DRIVER_DL_PROVINCE",
-      "DRIVER_DOB",
-      "DRIVER_ADDRESS",
-      "REASON_ALCOHOL_215",
-      "REASON_DRUGS_215",
-      "NOTICE_TIME",
-      "NOTICE_DAY",
-      "NOTICE_MONTH",
-      "NOTICE_YEAR",
-      "DL_SURRENDER_LOCATION",
-      "OFFICER_LAST_NAME",
-      "OFFICER_BADGE_NUMBER",
-      "AGENCY_NAME",
-      "AGENCY_FILE_NUMBER",
-      "OWNER_NAME",
-      "OWNER_ADDRESS",
-      "OWNER_PROVINCE",
-      "OWNER_POSTAL_CODE",
-      "VEHICLE_LICENSE_NUMBER",
-      "VEHICLE_PROVINCE",
-      "VEHICLE_LICENSE_YEAR",
-      "VEHICLE_TAG_NUMBER",
-      "VEHICLE_REGISTRATION_NUMBER",
-      "VEHICLE_TYPE",
-      "VEHICLE_MAKE",
-      "VEHICLE_MODEL",
-      "VEHICLE_YEAR",
-      "VEHICLE_COLOR",
-      "VEHICLE_NSC_PUJ",
-      "VEHICLE_NSC_NUMBER",
-      "VEHICLE_VIN",
-      "OWNER_PHONE_AREA_CODE",
-      "NOT_IMPOUNDED",
-      "IMPOUNDED",
-      "NOT_IMPOUNDED_REASON",
-      "IMPOUNDED_LOT",
-      "IMPOUNDED_ADDRESS",
-      "IMPOUNDED_PHONE_AREA_CODE",
-      "RELEASE_LOCATION_KEYS",
-      "RELEASE_LOCATION_VEHICLE",
-      "RELEASE_PERSON",
-      "RELEASE_DATE",
-      "RELEASE_TIME",
-      "DRIVER_WITNESSED_BY_OFFICER",
-      "DRIVER_ADMISSION_BY_DRIVER",
-      "DRIVER_INDEPENDENT_WITNESS",
-      "DRIVER_OTHER",
-      "DRIVER_ADDITIONAL_INFORMATION",
-      "REASONABLE_GROUNDS_YES",
-      "REASONABLE_GROUNDS_NO",
-      "REASONABLE_GROUNDS_TEST_ALCO_SENSOR",
-      "REASONABLE_GROUNDS_TEST_ASD_EXPIRY_DATE",
-      "REASONABLE_GROUNDS_TEST_APPROVED_INSTRUMENT",
-      "REASONABLE_GROUNDS_TEST_APPROVED_INSTRUMENT_SPECIFY",
-      "REASONABLE_GROUNDS_TEST_PHYSICAL_COORDINATION",
-      "REASONABLE_GROUNDS_TEST_TIME",
-      "REASONABLE_GROUNDS_ALCOHOL_51-99",
-      "REASONABLE_GROUNDS_ALCOHOL_OVER_99",
-      "REASONABLE_GROUNDS_ALCOHOL_BAC",
-      "REASONABLE_GROUNDS_ALCOHOL_BAC_VALUE",
-      "REASONABLE_GROUNDS_DRUG_ABILITY_TO_DRIVE_AFFECTED",
-      "REASON_PRESCRIBED_TEST_NOT_USED",
-      "ADSE_RESULTS_THC",
-      "PHYSICAL_TEST_SPECIFICS_SFST",
-      "PHYSICAL_TEST_SPECIFICS_DRE"
+      "ECOS_NOTICE_DAY",
+      "ECOS_MONTH_YEAR",
+      "ECOS_DRIVER_NAME",
+      "ECOS_OFFICER_NAME",
+      "ECOS_OFFICER_BADGE_NUMBER",
+      "ECOS_AGENCY_NAME",
+      "ECOS_DATE_CERTIFIED",
+      "REQUESTED_PRESCRIBED_TEST_YES",
+      "REQUESTED_PRESCRIBED_TEST_NO",
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_INSTRUMENT",
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_ALCO",
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_PPCT",
+      "REQUESTED_PRESCRIBED_TEST_USED_DRUG_INSTRUMENT",
+      "REQUESTED_PRESCRIBED_TEST_USED_DRUG_PPCT",
+      "REQUESTED_APPROVED_INSTRUMENT",
+      "REQUESTED_TEST_TIME",
+      "REQUESTED_TEST_BAC",
+      "REQUESTED_TEST_BAC_RESULT",
+      "REQUESTED_CAN_DRIVE_ALCOHOL",
+      "REQUESTED_CAN_DRIVE_DRUG"
     ],
     "fields": {
       "VIOLATION_NUMBER": {
@@ -253,8 +188,8 @@
         "field_name": ["driver_last_name", "driver_given_name"],
         "classNames": "fontSmall",
         "start": {
-          "x": 7.2,
-          "y": 32.5
+          "x": 10,
+          "y": 27
         }
       },
       "DRIVER_DL_NUMBER": {
@@ -262,8 +197,8 @@
         "field_name": "driver_licence_no",
         "classNames": "fontSmall",
         "start": {
-          "x": 7.2,
-          "y": 39.5
+          "x": 10,
+          "y": 34.5
         }
       },
       "DRIVER_DL_PROVINCE": {
@@ -271,8 +206,8 @@
         "field_name": "driver_prov_state",
         "classNames": "fontSmall",
         "start": {
-          "x": 54,
-          "y": 39.5
+          "x": 57,
+          "y": 34.5
         }
       },
       "DRIVER_DOB": {
@@ -280,8 +215,8 @@
         "field_name": "driver_dob",
         "classNames": "fontSmall",
         "start": {
-          "x": 77,
-          "y": 39.5
+          "x": 80,
+          "y": 34.5
         }
       },
       "DRIVER_ADDRESS": {
@@ -294,8 +229,8 @@
         ],
         "classNames": "fontSmall",
         "start": {
-          "x": 7.2,
-          "y": 46.5
+          "x": 10,
+          "y": 41.5
         }
       },
       "REASON_ALCOHOL_215": {
@@ -304,8 +239,8 @@
         "field_val": "alcohol",
         "classNames": "fontSmall",
         "start": {
-          "x": 22.8,
-          "y": 51
+          "x": 25.5,
+          "y": 46
         }
       },
       "REASON_DRUGS_215": {
@@ -314,8 +249,8 @@
         "field_val": "drugs",
         "classNames": "fontSmall",
         "start": {
-          "x": 50.7,
-          "y": 51
+          "x": 53.7,
+          "y": 46
         }
       },
       "NOTICE_TIME": {
@@ -323,8 +258,8 @@
         "field_name": "time_of_driving",
         "classNames": "fontSmall",
         "start": {
-          "x": 6.4,
-          "y": 66.5
+          "x": 10,
+          "y": 67.5
         }
       },
       "NOTICE_DAY": {
@@ -333,8 +268,8 @@
         "date_val": "Do",
         "classNames": "fontSmall",
         "start": {
-          "x": 38.4,
-          "y": 66.5
+          "x": 45.4,
+          "y": 67.5
         }
       },
       "NOTICE_MONTH": {
@@ -343,8 +278,8 @@
         "date_val": "MMMM",
         "classNames": "fontSmall",
         "start": {
-          "x": 58.9,
-          "y": 66.5
+          "x": 65.9,
+          "y": 67.5
         }
       },
       "NOTICE_YEAR": {
@@ -353,8 +288,8 @@
         "date_val": "YYYY",
         "classNames": "fontSmall",
         "start": {
-          "x": 90.8,
-          "y": 66.5
+          "x": 93.8,
+          "y": 67.5
         }
       },
       "DL_SURRENDER_LOCATION": {
@@ -362,8 +297,8 @@
         "field_name": "intersection_or_address_of_offence",
         "classNames": "fontSmall",
         "start": {
-          "x": 4.7,
-          "y": 83.5
+          "x": 7.5,
+          "y": 81.5
         }
       },
       "OFFICER_LAST_NAME": {
@@ -371,8 +306,8 @@
         "field_name": "officer-lastname",
         "classNames": "fontSmall",
         "start": {
-          "x": 4.7,
-          "y": 89.5
+          "x": 7.5,
+          "y": 88.5
         }
       },
       "OFFICER_BADGE_NUMBER": {
@@ -380,8 +315,8 @@
         "field_name": "officer-prime-id",
         "classNames": "fontSmall",
         "start": {
-          "x": 81,
-          "y": 89.5
+          "x": 84,
+          "y": 88.5
         }
       },
       "AGENCY_NAME": {
@@ -389,8 +324,8 @@
         "field_name": "officer-agency",
         "classNames": "fontSmall",
         "start": {
-          "x": 4.7,
-          "y": 96.5
+          "x": 7.5,
+          "y": 96
         }
       },
       "AGENCY_FILE_NUMBER": {
@@ -398,16 +333,16 @@
         "field_name": "agency_file_no",
         "classNames": "fontSmall",
         "start": {
-          "x": 66.2,
-          "y": 96.5
+          "x": 68.5,
+          "y": 96
         }
       },
       "OWNER_NAME": {
         "field_type": "text",
-        "field_name": ["regist_owner_first_name", "regist_owner_last_name"],
+        "field_name": ["regist_owner_last_name", "regist_owner_first_name"],
         "classNames": "fontSmall",
         "start": {
-          "x": 6.4,
+          "x": 10,
           "y": 106.5
         }
       },
@@ -416,7 +351,7 @@
         "field_name": ["regist_owner_address", "regist_owner_city"],
         "classNames": "fontSmall",
         "start": {
-          "x": 6.4,
+          "x": 10,
           "y": 113.5
         }
       },
@@ -425,7 +360,7 @@
         "field_name": "regist_owner_prov_state",
         "classNames": "fontSmall",
         "start": {
-          "x": 76.9,
+          "x": 80,
           "y": 113.5
         }
       },
@@ -434,7 +369,7 @@
         "field_name": "regist_owner_postal",
         "classNames": "fontSmall",
         "start": {
-          "x": 89.2,
+          "x": 92.5,
           "y": 113.5
         }
       },
@@ -443,7 +378,7 @@
         "field_name": "vehicle_plate_no",
         "classNames": "fontSmall",
         "start": {
-          "x": 6.4,
+          "x": 10,
           "y": 120.5
         }
       },
@@ -452,7 +387,7 @@
         "field_name": "nsc_prov_state",
         "classNames": "fontSmall",
         "start": {
-          "x": 27.5,
+          "x": 33.5,
           "y": 120.5
         }
       },
@@ -488,8 +423,8 @@
         "field_name": "vehicle_style",
         "classNames": "fontSmall",
         "start": {
-          "x": 90.8,
-          "y": 120.5
+          "x": 10,
+          "y": 127.5
         }
       },
       "VEHICLE_MAKE": {
@@ -498,8 +433,8 @@
         "delimeter": "-",
         "classNames": "fontSmall",
         "start": {
-          "x": 6.4,
-          "y": 126.5
+          "x": 50,
+          "y": 120.5
         }
       },
       "VEHICLE_MODEL": {
@@ -508,8 +443,8 @@
         "delimeter": "-",
         "classNames": "fontSmall",
         "start": {
-          "x": 27.7,
-          "y": 126.5
+          "x": 80,
+          "y": 120.5
         }
       },
       "VEHICLE_YEAR": {
@@ -517,8 +452,8 @@
         "field_name": "vehicle_year",
         "classNames": "fontSmall",
         "start": {
-          "x": 43.3,
-          "y": 126.5
+          "x": 50,
+          "y": 127.5
         }
       },
       "VEHICLE_COLOR": {
@@ -526,8 +461,8 @@
         "field_name": "vehicle_colour",
         "classNames": "fontXSmall",
         "start": {
-          "x": 53.9,
-          "y": 126.5
+          "x": 32,
+          "y": 127
         }
       },
       "VEHICLE_NSC_PUJ": {
@@ -535,8 +470,8 @@
         "field_name": "nsc_prov_state",
         "classNames": "fontSmall",
         "start": {
-          "x": 66.2,
-          "y": 126.5
+          "x": 66,
+          "y": 127.5
         }
       },
       "VEHICLE_NSC_NUMBER": {
@@ -544,8 +479,8 @@
         "field_name": "nsc_no",
         "classNames": "fontSmall",
         "start": {
-          "x": 79,
-          "y": 126.5
+          "x": 81,
+          "y": 127.5
         }
       },
       "VEHICLE_VIN": {
@@ -553,8 +488,8 @@
         "field_name": "vehicle_vin_no",
         "classNames": "fontSmall",
         "start": {
-          "x": 6.4,
-          "y": 132.5
+          "x": 10,
+          "y": 133.5
         }
       },
       "OWNER_PHONE_AREA_CODE": {
@@ -562,8 +497,8 @@
         "field_name": "regist_owner_phone",
         "classNames": "fontSmall",
         "start": {
-          "x": 74.3,
-          "y": 132.5
+          "x": 77.5,
+          "y": 133.5
         }
       },
       "NOT_IMPOUNDED": {
@@ -572,8 +507,8 @@
         "field_val": "NO",
         "classNames": "fontText",
         "start": {
-          "x": 4.5,
-          "y": 139.3
+          "x": 7.25,
+          "y": 141
         }
       },
       "IMPOUNDED": {
@@ -582,8 +517,8 @@
         "field_val": "YES",
         "classNames": "fontText",
         "start": {
-          "x": 4.5,
-          "y": 142.6
+          "x": 7.25,
+          "y": 145.25
         }
       },
       "NOT_IMPOUNDED_REASON": {
@@ -591,8 +526,8 @@
         "field_name": "reason_for_not_impounding",
         "classNames": "fontSmall",
         "start": {
-          "x": 42.5,
-          "y": 139.3
+          "x": 44.5,
+          "y": 141
         }
       },
       "IMPOUNDED_LOT": {
@@ -600,8 +535,8 @@
         "field_name": "ILO-name",
         "classNames": "fontSmall",
         "start": {
-          "x": 52.3,
-          "y": 148
+          "x": 56,
+          "y": 150.5
         }
       },
       "IMPOUNDED_ADDRESS": {
@@ -609,8 +544,8 @@
         "field_name": ["ILO-address", "ILO-city"],
         "classNames": "fontSmall",
         "start": {
-          "x": 3.9,
-          "y": 153.2
+          "x": 7,
+          "y": 156
         }
       },
       "IMPOUNDED_PHONE_AREA_CODE": {
@@ -618,26 +553,26 @@
         "field_name": "ILO-phone",
         "classNames": "fontSmall",
         "start": {
-          "x": 72.6,
-          "y": 153.2
+          "x": 75.5,
+          "y": 156
         }
       },
       "RELEASE_LOCATION_KEYS": {
         "field_type": "text",
         "field_name": "location_of_keys",
-        "classNames": "fontSmall",
+        "classNames": "fontXSmall",
         "start": {
-          "x": 4.7,
-          "y": 168.7
+          "x": 8,
+          "y": 172
         }
       },
       "RELEASE_LOCATION_VEHICLE": {
         "field_type": "text",
         "field_name": "reason_for_not_impounding",
-        "classNames": "fontSmall",
+        "classNames": "fontXSmall",
         "start": {
-          "x": 54.8,
-          "y": 168.7
+          "x": 60,
+          "y": 172
         }
       },
       "RELEASE_PERSON": {
@@ -645,46 +580,413 @@
         "field_name": "vehicle_released_to",
         "classNames": "fontXSmall",
         "start": {
-          "x": 4.5,
-          "y": 173.5
+          "x": 7.25,
+          "y": 178.5
         }
       },
       "RELEASE_DATE": {
         "field_type": "text",
         "field_name": "date_released",
-        "classNames": "fontSmall",
+        "classNames": "fontXSmall",
         "start": {
-          "x": 79,
-          "y": 173.5
+          "x": 83,
+          "y": 178.5
         }
       },
       "RELEASE_TIME": {
         "field_type": "text",
         "field_name": "time_released",
-        "classNames": "fontSmall",
+        "classNames": "fontXSmall",
         "start": {
-          "x": 95,
-          "y": 173.5
+          "x": 99.5,
+          "y": 178.5
         }
       },
-      "DRIVER_COPY": {
-        "field_type": "always",
-        "field_name": "",
-        "field_value": "DRIVER COPY",
+      "REASONABLE_GROUNDS_YES": {
+        "field_type": "checkbox",
+        "field_name": "prescribed_test_used",
+        "field_val": "YES",
         "classNames": "fontSmall",
         "start": {
-          "x": 74,
-          "y": 194.1
+          "x": 121,
+          "y": 58.75
         }
       },
-      "ILO_COPY": {
-        "field_type": "always",
-        "field_name": "",
-        "field_value": "ILO COPY",
+      "REASONABLE_GROUNDS_NO": {
+        "field_type": "checkbox",
+        "field_name": "prescribed_test_used",
+        "field_val": "NO",
         "classNames": "fontSmall",
         "start": {
-          "x": 74,
-          "y": 194.1
+          "x": 132,
+          "y": 58.75
+        }
+      },
+      "REASONABLE_GROUNDS_TEST_ALCO_SENSOR": {
+        "field_type": "checkbox",
+        "field_name": "resonable_test_used_alcohol",
+        "field_val": "alco-sensor",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.5,
+          "y": 66.5
+        }
+      },
+      "REASONABLE_GROUNDS_TEST_ASD_EXPIRY_DATE": {
+        "field_type": "text",
+        "field_name": "reasonable_asd_expiry_date",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 179.5,
+          "y": 66.5
+        }
+      },
+      "REASONABLE_GROUNDS_TEST_APPROVED_INSTRUMENT": {
+        "field_type": "checkbox",
+        "field_name": "resonable_test_used_alcohol",
+        "field_val": "instrument",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.5,
+          "y": 70.5
+        }
+      },
+      "REASONABLE_GROUNDS_TEST_APPROVED_INSTRUMENT_SPECIFY": {
+        "field_type": "text",
+        "field_name": "resonable_approved_instrument_used",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 190.2,
+          "y": 107.5
+        }
+      },
+      "REASONABLE_GROUNDS_TEST_PHYSICAL_COORDINATION": {
+        "field_type": "checkbox",
+        "field_name": "resonable_test_used_alcohol",
+        "field_val": "PPCT",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.5,
+          "y": 74.5
+        }
+      },
+      "REASONABLE_GROUNDS_TEST_TIME": {
+        "field_type": "text",
+        "field_name": "reasonable_time_of_test",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 135.5,
+          "y": 78.25
+        }
+      },
+      "REASONABLE_GROUNDS_ALCOHOL_51-59": {
+        "field_type": "checkbox",
+        "field_name": "reasonable_result_alcohol",
+        "field_val": "51-59",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.5,
+          "y": 85.5
+        }
+      },
+      "REASONABLE_GROUNDS_ALCOHOL_WARN": {
+        "field_type": "checkbox",
+        "field_name": "reasonable_result_alcohol",
+        "field_val": "WARN",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 141.5,
+          "y": 85.5
+        }
+      },
+      "REASONABLE_GROUNDS_ALCOHOL_FAIL": {
+        "field_type": "checkbox",
+        "field_name": "reasonable_result_alcohol",
+        "field_val": "FAIL",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 154,
+          "y": 85.5
+        }
+      },
+      "REASONABLE_GROUNDS_ALCOHOL_BAC": {
+        "field_type": "checkbox",
+        "field_name": "resonable_test_used_alcohol",
+        "field_val": "instrument",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 164.5,
+          "y": 85.5
+        }
+      },
+      "REASONABLE_GROUNDS_ALCOHOL_BAC_VALUE": {
+        "field_type": "text",
+        "field_name": "reasonable_bac_result_mg",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 207.4,
+          "y": 126.7
+        }
+      },
+      "REASONABLE_GROUNDS_DRUG_ABILITY_TO_DRIVE_AFFECTED": {
+        "field_type": "checkbox",
+        "field_name": "reasonable_can_drive_drug",
+        "field_val": "",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 144.5,
+          "y": 136.3
+        }
+      },
+      "DRIVER_WITNESSED_BY_OFFICER": {
+        "field_type": "checkbox",
+        "field_name": "witnessed_by_officer",
+        "field_val": "",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.5,
+          "y": 28.5
+        }
+      },
+      "DRIVER_ADMISSION_BY_DRIVER": {
+        "field_type": "checkbox",
+        "field_name": "admission_by_driver",
+        "field_val": "",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 149.5,
+          "y": 28.5
+        }
+      },
+      "DRIVER_INDEPENDENT_WITNESS": {
+        "field_type": "checkbox",
+        "field_name": "independent_witness",
+        "field_val": "",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 176.5,
+          "y": 28.5
+        }
+      },
+      "DRIVER_OTHER": {
+        "field_type": "checkbox",
+        "field_name": "reasonable_ground_other",
+        "field_val": "",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 205,
+          "y": 28.5
+        }
+      },
+      "DRIVER_ADDITIONAL_INFORMATION": {
+        "field_type": "textArea",
+        "field_name": "reasonable_ground_other_reason",
+        "classNames": "fontXXSmall textArea",
+        "start": {
+          "x": 147.5,
+          "y": 30
+        }
+      },
+      "REQUESTED_PRESCRIBED_TEST_YES": {
+        "field_type": "checkbox",
+        "field_name": "requested_prescribed_test",
+        "field_val": "YES",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.25,
+          "y": 110.5
+        }
+      },
+      "REQUESTED_PRESCRIBED_TEST_NO": {
+        "field_type": "checkbox",
+        "field_name": "requested_prescribed_test",
+        "field_val": "NO",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 132,
+          "y": 110.5
+        }
+      },
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_ALCO": {
+        "field_type": "checkbox",
+        "field_name": "requested_test_used_alcohol",
+        "field_val": "alco-sensor",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.25,
+          "y": 119.5
+        }
+      },
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_INSTRUMENT": {
+        "field_type": "checkbox",
+        "field_name": "requested_test_used_alcohol",
+        "field_val": "instrument",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.25,
+          "y": 123.75
+        }
+      },
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_PPCT": {
+        "field_type": "checkbox",
+        "field_name": "requested_test_used_alcohol",
+        "field_val": "PPCT",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.25,
+          "y": 127.75
+        }
+      },
+      "REQUESTED_APPROVED_INSTRUMENT": {
+        "field_type": "text",
+        "field_name": "requested_approved_instrument_used",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 165.25,
+          "y": 123.75
+        }
+      },
+      "REQUESTED_PRESCRIBED_TEST_USED_DRUG_INSTRUMENT": {
+        "field_type": "checkbox",
+        "field_name": "requested_test_used_drug",
+        "field_val": "approved-drug",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.25,
+          "y": 123.75
+        }
+      },
+      "REQUESTED_PRESCRIBED_TEST_USED_DRUG_PPCT": {
+        "field_type": "checkbox",
+        "field_name": "requested_test_used_drug",
+        "field_val": "PPCT",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.25,
+          "y": 127.75
+        }
+      },
+      "REQUESTED_TEST_TIME": {
+        "field_type": "text",
+        "field_name": "time_of_requested_test",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 135,
+          "y": 135.75
+        }
+      },
+      "REQUESTED_TEST_BAC": {
+        "field_type": "checkbox",
+        "field_name": "requested_test_used_alcohol",
+        "field_val": "instrument",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 164.5,
+          "y": 143
+        }
+      },
+      "REQUESTED_TEST_BAC_RESULT": {
+        "field_type": "text",
+        "field_name": "requested_BAC_result",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 176,
+          "y": 143
+        }
+      },
+      "REQUESTED_CAN_DRIVE_DRUG": {
+        "field_type": "checkbox",
+        "field_name": "requested_can_drive_drug",
+        "field_val": "",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.25,
+          "y": 155
+        }
+      },
+      "REQUESTED_CAN_DRIVE_ALCOHOL": {
+        "field_type": "checkbox",
+        "field_name": "requested_can_drive_alcohol",
+        "field_val": "",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.25,
+          "y": 147.25
+        }
+      },
+      "ECOS_OFFICER_NAME": {
+        "field_type": "text",
+        "field_name": "officer-lastname",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 118.5,
+          "y": 182
+        }
+      },
+      "ECOS_OFFICER_BADGE_NUMBER": {
+        "field_type": "text",
+        "field_name": "officer-prime-id",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 182.5,
+          "y": 182
+        }
+      },
+      "ECOS_AGENCY_NAME": {
+        "field_type": "text",
+        "field_name": "officer-agency",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 118.5,
+          "y": 188
+        }
+      },
+      "ECOS_NOTICE_DAY": {
+        "field_type": "text",
+        "field_name": "confirmation_of_service_date",
+        "date_val": "Do",
+        "classNames": "fontXSmall",
+        "start": {
+          "x": 175,
+          "y": 163.5
+        }
+      },
+      "ECOS_MONTH_YEAR": {
+        "field_type": "text",
+        "field_name": "confirmation_of_service_date",
+        "date_val": "MM/YYYY",
+        "classNames": "fontXSmall",
+        "start": {
+          "x": 191,
+          "y": 163.5
+        }
+      },
+      "ECOS_PROHIBITION_NUMBER": {
+        "field_type": "text",
+        "field_name": "officer-agency",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 118.5,
+          "y": 188
+        }
+      },
+      "ECOS_DRIVER_NAME": {
+        "field_type": "text",
+        "field_name": ["driver_last_name", "driver_given_name"],
+        "classNames": "fontSmall",
+        "start": {
+          "x": 126,
+          "y": 172
+        }
+      },
+      "ECOS_DATE_CERTIFIED": {
+        "field_type": "text",
+        "field_name": "confirmation_of_service_date",
+        "date_val": "YYYY-MM-DD",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 182.5,
+          "y": 188
         }
       }
     },

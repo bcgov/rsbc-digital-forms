@@ -323,6 +323,9 @@ class Event(db.Model):
     nsc_no: str
     type_of_prohibition: str
     owned_by_corp: bool
+    vehicle_released_to: str
+    date_released: datetime
+    time_released: str
     intersection_or_address_of_offence: str
     offence_city: str
     corporation_name: str
@@ -336,6 +339,8 @@ class Event(db.Model):
     regist_owner_phone: str
     agency_file_no: str
     submitted: bool
+    confirmation_of_service: bool
+    confirmation_of_service_date: datetime
     impound_lot_operator: int
     created_dt: datetime
     updated_dt: datetime
@@ -374,6 +379,9 @@ class Event(db.Model):
     nsc_no = db.Column(db.String)
     submitted = db.Column(db.Boolean)
     owned_by_corp = db.Column(db.Boolean)
+    vehicle_released_to = db.Column(db.String)
+    date_released = db.Column(db.DateTime)
+    time_released = db.Column(db.String)
     intersection_or_address_of_offence = db.Column(db.String)
     offence_city = db.Column(db.String)
     corporation_name = db.Column(db.String)
@@ -387,6 +395,8 @@ class Event(db.Model):
     regist_owner_phone = db.Column(db.String)
     impound_lot_operator = db.Column(
         db.Integer, db.ForeignKey('impound_lot_operator.id'))
+    confirmation_of_service= db.Column(db.Boolean)
+    confirmation_of_service_date= db.Column(db.DateTime)
     created_by = db.Column(db.String, db.ForeignKey('user.user_guid'))
     updated_by = db.Column(db.String)
     created_dt = db.Column(db.DateTime)
@@ -423,61 +433,69 @@ class TwentyFourHourForm(db.Model):
 
     form_id: int
     event_id: int
-    vehicle_impounded: bool
+    vehicle_impounded: str
     reason_for_not_impounding: str
-    vehicle_released_to: str
-    date_released: datetime
-    time_released: str
-    impound_lot_operator: str
-    reasonable_ground: str
-    reasonable_ground_other: str
-    prescribed_test_used: bool
-    date_of_test: datetime
-    time_of_test: str
+    reasonable_ground_other_reason: str
+    prescribed_test_used: str
+    reasonable_date_of_test: datetime
+    reasonable_time_of_test: str
     reason_for_not_using_prescribed_test: str
-    test_used_alcohol: str
-    asd_expiry_date: datetime
-    result_alcohol: str
-    bac_result_mg: int
-    test_used_drugs: str
-    test_result_drugs: str
-    requested_prescribed_test: bool
-    requested_test_used: str
-    time_of_requested_test: str
-    requested_ASD_expiry_date: datetime
-    requested_alcohol_test_result: str
-    requested_BAC_result: int
+    resonable_test_used_alcohol: str
+    reasonable_asd_expiry_date: datetime
+    reasonable_result_alcohol: str
+    reasonable_bac_result_mg: str
+    resonable_approved_instrument_used: str
+    reasonable_test_used_drugs: str
+    reasonable_can_drive_drug: bool
+    reasonable_can_drive_alcohol: bool
+    requested_can_drive_alcohol: bool
+    requested_can_drive_drug: bool
     requested_approved_instrument_used: str
+    requested_BAC_result: str
+    requested_alcohol_test_result: str
+    requested_ASD_expiry_date: datetime
+    time_of_requested_test: str
+    requested_test_used_alcohol: str
+    requested_test_used_drug: str
+    requested_prescribed_test: str
+    witnessed_by_officer: bool
+    admission_by_driver: bool
+    independent_witness: bool
+    reasonable_ground_other: bool
     created_dt: datetime
     updated_dt: datetime
 
     form_id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey('event.event_id'))
-    vehicle_impounded = db.Column(db.Boolean)
+    vehicle_impounded = db.Column(db.String)
     reason_for_not_impounding = db.Column(db.String)
-    vehicle_released_to = db.Column(db.String)
-    date_released = db.Column(db.DateTime)
-    time_released = db.Column(db.String)
-    impound_lot_operator = db.Column(db.String)
-    reasonable_ground = db.Column(db.String)
-    reasonable_ground_other = db.Column(db.String)
-    prescribed_test_used = db.Column(db.Boolean)
-    date_of_test = db.Column(db.DateTime)
-    time_of_test = db.Column(db.String)
+    reasonable_ground_other_reason = db.Column(db.String)
+    prescribed_test_used = db.Column(db.String)
+    reasonable_date_of_test= db.Column(db.DateTime)
+    reasonable_time_of_test= db.Column(db.String)
     reason_for_not_using_prescribed_test = db.Column(db.String)
-    test_used_alcohol = db.Column(db.String)
-    asd_expiry_date = db.Column(db.DateTime)
-    result_alcohol = db.Column(db.String)
-    bac_result_mg = db.Column(db.Integer)
-    test_used_drugs = db.Column(db.String)
-    test_result_drugs = db.Column(db.String)
-    requested_prescribed_test = db.Column(db.Boolean)
-    requested_test_used = db.Column(db.String)
-    time_of_requested_test = db.Column(db.String)
-    requested_ASD_expiry_date = db.Column(db.DateTime)
-    requested_alcohol_test_result = db.Column(db.String)
-    requested_BAC_result = db.Column(db.Integer)
+    resonable_test_used_alcohol= db.Column(db.String)
+    reasonable_asd_expiry_date= db.Column(db.DateTime)
+    reasonable_result_alcohol = db.Column(db.String)
+    reasonable_bac_result_mg = db.Column(db.String)
+    resonable_approved_instrument_used = db.Column(db.String)
+    reasonable_test_used_drugs = db.Column(db.String)
+    reasonable_can_drive_drug = db.Column(db.Boolean)
+    reasonable_can_drive_alcohol = db.Column(db.Boolean)
+    requested_can_drive_alcohol = db.Column(db.Boolean)
+    requested_can_drive_drug = db.Column(db.Boolean)
     requested_approved_instrument_used = db.Column(db.String)
+    requested_BAC_result = db.Column(db.String)
+    requested_alcohol_test_result = db.Column(db.String)
+    requested_ASD_expiry_date= db.Column(db.DateTime)
+    time_of_requested_test = db.Column(db.String)
+    requested_test_used_alcohol = db.Column(db.String)
+    requested_test_used_drug = db.Column(db.String)
+    requested_prescribed_test = db.Column(db.String)
+    witnessed_by_officer = db.Column(db.Boolean)
+    admission_by_driver = db.Column(db.Boolean)
+    independent_witness = db.Column(db.Boolean)
+    reasonable_ground_other = db.Column(db.Boolean)
     created_dt = db.Column(db.DateTime)
     updated_dt = db.Column(db.DateTime)
 

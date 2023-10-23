@@ -126,7 +126,6 @@ export const Dashboard = () => {
       );
       if (flattenedEventData.length) {
         db.event.bulkPut(flattenedEventData);
-        console.log(flattenedEventData);
         setFormsData(flattenedEventData);
       }
     };
