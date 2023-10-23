@@ -158,23 +158,24 @@ const dateFieldSplit = ["date_of_driving", "driver_licence_expiry"];
 export const printFormatHelper = (values, data, key) => {
   let val = values[data["field_name"]];
   // if the value needs to be split into to fields
-  if (val !== null) {
-    if (key in fieldsToSplit) {
-      const splitData =
-        typeof values[data["field_name"]] === "object"
-          ? values[data["field_name"]]["value"].split(data["delimeter"])
-          : values[data["field_name"]].split(data["delimeter"]);
-      // if the value only needs the first part split off then rejoin the rest
-      val =
-        typeof fieldsToSplit[key] === "number"
-          ? splitData[fieldsToSplit[key]]
-          : splitData.splice(1).join(data["delimeter"]);
-      return val;
-    }
-    //if the field on the form is expecting more than one value join them together
-    if (Array.isArray(data["field_name"])) {
-      val = "";
-      data["field_name"].forEach((value, index) => {
+
+  if (key in fieldsToSplit) {
+    const splitData =
+      typeof values[data["field_name"]] === "object"
+        ? values[data["field_name"]]["value"].split(data["delimeter"])
+        : values[data["field_name"]].split(data["delimeter"]);
+    // if the value only needs the first part split off then rejoin the rest
+    val =
+      typeof fieldsToSplit[key] === "number"
+        ? splitData[fieldsToSplit[key]]
+        : splitData.splice(1).join(data["delimeter"]);
+    return val;
+  }
+  //if the field on the form is expecting more than one value join them together
+  if (Array.isArray(data["field_name"])) {
+    val = "";
+    data["field_name"].forEach((value, index) => {
+      if (values[data["field_name"][index]]) {
         if (typeof values[data["field_name"][index]] === "object") {
           if (value === "offence_city") {
             val += values[data["field_name"][index]]["label"];
@@ -187,103 +188,117 @@ export const printFormatHelper = (values, data, key) => {
         if (data["field_name"].length > index + 1) {
           val += ", ";
         }
-      });
-      if (key === "DL_SURRENDER_LOCATION") {
-        val = val + ", BC";
       }
-      return val;
+    });
+    if (key === "DL_SURRENDER_LOCATION") {
+      val = val + ", BC";
     }
-    //if the value is a date
-    if (
-      Object.prototype.toString.call(values[data["field_name"]]) ===
-      "[object Date]"
-    ) {
-      if (dateFieldSplit.includes(data["field_name"])) {
-        val = moment(values[data["field_name"]]).format(data["date_val"]);
-      } else {
-        val = moment(values[data["field_name"]]).format("YYYY-MM-DD");
-      }
-      return val;
-    }
-    //if the value is a list join them into a single string
-    if (Array.isArray(values[data["field_name"]])) {
-      val = values[data["field_name"]].join("");
-      return val;
-    }
-    //temp: if the value is an object then take its value
-    if (typeof values[data["field_name"]] === "object") {
-      val = values[data["field_name"]]["value"];
-      return val;
-    }
-
-    if (key === "RELEASE_LOCATION_VEHICLE") {
-      if (values["VI"]) {
-        val = values["ILO-name"];
-      } else {
-        switch (values["vehicle_location"]) {
-          case "released":
-            val = "RELEASED TO OTHER DRIVER";
-            break;
-          case "private":
-            val = "PRIVATE TOW";
-            break;
-          case "roadside":
-            val = "LEFT AT ROADSIDE";
-            break;
-          default:
-            val = "";
-        }
-      }
-    }
-
-    if (key === "RELEASE_LOCATION_KEYS") {
-      if (values["VI"]) {
-        val = values["location_of_keys"];
-      } else {
-        switch (values["vehicle_location"]) {
-          case "released":
-            val = "WITH OTHER DRIVER";
-            break;
-          case "private":
-            val = values["location_of_keys"];
-            break;
-          case "roadside":
-            val = values["location_of_keys"];
-            break;
-          default:
-            val = "";
-        }
-      }
-    }
-
-    if (key === "RELEASE_PERSON") {
-      if (values["VI"]) {
-        val = values["ILO-name"];
-      } else {
-        switch (values["vehicle_location"]) {
-          case "released":
-            val = values["vehicle_released_to"];
-            break;
-          case "private":
-            val = values["ILO-name"];
-            break;
-          case "roadside":
-            val = "";
-            break;
-          default:
-            val = "";
-        }
-      }
-    }
-
-    if (key === "RELEASE_DATE") {
-      if (values["VI"]) {
-        val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
-      }
-    }
-
     return val;
   }
+  //if the value is a date
+  if (
+    Object.prototype.toString.call(values[data["field_name"]]) ===
+    "[object Date]"
+  ) {
+    if (data["date_val"]) {
+      val = moment(values[data["field_name"]]).format(data["date_val"]);
+    } else {
+      val = moment(values[data["field_name"]]).format("YYYY-MM-DD");
+    }
+    return val;
+  }
+  //if the value is a list join them into a single string
+  if (Array.isArray(values[data["field_name"]])) {
+    val = values[data["field_name"]].join("");
+    return val;
+  }
+  //temp: if the value is an object then take its value
+  if (
+    values[data["field_name"]] &&
+    typeof values[data["field_name"]] === "object"
+  ) {
+    val = values[data["field_name"]]["value"];
+    return val;
+  }
+  let released_val = "";
+  if (values["TwelveHour"]) {
+    released_val = "vehicle_location";
+  } else if (values["TwentyFourHour"]) {
+    released_val = "reason_for_not_impounding";
+  }
+  if (key === "RELEASE_LOCATION_VEHICLE") {
+    if (values["VI"]) {
+      val = values["ILO-name"];
+    } else {
+      switch (values[released_val]) {
+        case "released":
+          val = "RELEASED TO OTHER DRIVER";
+          break;
+        case "private":
+          val = "PRIVATE TOW";
+          break;
+        case "roadside":
+          val = "LEFT AT ROADSIDE";
+          break;
+        case "investigation":
+          val = "SEIZED FOR INVESTIGATION";
+          break;
+        default:
+          val = "";
+      }
+    }
+  }
+
+  if (key === "RELEASE_LOCATION_KEYS") {
+    if (
+      values["VI"] ||
+      (values["TwentyFourHour"] && values["vehicle_impounded"] === "YES")
+    ) {
+      val = values["location_of_keys"];
+    } else {
+      switch (values[released_val]) {
+        case "released":
+          val = "WITH OTHER DRIVER";
+          break;
+        case "private":
+          val = values["location_of_keys"];
+          break;
+        case "roadside":
+          val = values["location_of_keys"];
+          break;
+        default:
+          val = "";
+      }
+    }
+  }
+
+  if (key === "RELEASE_PERSON") {
+    if (values["VI"]) {
+      val = values["ILO-name"];
+    } else {
+      switch (values[released_val]) {
+        case "released":
+          val = values["vehicle_released_to"];
+          break;
+        case "private":
+          val = values["ILO-name"];
+          break;
+        case "roadside":
+          val = "";
+          break;
+        default:
+          val = "";
+      }
+    }
+  }
+
+  if (key === "RELEASE_DATE") {
+    if (values["VI"]) {
+      val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
+    }
+  }
+
+  return val;
 };
 
 export const printCheckHelper = (values, data, key) => {
@@ -348,6 +363,10 @@ export const eventDataFormatter = (
     "date_of_impound",
     "driver_dob",
     "regist_owner_dob",
+    "confirmation_of_service_date",
+    "created_dt",
+    "updated_dt",
+    "date_released",
   ];
   for (const item in data) {
     const event = data[item];
@@ -406,8 +425,8 @@ export const eventDataFormatter = (
       (x) => x["mk"] === mk_md_split[0] && x["md"] === mk_md_split[1]
     )[0];
     event["vehicle_mk_md"] = {
-      value: vehicle.mk + "-" + vehicle.md,
-      label: vehicle.search,
+      value: vehicle?.mk + "-" + vehicle?.md,
+      label: vehicle?.search,
     };
 
     event["officer-lastname"] = user.last_name;
@@ -442,15 +461,37 @@ export const eventDataFormatter = (
           impound.phone,
         value: impound.id,
       };
-      for (const field of date_fields) {
-        event[field] = pstDate(event[field]);
-      }
       event["ILO-name"] = impound.name;
       event["ILO-address"] = impound.lot_address;
       event["ILO-city"] = impound.city;
       event["ILO-phone"] = impound.phone;
     }
+    for (const field of date_fields) {
+      event[field] = pstDate(event[field]);
+    }
     eventData.push(event);
   }
   return eventData;
+};
+
+export const formNumberChecksum = (formNumber) => {
+  const timesTwo = (num) => {
+    let newNum = num * 2;
+    if (newNum > 9) {
+      newNum = 1;
+    }
+    return newNum;
+  };
+  let [calc1, calc2, calc3, calc4, calc5, calc6, calc7, calc8] = formNumber
+    .toString()
+    .split("")
+    .map(Number);
+
+  calc4 = timesTwo(calc4);
+  calc6 = timesTwo(calc6);
+  calc8 = timesTwo(calc8);
+
+  const digit = (calc3 + calc4 + calc5 + calc6 + calc7 + calc8) % 10;
+
+  return +("" + formNumber + digit);
 };
