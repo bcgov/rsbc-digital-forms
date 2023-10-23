@@ -35,7 +35,7 @@ export const Header = () => {
         setUserId(keycloak.tokenParsed.idir_user_guid);
       } else if (keycloak.tokenParsed.identity_provider === "bceid") {
         setUserId(keycloak.tokenParsed.bceid_user_guid);
-      }else{
+      } else {
         setUserId(keycloak.tokenParsed.bceid_user_guid);
       }
     }
@@ -69,7 +69,7 @@ export const Header = () => {
           }
           setUserRoleData(data);
           setuserAdminInfo(
-            data.some((role) => role["role_name"] === "administrator")
+            data.some((role) => role["role_name"] === "administrator"),
           );
           setLoginCompleted(true);
         } else {

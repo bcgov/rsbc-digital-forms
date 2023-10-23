@@ -52,7 +52,7 @@ jobs:
           REACT_APP_KEYCLOAK_REALM: ${{ secrets.REACT_APP_KEYCLOAK_REALM }}
           REACT_APP_KEYCLOAK_CLIENT_ID: ${{ secrets.REACT_APP_KEYCLOAK_CLIENT_ID }}
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL_DEV }}
-        run: |          
+        run: |
           cd roadside-forms-frontend/frontend_web_app
           npm run build:ci
       - name: Run Tests
@@ -85,15 +85,15 @@ jobs:
           file: ${{ inputs.DOCKER_FILE }}
           push: false
           load: true
-          tags:  ${{ inputs.DOCKER_IMAGE_NAME }}:latest
+          tags: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
       - name: Run Trivy vulnerability scanner- stdout
         uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
         if: always()
         with:
           scan-type: image
           image-ref: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
-          format: 'table'
-          exit-code: '1'
+          format: "table"
+          exit-code: "1"
           ignore-unfixed: true
           severity: CRITICAL
       - name: Run Trivy vulnerability scanner- save to file
@@ -102,7 +102,7 @@ jobs:
         with:
           scan-type: image
           image-ref: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
-          format: 'template'
+          format: "template"
           ignore-unfixed: true
           template: "@/contrib/html.tpl"
           output: trivy.html
@@ -113,20 +113,20 @@ jobs:
         with:
           scan-type: image
           image-ref: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
-          format: 'template'
+          format: "template"
           ignore-unfixed: true
           template: "@/contrib/sarif.tpl"
           output: trivy.sarif
           severity: CRITICAL
       - name: Edit html file to clean headers
         if: always()
-        run: |          
+        run: |
           sed '/<head/,/<\/head>/d' trivy.html >trivy_updated.html
           cat trivy_updated.html
       - name: Send results to Status
         if: always()
         run: |
-          cat trivy_updated.html >> $GITHUB_STEP_SUMMARY   
+          cat trivy_updated.html >> $GITHUB_STEP_SUMMARY
       - uses: mshick/add-pr-comment@v2
         if: always()
         with:
@@ -143,8 +143,6 @@ jobs:
           sarif-file: trivy.sarif
           title: "Critical vulnerabilities found in ${{ inputs.DOCKER_IMAGE_NAME }} on PR ${{ github.event.number }}"
           odc-sarif: false
-      
-      
 
   build:
     runs-on: ubuntu-latest

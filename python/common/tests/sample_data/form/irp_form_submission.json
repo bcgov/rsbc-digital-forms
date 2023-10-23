@@ -8,7 +8,8 @@
         "control-15": {
           "@filename": "info_reduced.png",
           "@mediatype": "image/png",
-          "#text": "/fr/service/persistence/crud/gov-pssg/prohibition_review/form/177ce3ac783dbc708641d34d68c4537610b2c88b.bin"},
+          "#text": "/fr/service/persistence/crud/gov-pssg/prohibition_review/form/177ce3ac783dbc708641d34d68c4537610b2c88b.bin"
+        },
         "control-16": null
       },
       "prohibition-information": {
@@ -67,9 +68,9 @@
         "oral-review-instructions": null
       },
       "consent-and-submission": {
-      "signature-applicant-name": "TESTING",
-      "date-signed": "2020-09-23",
-      "control-5": null
+        "signature-applicant-name": "TESTING",
+        "date-signed": "2020-09-23",
+        "control-5": null
       }
     },
     "xml": "YTM0NZomIzI2OTsmIzM0NTueYQ=="

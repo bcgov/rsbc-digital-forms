@@ -54,7 +54,7 @@ export const ViewPastEvent = () => {
               formLayout={item}
               formType={form}
               values={values}
-            />
+            />,
           );
         }
       }

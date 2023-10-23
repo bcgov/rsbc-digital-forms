@@ -1,6 +1,6 @@
-import React from 'react';
-import { useField, Field } from 'formik';
-import Table from 'react-bootstrap/Table';
+import React from "react";
+import { useField, Field } from "formik";
+import Table from "react-bootstrap/Table";
 
 export const MultiSelectWidget = ({ name, options }) => {
   const [field, , helpers] = useField({ name });
@@ -51,7 +51,12 @@ export const MultiSelectWidget = ({ name, options }) => {
           ))}
         </tbody>
       </Table>
-      <div>Selected: {field.value && field.value.length > 0 ? field.value.join(', ') : 'None'}</div>
+      <div>
+        Selected:{" "}
+        {field.value && field.value.length > 0
+          ? field.value.join(", ")
+          : "None"}
+      </div>
     </>
   );
 };

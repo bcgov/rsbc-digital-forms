@@ -23,7 +23,7 @@ export const pstDate = (datetime) => {
   var pstDate = new Date(
     myDate.toLocaleString("en-US", {
       timeZone: "America/Los_Angeles",
-    })
+    }),
   );
   return pstDate;
 };

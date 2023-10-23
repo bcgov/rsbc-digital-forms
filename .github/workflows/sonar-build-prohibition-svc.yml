@@ -17,18 +17,17 @@ on:
       - trigger.txt
 permissions:
   contents: read
-jobs: 
-
+jobs:
   sonarcloud-prohibition-svc:
     name: SonarCloud-prohibition-svc
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - uses: actions/setup-python@v4 
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+      - uses: actions/setup-python@v4
         with:
-          python-version: 'pypy3.9' 
+          python-version: "pypy3.9"
       # - name: Install dependencies
       #   run: |
       #     cd python/prohibition_web_svc
@@ -42,7 +41,7 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         if: always()
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: python/prohibition_web_svc

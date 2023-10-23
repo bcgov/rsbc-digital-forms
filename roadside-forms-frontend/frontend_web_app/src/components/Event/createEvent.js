@@ -68,7 +68,7 @@ export const CreateEvent = () => {
       jurisdictionsAtom.map((each) => ({
         label: each.objectDsc,
         value: each.objectCd,
-      }))
+      })),
     );
     setImpoundLotOperators(
       impoundAtom.map((each) => ({
@@ -81,31 +81,31 @@ export const CreateEvent = () => {
           ", " +
           each.phone,
         value: each.id,
-      }))
+      })),
     );
     setProvinces(
       provincesAtom.map((each) => ({
         label: each.objectDsc,
         value: each.objectCd,
-      }))
+      })),
     );
     setVehicleStyles(
-      vehicleStylesAtom.map((each) => ({ label: each.name, value: each.code }))
+      vehicleStylesAtom.map((each) => ({ label: each.name, value: each.code })),
     );
     setVehicleColours(
       vehicleColoursAtom.map((each) => ({
         label: each.display_name,
         value: each.code,
-      }))
+      })),
     );
     setVehicles(
       vehiclesAtom.map((each) => ({
         label: each.search,
         value: each.mk + "-" + each.md,
-      }))
+      })),
     );
     setCities(
-      cityAtom.map((each) => ({ label: each.objectDsc, value: each.objectCd }))
+      cityAtom.map((each) => ({ label: each.objectDsc, value: each.objectCd })),
     );
   }, [
     vehicleStylesAtom,
@@ -216,7 +216,7 @@ export const CreateEvent = () => {
       "Print Form",
       "If you print this form you cannot go back and edit it, please confirm you wish to proceed.",
       "Print",
-      () => handlePrintForms(values)
+      () => handlePrintForms(values),
     );
   };
 
@@ -272,7 +272,7 @@ export const CreateEvent = () => {
       "Confirm Withdraw Prohibition",
       "Are you sure you want to withdraw this prohibition.",
       "Withdraw",
-      () => handleWithdraw()
+      () => handleWithdraw(),
     );
   };
 
@@ -300,7 +300,7 @@ export const CreateEvent = () => {
               formLayout={item}
               formType={form}
               values={values}
-            />
+            />,
           );
         }
         componentsToRender.push(<div id={item}>{components}</div>);

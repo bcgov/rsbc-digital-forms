@@ -1,9 +1,8 @@
-
 name: "trivy-scan"
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 jobs:
@@ -106,22 +105,27 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        contexts: [ 'roadside-forms-frontend/frontend_web_app', 'python/prohibition_web_svc','python/form_handler' ]
+        contexts:
+          [
+            "roadside-forms-frontend/frontend_web_app",
+            "python/prohibition_web_svc",
+            "python/form_handler",
+          ]
         # image_names: ['rsbc-roadside-forms-frontend','rsbc-roadside-forms-backend-api','rsbc-roadside-forms-form-handler']
         # sarif_file: [ 'trivy-frontend.sarif','trivy-backend.sarif','trivy-form-handler.sarif']
         include:
-            - contexts: roadside-forms-frontend/frontend_web_app
-              image_names: rsbc-roadside-forms-frontend
-              sarif_file: trivy-frontend.sarif
-              docker_file: roadside-forms-frontend/frontend_web_app/Dockerfile
-            - contexts: python
-              image_names: rsbc-roadside-forms-backend-api
-              sarif_file: trivy-backend.sarif
-              docker_file: python/prohibition_web_svc/Dockerfile
-            - contexts: python
-              image_names: rsbc-roadside-forms-form-handler
-              sarif_file: trivy-form-handler.sarif
-              docker_file: python/form_handler/Dockerfile
+          - contexts: roadside-forms-frontend/frontend_web_app
+            image_names: rsbc-roadside-forms-frontend
+            sarif_file: trivy-frontend.sarif
+            docker_file: roadside-forms-frontend/frontend_web_app/Dockerfile
+          - contexts: python
+            image_names: rsbc-roadside-forms-backend-api
+            sarif_file: trivy-backend.sarif
+            docker_file: python/prohibition_web_svc/Dockerfile
+          - contexts: python
+            image_names: rsbc-roadside-forms-form-handler
+            sarif_file: trivy-form-handler.sarif
+            docker_file: python/form_handler/Dockerfile
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -145,14 +149,14 @@ jobs:
           file: ${{matrix.docker_file}}
           push: false
           load: true
-          tags:  ${{matrix.image_names}}:latest
+          tags: ${{matrix.image_names}}:latest
       - name: Run Trivy vulnerability scanner- save to sarif file
         uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
         if: always()
         with:
           scan-type: image
           image-ref: ${{matrix.image_names}}:latest
-          format: 'template'
+          format: "template"
           ignore-unfixed: true
           template: "@/contrib/sarif.tpl"
           output: ${{matrix.sarif_file}}

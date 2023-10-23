@@ -14,7 +14,7 @@ const vehicleImpoundedValidation = (selectedValue) => {
       }
 
       return true;
-    }
+    },
   );
 };
 
@@ -30,7 +30,7 @@ const prescribedDeviceValidation = (selectedValue) => {
       }
 
       return true;
-    }
+    },
   );
 };
 
@@ -47,7 +47,7 @@ const releasedToDriverValidation = (selectedValue) => {
       }
 
       return true;
-    }
+    },
   );
 };
 
@@ -63,7 +63,7 @@ const prohibitionValidation = (yesSeleted) => {
       }
 
       return true;
-    }
+    },
   );
 };
 
@@ -82,12 +82,12 @@ const validateRequiredDateWithMax = (selectedValue, errorPath, maxDate) => {
       const yesterdayPST = new Date(
         today.getFullYear(),
         today.getMonth(),
-        today.getDate() - 1
+        today.getDate() - 1,
       );
       const todayPST = new Date(
         today.getFullYear(),
         today.getMonth(),
-        today.getDate()
+        today.getDate(),
       );
 
       if (
@@ -127,7 +127,7 @@ export const validationSchema = Yup.object().shape({
   "officer-agency": Yup.string().required("Agency is required"),
   driver_phone: Yup.string().matches(
     /^\d{3}-\d{3}-\d{4}$/,
-    "Phone number format ###-###-####"
+    "Phone number format ###-###-####",
   ),
   driver_dob: Yup.string()
     .nullable()
@@ -202,7 +202,7 @@ export const validationSchema = Yup.object().shape({
       }
 
       return true;
-    }
+    },
   ),
   location_of_keys: Yup.string().when("TwentyFourHour", {
     is: true,
@@ -226,14 +226,14 @@ export const validationSchema = Yup.object().shape({
       }
 
       return true;
-    }
+    },
   ),
   type_of_prohibition: Yup.mixed().when("TwentyFourHour", {
     is: true,
     then: () => prohibitionValidation(Yup.ref("TwentyFourHour")),
   }),
   intersection_or_address_of_offence: prohibitionValidation(
-    Yup.ref("TwentyFourHour")
+    Yup.ref("TwentyFourHour"),
   ),
   offence_city: prohibitionValidation(Yup.ref("TwentyFourHour")),
   agency_file_no: prohibitionValidation(Yup.ref("TwentyFourHour")),
@@ -246,8 +246,8 @@ export const validationSchema = Yup.object().shape({
       validateRequiredDateWithMax(
         Yup.ref("TwentyFourHour"),
         "date_of_driving",
-        new Date()
-      )
+        new Date(),
+      ),
     ),
   time_of_driving: Yup.string()
     .matches(/^([01]\d|2[0-3])[0-5]\d$/, "Invalid time format")
@@ -265,10 +265,10 @@ export const validationSchema = Yup.object().shape({
         }
 
         return true;
-      }
+      },
     ),
   vehicle_released_to: releasedToDriverValidation(
-    Yup.ref("reason-for-not-impounding")
+    Yup.ref("reason-for-not-impounding"),
   ),
   date_released: Yup.date()
     .max(new Date(), "Date of release cannot be a future date")
@@ -282,15 +282,15 @@ export const validationSchema = Yup.object().shape({
           validateRequiredDateWithMax(
             Yup.ref("reason-for-not-impounding"),
             "date_released",
-            new Date()
-          )
+            new Date(),
+          ),
         ),
     }),
   time_released: releasedToDriverValidation(
-    Yup.ref("reason_for_not_impounding")
+    Yup.ref("reason_for_not_impounding"),
   ).matches(/^([01]\d|2[0-3])[0-5]\d$/, "Invalid time format"),
   reasonable_test_used_alcohol: prescribedDeviceValidation(
-    Yup.ref("prescribed_test_used")
+    Yup.ref("prescribed_test_used"),
   ),
   bac_result_mg: Yup.number()
     .nullable()
@@ -312,7 +312,7 @@ export const validationSchema = Yup.object().shape({
         }
 
         return true;
-      }
+      },
     ),
   asd_expiry_date: Yup.date()
     .nullable()
@@ -337,7 +337,7 @@ export const validationSchema = Yup.object().shape({
         }
 
         return true;
-      }
+      },
     ),
   result_alcohol: Yup.string()
     .nullable()
@@ -355,9 +355,9 @@ export const validationSchema = Yup.object().shape({
         }
 
         return true;
-      }
+      },
     ),
   reasonable_test_used_alcohol: prescribedDeviceValidation(
-    Yup.ref("prescribed_test_used")
+    Yup.ref("prescribed_test_used"),
   ),
 });

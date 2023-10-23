@@ -1,7 +1,7 @@
 {
-  "resp":"fail",
-  "error":{
-    "message":"Record not found",
-    "httpStatus":404
+  "resp": "fail",
+  "error": {
+    "message": "Record not found",
+    "httpStatus": 404
   }
 }

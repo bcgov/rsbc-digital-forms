@@ -17,9 +17,16 @@ export const TextAreaInput = ({ label, required, onChange, ...props }) => {
       <label htmlFor={props.id || props.name}>
         {label}
         {required && <span className="required-asterisk"> *</span>}
-        </label>
-      <textarea id={field.name} {...field} {...props} onChange={handleInputChange} />
-      {meta.touched && meta.error ? <div className="error-message">{meta.error}</div> : null}
+      </label>
+      <textarea
+        id={field.name}
+        {...field}
+        {...props}
+        onChange={handleInputChange}
+      />
+      {meta.touched && meta.error ? (
+        <div className="error-message">{meta.error}</div>
+      ) : null}
     </div>
   );
-}
+};

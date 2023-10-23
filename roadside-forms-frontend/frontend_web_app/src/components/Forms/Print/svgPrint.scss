@@ -35,7 +35,8 @@
 $font_path: ("../../../assets");
 @font-face {
   font-family: "barcode";
-  src: local("barcode"),
+  src:
+    local("barcode"),
     url($font_path + "/libre-barcode-39-v19-latin-regular.woff") format("woff");
   font-style: normal;
   font-weight: 400;

@@ -1,6 +1,6 @@
-import {atom} from 'recoil'
+import { atom } from "recoil";
 
 export const loginCompletedAtom = atom({
-    key: 'loginCompleted',
-    default: false,
-  });
+  key: "loginCompleted",
+  default: false,
+});

@@ -11,12 +11,12 @@
       "driverLicenceSeizedYn": "Y",
       "disclosure": [
         {
-            "documentId": "1234",
-            "disclosedDtm": "2019-01-02 17:30:00 -08:00"
+          "documentId": "1234",
+          "disclosedDtm": "2019-01-02 17:30:00 -08:00"
         },
         {
-            "documentId": "1234",
-            "disclosedDtm": "2019-01-02 17:30:00 -08:00"
+          "documentId": "1234",
+          "disclosedDtm": "2019-01-02 17:30:00 -08:00"
         }
       ],
       "reviews": [

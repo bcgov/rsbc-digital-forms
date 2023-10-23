@@ -55,7 +55,7 @@ jobs:
           file: ${{ inputs.DOCKER_FILE }}
           push: false
           load: true
-          tags:  ${{ inputs.DOCKER_IMAGE_NAME }}:latest
+          tags: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
       - name: Check Images
         run: |
           docker images
@@ -74,7 +74,7 @@ jobs:
         with:
           scan-type: image
           image-ref: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
-          format: 'template'
+          format: "template"
           # format: 'table'
           # exit-code: '1'
           ignore-unfixed: true
@@ -96,13 +96,12 @@ jobs:
       # - name: Send results to Status
       #   if: always()
       #   run: |
-      #     cat scan.md >> $GITHUB_STEP_SUMMARY   
+      #     cat scan.md >> $GITHUB_STEP_SUMMARY
       - uses: mshick/add-pr-comment@v2
         if: always()
         with:
           message-path: |
             scan.html
-      
 
   build:
     runs-on: ubuntu-latest

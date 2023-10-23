@@ -2,9 +2,9 @@ name: Scorecard supply-chain security
 on:
   branch_protection_rule:
   schedule:
-    - cron: '24 5 * * 0'
+    - cron: "24 5 * * 0"
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 # Declare default permissions as read only.
@@ -31,7 +31,6 @@ jobs:
           results_format: sarif
           publish_results: true
 
-      
       - name: "Upload artifact"
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # v3.1.0
         with:

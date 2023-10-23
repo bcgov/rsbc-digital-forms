@@ -1,33 +1,31 @@
-{% extends "email_alert_base.html" %}
-
-{% block primary_text_1 %}
-   Visit
-    <a href="{{ link_to_evidence_form }}">Upload Evidence and Statement</a>
-    to provide statements and evidence for your review. You can use this link more than once.
-{% endblock %}
-
-{% block primary_text_2 %}
-    <strong>Things you should know:</strong>
-    <ul>
-        <li>The speed of your Internet connection may affect your ability to upload and submit files.</li>
-        <li>Each upload can be no more than a single file limit of 25 MB and a combined limit of 50 MB.</li>
-        <li>You can return to the form to upload more files until 2 days before your review.</li>
-    </ul>
-{% endblock %}
-
-{% block primary_text_3 %}
-    <strong>Accepted file types:</strong>
-    <ul>
-        <li>.pdf, .doc, .docx and .txt files</li>
-        <li>.xls and .xlsx files</li>
-        <li>.png, .jpg and .gif files</li>
-    </ul>
-{% endblock %}
-
-{% block primary_text_4 %}
-We will <strong>not</strong> accept cloud or Google docs for evidence.
-{% endblock %}
-
-{% block callout %}You must finish providing evidence 2 days before your review.{% endblock %}
-{% block timeline %}evidence.png{% endblock %}
-{% block email_not_monitored %}{% include 'partials/call_appeals_registry.html' %}{% endblock %}
+{% extends "email_alert_base.html" %} {% block primary_text_1 %} Visit
+<a href="{{ link_to_evidence_form }}">Upload Evidence and Statement</a>
+to provide statements and evidence for your review. You can use this link more
+than once. {% endblock %} {% block primary_text_2 %}
+<strong>Things you should know:</strong>
+<ul>
+  <li>
+    The speed of your Internet connection may affect your ability to upload and
+    submit files.
+  </li>
+  <li>
+    Each upload can be no more than a single file limit of 25 MB and a combined
+    limit of 50 MB.
+  </li>
+  <li>
+    You can return to the form to upload more files until 2 days before your
+    review.
+  </li>
+</ul>
+{% endblock %} {% block primary_text_3 %}
+<strong>Accepted file types:</strong>
+<ul>
+  <li>.pdf, .doc, .docx and .txt files</li>
+  <li>.xls and .xlsx files</li>
+  <li>.png, .jpg and .gif files</li>
+</ul>
+{% endblock %} {% block primary_text_4 %} We will <strong>not</strong> accept
+cloud or Google docs for evidence. {% endblock %} {% block callout %}You must
+finish providing evidence 2 days before your review.{% endblock %} {% block
+timeline %}evidence.png{% endblock %} {% block email_not_monitored %}{% include
+'partials/call_appeals_registry.html' %}{% endblock %}

@@ -18,7 +18,8 @@
         "prohibition-no-image": {
           "@filename": "Combo prohibition no.png",
           "@mediatype": "image/png",
-          "#text": "/fr/service/persistence/crud/gov-pssg/review_schedule_picker/form/7490a2bdcb0062a565a5e7aa2b4144560c83d8e7.bin"},
+          "#text": "/fr/service/persistence/crud/gov-pssg/review_schedule_picker/form/7490a2bdcb0062a565a5e7aa2b4144560c83d8e7.bin"
+        },
         "last-name": "Gordon",
         "control-3": null,
         "api-error": null,
@@ -26,5 +27,6 @@
         "control-1": null
       }
     },
-    "xml": "--not-used--"}
+    "xml": "--not-used--"
+  }
 }

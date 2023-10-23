@@ -25,9 +25,7 @@
             {
               "use": "official",
               "family": "Abbott",
-              "given": [
-                "Geoffrey"
-              ]
+              "given": ["Geoffrey"]
             }
           ],
           "telecom": [
@@ -42,9 +40,7 @@
           "address": [
             {
               "use": "home",
-              "line": [
-                "997 Koepp Row Unit 64"
-              ],
+              "line": ["997 Koepp Row Unit 64"],
               "city": "Southborough",
               "state": "Massachusetts",
               "postalCode": "01772",
@@ -67,17 +63,13 @@
             {
               "use": "official",
               "family": "Orn",
-              "given": [
-                "Albertine"
-              ]
+              "given": ["Albertine"]
             }
           ],
           "address": [
             {
               "use": "home",
-              "line": [
-                "66B CONCORD STREET"
-              ],
+              "line": ["66B CONCORD STREET"],
               "city": "WILMINGTON",
               "state": "MA",
               "postalCode": "1887",
@@ -1041,5 +1033,4 @@
       }
     ]
   }
-
 }

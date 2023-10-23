@@ -27,31 +27,31 @@ export const Dashboard = () => {
   const [staticDataLoaded, setStaticDataLoaded] = useState(false);
   const [userResource, setUserResource] = useRecoilState(userAtom);
   const [agencyResource, setAgencyResource] = useRecoilState(
-    staticResources["agencies"]
+    staticResources["agencies"],
   );
   const [cityResource, setCityResource] = useRecoilState(
-    staticResources["cities"]
+    staticResources["cities"],
   );
   const [countryResource, setCountryResource] = useRecoilState(
-    staticResources["countries"]
+    staticResources["countries"],
   );
   const [jusrisdictionResource, setJurisdictionResource] = useRecoilState(
-    staticResources["jurisdictions"]
+    staticResources["jurisdictions"],
   );
   const [impoundResource, setImpoundResource] = useRecoilState(
-    staticResources["impound_lot_operators"]
+    staticResources["impound_lot_operators"],
   );
   const [provinceResource, setProvinceResource] = useRecoilState(
-    staticResources["provinces"]
+    staticResources["provinces"],
   );
   const [vehicleStyleResource, setVehicleStyleResource] = useRecoilState(
-    staticResources["vehicle_styles"]
+    staticResources["vehicle_styles"],
   );
   const [vehicleColourResource, setVehicleColourResource] = useRecoilState(
-    staticResources["vehicle_colours"]
+    staticResources["vehicle_colours"],
   );
   const [vehicleResource, setVehicleResource] = useRecoilState(
-    staticResources["vehicles"]
+    staticResources["vehicles"],
   );
 
   useEffect(() => {
@@ -122,7 +122,7 @@ export const Dashboard = () => {
         vehicleStyleResource,
         jusrisdictionResource,
         cityResource,
-        impoundResource
+        impoundResource,
       );
       if (flattenedEventData.length) {
         db.event.bulkPut(flattenedEventData);

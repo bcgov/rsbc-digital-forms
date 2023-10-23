@@ -47,7 +47,7 @@ export const ConfirmationStep = () => {
     const currentDate = new Date();
 
     const pacificDate = new Date(
-      currentDate.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
+      currentDate.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }),
     );
 
     const year = pacificDate.getFullYear();

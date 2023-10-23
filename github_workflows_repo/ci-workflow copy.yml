@@ -55,7 +55,7 @@ jobs:
           file: ${{ inputs.DOCKER_FILE }}
           push: false
           load: true
-          tags:  ${{ inputs.DOCKER_IMAGE_NAME }}:latest
+          tags: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
       - name: Check Images
         run: |
           docker images
@@ -65,7 +65,7 @@ jobs:
           scan-type: image
           image-ref: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
           format: table
-          exit-code: '1'
+          exit-code: "1"
           ignore-unfixed: true
           severity: HIGH,CRITICAL
       - name: Run Trivy vulnerability scanner- save to file
@@ -74,22 +74,21 @@ jobs:
         with:
           scan-type: image
           image-ref: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
-          format: 'template'
+          format: "template"
           # exit-code: '1'
           ignore-unfixed: true
           template: "@trivy/github-markdown.tpl"
           output: trivy.md
-          severity: HIGH,CRITICAL   
+          severity: HIGH,CRITICAL
       - name: Send results to Status
         if: always()
         run: |
-          cat trivy.md >> $GITHUB_STEP_SUMMARY   
+          cat trivy.md >> $GITHUB_STEP_SUMMARY
       # - uses: mshick/add-pr-comment@v2
       #   if: always()
       #   with:
       #     message-path: |
       #       trivy-results.sarif
-      
 
   build:
     runs-on: ubuntu-latest

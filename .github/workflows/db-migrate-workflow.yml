@@ -19,7 +19,6 @@ on:
   push:
     branches:
       - patch/dbmigrate
-    
 
 jobs:
   build:

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useField } from 'formik';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import Select from 'react-select';
-import { MultiSelectWidget } from '../Widget/MultiSelectWidget'; 
+import React, { useState } from "react";
+import { useField } from "formik";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import Select from "react-select";
+import { MultiSelectWidget } from "../Widget/MultiSelectWidget";
 
 export const MultiSelectField = ({ label, name, options }) => {
   const [field, , helpers] = useField(name);
@@ -21,9 +21,14 @@ export const MultiSelectField = ({ label, name, options }) => {
 
   return (
     <>
-      <label htmlFor={name}>{label}</label>{' '}<Button variant="primary" className="slim-button" onClick={handleToggleModal}>
-            Edit
-          </Button>
+      <label htmlFor={name}>{label}</label>{" "}
+      <Button
+        variant="primary"
+        className="slim-button"
+        onClick={handleToggleModal}
+      >
+        Edit
+      </Button>
       <Select
         isMulti
         options={options}
@@ -41,7 +46,11 @@ export const MultiSelectField = ({ label, name, options }) => {
           <Modal.Title>Select Options</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <MultiSelectWidget name={name} options={options} onSelect={handleSelect} />
+          <MultiSelectWidget
+            name={name}
+            options={options}
+            onSelect={handleSelect}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleToggleModal}>

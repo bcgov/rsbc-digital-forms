@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up Node.js 16.x
         uses: actions/setup-node@v3
         with:
@@ -32,7 +32,7 @@ jobs:
       #     REACT_APP_KEYCLOAK_REALM: ${{ secrets.REACT_APP_KEYCLOAK_REALM }}
       #     REACT_APP_KEYCLOAK_CLIENT_ID: ${{ secrets.REACT_APP_KEYCLOAK_CLIENT_ID }}
       #     REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL_DEV }}
-      #   run: |          
+      #   run: |
       #     cd roadside-forms-frontend/frontend_web_app
       #     npm run build:ci
       - name: Run Tests
@@ -43,10 +43,11 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         if: always()
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: roadside-forms-frontend/frontend_web_app            
+          projectBaseDir:
+            roadside-forms-frontend/frontend_web_app
             # -Dsonar.coverage.exclusions=src/setupTests.js
             # -Dsonar.tests=src/tests/
             # -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
@@ -61,5 +62,5 @@ jobs:
           #   sonar.exclusions=**/*.test.js,**/*.spec.js
           #   sonar.coverage.exclusions=**/*.test.js,**/*.spec.js
           #   sonar.test.inclusions=**/*.test.js,**/*.spec.js
-            # sonar.javascript.lcov.reportPaths=coverage/lcov.info
+          # sonar.javascript.lcov.reportPaths=coverage/lcov.info
           #   sonar.testExecutionReportPaths=test-report.xml

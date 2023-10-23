@@ -1,21 +1,33 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import './button.scss';
+import React from "react";
+import PropTypes from "prop-types";
+import "./button.scss";
 
 /**
  * Primary UI component for user interaction
  */
-export const Button = ({ primary, backgroundColor, size, label, icon=null, disabled, ...props }) => {
-  const mode = primary ? 'storybook-button--primary' : 'storybook-button--secondary';
+export const Button = ({
+  primary,
+  backgroundColor,
+  size,
+  label,
+  icon = null,
+  disabled,
+  ...props
+}) => {
+  const mode = primary
+    ? "storybook-button--primary"
+    : "storybook-button--secondary";
 
   const buttonStyle = {
-    backgroundColor: disabled ? 'steelblue' : (backgroundColor || null),
+    backgroundColor: disabled ? "steelblue" : backgroundColor || null,
     // Add other styles as needed
-  }; 
+  };
   return (
     <button
       type="button"
-      className={['storybook-button', `storybook-button--${size}`, mode].join(' ')}
+      className={["storybook-button", `storybook-button--${size}`, mode].join(
+        " ",
+      )}
       style={buttonStyle}
       disabled={disabled}
       {...props}
@@ -38,7 +50,7 @@ Button.propTypes = {
   /**
    * How large should the button be?
    */
-  size: PropTypes.oneOf(['small', 'medium', 'large']),
+  size: PropTypes.oneOf(["small", "medium", "large"]),
   /**
    * Button contents
    */
@@ -52,6 +64,6 @@ Button.propTypes = {
 Button.defaultProps = {
   backgroundColor: null,
   primary: false,
-  size: 'medium',
+  size: "medium",
   onClick: undefined,
 };

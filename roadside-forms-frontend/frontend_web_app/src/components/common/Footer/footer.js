@@ -1,5 +1,5 @@
-import React,{useState} from 'react';
-import packageJson from '../../../../package.json';
+import React, { useState } from "react";
+import packageJson from "../../../../package.json";
 
 export const Footer = () => {
   // code to on hover over <p> show another <p> element
@@ -9,9 +9,11 @@ export const Footer = () => {
   const hideText = () => setShow(false);
 
   return (
-    <footer id="roadesafety-footer" className='text-center text-font'>
-      <p onMouseOver={showText} onMouseOut={hideText}>Version: {packageJson.version}</p>
-      { show && <p>Hash: {hashValue}</p>}
+    <footer id="roadesafety-footer" className="text-center text-font">
+      <p onMouseOver={showText} onMouseOut={hideText}>
+        Version: {packageJson.version}
+      </p>
+      {show && <p>Hash: {hashValue}</p>}
     </footer>
   );
-}
+};

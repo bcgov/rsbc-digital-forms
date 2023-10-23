@@ -102,7 +102,7 @@ export const getEventDataToSave = (formValues) => {
       (eventValues[item] =
         typeof formValues[item] === "object"
           ? formValues[item]["value"]
-          : formValues[item])
+          : formValues[item]),
   );
   return eventValues;
 };
@@ -354,7 +354,7 @@ export const eventDataFormatter = (
   vehicleStyles,
   jurisdictions,
   cities,
-  impoundLots
+  impoundLots,
 ) => {
   const eventData = [];
   const date_fields = [
@@ -371,7 +371,7 @@ export const eventDataFormatter = (
   for (const item in data) {
     const event = data[item];
     const driverJurisdiction = jurisdictions.filter(
-      (x) => x["objectCd"] === event["driver_jurisdiction"]
+      (x) => x["objectCd"] === event["driver_jurisdiction"],
     )[0];
     event["drivers_licence_jurisdiction"] = {
       value: driverJurisdiction.objectCd,
@@ -379,7 +379,7 @@ export const eventDataFormatter = (
     };
     delete event["drivers_jurisdiction"];
     const driverProvState = provinces.filter(
-      (x) => x["objectCd"] === event["driver_prov"]
+      (x) => x["objectCd"] === event["driver_prov"],
     )[0];
     event["driver_prov_state"] = {
       value: driverProvState.objectCd,
@@ -387,7 +387,7 @@ export const eventDataFormatter = (
     };
     delete event["driver_prov"];
     const vehicleJurisdiction = jurisdictions.filter(
-      (x) => x["objectCd"] === event["vehicle_jurisdiction"]
+      (x) => x["objectCd"] === event["vehicle_jurisdiction"],
     )[0];
     event["vehicle_jurisdiction"] = {
       value: vehicleJurisdiction.objectCd,
@@ -395,7 +395,7 @@ export const eventDataFormatter = (
     };
     if (event["nsc_prov_state"]) {
       const nscProvState = provinces.filter(
-        (x) => x["objectCd"] === event["nsc_prov_state"]
+        (x) => x["objectCd"] === event["nsc_prov_state"],
       )[0];
       event["nsc_prov_state"] = {
         value: nscProvState.objectCd,
@@ -405,7 +405,7 @@ export const eventDataFormatter = (
 
     if (!event["TwelveHour"] || (event["TwelveHour"] && event["VI"])) {
       const registOwnerProvState = provinces.filter(
-        (x) => x["objectCd"] === event["regist_owner_prov"]
+        (x) => x["objectCd"] === event["regist_owner_prov"],
       )[0];
       event["regist_owner_prov_state"] = {
         value: registOwnerProvState.objectCd,
@@ -414,7 +414,7 @@ export const eventDataFormatter = (
     }
     delete event["regist_owner_prov"];
     const offenceCity = cities.filter(
-      (x) => x["objectCd"] === event["offence_city"]
+      (x) => x["objectCd"] === event["offence_city"],
     )[0];
     event["offence_city"] = {
       value: offenceCity.objectCd,
@@ -422,7 +422,7 @@ export const eventDataFormatter = (
     };
     const mk_md_split = event["vehicle_mk_md"].split("-");
     const vehicle = vehicles.filter(
-      (x) => x["mk"] === mk_md_split[0] && x["md"] === mk_md_split[1]
+      (x) => x["mk"] === mk_md_split[0] && x["md"] === mk_md_split[1],
     )[0];
     event["vehicle_mk_md"] = {
       value: vehicle?.mk + "-" + vehicle?.md,
@@ -440,7 +440,7 @@ export const eventDataFormatter = (
     }
 
     const vehicleStyl = vehicleStyles.filter(
-      (x) => x["code"] === event["vehicle_style"]
+      (x) => x["code"] === event["vehicle_style"],
     )[0];
     event["vehicle_style"] = {
       value: vehicleStyl.code,
@@ -448,7 +448,7 @@ export const eventDataFormatter = (
     };
     if (event["impound_lot_operator"]) {
       const impound = impoundLots.filter(
-        (x) => x["id"] === event["impound_lot_operator"]
+        (x) => x["id"] === event["impound_lot_operator"],
       )[0];
       event["ILO-options"] = {
         label:

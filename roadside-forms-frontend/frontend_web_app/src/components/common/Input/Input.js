@@ -18,9 +18,17 @@ export const Input = ({ label, required, onChange, ...props }) => {
       <label htmlFor={props.id || props.name}>
         {label}
         {required && <span className="required-asterisk"> *</span>}
-        </label>
-      <input id={field.name} {...field} {...props} className='form-control' onChange={handleInputChange} />
-      {meta.touched && meta.error ? <div className="error-message">{meta.error}</div> : null}
+      </label>
+      <input
+        id={field.name}
+        {...field}
+        {...props}
+        className="form-control"
+        onChange={handleInputChange}
+      />
+      {meta.touched && meta.error ? (
+        <div className="error-message">{meta.error}</div>
+      ) : null}
     </div>
   );
-}
+};

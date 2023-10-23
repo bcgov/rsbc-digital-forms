@@ -1,11 +1,11 @@
 const axios = {
-    create: jest.fn(() => ({
-      interceptors: {
-        response: {
-          use: jest.fn(),
-        },
+  create: jest.fn(() => ({
+    interceptors: {
+      response: {
+        use: jest.fn(),
       },
-    })),
-  };
-  
-  export default axios;
+    },
+  })),
+};
+
+export default axios;
