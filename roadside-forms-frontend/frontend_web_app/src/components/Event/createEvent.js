@@ -285,7 +285,6 @@ export const CreateEvent = () => {
     };
     const componentsToRender = [];
     let components = [];
-    console.log(values);
     for (const item in forms) {
       if (forms[item]) {
         for (const form in formsPNG[renderStage][item]) {
@@ -397,7 +396,6 @@ export const CreateEvent = () => {
         if (values["VI"]) {
           setNSCVI(values);
         }
-        console.log(values);
         return <div>{renderSVGForm(values, "stageOne")}</div>;
       case 2:
         return <ConfirmationStep />;
