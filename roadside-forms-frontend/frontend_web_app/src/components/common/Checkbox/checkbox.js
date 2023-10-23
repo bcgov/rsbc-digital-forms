@@ -13,7 +13,7 @@ export const Checkbox = ({ checked, children, ...props }) => {
           id={field.name}
           {...field}
           {...props}
-          checked={checked}
+          checked={field.value}
         />
         <span style={{ marginLeft: "5px" }}>{children}</span>
       </label>

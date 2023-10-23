@@ -15,8 +15,15 @@ on:
       - trigger.txt
 
 jobs:
+  run_automated_tests:
+    uses: ./.github/workflows/automated-testing-workflow.yml
+    with:
+      BUILD_CONTEXT: roadside-forms-frontend/frontend_web_app
+      NODE_VERSION: 16.14.2
+    secrets: inherit
   CD:
     uses: ./.github/workflows/cd-workflow.yml
+    # needs: run_automated_tests
     with:
       DOCKER_CONTEXT: roadside-forms-frontend/frontend_web_app
       DOCKER_FILE: roadside-forms-frontend/frontend_web_app/Dockerfile
