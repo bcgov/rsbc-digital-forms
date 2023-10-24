@@ -35,40 +35,49 @@ export const DriverInfo = (props) => {
   const launchDlScanner = async () => {
     setModalShow(true);
     let scanner = await dlScanner.openScanner();
-    //TODO: CONFIRM THIS NEXT LISTENER WORKS
     scanner.addEventListener("inputreport", handleScannedBarcode);
-    setScannerOpened(!!scannerOpened);
+    setScannerOpened(true);
   };
 
   const cancelDlScan = () => {
     setModalShow(false);
   };
 
-  //TODO: FILL DRIVER INFO FROM SCAN
   const populateDriverFromBarCode = async (dl_data) => {
-    console.log("dl_data: ", dl_data);
+    const dob_year = dl_data["dob"].slice(0, 4);
+    const dob_month = dl_data["dob"].slice(4, 6);
+    const dob_day = dl_data["dob"].slice(6, 8);
+
+    values["driver_licence_no"] = dl_data["number"];
+    values["driver_last_name"] = dl_data["name"]["surname"];
+    values["driver_given_name"] = dl_data["name"]["given"];
+    values["driver_dob"] = new Date(dob_year, dob_month - 1, dob_day);
+    values["drivers_licence_jurisdiction"] = jurisdictions.filter(
+      (jurisdiction) => jurisdiction.value === dl_data["province"]
+    );
+    values["driver_address"] = dl_data["address"]["street"];
+    values["driver_city"] = dl_data["address"]["city"];
+    values["driver_prov_state"] = provinces.filter(
+      (province) => province.value === dl_data["address"]["province"]
+    );
+    values["driver_postal"] = dl_data["address"]["postalCode"];
   };
 
-  //TODO: LOOKUP PROVINCE FROM BARCODE
-  const lookupDriverProvince = async (provinceArray) => {
-    console.log("provincearray: ", provinceArray);
-  };
-
-  //TODO: VERIFY THIS WORKS
   const handleScannedBarcode = (event) => {
-    console.log("EVENT: ", event);
     const { data, device, reportId } = event;
     dlScanner
       .readFromScanner(device, reportId, data)
       .then((dl_data) => {
         populateDriverFromBarCode(dl_data);
-        return dl_data["address"]["province"];
-      })
-      .then((provinceCode) => {
-        lookupDriverProvince([this.path, provinceCode]);
       })
       .then(() => {
         setModalShow(false);
+      })
+      .catch((err) => {
+        console.error(
+          "! An error occurred reading data from the scanner: ",
+          err
+        );
       });
   };
 
@@ -86,7 +95,7 @@ export const DriverInfo = (props) => {
         </Modal.Header>
         <Modal.Body>
           {scannerOpened ? (
-            <div>Please scan BC Driver's License.</div>
+            <div>Please scan BC Driver's License now.</div>
           ) : (
             <div> Requesting access to the DL scanner...</div>
           )}

@@ -6,18 +6,15 @@ const supportedScanners = [
 export const dlScanner = {
   async getScanner() {
     // get scanner from list of scanners user has granted us access
-    console.log("inside searchForScanner()");
     const device_list = await navigator.hid.getDevices();
     return device_list[0];
   },
 
   async requestAccessToScanner() {
     // ask user for permission to access hardware scanner
-    console.log("inside connectToScanner()");
     let devices = await navigator.hid.requestDevice({
       filters: supportedScanners,
     });
-    console.log("openDevice(): device list", devices);
     return devices[0];
   },
 
@@ -28,7 +25,7 @@ export const dlScanner = {
       scanner = await this.requestAccessToScanner();
     }
 
-    if (scanner && scanner.opened) {
+    if (scanner.opened) {
       return scanner;
     } else {
       await scanner.open();
@@ -37,9 +34,6 @@ export const dlScanner = {
   },
 
   async readFromScanner(device, reportId, data) {
-    console.log(
-      `readDataFromScanner(): Received input report ${reportId} from ${device.productName}`
-    );
     return await new Promise((resolve) => {
       const magStripe = String.fromCharCode.apply(
         null,
