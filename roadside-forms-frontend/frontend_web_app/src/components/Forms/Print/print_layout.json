@@ -524,7 +524,7 @@
       "NOT_IMPOUNDED_REASON": {
         "field_type": "text",
         "field_name": "reason_for_not_impounding",
-        "classNames": "fontSmall",
+        "classNames": "fontXSmall",
         "start": {
           "x": 44.5,
           "y": 141

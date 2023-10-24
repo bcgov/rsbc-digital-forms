@@ -226,7 +226,7 @@ export const printFormatHelper = (values, data, key) => {
   } else if (values["TwentyFourHour"]) {
     released_val = "reason_for_not_impounding";
   }
-  if (key === "RELEASE_LOCATION_VEHICLE") {
+  if (key === "RELEASE_LOCATION_VEHICLE" || key === "NOT_IMPOUNDED_REASON") {
     if (values["VI"]) {
       val = values["ILO-name"];
     } else {
