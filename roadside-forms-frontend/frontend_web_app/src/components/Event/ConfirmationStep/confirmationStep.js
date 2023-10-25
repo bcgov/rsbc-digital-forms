@@ -136,8 +136,8 @@ export const ConfirmationStep = () => {
               </Container>
               <span className="mt-4">
                 The individual is prohibited under section 215 of the Motor
-                Vehicle Act from driving a motor vehicle for 24 hours,
-                commencing at
+                Vehicle Act from driving a motor vehicle for
+                {values["TwelveHour"] ? "12" : "24"} hours, commencing at
                 {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},
                 {timeOfDriving ? formatTime(timeOfDriving) : "N/A"}
               </span>
