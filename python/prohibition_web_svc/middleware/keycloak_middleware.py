@@ -6,6 +6,7 @@ from python.prohibition_web_svc.models import db, UserRole, Permission
 from python.prohibition_web_svc.config import Config
 
 
+jwks_client = jwt.PyJWKClient(Config.KEYCLOAK_CERTS_URL)
 def get_authorization_header_from_request(**kwargs) -> tuple:
     request = kwargs.get('request')
     try:
@@ -26,11 +27,15 @@ def get_token_from_authorization_header(**kwargs) -> tuple:
 
 
 def get_keycloak_certificates(**kwargs) -> tuple:
-    try:
-        jwks_client = jwt.PyJWKClient(Config.KEYCLOAK_CERTS_URL)
+    try:        
+        logging.info("getting keycloak certificates")
         kwargs['signing_key'] = jwks_client.get_signing_key_from_jwt(kwargs.get('access_token')).key
+        logging.info("got keycloak certificates")
+        logging.debug("signing key: " + str(kwargs.get('signing_key')))
     except Exception as e:
         kwargs['error'] = str(e)
+        logging.debug("error while getting keycloak certificates: " + str(e))
+        logging.error("error while getting keycloak certificates: " + str(e))
         return False, kwargs
     return True, kwargs
 

@@ -54,6 +54,10 @@ $primary: #003366; // Change this to your desired primary color
     height: 40px;
   }
 
+.text-area-height {
+    height: 150px;
+  }
+
 .right{
     text-align: right;
 }
@@ -68,4 +72,24 @@ $primary: #003366; // Change this to your desired primary color
 
 .flex{
     display: flex; 
+}
+
+.textArea{
+    width: 120px;
+    height:25px;
+    text-align: left;
+}
+
+::-webkit-scrollbar {
+    width: 2em;
+    height: 2em;
+}
+::-webkit-scrollbar-button {
+    background: #ccc;
+}
+::-webkit-scrollbar-thumb {
+    background: #eee;
+}
+::-webkit-scrollbar-track-piece {
+    background: #888;
 }
