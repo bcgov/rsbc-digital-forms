@@ -7,6 +7,8 @@ import PropTypes from "prop-types";
 import { SearchableSelect } from "../common/Select/SearchableSelect";
 import { useFormikContext } from "formik";
 import "./commonForm.scss";
+import { Row, Col } from "react-bootstrap";
+import { DateOfBirthField } from "../common/DateField/dateOfBirthField";
 
 export const RegisteredOwnerInfo = (props) => {
   const { provinces } = props;
@@ -30,6 +32,8 @@ export const RegisteredOwnerInfo = (props) => {
     }
   }, [ownedByCorp, setValues, values]);
 
+  // TODO: Clear driver first + last name + DOB when corporate ownership checked
+
   const handlePopulateFields = () => {
     // Get the driver information and populate registered owner fields when prefill button is clicked
     const driverInfo = {
@@ -40,6 +44,10 @@ export const RegisteredOwnerInfo = (props) => {
       regist_owner_city: values["driver_city"],
       regist_owner_prov_state: values["driver_prov_state"],
       regist_owner_postal: values["driver_postal"],
+      regist_owner_dob: values["driver_dob"],
+      driver_is_regist_owner: true,
+      owned_by_corp: false,
+      corporation_name: "",
     };
     setValues({
       ...values,
@@ -49,11 +57,11 @@ export const RegisteredOwnerInfo = (props) => {
 
   return (
     <div className="registered-owner-info border-design-form left">
-      <div className="row" style={{ minHeight: "40px" }}>
-        <div className="col-sm-10">
+      <Row style={{ minHeight: "40px" }}>
+        <Col sm={10}>
           <h3>Registered Owner</h3>
-        </div>
-        <div className="col-sm-2 right">
+        </Col>
+        <Col sm={2}>
           <Button
             className="slim-button"
             variant="primary"
@@ -61,83 +69,105 @@ export const RegisteredOwnerInfo = (props) => {
           >
             Fill from driver
           </Button>
-        </div>
-      </div>
-      <div className="row" style={{ minHeight: "85px" }}>
-        <div className="col-sm-12 mt-4">
+        </Col>
+      </Row>
+      <Row style={{ minHeight: "85px", marginTop: "20px" }}>
+        <Col sm={6}>
           <Checkbox name="owned_by_corp">Owned by Corporate Entity</Checkbox>
-        </div>
-      </div>
+        </Col>
+        {values["VI"] && (
+          <Col sm={6}>
+            <Checkbox name="driver_is_regist_owner">
+              The driver is the registered owner
+            </Checkbox>
+          </Col>
+        )}
+      </Row>
       {ownedByCorp ? (
-        <div className="row" style={{ minHeight: "85px" }}>
-          <div className="col-sm-12">
+        <Row className="row" style={{ minHeight: "85px" }}>
+          <Col className="col-sm-12">
             <Input
               className="field-height field-width"
               name="corporation_name"
               label="Corporation Name"
             />
-          </div>
-        </div>
+          </Col>
+        </Row>
       ) : (
-        <div className="row" style={{ minHeight: "85px" }}>
-          <div className="col-sm-6">
+        <Row className="row" style={{ minHeight: "85px" }}>
+          <Col className="col-sm-5">
             <Input
               className="field-height field-width"
               name="regist_owner_last_name"
               label="Owner's Last Name"
             />
-          </div>
-          <div className="col-sm-6">
+          </Col>
+          <Col className="col-sm-5">
             <Input
               className="field-height field-width"
               name="regist_owner_first_name"
               label="Owner's First Name"
             />
-          </div>
-        </div>
+          </Col>
+          <Col className="col-sm-2">
+            <DateOfBirthField
+              className="field-height field-width"
+              name="regist_owner_dob"
+              label="Owner's Date of Birth"
+            />
+          </Col>
+        </Row>
       )}
-      <div className="row" style={{ minHeight: "85px" }}>
-        <div className=" col-sm-9">
+      <Row className="row" style={{ minHeight: "85px" }}>
+        <Col className="col-sm-4">
           <Input
             label="Address"
             name="regist_owner_address"
             className="field-height field-width"
             type="text"
           />
-        </div>
-        <div className=" col-sm-3">
+        </Col>
+        <Col className=" col-sm-4">
           <PhoneField
             className="field-height field-width"
             label="Phone number"
             name="regist_owner_phone"
           />
-        </div>
-      </div>
-      <div className="row" style={{ minHeight: "85px" }}>
-        <div className=" col-sm-4">
+        </Col>
+        <Col className="col-sm-4">
+          <Input
+            label="Email Address"
+            name="regist_owner_email"
+            className="field-height field-width"
+            type="text"
+          />
+        </Col>
+      </Row>
+      <Row className="row" style={{ minHeight: "85px" }}>
+        <Col className=" col-sm-4">
           <Input
             label="City"
             name="regist_owner_city"
             className="field-height field-width"
             type="text"
           />
-        </div>
-        <div className=" col-sm-4">
+        </Col>
+        <Col className=" col-sm-4">
           <SearchableSelect
             className="field-height field-width"
             label="Province / State"
             name="regist_owner_prov_state"
             options={provinces}
           />
-        </div>
-        <div className=" col-sm-4">
+        </Col>
+        <Col className=" col-sm-4">
           <Input
             className="field-height field-width"
             label="Postal / Zip"
             name="regist_owner_postal"
           />
-        </div>
-      </div>
+        </Col>
+      </Row>
     </div>
   );
 };
