@@ -1078,12 +1078,12 @@
       },
       "DRIVER_IS_OWNER": {
         "field_type": "checkbox",
-        "field_name": "driver_is_owner",
+        "field_name": "driver_is_regist_owner",
         "field_val": "",
-        "classNames": "fontSmall",
+        "classNames": "fontXSmall",
         "start": {
-          "x": 17,
-          "y": 55.7
+          "x": 52.2,
+          "y": 43.2
         }
       },
       "OWNER_NAME": {
@@ -1097,10 +1097,10 @@
       },
       "OWNER_DOB": {
         "field_type": "text",
-        "field_name": "",
+        "field_name": "regist_owner_dob",
         "classNames": "fontSmall",
         "start": {
-          "x": 167,
+          "x": 149,
           "y": 51
         }
       },
@@ -1142,10 +1142,10 @@
       },
       "OWNER_EMAIL": {
         "field_type": "text",
-        "field_name": "",
+        "field_name": "regist_owner_email",
         "classNames": "fontSmall",
         "start": {
-          "x": 125,
+          "x": 95,
           "y": 67
         }
       },
