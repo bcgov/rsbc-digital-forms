@@ -587,7 +587,7 @@ class VIForm(db.Model):
     belief_driver_bc_resident = db.Column(db.String)
     out_of_province_dl = db.Column(db.String)
     out_of_province_dl_number = db.Column(db.String)
-    out_of_province_dl_expiry = db.Coulmn(db.String)
+    out_of_province_dl_expiry = db.Column(db.String)
     date_of_impound = db.Column(db.DateTime)
     irp_impound = db.Column(db.String)
     irp_impound_duration = db.Column(db.String)
