@@ -190,9 +190,19 @@ export const printFormatHelper = (values, data, key) => {
         }
       }
     });
+
+    // Add province to location of DL surrender
     if (key === "DL_SURRENDER_LOCATION") {
       val = val + ", BC";
     }
+
+    // For registered owner, if owned by corp, display corp name instead of owner name
+    if (key === "OWNER_NAME") {
+      if (values["owned_by_corp"]) {
+        val = values["corporation_name"];
+      }
+    }
+
     return val;
   }
   //if the value is a date
