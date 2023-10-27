@@ -32,7 +32,7 @@ export const VehicleImpoundmentIRP = (props) => {
           <Row>
             <Col>
               <Radio
-                label="Vehicle Impoind Duration"
+                label="Vehicle Impound Duration"
                 name="irp_impound_duration"
                 options={[
                   {
