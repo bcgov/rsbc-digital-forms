@@ -294,7 +294,7 @@
       },
       "DL_SURRENDER_LOCATION": {
         "field_type": "text",
-        "field_name": "intersection_or_address_of_offence",
+        "field_name": ["intersection_or_address_of_offence", "offence_city"],
         "classNames": "fontSmall",
         "start": {
           "x": 7.5,
@@ -1079,7 +1079,7 @@
       "DRIVER_IS_OWNER": {
         "field_type": "checkbox",
         "field_name": "driver_is_regist_owner",
-        "field_val": "",
+        "field_val": "true",
         "classNames": "fontXSmall",
         "start": {
           "x": 52.2,

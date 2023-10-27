@@ -157,6 +157,7 @@ const dateFieldSplit = ["date_of_driving", "driver_licence_expiry"];
 
 export const printFormatHelper = (values, data, key) => {
   let val = values[data["field_name"]];
+
   // if the value needs to be split into to fields
 
   if (key in fieldsToSplit) {
@@ -171,6 +172,7 @@ export const printFormatHelper = (values, data, key) => {
         : splitData.splice(1).join(data["delimeter"]);
     return val;
   }
+
   //if the field on the form is expecting more than one value join them together
   if (Array.isArray(data["field_name"])) {
     val = "";
@@ -205,6 +207,7 @@ export const printFormatHelper = (values, data, key) => {
 
     return val;
   }
+
   //if the value is a date
   if (
     Object.prototype.toString.call(values[data["field_name"]]) ===
@@ -222,12 +225,18 @@ export const printFormatHelper = (values, data, key) => {
     val = values[data["field_name"]].join("");
     return val;
   }
+
   //temp: if the value is an object then take its value
   if (
     values[data["field_name"]] &&
     typeof values[data["field_name"]] === "object"
   ) {
-    val = values[data["field_name"]]["value"];
+    console.log("KEY: ", key, " VALUE ", val);
+    if (key === "LOCATION_CITY") {
+      val = val["label"];
+    } else {
+      val = values[data["field_name"]]["value"];
+    }
     return val;
   }
   let released_val = "";
