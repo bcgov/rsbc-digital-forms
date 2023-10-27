@@ -130,7 +130,7 @@ export const RegisteredOwnerInfo = (props) => {
         <Col className=" col-sm-4">
           <PhoneField
             className="field-height field-width"
-            label="Phone number"
+            label="Phone Number"
             name="regist_owner_phone"
           />
         </Col>

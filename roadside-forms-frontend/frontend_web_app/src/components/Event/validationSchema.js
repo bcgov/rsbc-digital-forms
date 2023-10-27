@@ -127,7 +127,7 @@ export const validationSchema = Yup.object().shape({
   "officer-agency": Yup.string().required("Agency is required"),
   driver_phone: Yup.string().matches(
     /^\d{3}-\d{3}-\d{4}$/,
-    "Phone number format ###-###-####"
+    "Phone Number format ###-###-####"
   ),
   driver_dob: Yup.string()
     .nullable()
