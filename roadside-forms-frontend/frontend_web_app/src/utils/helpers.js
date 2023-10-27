@@ -7,6 +7,7 @@ import twentyFourHourDriverform from "../assets/MV2634E_101223_driver.png";
 import twentyFourHourILOform from "../assets/MV2634E_101223_ilo.png";
 import twentyFourHourPoliceform from "../assets/MV2634E_101223_police.png";
 import viDriverForm from "../assets/MV2721_201502.png";
+import viIncidentDetails from "../assets/MV2722_201502_Incident_Details.png";
 import appealsForm from "../assets/MV2721_201502_appeal.png";
 import viReportForm from "../assets/MV2722_201502.png";
 import twelveHourDriverForm from "../assets/TwelveHourDriverCopy.png";
@@ -148,6 +149,7 @@ export const formsPNG = {
     VI: {
       POLICE: { png: viDriverForm, aspectClass: "--portrait" },
       REPORT: { png: viReportForm, aspectClass: "--portrait" },
+      DETAILS: { png: viIncidentDetails, aspectClass: "--portrait" },
     },
   },
 };
@@ -315,6 +317,19 @@ export const printFormatHelper = (values, data, key) => {
     if (values["VI"]) {
       val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
     }
+  }
+
+  if (
+    key === "REPORT_INCIDENT_DETAILS" &&
+    values["incident_details_extra_page"]
+  ) {
+    val = "";
+  }
+  if (
+    key === "DETAILS_INCIDENT_DETAILS" &&
+    !values["incident_details_extra_page"]
+  ) {
+    val = "";
   }
 
   return val;

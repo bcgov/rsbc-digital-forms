@@ -1,11 +1,13 @@
 import "./commonForm.scss";
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
+import _ from "lodash";
 import { Input } from "../common/Input/Input";
 import { SearchableSelect } from "../common/Select/SearchableSelect";
 import { useFormikContext } from "formik";
 import Button from "react-bootstrap/Button";
 import { MultiSelectField } from "../common/Select/MultiSelectField";
+import { ICBCVehicleDataApi } from "../../api/icbcVehicleDataApi";
 
 export const VehicleInfo = (props) => {
   const {
@@ -16,7 +18,7 @@ export const VehicleInfo = (props) => {
     jurisdictions,
     provinces,
   } = props;
-  const { values } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext();
   const [disableBtn, setdisableBtn] = useState(true);
   const driversLicenceJurisdiction = values["vehicle_jurisdiction"];
 
@@ -30,6 +32,21 @@ export const VehicleInfo = (props) => {
       setdisableBtn(true);
     }
   }, [driversLicenceJurisdiction]);
+
+  const fetchICBCVehicleInfo = () => {
+    if (values["vehicle_plate_no"]) {
+      ICBCVehicleDataApi.get(values["vehicle_plate_no"]).then((resp) => {
+        if (!_.isEmpty(resp.data)) {
+          // setFieldValue("driver_last_name", party.lastName);
+          // setFieldValue("driver_given_name", party.firstName);
+          // setFieldValue("driver_dob", new Date(party.birthDate));
+          // setFieldValue("driver_address", address.addressLine1);
+          // setFieldValue("driver_city", address.city);
+          // setFieldValue("driver_postal", address.postalCode);
+        }
+      });
+    }
+  };
 
   return (
     <div className="vehicle-info border-design-form left">
@@ -57,6 +74,7 @@ export const VehicleInfo = (props) => {
               className="slim-button"
               variant="primary"
               disabled={disableBtn}
+              onClick={() => fetchICBCVehicleInfo()}
             >
               ICBC Prefill
             </Button>

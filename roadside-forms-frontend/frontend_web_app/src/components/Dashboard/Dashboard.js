@@ -12,7 +12,6 @@ import {
   eventObjectFlatener,
   eventDataFormatter,
 } from "../../utils/helpers";
-import { eventDataUpsert } from "../../utils/dbHelpers";
 import { convertToPST } from "../../utils/dateTime";
 import { StaticDataApi } from "../../api/staticDataApi";
 import { Button } from "../common/Button/Button";
