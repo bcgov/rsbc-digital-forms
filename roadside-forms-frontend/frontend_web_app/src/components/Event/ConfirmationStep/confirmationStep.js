@@ -100,7 +100,6 @@ export const ConfirmationStep = () => {
         <div className="row">
           <div className="col">
             <Checkbox name="confirmation_of_service">
-              {" "}
               {certifyNoticeText}
             </Checkbox>
           </div>
@@ -117,7 +116,7 @@ export const ConfirmationStep = () => {
                   <Col>
                     {"Officers Number"}
                     <br />
-                    {userData.badge_number}{" "}
+                    {userData.badge_number}
                   </Col>
                 </Row>
                 <Row>
@@ -138,8 +137,8 @@ export const ConfirmationStep = () => {
               <span className="mt-4">
                 The individual is prohibited under section 215 of the Motor
                 Vehicle Act from driving a motor vehicle for 24 hours,
-                commencing at{" "}
-                {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},{" "}
+                commencing at
+                {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},
                 {timeOfDriving ? formatTime(timeOfDriving) : "N/A"}
               </span>
             </div>
