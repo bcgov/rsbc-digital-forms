@@ -550,6 +550,7 @@ class VIForm(db.Model):
     belief_driver_bc_resident: str
     out_of_province_dl: str
     out_of_province_dl_number: str
+    out_of_province_dl_expiry: str
     date_of_impound: datetime
     irp_impound: str
     irp_impound_duration: str

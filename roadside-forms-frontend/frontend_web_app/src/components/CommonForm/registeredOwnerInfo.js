@@ -32,8 +32,6 @@ export const RegisteredOwnerInfo = (props) => {
     }
   }, [ownedByCorp, setValues, values]);
 
-  // TODO: Clear driver first + last name + DOB when corporate ownership checked
-
   const handlePopulateFields = () => {
     // Get the driver information and populate registered owner fields when prefill button is clicked
     const driverInfo = {
