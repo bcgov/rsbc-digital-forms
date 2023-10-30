@@ -105,7 +105,6 @@ def save_event_data(**kwargs) -> tuple:
             updated_by=user_guid,
         )
         if data.get('VI'):
-            # TODO: ADD REGIST. OWNER EMAIL
             vi_form = VIForm(
                 gender=data.get('gender'),
                 driver_is_regist_owner=data.get('driver_is_regist_owner'),
