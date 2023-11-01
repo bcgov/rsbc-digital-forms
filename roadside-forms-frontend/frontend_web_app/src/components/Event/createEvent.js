@@ -291,6 +291,9 @@ export const CreateEvent = () => {
           if (form === "ILO" && values["vehicle_impounded"] === "NO") {
             break;
           }
+          if (form === "DETAILS" && !values["incident_details_extra_page"]) {
+            break;
+          }
 
           components.push(
             <SVGprint
@@ -498,6 +501,7 @@ export const CreateEvent = () => {
                         console.log(errors);
                         onSubmit(values);
                       }}
+                      disabled={isSubmitting}
                     >
                       Submit
                     </Button>
