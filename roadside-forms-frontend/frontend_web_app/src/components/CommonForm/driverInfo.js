@@ -2,6 +2,7 @@ import { Input } from "../common/Input/Input";
 import React, { useState, useEffect } from "react";
 import { SearchableSelect } from "../common/Select/SearchableSelect";
 import PropTypes from "prop-types";
+import _ from "lodash";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -12,10 +13,11 @@ import { useFormikContext } from "formik";
 import "./commonForm.scss";
 import Modal from "react-bootstrap/Modal";
 import { dlScanner } from "../../utils/dlScanner";
+import { ICBCDriverDataApi } from "../../api/icbcDriverDataAPI";
 
 export const DriverInfo = (props) => {
   const { jurisdictions, provinces } = props;
-  const { values } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext();
   const [disableBtn, setdisableBtn] = useState(true);
   const [modalShow, setModalShow] = useState(false);
   const [scannerOpened, setScannerOpened] = useState(false);
@@ -81,6 +83,23 @@ export const DriverInfo = (props) => {
       });
   };
 
+  const fetchICBCDriverInfo = () => {
+    if (values["driver_licence_no"]) {
+      ICBCDriverDataApi.get(values["driver_licence_no"]).then((resp) => {
+        if (!_.isEmpty(resp.data)) {
+          const party = resp.data.party;
+          const address = party.addresses[0];
+          setFieldValue("driver_last_name", party.lastName);
+          setFieldValue("driver_given_name", party.firstName);
+          setFieldValue("driver_dob", new Date(party.birthDate));
+          setFieldValue("driver_address", address.addressLine1);
+          setFieldValue("driver_city", address.city);
+          setFieldValue("driver_postal", address.postalCode);
+        }
+      });
+    }
+  };
+
   // Create conditional check for 12h
   return (
     <>
@@ -123,6 +142,7 @@ export const DriverInfo = (props) => {
                 className="slim-button"
                 variant="primary"
                 disabled={disableBtn}
+                onClick={() => fetchICBCDriverInfo()}
               >
                 ICBC Prefill
               </Button>
@@ -250,6 +270,7 @@ export const DriverInfo = (props) => {
     </>
   );
 };
+
 DriverInfo.propTypes = {
   jurisdictions: PropTypes.array.isRequired,
   provinces: PropTypes.array.isRequired,
