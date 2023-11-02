@@ -5,8 +5,10 @@ import { useFormikContext } from "formik";
 import { Radio } from "../../common/Radio/radio";
 import { Input } from "../../common/Input/Input";
 import { DatePickerField } from "../../common/DateField/DatePicker";
+import { SearchableSelect } from "../../common/Select/SearchableSelect";
 
 export const Unlicensed = (props) => {
+  const { jurisdictions } = props;
   const { values } = useFormikContext();
   return (
     <div className="border-design-form left text-font">
@@ -50,7 +52,7 @@ export const Unlicensed = (props) => {
       </Row>
       {values["out_of_province_dl"] === "YES" && (
         <Row>
-          <Col sm={10}>
+          <Col sm={6}>
             <Input
               label="Driver's Licence Number"
               name="out_of_province_dl_number"
@@ -58,6 +60,14 @@ export const Unlicensed = (props) => {
               type="text"
               required
             ></Input>
+          </Col>
+          <Col sm={4}>
+            <SearchableSelect
+              className="field-height field-width"
+              label="Province / State/ International"
+              name="out_of_province_dl_jurisdiction"
+              options={jurisdictions}
+            />
           </Col>
           <Col sm={2}>
             <DatePickerField
