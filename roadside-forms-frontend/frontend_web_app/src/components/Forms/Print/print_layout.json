@@ -294,7 +294,7 @@
       },
       "DL_SURRENDER_LOCATION": {
         "field_type": "text",
-        "field_name": "intersection_or_address_of_offence",
+        "field_name": ["intersection_or_address_of_offence", "offence_city"],
         "classNames": "fontSmall",
         "start": {
           "x": 7.5,
@@ -524,7 +524,7 @@
       "NOT_IMPOUNDED_REASON": {
         "field_type": "text",
         "field_name": "reason_for_not_impounding",
-        "classNames": "fontSmall",
+        "classNames": "fontXSmall",
         "start": {
           "x": 44.5,
           "y": 141
@@ -1078,12 +1078,12 @@
       },
       "DRIVER_IS_OWNER": {
         "field_type": "checkbox",
-        "field_name": "driver_is_owner",
-        "field_val": "",
-        "classNames": "fontSmall",
+        "field_name": "driver_is_regist_owner",
+        "field_val": "true",
+        "classNames": "fontXSmall",
         "start": {
-          "x": 17,
-          "y": 55.7
+          "x": 52.2,
+          "y": 43.2
         }
       },
       "OWNER_NAME": {
@@ -1097,10 +1097,10 @@
       },
       "OWNER_DOB": {
         "field_type": "text",
-        "field_name": "",
+        "field_name": "regist_owner_dob",
         "classNames": "fontSmall",
         "start": {
-          "x": 167,
+          "x": 149,
           "y": 51
         }
       },
@@ -1142,10 +1142,10 @@
       },
       "OWNER_EMAIL": {
         "field_type": "text",
-        "field_name": "",
+        "field_name": "regist_owner_email",
         "classNames": "fontSmall",
         "start": {
-          "x": 125,
+          "x": 95,
           "y": 67
         }
       },
@@ -1844,20 +1844,29 @@
       "INCIDENT_DETAILS_ATTACHED": {
         "field_type": "checkbox",
         "field_name": "incident_details_extra_page",
-        "field_val": "",
+        "field_val": "true",
         "classNames": "fontSmall",
         "start": {
           "x": 98.5,
           "y": 139
         }
       },
-      "INCIDENT_DETAILS": {
+      "REPORT_INCIDENT_DETAILS": {
         "field_type": "textArea",
         "field_name": "incident_details",
         "classNames": "fontXXSmall textArea",
         "start": {
           "x": 52.75,
           "y": 144
+        }
+      },
+      "DETAILS_INCIDENT_DETAILS": {
+        "field_type": "textArea",
+        "field_name": "incident_details",
+        "classNames": "fontXXSmall textArea",
+        "start": {
+          "x": 52.75,
+          "y": 30
         }
       },
       "REPORT_OFFICER_LAST_NAME": {
@@ -1897,6 +1906,51 @@
         }
       },
       "REPORT_AGENCY_FILE_NUMBER": {
+        "field_type": "text",
+        "field_name": "agency_file_no",
+        "classNames": "fontXSmall",
+        "start": {
+          "x": 130,
+          "y": 178.5
+        }
+      },
+      "DETAILS_OFFICER_LAST_NAME": {
+        "field_type": "text",
+        "field_name": "officer-lastname",
+        "classNames": "fontXSmall",
+        "start": {
+          "x": 52.75,
+          "y": 173.75
+        }
+      },
+      "DETAILS_OFFICER_SIGNATURE": {
+        "field_type": "text",
+        "field_name": "officer-lastname",
+        "classNames": "fontXSmall",
+        "start": {
+          "x": 96,
+          "y": 173.75
+        }
+      },
+      "DETAILS_OFFICER_BADGE_NUMBER": {
+        "field_type": "text",
+        "field_name": "officer-prime-id",
+        "classNames": "fontXSmall",
+        "start": {
+          "x": 143,
+          "y": 173.75
+        }
+      },
+      "DETAILS_AGENCY_NAME": {
+        "field_type": "text",
+        "field_name": "officer-agency",
+        "classNames": "fontXSmall",
+        "start": {
+          "x": 52.75,
+          "y": 178.5
+        }
+      },
+      "DETAILS_AGENCY_FILE_NUMBER": {
         "field_type": "text",
         "field_name": "agency_file_no",
         "classNames": "fontXSmall",
@@ -2116,9 +2170,17 @@
       "REPORT_AGENCY_FILE_NUMBER",
       "INCIDENT_DETAILS_EXPLAINED_BELOW",
       "INCIDENT_DETAILS_ATTACHED",
-      "INCIDENT_DETAILS",
+      "REPORT_INCIDENT_DETAILS",
       "UL_OUT_OF_PROVINCE",
       "SUSPECTED_BC_RESIDENT"
+    ],
+    "DETAILS": [
+      "DETAILS_INCIDENT_DETAILS",
+      "DETAILS_OFFICER_LAST_NAME",
+      "DETAILS_OFFICER_SIGNATURE",
+      "DETAILS_OFFICER_BADGE_NUMBER",
+      "DETAILS_AGENCY_NAME",
+      "DETAILS_AGENCY_FILE_NUMBER"
     ],
     "viewbox": "0 0 210 210"
   },

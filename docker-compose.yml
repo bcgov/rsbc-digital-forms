@@ -107,7 +107,7 @@ services:
       - .env
     environment:
       FLASK_SECRET_KEY: "${FLASK_SECRET_KEY}"
-      ICBC_API_ROOT: "http://icbc_mock_svc:5000/vips/icbc"
+      ICBC_API_ROOT: "${ICBC_API_ROOT}"
       ICBC_LOGIN_USER_ID: "${ICBC_LOGIN_USER_ID}"
       ICBC_API_USERNAME: "${ICBC_API_USERNAME}"
       ICBC_API_PASSWORD: "${ICBC_API_PASSWORD}"
