@@ -1587,7 +1587,7 @@
       },
       "REPORT_DRIVER_DL_PROVINCE": {
         "field_type": "text",
-        "field_name": "drivers_licence_jurisdiction",
+        "field_name": "out_of_province_dl_jurisdiction",
         "classNames": "fontSmall",
         "start": {
           "x": 142,
@@ -1596,7 +1596,7 @@
       },
       "REPORT_DRIVER_DL_EXPIRY": {
         "field_type": "text",
-        "field_name": "driver_licence_expiry",
+        "field_name": "out_of_province_dl_expiry",
         "date_val": "YYYY",
         "classNames": "fontSmall",
         "start": {
