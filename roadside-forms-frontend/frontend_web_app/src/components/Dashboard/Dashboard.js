@@ -153,7 +153,6 @@ export const Dashboard = () => {
 
     const fetchCurrentIDs = async () => {
       const currentIDs = await FormIDApi.get();
-      console.log(currentIDs);
       await db.formID.bulkPut(currentIDs);
     };
 
