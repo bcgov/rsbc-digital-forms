@@ -208,6 +208,7 @@ def save_event_data(**kwargs) -> tuple:
                 admission_by_driver=data.get("admission_by_driver"),
                 independent_witness=data.get("independent_witness"),
                 reasonable_ground_other=data.get("reasonable_ground_other"),
+                twenty_four_hour_number=data.get("twenty_four_hour_number"),
                 created_dt=date_created,
                 updated_dt=date_created,
 
@@ -216,6 +217,7 @@ def save_event_data(**kwargs) -> tuple:
         if data.get('TwelveHour'):
             twelve_hour_form = TwelveHourForm(
                 driver_phone=data.get('driver_phone'),
+                twelve_hour_number=data.get("twelve_hour_number"),
                 form_id=data.get('form_id'),
                 event_id=data.get('event_id'),
                 created_dt=date_created,
