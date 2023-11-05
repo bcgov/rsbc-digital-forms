@@ -99,41 +99,43 @@ services:
     networks:
       - docker-network
 
-  roadside-forms-api:
-    build:
-      context: python
-      dockerfile: prohibition_web_svc/Dockerfile-local
-    env_file:
-      - .env
-    environment:
-      FLASK_SECRET_KEY: "${FLASK_SECRET_KEY}"
-      ICBC_API_ROOT: "http://icbc_mock_svc:5000/vips/icbc"
-      ICBC_LOGIN_USER_ID: "${ICBC_LOGIN_USER_ID}"
-      ICBC_API_USERNAME: "${ICBC_API_USERNAME}"
-      ICBC_API_PASSWORD: "${ICBC_API_PASSWORD}"
-      ACCESS_CONTROL_ALLOW_ORIGIN: "*"
-      LOG_LEVEL: "DEBUG"
-      KEYCLOAK_REALM: "${KEYCLOAK_REALM}"
-      KEYCLOAK_AUTH_URL: "${KEYCLOAK_AUTH_URL}"
-      KEYCLOAK_CLIENT_ID: "${KEYCLOAK_CLIENT_ID}"
-      ADMIN_USERNAME: "${ADMIN_USERNAME}"
-      FLASK_BASIC_AUTH_USER: "${FLASK_BASIC_AUTH_USER}"
-      FLASK_BASIC_AUTH_PASS: "${FLASK_BASIC_AUTH_PASS}"
-      MINIO_SK: "${MINIO_SK}"
-      MINIO_AK: "${MINIO_AK}"
-    command: bash -c "cd /home/appuser/python/prohibition_web_svc && flask db upgrade && gunicorn --bind 0.0.0.0:5000 --pythonpath /home/appuser/python/prohibition_web_svc 'app:create_app()'"
-    networks:
-      - docker-network
-    # network_mode: "host"
-    ports:
-      - "5002:5000"
-    x-develop:
-      watch:
-        - action: rebuild
-          path: "./python/prohibition_web_svc"
-    depends_on:
-      db:
-        condition: service_healthy
+  
+
+  # roadside-forms-api:
+  #   build:
+  #     context: python
+  #     dockerfile: prohibition_web_svc/Dockerfile-local
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     FLASK_SECRET_KEY: "${FLASK_SECRET_KEY}"
+  #     ICBC_API_ROOT: "${ICBC_API_ROOT}"
+  #     ICBC_LOGIN_USER_ID: "${ICBC_LOGIN_USER_ID}"
+  #     ICBC_API_USERNAME: "${ICBC_API_USERNAME}"
+  #     ICBC_API_PASSWORD: "${ICBC_API_PASSWORD}"
+  #     ACCESS_CONTROL_ALLOW_ORIGIN: "*"
+  #     LOG_LEVEL: "DEBUG"
+  #     KEYCLOAK_REALM: "${KEYCLOAK_REALM}"
+  #     KEYCLOAK_AUTH_URL: "${KEYCLOAK_AUTH_URL}"
+  #     KEYCLOAK_CLIENT_ID: "${KEYCLOAK_CLIENT_ID}"
+  #     ADMIN_USERNAME: "${ADMIN_USERNAME}"
+  #     FLASK_BASIC_AUTH_USER: "${FLASK_BASIC_AUTH_USER}"
+  #     FLASK_BASIC_AUTH_PASS: "${FLASK_BASIC_AUTH_PASS}"
+  #     MINIO_SK: "${MINIO_SK}"
+  #     MINIO_AK: "${MINIO_AK}"
+  #   command: bash -c "cd /home/appuser/python/prohibition_web_svc && flask db upgrade && gunicorn --bind 0.0.0.0:5000 --pythonpath /home/appuser/python/prohibition_web_svc 'app:create_app()'"
+  #   networks:
+  #     - docker-network
+  #   # network_mode: "host"
+  #   ports:
+  #     - "5002:5000"
+  #   x-develop:
+  #     watch:
+  #       - action: rebuild
+  #         path: "./python/prohibition_web_svc"
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
 
   db:
     image: postgres:14.1-alpine
