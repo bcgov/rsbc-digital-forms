@@ -1,18 +1,20 @@
 import { api } from "./config/axiosConfig";
 import { createRequestHeader } from "../utils/requestHeaders";
 
-export const FormSubmissionApi = {
+export const FormIDApi = {
   post: async function (data) {
     const headers = {
       ...createRequestHeader(),
     };
+
     const response = await api.request({
-      url: "/api/v1/event",
+      url: "/api/v1/forms",
       method: "POST",
       headers: { ...headers },
-      data: { ...data },
+      data: JSON.stringify(data),
     });
-    return response;
+
+    return response.data;
   },
 
   get: async function () {
@@ -20,9 +22,21 @@ export const FormSubmissionApi = {
       ...createRequestHeader(),
     };
     const response = await api.request({
-      url: "/api/v1/event",
+      url: "/api/v1/forms",
       method: "GET",
       headers: { ...headers },
+    });
+    return response.data;
+  },
+  patch: async function (data) {
+    const headers = {
+      ...createRequestHeader(),
+    };
+    const response = await api.request({
+      url: "/api/v1/forms",
+      method: "PATCH",
+      headers: { ...headers },
+      data: { ...data },
     });
     return response.data;
   },

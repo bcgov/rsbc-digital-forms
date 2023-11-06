@@ -28,7 +28,6 @@ export const ConfirmationStep = () => {
     if (values["confirmation_of_service"]) {
       setFieldValue("confirmation_of_service_date", pstDate(new Date()));
     }
-    console.log("set value");
   }, [values["confirmation_of_service"], setFieldValue]);
 
   const generateLabel = () => {

@@ -8,7 +8,6 @@ const vehicleImpoundedValidation = (selectedValue) => {
     function (value) {
       const { createError, path, options } = this;
       const vehicleImpoundedValue = this.resolve(selectedValue);
-      console.log(vehicleImpoundedValue);
       if (vehicleImpoundedValue === "YES" && !value) {
         return createError({ path, message: options.message });
       }

@@ -233,7 +233,6 @@ export const printFormatHelper = (values, data, key) => {
     values[data["field_name"]] &&
     typeof values[data["field_name"]] === "object"
   ) {
-    console.log("KEY: ", key, " VALUE ", val);
     if (key === "LOCATION_CITY") {
       val = val["label"];
     } else {
