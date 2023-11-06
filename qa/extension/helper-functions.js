@@ -6,6 +6,7 @@ function FillAllSections() {
     FillDriverSection();
     FillVehicleSection();
     FillOwnerSection();
+    FillDispositionOfVehicleSection();
     FillVehicleImpoundmentSection();
     FillProhibitionSection();
     FillImpoundmentForIrpSection();
@@ -16,11 +17,11 @@ function FillAllSections() {
     FillIncidentDetailsSection();
     FillReasonableGroundsSection();
     FillTestAdministeredSection();
-    FillOfficerSection();
+    //FillOfficerSection();
 }
 
 function FillDriverSection() {
-    SetField('drivers_licence_no', GenerateDL());
+    SetField('driver_licence_no', GenerateDL());
     SetField('driver_last_name', chance.last());
     SetField('driver_given_name', GenerateGivenNames());
     SetField('driver_dob', GenerateDateOfBirth());
@@ -51,13 +52,25 @@ function FillVehicleSection(){
 
 function FillOwnerSection() {
     RandomlySelectRadioButton('owned_by_corp');
-    SetField('regist_owner_last_name', chance.last());
-    SetField('regist_owner_first_name', GenerateGivenNames());
+    var ownerLastName = chance.last();
+    var ownerFirstNames = GenerateGivenNames();
+    SetField('regist_owner_last_name', ownerLastName);
+    SetField('corporation_name', GenerateCompanyName());
+    SetField('regist_owner_first_name', ownerFirstNames);
+    SetField('regist_owner_email', GenerateEmailAddress(ownerFirstNames));
     SetField('regist_owner_address', GenerateStreetAddress());
     SetField('regist_owner_phone', GeneratePhoneNumber());
     SetField('regist_owner_city', GenerateCity());
     SetCustomSelect('regist_owner_prov_state-select', "BRITISH COLUMBIA");
     SetSelect('regist_owner_postal', GeneratePostalCode());
+}
+
+function FillDispositionOfVehicleSection() {
+    RandomlyChooseRadio('vehicle_location-released', 'vehicle_location-roadside', 'vehicle_location-private');
+    SetField('vehicle_released_to', chance.name());
+    SetField('date_released', GetCurrentDate());
+    SetField('time_released', GetTimeFiveMinutesAgo());
+    RandomlyChooseRadio('location_of_keys-WITH VEHICLE', 'location_of_keys-WITH DRIVER');
 }
 
 function FillVehicleImpoundmentSection() {
@@ -116,7 +129,7 @@ function FillLinkageFactorsSection() {
     RandomlySelectRadioButton('linkage_owner_aware_possesion');
     RandomlySelectRadioButton('linkage_vehicle_transfer_notice');
     RandomlySelectRadioButton('linkage_other');
-    SetField('linkage_location_of_keys_explanation', chance.paragraph({ sentences: 1 }));
+    SetField('linkage_location_of_keys_explanation', chance.sentence({ words: 4 }));
 }
 
 function FillIncidentDetailsSection() {
@@ -131,32 +144,38 @@ function FillReasonableGroundsSection() {
     RandomlySelectRadioButton('independent-witness');
     RandomlySelectRadioButton('video-surveillance');
     RandomlySelectRadioButton('reasonable_ground_other');
-    SetField('other-reason', chance.paragraph({ sentences: 1 }));
+    SetField('reasonable_ground_other_reason', chance.sentence({ words: 12 }));
     RandomlyChooseRadio('prescribed_test_used-YES', 'prescribed_test_used-NO');
-    SetField('date_of_test', GetCurrentDate());
-    SetField('time_of_test', GetTimeOneMinuteAgo());
+    SetField('reasonable_date_of_test', GetCurrentDate());
+    SetField('reasonable_time_of_test', GetTimeOneMinuteAgo());
     RandomlyChooseRadio('reason_for_not_using_prescribed_test-refused', 'reason_for_not_using_prescribed_test-opinion')
 }
 
 function FillTestAdministeredSection() {
-    // Test administered (alcohol)
-    RandomlyChooseRadio('test_used_alcohol-alco-sensor', 'test_used_alcohol-instrument', 'test_used_alcohol-physical-cordination-test');
-    SetField('asd_expiry_date', GetDateInFiveFiveDays());
-    RandomlyChooseRadio('result_alcohol-51-99 mg%', 'result_alcohol-51-99 mg%');
-    SetField('bac_result_mg', Math.floor(Math.random() * 1000));
+    // ALCOHOL
+    RandomlyChooseRadio('resonable_test_used_alcohol-alco-sensor', 'resonable_test_used_alcohol-instrument', 'resonable_test_used_alcohol-PPCT');
+    // When Alco-Sensor FST(ASD) is selected:
+    SetField('reasonable_asd_expiry_date', GetDateInFiveFiveDays());
+    RandomlyChooseRadio('reasonable_result_alcohol-51-59', 'reasonable_result_alcohol-WARN', 'reasonable_result_alcohol-FAIL');
+    // When Approved Instrument option is selected:
+    SetField('reasonable_bac_result_mg', Math.floor(Math.random() * 1000));
+    SetField('resonable_approved_instrument_used', 'Instrument 1');
+    // When Prescribed Pyhsical Coordination Test option is selected:
+    RandomlySelectRadioButton('reasonable_can_drive_alcohol');
 
-    // Test administered (drugs)
-    RandomlyChooseRadio('test_used_drugs-approved-drug', // test_used_drugs-approved-drug
-        'test_used_drugs-physical-cordination-test-sfts', // test_used_drugs-physical-cordination-test-sfts
-        'test_used_drugs-physical-cordination-test-dre'); // test_used_drugs-physical-cordination-test-dre
+    // DRUGS
+    RandomlyChooseRadio('reasonable_test_used_drugs-approved-drug',
+        'reasonable_test_used_drugs-screening-equipment',
+        'reasonable_test_used_drugs-PPCT'); 
     RandomlySelectRadioButton('THC');
     RandomlySelectRadioButton('Cocaine');
+    RandomlySelectRadioButton('reasonable_can_drive_drug');
 }
 
 function FillOfficerSection() {
     SetField('officer-lastname', chance.last());
     SetField('officer-prime-id', "QA" + GenerateRandomNumberLength(4));
-    SetField('officer-agency', GenerateCity() + " COPS");        
+    SetField('officer-agency', GenerateCity() + " TEST");        
     SetField('date-of-test', GetCurrentDate());
     SetField('time-of-test', GetTimeFiveMinutesAgo());
     SelectRadioButton('test-used-alcohol-physical-cordination-test')
@@ -505,4 +524,33 @@ function GetTimeOneMinuteAgo() {
     const minutes = date.getMinutes().toString().padStart(2, '0');
     const formattedTime = `${hours}${minutes}`;
     return formattedTime;
+}
+
+function GenerateCompanyName() {
+    var companysuffixes = ["Inc.", "Ltd.", "Corp.", "Co.", "Company", "Foundation", "GmbH", "AG", "e.V."];
+    var name = chance.last() + " TEST " + companysuffixes[Math.floor(Math.random() * companysuffixes.length)];
+    return name;
+}
+
+function GenerateEmailAddress(firstnames) {
+      var emaildomains = [
+        "yahoo.com",
+        "hotmail.com",
+        "gmx.de",
+        "aol.com",
+        "gov.bc.ca",
+        "vehicle-ownership-4u.com",
+        "eml.cc",
+        "thisisaverylongdomainname.co.uk"
+    ]
+
+    var firstname = "";
+    // Split the first name into parts
+    if (firstnames === undefined) {
+        firstname = chance.first();
+    }
+    else {
+        firstname = firstnames.split(" ")[0];
+    }
+    return firstname + "@" + emaildomains[Math.floor(Math.random() * emaildomains.length)];
 }
