@@ -184,14 +184,14 @@ export const validationSchema = Yup.object().shape({
     "Phone Number format ###-###-####"
   ),
   driver_city: Yup.string().required("City is required"),
-  driver_prov_state: Yup.object().required("Prov / State is required"),
+  driver_prov_state: Yup.object(),
   driver_postal: Yup.string(),
   gender: Yup.string(),
   driver_licence_expiry: Yup.date(),
   driver_licence_class: Yup.string(),
 
   /** Vehicle Information */
-  vehicle_jurisdiction: Yup.object.required("Jurisdiction is required"),
+  vehicle_jurisdiction: Yup.object,
   vehicle_plate_no: Yup.string(), // What if vehicle has no plate?
   vehicle_registration_no: Yup.string(), // What if vehicle has no registration?
   vehicle_year: Yup.string().required("Vehicle Year is required"),
