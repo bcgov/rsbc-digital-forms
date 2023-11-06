@@ -64,7 +64,7 @@ class Config():
     MINIO_SECURE                        = os.environ.get("MINIO_SECURE", False)
     MINIO_CERT_FILE                     = os.environ.get("MINIO_CERT_FILE", "/opt/app-root/src/ca.crt")
 
-    TASK_SCHEDULER_INTERVAL_SECONDS      = os.environ.get("TASK_SCHEDULER_INTERVAL_SECONDS", 5)
+    TASK_SCHEDULER_INTERVAL_SECONDS      = int(os.environ.get("TASK_SCHEDULER_INTERVAL_SECONDS", 5))
 
 
 
