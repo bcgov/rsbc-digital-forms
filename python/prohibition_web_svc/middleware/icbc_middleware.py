@@ -24,7 +24,11 @@ def get_icbc_driver(**kwargs) -> tuple:
     url = "{}/drivers/{}".format(Config.ICBC_API_ROOT, kwargs.get('dl_number'))
     try:
         icbc_response = requests.get(url, headers=kwargs.get('icbc_header'))
-        kwargs['response'] = make_response(icbc_response.json(), icbc_response.status_code)
+        logging.debug(icbc_response.status_code)
+        if icbc_response.status_code == 400:
+            kwargs['response'] = make_response({}, 200)
+        else:
+            kwargs['response'] = make_response(icbc_response.json(), icbc_response.status_code)
     except Exception as e:
         return False, kwargs
     return True, kwargs
@@ -40,6 +44,9 @@ def get_icbc_vehicle(**kwargs) -> tuple:
     try:
         icbc_response = requests.get(url, headers=kwargs.get('icbc_header'), params=url_parameters)
         logging.warning("icbc url:" + icbc_response.url)
+        logging.debug("---------------------------Made it here---------------------------")
+        logging.debug(icbc_response.json())
+        logging.debug("------------------------------------------------------------------")
         kwargs['response'] = make_response(icbc_response.json(), icbc_response.status_code)
     except Exception as e:
         return False, kwargs
