@@ -33,10 +33,10 @@ def my_periodic_task():
 
 def process_pending_events():
     logging.debug("process_pending_events() invoked")
-    try:
-        writer=RabbitMQ(Config())
+    try:        
         statusval,errmsg,all_events=query_pending_events(app,db)
         if statusval:
+            writer=RabbitMQ(Config())
             for event in all_events:
                 logging.debug(event)
                 try:
