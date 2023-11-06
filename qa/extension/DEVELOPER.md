@@ -58,10 +58,10 @@ This workflow is used for all the forms on the field. If an id for an element ch
 
 ## Libraries
 
-There is one library used by this extension: [Chance.js](https://chancejs.com/). Rather than hot-linking to the library, it is included as chance.min.js in this extension. This saves the developer's bandwidth and protects against a new release introducing incompatible changes that break this extension.
+There is one library used by this extension: [Chance.js](https://chancejs.com/). Rather than hot-linking to the Chance.js web site, it is included in this extension as chance.min.js. This saves the developer's bandwidth and protects against a new release of Chance.js introducing incompatible changes that break this extension.
 
 
 ## After making changes
-If you make a change to the code in this extension, you must reload the extension in your browser. This is done from the Extensions page. If developer mode is enabled, you should see a link to reload the extension. You must also reload the tab where the form is loaded, which will activate the new version of the extension.
+If you make a change to the code in this extension, you must reload it in your browser. This is done from the Extensions page. If developer mode is enabled, you should see a link to reload the extension. You must also reload the tab where the form is loaded, which will activate the new version of the extension.
 
 ![Alt text](images/reload.png)
