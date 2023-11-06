@@ -291,6 +291,9 @@ export const CreateEvent = () => {
           if (form === "ILO" && values["vehicle_impounded"] === "NO") {
             break;
           }
+          if (form === "DETAILS" && !values["incident_details_extra_page"]) {
+            break;
+          }
 
           components.push(
             <SVGprint
@@ -339,8 +342,8 @@ export const CreateEvent = () => {
                 </Checkbox>
               </div>
               <div className="col-sm-4 form-id-border">
-                <h5>IRP number: 21-9876540</h5>
-                <h5>VI number: 22-1234560</h5>
+                <h5>IRP Number: 21-9876540</h5>
+                <h5>VI Number: 22-1234560</h5>
               </div>
               <div className="col-sm-4 time-of-completion center mt-5">
                 <span>Estimated time to complete:</span>
@@ -498,6 +501,7 @@ export const CreateEvent = () => {
                         console.log(errors);
                         onSubmit(values);
                       }}
+                      disabled={isSubmitting}
                     >
                       Submit
                     </Button>
