@@ -89,7 +89,7 @@ export const InitialValues = () => {
     irp_impound: "",
     irp_impound_duration: "",
     IRP_number: "",
-    VI_number: "22-1312342",
+    VI_number: "",
     excessive_speed: false,
     prohibited: false,
     suspended: false,

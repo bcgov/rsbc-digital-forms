@@ -7,8 +7,14 @@ import logging
 db = SQLAlchemy()
 migrate = Migrate()
 
-
+@dataclass
 class Form(db.Model):
+    id: str
+    form_type: str
+    lease_expiry: datetime
+    printed_timestamp: datetime
+    user_guid: str
+    
     id = db.Column('id', db.String(20), primary_key=True)
     form_type = db.Column(db.String(20), nullable=False)
     lease_expiry = db.Column(db.Date, nullable=True)
@@ -24,16 +30,6 @@ class Form(db.Model):
         self.printed_timestamp = printed
         self.lease_expiry = lease_expiry
         self.user_guid = user_guid
-
-    @staticmethod
-    def serialize(form):
-        return {
-            "id": form.id,
-            "form_type": form.form_type,
-            "lease_expiry": Form._format_lease_expiry(form.lease_expiry),
-            "printed_timestamp": form.printed_timestamp,
-            "user_guid": form.user_guid
-        }
 
     def lease(self, user_guid):
         today = datetime.now()
@@ -155,7 +151,7 @@ class UserRole(db.Model):
         return UserRole.collection_to_list_roles(rows)
 
 
-@dataclass
+@dataclass 
 class Agency(db.Model):
     __tablename__ = 'agency'
 
@@ -464,6 +460,7 @@ class TwentyFourHourForm(db.Model):
     admission_by_driver: bool
     independent_witness: bool
     reasonable_ground_other: bool
+    twenty_four_hour_number: str
     created_dt: datetime
     updated_dt: datetime
 
@@ -498,6 +495,7 @@ class TwentyFourHourForm(db.Model):
     admission_by_driver = db.Column(db.Boolean)
     independent_witness = db.Column(db.Boolean)
     reasonable_ground_other = db.Column(db.Boolean)
+    twenty_four_hour_number = db.Column(db.String)
     created_dt = db.Column(db.DateTime)
     updated_dt = db.Column(db.DateTime)
 
@@ -511,12 +509,14 @@ class TwelveHourForm(db.Model):
     created_dt: datetime
     updated_dt: datetime
     driver_phone: str
+    twelve_hour_number: str
 
     form_id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey('event.event_id'))
     created_dt = db.Column(db.DateTime)
     updated_dt = db.Column(db.DateTime)
     driver_phone = db.Column(db.String)
+    twelve_hour_number = db.Column(db.String)
 
 
 @dataclass

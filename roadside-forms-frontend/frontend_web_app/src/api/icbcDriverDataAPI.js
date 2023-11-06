@@ -11,7 +11,7 @@ export const ICBCDriverDataApi = {
       method: "GET",
       headers: { ...headers },
     });
-    console.log(response);
+
     return response;
   },
 };

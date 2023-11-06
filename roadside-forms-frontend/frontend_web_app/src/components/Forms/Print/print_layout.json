@@ -176,11 +176,11 @@
     "fields": {
       "VIOLATION_NUMBER": {
         "field_type": "text",
-        "field_name": "",
+        "field_name": "twenty_four_hour_number",
         "classNames": "fontLarge",
         "start": {
-          "x": 4,
-          "y": 24.5
+          "x": 17,
+          "y": 19
         }
       },
       "DRIVER_NAME": {
@@ -2175,6 +2175,7 @@
       "SUSPECTED_BC_RESIDENT"
     ],
     "DETAILS": [
+      "VIOLATION_NUMBER",
       "DETAILS_INCIDENT_DETAILS",
       "DETAILS_OFFICER_LAST_NAME",
       "DETAILS_OFFICER_SIGNATURE",
@@ -2186,6 +2187,7 @@
   },
   "TwelveHour": {
     "DRIVER": [
+      "VIOLATION_NUMBER",
       "DRIVER_NAME",
       "DRIVER_DL_NUMBER",
       "DRIVER_DOB",
@@ -2217,6 +2219,7 @@
       "RELEASE_TIME"
     ],
     "POLICE": [
+      "VIOLATION_NUMBER",
       "DRIVER_NAME",
       "DRIVER_DL_NUMBER",
       "DRIVER_DOB",
@@ -2256,6 +2259,15 @@
       "ECOS_DATE_CERTIFIED"
     ],
     "fields": {
+      "VIOLATION_NUMBER": {
+        "field_type": "text",
+        "field_name": "twelve_hour_number",
+        "classNames": "fontLarge",
+        "start": {
+          "x": 16.75,
+          "y": 17.25
+        }
+      },
       "DRIVER_NAME": {
         "field_type": "text",
         "field_name": ["driver_last_name", "driver_given_name"],
