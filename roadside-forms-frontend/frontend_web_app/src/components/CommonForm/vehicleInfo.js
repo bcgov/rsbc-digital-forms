@@ -37,13 +37,7 @@ export const VehicleInfo = (props) => {
     if (values["vehicle_plate_no"]) {
       ICBCVehicleDataApi.get(values["vehicle_plate_no"]).then((resp) => {
         if (!_.isEmpty(resp.data)) {
-          console.log(resp.data);
-          //       setFieldValue("driver_last_name", party.lastName);
-          //       setFieldValue("driver_given_name", party.firstName);
-          //       setFieldValue("driver_dob", new Date(party.birthDate));
-          //       setFieldValue("driver_address", address.addressLine1);
-          //       setFieldValue("driver_city", address.city);
-          //       setFieldValue("driver_postal", address.postalCode);
+          return;
         }
       });
     }

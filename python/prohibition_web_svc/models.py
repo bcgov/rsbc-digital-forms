@@ -31,16 +31,6 @@ class Form(db.Model):
         self.lease_expiry = lease_expiry
         self.user_guid = user_guid
 
-    # @staticmethod
-    # def serialize(form):
-    #     return {
-    #         "id": form.id,
-    #         "form_type": form.form_type,
-    #         "lease_expiry": Form._format_lease_expiry(form.lease_expiry),
-    #         "printed_timestamp": form.printed_timestamp,
-    #         "user_guid": form.user_guid
-    #     }
-
     def lease(self, user_guid):
         today = datetime.now()
         lease_expiry = today + timedelta(days=30)
