@@ -83,19 +83,21 @@ def save_event_data(**kwargs) -> tuple:
             regist_owner_first_name=data.get('regist_owner_first_name'),
             regist_owner_address=data.get('regist_owner_address'),
             regist_owner_dob=datetime.strptime(
-                data.get('driver_dob'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_dob') else None,
+                data.get('regist_owner_dob'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('regist_owner_dob') else None,
             regist_owner_city=data.get('regist_owner_city'),
             regist_owner_prov=data.get('regist_owner_prov_state', {
                 'value': None, 'label': None}).get('value'),
             regist_owner_postal=data.get('regist_owner_postal'),
             regist_owner_phone=data.get('regist_owner_phone'),
-            vehicle_released_to = data.get("vehicle_released_to"),
-            date_released = datetime.strptime(
+            regist_owner_email=data.get('regist_owner_email'),
+            vehicle_released_to=data.get("vehicle_released_to"),
+            date_released=datetime.strptime(
                 data.get('date_released'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('date_released') else None,
-            time_released = data.get("time_released"),
+            time_released=data.get("time_released"),
             submitted=True,
             confirmation_of_service=data.get('confirmation_of_service'),
-            confirmation_of_service_date=data.get('confirmation_of_service_date'),
+            confirmation_of_service_date=data.get(
+                'confirmation_of_service_date'),
             agency_file_no=data.get('agency_file_no'),
             created_dt=date_created,
             updated_dt=date_created,
@@ -105,6 +107,7 @@ def save_event_data(**kwargs) -> tuple:
         if data.get('VI'):
             vi_form = VIForm(
                 gender=data.get('gender'),
+                driver_is_regist_owner=data.get('driver_is_regist_owner'),
                 driver_licence_expiry=datetime.strptime(
                     data.get('driver_licence_expiry'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_licence_expiry') else None,
                 driver_licence_class=data.get('driver_licence_class'),
@@ -115,6 +118,8 @@ def save_event_data(**kwargs) -> tuple:
                 out_of_province_dl=data.get('out_of_province_dl'),
                 out_of_province_dl_number=data.get(
                     'out_of_province_dl_number'),
+                out_of_province_dl_expiry=data.get(
+                    'out_of_province_dl_expiry'),
                 date_of_impound=datetime.strptime(
                     data.get('date_of_impound'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('date_of_impound') else None,
                 irp_impound=data.get('irp_impound'),
@@ -157,46 +162,62 @@ def save_event_data(**kwargs) -> tuple:
             event.vi_form = vi_form
         if data.get('TwentyFourHour'):
             twenty_four_hour_form = TwentyFourHourForm(
-                    vehicle_impounded = data.get('vehicle_impounded'),
-                    reason_for_not_impounding = data.get('reason_for_not_impounding'),
-                    reasonable_ground_other_reason = data.get('reasonable_ground_other_reason'),
-                    prescribed_test_used = data.get('prescribed_test_used'),
-                    reasonable_date_of_test=datetime.strptime(
+                vehicle_impounded=data.get('vehicle_impounded'),
+                reason_for_not_impounding=data.get(
+                    'reason_for_not_impounding'),
+                reasonable_ground_other_reason=data.get(
+                    'reasonable_ground_other_reason'),
+                prescribed_test_used=data.get('prescribed_test_used'),
+                reasonable_date_of_test=datetime.strptime(
                     data.get('reasonable_date_of_test'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('reasonable_date_of_test') else None,
-                    reasonable_time_of_test= data.get('reasonable_time_of_test'),
-                    reason_for_not_using_prescribed_test= data.get('reason_for_not_using_prescribed_test'),
-                    resonable_test_used_alcohol= data.get('resonable_test_used_alcohol'),
-                    reasonable_asd_expiry_date= datetime.strptime(
+                reasonable_time_of_test=data.get('reasonable_time_of_test'),
+                reason_for_not_using_prescribed_test=data.get(
+                    'reason_for_not_using_prescribed_test'),
+                resonable_test_used_alcohol=data.get(
+                    'resonable_test_used_alcohol'),
+                reasonable_asd_expiry_date=datetime.strptime(
                     data.get('reasonable_asd_expiry_date'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('reasonable_asd_expiry_date') else None,
-                    reasonable_result_alcohol= data.get('reasonable_result_alcohol'),
-                    reasonable_bac_result_mg= data.get('reasonable_bac_result_mg'),
-                    resonable_approved_instrument_used= data.get('resonable_approved_instrument_used'),
-                    reasonable_test_used_drugs= data.get('reasonable_test_used_drugs'),
-                    reasonable_can_drive_drug= data.get('reasonable_can_drive_drug'),
-                    reasonable_can_drive_alcohol= data.get('reasonable_can_drive_alcohol'),
-                    requested_can_drive_alcohol= data.get('requested_can_drive_alcohol'),
-                    requested_can_drive_drug= data.get('requested_can_drive_drug'),
-                    requested_approved_instrument_used= data.get('requested_approved_instrument_used'),
-                    requested_BAC_result= data.get('requested_BAC_result'),
-                    requested_alcohol_test_result= data.get('requested_alcohol_test_result'),
-                    requested_ASD_expiry_date= datetime.strptime(
+                reasonable_result_alcohol=data.get(
+                    'reasonable_result_alcohol'),
+                reasonable_bac_result_mg=data.get('reasonable_bac_result_mg'),
+                resonable_approved_instrument_used=data.get(
+                    'resonable_approved_instrument_used'),
+                reasonable_test_used_drugs=data.get(
+                    'reasonable_test_used_drugs'),
+                reasonable_can_drive_drug=data.get(
+                    'reasonable_can_drive_drug'),
+                reasonable_can_drive_alcohol=data.get(
+                    'reasonable_can_drive_alcohol'),
+                requested_can_drive_alcohol=data.get(
+                    'requested_can_drive_alcohol'),
+                requested_can_drive_drug=data.get('requested_can_drive_drug'),
+                requested_approved_instrument_used=data.get(
+                    'requested_approved_instrument_used'),
+                requested_BAC_result=data.get('requested_BAC_result'),
+                requested_alcohol_test_result=data.get(
+                    'requested_alcohol_test_result'),
+                requested_ASD_expiry_date=datetime.strptime(
                     data.get('requested_ASD_expiry_date'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('requested_ASD_expiry_date') else None,
-                    time_of_requested_test= data.get('time_of_requested_test'),
-                    requested_test_used_alcohol= data.get('requested_test_used_alcohol'),
-                    requested_test_used_drug= data.get('requested_test_used_drug'),
-                    requested_prescribed_test= data.get('requested_prescribed_test'),
-                    witnessed_by_officer=data.get("witnessed_by_officer"),
-                    admission_by_driver=data.get("admission_by_driver"),
-                    independent_witness=data.get("independent_witness"),
-                    reasonable_ground_other=data.get("reasonable_ground_other"),
-                    created_dt=date_created,
-                    updated_dt=date_created,
-                
+                time_of_requested_test=data.get('time_of_requested_test'),
+                requested_test_used_alcohol=data.get(
+                    'requested_test_used_alcohol'),
+                requested_test_used_drug=data.get('requested_test_used_drug'),
+                requested_prescribed_test=data.get(
+                    'requested_prescribed_test'),
+                witnessed_by_officer=data.get("witnessed_by_officer"),
+                admission_by_driver=data.get("admission_by_driver"),
+                independent_witness=data.get("independent_witness"),
+                reasonable_ground_other=data.get("reasonable_ground_other"),
+                twenty_four_hour_number=data.get("twenty_four_hour_number"),
+                created_dt=date_created,
+                updated_dt=date_created,
+
             )
             event.twenty_four_hour_form = twenty_four_hour_form
         if data.get('TwelveHour'):
             twelve_hour_form = TwelveHourForm(
                 driver_phone=data.get('driver_phone'),
+                twelve_hour_number=data.get("twelve_hour_number"),
                 form_id=data.get('form_id'),
                 event_id=data.get('event_id'),
                 created_dt=date_created,
@@ -222,7 +243,7 @@ def save_event_pdf(**kwargs) -> tuple:
     try:
         data = kwargs.get('payload')
         event = kwargs.get('event')
-        cert_path=Config.MINIO_CERT_FILE
+        cert_path = Config.MINIO_CERT_FILE
         os.environ['SSL_CERT_FILE'] = cert_path
         client = Minio(
             Config.MINIO_BUCKET_URL,

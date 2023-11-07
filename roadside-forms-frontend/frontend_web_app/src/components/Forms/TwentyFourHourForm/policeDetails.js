@@ -10,7 +10,6 @@ import { DatePickerField } from "../../common/DateField/DatePicker";
 
 export const PoliceDetails = (props) => {
   const { values } = useFormikContext();
-  console.log(values["requested_prescribed_test"]);
   return (
     <div className="border-design-form left text-font">
       <Row>
