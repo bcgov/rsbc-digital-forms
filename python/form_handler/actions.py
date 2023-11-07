@@ -50,7 +50,7 @@ def get_storage_ref_event_type(**args) -> tuple:
             if len(form) == 0 or len(form) > 1:
                 return False,args
             for f in form:
-                event_type=f.form_type
+                event_type=f.form_type.lower()
                 args['event_type']=event_type
                 form_dict=f.__dict__
                 form_dict.pop('_sa_instance_state',None)

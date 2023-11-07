@@ -96,7 +96,8 @@ def get_storage_ref_event_type(message,app,db,event_types) -> str:
             if len(form) == 0 or len(form) > 1:
                 return "unknown_event"
             for f in form:
-                event_type=f.form_type
+                # read form_ype as lower
+                event_type=f.form_type.lower()
                 event_id=f.event_id
         if event_type not in event_types:
             raise Exception("event type not found")
