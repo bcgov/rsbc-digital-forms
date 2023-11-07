@@ -92,6 +92,7 @@ export const staticResources = {
   permissions: staticData.permissions,
   provinces: staticData.provinces,
   vehicle_styles: staticData.vehicleStyles,
+  vehicle_types: staticData.vehicleTypes,
   vehicle_colours: staticData.vehicleColours,
   vehicles: staticData.vehicles,
 };
@@ -122,6 +123,23 @@ export const formTypes = (form) => {
     (form["TwentyFourHour"] ? "TwentyFourHour," : " ") +
     (form["TwelveHour"] ? "TwelveHour" : " ");
   return forms;
+};
+
+export const formNumbers = (data) => {
+  let formNums = [];
+  if (data["VI_number"]) {
+    formNums.push(data["VI_number"]);
+  }
+  if (data["IRP_number"]) {
+    formNums.push(data["IRP_number"]);
+  }
+  if (data["twelve_hour_number"]) {
+    formNums.push(data["twelve_hour_number"]);
+  }
+  if (data["twenty_four_hour_number"]) {
+    formNums.push(data["twenty_four_hour_number"]);
+  }
+  return formNums.join(", ");
 };
 
 export const formsPNG = {

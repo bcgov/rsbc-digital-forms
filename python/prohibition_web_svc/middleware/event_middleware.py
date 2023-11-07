@@ -64,6 +64,8 @@ def save_event_data(**kwargs) -> tuple:
                 'value': None, 'label': None}).get('value'),
             vehicle_style=data.get('vehicle_style', {
                 'value': None, 'label': None}).get('value'),
+            vehicle_type=data.get('vehicle_type', {
+                'value': None, 'label': None}).get('value'),
             vehicle_colour=data.get('vehicle_colour'),
             vehicle_vin_no=data.get('vehicle_vin_no'),
             intersection_or_address_of_offence=data.get(

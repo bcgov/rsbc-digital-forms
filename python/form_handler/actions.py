@@ -579,9 +579,7 @@ def prep_vips_payload(**args)->tuple:
             tmp_payload["vipsVehicleCreate"]["vehicleMakeTxt"]=mk.upper()  
 
         if "vehicle_style" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleStyleTxt"]=event_data["vehicle_style"].upper()  
-
-        # TODO: to confirm
-        if "vehicle_type" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=event_data["vehicle_type"].upper()  
+        if "vehicle_type" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=str(event_data["vehicle_type"])
 
         # vipsDocumentIdArray payload
         vipsDocumentIdArray=[]
