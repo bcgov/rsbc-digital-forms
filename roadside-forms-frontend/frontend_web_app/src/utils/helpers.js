@@ -7,6 +7,7 @@ import twentyFourHourDriverform from "../assets/MV2634E_101223_driver.png";
 import twentyFourHourILOform from "../assets/MV2634E_101223_ilo.png";
 import twentyFourHourPoliceform from "../assets/MV2634E_101223_police.png";
 import viDriverForm from "../assets/MV2721_201502.png";
+import viIncidentDetails from "../assets/MV2722_201502_Incident_Details.png";
 import appealsForm from "../assets/MV2721_201502_appeal.png";
 import viReportForm from "../assets/MV2722_201502.png";
 import twelveHourDriverForm from "../assets/TwelveHourDriverCopy.png";
@@ -148,6 +149,7 @@ export const formsPNG = {
     VI: {
       POLICE: { png: viDriverForm, aspectClass: "--portrait" },
       REPORT: { png: viReportForm, aspectClass: "--portrait" },
+      DETAILS: { png: viIncidentDetails, aspectClass: "--portrait" },
     },
   },
 };
@@ -157,6 +159,7 @@ const dateFieldSplit = ["date_of_driving", "driver_licence_expiry"];
 
 export const printFormatHelper = (values, data, key) => {
   let val = values[data["field_name"]];
+
   // if the value needs to be split into to fields
 
   if (key in fieldsToSplit) {
@@ -171,6 +174,7 @@ export const printFormatHelper = (values, data, key) => {
         : splitData.splice(1).join(data["delimeter"]);
     return val;
   }
+
   //if the field on the form is expecting more than one value join them together
   if (Array.isArray(data["field_name"])) {
     val = "";
@@ -190,11 +194,22 @@ export const printFormatHelper = (values, data, key) => {
         }
       }
     });
+
+    // Add province to location of DL surrender
     if (key === "DL_SURRENDER_LOCATION") {
       val = val + ", BC";
     }
+
+    // For registered owner, if owned by corp, display corp name instead of owner name
+    if (key === "OWNER_NAME") {
+      if (values["owned_by_corp"]) {
+        val = values["corporation_name"];
+      }
+    }
+
     return val;
   }
+
   //if the value is a date
   if (
     Object.prototype.toString.call(values[data["field_name"]]) ===
@@ -212,12 +227,17 @@ export const printFormatHelper = (values, data, key) => {
     val = values[data["field_name"]].join("");
     return val;
   }
+
   //temp: if the value is an object then take its value
   if (
     values[data["field_name"]] &&
     typeof values[data["field_name"]] === "object"
   ) {
-    val = values[data["field_name"]]["value"];
+    if (key === "LOCATION_CITY") {
+      val = val["label"];
+    } else {
+      val = values[data["field_name"]]["value"];
+    }
     return val;
   }
   let released_val = "";
@@ -226,7 +246,7 @@ export const printFormatHelper = (values, data, key) => {
   } else if (values["TwentyFourHour"]) {
     released_val = "reason_for_not_impounding";
   }
-  if (key === "RELEASE_LOCATION_VEHICLE") {
+  if (key === "RELEASE_LOCATION_VEHICLE" || key === "NOT_IMPOUNDED_REASON") {
     if (values["VI"]) {
       val = values["ILO-name"];
     } else {
@@ -296,6 +316,19 @@ export const printFormatHelper = (values, data, key) => {
     if (values["VI"]) {
       val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
     }
+  }
+
+  if (
+    key === "REPORT_INCIDENT_DETAILS" &&
+    values["incident_details_extra_page"]
+  ) {
+    val = "";
+  }
+  if (
+    key === "DETAILS_INCIDENT_DETAILS" &&
+    !values["incident_details_extra_page"]
+  ) {
+    val = "";
   }
 
   return val;
