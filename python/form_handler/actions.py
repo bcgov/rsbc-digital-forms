@@ -50,7 +50,7 @@ def get_storage_ref_event_type(**args) -> tuple:
             if len(form) == 0 or len(form) > 1:
                 return False,args
             for f in form:
-                event_type=f.form_type
+                event_type=f.form_type.lower()
                 args['event_type']=event_type
                 form_dict=f.__dict__
                 form_dict.pop('_sa_instance_state',None)
@@ -191,6 +191,7 @@ def validate_event_retry_count(**args)->tuple:
                 put_to_queue_name=Config.STORAGE_FAIL_QUEUE
             elif put_to_queue_name == Config.STORAGE_FAIL_QUEUE:
                 put_to_queue_name=Config.STORAGE_FAIL_QUEUE_PERS
+                args['stop_retry'] = True
             args['put_to_queue_name']=put_to_queue_name
             return False,args
     
@@ -731,6 +732,42 @@ def update_event_status_error(**args)->tuple:
                     .filter(Event.event_id == event_id) \
                     .one()
                 event.icbc_sent_status = 'error'
+                db.session.commit()
+    except Exception as e:
+        logging.error(e)
+        return False,args
+    return True,args
+
+
+def update_event_status_error_retry(**args)->tuple:
+    logging.debug("inside update_event_status_error_retry()")
+    logging.debug(args)
+    try:
+        application=args.get('app')
+        db=args.get('db')
+        event_id=args.get('event_data').get('event_id')
+        event_type=args.get('event_type')
+        stop_retry_flg=args.get('stop_retry_flg',False)
+        with application.app_context():
+            if event_type=='vi':
+                event = db.session.query(Event) \
+                    .filter(Event.event_id == event_id) \
+                    .one()
+                if stop_retry_flg is True:
+                    event.vi_sent_status = 'error'
+                else:
+                    event.vi_sent_status = 'retrying'
+                db.session.commit()
+            elif event_type=='irp':
+                pass
+            elif event_type=='24h' or event_type=='12h':
+                event = db.session.query(Event) \
+                    .filter(Event.event_id == event_id) \
+                    .one()
+                if stop_retry_flg is True:
+                    event.icbc_sent_status = 'error'
+                else:
+                    event.icbc_sent_status = 'retrying'
                 db.session.commit()
     except Exception as e:
         logging.error(e)
