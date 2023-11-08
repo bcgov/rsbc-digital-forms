@@ -40,6 +40,7 @@ import { FormIDApi } from "../../api/formIDApi";
 
 export const CreateEvent = () => {
   const vehicleStylesAtom = useRecoilValue(staticResources["vehicle_styles"]);
+  const vehicleTypesAtom = useRecoilValue(staticResources["vehicle_types"]);
   const vehicleColoursAtom = useRecoilValue(staticResources["vehicle_colours"]);
   const jurisdictionsAtom = useRecoilValue(staticResources["jurisdictions"]);
   const provincesAtom = useRecoilValue(staticResources["provinces"]);
@@ -57,6 +58,7 @@ export const CreateEvent = () => {
   const [jurisdictions, setJurisdictions] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [vehicleStyles, setVehicleStyles] = useState([]);
+  const [vehicleTypes, setVehicleTypes] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [vehicleColours, setVehicleColours] = useState([]);
   const [cities, setCities] = useState([]);
@@ -121,6 +123,12 @@ export const CreateEvent = () => {
     setVehicleStyles(
       vehicleStylesAtom.map((each) => ({ label: each.name, value: each.code }))
     );
+    setVehicleTypes(
+      vehicleTypesAtom.map((each) => ({
+        label: each.description,
+        value: each.type_cd,
+      }))
+    );
     setVehicleColours(
       vehicleColoursAtom.map((each) => ({
         label: each.display_name,
@@ -147,6 +155,7 @@ export const CreateEvent = () => {
     vehicleColoursAtom,
     cityAtom,
     impoundAtom,
+    vehicleTypesAtom,
     formIDsFetched,
   ]);
 
@@ -454,6 +463,7 @@ export const CreateEvent = () => {
                 jurisdictions={jurisdictions}
                 vehicles={vehicles}
                 vehicleStyles={vehicleStyles}
+                vehicleTypes={vehicleTypes}
               />
               {(values["TwentyFourHour"] || values["VI"]) && (
                 <RegisteredOwnerInfo provinces={provinces} />

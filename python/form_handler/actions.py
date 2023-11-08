@@ -483,37 +483,18 @@ def prep_vips_payload(**args)->tuple:
         # vipsImpoundCreate payload
         if "driver_jurisdiction" in event_data: tmp_payload["vipsImpoundCreate"]["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
         if "driver_licence_no" in event_data: tmp_payload["vipsImpoundCreate"]["driverLicenceNo"]=event_data["driver_licence_no"]
-        
-        # TODO: to confirm
-        # if "impound_lot_operator_id" in form_data: tmp_payload["vipsImpoundCreate"]["impoundLotOperatorId"]=form_data["impound_lot_operator_id"]
 
         # convert impoundment_dt to string
         impoundment_dt=form_data.get("date_of_impound")
         if impoundment_dt is not None:
-            # impoundment_dt=datetime.strptime(impoundment_dt, '%Y-%m-%d')
             impoundment_dt=impoundment_dt.strftime('%Y-%m-%dT%H:%M:%S')
             tmp_payload["vipsImpoundCreate"]["impoundmentDt"]=impoundment_dt
         
-
-        if "form_id" in form_data: tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=form_data["form_id"]
+        if "VI_number" in form_data: tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=form_data["VI_number"]
         
-        # TODO: to confirm
-        if "impoundment_release_dt" in form_data: tmp_payload["vipsImpoundCreate"]["impoundmentReleaseDt"]=form_data["impoundment_release_dt"]
-        
-        # TODO: to confirm
-        subject_cd="PERS"
+        tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]="VEHI"
 
-        if "owned_by_corp" in event_data and event_data["owned_by_corp"] is True:
-            subject_cd="CORP"
-        tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]=subject_cd
-        # if "notice_subject_cd" in form_data: tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]=form_data["notice_subject_cd"]
-
-        # TODO: to confirm
-        if "notice_type_cd" in form_data: tmp_payload["vipsImpoundCreate"]["noticeTypeCd"]=form_data["notice_type_cd"]
-
-        # TODO: to confirm (originalCauseCds)  
-
-        # TODO: to confirm
+        if "notice_type_cd" in form_data: tmp_payload["vipsImpoundCreate"]["noticeTypeCd"]="IMP"
         if "agency" in user_data: tmp_payload["vipsImpoundCreate"]["policeDetatchmentId"]=user_data["agency"].upper()
 
 
@@ -521,44 +502,28 @@ def prep_vips_payload(**args)->tuple:
         tmp_payload["vipsImpoundCreate"]["policeOfficerNm"]=officer_name.upper()
         
         if "badge_number" in user_data: tmp_payload["vipsImpoundCreate"]["policeOfficerNo"]=user_data["badge_number"].upper()  
-
-        # TODO: to confirm
-        if "form_id" in form_data: tmp_payload["vipsImpoundCreate"]["policeFileNo"]=form_data["form_id"]  
-        
-        # TODO: to confirm
-        if "projected_release_dt" in form_data: tmp_payload["vipsImpoundCreate"]["projectedReleaseDt"]=form_data["projected_release_dt"]
+        if "agency_file_no" in event_data: tmp_payload["vipsImpoundCreate"]["policeFileNo"]=event_data["agency_file_no"]  
+        if "projected_release_dt" in form_data: tmp_payload["vipsImpoundCreate"]["projectedReleaseDt"]=None
 
         # TODO: to confirm
         if "offence_city" in form_data: tmp_payload["vipsImpoundCreate"]["seizureLocationTxt"]=form_data["offence_city"].upper()
         
-        # TODO: to confirm
-        if "vehicle_returned_dt" in form_data: tmp_payload["vipsImpoundCreate"]["vehicleReturnedDt"]=form_data["vehicle_returned_dt"]
-
-
-
         # vipsRegistrationCreateArray payload
         vipsRegistrationCreateArray=[]
         vipsRegigCreateObj={}
         vipsRegigCreateObj["dataSourceCd"]="VIPS"
+        vips_addr_obj["registrationAddressTypeCd"]="RES"
 
         
         if "regist_owner_first_name" in event_data: vipsRegigCreateObj["firstGivenNm"]=event_data["regist_owner_first_name"].upper()
-        
+        if "icbcEnterpriseId" in event_data: vipsRegigCreateObj["icbcEnterpriseId"]=event_data["icbcEnterpriseId"]
         if "regist_owner_last_name" in event_data: vipsRegigCreateObj["surnameNm"]=event_data["regist_owner_last_name"].upper()
         # TODO: to confirm
-        
         if "regist_owner_middle_name" in event_data: vipsRegigCreateObj["secondGivenNm"]=event_data["regist_owner_middle_name"].upper()
-
         # TODO: to confirm
-        
         if "owned_by_corp" in event_data and event_data["owned_by_corp"] is True:
             if "corporation_name" in event_data and event_data["corporation_name"] is not None: vipsRegigCreateObj["organizationNm"]=event_data["corporation_name"].upper()
-
-        # TODO: to confirm
-        
-        if "icbcEnterpriseId" in event_data: vipsRegigCreateObj["icbcEnterpriseId"]=event_data["icbcEnterpriseId"].upper()
-
-        # TODO: to confirm
+            vips_addr_obj["registrationAddressTypeCd"]="BUSI"
         vipsRegigCreateObj["registrationRoleCd"]="REGOWN"
         # if "regist_owner_type" in event_data: tmp_payload["vipsRegistrationCreateArray"]["registrationRoleCd"]=event_data["regist_owner_type"].upper()
 
@@ -569,11 +534,8 @@ def prep_vips_payload(**args)->tuple:
         # if "regist_owner_address2" in event_data: vips_addr_obj["addressSecondLineTxt"]=event_data["regist_owner_address2"].upper()
         # if "regist_owner_address3" in event_data: vips_addr_obj["addressThirdLineTxt"]=event_data["regist_owner_address3"].upper()
         if "regist_owner_city" in event_data: vips_addr_obj["cityNm"]=event_data["regist_owner_city"].upper()
-        vips_addr_obj["countryNm"]="CANADA"
         if "regist_owner_postal" in event_data: vips_addr_obj["postalCodeTxt"]=event_data["regist_owner_postal"].upper()
         if "regist_owner_prov" in event_data: vips_addr_obj["provinceCd"]=event_data["regist_owner_prov"].upper()
-        # TODO: to confirm
-        vips_addr_obj["registrationAddressTypeCd"]="MAIL"
         vips_address_array.append(vips_addr_obj)
         vipsRegigCreateObj["vipsAddressArray"]=vips_address_array
 
@@ -589,15 +551,15 @@ def prep_vips_payload(**args)->tuple:
         if "driver_licence_no" in event_data: vips_licence_create_obj["driverLicenceNo"]=event_data["driver_licence_no"]
         if "driver_jurisdiction" in event_data: vips_licence_create_obj["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
         vipsRegigCreateObj["vipsLicenceCreateObj"]=vips_licence_create_obj
+        vipsRegistrationCreateArray.append(vipsRegigCreateObj)
+        tmp_payload["vipsRegistrationCreateArray"]=vipsRegistrationCreateArray
 
         # vipsVehicleCreate payload
         # TODO: to confirm
-        if "commercial_motor_carrier_id" in event_data: tmp_payload["vipsVehicleCreate"]["commercialMotorCarrierId"]=event_data["commercial_motor_carrier_id"]
+        if "nsc_no" in event_data: tmp_payload["vipsVehicleCreate"]["commercialMotorCarrierId"]=event_data["nsc_no"]
         
         if "vehicle_plate_no" in event_data: tmp_payload["vipsVehicleCreate"]["licencePlateNo"]=event_data["vehicle_plate_no"].upper()
-
-        # TODO: to confirm
-        if "vehicle_plate_expiry" in event_data: tmp_payload["vipsVehicleCreate"]["lpDecalValidYy"]=event_data["vehicle_plate_expiry"]
+        tmp_payload["vipsVehicleCreate"]["lpDecalValidYy"]=None
 
         if "vehicle_jurisdiction" in event_data: tmp_payload["vipsVehicleCreate"]["lpJurisdictionCd"]=event_data["vehicle_jurisdiction"]
 
@@ -606,17 +568,18 @@ def prep_vips_payload(**args)->tuple:
         if "vehicle_year" in event_data: tmp_payload["vipsVehicleCreate"]["manufacturedYy"]=event_data["vehicle_year"]
 
         if "nsc_prov_state" in event_data: tmp_payload["vipsVehicleCreate"]["nscJurisdictionTxt"]=event_data["nsc_prov_state"].upper()
+        if "vehicle_colour" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleColourTxt"]=event_data["vehicle_colour"].upper()
 
         if "vehicle_vin_no" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleIdentificationNo"]=event_data["vehicle_vin_no"].upper()  
+        
 
-        if "vehicle_mk_md" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleMakeTxt"]=event_data["vehicle_mk_md"].upper()  
-
-        if "vehicle_mk_md" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleModelTxt"]=event_data["vehicle_mk_md"].upper()  
+        if "vehicle_mk_md" in event_data: 
+            mk, md = event_data["vehicle_mk_md"].split("-")
+            tmp_payload["vipsVehicleCreate"]["vehicleModelTxt"]=md.upper()
+            tmp_payload["vipsVehicleCreate"]["vehicleMakeTxt"]=mk.upper()  
 
         if "vehicle_style" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleStyleTxt"]=event_data["vehicle_style"].upper()  
-
-        # TODO: to confirm
-        if "vehicle_type" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=event_data["vehicle_type"].upper()  
+        if "vehicle_type" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=str(event_data["vehicle_type"])
 
         # vipsDocumentIdArray payload
         vipsDocumentIdArray=[]
