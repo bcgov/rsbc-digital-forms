@@ -11,6 +11,7 @@ import {
   formTypes,
   eventObjectFlatener,
   eventDataFormatter,
+  formNumbers,
 } from "../../utils/helpers";
 import { convertToPST } from "../../utils/dateTime";
 import { StaticDataApi } from "../../api/staticDataApi";
@@ -48,6 +49,9 @@ export const Dashboard = () => {
   const [vehicleStyleResource, setVehicleStyleResource] = useRecoilState(
     staticResources["vehicle_styles"]
   );
+  const [vehicleTypeResource, setVehicleTypeResource] = useRecoilState(
+    staticResources["vehicle_types"]
+  );
   const [vehicleColourResource, setVehicleColourResource] = useRecoilState(
     staticResources["vehicle_colours"]
   );
@@ -65,6 +69,7 @@ export const Dashboard = () => {
         const impoundData = await StaticDataApi.get("impound_lot_operators");
         const provinceData = await StaticDataApi.get("provinces");
         const vehicleStyleData = await StaticDataApi.get("vehicle_styles");
+        const vehicleTypeData = await StaticDataApi.get("vehicle_types");
         const vehicleColourData = await StaticDataApi.get("vehicle_colours");
         const vehicleData = await StaticDataApi.get("vehicles");
 
@@ -77,6 +82,7 @@ export const Dashboard = () => {
         setCountryResource(countryData.data);
         setCityResource(cityData.data);
         setAgencyResource(agencyData.data);
+        setVehicleTypeResource(vehicleTypeData.data);
         setStaticDataLoaded(true);
 
         try {
@@ -280,7 +286,7 @@ export const Dashboard = () => {
                         : "N/A"}
                     </Link>
                   </td>
-                  <td>{data["VI_number"]}</td>
+                  <td>{formNumbers(data)}</td>
                   <td>{formTypes(data)}</td>
                   <td>
                     {data["intersection_or_address_of_offence"]

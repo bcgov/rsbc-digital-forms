@@ -17,7 +17,7 @@ class Config(BaseConfig):
     # URL of requesting resource
     ACCESS_CONTROL_ALLOW_ORIGIN = os.getenv('ACCESS_CONTROL_ALLOW_ORIGIN', '*')
 
-    DB_HOST = os.environ.get('DB_HOST', 'db')
+    DB_HOST = os.environ.get('DB_HOST', 'localhost')
     DB_USER = os.environ.get('DB_USER', 'testuser')
     DB_PASS = os.environ.get('DB_PASS', 'pass')
     DB_PORT = os.environ.get('DB_PORT', 5432)
