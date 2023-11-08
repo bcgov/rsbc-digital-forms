@@ -426,6 +426,13 @@ export const eventDataFormatter = (
       value: vehicleJurisdiction.objectCd,
       label: vehicleJurisdiction.objectDsc,
     };
+    const outOfProvinceDlJurisdiction = jurisdictions.filter(
+      (x) => x["objectCd"] === event["out_of_province_dl_jurisdiction"]
+    )[0];
+    event["out_of_province_dl_jurisdiction"] = {
+      value: outOfProvinceDlJurisdiction.objectCd,
+      label: outOfProvinceDlJurisdiction.objectDsc,
+    };
     if (event["nsc_prov_state"]) {
       const nscProvState = provinces.filter(
         (x) => x["objectCd"] === event["nsc_prov_state"]
