@@ -85,6 +85,7 @@ export const InitialValues = () => {
     out_of_province_dl: "",
     out_of_province_dl_number: "",
     out_of_province_dl_expiry: "",
+    out_of_province_dl_jurisdiction: { value: "BC", label: "BRITISH COLUMBIA" },
     date_of_impound: "",
     irp_impound: "",
     irp_impound_duration: "",

@@ -356,7 +356,4 @@ export const validationSchema = Yup.object().shape({
         return true;
       }
     ),
-  reasonable_test_used_alcohol: prescribedDeviceValidation(
-    Yup.ref("prescribed_test_used")
-  ),
 });

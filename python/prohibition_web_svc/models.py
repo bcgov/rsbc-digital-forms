@@ -551,6 +551,7 @@ class VIForm(db.Model):
     out_of_province_dl: str
     out_of_province_dl_number: str
     out_of_province_dl_expiry: str
+    out_of_province_dl_jurisdiction: str
     date_of_impound: datetime
     irp_impound: str
     irp_impound_duration: str
@@ -589,6 +590,7 @@ class VIForm(db.Model):
     out_of_province_dl = db.Column(db.String)
     out_of_province_dl_number = db.Column(db.String)
     out_of_province_dl_expiry = db.Column(db.String)
+    out_of_province_dl_jurisdiction = db.Column(db.String)
     date_of_impound = db.Column(db.DateTime)
     irp_impound = db.Column(db.String)
     irp_impound_duration = db.Column(db.String)
