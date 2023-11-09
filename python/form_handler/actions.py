@@ -297,6 +297,7 @@ def prep_icbc_payload(**args)->tuple:
         form_data=args.get('form_data')
         user_data=args.get('user_data')
         form_id=args.get('form_id')
+        event_type=args.get('event_type')
         tmp_payload= {
         "dlNumber":"",
         "dlJurisdiction": "",
@@ -308,9 +309,9 @@ def prep_icbc_payload(**args)->tuple:
         "pujCode": "",
         "nscNumber": "",
         # TODO: get the correct section from form
-        "section": "215.2",
+        "section": "",
         "violationLocation": "",
-        "noticeNumber": form_id,
+        "noticeNumber": "",
         "violationDate": "",
         "violationTime": "",
         "officerDetachment": "",        
@@ -331,37 +332,45 @@ def prep_icbc_payload(**args)->tuple:
         # convert birthdate to string
         birthdate=event_data.get("driver_dob")
         if birthdate is not None:
-            # birthdate=datetime.strptime(birthdate, '%Y-%m-%d')
-            birthdate= birthdate.strftime('%Y-%m-%d')
-            # birthdate=birthdate.strftime('%Y%m%d')
+            birthdate= birthdate.strftime('%Y%m%d')
             tmp_payload["birthdate"]=birthdate
-            
-
-        # if "driver_dob" in event_data: tmp_payload["birthdate"]=event_data["driver_dob"]
 
         if "vehicle_jurisdiction" in event_data : 
             tmp_payload["plateJurisdiction"]=event_data["vehicle_jurisdiction"]
 
         if "vehicle_plate_no" in event_data: tmp_payload["plateNumber"]=event_data["vehicle_plate_no"].upper()
 
-        # if "puj_code" in data and "objectCd" in data["puj_code"]: 
-        #     payload["pujCode"]=data["puj_code"]["objectCd"]  
+        if event_data["nsc_prov_state"]: 
+            tmp_payload["pujCode"]=event_data["nsc_prov_state"]
 
         #Some validation required for NSC-Number. ICBC does not accept all values.
         if "nsc_no" in event_data: tmp_payload["nscNumber"]=event_data["nsc_no"]
+        
+        if event_data["type_of_prohibition"] == "alcohol":
+            if event_type == "12h":
+                tmp_payload["section"] = "90.3(2)"
+            elif event_type == "24h":
+                tmp_payload["section"] = "215.2"
+        
+        if event_data["type_of_prohibition"] == "drugs":
+            if event_type == "12h":
+                tmp_payload["section"] = "90.3(2.1)" 
+            elif event_type == "24h":
+                tmp_payload["section"] = "215.3"
 
         if "offence_city" in form_data:
             tmp_payload["violationLocation"]=form_data["offence_city"].upper()
+            
+        if event_type == "12h":
+            tmp_payload["noticeNumber"] = form_data["twelve_hour_number"]
+        if event_type == "24h":
+            tmp_payload["noticeNumber"] = form_data["twenty_four_hour_number"]
 
-        # if "prohibitionStartDate" in data: payload["violationDate"]=data["prohibitionStartDate"]
-        # if "prohibitionStartTime" in data: payload["violationTime"]=data["prohibitionStartTime"]
         # convert date_of_driving to string
         date_of_driving=event_data.get("date_of_driving")
         if date_of_driving is not None:
-            # date_of_driving=datetime.strptime(date_of_driving, '%Y-%m-%d')
-            date_of_driving=date_of_driving.strftime('%Y-%m-%d')
+            date_of_driving=date_of_driving.strftime('%Y%m%d')
             tmp_payload["violationDate"]=date_of_driving
-        # if "date_of_driving" in event_data: tmp_payload["violationDate"]=event_data["date_of_driving"]
         if "time_of_driving" in event_data: tmp_payload["violationTime"]=event_data["time_of_driving"]
 
         # TODO: get agency from user table for the event
@@ -373,8 +382,7 @@ def prep_icbc_payload(**args)->tuple:
 
         officer_name=f'{user_data["first_name"]} {user_data["last_name"]}'
         tmp_payload["officerName"]=officer_name.upper()
-        # if "officer_name" in data: payload["officerName"]=data["officer_name"].upper()
-
+        
         args['icbc_payload']=tmp_payload
     except Exception as e:
         logging.error(e)
@@ -824,7 +832,6 @@ def add_unknown_event_error_to_message(**args)->tuple:
         logging.error(e)
         return False, args
     return True,args
-
 
 
 
