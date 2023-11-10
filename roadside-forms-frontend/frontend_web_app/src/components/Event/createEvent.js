@@ -617,7 +617,6 @@ export const CreateEvent = () => {
                   </Button>
                 </Modal.Footer>
               </Modal>
-              {/* The alert below should be left-justified. This can be accomplished by adding  */}
               <Alert
                 variant="danger"
                 show={formHasErrors}
