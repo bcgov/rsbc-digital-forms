@@ -31,6 +31,7 @@ export const ReasonableGrounds = () => {
               name="reasonable_ground_other_reason"
               className="field-height field-width"
               type="text"
+              required
             />
           </div>
         )}
@@ -44,6 +45,7 @@ export const ReasonableGrounds = () => {
               { label: "Yes", value: "YES" },
               { label: "No", value: "NO" },
             ]}
+            required
           />
         </div>
       </div>
