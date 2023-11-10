@@ -12,7 +12,6 @@ export const FormSubmissionApi = {
       headers: { ...headers },
       data: { ...data },
     });
-    console.log(response);
     return response;
   },
 

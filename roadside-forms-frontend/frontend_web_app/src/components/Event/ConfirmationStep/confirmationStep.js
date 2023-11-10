@@ -14,7 +14,7 @@ import { pstDate } from "../../../utils/dateTime";
 export const ConfirmationStep = () => {
   const { values, setFieldValue } = useFormikContext();
   const userData = useRecoilValue(userAtom);
-  const documentServed = values["document-served"];
+  const documentServed = values["document_served"];
   const certifyNoticeDelivery = values["confirmation_of_service"];
   const twentyFourHourForm = values["TwentyFourHour"];
   const twelveHourForm = values["TwelveHour"];
@@ -28,7 +28,6 @@ export const ConfirmationStep = () => {
     if (values["confirmation_of_service"]) {
       setFieldValue("confirmation_of_service_date", pstDate(new Date()));
     }
-    console.log("set value");
   }, [values["confirmation_of_service"], setFieldValue]);
 
   const generateLabel = () => {
@@ -87,7 +86,7 @@ export const ConfirmationStep = () => {
         <div className="col">
           <Radio
             label={label}
-            name="document-served"
+            name="document_served"
             options={[
               { label: "Yes", value: "YES" },
               { label: "No", value: "NO", disabled: true },
@@ -99,8 +98,7 @@ export const ConfirmationStep = () => {
       {documentServed === "YES" && (
         <div className="row">
           <div className="col">
-            <Checkbox name="confirmation_of_service">
-              {" "}
+            <Checkbox name="confirmation_of_service" required>
               {certifyNoticeText}
             </Checkbox>
           </div>
@@ -117,7 +115,7 @@ export const ConfirmationStep = () => {
                   <Col>
                     {"Officers Number"}
                     <br />
-                    {userData.badge_number}{" "}
+                    {userData.badge_number}
                   </Col>
                 </Row>
                 <Row>
@@ -137,9 +135,9 @@ export const ConfirmationStep = () => {
               </Container>
               <span className="mt-4">
                 The individual is prohibited under section 215 of the Motor
-                Vehicle Act from driving a motor vehicle for 24 hours,
-                commencing at{" "}
-                {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},{" "}
+                Vehicle Act from driving a motor vehicle for{" "}
+                {values["TwelveHour"] ? "12" : "24"} hours, commencing at{" "}
+                {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},
                 {timeOfDriving ? formatTime(timeOfDriving) : "N/A"}
               </span>
             </div>
