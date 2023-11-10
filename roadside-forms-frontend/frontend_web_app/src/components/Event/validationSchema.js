@@ -173,7 +173,7 @@ export const validationSchema = Yup.object().shape({
   vehicle_style: Yup.object().nullable().required("Style is required"), // Select one
   vehicle_colour: Yup.array()
     .required("Color is required")
-    .min(1, "Select at least one colour")
+    .min(1, "Select at least one vehicle colour")
     .max(2, "Select at most two colours"), // Select up 1-2
   vehicle_vin_no: Yup.string().when(["VI", "TwentyFourHour"], {
     is: (VI, TwentyFourHour) => VI || TwentyFourHour,
