@@ -23,16 +23,16 @@ export const InitialValues = () => {
     driver_prov_state: { value: "BC", label: "BRITISH COLUMBIA" },
     driver_postal: "",
     gender: "",
-    driver_licence_expiry: "",
+    driver_licence_expiry: null,
     driver_licence_class: "",
 
     /** Vehicle Information */
     vehicle_jurisdiction: { value: "BC", label: "BRITISH COLUMBIA" },
     vehicle_plate_no: "",
     vehicle_registration_no: "",
-    vehicle_year: "",
-    vehicle_mk_md: "",
-    vehicle_style: "",
+    vehicle_year: null,
+    vehicle_mk_md: null,
+    vehicle_style: null,
     vehicle_colour: [],
     vehicle_vin_no: "",
     nsc_prov_state: { value: "BC", label: "BRITISH COLUMBIA" },
@@ -51,11 +51,11 @@ export const InitialValues = () => {
     regist_owner_postal: "",
 
     /** Vehicle Impoundment or Disposition (24h/VI Only) */
-    date_of_impound: "",
+    date_of_impound: null,
     vehicle_impounded: "",
     reason_for_not_impounding: "",
     vehicle_released_to: "",
-    date_released: "",
+    date_released: null,
     time_released: "",
     location_of_keys: "",
     "ILO-name": "",
@@ -67,9 +67,9 @@ export const InitialValues = () => {
     /** Prohibition */
     type_of_prohibition: "",
     intersection_or_address_of_offence: "",
-    offence_city: "",
+    offence_city: null,
     agency_file_no: "",
-    date_of_driving: "",
+    date_of_driving: null,
     time_of_driving: "",
 
     /** Impondment for Immediate Roadside Prohibition */
@@ -99,8 +99,8 @@ export const InitialValues = () => {
     belief_driver_bc_resident: "",
     out_of_province_dl: "",
     out_of_province_dl_number: "",
-    out_of_province_dl_jurisdiction: "",
-    out_of_province_dl_expiry: "",
+    out_of_province_dl_jurisdiction: null,
+    out_of_province_dl_expiry: null,
 
     /** Linkage Factors */
     linkage_location_of_keys: false,
@@ -122,19 +122,19 @@ export const InitialValues = () => {
     reasonable_ground_other: false,
     reasonable_ground_other_reason: "",
     prescribed_test_used: "",
-    reasonable_date_of_test: "",
+    reasonable_date_of_test: null,
     reasonable_time_of_test: "",
     reason_for_not_using_prescribed_test: "",
 
     /** Test Administred */
     resonable_test_used_alcohol: "",
     reasonable_test_used_drugs: "",
-    reasonable_asd_expiry_date: "",
+    reasonable_asd_expiry_date: null,
     reasonable_result_alcohol: "",
-    reasonable_bac_result_mg: "",
+    reasonable_bac_result_mg: null,
     resonable_approved_instrument_used: "",
-    reasonable_can_drive_drug: "",
-    reasonable_can_drive_alcohol: "",
+    reasonable_can_drive_drug: false,
+    reasonable_can_drive_alcohol: false,
 
     /** Officer */
     "officer-lastname": user.last_name || "",
