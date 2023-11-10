@@ -37,6 +37,7 @@ import { SVGprint } from "../Forms/Print/svgPrint";
 import { db } from "../../db";
 import "./createEvent.scss";
 import { FormIDApi } from "../../api/formIDApi";
+import { Alert } from "react-bootstrap";
 
 export const CreateEvent = () => {
   const vehicleStylesAtom = useRecoilValue(staticResources["vehicle_styles"]);
@@ -72,6 +73,8 @@ export const CreateEvent = () => {
   const [isPrinted, setIsPrinted] = useState(false);
   const [modalCloseFunc, setmodalCloseFunc] = useState(() => () => null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formHasErrors, setFormHasErrors] = useState(false);
+  const [formErrors, setFormErrors] = useState([]);
 
   const navigate = useNavigate();
 
@@ -315,6 +318,9 @@ export const CreateEvent = () => {
     // Otherwise the schema will throw an error as a field on the next page is required if values["ecos_confirmed"] is true
 
     if (validationSchema.isValidSync(values)) {
+      // Clear errors
+      setFormHasErrors(false);
+      setFormErrors([]);
       // Once we know the form schema so far is valid, we can alter values based on the step we are on
       if (currentStep === 1) {
         // By this point the user has confirmed the form has printed successfully
@@ -360,6 +366,10 @@ export const CreateEvent = () => {
       // Schema not valid, display errors
       validationSchema.validate(values, { abortEarly: false }).catch((err) => {
         console.log("Validation Errors: ", err.errors);
+        setFormHasErrors(true);
+        setFormErrors(err.errors);
+        // scroll to the top of the page
+        window.scrollTo(0, 0);
       });
     }
   };
@@ -607,6 +617,25 @@ export const CreateEvent = () => {
                   </Button>
                 </Modal.Footer>
               </Modal>
+              {/* The alert below should be left-justified. This can be accomplished by adding  */}
+              <Alert
+                variant="danger"
+                show={formHasErrors}
+                style={{ alignItems: "left" }}
+              >
+                <div className="left">
+                  <Alert.Heading>
+                    This form has errors preventing you from proceeding.
+                  </Alert.Heading>
+                  <p>Please address them before continuing.</p>
+                  <hr />
+                  <ul>
+                    {formErrors.map((error) => (
+                      <li>{error}</li>
+                    ))}
+                  </ul>
+                </div>
+              </Alert>
               {renderPage(currentStep, values, setFieldValue)}
               <div id="button-container" className="flex">
                 {((currentStep > 0 && !isPrinted) ||

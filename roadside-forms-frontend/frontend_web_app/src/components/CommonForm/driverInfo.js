@@ -184,6 +184,7 @@ export const DriverInfo = (props) => {
                 name="driver_given_name"
                 className="field-height field-width"
                 type="text"
+                required
               />
             </Col>
             <Col sm={4}>
@@ -201,7 +202,6 @@ export const DriverInfo = (props) => {
                 name="driver_address"
                 className="field-height field-width"
                 type="text"
-                required
               />
             </Col>
             <Col sm={3}>
@@ -219,7 +219,6 @@ export const DriverInfo = (props) => {
                 name="driver_city"
                 className="field-height field-width"
                 type="text"
-                required
               />
             </Col>
             <Col sm={4}>
@@ -228,7 +227,6 @@ export const DriverInfo = (props) => {
                 label="Province / State"
                 name="driver_prov_state"
                 options={provinces}
-                required
               />
             </Col>
             <Col sm={4}>
