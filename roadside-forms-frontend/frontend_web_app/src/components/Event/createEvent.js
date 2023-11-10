@@ -37,6 +37,7 @@ import { SVGprint } from "../Forms/Print/svgPrint";
 import { db } from "../../db";
 import "./createEvent.scss";
 import { FormIDApi } from "../../api/formIDApi";
+import { Alert } from "react-bootstrap";
 
 export const CreateEvent = () => {
   const vehicleStylesAtom = useRecoilValue(staticResources["vehicle_styles"]);
@@ -72,6 +73,8 @@ export const CreateEvent = () => {
   const [isPrinted, setIsPrinted] = useState(false);
   const [modalCloseFunc, setmodalCloseFunc] = useState(() => () => null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formHasErrors, setFormHasErrors] = useState(false);
+  const [formErrors, setFormErrors] = useState([]);
 
   const navigate = useNavigate();
 
@@ -309,24 +312,65 @@ export const CreateEvent = () => {
   // Step 3: Police details (24h only)
   // Step 4: Police copy preview / print
   const nextPage = (values) => {
-    if (values["TwentyFourHour"]) {
-      if (currentStep === 2 && values["prescribed_test_used"] === "YES") {
-        setCurrentStep(currentStep + 2);
-      } else {
-        setCurrentStep(currentStep + 1);
+    // Need to check if schema is valid before proceeding to next page
+    // Once form has printed successfully, need to set values["form_printed_successfully"] to true and then proceed to next page, but after validating the schema for the same reason as below
+    // If 24h and we are on step 2 and in this function, we need to set values["ecos_confirmed"] to true before proceeding to the next page but after validating the schema
+    // Otherwise the schema will throw an error as a field on the next page is required if values["ecos_confirmed"] is true
+
+    if (validationSchema.isValidSync(values)) {
+      // Clear errors
+      setFormHasErrors(false);
+      setFormErrors([]);
+      // Once we know the form schema so far is valid, we can alter values based on the step we are on
+      if (currentStep === 1) {
+        // By this point the user has confirmed the form has printed successfully
+        values["form_printed_successfully"] = true;
       }
-    } else if (values["TwelveHour"]) {
-      if (currentStep === 2) {
-        setCurrentStep(currentStep + 2);
+      if (
+        currentStep === 2 &&
+        (values["TwentyFourHour"] || values["TwelveHour"])
+      ) {
+        // By this point the user has certified the eCOS and confirmed the form has printed successfully
+        values["ecos_confirmed"] = true;
+      }
+      if (
+        currentStep === 3 &&
+        values["TwentyFourHour"] &&
+        values["prescribed_test_used"] === "NO"
+      ) {
+        // By this point the police details have been completed if applicable, we can navigate to the police copy
+        values["police_details_complete"] = true;
+      }
+
+      // Page navigation
+      if (values["TwentyFourHour"]) {
+        if (currentStep === 2 && values["prescribed_test_used"] === "YES") {
+          setCurrentStep(currentStep + 2);
+        } else {
+          setCurrentStep(currentStep + 1);
+        }
+      } else if (values["TwelveHour"]) {
+        if (currentStep === 2) {
+          setCurrentStep(currentStep + 2);
+        } else {
+          setCurrentStep(currentStep + 1);
+        }
       } else {
-        setCurrentStep(currentStep + 1);
+        if (currentStep === 0) {
+          setCurrentStep(currentStep + 1);
+        } else {
+          setCurrentStep(4);
+        }
       }
     } else {
-      if (currentStep === 0) {
-        setCurrentStep(currentStep + 1);
-      } else {
-        setCurrentStep(4);
-      }
+      // Schema not valid, display errors
+      validationSchema.validate(values, { abortEarly: false }).catch((err) => {
+        console.log("Validation Errors: ", err.errors);
+        setFormHasErrors(true);
+        setFormErrors(err.errors);
+        // scroll to the top of the page
+        window.scrollTo(0, 0);
+      });
     }
   };
 
@@ -573,6 +617,24 @@ export const CreateEvent = () => {
                   </Button>
                 </Modal.Footer>
               </Modal>
+              <Alert
+                variant="danger"
+                show={formHasErrors}
+                style={{ alignItems: "left" }}
+              >
+                <div className="left">
+                  <Alert.Heading>
+                    This form has errors preventing you from proceeding.
+                  </Alert.Heading>
+                  <p>Please address them before continuing.</p>
+                  <hr />
+                  <ul>
+                    {formErrors.map((error) => (
+                      <li>{error}</li>
+                    ))}
+                  </ul>
+                </div>
+              </Alert>
               {renderPage(currentStep, values, setFieldValue)}
               <div id="button-container" className="flex">
                 {((currentStep > 0 && !isPrinted) ||

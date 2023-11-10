@@ -107,6 +107,7 @@ export const VehicleInfo = (props) => {
               label="Vehicle Year"
               name="vehicle_year"
               options={years}
+              required
             />
           </Col>
           <Col sm={3}>
@@ -115,6 +116,7 @@ export const VehicleInfo = (props) => {
               label="Vehicle Make and Model"
               name="vehicle_mk_md"
               options={vehicles}
+              required
             />
           </Col>
           <Col sm={3}>
@@ -123,6 +125,7 @@ export const VehicleInfo = (props) => {
               label="Vehicle Style"
               name="vehicle_style"
               options={vehicleStyles}
+              required
             />
           </Col>
           <Col sm={3}>
@@ -131,6 +134,7 @@ export const VehicleInfo = (props) => {
               label="Vehicle Colour(s)"
               name="vehicle_colour"
               options={vehicleColours}
+              required
             />
           </Col>
         </Row>
@@ -142,6 +146,7 @@ export const VehicleInfo = (props) => {
                 name="vehicle_vin_no"
                 className="field-height field-width"
                 type="text"
+                required
               />
             </Col>
           )}
