@@ -11,8 +11,8 @@ import {
   formTypes,
   eventObjectFlatener,
   eventDataFormatter,
+  formNumbers,
 } from "../../utils/helpers";
-import { eventDataUpsert } from "../../utils/dbHelpers";
 import { convertToPST } from "../../utils/dateTime";
 import { StaticDataApi } from "../../api/staticDataApi";
 import { Button } from "../common/Button/Button";
@@ -20,6 +20,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { db } from "../../db";
 import { userAtom } from "../../atoms/users";
 import "./dashboard.scss";
+import { FormIDApi } from "../../api/formIDApi";
+import { getAllFormIDs } from "../../utils/dbHelpers";
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -47,6 +49,9 @@ export const Dashboard = () => {
   const [vehicleStyleResource, setVehicleStyleResource] = useRecoilState(
     staticResources["vehicle_styles"]
   );
+  const [vehicleTypeResource, setVehicleTypeResource] = useRecoilState(
+    staticResources["vehicle_types"]
+  );
   const [vehicleColourResource, setVehicleColourResource] = useRecoilState(
     staticResources["vehicle_colours"]
   );
@@ -64,6 +69,7 @@ export const Dashboard = () => {
         const impoundData = await StaticDataApi.get("impound_lot_operators");
         const provinceData = await StaticDataApi.get("provinces");
         const vehicleStyleData = await StaticDataApi.get("vehicle_styles");
+        const vehicleTypeData = await StaticDataApi.get("vehicle_types");
         const vehicleColourData = await StaticDataApi.get("vehicle_colours");
         const vehicleData = await StaticDataApi.get("vehicles");
 
@@ -76,18 +82,19 @@ export const Dashboard = () => {
         setCountryResource(countryData.data);
         setCityResource(cityData.data);
         setAgencyResource(agencyData.data);
+        setVehicleTypeResource(vehicleTypeData.data);
         setStaticDataLoaded(true);
 
         try {
-          db.vehicles.bulkPut(vehicleData.data);
-          db.vehicleStyles.bulkPut(vehicleStyleData.data);
-          db.vehicleColours.bulkPut(vehicleColourData.data);
-          db.provinces.bulkPut(provinceData.data);
-          db.impoundLotOperators.bulkPut(impoundData.data);
-          db.jurisdictions.bulkPut(jurisdictionData.data);
-          db.countries.bulkPut(countryData.data);
-          db.cities.bulkPut(cityData.data);
-          db.agencies.bulkPut(agencyData.data);
+          await db.vehicles.bulkPut(vehicleData.data);
+          await db.vehicleStyles.bulkPut(vehicleStyleData.data);
+          await db.vehicleColours.bulkPut(vehicleColourData.data);
+          await db.provinces.bulkPut(provinceData.data);
+          await db.impoundLotOperators.bulkPut(impoundData.data);
+          await db.jurisdictions.bulkPut(jurisdictionData.data);
+          await db.countries.bulkPut(countryData.data);
+          await db.cities.bulkPut(cityData.data);
+          await db.agencies.bulkPut(agencyData.data);
         } catch (error) {
           console.log(error);
         }
@@ -125,7 +132,7 @@ export const Dashboard = () => {
         impoundResource
       );
       if (flattenedEventData.length) {
-        db.event.bulkPut(flattenedEventData);
+        await db.event.bulkPut(flattenedEventData);
         setFormsData(flattenedEventData);
       }
     };
@@ -142,6 +149,23 @@ export const Dashboard = () => {
     impoundResource,
     staticDataLoaded,
   ]);
+
+  useEffect(() => {
+    const fetchNeededIDs = async () => {
+      const neededFormID = await getAllFormIDs();
+      const newIDs = await FormIDApi.post(neededFormID);
+      await db.formID.bulkPut(newIDs.forms);
+    };
+
+    const fetchCurrentIDs = async () => {
+      const currentIDs = await FormIDApi.get();
+      await db.formID.bulkPut(currentIDs);
+    };
+
+    if (staticDataLoaded) {
+      fetchCurrentIDs().then(() => fetchNeededIDs());
+    }
+  }, [staticDataLoaded]);
 
   const handleClick = () => {
     navigate("/createEvent");
@@ -262,7 +286,7 @@ export const Dashboard = () => {
                         : "N/A"}
                     </Link>
                   </td>
-                  <td>{data["VI_number"]}</td>
+                  <td>{formNumbers(data)}</td>
                   <td>{formTypes(data)}</td>
                   <td>
                     {data["intersection_or_address_of_offence"]
