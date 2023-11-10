@@ -514,6 +514,20 @@ export const validationSchema = Yup.object().shape({
         .matches(
           /^([01]\d|2[0-3])[0-5]\d$/,
           "Time of Driving must match 24h format HHMM"
+        )
+        .test(
+          "time_of_driving",
+          "Time of Driving cannot be in the future",
+          function (value) {
+            if (value && this.parent.date_of_driving) {
+              return (
+                moment(this.parent.date_of_driving)
+                  .set("hour", value.slice(0, 2))
+                  .set("minute", value.slice(2)) <= moment()
+              );
+            }
+            return true;
+          }
         ),
   }),
 
@@ -597,7 +611,7 @@ export const validationSchema = Yup.object().shape({
               return true;
             }
           ),
-    }), // Only for VI, required if excessive_speed is true, max 3 digits long TODO: MUST BE AT LEAST 41km/h over speed limit
+    }), // Only for VI, required if excessive_speed is true, max 3 digits long
   speed_estimation_technique: Yup.string().when(["VI", "excessive_speed"], {
     is: (VI, excessive_speed) => VI && excessive_speed,
     then: () => Yup.string().required("Speed estimation technique is required"),
@@ -770,13 +784,10 @@ export const validationSchema = Yup.object().shape({
 
                 return timeOfDrivingCareOrControl.isBefore(testTime);
               }
-              // If date of driving < date of test, return true
-              // Else,
-              // If time of driving - care or ctrl > time of test - 1 minute, return false
             }
           ),
     }
-  ), // Only for 24h required if prescribed_test_used is "Yes", TODO: MUST BE AT LEAST ONE MINUTE AFTER TIME OF DRIVING - CARE OR CTRL
+  ), // Only for 24h required if prescribed_test_used is "Yes",
   reason_for_not_using_prescribed_test: Yup.string().when(
     ["TwentyFourHour", "prescribed_test_used"],
     {
@@ -987,7 +998,6 @@ export const validationSchema = Yup.object().shape({
       then: () => Yup.string().required("Test administred is required"),
     }
   ),
-
   requested_test_used_drug: Yup.string().when(
     ["requested_prescribed_test", "type_of_prohibition"],
     {
@@ -996,7 +1006,6 @@ export const validationSchema = Yup.object().shape({
       then: () => Yup.string().required("Test administred is required"),
     }
   ),
-
   time_of_requested_test: Yup.string().when(
     ["requested_prescribed_test", "requested_test_used_alcohol"],
     {
