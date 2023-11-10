@@ -1,3 +1,10 @@
+/** FIXME:
+ * Fix typos:
+ * - reasonable
+ * - possesion
+ * - license / licence
+ */
+
 import * as Yup from "yup";
 import moment from "moment-timezone";
 
@@ -508,7 +515,7 @@ export const validationSchema = Yup.object().shape({
           /^([01]\d|2[0-3])[0-5]\d$/,
           "Time of Driving must match 24h format HHMM"
         ),
-  }), // TODO: If date_of_driving is today, time_of_driving cannot be in the future // Required, 24h format HHMM, cannot be in the future
+  }),
 
   /** Impoundment for Immediate Roadside Prohibition */
   irp_impound: Yup.string().when("VI", {
@@ -734,19 +741,23 @@ export const validationSchema = Yup.object().shape({
 
   /** Test Administred */
   resonable_test_used_alcohol: Yup.string().when(
-    ["TwentyFourHour", "type_of_prohibition"],
+    ["TwentyFourHour", "type_of_prohibition", "prescribed_test_used"],
     {
-      is: (TwentyFourHour, type_of_prohibition) =>
-        TwentyFourHour && type_of_prohibition === "alcohol",
+      is: (TwentyFourHour, type_of_prohibition, prescribed_test_used) =>
+        TwentyFourHour &&
+        type_of_prohibition === "alcohol" &&
+        prescribed_test_used === "YES",
       then: () =>
         Yup.string().required("Type of test used - alcohol is required"),
     }
   ), // Only for 24h / VI, required if type_of_prohibition = "alcohol"
   reasonable_test_used_drugs: Yup.string().when(
-    ["TwentyFourHour", "type_of_prohibition"],
+    ["TwentyFourHour", "type_of_prohibition", "prescribed_test_used"],
     {
-      is: (TwentyFourHour, type_of_prohibition) =>
-        TwentyFourHour && type_of_prohibition === "drugs",
+      is: (TwentyFourHour, type_of_prohibition, prescribed_test_used) =>
+        TwentyFourHour &&
+        type_of_prohibition === "drugs" &&
+        prescribed_test_used === "YES",
       then: () =>
         Yup.string().required("Type of test used - drugs is required"),
     }
@@ -756,7 +767,6 @@ export const validationSchema = Yup.object().shape({
     .when(
       ["TwentyFourHour", "type_of_prohibition", "resonable_test_used_alcohol"],
       {
-        // TODO: FIX TYPO resonable_test_used_alcohol
         is: (
           TwentyFourHour,
           type_of_prohibition,
@@ -775,7 +785,6 @@ export const validationSchema = Yup.object().shape({
   reasonable_result_alcohol: Yup.string().when(
     ["TwentyFourHour", "type_of_prohibition", "resonable_test_used_alcohol"],
     {
-      // TODO: FIX TYPO resonable_test_used_alcohol
       is: (TwentyFourHour, type_of_prohibition, resonable_test_used_alcohol) =>
         TwentyFourHour &&
         type_of_prohibition === "alcohol" &&
@@ -788,7 +797,6 @@ export const validationSchema = Yup.object().shape({
     .when(
       ["TwentyFourHour", "type_of_prohibition", "resonable_test_used_alcohol"],
       {
-        // TODO: FIX TYPO resonable_test_used_alcohol
         is: (
           TwentyFourHour,
           type_of_prohibition,
@@ -809,7 +817,6 @@ export const validationSchema = Yup.object().shape({
   resonable_approved_instrument_used: Yup.string().when(
     ["TwentyFourHour", "type_of_prohibition", "resonable_test_used_alcohol"],
     {
-      // TODO: FIX TYPO resonable_test_used_alcohol
       is: (TwentyFourHour, type_of_prohibition, resonable_test_used_alcohol) =>
         TwentyFourHour &&
         type_of_prohibition === "alcohol" &&
@@ -830,7 +837,6 @@ export const validationSchema = Yup.object().shape({
   reasonable_can_drive_alcohol: Yup.boolean().when(
     ["TwentyFourHour", "type_of_prohibition", "resonable_test_used_alcohol"],
     {
-      // TODO: FIX TYPO resonable_test_used_alcohol
       is: (TwentyFourHour, type_of_prohibition, resonable_test_used_alcohol) =>
         TwentyFourHour &&
         type_of_prohibition === "alcohol" &&
@@ -849,4 +855,146 @@ export const validationSchema = Yup.object().shape({
     is: true,
     then: () => Yup.string().required("Vehicle Location is required"),
   }), // Only for 12h
+
+  /** eCOS (12h and 24h only) */
+  document_served: Yup.string().when("form_printed_successfully", {
+    is: true,
+    then: () => Yup.string().required("Document served is required"),
+  }),
+  confirmation_of_service: Yup.boolean().when(
+    ["form_printed_successfully", "document_served"],
+    {
+      is: (form_printed_successfully, document_served) =>
+        form_printed_successfully && document_served === "YES",
+      then: () =>
+        Yup.boolean().oneOf([true], "Confirmation of service is required"),
+    }
+  ),
+
+  /** Police Details (24h only) */
+  requested_prescribed_test: Yup.string().when(
+    [
+      "TwentyFourHour",
+      "form_printed_successfully",
+      "ecos_confirmed",
+      "prescribed_test_used",
+    ],
+    {
+      is: (
+        TwentyFourHour,
+        form_printed_successfully,
+        ecos_confirmed,
+        prescribed_test_used
+      ) =>
+        TwentyFourHour &&
+        form_printed_successfully &&
+        ecos_confirmed &&
+        prescribed_test_used === "NO",
+      then: () =>
+        Yup.string().required("Requested prescribed test is required"),
+    }
+  ),
+  requested_test_used_alcohol: Yup.string().when(
+    ["requested_prescribed_test", "type_of_prohibition"],
+    {
+      is: (requested_prescribed_test, type_of_prohibition) =>
+        requested_prescribed_test === "YES" &&
+        type_of_prohibition === "alcohol",
+      then: () => Yup.string().required("Test administred is required"),
+    }
+  ),
+
+  requested_test_used_drug: Yup.string().when(
+    ["requested_prescribed_test", "type_of_prohibition"],
+    {
+      is: (requested_prescribed_test, type_of_prohibition) =>
+        requested_prescribed_test === "YES" && type_of_prohibition === "drugs",
+      then: () => Yup.string().required("Test administred is required"),
+    }
+  ),
+
+  time_of_requested_test: Yup.string().when(
+    ["requested_prescribed_test", "requested_test_used_alcohol"],
+    {
+      is: (requested_prescribed_test, requested_test_used_alcohol) =>
+        requested_prescribed_test === "YES" &&
+        (requested_test_used_alcohol === "instrument" ||
+          requested_test_used_alcohol === "alco-sensor" ||
+          requested_test_used_alcohol === "PPCT"),
+      then: () =>
+        Yup.string()
+          .required("Time of requested test is required")
+          .matches(
+            /^([01]\d|2[0-3])[0-5]\d$/,
+            "Time of requested test must match 24h format HHMM"
+          ),
+    }
+  ),
+  requested_ASD_expiry_date: Yup.date()
+    .nullable()
+    .when(["requested_prescribed_test", "requested_test_used_alcohol"], {
+      is: (requested_prescribed_test, requested_test_used_alcohol) =>
+        requested_prescribed_test === "YES" &&
+        requested_test_used_alcohol === "alco-sensor",
+      then: () =>
+        Yup.date()
+          .nullable()
+          .required("ASD Expiry Date is required")
+          .min(new Date(), "ASD Test is expired"),
+    }),
+  requested_alcohol_test_result: Yup.string().when(
+    ["requested_prescribed_test", "requested_test_used_alcohol"],
+    {
+      is: (requested_prescribed_test, requested_test_used_alcohol) =>
+        requested_prescribed_test === "YES" &&
+        requested_test_used_alcohol === "alco-sensor",
+      then: () => Yup.string().required("ASD Result is required"),
+    }
+  ),
+  requested_BAC_result: Yup.number()
+    .nullable()
+    .when(["requested_prescribed_test", "requested_test_used_alcohol"], {
+      is: (requested_prescribed_test, requested_test_used_alcohol) =>
+        requested_prescribed_test === "YES" &&
+        requested_test_used_alcohol === "instrument",
+      then: () =>
+        Yup.number()
+          .required("BAC result is required")
+          .positive("BAC result must be a positive number")
+          .integer("BAC result must be an integer")
+          .min(2, "BAC result must be greater than 1")
+          .max(998, "BAC result must be less than 999"),
+    }),
+  requested_approved_instrument_used: Yup.string().when(
+    [
+      "requested_prescribed_test",
+      "requested_test_used_alcohol",
+      "requested_test_used_drug",
+    ],
+    {
+      is: (requested_prescribed_test, requested_test_used_alcohol) =>
+        requested_prescribed_test === "YES" &&
+        (requested_test_used_alcohol === "instrument" ||
+          requested_test_used_alcohol === "approved-drug"),
+      then: () => Yup.string().required("Approved Instrument used is required"),
+    }
+  ),
+  requested_can_drive_drug: Yup.boolean().when(
+    ["requested_prescribed_test", "requested_test_used_drug"],
+    {
+      is: (requested_prescribed_test, requested_test_used_drug) =>
+        requested_prescribed_test === "YES" &&
+        requested_test_used_drug === "PPCT",
+      then: () => Yup.boolean(),
+    }
+  ),
+  requested_can_drive_alcohol: Yup.boolean().when(
+    ["requested_prescribed_test", "requested_test_used_alcohol"],
+    {
+      is: (requested_prescribed_test, requested_test_used_alcohol) =>
+        requested_prescribed_test === "YES" &&
+        requested_test_used_alcohol === "PPCT",
+      then: () => Yup.boolean(),
+    }
+  ),
 });
