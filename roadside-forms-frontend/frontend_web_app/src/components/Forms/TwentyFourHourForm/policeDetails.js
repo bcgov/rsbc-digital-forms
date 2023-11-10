@@ -119,7 +119,7 @@ export const PoliceDetails = (props) => {
                     label="Which test was used?"
                     name="requested_test_used_drug"
                     options={[
-                      { label: "Approved Drug", value: "approved-drug" },
+                      { label: "Approved Instrument", value: "approved-drug" },
                       {
                         label: "Prescribed Physical Coordination Test",
                         value: "PPCT",
