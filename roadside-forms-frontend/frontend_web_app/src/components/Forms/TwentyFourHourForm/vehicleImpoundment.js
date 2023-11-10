@@ -53,7 +53,7 @@ export const VehicleImpoundment = (props) => {
   ];
   return (
     <div className="border-design-form left text-font">
-      <h3>Vehicle Impoundment or Dispostion</h3>
+      <h3>Vehicle Impoundment or Disposition</h3>
       {!values["VI"] && (
         <Row>
           <Col>

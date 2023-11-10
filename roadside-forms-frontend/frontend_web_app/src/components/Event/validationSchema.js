@@ -8,7 +8,6 @@ const vehicleImpoundedValidation = (selectedValue) => {
     function (value) {
       const { createError, path, options } = this;
       const vehicleImpoundedValue = this.resolve(selectedValue);
-      console.log(vehicleImpoundedValue);
       if (vehicleImpoundedValue === "YES" && !value) {
         return createError({ path, message: options.message });
       }
@@ -127,7 +126,7 @@ export const validationSchema = Yup.object().shape({
   "officer-agency": Yup.string().required("Agency is required"),
   driver_phone: Yup.string().matches(
     /^\d{3}-\d{3}-\d{4}$/,
-    "Phone number format ###-###-####"
+    "Phone Number format ###-###-####"
   ),
   driver_dob: Yup.string()
     .nullable()
@@ -357,7 +356,4 @@ export const validationSchema = Yup.object().shape({
         return true;
       }
     ),
-  reasonable_test_used_alcohol: prescribedDeviceValidation(
-    Yup.ref("prescribed_test_used")
-  ),
 });
