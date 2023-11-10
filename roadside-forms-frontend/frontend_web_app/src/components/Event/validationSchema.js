@@ -570,20 +570,34 @@ export const validationSchema = Yup.object().shape({
   }), // Only for VI
 
   /** Excessive Speed */
-  speed_limit: Yup.string().when(["VI", "excessive_speed"], {
-    is: (VI, excessive_speed) => VI && excessive_speed,
-    then: () =>
-      Yup.string()
-        .required("Speed Limit is required")
-        .matches(/^$|^\d{1,3}$/, "Speed Limit must be 3 digits or less"),
-  }), // Only for VI, required if excessive_speed is true, max 3 digits long
-  vehicle_speed: Yup.string().when(["VI", "excessive_speed"], {
-    is: (VI, excessive_speed) => VI && excessive_speed,
-    then: () =>
-      Yup.string()
-        .required("Vehicle Speed is required")
-        .matches(/^$|^\d{1,3}$/, "Vehicle Speed must be 3 digits or less"),
-  }), // Only for VI, required if excessive_speed is true, max 3 digits long
+  speed_limit: Yup.number()
+    .nullable()
+    .when(["VI", "excessive_speed"], {
+      is: (VI, excessive_speed) => VI && excessive_speed,
+      then: () =>
+        Yup.number()
+          .required("Speed Limit is required")
+          .max(999, "Speed Limit must be 3 digits or less"),
+    }), // Only for VI, required if excessive_speed is true, max 3 digits long
+  vehicle_speed: Yup.number()
+    .nullable()
+    .when(["VI", "excessive_speed"], {
+      is: (VI, excessive_speed) => VI && excessive_speed,
+      then: () =>
+        Yup.number()
+          .required("Vehicle Speed is required")
+          .max(999, "Vehicle Speed must be 3 digits or less")
+          .test(
+            "vehicle_speed",
+            "Vehicle Speed must be at least 41km/h above the speed limit",
+            function (value) {
+              if (value && this.parent.speed_limit) {
+                return value >= this.parent.speed_limit + 41;
+              }
+              return true;
+            }
+          ),
+    }), // Only for VI, required if excessive_speed is true, max 3 digits long TODO: MUST BE AT LEAST 41km/h over speed limit
   speed_estimation_technique: Yup.string().when(["VI", "excessive_speed"], {
     is: (VI, excessive_speed) => VI && excessive_speed,
     then: () => Yup.string().required("Speed estimation technique is required"),
@@ -726,9 +740,43 @@ export const validationSchema = Yup.object().shape({
           .matches(
             /^([01]\d|2[0-3])[0-5]\d$/,
             "Time of Test must match 24h format HHMM"
+          )
+          .test(
+            "reasonable_time_of_test",
+            "Time of test must be at least 1 minute after time of driving - care or control",
+            function (value) {
+              if (
+                this.parent.date_of_driving &&
+                this.parent.time_of_driving &&
+                this.parent.reasonable_date_of_test &&
+                value
+              ) {
+                const dateOfDriving = moment(this.parent.date_of_driving);
+                console.log("Date of driving: ", dateOfDriving);
+                const timeOfDriving = moment(
+                  this.parent.time_of_driving,
+                  "HHmm"
+                );
+                const dateOfTest = moment(this.parent.reasonable_date_of_test);
+                const timeOfTest = moment(value, "HHmm");
+
+                const timeOfDrivingCareOrControl = moment(dateOfDriving)
+                  .add(timeOfDriving.hours(), "hours")
+                  .add(timeOfDriving.minutes(), "minutes");
+
+                const testTime = moment(dateOfTest)
+                  .add(timeOfTest.hours(), "hours")
+                  .add(timeOfTest.minutes(), "minutes");
+
+                return timeOfDrivingCareOrControl.isBefore(testTime);
+              }
+              // If date of driving < date of test, return true
+              // Else,
+              // If time of driving - care or ctrl > time of test - 1 minute, return false
+            }
           ),
     }
-  ), // Only for 24h required if prescribed_test_used is "Yes"
+  ), // Only for 24h required if prescribed_test_used is "Yes", TODO: MUST BE AT LEAST ONE MINUTE AFTER TIME OF DRIVING - CARE OR CTRL
   reason_for_not_using_prescribed_test: Yup.string().when(
     ["TwentyFourHour", "prescribed_test_used"],
     {
@@ -765,16 +813,23 @@ export const validationSchema = Yup.object().shape({
   reasonable_asd_expiry_date: Yup.date()
     .nullable()
     .when(
-      ["TwentyFourHour", "type_of_prohibition", "resonable_test_used_alcohol"],
+      [
+        "TwentyFourHour",
+        "type_of_prohibition",
+        "resonable_test_used_alcohol",
+        "prescribed_test_used",
+      ],
       {
         is: (
           TwentyFourHour,
           type_of_prohibition,
-          resonable_test_used_alcohol
+          resonable_test_used_alcohol,
+          prescribed_test_used
         ) =>
           TwentyFourHour &&
           type_of_prohibition === "alcohol" &&
-          resonable_test_used_alcohol === "alco-sensor",
+          resonable_test_used_alcohol === "alco-sensor" &&
+          prescribed_test_used === "YES",
         then: () =>
           Yup.date()
             .nullable()
@@ -783,28 +838,46 @@ export const validationSchema = Yup.object().shape({
       }
     ), // Only for 24h, required if prescribed_test_used = "Yes" and type_of_prohibition = "alcohol" and reasonable_test_used_alcohol = "alco-sensor", min. value: date_of_driving, max. value: date_of_driving + 28 days
   reasonable_result_alcohol: Yup.string().when(
-    ["TwentyFourHour", "type_of_prohibition", "resonable_test_used_alcohol"],
+    [
+      "TwentyFourHour",
+      "type_of_prohibition",
+      "resonable_test_used_alcohol",
+      "prescribed_test_used",
+    ],
     {
-      is: (TwentyFourHour, type_of_prohibition, resonable_test_used_alcohol) =>
+      is: (
+        TwentyFourHour,
+        type_of_prohibition,
+        resonable_test_used_alcohol,
+        prescribed_test_used
+      ) =>
         TwentyFourHour &&
         type_of_prohibition === "alcohol" &&
-        resonable_test_used_alcohol === "alco-sensor",
+        resonable_test_used_alcohol === "alco-sensor" &&
+        prescribed_test_used === "YES",
       then: () => Yup.string().required("ASD Result is required"),
     }
   ), // Only for 24h, required if prescribed_test_used = "Yes" and type_of_prohibition = "alcohol" and reasonable_test_used_alcohol = "alco-sensor"
   reasonable_bac_result_mg: Yup.number()
     .nullable()
     .when(
-      ["TwentyFourHour", "type_of_prohibition", "resonable_test_used_alcohol"],
+      [
+        "TwentyFourHour",
+        "type_of_prohibition",
+        "resonable_test_used_alcohol",
+        "prescribed_test_used",
+      ],
       {
         is: (
           TwentyFourHour,
           type_of_prohibition,
-          resonable_test_used_alcohol
+          resonable_test_used_alcohol,
+          prescribed_test_used
         ) =>
           TwentyFourHour &&
           type_of_prohibition === "alcohol" &&
-          resonable_test_used_alcohol === "instrument",
+          resonable_test_used_alcohol === "instrument" &&
+          prescribed_test_used === "YES",
         then: () =>
           Yup.number()
             .required("BAC result is required")
@@ -815,12 +888,23 @@ export const validationSchema = Yup.object().shape({
       }
     ), // Only for 24h, required if prescribed_test_used = "Yes" and type_of_prohibition = "alcohol" and reasonable_test_used_alcohol = "instrument", numeric 51-600
   resonable_approved_instrument_used: Yup.string().when(
-    ["TwentyFourHour", "type_of_prohibition", "resonable_test_used_alcohol"],
+    [
+      "TwentyFourHour",
+      "type_of_prohibition",
+      "resonable_test_used_alcohol",
+      "prescribed_test_used",
+    ],
     {
-      is: (TwentyFourHour, type_of_prohibition, resonable_test_used_alcohol) =>
+      is: (
+        TwentyFourHour,
+        type_of_prohibition,
+        resonable_test_used_alcohol,
+        prescribed_test_used
+      ) =>
         TwentyFourHour &&
         type_of_prohibition === "alcohol" &&
-        resonable_test_used_alcohol === "instrument",
+        resonable_test_used_alcohol === "instrument" &&
+        prescribed_test_used === "YES",
       then: () => Yup.string().required("Approved Instrument used is required"),
     }
   ), // Only for 24h, required if prescribed_test_used = "Yes" and type_of_prohibition = "alcohol" and reasonable_test_used_alcohol = "instrument"
@@ -972,10 +1056,14 @@ export const validationSchema = Yup.object().shape({
       "requested_test_used_drug",
     ],
     {
-      is: (requested_prescribed_test, requested_test_used_alcohol) =>
+      is: (
+        requested_prescribed_test,
+        requested_test_used_alcohol,
+        requested_test_used_drug
+      ) =>
         requested_prescribed_test === "YES" &&
         (requested_test_used_alcohol === "instrument" ||
-          requested_test_used_alcohol === "approved-drug"),
+          requested_test_used_drug === "approved-drug"),
       then: () => Yup.string().required("Approved Instrument used is required"),
     }
   ),

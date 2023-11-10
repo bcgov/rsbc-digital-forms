@@ -89,8 +89,8 @@ export const InitialValues = () => {
     unlicensed: false,
 
     /** Excessive Speed */
-    speed_limit: "",
-    vehicle_speed: "",
+    speed_limit: null,
+    vehicle_speed: null,
     speed_estimation_technique: "",
     speed_confirmation_technique: "",
 
