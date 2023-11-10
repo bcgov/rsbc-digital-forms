@@ -264,9 +264,31 @@ export const printFormatHelper = (values, data, key) => {
   } else if (values["TwentyFourHour"]) {
     released_val = "reason_for_not_impounding";
   }
-  if (key === "RELEASE_LOCATION_VEHICLE" || key === "NOT_IMPOUNDED_REASON") {
-    if (values["VI"]) {
-      val = values["ILO-name"];
+  if (key === "NOT_IMPOUNDED_REASON") {
+    switch (values[released_val]) {
+      case "released":
+        val = "RELEASED TO OTHER DRIVER";
+        break;
+      case "private":
+        val = "PRIVATE TOW";
+        break;
+      case "roadside":
+        val = "LEFT AT ROADSIDE";
+        break;
+      case "investigation":
+        val = "SEIZED FOR INVESTIGATION";
+        break;
+      default:
+        val = "";
+    }
+  }
+
+  if (key === "RELEASE_LOCATION_VEHICLE") {
+    if (
+      values["VI"] ||
+      (values["TwentyFourHour"] && values["vehicle_impounded"] === "YES")
+    ) {
+      val = "IMPOUNDED";
     } else {
       switch (values[released_val]) {
         case "released":
@@ -311,8 +333,11 @@ export const printFormatHelper = (values, data, key) => {
   }
 
   if (key === "RELEASE_PERSON") {
-    if (values["VI"]) {
-      val = values["ILO-name"];
+    if (
+      values["VI"] ||
+      (values["TwentyFourHour"] && values["vehicle_impounded"] === "YES")
+    ) {
+      val = "";
     } else {
       switch (values[released_val]) {
         case "released":
