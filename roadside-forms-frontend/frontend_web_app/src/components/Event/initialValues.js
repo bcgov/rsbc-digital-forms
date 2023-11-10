@@ -146,10 +146,24 @@ export const InitialValues = () => {
 
     /** eCOS */
     confirmation_of_service_date: null,
-    "document-served": "",
+    document_served: "",
     confirmation_of_service: false,
+
+    /** Police Details */
+    requested_prescribed_test: "",
+    requested_test_used_alcohol: "",
+    requested_test_used_drug: "",
+    time_of_requested_test: "",
+    requested_ASD_expiry_date: null,
+    requested_alcohol_test_result: "",
+    requested_BAC_result: null,
+    requested_approved_instrument_used: "",
+    requested_can_drive_drug: false,
+    requested_can_drive_alcohol: false,
 
     /** Other */
     is_nsc: false,
+    ecos_confirmed: false,
+    form_printed_successfully: false,
   };
 };
