@@ -24,6 +24,25 @@ const vehicleStyles = [
     "TRACTOR"
 ];
 
+const vehicleTypes = [
+    "PASSENGER",
+    "COMMERCIAL TRUCK, FARM INDUSTRIAL, OR PASSENGER CARRYING COMMERCIAL",
+    "MOTORCYCLE MOPED",
+    "UTILITY TRAILER",
+    "MOTOR HOME",
+    "COMMERCIAL TRAILER"
+];
+
+const oopJurisdictions = [
+    "ALBERTA",
+    "BRITISH COLUMBIA",
+    "MANITOBA",
+    "WASHINGTON",
+    "ALASKA",
+    "GERMANY",
+    "INTERNATIONAL LICENCE"
+];
+
 const vehicleColours = [
     "BEIGE",
     "BLACK",
