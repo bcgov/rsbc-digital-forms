@@ -21,6 +21,7 @@ function FillAllSections() {
 }
 
 function FillDriverSection() {
+    console.log("RSF extension: Filling form...");
     SetField('driver_licence_no', GenerateDL());
     SetField('driver_last_name', chance.last());
     SetField('driver_given_name', GenerateGivenNames());
@@ -37,6 +38,7 @@ function FillDriverSection() {
 function FillVehicleSection(){
     SetField('vehicle_plate_no', GenerateLicencePlate());
     SetField('vehicle_registration_no', GenerateRegistrationNumber());
+    SelectRandomVehicleType('vehicle_type-select');
     SetField('vehicle_vin_no', GenerateVIN());
     SetField('nsc_no', GenerateNSC());
 
@@ -52,6 +54,8 @@ function FillVehicleSection(){
 
 function FillOwnerSection() {
     RandomlySelectRadioButton('owned_by_corp');
+    RandomlySelectRadioButton('driver_is_regist_owner');
+
     var ownerLastName = chance.last();
     var ownerFirstNames = GenerateGivenNames();
     SetField('regist_owner_last_name', ownerLastName);
@@ -112,6 +116,9 @@ function FillUnlicencedDriverSection() {
     RandomlyChooseRadio('belief_driver_bc_resident-YES', 'belief_driver_bc_resident-NO');
     RandomlyChooseRadio('out_of_province_dl-YES', 'out_of_province_dl-NO');
     SetField('out_of_province_dl_number', GenerateDL())
+    SelectRandomOOPJurisdiction('out_of_province_dl_jurisdiction-select');
+    expiryYear = GenerateDLExpiryDate().substring(0, 4);
+    SetField('out_of_province_dl_expiry', expiryYear);
 }
 
 function FillExcessiveSpeedSection() {
@@ -144,7 +151,7 @@ function FillReasonableGroundsSection() {
     RandomlySelectRadioButton('independent-witness');
     RandomlySelectRadioButton('video-surveillance');
     RandomlySelectRadioButton('reasonable_ground_other');
-    SetField('reasonable_ground_other_reason', chance.sentence({ words: 12 }));
+    SetField('reasonable_ground_other_reason', chance.sentence({ words: 6 }));
     RandomlyChooseRadio('prescribed_test_used-YES', 'prescribed_test_used-NO');
     SetField('reasonable_date_of_test', GetCurrentDate());
     SetField('reasonable_time_of_test', GetTimeOneMinuteAgo());
@@ -209,6 +216,12 @@ function SelectRandomVehicleStyle(id) {
     SetCustomSelect(id, vehicleStyle);
 }
 
+function SelectRandomVehicleType(id) {
+    const vehicleType = vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)];
+    console.log("Selecting vehicle type " + vehicleType);
+    SetCustomSelect(id, vehicleType);
+}
+
 function SelectRandomVehicleColour(id) {
     // Select a random vehicle style
     const vehicleColour = vehicleColours[Math.floor(Math.random() * vehicleColours.length)];
@@ -228,6 +241,11 @@ function SelectRandomVehicleYear(id){
     const max = currentYear + 1;
     const randomYear = Math.floor(Math.random() * (max - min + 1)) + min;
     SetCustomSelect(id, randomYear.toString());
+}
+
+function SelectRandomOOPJurisdiction(id){
+    const oopJurisdiction = oopJurisdictions[Math.floor(Math.random() * oopJurisdictions.length)];
+    SetCustomSelect(id, oopJurisdiction);
 }
 
 function SelectRandomIlo(id){
@@ -295,7 +313,7 @@ function GenerateGivenName(gender) {
 // Helper function to generate a 1-5 given names. Male, female, or either.
 function GenerateGivenNames(gender) {
     let names = [];
-    let numNames = chance.integer({min: 1, max: 5});
+    let numNames = chance.integer({min: 1, max: 4});
 
     for (let i = 0; i < numNames; i++) {
         if (gender === 'male') {
@@ -346,7 +364,7 @@ function RandomGender() {
 
 function GenerateRandomDlClass()
 {
-    const dlClasses = ["1", "2", "3", "4", "5", "6", "7", "8", "5L", "5N", "5 + 7L", "5 + 8N", "4 + 7N"];
+    const dlClasses = ["1", "2", "3", "4", "5", "6", "7", "8", "5,1", "4,2", "2,5,8", "5L", "5N", "5,6", "5,2,7"];
     return dlClasses[Math.floor(Math.random() * dlClasses.length)];
 }
 
