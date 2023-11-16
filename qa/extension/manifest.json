@@ -1,6 +1,6 @@
 {
     "name": "RSBC Roadside Forms auto-fill extension",
-    "version": "2.5",
+    "version": "2.6",
     "manifest_version": 3,
     "description": "A minimal extension to make filling out roadside digital forms easier.",
     "permissions": [

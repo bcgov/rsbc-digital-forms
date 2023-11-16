@@ -21,10 +21,14 @@ function FillAllSections() {
 }
 
 function FillDriverSection() {
-    console.log("RSF extension: Filling form...");
-    SetField('driver_licence_no', GenerateDL());
-    SetField('driver_last_name', chance.last());
-    SetField('driver_given_name', GenerateGivenNames());
+    const dl_no = GenerateDL();
+    const dl_surname = chance.last();
+    const dl_given = GenerateGivenNames();
+    console.log("RSF test extension: filling form for DL " + dl_no + ": " + dl_given + " " + dl_surname + ".");
+
+    SetField('driver_licence_no', dl_no);
+    SetField('driver_last_name', dl_surname);
+    SetField('driver_given_name', dl_given);
     SetField('driver_dob', GenerateDateOfBirth());
     SetField('driver_address', GenerateStreetAddress());
     SetField('driver_phone', GeneratePhoneNumber());
@@ -55,9 +59,9 @@ function FillVehicleSection(){
 function FillOwnerSection() {
     RandomlySelectRadioButton('owned_by_corp');
     RandomlySelectRadioButton('driver_is_regist_owner');
-
     var ownerLastName = chance.last();
     var ownerFirstNames = GenerateGivenNames();
+    SetField('regist_owner_dob', GenerateDateOfBirth());
     SetField('regist_owner_last_name', ownerLastName);
     SetField('corporation_name', GenerateCompanyName());
     SetField('regist_owner_first_name', ownerFirstNames);
@@ -218,7 +222,6 @@ function SelectRandomVehicleStyle(id) {
 
 function SelectRandomVehicleType(id) {
     const vehicleType = vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)];
-    console.log("Selecting vehicle type " + vehicleType);
     SetCustomSelect(id, vehicleType);
 }
 
@@ -274,13 +277,33 @@ function SetCustomSelect(id, value) {
                 var arrayOfDivs = inputElement.parentElement.parentElement.parentElement.parentElement.getElementsByTagName('div');
                 var div = arrayOfDivs[arrayOfDivs.length - 1];
         
-                if (div.innerText === value) {
-                    clearInterval(interval);
-                    // Now we can click the child element
-                    div.click();
+                // if (div.innerText === value) {
+                //     clearInterval(interval);
+                //     // Now we can click the child element
+                //     div.click();
+                // }
+
+                // Iterate backwards through arrayOfDivs checking to see if the innerText matches the value
+                // If it does, click the div
+                for (let i = arrayOfDivs.length - 1; i >= 0; i--) {
+                
+                    // Ignore TypeError: Cannot read property 'innerText' of undefined
+                    try {
+                        if (arrayOfDivs[i].innerText === value) {
+                            clearInterval(interval);
+                            // Now we can click the child element
+                            arrayOfDivs[i].click();
+                            break;
+                        }
+                    }
+                    catch (err) {
+                        // Ignore TypeError: Cannot read property 'innerText' of undefined
+                        console.log(err);
+                    }
                 }
             }
         }, 1000);
+
     }
 }
 
@@ -364,7 +387,7 @@ function RandomGender() {
 
 function GenerateRandomDlClass()
 {
-    const dlClasses = ["1", "2", "3", "4", "5", "6", "7", "8", "5,1", "4,2", "2,5,8", "5L", "5N", "5,6", "5,2,7"];
+    const dlClasses = ["1", "2", "3", "4", "5", "6", "7", "8", "5,6", "5,8", "2,5,8"];
     return dlClasses[Math.floor(Math.random() * dlClasses.length)];
 }
 
