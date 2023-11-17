@@ -38,6 +38,7 @@ import { db } from "../../db";
 import "./createEvent.scss";
 import { FormIDApi } from "../../api/formIDApi";
 import { Alert } from "react-bootstrap";
+const { v4: uuidv4 } = require('uuid');
 
 export const CreateEvent = () => {
   const vehicleStylesAtom = useRecoilValue(staticResources["vehicle_styles"]);
@@ -252,11 +253,16 @@ export const CreateEvent = () => {
   const handleGoBackandSave = (values) => {
     const eventData = getEventDataToSave(values);
     if (eventData["event_id"] === undefined) {
-      // need a beter solution to this
-      eventData["event_id"] = 1;
+      // need a beter solution to this--DONE
+      // eventData["event_id"] = 1;
+      eventData["event_id"] = uuidv4();
     }
-    db.event.put(eventData);
-    navigate("/");
+    db.event.put(eventData, eventData["event_id"]).then(() => {
+      navigate("/");
+    }
+    ).catch((err) => {
+      console.error(err);
+    });
   };
 
   const printForms = async (values) => {
@@ -639,12 +645,12 @@ export const CreateEvent = () => {
               <div id="button-container" className="flex">
                 {((currentStep > 0 && !isPrinted) ||
                   values["prescribed_device"] === "YES") && (
-                  <div className="left">
-                    <Button type="button" onClick={() => prevPage()}>
-                      Previous
-                    </Button>
-                  </div>
-                )}
+                    <div className="left">
+                      <Button type="button" onClick={() => prevPage()}>
+                        Previous
+                      </Button>
+                    </div>
+                  )}
                 {currentStep === 3 && values["prescribed_device"] === "NO" && (
                   <div className="left">
                     <Button type="button" onClick={() => withdrawProhibition()}>
