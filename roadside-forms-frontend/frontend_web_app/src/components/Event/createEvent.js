@@ -230,9 +230,16 @@ export const CreateEvent = () => {
       const base64_png = await toPng(element);
       values["TwelveHour_form_png"] = base64_png;
     }
+    // if(values["date_of_impound"]){
+    //   values["date_released"] = values["date_of_impound"];
+    // }
+    // console.log('here are the values before api call')
+    // console.log(values);
     FormSubmissionApi.post(values)
       .then((resp) => {
         values["event_id"] = resp.data["event_id"];
+        // console.log('here are the values')
+        // console.log(values);
         db.event
           .put(values)
           .then(() => {
@@ -251,12 +258,22 @@ export const CreateEvent = () => {
   };
 
   const handleGoBackandSave = (values) => {
-    const eventData = getEventDataToSave(values);
+    // console.log('this is value before saveing impound even before')
+    // console.log(values)
+    // copy values to another variable
+    let valuesCopy = JSON.parse(JSON.stringify(values));
+    if(valuesCopy["date_of_impound"]){
+      valuesCopy["date_released"] = valuesCopy["date_of_impound"];
+    }
+    const eventData = getEventDataToSave(valuesCopy);
     if (eventData["event_id"] === undefined) {
       // need a beter solution to this--DONE
       // eventData["event_id"] = 1;
       eventData["event_id"] = uuidv4();
     }
+    // console.log('this is value before saveing impound')
+    // console.log(eventData)
+    
     db.event.put(eventData, eventData["event_id"]).then(() => {
       navigate("/");
     }

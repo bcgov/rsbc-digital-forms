@@ -101,7 +101,7 @@ export const getEventDataToSave = (formValues) => {
   const eventValues = {};
   console.log(formValues);
   eventValueKeys.forEach((item) => {
-    if (formValues[item] === null || formValues[item] === "") {
+    if (formValues[item] === null|| formValues[item] === "") {
       eventValues[item] = "";
     } else {
       eventValues[item] =
