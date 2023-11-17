@@ -23,6 +23,10 @@ export const ConfirmationStep = () => {
   const driverLastName = values["driver_last_name"];
   const dateOfDriving = values["date_of_driving"];
   const timeOfDriving = values["time_of_driving"];
+  const viNumber = values["VI_number"]? values["VI_number"] : "";
+  const irpNumber = values["IRP_number"]? values["IRP_number"] : "";
+  const twentyFourHourNumber = values["twenty_four_hour_number"]? values["twenty_four_hour_number"] : "";
+  const twelveHourNumber = values["twelve_hour_number"]? values["twelve_hour_number"] : "";
 
   useEffect(() => {
     if (values["confirmation_of_service"]) {
@@ -32,9 +36,12 @@ export const ConfirmationStep = () => {
 
   const generateLabel = () => {
     let formNames = [];
+    
     if (vi) formNames.push("Vehicle Impound");
     if (twentyFourHourForm) formNames.push("24-hour Driving Prohibition");
     if (twelveHourForm) formNames.push("12-hour Driving Prohibition");
+
+    
 
     let formNamesString = formNames.join(" and ");
 
@@ -56,9 +63,14 @@ export const ConfirmationStep = () => {
     const formattedPacificDate = `${year}-${month}-${day}`; // returns date in 'YYYY-MM-DD' format
 
     const formSubmittedDate = formattedPacificDate;
-    const noticeNumber = "mock-232323";
 
-    return `I, the peace officer identified below, certify that on ${formSubmittedDate} I served a printout under the Motor Vehicle Act or the Motor Vehicle Act Regulations, of notice number ${noticeNumber} on ${driverLastName}, ${driverGivenName} by personal delivery.`;
+    let formNumbers = [];
+    if (vi) formNumbers.push(viNumber);
+    if (twentyFourHourForm) formNumbers.push(twentyFourHourNumber);
+    if (twelveHourForm) formNumbers.push(twelveHourNumber);
+    // const noticeNumber = "mock-232323";
+
+    return `I, the peace officer identified below, certify that on ${formSubmittedDate} I served a printout under the Motor Vehicle Act or the Motor Vehicle Act Regulations, of notice number ${formNumbers} on ${driverLastName}, ${driverGivenName} by personal delivery.`;
   };
 
   const formatDate = (dateString) => {
