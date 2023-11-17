@@ -81,6 +81,11 @@ export const ConfirmationStep = () => {
     return `${year}-${month}-${day}`;
   };
 
+  const formatStrToTimeFormat=(timeString)=>{
+    const formattedTime = `${timeString.substring(0, 2)}:${timeString.substring(2, 4)}`;
+    return formattedTime;    
+  }
+
   const formatTime = (timeString) => {
     const date = new Date(timeString);
     const hours = String(date.getHours()).padStart(2, "0");
@@ -150,7 +155,7 @@ export const ConfirmationStep = () => {
                 Vehicle Act from driving a motor vehicle for{" "}
                 {values["TwelveHour"] ? "12" : "24"} hours, commencing at{" "}
                 {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},
-                {timeOfDriving ? formatTime(timeOfDriving) : "N/A"}
+                {timeOfDriving ? formatStrToTimeFormat(timeOfDriving) : "N/A"}
               </span>
             </div>
           )}
