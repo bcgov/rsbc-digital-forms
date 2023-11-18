@@ -145,6 +145,7 @@
       "REASONABLE_GROUNDS_TEST_APPROVED_INSTRUMENT",
       "REASONABLE_GROUNDS_TEST_APPROVED_INSTRUMENT_SPECIFY",
       "REASONABLE_GROUNDS_TEST_PHYSICAL_COORDINATION",
+      "REASONABLE_GROUNDS_TEST_PHYSICAL_COORDINATION_DRUG",
       "REASONABLE_GROUNDS_TEST_TIME",
       "REASONABLE_GROUNDS_ALCOHOL_51-59",
       "REASONABLE_GROUNDS_ALCOHOL_WARN",
@@ -672,6 +673,16 @@
           "y": 74.5
         }
       },
+      "REASONABLE_GROUNDS_TEST_PHYSICAL_COORDINATION_DRUG": {
+        "field_type": "checkbox",
+        "field_name": "reasonable_test_used_drugs",
+        "field_val": "PPCT",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.5,
+          "y": 74.5
+        }
+      },
       "REASONABLE_GROUNDS_TEST_TIME": {
         "field_type": "text",
         "field_name": "reasonable_time_of_test",
@@ -736,8 +747,8 @@
         "field_val": "",
         "classNames": "fontSmall",
         "start": {
-          "x": 144.5,
-          "y": 136.3
+          "x": 121.5,
+          "y": 97.5
         }
       },
       "REASONABLE_GROUNDS_ALCOHOL_ABILITY_TO_DRIVE_AFFECTED": {
