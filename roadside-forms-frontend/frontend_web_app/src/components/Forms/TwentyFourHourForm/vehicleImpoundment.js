@@ -42,6 +42,9 @@ export const VehicleImpoundment = (props) => {
       setFieldValue("ILO-options", {});
     } else if (values["vehicle_impounded"] === "YES") {
       setFieldValue("reason_for_not_impounding", "");
+      setFieldValue("date_released", null);
+      setFieldValue("time_released", null);
+      setFieldValue("vehicle_released_to", null);
     }
   }, [values["vehicle_impounded"], values["VI"], setFieldValue]);
 

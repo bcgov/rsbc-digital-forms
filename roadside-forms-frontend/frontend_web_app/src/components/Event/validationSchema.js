@@ -313,7 +313,7 @@ export const validationSchema = Yup.object().shape({
         Yup.string().required("Reason for not impounding field is required"),
     }
   ), // Only for 24h / VI, required if vehicle_impounded = "No"
-  vehicle_released_to: Yup.string().when(
+  vehicle_released_to: Yup.string().nullable().when(
     [
       "TwentyFourHour",
       "TwelveHour",
@@ -377,7 +377,7 @@ export const validationSchema = Yup.object().shape({
             ),
       }
     ), // Only for 24h / VI, required if vehicle_impounded = "No" and reason_for_not_impounding = "released"
-  time_released: Yup.string().when(
+  time_released: Yup.string().nullable().when(
     [
       "TwentyFourHour",
       "TwelveHour",

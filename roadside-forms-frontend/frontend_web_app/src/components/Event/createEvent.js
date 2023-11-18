@@ -230,7 +230,7 @@ export const CreateEvent = () => {
       const base64_png = await toPng(element);
       values["TwelveHour_form_png"] = base64_png;
     }
-    if(values["date_of_impound"]){
+    if(values["date_of_impound"] && values["vehicle_impounded"] === "NO"){
       values["date_released"] = values["date_of_impound"];
     }
     // console.log('here are the values before api call')
@@ -268,11 +268,11 @@ export const CreateEvent = () => {
   };
 
   const handleGoBackandSave = (values) => {
-    // console.log('this is value before saveing impound even before')
-    // console.log(values)
+    console.log('this is value before saveing impound even before')
+    console.log(values)
     // copy values to another variable
     let valuesCopy = JSON.parse(JSON.stringify(values));
-    if(valuesCopy["date_of_impound"]){
+    if(valuesCopy["date_of_impound"] && valuesCopy["vehicle_impounded"] === "NO"){
       valuesCopy["date_released"] = valuesCopy["date_of_impound"];
     }
     const eventData = getEventDataToSave(valuesCopy);
@@ -281,8 +281,8 @@ export const CreateEvent = () => {
       // eventData["event_id"] = 1;
       eventData["event_id"] = uuidv4();
     }
-    // console.log('this is value before saveing impound')
-    // console.log(eventData)
+    console.log('this is value before saveing impound')
+    console.log(eventData)
     
     db.event.put(eventData, eventData["event_id"]).then(() => {
       navigate("/");
@@ -444,14 +444,28 @@ export const CreateEvent = () => {
       IRP: values["IRP"],
       VI: values["VI"],
     };
+    const valuesCopy={...values}
+    if (values["vehicle_impounded"] === "YES") {
+      console.log(values["date_released"])
+      valuesCopy['date_released']=null
+      valuesCopy['time_released']=null
+      // break;
+    }
     const componentsToRender = [];
     let components = [];
     for (const item in forms) {
       if (forms[item]) {
         for (const form in formsPNG[renderStage][item]) {
+          
           if (form === "ILO" && values["vehicle_impounded"] === "NO") {
             break;
           }
+          // if (form === "ILO" && values["vehicle_impounded"] === "YES") {
+          //   values['date_released']=null
+          //   values['time_released']=null
+          //   break;
+          // }
+          
           if (form === "DETAILS" && !values["incident_details_extra_page"]) {
             break;
           }
@@ -463,7 +477,7 @@ export const CreateEvent = () => {
               formAspect={formsPNG[renderStage][item][form]["aspectClass"]}
               formLayout={item}
               formType={form}
-              values={values}
+              values={valuesCopy}
             />
           );
         }
