@@ -125,19 +125,19 @@ export const ConfirmationStep = () => {
               <Container className="ecos-container">
                 <Row>
                   <Col>
-                    {"Enforcment Officers Name"}
+                    {"Enforcement Officer's Name"}
                     <br />
                     {userData.last_name + ", " + userData.first_name}
                   </Col>
                   <Col>
-                    {"Officers Number"}
+                    {"Officer's Number"}
                     <br />
                     {userData.badge_number}
                   </Col>
                 </Row>
                 <Row>
                   <Col>
-                    {"Oranization/Detachment/Location of Officer"}
+                    {"Organization/Detachment/Location of Officer"}
                     <br />
                     {userData.agency}
                   </Col>
