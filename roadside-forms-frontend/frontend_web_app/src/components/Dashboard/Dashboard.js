@@ -13,7 +13,7 @@ import {
   eventDataFormatter,
   formNumbers,
 } from "../../utils/helpers";
-import { convertToPST } from "../../utils/dateTime";
+import { convertToPST,convertToPSTFormat } from "../../utils/dateTime";
 import { StaticDataApi } from "../../api/staticDataApi";
 import { Button } from "../common/Button/Button";
 import { useNavigate, Link } from "react-router-dom";
@@ -282,7 +282,7 @@ export const Dashboard = () => {
                       state={{ eventId: data["event_id"] }}
                     >
                       {data["created_dt"]
-                        ? convertToPST(data["created_dt"])
+                        ? convertToPSTFormat(data["created_dt"])
                         : "N/A"}
                     </Link>
                   </td>
