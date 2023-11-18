@@ -70,7 +70,8 @@ export const ConfirmationStep = () => {
     if (twelveHourForm) formNumbers.push(twelveHourNumber);
     // const noticeNumber = "mock-232323";
 
-    return `I, the peace officer identified below, certify that on ${formSubmittedDate} I served a printout under the Motor Vehicle Act or the Motor Vehicle Act Regulations, of notice number ${formNumbers} on ${driverLastName}, ${driverGivenName} by personal delivery.`;
+    // return `I, the peace officer identified below, certify that on ${formSubmittedDate} I personally served a printout under the Motor Vehicle Act or the Motor Vehicle Act Regulations, of notice number ${formNumbers} on ${driverLastName}, ${driverGivenName} by personal delivery.`;
+    return `I, the peace officer identified below, certify that on ${formSubmittedDate} I personally served a notice of ${twelveHourForm?'suspension number':'prohibition number'} ${formNumbers} on ${driverLastName}, ${driverGivenName}.`;
   };
 
   const formatDate = (dateString) => {
@@ -153,7 +154,7 @@ export const ConfirmationStep = () => {
               <span className="mt-4">
                 The individual is prohibited under section 215 of the Motor
                 Vehicle Act from driving a motor vehicle for{" "}
-                {values["TwelveHour"] ? "12" : "24"} hours, commencing at{" "}
+                {values["TwelveHour"] ? "12" : "24"} hours, commencing at: {" "}
                 {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},
                 {timeOfDriving ? formatStrToTimeFormat(timeOfDriving) : "N/A"}
               </span>
