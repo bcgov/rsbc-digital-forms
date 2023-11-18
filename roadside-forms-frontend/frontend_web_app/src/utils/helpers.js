@@ -369,7 +369,7 @@ export const printFormatHelper = (values, data, key) => {
 
   if (key === "RELEASE_DATE") {
     if (values["VI"]) {
-      val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
+      // val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
     }
   }
 
