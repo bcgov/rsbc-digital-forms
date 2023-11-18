@@ -96,6 +96,7 @@ def save_event_data(**kwargs) -> tuple:
             date_released=datetime.strptime(
                 data.get('date_released'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('date_released') else None,
             time_released=data.get("time_released"),
+            location_of_keys=data.get('location_of_keys'),
             submitted=True,
             confirmation_of_service=data.get('confirmation_of_service'),
             confirmation_of_service_date=data.get(
@@ -122,8 +123,9 @@ def save_event_data(**kwargs) -> tuple:
                     'out_of_province_dl_number'),
                 out_of_province_dl_expiry=data.get(
                     'out_of_province_dl_expiry'),
-                out_of_province_dl_jurisdiction=data.get('out_of_province_dl_jurisdiction', {
-                'value': None, 'label': None}).get('value'),
+                out_of_province_dl_jurisdiction=(lambda x: x.get('value') if x else None)(data.get('out_of_province_dl_jurisdiction', None)),
+                # out_of_province_dl_jurisdiction=data.get('out_of_province_dl_jurisdiction', {
+                # 'value': None, 'label': None}).get('value'),                
                 date_of_impound=datetime.strptime(
                     data.get('date_of_impound'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('date_of_impound') else None,
                 irp_impound=data.get('irp_impound'),
