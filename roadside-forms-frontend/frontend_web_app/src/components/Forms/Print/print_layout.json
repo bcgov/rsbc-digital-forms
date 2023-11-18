@@ -657,8 +657,8 @@
         "field_name": "resonable_approved_instrument_used",
         "classNames": "fontSmall",
         "start": {
-          "x": 190.2,
-          "y": 107.5
+          "x": 160.2,
+          "y": 70.5
         }
       },
       "REASONABLE_GROUNDS_TEST_PHYSICAL_COORDINATION": {
@@ -725,8 +725,8 @@
         "field_name": "reasonable_bac_result_mg",
         "classNames": "fontSmall",
         "start": {
-          "x": 207.4,
-          "y": 126.7
+          "x": 175.4,
+          "y": 85.7
         }
       },
       "REASONABLE_GROUNDS_DRUG_ABILITY_TO_DRIVE_AFFECTED": {
