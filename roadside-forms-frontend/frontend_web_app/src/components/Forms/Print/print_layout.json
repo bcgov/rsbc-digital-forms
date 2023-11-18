@@ -154,11 +154,12 @@
       "REASONABLE_GROUNDS_DRUG_ABILITY_TO_DRIVE_AFFECTED",
       "ECOS_NOTICE_DAY",
       "ECOS_MONTH_YEAR",
+      "ECOS_PROHIBITION_NUMBER",
       "ECOS_DRIVER_NAME",
       "ECOS_OFFICER_NAME",
       "ECOS_OFFICER_BADGE_NUMBER",
       "ECOS_AGENCY_NAME",
-      "ECOS_DATE_CERTIFIED",
+      "ECOS_DATE_CERTIFIED",      
       "REQUESTED_PRESCRIBED_TEST_YES",
       "REQUESTED_PRESCRIBED_TEST_NO",
       "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_INSTRUMENT",
@@ -963,11 +964,11 @@
       },
       "ECOS_PROHIBITION_NUMBER": {
         "field_type": "text",
-        "field_name": "officer-agency",
+        "field_name": "twenty_four_hour_number",
         "classNames": "fontSmall",
         "start": {
-          "x": 118.5,
-          "y": 188
+          "x": 175,
+          "y": 167.5
         }
       },
       "ECOS_DRIVER_NAME": {
@@ -2252,6 +2253,7 @@
       "ECOS_NOTICE_DAY",
       "ECOS_NOTICE_MONTH",
       "ECOS_NOTICE_YEAR",
+      "ECOS_PROHIBITION_NUMBER",
       "ECOS_DRIVER_NAME",
       "ECOS_OFFICER_NAME",
       "ECOS_OFFICER_BADGE_NUMBER",
@@ -2569,6 +2571,15 @@
         "start": {
           "x": 192,
           "y": 13
+        }
+      },
+      "ECOS_PROHIBITION_NUMBER": {
+        "field_type": "text",
+        "field_name": "twelve_hour_number",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 175,
+          "y": 17
         }
       },
       "ECOS_DRIVER_NAME": {
