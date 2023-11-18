@@ -230,11 +230,11 @@ export const CreateEvent = () => {
       const base64_png = await toPng(element);
       values["TwelveHour_form_png"] = base64_png;
     }
-    // if(values["date_of_impound"]){
-    //   values["date_released"] = values["date_of_impound"];
-    // }
-    // console.log('here are the values before api call')
-    // console.log(values);
+    if(values["date_of_impound"]){
+      values["date_released"] = values["date_of_impound"];
+    }
+    console.log('here are the values before api call')
+    console.log(values);
     FormSubmissionApi.post(values)
       .then((resp) => {
         values["event_id"] = resp.data["event_id"];
