@@ -23,6 +23,10 @@ export const ConfirmationStep = () => {
   const driverLastName = values["driver_last_name"];
   const dateOfDriving = values["date_of_driving"];
   const timeOfDriving = values["time_of_driving"];
+  const viNumber = values["VI_number"]? values["VI_number"] : "";
+  const irpNumber = values["IRP_number"]? values["IRP_number"] : "";
+  const twentyFourHourNumber = values["twenty_four_hour_number"]? values["twenty_four_hour_number"] : "";
+  const twelveHourNumber = values["twelve_hour_number"]? values["twelve_hour_number"] : "";
 
   useEffect(() => {
     if (values["confirmation_of_service"]) {
@@ -32,9 +36,12 @@ export const ConfirmationStep = () => {
 
   const generateLabel = () => {
     let formNames = [];
+    
     if (vi) formNames.push("Vehicle Impound");
     if (twentyFourHourForm) formNames.push("24-hour Driving Prohibition");
     if (twelveHourForm) formNames.push("12-hour Driving Prohibition");
+
+    
 
     let formNamesString = formNames.join(" and ");
 
@@ -56,9 +63,15 @@ export const ConfirmationStep = () => {
     const formattedPacificDate = `${year}-${month}-${day}`; // returns date in 'YYYY-MM-DD' format
 
     const formSubmittedDate = formattedPacificDate;
-    const noticeNumber = "mock-232323";
 
-    return `I, the peace officer identified below, certify that on ${formSubmittedDate} I served a printout under the Motor Vehicle Act or the Motor Vehicle Act Regulations, of notice number ${noticeNumber} on ${driverLastName}, ${driverGivenName} by personal delivery.`;
+    let formNumbers = [];
+    if (vi) formNumbers.push(viNumber);
+    if (twentyFourHourForm) formNumbers.push(twentyFourHourNumber);
+    if (twelveHourForm) formNumbers.push(twelveHourNumber);
+    // const noticeNumber = "mock-232323";
+
+    // return `I, the peace officer identified below, certify that on ${formSubmittedDate} I personally served a printout under the Motor Vehicle Act or the Motor Vehicle Act Regulations, of notice number ${formNumbers} on ${driverLastName}, ${driverGivenName} by personal delivery.`;
+    return `I, the peace officer identified below, certify that on ${formSubmittedDate} I personally served a notice of ${twelveHourForm?'suspension number':'prohibition number'} ${formNumbers} on ${driverLastName}, ${driverGivenName}.`;
   };
 
   const formatDate = (dateString) => {
@@ -68,6 +81,11 @@ export const ConfirmationStep = () => {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+
+  const formatStrToTimeFormat=(timeString)=>{
+    const formattedTime = `${timeString.substring(0, 2)}:${timeString.substring(2, 4)}`;
+    return formattedTime;    
+  }
 
   const formatTime = (timeString) => {
     const date = new Date(timeString);
@@ -108,19 +126,19 @@ export const ConfirmationStep = () => {
               <Container className="ecos-container">
                 <Row>
                   <Col>
-                    {"Enforcment Officers Name"}
+                    {"Enforcement Officer's Name"}
                     <br />
                     {userData.last_name + ", " + userData.first_name}
                   </Col>
                   <Col>
-                    {"Officers Number"}
+                    {"Officer's Number"}
                     <br />
                     {userData.badge_number}
                   </Col>
                 </Row>
                 <Row>
                   <Col>
-                    {"Oranization/Detachment/Location of Officer"}
+                    {"Organization/Detachment/Location of Officer"}
                     <br />
                     {userData.agency}
                   </Col>
@@ -136,9 +154,9 @@ export const ConfirmationStep = () => {
               <span className="mt-4">
                 The individual is prohibited under section 215 of the Motor
                 Vehicle Act from driving a motor vehicle for{" "}
-                {values["TwelveHour"] ? "12" : "24"} hours, commencing at{" "}
+                {values["TwelveHour"] ? "12" : "24"} hours, commencing at: {" "}
                 {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},
-                {timeOfDriving ? formatTime(timeOfDriving) : "N/A"}
+                {timeOfDriving ? formatStrToTimeFormat(timeOfDriving) : "N/A"}
               </span>
             </div>
           )}
