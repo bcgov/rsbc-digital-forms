@@ -313,7 +313,7 @@ export const validationSchema = Yup.object().shape({
         Yup.string().required("Reason for not impounding field is required"),
     }
   ), // Only for 24h / VI, required if vehicle_impounded = "No"
-  vehicle_released_to: Yup.string().when(
+  vehicle_released_to: Yup.string().nullable().when(
     [
       "TwentyFourHour",
       "TwelveHour",
@@ -377,7 +377,7 @@ export const validationSchema = Yup.object().shape({
             ),
       }
     ), // Only for 24h / VI, required if vehicle_impounded = "No" and reason_for_not_impounding = "released"
-  time_released: Yup.string().when(
+  time_released: Yup.string().nullable().when(
     [
       "TwentyFourHour",
       "TwelveHour",
@@ -639,8 +639,8 @@ export const validationSchema = Yup.object().shape({
   out_of_province_dl_number: Yup.string().when(
     ["VI", "unlicensed", "belief_driver_bc_resident"],
     {
-      is: (VI, unlicensed, belief_driver_bc_resident) =>
-        VI && unlicensed && belief_driver_bc_resident,
+      is: (VI, unlicensed, belief_driver_bc_resident,out_of_province_dl) =>
+        VI && unlicensed && belief_driver_bc_resident && out_of_province_dl,
       then: () =>
         Yup.string().required("Out of Province DL Number is required"),
     }
@@ -648,16 +648,16 @@ export const validationSchema = Yup.object().shape({
   out_of_province_dl_jurisdiction: Yup.object()
     .nullable()
     .when(["VI", "unlicensed", "belief_driver_bc_resident"], {
-      is: (VI, unlicensed, belief_driver_bc_resident) =>
-        VI && unlicensed && belief_driver_bc_resident,
+      is: (VI, unlicensed, belief_driver_bc_resident,out_of_province_dl) =>
+        VI && unlicensed && belief_driver_bc_resident && out_of_province_dl,
       then: () =>
         Yup.object().required("Out of Province DL Jurisdiction is required"),
     }), // Only for VI, required if unlicensed is true and belief_driver_bc_resident is "Yes"
   out_of_province_dl_expiry: Yup.date()
     .nullable()
     .when(["VI", "unlicensed", "belief_driver_bc_resident"], {
-      is: (VI, unlicensed, belief_driver_bc_resident) =>
-        VI && unlicensed && belief_driver_bc_resident,
+      is: (VI, unlicensed, belief_driver_bc_resident,out_of_province_dl) =>
+        VI && unlicensed && belief_driver_bc_resident && out_of_province_dl,
       then: () =>
         Yup.date().required("Out of Province DL Expiry Date is required"),
     }), // Only for VI, required if unlicensed is true and belief_driver_bc_resident is "Yes"

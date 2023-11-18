@@ -99,13 +99,25 @@ export const staticResources = {
 
 export const getEventDataToSave = (formValues) => {
   const eventValues = {};
-  eventValueKeys.forEach(
-    (item) =>
-      (eventValues[item] =
+  console.log(formValues);
+  eventValueKeys.forEach((item) => {
+    if (formValues[item] === null|| formValues[item] === "") {
+      eventValues[item] = "";
+    } else {
+      eventValues[item] =
         typeof formValues[item] === "object"
           ? formValues[item]["value"]
-          : formValues[item])
-  );
+          : formValues[item];
+    }
+  });
+  
+  // eventValueKeys.forEach(
+  //   (item) =>
+  //     (eventValues[item] =
+  //       typeof formValues[item] === "object"
+  //         ? formValues[item]["value"]
+  //         : formValues[item])
+  // );
   return eventValues;
 };
 
@@ -357,7 +369,7 @@ export const printFormatHelper = (values, data, key) => {
 
   if (key === "RELEASE_DATE") {
     if (values["VI"]) {
-      val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
+      // val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
     }
   }
 
