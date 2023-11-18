@@ -233,8 +233,18 @@ export const CreateEvent = () => {
     if(values["date_of_impound"]){
       values["date_released"] = values["date_of_impound"];
     }
-    console.log('here are the values before api call')
-    console.log(values);
+    // console.log('here are the values before api call')
+    // console.log(values);
+    // db.event
+    //       .put(values)
+    //       .then(() => {
+    //         // setIsSubmitting(false);
+    //         // navigate("/");
+    //       })
+    //       .catch((err) => {
+    //         // console.error(err);
+    //         // setIsSubmitting(false);
+    //       });
     FormSubmissionApi.post(values)
       .then((resp) => {
         values["event_id"] = resp.data["event_id"];
