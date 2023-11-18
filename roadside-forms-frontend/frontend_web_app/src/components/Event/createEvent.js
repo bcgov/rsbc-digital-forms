@@ -268,21 +268,26 @@ export const CreateEvent = () => {
   };
 
   const handleGoBackandSave = (values) => {
-    console.log('this is value before saveing impound even before')
-    console.log(values)
+    // console.log('this is value before saveing impound even before')
+    // console.log(values)
     // copy values to another variable
-    let valuesCopy = JSON.parse(JSON.stringify(values));
+    // let valuesCopy = JSON.parse(JSON.stringify(values));
+    let valuesCopy = {...values};
+    // console.log('this is value of valuesCopy before saveing impound even before')
+    // console.log(valuesCopy)
     if(valuesCopy["date_of_impound"] && valuesCopy["vehicle_impounded"] === "NO"){
       valuesCopy["date_released"] = valuesCopy["date_of_impound"];
     }
     const eventData = getEventDataToSave(valuesCopy);
+    // console.log('this is value of event data before saving impound')
+    // console.log(eventData)
     if (eventData["event_id"] === undefined) {
       // need a beter solution to this--DONE
       // eventData["event_id"] = 1;
       eventData["event_id"] = uuidv4();
     }
-    console.log('this is value before saveing impound')
-    console.log(eventData)
+    // console.log('this is value before saveing impound')
+    // console.log(eventData)
     
     db.event.put(eventData, eventData["event_id"]).then(() => {
       navigate("/");
