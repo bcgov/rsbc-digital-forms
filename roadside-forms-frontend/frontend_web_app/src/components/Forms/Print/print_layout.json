@@ -152,6 +152,7 @@
       "REASONABLE_GROUNDS_ALCOHOL_BAC",
       "REASONABLE_GROUNDS_ALCOHOL_BAC_VALUE",
       "REASONABLE_GROUNDS_DRUG_ABILITY_TO_DRIVE_AFFECTED",
+      "REASONABLE_GROUNDS_ALCOHOL_ABILITY_TO_DRIVE_AFFECTED",
       "ECOS_NOTICE_DAY",
       "ECOS_MONTH_YEAR",
       "ECOS_PROHIBITION_NUMBER",
@@ -737,6 +738,16 @@
         "start": {
           "x": 144.5,
           "y": 136.3
+        }
+      },
+      "REASONABLE_GROUNDS_ALCOHOL_ABILITY_TO_DRIVE_AFFECTED": {
+        "field_type": "checkbox",
+        "field_name": "reasonable_can_drive_alcohol",
+        "field_val": "",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.5,
+          "y": 89.9
         }
       },
       "DRIVER_WITNESSED_BY_OFFICER": {
