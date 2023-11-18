@@ -166,6 +166,14 @@
       "REQUESTED_PRESCRIBED_TEST_NO",
       "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_INSTRUMENT",
       "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_ALCO",
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_ALCO_EXP",
+
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_51-59",
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_WARN",
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_FAIL",
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_BAC",
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_BAC_VALUE",
+
       "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_PPCT",
       "REQUESTED_PRESCRIBED_TEST_USED_DRUG_INSTRUMENT",
       "REQUESTED_PRESCRIBED_TEST_USED_DRUG_PPCT",
@@ -840,6 +848,68 @@
           "y": 119.5
         }
       },
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_ALCO_EXP": {
+        "field_type": "text",
+        "field_name": "requested_ASD_expiry_date",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 182.25,
+          "y": 119.5
+        }
+      },
+
+
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_51-59": {
+        "field_type": "checkbox",
+        "field_name": "requested_alcohol_test_result",
+        "field_val": "51-59",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.5,
+          "y": 143.2
+        }
+      },
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_WARN": {
+        "field_type": "checkbox",
+        "field_name": "requested_alcohol_test_result",
+        "field_val": "WARN",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 141.5,
+          "y": 143.2
+        }
+      },
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_FAIL": {
+        "field_type": "checkbox",
+        "field_name": "requested_alcohol_test_result",
+        "field_val": "FAIL",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 154,
+          "y": 143.2
+        }
+      },
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_BAC": {
+        "field_type": "checkbox",
+        "field_name": "requested_alcohol_test_result",
+        "field_val": "instrument",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 164.5,
+          "y": 143.2
+        }
+      },
+      "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_BAC_VALUE": {
+        "field_type": "text",
+        "field_name": "requested_BAC_result",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 175.4,
+          "y": 143.2
+        }
+      },
+
+
       "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_INSTRUMENT": {
         "field_type": "checkbox",
         "field_name": "requested_test_used_alcohol",
