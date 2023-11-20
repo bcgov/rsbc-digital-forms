@@ -1,95 +1,95 @@
 $primary: #003366; // Change this to your desired primary color
 
 // Import Bootstrap and its dependencies
-@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/scss/bootstrap";
 
-.base-class{
-    border: 1px solid black;
-    color: black;
-    border-radius: 0.2rem;
-    text-align: center;
+.base-class {
+  border: 1px solid black;
+  color: black;
+  border-radius: 0.2rem;
+  text-align: center;
 }
 
 .slim-button {
-    padding: 0.15rem 1.0rem;
-    font-size: 0.875rem; 
-  }
-
-.text-font{
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    font-size: large;
+  padding: 0.15rem 1rem;
+  font-size: 0.875rem;
 }
 
-.border-design{
-    @extend .base-class;
-    background-color: #F2F2F2;
-    margin: 2rem;
-    padding: 2rem;
+.text-font {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-size: large;
 }
 
-.outline{
-    @extend .base-class;
-    margin: 2rem;
-    padding: 2rem;
+.border-design {
+  @extend .base-class;
+  background-color: #f2f2f2;
+  margin: 2rem;
+  padding: 2rem;
 }
 
-.border-design-form{
-    @extend .base-class;
-    background-color: #F2F2F2;
-    margin: 1rem;
-    padding: 1rem;
+.outline {
+  @extend .base-class;
+  margin: 2rem;
+  padding: 2rem;
 }
 
-.error-message{
-    color: #D8292F;
-}
-.required-asterisk{
-    color: #D8292F;
+.border-design-form {
+  @extend .base-class;
+  background-color: #f2f2f2;
+  margin: 1rem;
+  padding: 1rem;
 }
 
-.field-width{
-    width: 100%;
+.error-message {
+  color: #d8292f;
+}
+.required-asterisk {
+  color: #d8292f;
+}
+
+.field-width {
+  width: 100%;
 }
 .field-height {
-    height: 40px;
-  }
+  height: 40px;
+}
 
 .text-area-height {
-    height: 150px;
-  }
-
-.right{
-    text-align: right;
+  height: 150px;
 }
 
-.left{
-    text-align: left;
+.right {
+  text-align: right;
 }
 
-.center{
-    text-align: center;
+.left {
+  text-align: left;
 }
 
-.flex{
-    display: flex; 
+.center {
+  text-align: center;
 }
 
-.textArea{
-    width: 120px;
-    height:25px;
-    text-align: left;
+.flex {
+  display: flex;
+}
+
+.textArea {
+  width: 120px;
+  height: 100%;
+  text-align: left;
 }
 
 ::-webkit-scrollbar {
-    width: 2em;
-    height: 2em;
+  width: 2em;
+  height: 2em;
 }
 ::-webkit-scrollbar-button {
-    background: #ccc;
+  background: #ccc;
 }
 ::-webkit-scrollbar-thumb {
-    background: #eee;
+  background: #eee;
 }
 ::-webkit-scrollbar-track-piece {
-    background: #888;
+  background: #888;
 }
