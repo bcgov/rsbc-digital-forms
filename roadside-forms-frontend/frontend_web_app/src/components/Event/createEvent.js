@@ -318,31 +318,6 @@ export const CreateEvent = () => {
 
   const handlePrintForms = async (values) => {
     window.print();
-    setIsPrinted(true);
-    const forms = {
-      TwentyFourHour: "twenty_four_hour_number",
-      TwelveHour: "twelve_hour_number",
-      // IRP: "IRP_number",
-      VI: "VI_number",
-    };
-    const idsToDelete = {};
-    for (const form in forms) {
-      if (values[forms[form]]) {
-        await db.formID.delete(
-          forms[form] === "VI_number" || forms[form] === "IRP_number"
-            ? values[forms[form]].toString().slice(0, -1)
-            : values[forms[form]]
-        );
-        idsToDelete[forms[form]] = values[forms[form]];
-      }
-    }
-    await FormIDApi.patch({
-      forms: { ...idsToDelete },
-      printed_timestamp: new Date(),
-    });
-    handleShow("Print Form", "Did the form print correctly?", "No", "Yes", () =>
-      handleSuccessfulPrint(values)
-    );
   };
 
   const handleSuccessfulPrint = async (values) => {
@@ -498,6 +473,43 @@ export const CreateEvent = () => {
   };
 
   const renderPage = (currentStep, values, setFieldValue) => {
+    window.onbeforeprint = (event) => {
+      console.log("About to print!");
+    };
+
+    window.onafterprint = async (event) => {
+      console.log("Done printing");
+      setIsPrinted(true);
+      const forms = {
+        TwentyFourHour: "twenty_four_hour_number",
+        TwelveHour: "twelve_hour_number",
+        // IRP: "IRP_number",
+        VI: "VI_number",
+      };
+      const idsToDelete = {};
+      for (const form in forms) {
+        if (values[forms[form]]) {
+          await db.formID.delete(
+            forms[form] === "VI_number" || forms[form] === "IRP_number"
+              ? values[forms[form]].toString().slice(0, -1)
+              : values[forms[form]]
+          );
+          idsToDelete[forms[form]] = values[forms[form]];
+        }
+      }
+      await FormIDApi.patch({
+        forms: { ...idsToDelete },
+        printed_timestamp: new Date(),
+      });
+      handleShow(
+        "Print Form",
+        "Did the form print correctly?",
+        "No",
+        "Yes",
+        () => handleSuccessfulPrint(values)
+      );
+    };
+
     switch (currentStep) {
       case 0:
         return (

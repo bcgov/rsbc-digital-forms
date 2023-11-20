@@ -701,7 +701,11 @@ export const validationSchema = Yup.object().shape({
     is: (VI, incident_details) => {
       return VI && incident_details && incident_details.length > 600;
     },
-    then: () => Yup.boolean().oneOf([true], "Please incude an extra page"),
+    then: () =>
+      Yup.boolean().oneOf(
+        [true],
+        "Please incude an extra page of incident details"
+      ),
   }), // Only for VI
   incident_details: Yup.string().when("VI", {
     is: true,
