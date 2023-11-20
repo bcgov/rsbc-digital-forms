@@ -38,7 +38,7 @@ import { db } from "../../db";
 import "./createEvent.scss";
 import { FormIDApi } from "../../api/formIDApi";
 import { Alert } from "react-bootstrap";
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 export const CreateEvent = () => {
   const vehicleStylesAtom = useRecoilValue(staticResources["vehicle_styles"]);
@@ -230,7 +230,7 @@ export const CreateEvent = () => {
       const base64_png = await toPng(element);
       values["TwelveHour_form_png"] = base64_png;
     }
-    if(values["date_of_impound"] && values["vehicle_impounded"] === "NO"){
+    if (values["date_of_impound"] && values["vehicle_impounded"] === "NO") {
       values["date_released"] = values["date_of_impound"];
     }
     // console.log('here are the values before api call')
@@ -272,10 +272,13 @@ export const CreateEvent = () => {
     // console.log(values)
     // copy values to another variable
     // let valuesCopy = JSON.parse(JSON.stringify(values));
-    let valuesCopy = {...values};
+    let valuesCopy = { ...values };
     // console.log('this is value of valuesCopy before saveing impound even before')
     // console.log(valuesCopy)
-    if(valuesCopy["date_of_impound"] && valuesCopy["vehicle_impounded"] === "NO"){
+    if (
+      valuesCopy["date_of_impound"] &&
+      valuesCopy["vehicle_impounded"] === "NO"
+    ) {
       valuesCopy["date_released"] = valuesCopy["date_of_impound"];
     }
     const eventData = getEventDataToSave(valuesCopy);
@@ -288,13 +291,15 @@ export const CreateEvent = () => {
     }
     // console.log('this is value before saveing impound')
     // console.log(eventData)
-    
-    db.event.put(eventData, eventData["event_id"]).then(() => {
-      navigate("/");
-    }
-    ).catch((err) => {
-      console.error(err);
-    });
+
+    db.event
+      .put(eventData, eventData["event_id"])
+      .then(() => {
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   const printForms = async (values) => {
@@ -449,11 +454,11 @@ export const CreateEvent = () => {
       IRP: values["IRP"],
       VI: values["VI"],
     };
-    const valuesCopy={...values}
+    const valuesCopy = { ...values };
     if (values["vehicle_impounded"] === "YES") {
-      console.log(values["date_released"])
-      valuesCopy['date_released']=null
-      valuesCopy['time_released']=null
+      console.log(values["date_released"]);
+      valuesCopy["date_released"] = null;
+      valuesCopy["time_released"] = null;
       // break;
     }
     const componentsToRender = [];
@@ -461,7 +466,6 @@ export const CreateEvent = () => {
     for (const item in forms) {
       if (forms[item]) {
         for (const form in formsPNG[renderStage][item]) {
-          
           if (form === "ILO" && values["vehicle_impounded"] === "NO") {
             break;
           }
@@ -470,7 +474,7 @@ export const CreateEvent = () => {
           //   values['time_released']=null
           //   break;
           // }
-          
+
           if (form === "DETAILS" && !values["incident_details_extra_page"]) {
             break;
           }
@@ -691,12 +695,12 @@ export const CreateEvent = () => {
               <div id="button-container" className="flex">
                 {((currentStep > 0 && !isPrinted) ||
                   values["prescribed_device"] === "YES") && (
-                    <div className="left">
-                      <Button type="button" onClick={() => prevPage()}>
-                        Previous
-                      </Button>
-                    </div>
-                  )}
+                  <div className="left">
+                    <Button type="button" onClick={() => prevPage()}>
+                      Previous
+                    </Button>
+                  </div>
+                )}
                 {currentStep === 3 && values["prescribed_device"] === "NO" && (
                   <div className="left">
                     <Button type="button" onClick={() => withdrawProhibition()}>
