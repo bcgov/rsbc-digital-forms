@@ -6,7 +6,8 @@ import time
 def submit_to_icbc(payload) -> tuple:
     # print("___ICBC__")
     # url = "{}".format(Config.ICBC_API_ROOT)
-    url=f'{Config.ICBC_API_ROOT}/vips/icbc/dfft/contravention'
+    # url=f'{Config.ICBC_API_ROOT}/vips/icbc/dfft/contravention'
+    url=f'{Config.ICBC_API_ROOT}/dfft/v1/contravention'
     try:
         # payload = kwargs['message']['icbc_submission']
         # # TODO remove for oc

@@ -20,7 +20,8 @@ def create_vips_doc(payload) -> tuple:
 
 
 def create_vips_imp(payload) -> tuple:
-    url=f'{Config.VIPS_ROOT}/digitalforms-viirp/v1/impoundments/CreateImpoundment'
+    # url=f'{Config.VIPS_ROOT}/digitalforms-viirp/v1/impoundments/CreateImpoundment'
+    url=f'{Config.VIPS_ROOT}/digitalforms-viirp/v1/prohibitions/CreateProhibition'
     try:
         print("_Creating VIPS impoundment_")        
         print(payload)        
