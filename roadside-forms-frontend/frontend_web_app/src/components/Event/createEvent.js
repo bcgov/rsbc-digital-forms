@@ -81,23 +81,41 @@ export const CreateEvent = () => {
 
   useEffect(() => {
     const fetchOneOfEachID = async () => {
-      const VINum = await db.formID.where("form_type").equals("VI").first();
-      const IRPNum = await db.formID.where("form_type").equals("IRP").first();
+      const VINum = await db.formID
+        .where("[form_type+leased]")
+        .anyOf([["VI", 0]])
+        .first();
+      console.log("VINum: ", VINum);
+
+      const IRPNum = await db.formID
+        .where("[form_type+leased]")
+        .anyOf([["IRP", 0]])
+        .first();
       const twentyFourNum = await db.formID
-        .where("form_type")
-        .equals("24Hour")
+        .where("[form_type+leased]")
+        .anyOf([["24Hour", 0]])
         .first();
       const twelveNum = await db.formID
-        .where("form_type")
-        .equals("12Hour")
+        .where("[form_type+leased]")
+        .anyOf([["12Hour", 0]])
         .first();
-      setFormIDs({
+
+      await setFormIDs({
         VI: VINum.id,
         IRP: IRPNum.id,
         TwentyFourHour: twentyFourNum.id,
         TwelveHour: twelveNum.id,
       });
-      setFormIDsFetched(true);
+
+      // Go into indexedDB and mark all form IDs we are leasing for this form as "leased"
+      await db.formID.where("id").equals(VINum.id).modify({ leased: 1 });
+      await db.formID.where("id").equals(IRPNum.id).modify({ leased: 1 });
+      await db.formID
+        .where("id")
+        .equals(twentyFourNum.id)
+        .modify({ leased: 1 });
+      await db.formID.where("id").equals(twelveNum.id).modify({ leased: 1 });
+      await setFormIDsFetched(true);
     };
     setJurisdictions(
       jurisdictionsAtom.map((each) => ({
@@ -473,11 +491,9 @@ export const CreateEvent = () => {
   };
 
   const renderPage = (currentStep, values, setFieldValue) => {
-    window.onbeforeprint = (event) => {
-      console.log("About to print!");
-    };
-
-    window.onafterprint = async (event) => {
+    // console.log("FORM IDS: ", formIDs);
+    // console.log(values);
+    window.onafterprint = async () => {
       console.log("Done printing");
       setIsPrinted(true);
       const forms = {
@@ -488,6 +504,7 @@ export const CreateEvent = () => {
       };
       const idsToDelete = {};
       for (const form in forms) {
+        console.log("Form: ", form);
         if (values[forms[form]]) {
           await db.formID.delete(
             forms[form] === "VI_number" || forms[form] === "IRP_number"
@@ -497,6 +514,32 @@ export const CreateEvent = () => {
           idsToDelete[forms[form]] = values[forms[form]];
         }
       }
+      if (!values["TwentyFourHour"]) {
+        // unlease the TwentyFourHour ID
+        await db.formID
+          .where("id")
+          .equals(formIDs["TwentyFourHour"])
+          .modify({ leased: 0 });
+      }
+      if (!values["TwelveHour"]) {
+        // unlease the TwelveHour ID
+        await db.formID
+          .where("id")
+          .equals(formIDs["TwelveHour"])
+          .modify({ leased: 0 });
+      }
+      if (!values["IRP"]) {
+        // unlease the IRP ID
+        await db.formID
+          .where("id")
+          .equals(formIDs["IRP"])
+          .modify({ leased: 0 });
+      }
+      if (!values["VI"]) {
+        // unlease the VI ID
+        await db.formID.where("id").equals(formIDs["VI"]).modify({ leased: 0 });
+      }
+
       await FormIDApi.patch({
         forms: { ...idsToDelete },
         printed_timestamp: new Date(),
