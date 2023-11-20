@@ -23,8 +23,12 @@ def get_icbc_api_authorization_header(**kwargs) -> tuple:
 def get_icbc_driver(**kwargs) -> tuple:
     url = "{}/drivers/{}".format(Config.ICBC_API_ROOT, kwargs.get('dl_number'))
     try:
+        logging.debug("icbc url:" + url)
+        logging.debug("icbc header:" + str(kwargs.get('icbc_header')))
         icbc_response = requests.get(url, headers=kwargs.get('icbc_header'))
         logging.debug(icbc_response.status_code)
+        logging.debug(icbc_response.json())
+        logging.debug(icbc_response.reason)
         if icbc_response.status_code == 400:
             kwargs['response'] = make_response({}, 200)
         else:
