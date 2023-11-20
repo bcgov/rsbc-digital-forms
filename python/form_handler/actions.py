@@ -519,6 +519,7 @@ def prep_vips_payload(**args)->tuple:
         # vipsRegistrationCreateArray payload
         vipsRegistrationCreateArray=[]
         vipsRegigCreateObj={}
+        vips_addr_obj={}
         vipsRegigCreateObj["dataSourceCd"]="VIPS"
         vips_addr_obj["registrationAddressTypeCd"]="RES"
 
@@ -536,7 +537,7 @@ def prep_vips_payload(**args)->tuple:
         # if "regist_owner_type" in event_data: tmp_payload["vipsRegistrationCreateArray"]["registrationRoleCd"]=event_data["regist_owner_type"].upper()
 
         vips_address_array=[]
-        vips_addr_obj={}
+        
         vips_addr_obj["additionalDeliveryLineTxt"]=""
         if "regist_owner_address" in event_data: vips_addr_obj["addressFirstLineTxt"]=event_data["regist_owner_address"].upper()
         # if "regist_owner_address2" in event_data: vips_addr_obj["addressSecondLineTxt"]=event_data["regist_owner_address2"].upper()
