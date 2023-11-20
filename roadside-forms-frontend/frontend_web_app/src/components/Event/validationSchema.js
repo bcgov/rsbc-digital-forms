@@ -701,10 +701,10 @@ export const validationSchema = Yup.object().shape({
     is: true,
     then: () =>
       Yup.string().max(
-        6000,
-        "Incident Details must be 6000 characters or less"
+        4000,
+        "Incident Details must be 4000 characters or less"
       ),
-  }), // Only for VI, max 6000 characters
+  }), // Only for VI, max 4000 characters
 
   /** Reasonable Grounds */
   witnessed_by_officer: Yup.boolean().when("TwentyFourHour", {
