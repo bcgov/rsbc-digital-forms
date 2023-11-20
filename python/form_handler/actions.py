@@ -438,6 +438,7 @@ def prep_vips_document_payload(**args)->tuple:
         tmp_payload["file_object"]=pdf_data
 
         # TODO: to confirm
+        tmp_payload["type_code"]="MULTIPLE"
         if "type_cd" in form_data: tmp_payload["type_code"]=form_data["type_cd"]
 
         tmp_payload["pageCount"]=1
