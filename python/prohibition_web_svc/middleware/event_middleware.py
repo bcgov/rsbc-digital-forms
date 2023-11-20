@@ -37,8 +37,9 @@ def save_event_data(**kwargs) -> tuple:
         logging.debug('Creating Event')
         date_created = datetime.now()
         # logging.debug(f'heres your data {data}')
-
         event = Event(
+            icbc_sent_status='pending',
+            vi_sent_status='pending',
             driver_licence_no=data.get('driver_licence_no'),
             driver_jurisdiction=data.get(
                 'drivers_licence_jurisdiction', {
