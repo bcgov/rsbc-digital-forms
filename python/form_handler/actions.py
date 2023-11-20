@@ -50,7 +50,7 @@ def get_storage_ref_event_type(**args) -> tuple:
             if len(form) == 0 or len(form) > 1:
                 return False,args
             for f in form:
-                event_type=f.form_type
+                event_type=f.form_type.lower()
                 args['event_type']=event_type
                 form_dict=f.__dict__
                 form_dict.pop('_sa_instance_state',None)
@@ -191,6 +191,7 @@ def validate_event_retry_count(**args)->tuple:
                 put_to_queue_name=Config.STORAGE_FAIL_QUEUE
             elif put_to_queue_name == Config.STORAGE_FAIL_QUEUE:
                 put_to_queue_name=Config.STORAGE_FAIL_QUEUE_PERS
+                args['stop_retry'] = True
             args['put_to_queue_name']=put_to_queue_name
             return False,args
     
@@ -296,6 +297,7 @@ def prep_icbc_payload(**args)->tuple:
         form_data=args.get('form_data')
         user_data=args.get('user_data')
         form_id=args.get('form_id')
+        event_type=args.get('event_type')
         tmp_payload= {
         "dlNumber":"",
         "dlJurisdiction": "",
@@ -307,9 +309,9 @@ def prep_icbc_payload(**args)->tuple:
         "pujCode": "",
         "nscNumber": "",
         # TODO: get the correct section from form
-        "section": "215.2",
+        "section": "",
         "violationLocation": "",
-        "noticeNumber": form_id,
+        "noticeNumber": "",
         "violationDate": "",
         "violationTime": "",
         "officerDetachment": "",        
@@ -330,37 +332,45 @@ def prep_icbc_payload(**args)->tuple:
         # convert birthdate to string
         birthdate=event_data.get("driver_dob")
         if birthdate is not None:
-            # birthdate=datetime.strptime(birthdate, '%Y-%m-%d')
-            birthdate= birthdate.strftime('%Y-%m-%d')
-            # birthdate=birthdate.strftime('%Y%m%d')
+            birthdate= birthdate.strftime('%Y%m%d')
             tmp_payload["birthdate"]=birthdate
-            
-
-        # if "driver_dob" in event_data: tmp_payload["birthdate"]=event_data["driver_dob"]
 
         if "vehicle_jurisdiction" in event_data : 
             tmp_payload["plateJurisdiction"]=event_data["vehicle_jurisdiction"]
 
         if "vehicle_plate_no" in event_data: tmp_payload["plateNumber"]=event_data["vehicle_plate_no"].upper()
 
-        # if "puj_code" in data and "objectCd" in data["puj_code"]: 
-        #     payload["pujCode"]=data["puj_code"]["objectCd"]  
+        if event_data["nsc_prov_state"]: 
+            tmp_payload["pujCode"]=event_data["nsc_prov_state"]
 
         #Some validation required for NSC-Number. ICBC does not accept all values.
         if "nsc_no" in event_data: tmp_payload["nscNumber"]=event_data["nsc_no"]
+        
+        if event_data["type_of_prohibition"] == "alcohol":
+            if event_type == "12h":
+                tmp_payload["section"] = "90.3(2)"
+            elif event_type == "24h":
+                tmp_payload["section"] = "215.2"
+        
+        if event_data["type_of_prohibition"] == "drugs":
+            if event_type == "12h":
+                tmp_payload["section"] = "90.3(2.1)" 
+            elif event_type == "24h":
+                tmp_payload["section"] = "215.3"
 
         if "offence_city" in form_data:
             tmp_payload["violationLocation"]=form_data["offence_city"].upper()
+            
+        if event_type == "12h":
+            tmp_payload["noticeNumber"] = form_data["twelve_hour_number"]
+        if event_type == "24h":
+            tmp_payload["noticeNumber"] = form_data["twenty_four_hour_number"]
 
-        # if "prohibitionStartDate" in data: payload["violationDate"]=data["prohibitionStartDate"]
-        # if "prohibitionStartTime" in data: payload["violationTime"]=data["prohibitionStartTime"]
         # convert date_of_driving to string
         date_of_driving=event_data.get("date_of_driving")
         if date_of_driving is not None:
-            # date_of_driving=datetime.strptime(date_of_driving, '%Y-%m-%d')
-            date_of_driving=date_of_driving.strftime('%Y-%m-%d')
+            date_of_driving=date_of_driving.strftime('%Y%m%d')
             tmp_payload["violationDate"]=date_of_driving
-        # if "date_of_driving" in event_data: tmp_payload["violationDate"]=event_data["date_of_driving"]
         if "time_of_driving" in event_data: tmp_payload["violationTime"]=event_data["time_of_driving"]
 
         # TODO: get agency from user table for the event
@@ -372,8 +382,7 @@ def prep_icbc_payload(**args)->tuple:
 
         officer_name=f'{user_data["first_name"]} {user_data["last_name"]}'
         tmp_payload["officerName"]=officer_name.upper()
-        # if "officer_name" in data: payload["officerName"]=data["officer_name"].upper()
-
+        
         args['icbc_payload']=tmp_payload
     except Exception as e:
         logging.error(e)
@@ -429,6 +438,7 @@ def prep_vips_document_payload(**args)->tuple:
         tmp_payload["file_object"]=pdf_data
 
         # TODO: to confirm
+        tmp_payload["type_code"]="MULTIPLE"
         if "type_cd" in form_data: tmp_payload["type_code"]=form_data["type_cd"]
 
         tmp_payload["pageCount"]=1
@@ -482,37 +492,18 @@ def prep_vips_payload(**args)->tuple:
         # vipsImpoundCreate payload
         if "driver_jurisdiction" in event_data: tmp_payload["vipsImpoundCreate"]["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
         if "driver_licence_no" in event_data: tmp_payload["vipsImpoundCreate"]["driverLicenceNo"]=event_data["driver_licence_no"]
-        
-        # TODO: to confirm
-        # if "impound_lot_operator_id" in form_data: tmp_payload["vipsImpoundCreate"]["impoundLotOperatorId"]=form_data["impound_lot_operator_id"]
 
         # convert impoundment_dt to string
         impoundment_dt=form_data.get("date_of_impound")
         if impoundment_dt is not None:
-            # impoundment_dt=datetime.strptime(impoundment_dt, '%Y-%m-%d')
             impoundment_dt=impoundment_dt.strftime('%Y-%m-%dT%H:%M:%S')
             tmp_payload["vipsImpoundCreate"]["impoundmentDt"]=impoundment_dt
         
-
-        if "form_id" in form_data: tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=form_data["form_id"]
+        if "VI_number" in form_data: tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=form_data["VI_number"]
         
-        # TODO: to confirm
-        if "impoundment_release_dt" in form_data: tmp_payload["vipsImpoundCreate"]["impoundmentReleaseDt"]=form_data["impoundment_release_dt"]
-        
-        # TODO: to confirm
-        subject_cd="PERS"
+        tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]="VEHI"
 
-        if "owned_by_corp" in event_data and event_data["owned_by_corp"] is True:
-            subject_cd="CORP"
-        tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]=subject_cd
-        # if "notice_subject_cd" in form_data: tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]=form_data["notice_subject_cd"]
-
-        # TODO: to confirm
-        if "notice_type_cd" in form_data: tmp_payload["vipsImpoundCreate"]["noticeTypeCd"]=form_data["notice_type_cd"]
-
-        # TODO: to confirm (originalCauseCds)  
-
-        # TODO: to confirm
+        if "notice_type_cd" in form_data: tmp_payload["vipsImpoundCreate"]["noticeTypeCd"]="IMP"
         if "agency" in user_data: tmp_payload["vipsImpoundCreate"]["policeDetatchmentId"]=user_data["agency"].upper()
 
 
@@ -520,59 +511,41 @@ def prep_vips_payload(**args)->tuple:
         tmp_payload["vipsImpoundCreate"]["policeOfficerNm"]=officer_name.upper()
         
         if "badge_number" in user_data: tmp_payload["vipsImpoundCreate"]["policeOfficerNo"]=user_data["badge_number"].upper()  
-
-        # TODO: to confirm
-        if "form_id" in form_data: tmp_payload["vipsImpoundCreate"]["policeFileNo"]=form_data["form_id"]  
-        
-        # TODO: to confirm
-        if "projected_release_dt" in form_data: tmp_payload["vipsImpoundCreate"]["projectedReleaseDt"]=form_data["projected_release_dt"]
+        if "agency_file_no" in event_data: tmp_payload["vipsImpoundCreate"]["policeFileNo"]=event_data["agency_file_no"]  
+        if "projected_release_dt" in form_data: tmp_payload["vipsImpoundCreate"]["projectedReleaseDt"]=None
 
         # TODO: to confirm
         if "offence_city" in form_data: tmp_payload["vipsImpoundCreate"]["seizureLocationTxt"]=form_data["offence_city"].upper()
         
-        # TODO: to confirm
-        if "vehicle_returned_dt" in form_data: tmp_payload["vipsImpoundCreate"]["vehicleReturnedDt"]=form_data["vehicle_returned_dt"]
-
-
-
         # vipsRegistrationCreateArray payload
         vipsRegistrationCreateArray=[]
         vipsRegigCreateObj={}
+        vips_addr_obj={}
         vipsRegigCreateObj["dataSourceCd"]="VIPS"
+        vips_addr_obj["registrationAddressTypeCd"]="RES"
 
         
         if "regist_owner_first_name" in event_data: vipsRegigCreateObj["firstGivenNm"]=event_data["regist_owner_first_name"].upper()
-        
+        if "icbcEnterpriseId" in event_data: vipsRegigCreateObj["icbcEnterpriseId"]=event_data["icbcEnterpriseId"]
         if "regist_owner_last_name" in event_data: vipsRegigCreateObj["surnameNm"]=event_data["regist_owner_last_name"].upper()
         # TODO: to confirm
-        
         if "regist_owner_middle_name" in event_data: vipsRegigCreateObj["secondGivenNm"]=event_data["regist_owner_middle_name"].upper()
-
         # TODO: to confirm
-        
         if "owned_by_corp" in event_data and event_data["owned_by_corp"] is True:
             if "corporation_name" in event_data and event_data["corporation_name"] is not None: vipsRegigCreateObj["organizationNm"]=event_data["corporation_name"].upper()
-
-        # TODO: to confirm
-        
-        if "icbcEnterpriseId" in event_data: vipsRegigCreateObj["icbcEnterpriseId"]=event_data["icbcEnterpriseId"].upper()
-
-        # TODO: to confirm
+            vips_addr_obj["registrationAddressTypeCd"]="BUSI"
         vipsRegigCreateObj["registrationRoleCd"]="REGOWN"
         # if "regist_owner_type" in event_data: tmp_payload["vipsRegistrationCreateArray"]["registrationRoleCd"]=event_data["regist_owner_type"].upper()
 
         vips_address_array=[]
-        vips_addr_obj={}
+        
         vips_addr_obj["additionalDeliveryLineTxt"]=""
         if "regist_owner_address" in event_data: vips_addr_obj["addressFirstLineTxt"]=event_data["regist_owner_address"].upper()
         # if "regist_owner_address2" in event_data: vips_addr_obj["addressSecondLineTxt"]=event_data["regist_owner_address2"].upper()
         # if "regist_owner_address3" in event_data: vips_addr_obj["addressThirdLineTxt"]=event_data["regist_owner_address3"].upper()
         if "regist_owner_city" in event_data: vips_addr_obj["cityNm"]=event_data["regist_owner_city"].upper()
-        vips_addr_obj["countryNm"]="CANADA"
         if "regist_owner_postal" in event_data: vips_addr_obj["postalCodeTxt"]=event_data["regist_owner_postal"].upper()
         if "regist_owner_prov" in event_data: vips_addr_obj["provinceCd"]=event_data["regist_owner_prov"].upper()
-        # TODO: to confirm
-        vips_addr_obj["registrationAddressTypeCd"]="MAIL"
         vips_address_array.append(vips_addr_obj)
         vipsRegigCreateObj["vipsAddressArray"]=vips_address_array
 
@@ -588,15 +561,15 @@ def prep_vips_payload(**args)->tuple:
         if "driver_licence_no" in event_data: vips_licence_create_obj["driverLicenceNo"]=event_data["driver_licence_no"]
         if "driver_jurisdiction" in event_data: vips_licence_create_obj["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
         vipsRegigCreateObj["vipsLicenceCreateObj"]=vips_licence_create_obj
+        vipsRegistrationCreateArray.append(vipsRegigCreateObj)
+        tmp_payload["vipsRegistrationCreateArray"]=vipsRegistrationCreateArray
 
         # vipsVehicleCreate payload
         # TODO: to confirm
-        if "commercial_motor_carrier_id" in event_data: tmp_payload["vipsVehicleCreate"]["commercialMotorCarrierId"]=event_data["commercial_motor_carrier_id"]
+        if "nsc_no" in event_data: tmp_payload["vipsVehicleCreate"]["commercialMotorCarrierId"]=event_data["nsc_no"]
         
         if "vehicle_plate_no" in event_data: tmp_payload["vipsVehicleCreate"]["licencePlateNo"]=event_data["vehicle_plate_no"].upper()
-
-        # TODO: to confirm
-        if "vehicle_plate_expiry" in event_data: tmp_payload["vipsVehicleCreate"]["lpDecalValidYy"]=event_data["vehicle_plate_expiry"]
+        tmp_payload["vipsVehicleCreate"]["lpDecalValidYy"]=None
 
         if "vehicle_jurisdiction" in event_data: tmp_payload["vipsVehicleCreate"]["lpJurisdictionCd"]=event_data["vehicle_jurisdiction"]
 
@@ -605,17 +578,18 @@ def prep_vips_payload(**args)->tuple:
         if "vehicle_year" in event_data: tmp_payload["vipsVehicleCreate"]["manufacturedYy"]=event_data["vehicle_year"]
 
         if "nsc_prov_state" in event_data: tmp_payload["vipsVehicleCreate"]["nscJurisdictionTxt"]=event_data["nsc_prov_state"].upper()
+        if "vehicle_colour" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleColourTxt"]=event_data["vehicle_colour"].upper()
 
         if "vehicle_vin_no" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleIdentificationNo"]=event_data["vehicle_vin_no"].upper()  
+        
 
-        if "vehicle_mk_md" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleMakeTxt"]=event_data["vehicle_mk_md"].upper()  
-
-        if "vehicle_mk_md" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleModelTxt"]=event_data["vehicle_mk_md"].upper()  
+        if "vehicle_mk_md" in event_data: 
+            mk, md = event_data["vehicle_mk_md"].split("-")
+            tmp_payload["vipsVehicleCreate"]["vehicleModelTxt"]=md.upper()
+            tmp_payload["vipsVehicleCreate"]["vehicleMakeTxt"]=mk.upper()  
 
         if "vehicle_style" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleStyleTxt"]=event_data["vehicle_style"].upper()  
-
-        # TODO: to confirm
-        if "vehicle_type" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=event_data["vehicle_type"].upper()  
+        if "vehicle_type" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=str(event_data["vehicle_type"])
 
         # vipsDocumentIdArray payload
         vipsDocumentIdArray=[]
@@ -737,6 +711,42 @@ def update_event_status_error(**args)->tuple:
         return False,args
     return True,args
 
+
+def update_event_status_error_retry(**args)->tuple:
+    logging.debug("inside update_event_status_error_retry()")
+    logging.debug(args)
+    try:
+        application=args.get('app')
+        db=args.get('db')
+        event_id=args.get('event_data').get('event_id')
+        event_type=args.get('event_type')
+        stop_retry_flg=args.get('stop_retry_flg',False)
+        with application.app_context():
+            if event_type=='vi':
+                event = db.session.query(Event) \
+                    .filter(Event.event_id == event_id) \
+                    .one()
+                if stop_retry_flg is True:
+                    event.vi_sent_status = 'error'
+                else:
+                    event.vi_sent_status = 'retrying'
+                db.session.commit()
+            elif event_type=='irp':
+                pass
+            elif event_type=='24h' or event_type=='12h':
+                event = db.session.query(Event) \
+                    .filter(Event.event_id == event_id) \
+                    .one()
+                if stop_retry_flg is True:
+                    event.icbc_sent_status = 'error'
+                else:
+                    event.icbc_sent_status = 'retrying'
+                db.session.commit()
+    except Exception as e:
+        logging.error(e)
+        return False,args
+    return True,args
+
 def add_to_persistent_failed_queue(**args)->tuple:
     logging.debug("inside add_to_persistent_failed_queue()")
     logging.debug(args)
@@ -824,7 +834,6 @@ def add_unknown_event_error_to_message(**args)->tuple:
         logging.error(e)
         return False, args
     return True,args
-
 
 
 
