@@ -38,7 +38,7 @@ import { db } from "../../db";
 import "./createEvent.scss";
 import { FormIDApi } from "../../api/formIDApi";
 import { Alert } from "react-bootstrap";
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 export const CreateEvent = () => {
   const vehicleStylesAtom = useRecoilValue(staticResources["vehicle_styles"]);
@@ -81,23 +81,41 @@ export const CreateEvent = () => {
 
   useEffect(() => {
     const fetchOneOfEachID = async () => {
-      const VINum = await db.formID.where("form_type").equals("VI").first();
-      const IRPNum = await db.formID.where("form_type").equals("IRP").first();
+      const VINum = await db.formID
+        .where("[form_type+leased]")
+        .anyOf([["VI", 0]])
+        .first();
+      console.log("VINum: ", VINum);
+
+      const IRPNum = await db.formID
+        .where("[form_type+leased]")
+        .anyOf([["IRP", 0]])
+        .first();
       const twentyFourNum = await db.formID
-        .where("form_type")
-        .equals("24Hour")
+        .where("[form_type+leased]")
+        .anyOf([["24Hour", 0]])
         .first();
       const twelveNum = await db.formID
-        .where("form_type")
-        .equals("12Hour")
+        .where("[form_type+leased]")
+        .anyOf([["12Hour", 0]])
         .first();
-      setFormIDs({
+
+      await setFormIDs({
         VI: VINum.id,
         IRP: IRPNum.id,
         TwentyFourHour: twentyFourNum.id,
         TwelveHour: twelveNum.id,
       });
-      setFormIDsFetched(true);
+
+      // Go into indexedDB and mark all form IDs we are leasing for this form as "leased"
+      await db.formID.where("id").equals(VINum.id).modify({ leased: 1 });
+      await db.formID.where("id").equals(IRPNum.id).modify({ leased: 1 });
+      await db.formID
+        .where("id")
+        .equals(twentyFourNum.id)
+        .modify({ leased: 1 });
+      await db.formID.where("id").equals(twelveNum.id).modify({ leased: 1 });
+      await setFormIDsFetched(true);
     };
     setJurisdictions(
       jurisdictionsAtom.map((each) => ({
@@ -230,7 +248,7 @@ export const CreateEvent = () => {
       const base64_png = await toPng(element);
       values["TwelveHour_form_png"] = base64_png;
     }
-    if(values["date_of_impound"] && values["vehicle_impounded"] === "NO"){
+    if (values["date_of_impound"] && values["vehicle_impounded"] === "NO") {
       values["date_released"] = values["date_of_impound"];
     }
     // console.log('here are the values before api call')
@@ -272,10 +290,13 @@ export const CreateEvent = () => {
     // console.log(values)
     // copy values to another variable
     // let valuesCopy = JSON.parse(JSON.stringify(values));
-    let valuesCopy = {...values};
+    let valuesCopy = { ...values };
     // console.log('this is value of valuesCopy before saveing impound even before')
     // console.log(valuesCopy)
-    if(valuesCopy["date_of_impound"] && valuesCopy["vehicle_impounded"] === "NO"){
+    if (
+      valuesCopy["date_of_impound"] &&
+      valuesCopy["vehicle_impounded"] === "NO"
+    ) {
       valuesCopy["date_released"] = valuesCopy["date_of_impound"];
     }
     const eventData = getEventDataToSave(valuesCopy);
@@ -288,13 +309,15 @@ export const CreateEvent = () => {
     }
     // console.log('this is value before saveing impound')
     // console.log(eventData)
-    
-    db.event.put(eventData, eventData["event_id"]).then(() => {
-      navigate("/");
-    }
-    ).catch((err) => {
-      console.error(err);
-    });
+
+    db.event
+      .put(eventData, eventData["event_id"])
+      .then(() => {
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   const printForms = async (values) => {
@@ -313,31 +336,6 @@ export const CreateEvent = () => {
 
   const handlePrintForms = async (values) => {
     window.print();
-    setIsPrinted(true);
-    const forms = {
-      TwentyFourHour: "twenty_four_hour_number",
-      TwelveHour: "twelve_hour_number",
-      // IRP: "IRP_number",
-      VI: "VI_number",
-    };
-    const idsToDelete = {};
-    for (const form in forms) {
-      if (values[forms[form]]) {
-        await db.formID.delete(
-          forms[form] === "VI_number" || forms[form] === "IRP_number"
-            ? values[forms[form]].toString().slice(0, -1)
-            : values[forms[form]]
-        );
-        idsToDelete[forms[form]] = values[forms[form]];
-      }
-    }
-    await FormIDApi.patch({
-      forms: { ...idsToDelete },
-      printed_timestamp: new Date(),
-    });
-    handleShow("Print Form", "Did the form print correctly?", "No", "Yes", () =>
-      handleSuccessfulPrint(values)
-    );
   };
 
   const handleSuccessfulPrint = async (values) => {
@@ -449,11 +447,11 @@ export const CreateEvent = () => {
       IRP: values["IRP"],
       VI: values["VI"],
     };
-    const valuesCopy={...values}
+    const valuesCopy = { ...values };
     if (values["vehicle_impounded"] === "YES") {
-      console.log(values["date_released"])
-      valuesCopy['date_released']=null
-      valuesCopy['time_released']=null
+      console.log(values["date_released"]);
+      valuesCopy["date_released"] = null;
+      valuesCopy["time_released"] = null;
       // break;
     }
     const componentsToRender = [];
@@ -461,7 +459,6 @@ export const CreateEvent = () => {
     for (const item in forms) {
       if (forms[item]) {
         for (const form in formsPNG[renderStage][item]) {
-          
           if (form === "ILO" && values["vehicle_impounded"] === "NO") {
             break;
           }
@@ -470,7 +467,7 @@ export const CreateEvent = () => {
           //   values['time_released']=null
           //   break;
           // }
-          
+
           if (form === "DETAILS" && !values["incident_details_extra_page"]) {
             break;
           }
@@ -494,6 +491,68 @@ export const CreateEvent = () => {
   };
 
   const renderPage = (currentStep, values, setFieldValue) => {
+    // console.log("FORM IDS: ", formIDs);
+    // console.log(values);
+    window.onafterprint = async () => {
+      console.log("Done printing");
+      setIsPrinted(true);
+      const forms = {
+        TwentyFourHour: "twenty_four_hour_number",
+        TwelveHour: "twelve_hour_number",
+        // IRP: "IRP_number",
+        VI: "VI_number",
+      };
+      const idsToDelete = {};
+      for (const form in forms) {
+        console.log("Form: ", form);
+        if (values[forms[form]]) {
+          await db.formID.delete(
+            forms[form] === "VI_number" || forms[form] === "IRP_number"
+              ? values[forms[form]].toString().slice(0, -1)
+              : values[forms[form]]
+          );
+          idsToDelete[forms[form]] = values[forms[form]];
+        }
+      }
+      if (!values["TwentyFourHour"]) {
+        // unlease the TwentyFourHour ID
+        await db.formID
+          .where("id")
+          .equals(formIDs["TwentyFourHour"])
+          .modify({ leased: 0 });
+      }
+      if (!values["TwelveHour"]) {
+        // unlease the TwelveHour ID
+        await db.formID
+          .where("id")
+          .equals(formIDs["TwelveHour"])
+          .modify({ leased: 0 });
+      }
+      if (!values["IRP"]) {
+        // unlease the IRP ID
+        await db.formID
+          .where("id")
+          .equals(formIDs["IRP"])
+          .modify({ leased: 0 });
+      }
+      if (!values["VI"]) {
+        // unlease the VI ID
+        await db.formID.where("id").equals(formIDs["VI"]).modify({ leased: 0 });
+      }
+
+      await FormIDApi.patch({
+        forms: { ...idsToDelete },
+        printed_timestamp: new Date(),
+      });
+      handleShow(
+        "Print Form",
+        "Did the form print correctly?",
+        "No",
+        "Yes",
+        () => handleSuccessfulPrint(values)
+      );
+    };
+
     switch (currentStep) {
       case 0:
         return (
@@ -691,12 +750,12 @@ export const CreateEvent = () => {
               <div id="button-container" className="flex">
                 {((currentStep > 0 && !isPrinted) ||
                   values["prescribed_device"] === "YES") && (
-                    <div className="left">
-                      <Button type="button" onClick={() => prevPage()}>
-                        Previous
-                      </Button>
-                    </div>
-                  )}
+                  <div className="left">
+                    <Button type="button" onClick={() => prevPage()}>
+                      Previous
+                    </Button>
+                  </div>
+                )}
                 {currentStep === 3 && values["prescribed_device"] === "NO" && (
                   <div className="left">
                     <Button type="button" onClick={() => withdrawProhibition()}>
