@@ -160,10 +160,8 @@ export const Dashboard = () => {
             // If it has a value, set the value = that value
             // Otherwise, set leased = false
             const existingId = await db.formID.get(idArray[i].id);
-            console.log("Existing ID?", existingId);
             if (existingId) {
               if (existingId.leased) {
-                console.log(existingId.leased);
                 idArray[i].leased = existingId.leased;
               } else {
                 idArray[i].leased = 0;
