@@ -134,11 +134,11 @@ export const Dashboard = () => {
     setFormsData,
     setStaticDataLoaded,
     setVehicleTypeResource,
+    isConnected,
   ]);
 
   useEffect(() => {
     const fetchEventData = async () => {
-      console.log(isConnected);
       if (isConnected) {
         const eventData = await FormSubmissionApi.get();
         const flattenedEventData = eventDataFormatter(
@@ -255,7 +255,6 @@ export const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {console.log(formsData)}
             {formsData &&
               formsData.map((data, index) => {
                 return !data["submitted"] ? (

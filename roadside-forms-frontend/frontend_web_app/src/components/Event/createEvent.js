@@ -427,7 +427,6 @@ export const CreateEvent = () => {
     };
     const valuesCopy = { ...values };
     if (values["vehicle_impounded"] === "YES") {
-      console.log(values["date_released"]);
       valuesCopy["date_released"] = null;
       valuesCopy["time_released"] = null;
       // break;
@@ -472,7 +471,6 @@ export const CreateEvent = () => {
     // console.log("FORM IDS: ", formIDs);
     // console.log(values);
     window.onafterprint = async () => {
-      console.log("Done printing");
       setIsPrinted(true);
       const forms = {
         TwentyFourHour: "twenty_four_hour_number",
@@ -482,7 +480,6 @@ export const CreateEvent = () => {
       };
       const idsToDelete = {};
       for (const form in forms) {
-        console.log("Form: ", form);
         if (values[forms[form]]) {
           await db.formID.delete(
             forms[form] === "VI_number" || forms[form] === "IRP_number"
