@@ -40,6 +40,7 @@ def process_incoming_form() -> dict:
             # DONE: if success update vips status on event row on db and retry count to 0
             {"try": actions.validate_event_retry_count, "fail": [
                 {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.update_event_status_error_retry, "fail": []},
                 {"try": rsi_email.rsiops_event_to_retry_queue, "fail": []}
             ]},
             {"try": actions.get_storage_ref_event_type, "fail": [
@@ -88,6 +89,7 @@ def process_incoming_form() -> dict:
         "24h": [
             {"try": actions.validate_event_retry_count, "fail": [
                 {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.update_event_status_error_retry, "fail": []},
                 {"try": rsi_email.rsiops_event_to_retry_queue, "fail": []}
             ]},
             {"try": actions.get_storage_ref_event_type, "fail": [
@@ -130,6 +132,7 @@ def process_incoming_form() -> dict:
         "12h": [
             {"try": actions.validate_event_retry_count, "fail": [
                 {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.update_event_status_error_retry, "fail": []},
                 {"try": rsi_email.rsiops_event_to_retry_queue, "fail": []}
             ]},
             {"try": actions.get_storage_ref_event_type, "fail": [
