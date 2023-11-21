@@ -13,7 +13,7 @@ import {
   eventDataFormatter,
   formNumbers,
 } from "../../utils/helpers";
-import { convertToPST,convertToPSTFormat } from "../../utils/dateTime";
+import { convertToPST, convertToPSTFormat } from "../../utils/dateTime";
 import { StaticDataApi } from "../../api/staticDataApi";
 import { Button } from "../common/Button/Button";
 import { useNavigate, Link } from "react-router-dom";
@@ -151,15 +151,44 @@ export const Dashboard = () => {
   ]);
 
   useEffect(() => {
+    const seedLeasedValues = async (idArray) => {
+      if (idArray) {
+        if (idArray.length > 0) {
+          for (let i = 0; i < idArray.length; i++) {
+            // Check if idArray[i] exists in indexedDB
+            // If it does, check for leased property on that id
+            // If it has a value, set the value = that value
+            // Otherwise, set leased = false
+            const existingId = await db.formID.get(idArray[i].id);
+            console.log("Existing ID?", existingId);
+            if (existingId) {
+              if (existingId.leased) {
+                console.log(existingId.leased);
+                idArray[i].leased = existingId.leased;
+              } else {
+                idArray[i].leased = 0;
+              }
+            } else {
+              idArray[i].leased = 0;
+            }
+          }
+          return idArray;
+        }
+      }
+      return [];
+    };
+
     const fetchNeededIDs = async () => {
       const neededFormID = await getAllFormIDs();
       const newIDs = await FormIDApi.post(neededFormID);
-      await db.formID.bulkPut(newIDs.forms);
+      const seededIDs = await seedLeasedValues(newIDs.forms);
+      await db.formID.bulkPut(seededIDs);
     };
 
     const fetchCurrentIDs = async () => {
       const currentIDs = await FormIDApi.get();
-      await db.formID.bulkPut(currentIDs);
+      const seededIDs = await seedLeasedValues(currentIDs);
+      await db.formID.bulkPut(seededIDs);
     };
 
     if (staticDataLoaded) {
