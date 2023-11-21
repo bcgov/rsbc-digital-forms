@@ -13,9 +13,11 @@ import { UserApi } from "../../../api/userApi";
 import { UserRolesApi } from "../../../api/userRolesApi";
 import { db } from "../../../db";
 import "./header.scss";
+import { useSharedIsOnline } from "../../../utils/connectivity";
 
 export const Header = () => {
-  const [isConnected, setIsConnected] = useState(navigator.onLine);
+  const { isConnected } = useSharedIsOnline();
+  // const [isConnected, setIsConnected] = useState(navigator.onLine);
   const [isLoading, setIsLoading] = useState(true);
   const [userInfo, setUserInfo] = useState({ username: null, agency: null });
   const [userAdminInfo, setuserAdminInfo] = useState(false);
@@ -79,11 +81,11 @@ export const Header = () => {
       });
     }
 
-    const handleOnline = () => setIsConnected(true);
-    const handleOffline = () => setIsConnected(false);
+    // const handleOnline = () => setIsConnected(true);
+    // const handleOffline = () => setIsConnected(false);
 
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
+    // window.addEventListener("online", handleOnline);
+    // window.addEventListener("offline", handleOffline);
 
     const interval = setInterval(() => {
       const { dateString, dayString, timeString } = getCurrentDateTime();
@@ -95,8 +97,8 @@ export const Header = () => {
 
     return () => {
       clearInterval(interval);
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
+      // window.removeEventListener("online", handleOnline);
+      // window.removeEventListener("offline", handleOffline);
     };
   }, [
     keycloak.authenticated,

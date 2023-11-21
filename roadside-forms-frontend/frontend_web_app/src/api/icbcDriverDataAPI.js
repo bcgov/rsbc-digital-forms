@@ -6,12 +6,20 @@ export const ICBCDriverDataApi = {
     const headers = {
       ...createRequestHeader(),
     };
-    const response = await api.request({
-      url: `/api/v1/icbc/drivers/${driver_licence_no}`,
-      method: "GET",
-      headers: { ...headers },
-    });
-
-    return response;
+    return await api
+      .request({
+        url: `/api/v1/icbc/drivers/${driver_licence_no}`,
+        method: "GET",
+        headers: { ...headers },
+      })
+      .then((response) => {
+        return response;
+      })
+      .catch((error) => {
+        return {
+          status: error.status,
+          data: error.response,
+        };
+      });
   },
 };

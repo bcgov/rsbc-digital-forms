@@ -36,10 +36,47 @@ export const VehicleInfo = (props) => {
     }
   }, [driversLicenceJurisdiction]);
 
-  const fetchICBCVehicleInfo = () => {
+  const fetchICBCVehicleInfo = async () => {
     if (values["vehicle_plate_no"]) {
-      ICBCVehicleDataApi.get(values["vehicle_plate_no"]).then((resp) => {
-        if (!_.isEmpty(resp.data)) {
+      await ICBCVehicleDataApi.get(values["vehicle_plate_no"]).then((resp) => {
+        if (!_.isEmpty(resp)) {
+          const vehicle = resp[0];
+          const party = vehicle.vehicleParties[0].party;
+          const address = party.addresses[0];
+          setFieldValue("nsc_no", vehicle.nscNumber);
+          setFieldValue("vehicle_registration_no", vehicle.registrationNumber);
+          setFieldValue(
+            "vehicle_colour",
+            vehicleColours.filter(
+              (item) => item.label === vehicle.vehicleColour.toUpperCase()
+            )[0].value
+          );
+          setFieldValue("vehicle_mk_md", vehicle.vehicleMake + " - ");
+          setFieldValue("vehicle_vin_no", vehicle.vehicleIdNumber);
+          setFieldValue(
+            "vehicle_year",
+            years.filter((item) => item.label === vehicle.vehicleModelYear)
+          );
+          setFieldValue(
+            "vehicle_type",
+            vehicleTypes.filter(
+              (item) => item.label === vehicle.vehicleType.toUpperCase()
+            )
+          );
+          setFieldValue("vehicle_jurisdiction", {
+            value: "BC",
+            label: "BRITISH COLUMBIA",
+          });
+          setFieldValue("regist_owner_last_name", party.lastName);
+          setFieldValue("regist_owner_first_name", party.firstName);
+          setFieldValue("regist_owner_dob", new Date(party.birthDate));
+          setFieldValue("regist_owner_address", address.addressLine1);
+          setFieldValue("regist_owner_city", address.city);
+          setFieldValue("regist_owner_postal", address.postalCode);
+          setFieldValue("regist_owner_prov_state", {
+            value: "BC",
+            label: "BRITISH COLUMBIA",
+          });
           return;
         }
       });

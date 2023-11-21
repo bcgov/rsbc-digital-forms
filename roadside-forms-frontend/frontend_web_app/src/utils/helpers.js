@@ -99,9 +99,8 @@ export const staticResources = {
 
 export const getEventDataToSave = (formValues) => {
   const eventValues = {};
-  console.log(formValues);
   eventValueKeys.forEach((item) => {
-    if (formValues[item] === null|| formValues[item] === "") {
+    if (formValues[item] === null || formValues[item] === "") {
       eventValues[item] = "";
     } else {
       eventValues[item] =
@@ -110,7 +109,7 @@ export const getEventDataToSave = (formValues) => {
           : formValues[item];
     }
   });
-  
+
   // eventValueKeys.forEach(
   //   (item) =>
   //     (eventValues[item] =
