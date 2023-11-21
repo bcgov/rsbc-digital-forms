@@ -22,8 +22,10 @@ import { userAtom } from "../../atoms/users";
 import "./dashboard.scss";
 import { FormIDApi } from "../../api/formIDApi";
 import { getAllFormIDs } from "../../utils/dbHelpers";
+import { useSharedIsOnline } from "../../utils/connectivity";
 
 export const Dashboard = () => {
+  const { isConnected } = useSharedIsOnline();
   const navigate = useNavigate();
   const [formsData, setFormsData] = useState([]);
   const [staticDataLoaded, setStaticDataLoaded] = useState(false);
@@ -61,45 +63,60 @@ export const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const agencyData = await StaticDataApi.get("agencies");
-        const cityData = await StaticDataApi.get("cities");
-        const countryData = await StaticDataApi.get("countries");
-        const jurisdictionData = await StaticDataApi.get("jurisdictions");
-        const impoundData = await StaticDataApi.get("impound_lot_operators");
-        const provinceData = await StaticDataApi.get("provinces");
-        const vehicleStyleData = await StaticDataApi.get("vehicle_styles");
-        const vehicleTypeData = await StaticDataApi.get("vehicle_types");
-        const vehicleColourData = await StaticDataApi.get("vehicle_colours");
-        const vehicleData = await StaticDataApi.get("vehicles");
-
-        setVehicleResource(vehicleData.data);
-        setVehicleStyleResource(vehicleStyleData.data);
-        setVehicleColourResource(vehicleColourData.data);
-        setProvinceResource(provinceData.data);
-        setImpoundResource(impoundData.data);
-        setJurisdictionResource(jurisdictionData.data);
-        setCountryResource(countryData.data);
-        setCityResource(cityData.data);
-        setAgencyResource(agencyData.data);
-        setVehicleTypeResource(vehicleTypeData.data);
-        setStaticDataLoaded(true);
-
+      if (isConnected) {
         try {
-          await db.vehicles.bulkPut(vehicleData.data);
-          await db.vehicleStyles.bulkPut(vehicleStyleData.data);
-          await db.vehicleColours.bulkPut(vehicleColourData.data);
-          await db.provinces.bulkPut(provinceData.data);
-          await db.impoundLotOperators.bulkPut(impoundData.data);
-          await db.jurisdictions.bulkPut(jurisdictionData.data);
-          await db.countries.bulkPut(countryData.data);
-          await db.cities.bulkPut(cityData.data);
-          await db.agencies.bulkPut(agencyData.data);
+          const agencyData = await StaticDataApi.get("agencies");
+          const cityData = await StaticDataApi.get("cities");
+          const countryData = await StaticDataApi.get("countries");
+          const jurisdictionData = await StaticDataApi.get("jurisdictions");
+          const impoundData = await StaticDataApi.get("impound_lot_operators");
+          const provinceData = await StaticDataApi.get("provinces");
+          const vehicleStyleData = await StaticDataApi.get("vehicle_styles");
+          const vehicleTypeData = await StaticDataApi.get("vehicle_types");
+          const vehicleColourData = await StaticDataApi.get("vehicle_colours");
+          const vehicleData = await StaticDataApi.get("vehicles");
+
+          setVehicleResource(vehicleData.data);
+          setVehicleStyleResource(vehicleStyleData.data);
+          setVehicleColourResource(vehicleColourData.data);
+          setProvinceResource(provinceData.data);
+          setImpoundResource(impoundData.data);
+          setJurisdictionResource(jurisdictionData.data);
+          setCountryResource(countryData.data);
+          setCityResource(cityData.data);
+          setAgencyResource(agencyData.data);
+          setVehicleTypeResource(vehicleTypeData.data);
+          setStaticDataLoaded(true);
+
+          try {
+            await db.vehicles.bulkPut(vehicleData.data);
+            await db.vehicleStyles.bulkPut(vehicleStyleData.data);
+            await db.vehicleColours.bulkPut(vehicleColourData.data);
+            await db.provinces.bulkPut(provinceData.data);
+            await db.impoundLotOperators.bulkPut(impoundData.data);
+            await db.jurisdictions.bulkPut(jurisdictionData.data);
+            await db.countries.bulkPut(countryData.data);
+            await db.cities.bulkPut(cityData.data);
+            await db.vehicleTypes.bulkPut(vehicleTypeData.data);
+            await db.agencies.bulkPut(agencyData.data);
+          } catch (error) {
+            console.log(error);
+          }
         } catch (error) {
-          console.log(error);
+          console.error("Error fetching data:", error);
         }
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      } else {
+        setVehicleResource(await db.vehicles.toArray());
+        setVehicleStyleResource(await db.vehicleStyles.toArray());
+        setVehicleColourResource(await db.vehicleColours.toArray());
+        setProvinceResource(await db.provinces.toArray());
+        setImpoundResource(await db.impoundLotOperators.toArray());
+        setJurisdictionResource(await db.jurisdictions.toArray());
+        setCountryResource(await db.countries.toArray());
+        setCityResource(await db.cities.toArray());
+        setAgencyResource(await db.agencies.toArray());
+        setVehicleTypeResource(await db.vehicleTypes.toArray());
+        setStaticDataLoaded(true);
       }
     };
 
@@ -116,24 +133,31 @@ export const Dashboard = () => {
     setAgencyResource,
     setFormsData,
     setStaticDataLoaded,
+    setVehicleTypeResource,
   ]);
 
   useEffect(() => {
     const fetchEventData = async () => {
-      const eventData = await FormSubmissionApi.get();
-      const flattenedEventData = eventDataFormatter(
-        eventObjectFlatener(eventData),
-        userResource,
-        provinceResource,
-        vehicleResource,
-        vehicleStyleResource,
-        jusrisdictionResource,
-        cityResource,
-        impoundResource
-      );
-      if (flattenedEventData.length) {
-        await db.event.bulkPut(flattenedEventData);
-        setFormsData(flattenedEventData);
+      console.log(isConnected);
+      if (isConnected) {
+        const eventData = await FormSubmissionApi.get();
+        const flattenedEventData = eventDataFormatter(
+          eventObjectFlatener(eventData),
+          userResource,
+          provinceResource,
+          vehicleResource,
+          vehicleStyleResource,
+          jusrisdictionResource,
+          cityResource,
+          impoundResource
+        );
+        if (flattenedEventData.length) {
+          await db.event.bulkPut(flattenedEventData);
+          setFormsData(flattenedEventData);
+        }
+      } else {
+        const data = await db.event.toArray();
+        setFormsData(data);
       }
     };
     if (staticDataLoaded) {
@@ -148,6 +172,7 @@ export const Dashboard = () => {
     cityResource,
     impoundResource,
     staticDataLoaded,
+    isConnected,
   ]);
 
   useEffect(() => {
@@ -192,9 +217,11 @@ export const Dashboard = () => {
     };
 
     if (staticDataLoaded) {
-      fetchCurrentIDs().then(() => fetchNeededIDs());
+      if (isConnected) {
+        fetchCurrentIDs().then(() => fetchNeededIDs());
+      }
     }
-  }, [staticDataLoaded]);
+  }, [staticDataLoaded, isConnected]);
 
   const handleClick = () => {
     navigate("/createEvent");
@@ -228,34 +255,36 @@ export const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {formsData.map((data, index) => {
-              return !data["submitted"] ? (
-                <tr key={data["vehicle_vin_no"]}>
-                  <td>
-                    {data["created_dt"]
-                      ? convertToPST(data["created_dt"])
-                      : "N/A"}
-                  </td>
-                  <td>{formTypes(data)}</td>
-                  <td>
-                    {data["intersection_or_address_of_offence"]
-                      ? data["intersection_or_address_of_offence"]
-                      : "N/A"}
-                  </td>
-                  <td>
-                    {data["driver_last_name"]
-                      ? data["driver_last_name"]
-                      : "N/A"}
-                  </td>
-                  <td>
-                    {data["vehicle_plate_no"]
-                      ? data["vehicle_plate_no"]
-                      : "N/A"}
-                  </td>
-                  <td>Print</td>
-                </tr>
-              ) : null;
-            })}
+            {console.log(formsData)}
+            {formsData &&
+              formsData.map((data, index) => {
+                return !data["submitted"] ? (
+                  <tr key={data["vehicle_vin_no"]}>
+                    <td>
+                      {data["created_dt"]
+                        ? convertToPST(data["created_dt"])
+                        : "N/A"}
+                    </td>
+                    <td>{formTypes(data)}</td>
+                    <td>
+                      {data["intersection_or_address_of_offence"]
+                        ? data["intersection_or_address_of_offence"]
+                        : "N/A"}
+                    </td>
+                    <td>
+                      {data["driver_last_name"]
+                        ? data["driver_last_name"]
+                        : "N/A"}
+                    </td>
+                    <td>
+                      {data["vehicle_plate_no"]
+                        ? data["vehicle_plate_no"]
+                        : "N/A"}
+                    </td>
+                    <td>Print</td>
+                  </tr>
+                ) : null;
+              })}
           </tbody>
         </Table>
       </div>
