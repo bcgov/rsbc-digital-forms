@@ -16,6 +16,7 @@
     "formik": "^2.2.9",
     "html-to-image": "^1.11.11",
     "keycloak-js": "^21.0.1",
+    "lodash": "^4.17.21",
     "moment-timezone": "^0.5.34",
     "nth-check": "^2.0.1",
     "postcss": "^8.2.4",

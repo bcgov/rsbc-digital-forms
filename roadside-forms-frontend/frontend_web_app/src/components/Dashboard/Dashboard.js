@@ -11,15 +11,17 @@ import {
   formTypes,
   eventObjectFlatener,
   eventDataFormatter,
+  formNumbers,
 } from "../../utils/helpers";
-import { eventDataUpsert } from "../../utils/dbHelpers";
-import { convertToPST } from "../../utils/dateTime";
+import { convertToPST, convertToPSTFormat } from "../../utils/dateTime";
 import { StaticDataApi } from "../../api/staticDataApi";
 import { Button } from "../common/Button/Button";
 import { useNavigate, Link } from "react-router-dom";
 import { db } from "../../db";
 import { userAtom } from "../../atoms/users";
 import "./dashboard.scss";
+import { FormIDApi } from "../../api/formIDApi";
+import { getAllFormIDs } from "../../utils/dbHelpers";
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -47,6 +49,9 @@ export const Dashboard = () => {
   const [vehicleStyleResource, setVehicleStyleResource] = useRecoilState(
     staticResources["vehicle_styles"]
   );
+  const [vehicleTypeResource, setVehicleTypeResource] = useRecoilState(
+    staticResources["vehicle_types"]
+  );
   const [vehicleColourResource, setVehicleColourResource] = useRecoilState(
     staticResources["vehicle_colours"]
   );
@@ -64,6 +69,7 @@ export const Dashboard = () => {
         const impoundData = await StaticDataApi.get("impound_lot_operators");
         const provinceData = await StaticDataApi.get("provinces");
         const vehicleStyleData = await StaticDataApi.get("vehicle_styles");
+        const vehicleTypeData = await StaticDataApi.get("vehicle_types");
         const vehicleColourData = await StaticDataApi.get("vehicle_colours");
         const vehicleData = await StaticDataApi.get("vehicles");
 
@@ -76,18 +82,19 @@ export const Dashboard = () => {
         setCountryResource(countryData.data);
         setCityResource(cityData.data);
         setAgencyResource(agencyData.data);
+        setVehicleTypeResource(vehicleTypeData.data);
         setStaticDataLoaded(true);
 
         try {
-          db.vehicles.bulkPut(vehicleData.data);
-          db.vehicleStyles.bulkPut(vehicleStyleData.data);
-          db.vehicleColours.bulkPut(vehicleColourData.data);
-          db.provinces.bulkPut(provinceData.data);
-          db.impoundLotOperators.bulkPut(impoundData.data);
-          db.jurisdictions.bulkPut(jurisdictionData.data);
-          db.countries.bulkPut(countryData.data);
-          db.cities.bulkPut(cityData.data);
-          db.agencies.bulkPut(agencyData.data);
+          await db.vehicles.bulkPut(vehicleData.data);
+          await db.vehicleStyles.bulkPut(vehicleStyleData.data);
+          await db.vehicleColours.bulkPut(vehicleColourData.data);
+          await db.provinces.bulkPut(provinceData.data);
+          await db.impoundLotOperators.bulkPut(impoundData.data);
+          await db.jurisdictions.bulkPut(jurisdictionData.data);
+          await db.countries.bulkPut(countryData.data);
+          await db.cities.bulkPut(cityData.data);
+          await db.agencies.bulkPut(agencyData.data);
         } catch (error) {
           console.log(error);
         }
@@ -125,7 +132,7 @@ export const Dashboard = () => {
         impoundResource
       );
       if (flattenedEventData.length) {
-        db.event.bulkPut(flattenedEventData);
+        await db.event.bulkPut(flattenedEventData);
         setFormsData(flattenedEventData);
       }
     };
@@ -142,6 +149,52 @@ export const Dashboard = () => {
     impoundResource,
     staticDataLoaded,
   ]);
+
+  useEffect(() => {
+    const seedLeasedValues = async (idArray) => {
+      if (idArray) {
+        if (idArray.length > 0) {
+          for (let i = 0; i < idArray.length; i++) {
+            // Check if idArray[i] exists in indexedDB
+            // If it does, check for leased property on that id
+            // If it has a value, set the value = that value
+            // Otherwise, set leased = false
+            const existingId = await db.formID.get(idArray[i].id);
+            console.log("Existing ID?", existingId);
+            if (existingId) {
+              if (existingId.leased) {
+                console.log(existingId.leased);
+                idArray[i].leased = existingId.leased;
+              } else {
+                idArray[i].leased = 0;
+              }
+            } else {
+              idArray[i].leased = 0;
+            }
+          }
+          return idArray;
+        }
+      }
+      return [];
+    };
+
+    const fetchNeededIDs = async () => {
+      const neededFormID = await getAllFormIDs();
+      const newIDs = await FormIDApi.post(neededFormID);
+      const seededIDs = await seedLeasedValues(newIDs.forms);
+      await db.formID.bulkPut(seededIDs);
+    };
+
+    const fetchCurrentIDs = async () => {
+      const currentIDs = await FormIDApi.get();
+      const seededIDs = await seedLeasedValues(currentIDs);
+      await db.formID.bulkPut(seededIDs);
+    };
+
+    if (staticDataLoaded) {
+      fetchCurrentIDs().then(() => fetchNeededIDs());
+    }
+  }, [staticDataLoaded]);
 
   const handleClick = () => {
     navigate("/createEvent");
@@ -258,11 +311,11 @@ export const Dashboard = () => {
                       state={{ eventId: data["event_id"] }}
                     >
                       {data["created_dt"]
-                        ? convertToPST(data["created_dt"])
+                        ? convertToPSTFormat(data["created_dt"])
                         : "N/A"}
                     </Link>
                   </td>
-                  <td>{data["VI_number"]}</td>
+                  <td>{formNumbers(data)}</td>
                   <td>{formTypes(data)}</td>
                   <td>
                     {data["intersection_or_address_of_offence"]
