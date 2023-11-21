@@ -37,7 +37,6 @@ export const VehicleInfo = (props) => {
   }, [driversLicenceJurisdiction]);
 
   const fetchICBCVehicleInfo = async () => {
-    console.log(values);
     if (values["vehicle_plate_no"]) {
       await ICBCVehicleDataApi.get(values["vehicle_plate_no"]).then((resp) => {
         if (!_.isEmpty(resp)) {
