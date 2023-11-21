@@ -48,24 +48,24 @@ services:
   #     LOG_LEVEL: "INFO"
   #     ENCRYPT_KEY: "${ENCRYPT_KEY}"
 
-  web_app:
-    build:
-      context: roadside-forms-frontend/frontend_web_app
-      dockerfile: Dockerfile-local
-      args:
-        REACT_APP_BASE_URL: "${REACT_APP_BASE_URL_DEV}"
-        REACT_APP_KEYCLOAK_URL: "${KEYCLOAK_AUTH_URL}"
-        REACT_APP_KEYCLOAK_REALM: "${KEYCLOAK_REALM}"
-        REACT_APP_KEYCLOAK_CLIENT_ID: "${KEYCLOAK_CLIENT_ID}"
-        REACT_APP_API_BASE_URL: "${REACT_APP_API_BASE_URL}"
-    env_file:
-      - .env
-    depends_on:
-      - roadside-forms-api
-    networks:
-      - docker-network
-    ports:
-      - "3000:5000"
+  # web_app:
+  #   build:
+  #     context: roadside-forms-frontend/frontend_web_app
+  #     dockerfile: Dockerfile-local
+  #     args:
+  #       REACT_APP_BASE_URL: "${REACT_APP_BASE_URL_DEV}"
+  #       REACT_APP_KEYCLOAK_URL: "${KEYCLOAK_AUTH_URL}"
+  #       REACT_APP_KEYCLOAK_REALM: "${KEYCLOAK_REALM}"
+  #       REACT_APP_KEYCLOAK_CLIENT_ID: "${KEYCLOAK_CLIENT_ID}"
+  #       REACT_APP_API_BASE_URL: "${REACT_APP_API_BASE_URL}"
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - roadside-forms-api
+  #   networks:
+  #     - docker-network
+  #   ports:
+  #     - "3000:5000"
 
   minio:
     image: "minio/minio:latest"
