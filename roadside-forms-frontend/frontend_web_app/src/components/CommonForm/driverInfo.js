@@ -14,6 +14,7 @@ import "./commonForm.scss";
 import Modal from "react-bootstrap/Modal";
 import { dlScanner } from "../../utils/dlScanner";
 import { ICBCDriverDataApi } from "../../api/icbcDriverDataAPI";
+import { formatBCDL } from "../../utils/formatBCDL";
 
 export const DriverInfo = (props) => {
   const { jurisdictions, provinces } = props;
@@ -100,7 +101,6 @@ export const DriverInfo = (props) => {
     }
   };
 
-  // Create conditional check for 12h
   return (
     <>
       <Modal
@@ -134,6 +134,10 @@ export const DriverInfo = (props) => {
                 className="field-height field-width"
                 label="Driver's Licence Number"
                 name="driver_licence_no"
+                onBlur={(event) => {
+                  event.target.value = formatBCDL(event, values);
+                  values["driver_licence_no"] = event.target.value;
+                }}
                 type="text"
               />
             </Col>
