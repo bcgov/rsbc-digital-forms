@@ -251,33 +251,11 @@ export const CreateEvent = () => {
     if (values["date_of_impound"] && values["vehicle_impounded"] === "NO") {
       values["date_released"] = values["date_of_impound"];
     }
-    // console.log('here are the values before api call')
-    // console.log(values);
-    // db.event
-    //       .put(values)
-    //       .then(() => {
-    //         // setIsSubmitting(false);
-    //         // navigate("/");
-    //       })
-    //       .catch((err) => {
-    //         // console.error(err);
-    //         // setIsSubmitting(false);
-    //       });
-    FormSubmissionApi.post(values)
+
+    await FormSubmissionApi.post(values)
       .then((resp) => {
-        values["event_id"] = resp.data["event_id"];
-        // console.log('here are the values')
-        // console.log(values);
-        db.event
-          .put(values)
-          .then(() => {
-            setIsSubmitting(false);
-            navigate("/");
-          })
-          .catch((err) => {
-            console.error(err);
-            setIsSubmitting(false);
-          });
+        setIsSubmitting(false);
+        navigate("/");
       })
       .catch((err) => {
         console.error(err);
@@ -449,7 +427,6 @@ export const CreateEvent = () => {
     };
     const valuesCopy = { ...values };
     if (values["vehicle_impounded"] === "YES") {
-      console.log(values["date_released"]);
       valuesCopy["date_released"] = null;
       valuesCopy["time_released"] = null;
       // break;
@@ -494,7 +471,6 @@ export const CreateEvent = () => {
     // console.log("FORM IDS: ", formIDs);
     // console.log(values);
     window.onafterprint = async () => {
-      console.log("Done printing");
       setIsPrinted(true);
       const forms = {
         TwentyFourHour: "twenty_four_hour_number",
@@ -504,7 +480,6 @@ export const CreateEvent = () => {
       };
       const idsToDelete = {};
       for (const form in forms) {
-        console.log("Form: ", form);
         if (values[forms[form]]) {
           await db.formID.delete(
             forms[form] === "VI_number" || forms[form] === "IRP_number"

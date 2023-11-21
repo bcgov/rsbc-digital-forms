@@ -956,8 +956,8 @@ export const validationSchema = Yup.object().shape({
   "officer-agency": Yup.string().required("Agency is required"), // Required, max. 30 characters
 
   /** Disposition of Vehicle (12h only) */
-  vehicle_location: Yup.string().when("TwelveHour", {
-    is: true,
+  vehicle_location: Yup.string().when(["TwelveHour", "VI"], {
+    is: (TwelveHour, VI) => TwelveHour && !VI,
     then: () => Yup.string().required("Vehicle Location is required"),
   }), // Only for 12h
 

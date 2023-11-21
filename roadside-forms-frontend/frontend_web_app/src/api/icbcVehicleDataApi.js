@@ -6,12 +6,20 @@ export const ICBCVehicleDataApi = {
     const headers = {
       ...createRequestHeader(),
     };
-    const response = await api.request({
-      url: `/api/v1/icbc/vehicles/${licencePlate}`,
-      method: "GET",
-      headers: { ...headers },
-    });
-    console.log(response);
-    return response.data;
+    return await api
+      .request({
+        url: `/api/v1/icbc/vehicles/${licencePlate}`,
+        method: "GET",
+        headers: { ...headers },
+      })
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error) => {
+        return {
+          status: error.status,
+          data: error.response,
+        };
+      });
   },
 };
