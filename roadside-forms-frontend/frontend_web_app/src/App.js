@@ -1,13 +1,14 @@
 import React from "react";
 import { ReactKeycloakProvider } from "@react-keycloak/web";
-import AppRouter from "./routes/appRouter";
 import keycloak, { keycloakInitConfig } from "./keycloak";
 import "../src/utils/commonStyles.scss";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import { Footer } from "./components/common/Footer/footer";
+import { RouterProvider } from "react-router-dom";
+
+import { appRouter } from "./routes/appRouter";
 
 library.add(fab, far, fas);
 
@@ -18,8 +19,7 @@ function App() {
         authClient={keycloak}
         initOptions={keycloakInitConfig}
       >
-        <AppRouter />
-        <Footer />
+        <RouterProvider router={appRouter} />
       </ReactKeycloakProvider>
     </div>
   );
