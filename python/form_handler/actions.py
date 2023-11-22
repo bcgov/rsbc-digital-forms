@@ -417,6 +417,20 @@ def send_to_icbc(**args)->tuple:
 #   "notice_type_code": ""
 # }
 
+
+
+# {
+#   "type_code": "MV2721",
+#   "mime_sub_type": "pdf",
+#   "mime_type": "application",
+#   "file_object": "JVBERi0xLjIgCjkgMCBvYmoKPDwKPj4Kc3RyZWFtCkJULyA5IFRmKFRlc3QpJyBFVAplbmRzdHJlYW0KZW5kb2JqCjQgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCA1IDAgUgovQ29udGVudHMgOSAwIFIKPj4KZW5kb2JqCjUgMCBvYmoKPDwKL0tpZHMgWzQgMCBSIF0KL0NvdW50IDEKL1R5cGUgL1BhZ2VzCi9NZWRpYUJveCBbIDAgMCA5OSA5IF0KPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1BhZ2VzIDUgMCBSCi9UeXBlIC9DYXRhbG9nCj4+CmVuZG9iagp0cmFpbGVyCjw8Ci9Sb290IDMgMCBSCj4+CiUlRU9G",
+#   "notice_type_code": "IMP",
+#   "notice_subject_code": "VEHI",
+#   "pageCount": 1
+# }
+
+
+
 def prep_vips_document_payload(**args)->tuple:
     logging.debug("inside prep_vips_document_payload()")
     logging.debug(args)
@@ -429,17 +443,18 @@ def prep_vips_document_payload(**args)->tuple:
         form_id=args.get('form_id')
         tmp_payload=vips_document_payload.copy()
 
-        subject_cd="PERS"
+        subject_cd="VEHI"
 
-        if "owned_by_corp" in event_data and event_data["owned_by_corp"] is True:
-            subject_cd="CORP"
+        # if "owned_by_corp" in event_data and event_data["owned_by_corp"] is True:
+        #     subject_cd="CORP"
+        # tmp_payload["notice_subject_code"]=subject_cd
         tmp_payload["notice_subject_code"]=subject_cd
 
         tmp_payload["file_object"]=pdf_data
 
-        # TODO: to confirm
-        tmp_payload["type_code"]="MULTIPLE"
-        if "type_cd" in form_data: tmp_payload["type_code"]=form_data["type_cd"]
+        # DONE: to confirm
+        tmp_payload["type_code"]="MV2721"
+        # if "type_cd" in form_data: tmp_payload["type_code"]=form_data["type_cd"]
 
         tmp_payload["pageCount"]=1
         tmp_payload["mime_sub_type"]="pdf"
@@ -469,7 +484,7 @@ def create_vips_document(**args)->tuple:
         else:
             # TODO: get the documentId from the response
             vips_doc_response_txt=json.loads(vips_doc_response_txt)
-            vips_doc_id=vips_doc_response_txt.get('documentId')
+            vips_doc_id=vips_doc_response_txt.get('document_id')
             args['vips_doc_id']=vips_doc_id
     except Exception as e:
         logging.error(e)
