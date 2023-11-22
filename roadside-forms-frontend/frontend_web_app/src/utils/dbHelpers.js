@@ -12,7 +12,6 @@ export const getAllFormIDs = async () => {
     await db.formID
       .where("form_type")
       .equals(key)
-      .and((form) => form.leased === 0)
       .toArray()
       .then((value) => {
         idDict[key] =
