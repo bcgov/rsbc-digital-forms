@@ -3,15 +3,15 @@ import moment from "moment-timezone";
 import * as staticData from "../atoms/staticData";
 
 import { pstDate } from "./dateTime";
-import twentyFourHourDriverform from "../assets/MV2634E_101223_driver.png";
-import twentyFourHourILOform from "../assets/MV2634E_101223_ilo.png";
-import twentyFourHourPoliceform from "../assets/MV2634E_101223_police.png";
+import twentyFourHourDriverform from "../assets/MV2634E_082023_driver.png";
+import twentyFourHourILOform from "../assets/MV2634E_082023_ilo.png";
+import twentyFourHourPoliceform from "../assets/MV2634E_082023_icbc.png";
 import viDriverForm from "../assets/MV2721_201502.png";
 import viIncidentDetails from "../assets/MV2722_201502_Incident_Details.png";
 import appealsForm from "../assets/MV2721_201502_appeal.png";
 import viReportForm from "../assets/MV2722_201502.png";
-import twelveHourDriverForm from "../assets/TwelveHourDriverCopy.png";
-import twelveHourICBCForm from "../assets/TwelveHourICBCCopy.png";
+import twelveHourDriverForm from "../assets/MV2906E_082023_driver.png";
+import twelveHourICBCForm from "../assets/MV2906E_082023_icbc.png";
 
 const eventValueKeys = [
   "event_id",

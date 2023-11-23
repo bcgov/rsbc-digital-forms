@@ -86,7 +86,8 @@ export const CreateEvent = () => {
   const blocker = useBlocker(({ currentLocation, nextLocation }) => {
     return (
       currentLocation.pathname !== nextLocation.pathname &&
-      currentLocation.pathname === "/createEvent"
+      currentLocation.pathname === "/createEvent" &&
+      currentStep !== 4
     );
   });
 
