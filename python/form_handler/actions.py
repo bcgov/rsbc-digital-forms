@@ -12,7 +12,7 @@ import json
 from datetime import datetime
 from minio import Minio
 from minio.error import S3Error
-from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User
+from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref
 from python.form_handler.icbc_service import submit_to_icbc
 from python.form_handler.vips_service import create_vips_doc,create_vips_imp
 from python.form_handler.payloads import vips_payload,vips_document_payload
@@ -423,7 +423,8 @@ def send_to_icbc(**args)->tuple:
 #   "type_code": "MV2721",
 #   "mime_sub_type": "pdf",
 #   "mime_type": "application",
-#   "file_object": "JVBERi0xLjIgCjkgMCBvYmoKPDwKPj4Kc3RyZWFtCkJULyA5IFRmKFRlc3QpJyBFVAplbmRzdHJlYW0KZW5kb2JqCjQgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCA1IDAgUgovQ29udGVudHMgOSAwIFIKPj4KZW5kb2JqCjUgMCBvYmoKPDwKL0tpZHMgWzQgMCBSIF0KL0NvdW50IDEKL1R5cGUgL1BhZ2VzCi9NZWRpYUJveCBbIDAgMCA5OSA5IF0KPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1BhZ2VzIDUgMCBSCi9UeXBlIC9DYXRhbG9nCj4+CmVuZG9iagp0cmFpbGVyCjw8Ci9Sb290IDMgMCBSCj4+CiUlRU9G",
+#   "file_object": "
+
 #   "notice_type_code": "IMP",
 #   "notice_subject_code": "VEHI",
 #   "pageCount": 1
@@ -504,6 +505,27 @@ def prep_vips_payload(**args)->tuple:
         tmp_payload=vips_payload.copy()
         logging.debug(tmp_payload)
 
+        # get data from db
+        application = args.get('app')
+        db = args.get('db')
+        with application.app_context():
+            # get detachment data
+            policeDetatchmentId=''
+            agency_name=''
+            if "agency" in user_data: 
+                agency_name=user_data["agency"].upper()
+                agency_data = db.session.query(AgencyCrossref) \
+                    .filter(AgencyCrossref.agency_name == agency_name) \
+                    .all()
+                if len(agency_data) == 0:
+                    pass
+                else:
+                    for a in agency_data:
+                        agency_dict = a.__dict__
+                        agency_dict.pop('_sa_instance_state', None)
+                        policeDetatchmentId=agency_dict["vips_policedetachments_agency_id"]
+                        break
+
         # vipsImpoundCreate payload
         if "driver_jurisdiction" in event_data: tmp_payload["vipsImpoundCreate"]["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
         if "driver_licence_no" in event_data: tmp_payload["vipsImpoundCreate"]["driverLicenceNo"]=event_data["driver_licence_no"]
@@ -519,7 +541,8 @@ def prep_vips_payload(**args)->tuple:
         tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]="VEHI"
 
         if "notice_type_cd" in form_data: tmp_payload["vipsImpoundCreate"]["noticeTypeCd"]="IMP"
-        if "agency" in user_data: tmp_payload["vipsImpoundCreate"]["policeDetatchmentId"]=user_data["agency"].upper()
+        tmp_payload["vipsImpoundCreate"]["policeDetatchmentId"]=policeDetatchmentId
+        # if "agency" in user_data: tmp_payload["vipsImpoundCreate"]["policeDetatchmentId"]=user_data["agency"].upper()
 
 
         officer_name=f'{user_data["first_name"]} {user_data["last_name"]}'
@@ -581,7 +604,8 @@ def prep_vips_payload(**args)->tuple:
 
         # vipsVehicleCreate payload
         # TODO: to confirm
-        if "nsc_no" in event_data: tmp_payload["vipsVehicleCreate"]["commercialMotorCarrierId"]=event_data["nsc_no"]
+        # if "nsc_no" in event_data: tmp_payload["vipsVehicleCreate"]["commercialMotorCarrierId"]=event_data["nsc_no"]
+        tmp_payload["vipsVehicleCreate"]["commercialMotorCarrierId"]=None
         
         if "vehicle_plate_no" in event_data: tmp_payload["vipsVehicleCreate"]["licencePlateNo"]=event_data["vehicle_plate_no"].upper()
         tmp_payload["vipsVehicleCreate"]["lpDecalValidYy"]=None
@@ -592,7 +616,8 @@ def prep_vips_payload(**args)->tuple:
 
         if "vehicle_year" in event_data: tmp_payload["vipsVehicleCreate"]["manufacturedYy"]=event_data["vehicle_year"]
 
-        if "nsc_prov_state" in event_data: tmp_payload["vipsVehicleCreate"]["nscJurisdictionTxt"]=event_data["nsc_prov_state"].upper()
+        # if "nsc_prov_state" in event_data: tmp_payload["vipsVehicleCreate"]["nscJurisdictionTxt"]=event_data["nsc_prov_state"].upper()
+        tmp_payload["vipsVehicleCreate"]["nscJurisdictionTxt"]=None
         if "vehicle_colour" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleColourTxt"]=event_data["vehicle_colour"].upper()
 
         if "vehicle_vin_no" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleIdentificationNo"]=event_data["vehicle_vin_no"].upper()  
@@ -614,7 +639,7 @@ def prep_vips_payload(**args)->tuple:
 
         # vipsImpoundmentArray payload
         vipsImpoundmentArray=[]
-        if "VI_number" in form_data: vipsImpoundmentArray.append(form_data["VI_number"])
+        # if "VI_number" in form_data: vipsImpoundmentArray.append(form_data["VI_number"])
         tmp_payload["vipsImpoundmentArray"]=vipsImpoundmentArray
 
         args['vips_payload']=tmp_payload
