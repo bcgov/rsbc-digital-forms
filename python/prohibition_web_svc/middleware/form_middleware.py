@@ -55,6 +55,7 @@ def renew_form_id_lease(**kwargs) -> tuple:
         .filter(Form.form_type == form_type) \
         .filter(Form.user_guid == user_guid) \
         .filter(Form.printed_timestamp == None) \
+        .filter(Form.spoiled_timestamp == None) \
         .filter(Form.id == form_id) \
         .first()
     if form is None:
@@ -94,6 +95,31 @@ def mark_form_as_printed(**kwargs) -> tuple:
     kwargs['response_dict'] = {'message': f'successfully printed forms: {forms}'}
     return True, kwargs
 
+def mark_form_as_spoiled(**kwargs) -> tuple:
+    logging.debug('inside mark_form_as_spoiled()')
+    payload = kwargs.get('payload')
+    forms = payload.get('forms')
+    user_guid = kwargs.get('user_guid')
+    logging.debug(payload)
+    for form in forms:
+        number = forms.get(form)
+        if form == "VI_number" or form == "IRP_number":
+            number = str(number)[:-1]
+        logging.debug(f'Form Number: {number}')
+        form = db.session.query(Form) \
+            .filter(Form.id == number) \
+            .first()
+        if form is None:
+            logging.warning(f'{user_guid}, cannot update {payload.get(form)} as spoiled - record not found') 
+            return False, kwargs
+        form.spoiled_timestamp = payload.get('spoiled_timestamp')
+    try:
+        db.session.commit()
+    except Exception as e:
+        return False, kwargs
+    kwargs['response_dict'] = {'message': f'successfully spoiled forms: {forms}'}
+    return True, kwargs
+
 
 def request_contains_a_payload(**kwargs) -> tuple:
     request = kwargs.get('request')
@@ -114,6 +140,7 @@ def list_all_users_forms(**kwargs) -> tuple:
         all_forms = db.session.query(Form) \
             .filter(Form.user_guid == user_guid) \
             .filter(Form.printed_timestamp == None)\
+            .filter(Form.spoiled_timestamp == None)\
             .all()
         for id in all_forms:
             all_ids.append(asdict(id))

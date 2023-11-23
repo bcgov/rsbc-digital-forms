@@ -95,6 +95,10 @@ def update():
                     # TODO - Write to RabbitMQ fail queue
                     {"try": http_responses.record_not_found, "fail": []},
                 ]},
+                {"try": form_middleware.mark_form_as_spoiled, "fail": [
+                    # TODO - Write to RabbitMQ fail queue
+                    {"try": http_responses.record_not_found, "fail": []},
+                ]},
                 # TODO - Write to RabbitMQ ingested queue
                 {"try": http_responses.successful_update_response, "fail": []}
             ],
