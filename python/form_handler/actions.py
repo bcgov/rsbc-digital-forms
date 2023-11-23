@@ -17,7 +17,7 @@ from python.form_handler.icbc_service import submit_to_icbc
 from python.form_handler.vips_service import create_vips_doc,create_vips_imp
 from python.form_handler.payloads import vips_payload,vips_document_payload
 from python.form_handler.message import encode_message
-from python.form_handler.helper import method2_decrypt,decryptPdf_method1
+from python.form_handler.helper import method2_decrypt,decryptPdf_method1,convertDateTime,convertDateTimeWithSecs
 
 import fitz
 import base64
@@ -513,34 +513,41 @@ def prep_vips_payload(**args)->tuple:
             policeDetatchmentId=''
             agency_name=''
             if "agency" in user_data: 
-                agency_name=user_data["agency"].upper()
+                logging.debug(user_data["agency"])
+                agency_name=user_data["agency"]
                 agency_data = db.session.query(AgencyCrossref) \
                     .filter(AgencyCrossref.agency_name == agency_name) \
                     .all()
                 if len(agency_data) == 0:
+                    logging.error("agency not found")
                     pass
                 else:
                     for a in agency_data:
                         agency_dict = a.__dict__
                         agency_dict.pop('_sa_instance_state', None)
-                        policeDetatchmentId=agency_dict["vips_policedetachments_agency_id"]
+                        policeDetatchmentId=int(agency_dict["vips_policedetachments_agency_id"])
                         break
 
         # vipsImpoundCreate payload
         if "driver_jurisdiction" in event_data: tmp_payload["vipsImpoundCreate"]["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
         if "driver_licence_no" in event_data: tmp_payload["vipsImpoundCreate"]["driverLicenceNo"]=event_data["driver_licence_no"]
 
+        tmp_payload["vipsImpoundCreate"]["impoundLotOperatorId"]=None
+
         # convert impoundment_dt to string
         impoundment_dt=form_data.get("date_of_impound")
         if impoundment_dt is not None:
-            impoundment_dt=impoundment_dt.strftime('%Y-%m-%dT%H:%M:%S')
+            # impoundment_dt=impoundment_dt.strftime('%Y-%m-%dT%H:%M:%S')
+            impoundment_dt=convertDateTimeWithSecs(impoundment_dt)
             tmp_payload["vipsImpoundCreate"]["impoundmentDt"]=impoundment_dt
         
         if "VI_number" in form_data: tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=form_data["VI_number"]
         
         tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]="VEHI"
+        tmp_payload["vipsImpoundCreate"]["originalCauseCds"]=[]
 
-        if "notice_type_cd" in form_data: tmp_payload["vipsImpoundCreate"]["noticeTypeCd"]="IMP"
+        # if "notice_type_cd" in form_data: tmp_payload["vipsImpoundCreate"]["noticeTypeCd"]="IMP"
+        tmp_payload["vipsImpoundCreate"]["noticeTypeCd"]="IMP"
         tmp_payload["vipsImpoundCreate"]["policeDetatchmentId"]=policeDetatchmentId
         # if "agency" in user_data: tmp_payload["vipsImpoundCreate"]["policeDetatchmentId"]=user_data["agency"].upper()
 
@@ -553,6 +560,7 @@ def prep_vips_payload(**args)->tuple:
         if "projected_release_dt" in form_data: tmp_payload["vipsImpoundCreate"]["projectedReleaseDt"]=None
 
         # TODO: to confirm
+        tmp_payload["vipsImpoundCreate"]["seizureLocationTxt"]=None
         if "offence_city" in form_data: tmp_payload["vipsImpoundCreate"]["seizureLocationTxt"]=form_data["offence_city"].upper()
         
         # vipsRegistrationCreateArray payload
@@ -592,7 +600,8 @@ def prep_vips_payload(**args)->tuple:
         birthdate=event_data.get("driver_dob")
         if birthdate is not None:
             # birthdate=datetime.strptime(birthdate, '%Y-%m-%d')
-            birthdate= birthdate.strftime('%Y-%m-%d')
+            # birthdate= birthdate.strftime('%Y-%m-%d')
+            birthdate= convertDateTime(birthdate)
             # birthdate=birthdate.strftime('%Y%m%d')
             vips_licence_create_obj["birthDt"]=birthdate
 
