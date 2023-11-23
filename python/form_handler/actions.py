@@ -430,18 +430,21 @@ def prep_icbc_payload(**args)->tuple:
             logging.debug(user_data["agency"])
             agency_name=user_data["agency"]
             detachment_city=''
-            agency_data = db.session.query(AgencyCrossref) \
-                .filter(AgencyCrossref.agency_name == agency_name) \
-                .all()
-            if len(agency_data) == 0:
-                logging.error("agency not found")
-                pass
-            else:
-                for a in agency_data:
-                    agency_dict = a.__dict__
-                    agency_dict.pop('_sa_instance_state', None)
-                    detachment_city=agency_dict["icbc_city_name"]
-                    break
+            application = args.get('app')
+            db = args.get('db')
+            with application.app_context():
+                agency_data = db.session.query(AgencyCrossref) \
+                    .filter(AgencyCrossref.agency_name == agency_name) \
+                    .all()
+                if len(agency_data) == 0:
+                    logging.error("agency not found")
+                    pass
+                else:
+                    for a in agency_data:
+                        agency_dict = a.__dict__
+                        agency_dict.pop('_sa_instance_state', None)
+                        detachment_city=agency_dict["icbc_city_name"]
+                        break
             tmp_payload["officerDetachment"]=detachment_city.upper()
 
         #DONE -- Need to add agency name abbr to the begining of officerNumber
