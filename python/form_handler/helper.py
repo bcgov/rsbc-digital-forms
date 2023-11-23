@@ -189,5 +189,41 @@ def decryptPdf_method1(pdfPath, password,outfile):
     except Exception as e:
         logging.error(e)
         return False,None
+    
+
+def convertDateTime(timevalue):
+    # Convert to datetime object
+    date_obj = datetime.strptime(timevalue, "%Y-%m-%d")
+
+    # Set the time to midnight
+    date_obj = date_obj.replace(hour=0, minute=0, second=0, microsecond=00)
+
+    # Specify the timezone (Pacific Time in this case)
+    pacific_time = pytz.timezone("America/Los_Angeles")
+    date_obj = pacific_time.localize(date_obj)
+
+    # Convert to desired string format
+    formatted_date_str = date_obj.isoformat()
+    date_obj.strftime("%Y-%m-%dT%H:%M:%S.%f")
+
+    # Reformat the datetime object to include microseconds in the specified format
+    formatted_date_str_with_microseconds = date_obj.strftime('%Y-%m-%dT%H:%M:%S.000%z')
+    formatted_date_str_with_correct_offset = formatted_date_str_with_microseconds[:-2] + ":" + formatted_date_str_with_microseconds[-2:]
+    return formatted_date_str_with_correct_offset
+
+def convertDateTimeWithSecs(timevalue):
+
+    # Convert to datetime object
+    new_date_obj = datetime.strptime(timevalue, "%Y-%m-%dT%H:%M:%S")
+
+    # Specify the timezone (Pacific Time in this case)
+    pacific_time = pytz.timezone("America/Los_Angeles")
+    new_date_obj = pacific_time.localize(new_date_obj)
+
+    # Reformat the datetime object to include the timezone offset in the specified format
+    formatted_new_date_str_with_correct_offset = new_date_obj.strftime('%Y-%m-%dT%H:%M:%S.000%z')
+    # Inserting the colon in the timezone offset
+    formatted_new_date_str_with_correct_offset = formatted_new_date_str_with_correct_offset[:-2] + ":" + formatted_new_date_str_with_correct_offset[-2:]
+    return formatted_new_date_str_with_correct_offset
 
 
