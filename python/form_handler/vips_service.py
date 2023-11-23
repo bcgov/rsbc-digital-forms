@@ -31,7 +31,7 @@ def create_vips_imp(payload) -> tuple:
     try:
         print("_Creating VIPS impoundment_")        
         print(payload)        
-        vips_doc_response = requests.post(url, json=json.dumps(payload), timeout=5, auth=HTTPBasicAuth(Config.VIPS_API_USERNAME, Config.VIPS_API_PASSWORD))
+        vips_doc_response = requests.post(url, json=payload, timeout=5, auth=HTTPBasicAuth(Config.VIPS_API_USERNAME, Config.VIPS_API_PASSWORD))
         print(vips_doc_response.text)
         print(vips_doc_response.status_code)
         if(vips_doc_response.status_code!=200):
