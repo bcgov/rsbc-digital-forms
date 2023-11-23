@@ -424,6 +424,7 @@ def send_to_icbc(**args)->tuple:
 #   "mime_sub_type": "pdf",
 #   "mime_type": "application",
 #   "file_object": "
+
 #   "notice_type_code": "IMP",
 #   "notice_subject_code": "VEHI",
 #   "pageCount": 1
