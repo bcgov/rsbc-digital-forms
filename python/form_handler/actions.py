@@ -402,16 +402,35 @@ def prep_icbc_payload(**args)->tuple:
         if date_of_driving is not None:
             date_of_driving=date_of_driving.strftime('%Y%m%d')
             tmp_payload["violationDate"]=date_of_driving
-        if "time_of_driving" in event_data: tmp_payload["violationTime"]=event_data["time_of_driving"]
+        if "time_of_driving" in event_data: 
+            tmp_time_str=event_data["time_of_driving"]
+            tmp_time_str=tmp_time_str[:2] + ":" + tmp_time_str[2:]
+            tmp_payload["violationTime"]=tmp_time_str
 
         # TODO: get agency from user table for the event
-        if "agency" in user_data: tmp_payload["officerDetachment"]=user_data["agency"].upper()
+        if "agency" in user_data: 
+            logging.debug(user_data["agency"])
+            agency_name=user_data["agency"]
+            detachment_city=''
+            agency_data = db.session.query(AgencyCrossref) \
+                .filter(AgencyCrossref.agency_name == agency_name) \
+                .all()
+            if len(agency_data) == 0:
+                logging.error("agency not found")
+                pass
+            else:
+                for a in agency_data:
+                    agency_dict = a.__dict__
+                    agency_dict.pop('_sa_instance_state', None)
+                    detachment_city=agency_dict["icbc_city_name"]
+                    break
+            tmp_payload["officerDetachment"]=detachment_city.upper()
 
         #DONE -- Need to add agency name abbr to the begining of officerNumber
         # if "badge_number" in user_data: tmp_payload["officerNumber"]="AB"+ data["badge_number"]
         if "badge_number" in user_data: tmp_payload["officerNumber"]=user_data["badge_number"]
 
-        officer_name=f'{user_data["first_name"]} {user_data["last_name"]}'
+        officer_name=f'{user_data["last_name"]}'
         tmp_payload["officerName"]=officer_name.upper()
         
         args['icbc_payload']=tmp_payload
