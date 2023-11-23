@@ -2,9 +2,15 @@
 
 import { clientsClaim } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
+import { BackgroundSyncPlugin } from "workbox-background-sync";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+import {
+  StaleWhileRevalidate,
+  CacheFirst,
+  NetworkOnly,
+} from "workbox-strategies";
+import { CacheableResponsePlugin } from "workbox-cacheable-response";
 
 clientsClaim();
 
@@ -14,17 +20,6 @@ clientsClaim();
 // even if you decide not to use precaching.
 const manifest = self.__WB_MANIFEST;
 precacheAndRoute(manifest);
-
-// Define the URLs to pre-cache
-const precacheUrls = [
-  "/",
-  "/roadside-forms/createEvent",
-  "/roadside-forms/svg-test",
-  // Add more URLs as needed
-];
-
-// Configure Workbox to pre-cache the URLs
-precacheAndRoute(precacheUrls, { revision: null });
 
 // Set up App Shell-style routing, so that all navigation requests
 // are fulfilled with your index.html shell. Learn more at
@@ -50,7 +45,6 @@ registerRoute(
   },
   createHandlerBoundToURL(process.env.PUBLIC_URL + "/index.html")
 );
-
 // An example runtime caching route for requests that aren't handled by the
 // precache, in this case same-origin .png requests like those from in public/
 registerRoute(
@@ -76,3 +70,86 @@ self.addEventListener("message", (event) => {
 });
 
 // Any other custom service worker logic can go here.
+
+registerRoute(
+  // Check to see if the request's destination is style for stylesheets, script for JavaScript, or worker for web worker
+  ({ request }) =>
+    request.destination === "style" ||
+    request.destination === "script" ||
+    request.destination === "worker",
+  // Use a Stale While Revalidate caching strategy
+  new StaleWhileRevalidate({
+    // Put all cached files in a cache named 'assets'
+    cacheName: "assets",
+    plugins: [
+      // Ensure that only requests that result in a 200 status are cached
+      new CacheableResponsePlugin({
+        statuses: [200],
+      }),
+    ],
+  })
+);
+
+registerRoute(
+  ({ url }) =>
+    url.pathname.includes("/api/v1/static/agencies") ||
+    url.pathname.includes("/api/v1/static/cities") ||
+    url.pathname.includes("/api/v1/static/configuration") ||
+    url.pathname.includes("/api/v1/static/countries") ||
+    url.pathname.includes("/api/v1/static/jurisdictions") ||
+    url.pathname.includes("/api/v1/static/provinces") ||
+    url.pathname.includes("/api/v1/static/vehicles") ||
+    url.pathname.includes("/api/v1/static/vehicle_styles"),
+  new CacheFirst({
+    cacheName: "static-api",
+    plugins: [
+      // Ensure that only requests that result in a 200 status are cached
+      new CacheableResponsePlugin({
+        statuses: [200],
+      }),
+      new ExpirationPlugin({
+        maxAgeSeconds: 60 * 60 * 24 * 2, // 2 Days
+      }),
+    ],
+  })
+);
+
+registerRoute(
+  ({ url }) =>
+    url.pathname.includes("/api/v1/static/impound_lot_operators") ||
+    url.pathname.includes("/api/v1/users") ||
+    url.pathname.includes("/api/v1/user_roles"),
+  new StaleWhileRevalidate({
+    cacheName: "dynamic-api",
+    plugins: [
+      // Ensure that only requests that result in a 200 status are cached
+      new CacheableResponsePlugin({
+        statuses: [200],
+      }),
+    ],
+  })
+);
+
+registerRoute(
+  ({ url }) => url.pathname.includes("/api/v1/event"),
+  new NetworkOnly({
+    plugins: [
+      new BackgroundSyncPlugin("roadside-forms-event", {
+        maxRetentionTime: 24 * 60, // Retry for max of 24 Hours (specified in minutes)
+      }),
+    ],
+  }),
+  "POST"
+);
+
+registerRoute(
+  ({ url }) => url.pathname.includes("/api/v1/forms"),
+  new NetworkOnly({
+    plugins: [
+      new BackgroundSyncPlugin("roadside-forms-id", {
+        maxRetentionTime: 24 * 60, // Retry for max of 24 Hours (specified in minutes)
+      }),
+    ],
+  }),
+  "PATCH"
+);
