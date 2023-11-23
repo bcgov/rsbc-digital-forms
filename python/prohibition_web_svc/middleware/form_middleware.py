@@ -4,6 +4,7 @@ import pytz
 import iso8601
 from datetime import datetime
 from cerberus import Validator
+from dataclasses import asdict
 from flask import jsonify, make_response
 from python.prohibition_web_svc.models import db, Form
 from python.prohibition_web_svc.config import Config
@@ -22,21 +23,26 @@ def log_payload_to_splunk(**kwargs) -> tuple:
 
 def lease_a_form_id(**kwargs) -> tuple:
     logging.debug('inside lease_a_form_id()')
-    form_type = kwargs.get('form_type')
+    data = kwargs.get('payload')
     user_guid = kwargs.get('user_guid')
-    form = db.session.query(Form) \
-        .filter(Form.form_type == form_type) \
-        .filter(Form.user_guid == None) \
-        .first()
-    if form is None:
-        logging.warning('Insufficient unique ids available for {}'.format(form_type))
-        return False, kwargs
-    form.lease(user_guid)
+    id_list = []
+    for form_type in data:
+        ids = db.session.query(Form) \
+            .filter(Form.form_type == form_type) \
+            .filter(Form.user_guid == None) \
+            .limit(data.get(form_type))
+        if ids is None:
+            logging.warning('Insufficient unique ids available for {}'.format(form_type))
+            return False, kwargs
+        for id in ids:
+            logging.debug(f'id: {id}')
+            id.lease(user_guid)
+            id_list.append(asdict(id))
     try:
         db.session.commit()
     except Exception as e:
         return False, kwargs
-    kwargs['response_dict'] = Form.serialize(form)
+    kwargs['response_dict'] = jsonify({'forms':id_list})
     return True, kwargs
 
 
@@ -65,25 +71,27 @@ def renew_form_id_lease(**kwargs) -> tuple:
 
 def mark_form_as_printed(**kwargs) -> tuple:
     logging.debug('inside mark_form_as_served()')
-    form_type = kwargs.get('form_type')
-    user_guid = kwargs.get('user_guid')
-    form_id = kwargs.get('form_id')
     payload = kwargs.get('payload')
-    form = db.session.query(Form) \
-        .filter(Form.form_type == form_type) \
-        .filter(Form.user_guid == user_guid) \
-        .filter(Form.id == form_id) \
-        .first()
-    if form is None:
-        logging.warning('{}, cannot update {} - {} as printed - record not found'.format(
-            user_guid, form_type, form_id))
-        return False, kwargs
-    form.printed_timestamp = convert_vancouver_to_utc(payload.get('printed_timestamp'))
+    forms = payload.get('forms')
+    user_guid = kwargs.get('user_guid')
+    logging.debug(payload)
+    for form in forms:
+        number = forms.get(form)
+        if form == "VI_number" or form == "IRP_number":
+            number = str(number)[:-1]
+        logging.debug(f'Form Number: {number}')
+        form = db.session.query(Form) \
+            .filter(Form.id == number) \
+            .first()
+        if form is None:
+            logging.warning(f'{user_guid}, cannot update {payload.get(form)} as printed - record not found') 
+            return False, kwargs
+        form.printed_timestamp = payload.get('printed_timestamp')
     try:
         db.session.commit()
     except Exception as e:
         return False, kwargs
-    kwargs['response_dict'] = Form.serialize(form)
+    kwargs['response_dict'] = {'message': f'successfully printed forms: {forms}'}
     return True, kwargs
 
 
@@ -99,15 +107,17 @@ def request_contains_a_payload(**kwargs) -> tuple:
 
 
 def list_all_users_forms(**kwargs) -> tuple:
-    form_type = kwargs.get('form_type')
     user_guid = kwargs.get('user_guid')
-    logging.debug("inside list_all_forms() {} {}".format(user_guid, form_type))
+    all_ids = []
+    logging.debug("inside list_all_forms() {}".format(user_guid))
     try:
         all_forms = db.session.query(Form) \
-            .filter(Form.form_type == form_type) \
-            .filter(Form.user_guid == kwargs['username']) \
+            .filter(Form.user_guid == user_guid) \
+            .filter(Form.printed_timestamp == None)\
             .all()
-        kwargs['response'] = make_response(jsonify(Form.collection_to_dict(all_forms)))
+        for id in all_forms:
+            all_ids.append(asdict(id))
+        kwargs['response'] = make_response(jsonify(all_ids))
     except Exception as e:
         logging.warning(str(e))
         return False, kwargs
