@@ -16,8 +16,7 @@ vips_payload ={
         "policeOfficerNo": "",
         "policeFileNo": "",
         "projectedReleaseDt": "",
-        "seizureLocationTxt": "",
-        "vehicleReturnedDt": ""
+        "seizureLocationTxt": ""
     },
     "vipsRegistrationCreateArray": [
         {
@@ -67,6 +66,8 @@ vips_payload ={
     "vipsDocumentIdArray": [],
     "vipsImpoundmentArray": []
 }
+
+
 
 vips_document_payload = {
   "notice_subject_code": "PERS",

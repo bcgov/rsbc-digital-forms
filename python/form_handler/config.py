@@ -11,6 +11,7 @@ class Config():
     STORAGE_FAIL_QUEUE = os.getenv('STORAGE_FAIL_QUEUE', 'df-storage-events-fail')
     STORAGE_FAIL_QUEUE_PERS=os.getenv('STORAGE_FAIL_QUEUE_PERS', 'df-storage-events-fail-persistent')
     EVENT_TYPES                         = os.getenv('EVENT_TYPES', 'vi,24h,12h,irp').split(',')
+    PENDING_EVENT_STATUSES = os.getenv('PENDING_EVENT_STATUSES', 'pending,retrying').split(',')
 
     DB_HOST = os.environ.get('DB_HOST', 'db')
     DB_USER = os.environ.get('DB_USER', 'testuser')
@@ -45,6 +46,9 @@ class Config():
     ICBC_API_ROOT = os.getenv('ICBC_API_ROOT', 'http://localhost:5003')
     ICBC_API_USERNAME = os.getenv('ICBC_API_USERNAME', 'user')
     ICBC_API_PASSWORD = os.getenv('ICBC_API_PASSWORD', 'password')
+    ICBC_API_SUBMIT_ROOT = os.getenv('ICBC_API_SUBMIT_ROOT', 'http://localhost:5003')
+    ICBC_API_SUBMIT_USERNAME = os.getenv('ICBC_API_SUBMIT_USERNAME', 'user')
+    ICBC_API_SUBMIT_PASSWORD = os.getenv('ICBC_API_SUBMIT_PASSWORD', 'password')
 
 
     VIPS_ROOT = os.getenv('VIPS_ROOT', 'http://localhost:5003')
