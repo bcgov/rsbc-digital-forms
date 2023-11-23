@@ -609,7 +609,12 @@ def prep_vips_payload(**args)->tuple:
             impoundment_dt=convertDateTimeWithSecs(impoundment_dt)
             tmp_payload["vipsImpoundCreate"]["impoundmentDt"]=impoundment_dt
         
-        if "VI_number" in form_data: tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=form_data["VI_number"]
+        if "VI_number" in form_data: 
+            tmp_vi_number=form_data["VI_number"]
+            tmp_vi_number=tmp_vi_number[:-1]
+            tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=tmp_vi_number
+        else:
+            tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=None
         
         tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]="VEHI"
         tmp_payload["vipsImpoundCreate"]["originalCauseCds"]=[]
