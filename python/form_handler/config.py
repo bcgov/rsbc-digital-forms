@@ -46,6 +46,9 @@ class Config():
     ICBC_API_ROOT = os.getenv('ICBC_API_ROOT', 'http://localhost:5003')
     ICBC_API_USERNAME = os.getenv('ICBC_API_USERNAME', 'user')
     ICBC_API_PASSWORD = os.getenv('ICBC_API_PASSWORD', 'password')
+    ICBC_API_SUBMIT_ROOT = os.getenv('ICBC_API_SUBMIT_ROOT', 'http://localhost:5003')
+    ICBC_API_SUBMIT_USERNAME = os.getenv('ICBC_API_SUBMIT_USERNAME', 'user')
+    ICBC_API_SUBMIT_PASSWORD = os.getenv('ICBC_API_SUBMIT_PASSWORD', 'password')
 
 
     VIPS_ROOT = os.getenv('VIPS_ROOT', 'http://localhost:5003')
