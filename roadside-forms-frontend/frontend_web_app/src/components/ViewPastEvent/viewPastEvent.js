@@ -26,7 +26,6 @@ export const ViewPastEvent = () => {
     }
   }, [setEvent, state]);
 
-  console.log(event);
   const options = [
     { value: "stageTwo", label: "Police/ICBC" },
     { value: "stageOne", label: "Driver/ILO" },
