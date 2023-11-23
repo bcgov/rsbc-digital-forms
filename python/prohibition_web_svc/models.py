@@ -688,4 +688,42 @@ class AgencyCrossref(db.Model):
     icbc_city_name = db.Column(db.String)
     vips_policedetachments_agency_id = db.Column(db.String)
     vips_policedetachments_agency_nm = db.Column(db.String)
+
+@dataclass
+class JurisdictionCrossRef(db.Model):
+    __tablename__ = 'jurisdiction_cross_ref'
+
+    jurisdiction_name: str
+    jurisdiction_code: str
+    prime_jurisdiction_code: str
+    icbc_jurisdiction_code: str
+    icbc_jurisdiction: str
+    vips_jurisdictions_objectCd: str
+    vips_jurisdictions_objectDsc: str
+
+    jurisdiction_name = db.Column(db.String, primary_key=True)
+    jurisdiction_code = db.Column(db.String)
+    prime_jurisdiction_code = db.Column(db.String)
+    icbc_jurisdiction_code = db.Column(db.String)
+    icbc_jurisdiction = db.Column(db.String)
+    vips_jurisdictions_objectCd = db.Column(db.String)
+    vips_jurisdictions_objectDsc = db.Column(db.String)
+
+@dataclass
+class CityCrossRef(db.Model):
+    __tablename__ = 'city_cross_ref'
+
+    city_code: str
+    city_name: str
+    icbc_city_code: str
+    icbc_city_name: str
+    icbc_city_name_legacy: str
+    vips_city_name: str
+
+    city_code = db.Column(db.String, primary_key=True)
+    city_name = db.Column(db.String)
+    icbc_city_code = db.Column(db.String)
+    icbc_city_name = db.Column(db.String)
+    icbc_city_name_legacy = db.Column(db.String)
+    vips_city_name = db.Column(db.String)
     

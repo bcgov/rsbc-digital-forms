@@ -7,7 +7,7 @@ def submit_to_icbc(payload) -> tuple:
     # print("___ICBC__")
     # url = "{}".format(Config.ICBC_API_ROOT)
     # url=f'{Config.ICBC_API_ROOT}/vips/icbc/dfft/contravention'
-    url=f'{Config.ICBC_API_ROOT}/dfft/v1/contravention'
+    url=f'{Config.ICBC_API_SUBMIT_ROOT}/dfft/v1/contravention'
     try:
         # payload = kwargs['message']['icbc_submission']
         # # TODO remove for oc
@@ -17,7 +17,7 @@ def submit_to_icbc(payload) -> tuple:
         #     time.sleep(1)
         print("_Sending to ICBC_")        
         print(payload)        
-        icbc_response = requests.post(url, json=payload, timeout=5, auth=HTTPBasicAuth(Config.ICBC_API_USERNAME, Config.ICBC_API_PASSWORD))
+        icbc_response = requests.post(url, json=payload, timeout=5, auth=HTTPBasicAuth(Config.ICBC_API_SUBMIT_USERNAME, Config.ICBC_API_SUBMIT_PASSWORD))
         ##kwargs['response'] = make_response(icbc_response.text, icbc_response.status_code)        
         print(icbc_response.text)
         print(icbc_response.status_code)
