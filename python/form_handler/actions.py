@@ -537,7 +537,7 @@ def prep_vips_payload(**args)->tuple:
         # convert impoundment_dt to string
         impoundment_dt=form_data.get("date_of_impound")
         if impoundment_dt is not None:
-            # impoundment_dt=impoundment_dt.strftime('%Y-%m-%dT%H:%M:%S')
+            impoundment_dt=impoundment_dt.strftime('%Y-%m-%dT%H:%M:%S')
             impoundment_dt=convertDateTimeWithSecs(impoundment_dt)
             tmp_payload["vipsImpoundCreate"]["impoundmentDt"]=impoundment_dt
         
@@ -600,7 +600,7 @@ def prep_vips_payload(**args)->tuple:
         birthdate=event_data.get("driver_dob")
         if birthdate is not None:
             # birthdate=datetime.strptime(birthdate, '%Y-%m-%d')
-            # birthdate= birthdate.strftime('%Y-%m-%d')
+            birthdate= birthdate.strftime('%Y-%m-%d')
             birthdate= convertDateTime(birthdate)
             # birthdate=birthdate.strftime('%Y%m%d')
             vips_licence_create_obj["birthDt"]=birthdate
