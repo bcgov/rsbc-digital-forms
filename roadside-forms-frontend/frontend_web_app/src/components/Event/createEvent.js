@@ -23,12 +23,11 @@ import { LinkageFactors } from "../Forms/VehicleImpoundment/linkageFactors";
 import { IncidentDetails } from "../Forms/VehicleImpoundment/incidentDetails";
 import { RegisteredOwnerInfo } from "../CommonForm/registeredOwnerInfo";
 import { useRecoilValue } from "recoil";
-import { useNavigate } from "react-router-dom";
+import { useBeforeUnload, useBlocker, useNavigate } from "react-router-dom";
 import { ConfirmationStep } from "./ConfirmationStep/confirmationStep";
 import { PoliceDetails } from "../Forms/TwentyFourHourForm/policeDetails";
 import {
   staticResources,
-  getEventDataToSave,
   formsPNG,
   formNumberChecksum,
 } from "../../utils/helpers";
@@ -38,6 +37,8 @@ import { db } from "../../db";
 import "./createEvent.scss";
 import { FormIDApi } from "../../api/formIDApi";
 import { Alert } from "react-bootstrap";
+import Warning from "@mui/icons-material/Warning";
+import { ArrowBack } from "@mui/icons-material";
 const { v4: uuidv4 } = require("uuid");
 
 export const CreateEvent = () => {
@@ -76,8 +77,28 @@ export const CreateEvent = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formHasErrors, setFormHasErrors] = useState(false);
   const [formErrors, setFormErrors] = useState([]);
+  const [exitWindowModalOpen, setExitWindowModalOpen] = useState(false);
+  const [exitFormLoading, setExitFormLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  // Blocker
+  const blocker = useBlocker(({ currentLocation, nextLocation }) => {
+    return (
+      currentLocation.pathname !== nextLocation.pathname &&
+      currentLocation.pathname === "/createEvent"
+    );
+  });
+
+  useBeforeUnload((event) => {
+    event.preventDefault();
+  });
+
+  useEffect(() => {
+    if (blocker.state === "blocked") {
+      setExitWindowModalOpen(true);
+    }
+  }, [blocker.state]);
 
   useEffect(() => {
     const fetchOneOfEachID = async () => {
@@ -85,8 +106,6 @@ export const CreateEvent = () => {
         .where("[form_type+leased]")
         .anyOf([["VI", 0]])
         .first();
-      console.log("VINum: ", VINum);
-
       const IRPNum = await db.formID
         .where("[form_type+leased]")
         .anyOf([["IRP", 0]])
@@ -263,39 +282,108 @@ export const CreateEvent = () => {
       });
   };
 
-  const handleGoBackandSave = (values) => {
-    // console.log('this is value before saveing impound even before')
-    // console.log(values)
-    // copy values to another variable
-    // let valuesCopy = JSON.parse(JSON.stringify(values));
-    let valuesCopy = { ...values };
-    // console.log('this is value of valuesCopy before saveing impound even before')
-    // console.log(valuesCopy)
-    if (
-      valuesCopy["date_of_impound"] &&
-      valuesCopy["vehicle_impounded"] === "NO"
-    ) {
-      valuesCopy["date_released"] = valuesCopy["date_of_impound"];
+  const fetchIDsToDelete = async (values) => {
+    const forms = {
+      TwentyFourHour: "twenty_four_hour_number",
+      TwelveHour: "twelve_hour_number",
+      // IRP: "IRP_number",
+      VI: "VI_number",
+    };
+    const idsToDelete = {};
+    for (const form in forms) {
+      if (values[forms[form]]) {
+        await db.formID.delete(
+          forms[form] === "VI_number" || forms[form] === "IRP_number"
+            ? values[forms[form]].toString().slice(0, -1)
+            : values[forms[form]]
+        );
+        idsToDelete[forms[form]] = values[forms[form]];
+      }
     }
-    const eventData = getEventDataToSave(valuesCopy);
-    // console.log('this is value of event data before saving impound')
-    // console.log(eventData)
-    if (eventData["event_id"] === undefined) {
-      // need a beter solution to this--DONE
-      // eventData["event_id"] = 1;
-      eventData["event_id"] = uuidv4();
-    }
-    // console.log('this is value before saveing impound')
-    // console.log(eventData)
+    return idsToDelete;
+  };
 
-    db.event
-      .put(eventData, eventData["event_id"])
-      .then(() => {
-        navigate("/");
-      })
-      .catch((err) => {
-        console.error(err);
+  const unleaseIDs = async (values) => {
+    if (!values["TwentyFourHour"]) {
+      // unlease the TwentyFourHour ID
+      await db.formID
+        .where("id")
+        .equals(formIDs["TwentyFourHour"])
+        .modify({ leased: 0 });
+    }
+    if (!values["TwelveHour"]) {
+      // unlease the TwelveHour ID
+      await db.formID
+        .where("id")
+        .equals(formIDs["TwelveHour"])
+        .modify({ leased: 0 });
+    }
+    if (!values["IRP"]) {
+      // unlease the IRP ID
+      await db.formID.where("id").equals(formIDs["IRP"]).modify({ leased: 0 });
+    }
+    if (!values["VI"]) {
+      // unlease the VI ID
+      await db.formID.where("id").equals(formIDs["VI"]).modify({ leased: 0 });
+    }
+  };
+
+  // Should we account for when the user presses the back button in their browser?
+  // If not, can just call handleExitForm() and then programatically navigate to main menu after user confirms
+  // If so, need to block navigation away from the page and prompt user to confirm they want to exit the form
+  const handleExitForm = async (values) => {
+    console.log("Values: ", values);
+    setExitFormLoading(true);
+    // If the form is printed, we need to mark the form as spoiled and void it in the system. Otherwise nothing to do here.
+
+    if (isPrinted) {
+      // Make call to API to modify the form as spoiled
+      const idsToDelete = await fetchIDsToDelete(values);
+      await FormIDApi.patch({
+        forms: { ...idsToDelete },
+        spoiled_timestamp: new Date(),
       });
+    }
+    // We need to unlease the IDs used for this form
+    await unleaseIDs(values);
+
+    // Finally, unblock the user from changing routes.
+    if (blocker.state === "blocked") {
+      setExitFormLoading(false);
+      blocker.proceed();
+    }
+
+    // // console.log('this is value before saveing impound even before')
+    // // console.log(values)
+    // // copy values to another variable
+    // // let valuesCopy = JSON.parse(JSON.stringify(values));
+    // let valuesCopy = { ...values };
+    // // console.log('this is value of valuesCopy before saveing impound even before')
+    // // console.log(valuesCopy)
+    // if (
+    //   valuesCopy["date_of_impound"] &&
+    //   valuesCopy["vehicle_impounded"] === "NO"
+    // ) {
+    //   valuesCopy["date_released"] = valuesCopy["date_of_impound"];
+    // }
+    // const eventData = getEventDataToSave(valuesCopy);
+    // // console.log('this is value of event data before saving impound')
+    // // console.log(eventData)
+    // if (eventData["event_id"] === undefined) {
+    //   // need a beter solution to this--DONE
+    //   // eventData["event_id"] = 1;
+    //   eventData["event_id"] = uuidv4();
+    // }
+    // // console.log('this is value before saveing impound')
+    // // console.log(eventData)
+    // db.event
+    //   .put(eventData, eventData["event_id"])
+    //   .then(() => {
+    //     navigate("/");
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
   };
 
   const printForms = async (values) => {
@@ -470,55 +558,21 @@ export const CreateEvent = () => {
   const renderPage = (currentStep, values, setFieldValue) => {
     // console.log("FORM IDS: ", formIDs);
     // console.log(values);
+    window.onunload = async () => {
+      await handleExitForm(values);
+    };
+
     window.onafterprint = async () => {
       setIsPrinted(true);
-      const forms = {
-        TwentyFourHour: "twenty_four_hour_number",
-        TwelveHour: "twelve_hour_number",
-        // IRP: "IRP_number",
-        VI: "VI_number",
-      };
-      const idsToDelete = {};
-      for (const form in forms) {
-        if (values[forms[form]]) {
-          await db.formID.delete(
-            forms[form] === "VI_number" || forms[form] === "IRP_number"
-              ? values[forms[form]].toString().slice(0, -1)
-              : values[forms[form]]
-          );
-          idsToDelete[forms[form]] = values[forms[form]];
-        }
-      }
-      if (!values["TwentyFourHour"]) {
-        // unlease the TwentyFourHour ID
-        await db.formID
-          .where("id")
-          .equals(formIDs["TwentyFourHour"])
-          .modify({ leased: 0 });
-      }
-      if (!values["TwelveHour"]) {
-        // unlease the TwelveHour ID
-        await db.formID
-          .where("id")
-          .equals(formIDs["TwelveHour"])
-          .modify({ leased: 0 });
-      }
-      if (!values["IRP"]) {
-        // unlease the IRP ID
-        await db.formID
-          .where("id")
-          .equals(formIDs["IRP"])
-          .modify({ leased: 0 });
-      }
-      if (!values["VI"]) {
-        // unlease the VI ID
-        await db.formID.where("id").equals(formIDs["VI"]).modify({ leased: 0 });
-      }
 
+      const idsToDelete = await fetchIDsToDelete(values);
       await FormIDApi.patch({
         forms: { ...idsToDelete },
         printed_timestamp: new Date(),
       });
+
+      await unleaseIDs(values);
+
       handleShow(
         "Print Form",
         "Did the form print correctly?",
@@ -534,8 +588,8 @@ export const CreateEvent = () => {
           <>
             <div className="row mt-2">
               <div className="col-sm-4 left checkboxs">
-                <h4>Documents to Generate</h4>
-                <Checkbox
+                <h3>Please select one or more forms:</h3>
+                {/* <Checkbox
                   name="IRP"
                   disabled={
                     true || values["TwentyFourHour"] || values["TwelveHour"]
@@ -543,31 +597,37 @@ export const CreateEvent = () => {
                   onClick={(e) => setFormNumbers(e, setFieldValue, "IRP")}
                 >
                   Immediate Roadside Prohibition
-                </Checkbox>
-                <Checkbox
-                  name="VI"
-                  onClick={(e) => setFormNumbers(e, setFieldValue, "VI")}
-                >
-                  Vehicle Impound
-                </Checkbox>
-                <Checkbox
-                  name="TwentyFourHour"
-                  disabled={values["IRP"] || values["TwelveHour"]}
-                  onClick={(e) =>
-                    setFormNumbers(e, setFieldValue, "TwentyFourHour")
-                  }
-                >
-                  24-hour Driving Prohibition
-                </Checkbox>
-                <Checkbox
-                  name="TwelveHour"
-                  disabled={values["TwentyFourHour"] || values["IRP"]}
-                  onClick={(e) =>
-                    setFormNumbers(e, setFieldValue, "TwelveHour")
-                  }
-                >
-                  12-hour Driving Prohibition
-                </Checkbox>
+                </Checkbox> */}
+                <h5>
+                  <Checkbox
+                    name="VI"
+                    onClick={(e) => setFormNumbers(e, setFieldValue, "VI")}
+                  >
+                    Vehicle Impound
+                  </Checkbox>
+                </h5>
+                <h5>
+                  <Checkbox
+                    name="TwentyFourHour"
+                    disabled={values["IRP"] || values["TwelveHour"]}
+                    onClick={(e) =>
+                      setFormNumbers(e, setFieldValue, "TwentyFourHour")
+                    }
+                  >
+                    24-hour Driving Prohibition
+                  </Checkbox>
+                </h5>
+                <h5>
+                  <Checkbox
+                    name="TwelveHour"
+                    disabled={values["TwentyFourHour"] || values["IRP"]}
+                    onClick={(e) =>
+                      setFormNumbers(e, setFieldValue, "TwelveHour")
+                    }
+                  >
+                    12-hour Driving Prohibition
+                  </Checkbox>
+                </h5>
               </div>
               <div className="col-sm-4 form-id-border">
                 {values["IRP"] && <h5>IRP Number: {values["IRP_number"]}</h5>}
@@ -579,57 +639,74 @@ export const CreateEvent = () => {
                   <h5>12 Hour Number: {values["twelve_hour_number"]}</h5>
                 )}
               </div>
-              <div className="col-sm-4 time-of-completion center mt-5">
-                <span>Estimated time to complete:</span>
-                <h5>12 minutes</h5>
-              </div>
-            </div>
-            <div className="common-fields">
-              <DriverInfo jurisdictions={jurisdictions} provinces={provinces} />
-              <VehicleInfo
-                vehicleColours={vehicleColours}
-                years={generateYearOptions()}
-                provinces={provinces}
-                jurisdictions={jurisdictions}
-                vehicles={vehicles}
-                vehicleStyles={vehicleStyles}
-                vehicleTypes={vehicleTypes}
-              />
-              {(values["TwentyFourHour"] || values["VI"]) && (
-                <RegisteredOwnerInfo provinces={provinces} />
+              {(values["IRP"] ||
+                values["VI"] ||
+                values["TwentyFourHour"] ||
+                values["TwelveHour"]) && (
+                <div className="col-sm-4 time-of-completion center mt-5">
+                  <span>Estimated time to complete:</span>
+                  <h5>12 minutes</h5>
+                </div>
               )}
             </div>
-            {(values["TwentyFourHour"] || values["VI"]) && (
-              <>
-                <VehicleImpoundment impoundLotOperators={impoundLotOperators} />
-                <Prohibition cities={cities} />
-              </>
-            )}
-            {values["TwelveHour"] && !values["VI"] && (
-              <>
-                <Disposition impoundLotOperators={impoundLotOperators} />
-                <Prohibition cities={cities} />
-              </>
-            )}
-            {values["VI"] && (
-              <>
-                <VehicleImpoundmentIRP />
-                <VehicleImpoundmentReason />
-                {values["excessive_speed"] && <Excessive />}
-                {values["unlicensed"] && (
-                  <Unlicensed jurisdictions={jurisdictions} />
+            {(values["IRP"] ||
+              values["VI"] ||
+              values["TwentyFourHour"] ||
+              values["TwelveHour"]) && (
+              <div>
+                <div className="common-fields">
+                  <DriverInfo
+                    jurisdictions={jurisdictions}
+                    provinces={provinces}
+                  />
+                  <VehicleInfo
+                    vehicleColours={vehicleColours}
+                    years={generateYearOptions()}
+                    provinces={provinces}
+                    jurisdictions={jurisdictions}
+                    vehicles={vehicles}
+                    vehicleStyles={vehicleStyles}
+                    vehicleTypes={vehicleTypes}
+                  />
+                  {(values["TwentyFourHour"] || values["VI"]) && (
+                    <RegisteredOwnerInfo provinces={provinces} />
+                  )}
+                </div>
+                {(values["TwentyFourHour"] || values["VI"]) && (
+                  <>
+                    <VehicleImpoundment
+                      impoundLotOperators={impoundLotOperators}
+                    />
+                    <Prohibition cities={cities} />
+                  </>
                 )}
-                <LinkageFactors />
-                <IncidentDetails />
-              </>
+                {values["TwelveHour"] && !values["VI"] && (
+                  <>
+                    <Disposition impoundLotOperators={impoundLotOperators} />
+                    <Prohibition cities={cities} />
+                  </>
+                )}
+                {values["VI"] && (
+                  <>
+                    <VehicleImpoundmentIRP />
+                    <VehicleImpoundmentReason />
+                    {values["excessive_speed"] && <Excessive />}
+                    {values["unlicensed"] && (
+                      <Unlicensed jurisdictions={jurisdictions} />
+                    )}
+                    <LinkageFactors />
+                    <IncidentDetails />
+                  </>
+                )}
+                {values["TwentyFourHour"] && (
+                  <>
+                    <ReasonableGrounds />
+                    <TestAdministered />
+                  </>
+                )}
+                <OfficerInfo />
+              </div>
             )}
-            {values["TwentyFourHour"] && (
-              <>
-                <ReasonableGrounds />
-                <TestAdministered />
-              </>
-            )}
-            <OfficerInfo />
           </>
         );
       case 1:
@@ -664,12 +741,51 @@ export const CreateEvent = () => {
           </div>
         </Modal.Body>
       </Modal>
+      {blocker && (
+        <Modal show={exitWindowModalOpen} centred>
+          <Modal.Header>
+            {exitFormLoading ? (
+              <h3>Aborting...</h3>
+            ) : (
+              <h3>Are you sure you want to leave this page?</h3>
+            )}
+          </Modal.Header>
+          <Modal.Body>
+            {isPrinted && !exitFormLoading
+              ? "Leaving the page now will mark the form(s) as spoiled and void them in the system. The printed form will no longer be valid."
+              : "All progress will be lost."}
+            {exitFormLoading && (
+              <div className="center">
+                <Spinner style={{ marginTop: "10px" }} animation="border" />
+              </div>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                if (blocker.state === "blocked") {
+                  blocker.reset();
+                }
+                setExitWindowModalOpen(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button variant="danger" onClick={() => handleExitForm(formValues)}>
+              <Warning />
+              Proceed
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
       <div id="button-container" className="m-4">
-        <Button
-          variant="primary"
-          onClick={() => handleGoBackandSave(formValues)}
-        >
-          Save & Return to Main Menu
+        <Button variant="primary" onClick={() => navigate("/")}>
+          <ArrowBack />
+          &nbsp;
+          {isPrinted
+            ? "Mark Form as Spoiled & Return to Main Menu"
+            : "Cancel Form & Return to Main Menu"}
         </Button>
       </div>
       <div className="outline">
@@ -738,30 +854,38 @@ export const CreateEvent = () => {
                     </Button>
                   </div>
                 )}
-                <div className="right">
-                  {currentStep < 4 ? (
-                    currentStep === 1 ? (
-                      <Button type="button" onClick={() => printForms(values)}>
-                        Print
-                      </Button>
+                {(values["IRP"] ||
+                  values["VI"] ||
+                  values["TwentyFourHour"] ||
+                  values["TwelveHour"]) && (
+                  <div className="right">
+                    {currentStep < 4 ? (
+                      currentStep === 1 ? (
+                        <Button
+                          type="button"
+                          onClick={() => printForms(values)}
+                        >
+                          Print
+                        </Button>
+                      ) : (
+                        <Button type="button" onClick={() => nextPage(values)}>
+                          Next
+                        </Button>
+                      )
                     ) : (
-                      <Button type="button" onClick={() => nextPage(values)}>
-                        Next
+                      <Button
+                        variant="primary"
+                        onClick={() => {
+                          console.log(errors);
+                          onSubmit(values);
+                        }}
+                        disabled={isSubmitting}
+                      >
+                        Submit
                       </Button>
-                    )
-                  ) : (
-                    <Button
-                      variant="primary"
-                      onClick={() => {
-                        console.log(errors);
-                        onSubmit(values);
-                      }}
-                      disabled={isSubmitting}
-                    >
-                      Submit
-                    </Button>
-                  )}
-                </div>
+                    )}
+                  </div>
+                )}
               </div>
             </Form>
           )}
