@@ -12,7 +12,7 @@ import json
 from datetime import datetime
 from minio import Minio
 from minio.error import S3Error
-from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref
+from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef
 from python.form_handler.icbc_service import submit_to_icbc
 from python.form_handler.vips_service import create_vips_doc,create_vips_imp
 from python.form_handler.payloads import vips_payload,vips_document_payload
@@ -388,9 +388,27 @@ def prep_icbc_payload(**args)->tuple:
                 tmp_payload["section"] = "90.321" 
             elif event_type == "24h":
                 tmp_payload["section"] = "215.3"
+        
 
-        if "offence_city" in form_data:
-            tmp_payload["violationLocation"]=form_data["offence_city"].upper()
+        # get the icbc city code
+        if "offence_city" in event_data:
+            tmp_city=event_data["offence_city"]
+            offence_city_value=''
+            application = args.get('app')
+            db = args.get('db')
+            with application.app_context():
+                city_data = db.session.query(CityCrossRef) \
+                        .filter(CityCrossRef.city_code == tmp_city) \
+                        .all()
+                if len(city_data) == 0:
+                    logging.error("city not found")
+                else:
+                    for j in city_data:
+                        city_data = j.__dict__
+                        city_data.pop('_sa_instance_state', None)
+                        offence_city_value= city_data["icbc_city_code"]
+                        break
+            tmp_payload["violationLocation"]=offence_city_value
             
         if event_type == "12h":
             tmp_payload["noticeNumber"] = form_data["twelve_hour_number"]
