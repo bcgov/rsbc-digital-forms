@@ -97,7 +97,7 @@ def contravention():
         
 @application.route('/digitalforms-viirp/v1/documents/<correlation_id>', methods=['POST'])
 @basic_auth_required
-def vipsdoc():
+def vipsdoc(correlation_id):
     if request.method == 'POST':
         logging.debug('request: {}'.format(request.json))
         try:
@@ -118,7 +118,7 @@ def vipsdoc():
         
 @application.route('/digitalforms-viirp/v1/impoundments/<correlation_id>', methods=['POST'])
 @basic_auth_required
-def vipsimp():
+def vipsimp(correlation_id):
     if request.method == 'POST':
         logging.debug('request: {}'.format(request.json))
         try:
