@@ -563,23 +563,22 @@ export const CreateEvent = () => {
     };
 
     window.onafterprint = async () => {
-      setIsPrinted(true);
-
-      const idsToDelete = await fetchIDsToDelete(values);
-      await FormIDApi.patch({
-        forms: { ...idsToDelete },
-        printed_timestamp: new Date(),
-      });
-
-      await unleaseIDs(values);
-
-      handleShow(
-        "Print Form",
-        "Did the form print correctly?",
-        "No",
-        "Yes",
-        () => handleSuccessfulPrint(values)
-      );
+      if (currentStep === 1) {
+        setIsPrinted(true);
+        const idsToDelete = await fetchIDsToDelete(values);
+        await FormIDApi.patch({
+          forms: { ...idsToDelete },
+          printed_timestamp: new Date(),
+        });
+        await unleaseIDs(values);
+        handleShow(
+          "Print Form",
+          "Did the form print correctly?",
+          "No",
+          "Yes",
+          () => handleSuccessfulPrint(values)
+        );
+      }
     };
 
     switch (currentStep) {
