@@ -14,6 +14,7 @@ import { UserRolesApi } from "../../../api/userRolesApi";
 import { db } from "../../../db";
 import "./header.scss";
 import { useSharedIsOnline } from "../../../utils/connectivity";
+import { Col, Row } from "react-bootstrap";
 
 export const Header = () => {
   const { isConnected } = useSharedIsOnline();
@@ -114,25 +115,25 @@ export const Header = () => {
       <div
         id="roadsafety-header"
         data-testid="roadsafety-header"
-        className="container text-font"
+        className="header-container text-font"
         style={{ maxWidth: "100%" }}
       >
-        <div className="row">
-          <div className="col-sm-3">
+        <Row className="header">
+          <Col sm={3}>
             <Link to="/">
               <div className="brand-logo"></div>
             </Link>
-          </div>
+          </Col>
           {keycloak.authenticated && !isLoading && (
-            <div className="col-sm-9">
-              <div className="row">
-                <div className=" col-sm-4 time fw-bold mt-4">
+            <Col sm={9}>
+              <Row>
+                <Col sm={4} className="time fw-bold mt-4">
                   &nbsp;<span className="text-light d-block large">{time}</span>
                   <span className="text-light d-block large">
                     {day} {date}
                   </span>
-                </div>
-                <div className=" col-sm-2 icon mt-4">
+                </Col>
+                <Col sm={2} className="icon mt-4">
                   {isConnected ? (
                     <CloudOutlinedIcon
                       sx={{ color: "white", fontSize: 80 }}
@@ -142,8 +143,8 @@ export const Header = () => {
                       sx={{ color: "white", fontSize: 80 }}
                     ></CloudOffOutlinedIcon>
                   )}
-                </div>
-                <div className=" col-sm-4 user-info fw-bold col-right">
+                </Col>
+                <Col sm={4} className="user-info fw-bold col-right">
                   &nbsp;
                   <span className="text-light d-block large">
                     {userInfo.username}
@@ -151,8 +152,8 @@ export const Header = () => {
                   <span className="text-light d-block large">
                     {userInfo.agency}
                   </span>
-                </div>
-                <div className=" col-sm-2 links fw-bold col-right">
+                </Col>
+                <Col sm={2} className="links fw-bold col-right">
                   &nbsp;
                   {userAdminInfo ? (
                     <div>
@@ -177,11 +178,11 @@ export const Header = () => {
                   >
                     Logout
                   </a>
-                </div>
-              </div>
-            </div>
+                </Col>
+              </Row>
+            </Col>
           )}
-        </div>
+        </Row>
       </div>
     </header>
   );
