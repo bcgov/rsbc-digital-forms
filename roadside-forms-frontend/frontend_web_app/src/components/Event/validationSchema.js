@@ -776,7 +776,6 @@ export const validationSchema = Yup.object().shape({
                 value
               ) {
                 const dateOfDriving = moment(this.parent.date_of_driving);
-                console.log("Date of driving: ", dateOfDriving);
                 const timeOfDriving = moment(
                   this.parent.time_of_driving,
                   "HHmm"

@@ -1,6 +1,6 @@
 import { useField } from "formik";
 
-export const Input = ({ label, required, onChange, ...props }) => {
+export const Input = ({ label, required, onChange, onBlur, ...props }) => {
   const [field, meta, helpers] = useField(props);
 
   const handleInputChange = (event) => {
@@ -25,6 +25,7 @@ export const Input = ({ label, required, onChange, ...props }) => {
         {...props}
         className="form-control"
         onChange={handleInputChange}
+        onBlur={onBlur}
         autoComplete="off"
       />
       {meta.touched && meta.error ? (
