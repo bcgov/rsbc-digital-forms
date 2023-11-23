@@ -155,7 +155,7 @@ export const validationSchema = Yup.object().shape({
       Yup.string()
         .matches(
           /^$|^\d{1,3}(,\d{1,3})*$/,
-          "Up to three classes, separated by commas"
+          "DL Class may be up to three classes, separated by commas"
         )
         .max(5, "Up to three classes are permitted"), // Up to three digits, separated by commas. Only for VI
   }),
