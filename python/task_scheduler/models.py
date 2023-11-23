@@ -7,8 +7,14 @@ import logging
 db = SQLAlchemy()
 migrate = Migrate()
 
-
+@dataclass
 class Form(db.Model):
+    id: str
+    form_type: str
+    lease_expiry: datetime
+    printed_timestamp: datetime
+    user_guid: str
+    
     id = db.Column('id', db.String(20), primary_key=True)
     form_type = db.Column(db.String(20), nullable=False)
     lease_expiry = db.Column(db.Date, nullable=True)
@@ -24,16 +30,6 @@ class Form(db.Model):
         self.printed_timestamp = printed
         self.lease_expiry = lease_expiry
         self.user_guid = user_guid
-
-    @staticmethod
-    def serialize(form):
-        return {
-            "id": form.id,
-            "form_type": form.form_type,
-            "lease_expiry": Form._format_lease_expiry(form.lease_expiry),
-            "printed_timestamp": form.printed_timestamp,
-            "user_guid": form.user_guid
-        }
 
     def lease(self, user_guid):
         today = datetime.now()
@@ -155,7 +151,7 @@ class UserRole(db.Model):
         return UserRole.collection_to_list_roles(rows)
 
 
-@dataclass
+@dataclass 
 class Agency(db.Model):
     __tablename__ = 'agency'
 
@@ -259,6 +255,16 @@ class VehicleStyle(db.Model):
 
     code = db.Column(db.String, primary_key=True)
     name = db.Column(db.String)
+    
+@dataclass
+class VehicleType(db.Model):
+    __tablename__ = 'vehicle_type'
+
+    type_cd: int
+    description: str
+
+    type_cd = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String)
 
 
 @dataclass
@@ -316,6 +322,7 @@ class Event(db.Model):
     vehicle_year: str
     vehicle_mk_md: str
     vehicle_style: str
+    vehicle_type: int
     vehicle_colour: str
     vehicle_vin_no: str
     nsc_prov_state: str
@@ -373,6 +380,7 @@ class Event(db.Model):
     vehicle_year = db.Column(db.String)
     vehicle_mk_md = db.Column(db.String)
     vehicle_style = db.Column(db.String)
+    vehicle_type = db.Column(db.Integer, db.ForeignKey('vehicle_type.type_cd'))
     vehicle_colour = db.Column(db.String)
     vehicle_vin_no = db.Column(db.String)
     nsc_prov_state = db.Column(db.String)
@@ -464,6 +472,7 @@ class TwentyFourHourForm(db.Model):
     admission_by_driver: bool
     independent_witness: bool
     reasonable_ground_other: bool
+    twenty_four_hour_number: str
     created_dt: datetime
     updated_dt: datetime
 
@@ -498,6 +507,7 @@ class TwentyFourHourForm(db.Model):
     admission_by_driver = db.Column(db.Boolean)
     independent_witness = db.Column(db.Boolean)
     reasonable_ground_other = db.Column(db.Boolean)
+    twenty_four_hour_number = db.Column(db.String)
     created_dt = db.Column(db.DateTime)
     updated_dt = db.Column(db.DateTime)
 
@@ -511,12 +521,14 @@ class TwelveHourForm(db.Model):
     created_dt: datetime
     updated_dt: datetime
     driver_phone: str
+    twelve_hour_number: str
 
     form_id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey('event.event_id'))
     created_dt = db.Column(db.DateTime)
     updated_dt = db.Column(db.DateTime)
     driver_phone = db.Column(db.String)
+    twelve_hour_number = db.Column(db.String)
 
 
 @dataclass
@@ -551,6 +563,7 @@ class VIForm(db.Model):
     out_of_province_dl: str
     out_of_province_dl_number: str
     out_of_province_dl_expiry: str
+    out_of_province_dl_jurisdiction: str
     date_of_impound: datetime
     irp_impound: str
     irp_impound_duration: str
@@ -589,6 +602,7 @@ class VIForm(db.Model):
     out_of_province_dl = db.Column(db.String)
     out_of_province_dl_number = db.Column(db.String)
     out_of_province_dl_expiry = db.Column(db.String)
+    out_of_province_dl_jurisdiction = db.Column(db.String)
     date_of_impound = db.Column(db.DateTime)
     irp_impound = db.Column(db.String)
     irp_impound_duration = db.Column(db.String)
@@ -647,3 +661,28 @@ class FormStorageRefs(db.Model):
     encryptiv = db.Column(db.String)
     created_dt = db.Column(db.DateTime)
     updated_dt = db.Column(db.DateTime)
+
+
+
+@dataclass
+class AgencyCrossref(db.Model):
+    __tablename__ = 'agency_cross_refs'
+
+    agency_name: str
+    agency_id: str
+    agency_city: str
+    prime_vjur: str
+    icbc_detachment_name: str
+    icbc_city_name: str
+    vips_policedetachments_agency_id: str
+    vips_policedetachments_agency_nm: str
+
+    agency_name = db.Column(db.String, primary_key=True)
+    agency_id = db.Column(db.String)
+    agency_city = db.Column(db.String)
+    prime_vjur = db.Column(db.String)
+    icbc_detachment_name = db.Column(db.String)
+    icbc_city_name = db.Column(db.String)
+    vips_policedetachments_agency_id = db.Column(db.String)
+    vips_policedetachments_agency_nm = db.Column(db.String)
+    
