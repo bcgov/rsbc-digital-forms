@@ -45,7 +45,8 @@
       "RELEASE_LOCATION_VEHICLE",
       "RELEASE_PERSON",
       "RELEASE_DATE",
-      "RELEASE_TIME"
+      "RELEASE_TIME",
+      "DRIVER_COPY"
     ],
     "ILO": [
       "VIOLATION_NUMBER",
@@ -85,7 +86,8 @@
       "RELEASE_LOCATION_VEHICLE",
       "RELEASE_PERSON",
       "RELEASE_DATE",
-      "RELEASE_TIME"
+      "RELEASE_TIME",
+      "ILO_COPY"
     ],
     "POLICE": [
       "VIOLATION_NUMBER",
@@ -161,7 +163,7 @@
       "ECOS_OFFICER_NAME",
       "ECOS_OFFICER_BADGE_NUMBER",
       "ECOS_AGENCY_NAME",
-      "ECOS_DATE_CERTIFIED",      
+      "ECOS_DATE_CERTIFIED",
       "REQUESTED_PRESCRIBED_TEST_YES",
       "REQUESTED_PRESCRIBED_TEST_NO",
       "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_INSTRUMENT",
@@ -182,7 +184,8 @@
       "REQUESTED_TEST_BAC",
       "REQUESTED_TEST_BAC_RESULT",
       "REQUESTED_CAN_DRIVE_ALCOHOL",
-      "REQUESTED_CAN_DRIVE_DRUG"
+      "REQUESTED_CAN_DRIVE_DRUG",
+      "POLICE_COPY"
     ],
     "fields": {
       "VIOLATION_NUMBER": {
@@ -190,7 +193,7 @@
         "field_name": "twenty_four_hour_number",
         "classNames": "fontLarge",
         "start": {
-          "x": 17,
+          "x": 7,
           "y": 19
         }
       },
@@ -858,7 +861,6 @@
         }
       },
 
-
       "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_51-59": {
         "field_type": "checkbox",
         "field_name": "requested_alcohol_test_result",
@@ -908,7 +910,6 @@
           "y": 143.2
         }
       },
-
 
       "REQUESTED_PRESCRIBED_TEST_USED_ALCOHOL_INSTRUMENT": {
         "field_type": "checkbox",
@@ -1080,6 +1081,36 @@
         "start": {
           "x": 182.5,
           "y": 188
+        }
+      },
+      "ILO_COPY": {
+        "field_type": "always",
+        "field_name": "",
+        "field_value": "ILO COPY",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 47,
+          "y": 201
+        }
+      },
+      "POLICE_COPY": {
+        "field_type": "always",
+        "field_name": "",
+        "field_value": "POLICE/SUPERINTENDENT COPY",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 31,
+          "y": 201
+        }
+      },
+      "DRIVER_COPY": {
+        "field_type": "always",
+        "field_name": "",
+        "field_value": "DRIVER COPY",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 47,
+          "y": 201
         }
       }
     },
@@ -2309,7 +2340,8 @@
       "RELEASE_LOCATION_VEHICLE",
       "RELEASE_PERSON",
       "RELEASE_DATE",
-      "RELEASE_TIME"
+      "RELEASE_TIME",
+      "DRIVER_COPY"
     ],
     "POLICE": [
       "VIOLATION_NUMBER",
@@ -2350,7 +2382,8 @@
       "ECOS_OFFICER_NAME",
       "ECOS_OFFICER_BADGE_NUMBER",
       "ECOS_AGENCY_NAME",
-      "ECOS_DATE_CERTIFIED"
+      "ECOS_DATE_CERTIFIED",
+      "POLICE_COPY"
     ],
     "fields": {
       "VIOLATION_NUMBER": {
@@ -2358,7 +2391,7 @@
         "field_name": "twelve_hour_number",
         "classNames": "fontLarge",
         "start": {
-          "x": 16.75,
+          "x": 6,
           "y": 17.25
         }
       },
@@ -2718,6 +2751,26 @@
         "start": {
           "x": 185,
           "y": 40
+        }
+      },
+      "POLICE_COPY": {
+        "field_type": "always",
+        "field_name": "",
+        "field_value": "POLICE/SUPERINTENDENT COPY",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 30,
+          "y": 185
+        }
+      },
+      "DRIVER_COPY": {
+        "field_type": "always",
+        "field_name": "",
+        "field_value": "DRIVER COPY",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 43,
+          "y": 185
         }
       }
     },
