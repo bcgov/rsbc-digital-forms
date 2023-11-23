@@ -12,7 +12,7 @@ import json
 from datetime import datetime
 from minio import Minio
 from minio.error import S3Error
-from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref
+from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef
 from python.form_handler.icbc_service import submit_to_icbc
 from python.form_handler.vips_service import create_vips_doc,create_vips_imp
 from python.form_handler.payloads import vips_payload,vips_document_payload
@@ -322,9 +322,35 @@ def prep_icbc_payload(**args)->tuple:
 
         # if "form_id" in form_data: tmp_payload["noticeNumber"]=event_data["form_id"]
 
-        if "driver_licence_no" in event_data: tmp_payload["dlNumber"]=event_data["driver_licence_no"]
+        if "driver_licence_no" in event_data: 
+            tmpdl=event_data["driver_licence_no"] 
+            if len(tmpdl) <8:
+                tmpdl="0"*(8-len(tmpdl))+tmpdl
+            tmp_payload["dlNumber"]=tmpdl
+        else: 
+            tmp_payload["dlNumber"]=None
+
+
         if "driver_jurisdiction" in event_data:
-            tmp_payload["dlJurisdiction"]=event_data["driver_jurisdiction"]
+            application = args.get('app')
+            db = args.get('db')
+            tmp_jurisdictionvalue=event_data["driver_jurisdiction"]
+            with application.app_context():
+                # get jurisdiction data
+                icbc_jurisdiction_code=''
+                juris_data = db.session.query(JurisdictionCrossRef) \
+                        .filter(JurisdictionCrossRef.prime_jurisdiction_code == tmp_jurisdictionvalue) \
+                        .all()
+                if len(juris_data) == 0:
+                    logging.error("jurisdiction not found")
+                else:
+                    for j in juris_data:
+                        juris_dict = j.__dict__
+                        juris_dict.pop('_sa_instance_state', None)
+                        icbc_jurisdiction_code= juris_dict["icbc_jurisdiction_code"]
+                        break
+                tmp_payload["dlJurisdiction"]=icbc_jurisdiction_code
+            
         
         if "driver_last_name" in  event_data: tmp_payload["lastName"]=event_data["driver_last_name"].upper()
         if "driver_given_name" in event_data: tmp_payload["firstName"]=event_data["driver_given_name"].upper()
@@ -338,28 +364,51 @@ def prep_icbc_payload(**args)->tuple:
         if "vehicle_jurisdiction" in event_data : 
             tmp_payload["plateJurisdiction"]=event_data["vehicle_jurisdiction"]
 
-        if "vehicle_plate_no" in event_data: tmp_payload["plateNumber"]=event_data["vehicle_plate_no"].upper()
+        if "vehicle_plate_no" in event_data: 
+            tmp_plate_no=event_data["vehicle_plate_no"].upper()
+            tmp_plate_no=tmp_plate_no.replace(" ", "")
+            tmp_payload["plateNumber"]=tmp_plate_no
 
         if event_data["nsc_prov_state"]: 
             tmp_payload["pujCode"]=event_data["nsc_prov_state"]
+        else:
+            tmp_payload["pujCode"]="BC"
 
         #Some validation required for NSC-Number. ICBC does not accept all values.
-        if "nsc_no" in event_data: tmp_payload["nscNumber"]=event_data["nsc_no"]
+        # if "nsc_no" in event_data: tmp_payload["nscNumber"]=event_data["nsc_no"]
         
         if event_data["type_of_prohibition"] == "alcohol":
             if event_type == "12h":
-                tmp_payload["section"] = "90.3(2)"
+                tmp_payload["section"] = "90.32"
             elif event_type == "24h":
                 tmp_payload["section"] = "215.2"
         
         if event_data["type_of_prohibition"] == "drugs":
             if event_type == "12h":
-                tmp_payload["section"] = "90.3(2.1)" 
+                tmp_payload["section"] = "90.321" 
             elif event_type == "24h":
                 tmp_payload["section"] = "215.3"
+        
 
-        if "offence_city" in form_data:
-            tmp_payload["violationLocation"]=form_data["offence_city"].upper()
+        # get the icbc city code
+        if "offence_city" in event_data:
+            tmp_city=event_data["offence_city"]
+            offence_city_value=''
+            application = args.get('app')
+            db = args.get('db')
+            with application.app_context():
+                city_data = db.session.query(CityCrossRef) \
+                        .filter(CityCrossRef.city_code == tmp_city) \
+                        .all()
+                if len(city_data) == 0:
+                    logging.error("city not found")
+                else:
+                    for j in city_data:
+                        city_data = j.__dict__
+                        city_data.pop('_sa_instance_state', None)
+                        offence_city_value= city_data["icbc_city_code"]
+                        break
+            tmp_payload["violationLocation"]=offence_city_value
             
         if event_type == "12h":
             tmp_payload["noticeNumber"] = form_data["twelve_hour_number"]
@@ -371,16 +420,35 @@ def prep_icbc_payload(**args)->tuple:
         if date_of_driving is not None:
             date_of_driving=date_of_driving.strftime('%Y%m%d')
             tmp_payload["violationDate"]=date_of_driving
-        if "time_of_driving" in event_data: tmp_payload["violationTime"]=event_data["time_of_driving"]
+        if "time_of_driving" in event_data: 
+            tmp_time_str=event_data["time_of_driving"]
+            tmp_time_str=tmp_time_str[:2] + ":" + tmp_time_str[2:]
+            tmp_payload["violationTime"]=tmp_time_str
 
         # TODO: get agency from user table for the event
-        if "agency" in user_data: tmp_payload["officerDetachment"]=user_data["agency"].upper()
+        if "agency" in user_data: 
+            logging.debug(user_data["agency"])
+            agency_name=user_data["agency"]
+            detachment_city=''
+            agency_data = db.session.query(AgencyCrossref) \
+                .filter(AgencyCrossref.agency_name == agency_name) \
+                .all()
+            if len(agency_data) == 0:
+                logging.error("agency not found")
+                pass
+            else:
+                for a in agency_data:
+                    agency_dict = a.__dict__
+                    agency_dict.pop('_sa_instance_state', None)
+                    detachment_city=agency_dict["icbc_city_name"]
+                    break
+            tmp_payload["officerDetachment"]=detachment_city.upper()
 
         #DONE -- Need to add agency name abbr to the begining of officerNumber
         # if "badge_number" in user_data: tmp_payload["officerNumber"]="AB"+ data["badge_number"]
         if "badge_number" in user_data: tmp_payload["officerNumber"]=user_data["badge_number"]
 
-        officer_name=f'{user_data["first_name"]} {user_data["last_name"]}'
+        officer_name=f'{user_data["last_name"]}'
         tmp_payload["officerName"]=officer_name.upper()
         
         args['icbc_payload']=tmp_payload
@@ -541,7 +609,12 @@ def prep_vips_payload(**args)->tuple:
             impoundment_dt=convertDateTimeWithSecs(impoundment_dt)
             tmp_payload["vipsImpoundCreate"]["impoundmentDt"]=impoundment_dt
         
-        if "VI_number" in form_data: tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=form_data["VI_number"]
+        if "VI_number" in form_data: 
+            tmp_vi_number=form_data["VI_number"]
+            tmp_vi_number=tmp_vi_number[:-1]
+            tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=tmp_vi_number
+        else:
+            tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=None
         
         tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]="VEHI"
         tmp_payload["vipsImpoundCreate"]["originalCauseCds"]=[]
