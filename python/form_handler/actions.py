@@ -322,9 +322,35 @@ def prep_icbc_payload(**args)->tuple:
 
         # if "form_id" in form_data: tmp_payload["noticeNumber"]=event_data["form_id"]
 
-        if "driver_licence_no" in event_data: tmp_payload["dlNumber"]=event_data["driver_licence_no"]
+        if "driver_licence_no" in event_data: 
+            tmpdl=event_data["driver_licence_no"] 
+            if len(tmpdl) <8:
+                tmpdl="0"*(8-len(tmpdl))+tmpdl
+            tmp_payload["dlNumber"]=tmpdl
+        else: 
+            tmp_payload["dlNumber"]=None
+
+
         if "driver_jurisdiction" in event_data:
-            tmp_payload["dlJurisdiction"]=event_data["driver_jurisdiction"]
+            application = args.get('app')
+            db = args.get('db')
+            tmp_jurisdictionvalue=event_data["driver_jurisdiction"]
+            with application.app_context():
+                # get jurisdiction data
+                icbc_jurisdiction_code=''
+                juris_data = db.session.query(JurisdictionCrossRef) \
+                        .filter(JurisdictionCrossRef.prime_jurisdiction_code == tmp_jurisdictionvalue) \
+                        .all()
+                if len(juris_data) == 0:
+                    logging.error("jurisdiction not found")
+                else:
+                    for j in juris_data:
+                        juris_dict = j.__dict__
+                        juris_dict.pop('_sa_instance_state', None)
+                        icbc_jurisdiction_code= juris_dict["icbc_jurisdiction_code"]
+                        break
+                tmp_payload["dlJurisdiction"]=icbc_jurisdiction_code
+            
         
         if "driver_last_name" in  event_data: tmp_payload["lastName"]=event_data["driver_last_name"].upper()
         if "driver_given_name" in event_data: tmp_payload["firstName"]=event_data["driver_given_name"].upper()
@@ -338,23 +364,28 @@ def prep_icbc_payload(**args)->tuple:
         if "vehicle_jurisdiction" in event_data : 
             tmp_payload["plateJurisdiction"]=event_data["vehicle_jurisdiction"]
 
-        if "vehicle_plate_no" in event_data: tmp_payload["plateNumber"]=event_data["vehicle_plate_no"].upper()
+        if "vehicle_plate_no" in event_data: 
+            tmp_plate_no=event_data["vehicle_plate_no"].upper()
+            tmp_plate_no=tmp_plate_no.replace(" ", "")
+            tmp_payload["plateNumber"]=tmp_plate_no
 
         if event_data["nsc_prov_state"]: 
             tmp_payload["pujCode"]=event_data["nsc_prov_state"]
+        else:
+            tmp_payload["pujCode"]="BC"
 
         #Some validation required for NSC-Number. ICBC does not accept all values.
-        if "nsc_no" in event_data: tmp_payload["nscNumber"]=event_data["nsc_no"]
+        # if "nsc_no" in event_data: tmp_payload["nscNumber"]=event_data["nsc_no"]
         
         if event_data["type_of_prohibition"] == "alcohol":
             if event_type == "12h":
-                tmp_payload["section"] = "90.3(2)"
+                tmp_payload["section"] = "90.32"
             elif event_type == "24h":
                 tmp_payload["section"] = "215.2"
         
         if event_data["type_of_prohibition"] == "drugs":
             if event_type == "12h":
-                tmp_payload["section"] = "90.3(2.1)" 
+                tmp_payload["section"] = "90.321" 
             elif event_type == "24h":
                 tmp_payload["section"] = "215.3"
 
