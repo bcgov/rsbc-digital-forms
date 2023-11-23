@@ -558,6 +558,10 @@ export const CreateEvent = () => {
   const renderPage = (currentStep, values, setFieldValue) => {
     // console.log("FORM IDS: ", formIDs);
     // console.log(values);
+    window.onunload = async () => {
+      await handleExitForm(values);
+    };
+
     window.onafterprint = async () => {
       setIsPrinted(true);
 
