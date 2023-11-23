@@ -149,13 +149,10 @@ registerRoute(
   "PATCH"
 );
 
-// Cache images using CacheFirst strategy
-registerRoute(
-  /\.(?:png|gif|jpg|jpeg|webp|svg)$/,
-  new CacheFirst({
-    cacheName: "images",
-    plugins: [
-      // Additional plugins if needed
-    ],
-  })
-);
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    })
+  );
+});
