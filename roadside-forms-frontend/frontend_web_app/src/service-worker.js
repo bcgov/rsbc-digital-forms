@@ -18,7 +18,17 @@ clientsClaim();
 // Their URLs are injected into the manifest variable below.
 // This variable must be present somewhere in your service worker file,
 // even if you decide not to use precaching.
-const manifest = self.__WB_MANIFEST;
+const manifest = (self.__WB_MANIFEST || []).concat([
+  {
+    url: "/roadside-forms/",
+    revision: null,
+  },
+  {
+    url: "/roadside-forms/createEvent",
+    revision: null,
+  },
+  // Add other assets to cache here
+]);
 precacheAndRoute(manifest);
 
 // Set up App Shell-style routing, so that all navigation requests
