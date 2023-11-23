@@ -1,5 +1,6 @@
 # FROM registry.access.redhat.com/ubi8/nodejs-16-minimal:latest AS build
-FROM artifacts.developer.gov.bc.ca/dbe7-images/node16:1.0 AS build
+# FROM artifacts.developer.gov.bc.ca/dbe7-images/node16:1.0 AS build
+FROM artifacts.developer.gov.bc.ca/dbe7-images/node20:1.0 AS build
 ARG REACT_APP_KEYCLOAK_URL
 ARG REACT_APP_KEYCLOAK_REALM
 ARG REACT_APP_KEYCLOAK_CLIENT_ID
@@ -15,8 +16,9 @@ ENV REACT_APP_BASE_URL=$REACT_APP_BASE_URL
 ENV PUBLIC_URL=$PUBLIC_URL
 ENV REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL
 ENV REACT_APP_GIT_COMMIT_HASH=$REACT_APP_GIT_COMMIT_HASH
+USER root
 WORKDIR /app
-COPY package*.json ./
+COPY package*.json ./   
 RUN npm install
 COPY . .
 RUN ls -a
