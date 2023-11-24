@@ -39,3 +39,4 @@ COPY --from=build /app/build /app/build
 # COPY dist /app/dist
 
 CMD ["nginx", "-c", "/app/nginx.conf",  "-g", "daemon off;"]
+
