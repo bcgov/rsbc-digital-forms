@@ -23,7 +23,8 @@ def query_pending_events(app,db):
             event_data = db.session.query(Event) \
                 .filter(or_(Event.icbc_sent_status == event_status, Event.vi_sent_status == event_status)) \
                 .all()
-            if len(event_data) == 0 or len(event_data) > 1:
+            # if len(event_data) == 0 or len(event_data) > 1:
+            if len(event_data) == 0:
                 errmsg="No pending events found"
                 return False,errmsg, None
             for e in event_data:
