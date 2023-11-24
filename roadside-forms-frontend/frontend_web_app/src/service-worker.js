@@ -23,10 +23,10 @@ const manifest = (self.__WB_MANIFEST || []).concat([
     url: "/roadside-forms/",
     revision: null,
   },
-  {
-      url: "/roadside-forms/static/media/BCID_RoadSafetyBC_logo_transparent.png",
-      revision: null,
-    },
+  // {
+  //     url: "/roadside-forms/static/media/BCID_RoadSafetyBC_logo_transparent.png",
+  //     revision: null,
+  //   },
     {
       url: "/roadside-forms/static/media/libre-barcode-39-v19-latin-regular.woff",
       revision: null,
