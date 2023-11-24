@@ -704,7 +704,11 @@ def prep_vips_payload(**args)->tuple:
 
         # if "nsc_prov_state" in event_data: tmp_payload["vipsVehicleCreate"]["nscJurisdictionTxt"]=event_data["nsc_prov_state"].upper()
         tmp_payload["vipsVehicleCreate"]["nscJurisdictionTxt"]=None
-        if "vehicle_colour" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleColourTxt"]=event_data["vehicle_colour"].upper()
+        if "vehicle_colour" in event_data: 
+            tmp_vehicle_color=event_data["vehicle_colour"].upper()
+            tmp_vehicle_color=tmp_vehicle_color.replace("{","")
+            tmp_vehicle_color=tmp_vehicle_color.replace("}","")
+            tmp_payload["vipsVehicleCreate"]["vehicleColourTxt"]=tmp_vehicle_color
 
         if "vehicle_vin_no" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleIdentificationNo"]=event_data["vehicle_vin_no"].upper()  
         
