@@ -24,9 +24,53 @@ const manifest = (self.__WB_MANIFEST || []).concat([
     revision: null,
   },
   {
-    url: "/roadside-forms/createEvent",
-    revision: null,
-  },
+      url: "/roadside-forms/static/media/BCID_RoadSafetyBC_logo_transparent.png",
+      revision: null,
+    },
+    {
+      url: "/roadside-forms/static/media/libre-barcode-39-v19-latin-regular.woff",
+      revision: null,
+    },
+    {
+      url: "/roadside-forms/static/media/MV2634E_082023_driver.png",
+      revision: null,
+    },
+    {
+      url: "/roadside-forms/static/media/MV2634E_082023_icbc.png",
+      revision: null,
+    },
+    {
+      url: "/roadside-forms/static/media/MV2634E_082023_ilo.png",
+      revision: null,
+    },
+    {
+      url: "/roadside-forms/static/media/MV2721_201502_appeal.png",
+      revision: null,
+    },
+    {
+      url: "/roadside-forms/static/media/MV2721_201502.png",
+      revision: null,
+    },
+    {
+      url: "/roadside-forms/static/media/MV2722_201502_Incident_Details.png",
+      revision: null,
+    },
+    {
+      url: "/roadside-forms/static/media/MV2722_201502.png",
+      revision: null,
+    },
+    {
+      url: "/roadside-forms/static/media/MV2906E_082023_driver.png",
+      revision: null,
+    },
+    {
+      url: "/roadside-forms/static/media/MV2906E_082023_icbc.png",
+      revision: null,
+    },
+  // {
+  //   url: "/roadside-forms/createEvent",
+  //   revision: null,
+  // },
   // Add other assets to cache here
 ]);
 precacheAndRoute(manifest);
