@@ -146,7 +146,7 @@ export const DriverInfo = (props) => {
                 className="slim-button"
                 variant="primary"
                 disabled={disableBtn}
-                onClick={() => fetchICBCDriverInfo()}
+                onClick={() => console.log(values)}
               >
                 ICBC Prefill
               </Button>
