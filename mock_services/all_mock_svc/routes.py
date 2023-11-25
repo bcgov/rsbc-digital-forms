@@ -95,14 +95,14 @@ def contravention():
                     }
                 }), 404)
         
-@application.route('/digitalforms-viirp/v1/documents/CreateDocument', methods=['POST'])
+@application.route('/digitalforms-viirp/v1/documents/<correlation_id>', methods=['POST'])
 @basic_auth_required
-def vipsdoc():
+def vipsdoc(correlation_id):
     if request.method == 'POST':
         logging.debug('request: {}'.format(request.json))
         try:
             doc = {
-                "documentId": "123"
+                "document_id": "123"
             }
             return make_response(jsonify(doc), 200)
         except Exception as e:
@@ -116,9 +116,9 @@ def vipsdoc():
                     }
                 }), 404)
         
-@application.route('/digitalforms-viirp/v1/impoundments/CreateImpoundment', methods=['POST'])
+@application.route('/digitalforms-viirp/v1/impoundments/<correlation_id>', methods=['POST'])
 @basic_auth_required
-def vipsimp():
+def vipsimp(correlation_id):
     if request.method == 'POST':
         logging.debug('request: {}'.format(request.json))
         try:
