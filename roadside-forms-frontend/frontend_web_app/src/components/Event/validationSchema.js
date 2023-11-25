@@ -23,7 +23,6 @@ const validateRequiredDateWithMax = (
     }
 
     if (selectedValue && value) {
-      // Adjust the current date and yesterday's date to Pacific Timezone
       const today = new Date();
       const yesterdayPST = new Date(
         today.getFullYear(),
@@ -318,10 +317,25 @@ export const validationSchema = Yup.object().shape(
     /** Vehicle Impoundment or Disposition (24h/VI Only) */
     date_of_impound: Yup.date()
       .nullable()
+      .max(new Date(), "Date of impound cannot be a future date")
       .when("VI", {
         is: true,
-        then: () => Yup.date().required("Date of impound is required"),
+        then: () =>
+          Yup.date()
+            .max(new Date(), "Date of impound cannot be a future date")
+            .required("Date of impound is required")
+            .test(
+              "date_of_impound",
+              "Date of Impound is required",
+              validateRequiredDateWithMax(
+                Yup.ref("TwentyFourHour"),
+                "date_of_impound",
+                new Date(),
+                "Date of impound is required"
+              )
+            ),
       }), // Only for VI, required if VI is selected
+
     vehicle_impounded: Yup.string().when("TwentyFourHour", {
       is: true,
       then: () => Yup.string().required("Vehicle impounded field is required"),
