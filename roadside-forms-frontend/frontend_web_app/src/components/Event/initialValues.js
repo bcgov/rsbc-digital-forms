@@ -35,7 +35,7 @@ export const InitialValues = () => {
     vehicle_style: null,
     vehicle_colour: [],
     vehicle_vin_no: "",
-    nsc_prov_state: { value: "BC", label: "BRITISH COLUMBIA" },
+    nsc_prov_state: null,
     nsc_no: "",
     owned_by_corp: false,
     driver_is_regist_owner: false,
