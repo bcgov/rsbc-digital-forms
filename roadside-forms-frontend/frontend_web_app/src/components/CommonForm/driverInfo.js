@@ -188,7 +188,6 @@ export const DriverInfo = (props) => {
                 name="driver_given_name"
                 className="field-height field-width"
                 type="text"
-                required
               />
             </Col>
             <Col sm={4}>
