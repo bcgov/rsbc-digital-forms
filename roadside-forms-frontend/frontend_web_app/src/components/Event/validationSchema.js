@@ -72,7 +72,7 @@ export const validationSchema = Yup.object().shape({
     then: () => Yup.object().required("Jurisdiction is required"),
   }), // Only for 24h / VI
   driver_last_name: Yup.string().required("Last Name is required"),
-  driver_given_name: Yup.string().required("Given Name is required"),
+  driver_given_name: Yup.string(),
   driver_dob: Yup.string()
     .nullable()
     .test("dob-validation", "Invalid Date of Birth", function (dob) {
