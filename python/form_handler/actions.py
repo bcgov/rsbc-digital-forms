@@ -406,7 +406,8 @@ def prep_icbc_payload(**args)->tuple:
                     for j in city_data:
                         city_data = j.__dict__
                         city_data.pop('_sa_instance_state', None)
-                        offence_city_value= city_data["icbc_city_code"]
+                        # offence_city_value= city_data["icbc_city_code"]
+                        offence_city_value= city_data["icbc_city_name_legacy"]
                         break
             tmp_payload["violationLocation"]=offence_city_value
             
