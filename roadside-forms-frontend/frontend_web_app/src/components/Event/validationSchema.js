@@ -750,23 +750,42 @@ export const validationSchema = Yup.object().shape(
         ),
     }), // Only for VI, max 4000 characters
 
-    /** Reasonable Grounds */
-    witnessed_by_officer: Yup.boolean().when("TwentyFourHour", {
-      is: true,
-      then: () => Yup.boolean(),
-    }), // Only for 24h
-    admission_by_driver: Yup.boolean().when("TwentyFourHour", {
-      is: true,
-      then: () => Yup.boolean(),
-    }), // Only for 24h
-    independent_witness: Yup.boolean().when("TwentyFourHour", {
-      is: true,
-      then: () => Yup.boolean(),
-    }), // Only for 24h
-    reasonable_ground_other: Yup.boolean().when("TwentyFourHour", {
-      is: true,
-      then: () => Yup.boolean(),
-    }), // Only for 24h
+    reasonable_grounds: Yup.object()
+      .shape({
+        /** Reasonable Grounds */
+        witnessed_by_officer: Yup.boolean().when("TwentyFourHour", {
+          is: true,
+          then: () => Yup.boolean(),
+        }), // Only for 24h
+        admission_by_driver: Yup.boolean().when("TwentyFourHour", {
+          is: true,
+          then: () => Yup.boolean(),
+        }), // Only for 24h
+        independent_witness: Yup.boolean().when("TwentyFourHour", {
+          is: true,
+          then: () => Yup.boolean(),
+        }), // Only for 24h
+        reasonable_ground_other: Yup.boolean().when("TwentyFourHour", {
+          is: true,
+          then: () => Yup.boolean(),
+        }), // Only for 24h
+      })
+      .test(
+        "at_least_one_reasonable_grounds",
+        "Please select at least one option from the list of reasonable grounds",
+        function (value) {
+          if (this.parent.TwentyFourHour) {
+            return (
+              this.parent.witnessed_by_officer ||
+              this.parent.admission_by_driver ||
+              this.parent.independent_witness ||
+              this.parent.reasonable_ground_other
+            );
+          }
+          return true;
+        }
+      ),
+
     reasonable_ground_other_reason: Yup.string().when(
       ["TwentyFourHour", "reasonable_ground_other"],
       {
