@@ -37,6 +37,8 @@ class RabbitMQ:
             logging.info('SocketConnectionError - expected')
         except workflow.AMQPConnector as error:
             logging.info('AMQPConnector error - expected')
+        except Exception as error:
+            logging.info('Connection Exception - will be retried')
 
     def publish(self, queue_name: str, payload: bytes):
         logging.info('publish to: ' + queue_name)

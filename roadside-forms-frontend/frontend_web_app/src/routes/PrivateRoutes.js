@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Navigate, Outlet} from 'react-router-dom';
-import { userRolesAtom } from '../atoms/userRoles';
-import { useKeycloak } from '@react-keycloak/web';
-import { useRecoilValueLoadable } from 'recoil';
+import React, { useEffect, useRef, useState } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { userRolesAtom } from "../atoms/userRoles";
+import { useKeycloak } from "@react-keycloak/web";
+import { useRecoilValueLoadable } from "recoil";
 
 export const PrivateRoutes = () => {
   const { keycloak, initialized } = useKeycloak();
@@ -12,7 +12,7 @@ export const PrivateRoutes = () => {
 
   useEffect(() => {
     if (initialized && keycloak.authenticated) {
-      if (userRolesLoadable.state === 'hasValue') {
+      if (userRolesLoadable.state === "hasValue") {
         const userRoles = userRolesLoadable.contents;
         userHasRoleRef.current = userRoles.length !== 0;
       }
