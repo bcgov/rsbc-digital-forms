@@ -76,7 +76,7 @@ export const SVGprint = ({
             }
             return null;
           })}
-          )
+          {/* ) */}
         </svg>
       </div>
     );
