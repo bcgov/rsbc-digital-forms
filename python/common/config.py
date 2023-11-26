@@ -55,7 +55,7 @@ class Config:
         'formatters': {
             'json': {
                 '()': 'pythonjsonlogger.jsonlogger.JsonFormatter',
-                'format': '%(asctime)s %(filename)s %(funcName)s %(levelname)s %(lineno)d %(module)s %(message)s %(pathname)s'
+                'format': '[DF_BACKEND_API] %(asctime)s %(filename)s %(funcName)s %(levelname)s %(lineno)d %(module)s %(message)s %(pathname)s'
             },
             'brief': {
                 'format': LOG_FORMAT
