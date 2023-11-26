@@ -13,10 +13,9 @@ export const ReasonableGrounds = () => {
       <div className="row">
         <div className="col-sm-12">
           <span>
-            {" "}
             The driver was operating a motor vehicle or had care and control of
             a motor vehicle for the purposes of MVA section 215(1) based on
-            (select at least one):{" "}
+            (select at least one):
           </span>
         </div>
         <div className="col-sm-12 left checkboxs">
@@ -32,6 +31,7 @@ export const ReasonableGrounds = () => {
               name="reasonable_ground_other_reason"
               className="field-height field-width"
               type="text"
+              required
             />
           </div>
         )}
@@ -45,6 +45,7 @@ export const ReasonableGrounds = () => {
               { label: "Yes", value: "YES" },
               { label: "No", value: "NO" },
             ]}
+            required
           />
         </div>
       </div>
