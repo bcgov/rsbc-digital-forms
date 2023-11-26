@@ -13,21 +13,24 @@ class Form(db.Model):
     form_type: str
     lease_expiry: datetime
     printed_timestamp: datetime
+    spoiled_timestamp: datetime
     user_guid: str
     
     id = db.Column('id', db.String(20), primary_key=True)
     form_type = db.Column(db.String(20), nullable=False)
     lease_expiry = db.Column(db.Date, nullable=True)
     printed_timestamp = db.Column(db.DateTime, nullable=True)
+    spoiled_timestamp = db.Column(db.DateTime, nullable=True)
     user_guid = db.Column(db.String(80), db.ForeignKey(
         'user.user_guid'), nullable=True)
 
     # Note: The printed timestamp prior to v0.4.17 was saved in local Pacific time instead of GMT
 
-    def __init__(self, form_id, form_type, printed=None, lease_expiry=None, user_guid=None):
+    def __init__(self, form_id, form_type, printed=None, spoiled=None, lease_expiry=None, user_guid=None):
         self.id = form_id
         self.form_type = form_type
         self.printed_timestamp = printed
+        self.spoiled_timestamp = spoiled
         self.lease_expiry = lease_expiry
         self.user_guid = user_guid
 
@@ -350,6 +353,7 @@ class Event(db.Model):
     confirmation_of_service: bool
     confirmation_of_service_date: datetime
     impound_lot_operator: int
+    task_processing_status: str
     created_dt: datetime
     updated_dt: datetime
     created_by: str
@@ -407,6 +411,7 @@ class Event(db.Model):
         db.Integer, db.ForeignKey('impound_lot_operator.id'))
     confirmation_of_service = db.Column(db.Boolean)
     confirmation_of_service_date = db.Column(db.DateTime)
+    task_processing_status = db.Column(db.String)
     created_by = db.Column(db.String, db.ForeignKey('user.user_guid'))
     updated_by = db.Column(db.String)
     created_dt = db.Column(db.DateTime)
