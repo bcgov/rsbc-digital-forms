@@ -47,29 +47,32 @@ class Listener:
         self.listener.consume(self.config.STORAGE_WATCH_QUEUE, self.callback)
 
     def callback(self, ch, method, properties, body):
-        # convert body (in bytes) to string
-        message_dict = decode_message(body, self.config.ENCRYPT_KEY)
-        # DONE: Get event type by querying db
-        message_dict['event_type'],event_id_val = get_storage_ref_event_type(message_dict,application,db,Config.EVENT_TYPES)
-        event_status_val = get_event_status(message_dict, application, db, Config.EVENT_TYPES,message_dict['event_type'],event_id_val)
-        logging.info('event type: {}'.format(message_dict['event_type']))
-        logging.info('event status: {}'.format(event_status_val))
-        if event_status_val in Config.PENDING_EVENT_STATUSES:
-            # DONE: Pass event type and event to middle logic
-            logging.info("callback() invoked: {}".format(json.dumps(message_dict)))
-            helper.middle_logic(helper.get_listeners(business.process_incoming_form(), message_dict['event_type']),
-                            message=message_dict,
-                            config=self.config,
-                            writer=self.writer,
-                            app=application,
-                            db=db)
-        else:
-            logging.info('skipping event processing. Possible duplicate event.')
+        try:
+            # convert body (in bytes) to string
+            message_dict = decode_message(body, self.config.ENCRYPT_KEY)
+            # DONE: Get event type by querying db
+            message_dict['event_type'],event_id_val = get_storage_ref_event_type(message_dict,application,db,Config.EVENT_TYPES)
+            event_status_val = get_event_status(message_dict, application, db, Config.EVENT_TYPES,message_dict['event_type'],event_id_val)
+            logging.info('event type: {}'.format(message_dict['event_type']))
+            logging.info('event status: {}'.format(event_status_val))
+            if event_status_val in Config.PENDING_EVENT_STATUSES:
+                # DONE: Pass event type and event to middle logic
+                logging.info("callback() invoked: {}".format(json.dumps(message_dict)))
+                helper.middle_logic(helper.get_listeners(business.process_incoming_form(), message_dict['event_type']),
+                                message=message_dict,
+                                config=self.config,
+                                writer=self.writer,
+                                app=application,
+                                db=db)
+            else:
+                logging.info('skipping event processing. Possible duplicate event.')
 
-        # Regardless of whether the process above follows the happy path or not,
-        # we need to acknowledge receipt of the message to RabbitMQ below. This
-        # acknowledgement deletes it from the queue. The logic above
-        # must have saved / handled the message before we get here.
+            # Regardless of whether the process above follows the happy path or not,
+            # we need to acknowledge receipt of the message to RabbitMQ below. This
+            # acknowledgement deletes it from the queue. The logic above
+            # must have saved / handled the message before we get here.
+        except Exception as e:
+            logging.error(e)
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
