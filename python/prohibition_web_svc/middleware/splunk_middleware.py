@@ -21,14 +21,7 @@ def log_form_index(**kwargs) -> tuple:
 
 def log_form_create(**kwargs) -> tuple:
     forms_response = kwargs.get('response_dict')
-    kwargs['splunk_data'] = {
-        "event": "create form",
-        "user_guid": kwargs.get('user_guid', ''),
-        "username": kwargs.get('username'),
-        'form_type': kwargs.get('form_type'),
-        'lease_expiry': forms_response.get('lease_expiry'),
-        'id': forms_response.get('id')
-    }
+    kwargs['splunk_data'] = forms_response
     return True, kwargs
 
 
