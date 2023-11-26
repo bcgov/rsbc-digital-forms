@@ -353,6 +353,7 @@ class Event(db.Model):
     confirmation_of_service: bool
     confirmation_of_service_date: datetime
     impound_lot_operator: int
+    task_processing_status: str
     created_dt: datetime
     updated_dt: datetime
     created_by: str
@@ -410,6 +411,7 @@ class Event(db.Model):
         db.Integer, db.ForeignKey('impound_lot_operator.id'))
     confirmation_of_service = db.Column(db.Boolean)
     confirmation_of_service_date = db.Column(db.DateTime)
+    task_processing_status = db.Column(db.String)
     created_by = db.Column(db.String, db.ForeignKey('user.user_guid'))
     updated_by = db.Column(db.String)
     created_dt = db.Column(db.DateTime)

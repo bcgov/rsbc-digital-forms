@@ -21,7 +21,7 @@ def query_pending_events(app,db):
         with application.app_context():
             # get event data
             event_data = db.session.query(Event) \
-                .filter(or_(Event.icbc_sent_status == event_status, Event.vi_sent_status == event_status)) \
+                .filter(Event.task_processing_status == event_status) \
                 .all()
             # if len(event_data) == 0 or len(event_data) > 1:
             if len(event_data) == 0:
@@ -52,3 +52,30 @@ def query_pending_events(app,db):
         return False,errmsg, None
     logging.debug(events)
     return True,None, events
+
+def update_event_status(app,db,event_id,status):
+    """Update the event status."""
+    logging.debug("Update the event status.")
+    try:
+        application = app
+        with application.app_context():
+            # get event data
+            event_data = db.session.query(Event) \
+                .filter(Event.event_id == event_id) \
+                .all()
+            if len(event_data) == 0 or len(event_data) > 1:
+                errmsg="No events found or multiple events found"
+                return False,errmsg
+            for e in event_data:
+                e.task_processing_status=status
+                db.session.commit()
+    except Exception as e:
+        logging.error(e)
+        errmsg=f"Error updating processed event status: {e}"
+        return False,errmsg
+    return True,None
+
+
+
+
+# .filter(or_(Event.icbc_sent_status == event_status, Event.vi_sent_status == event_status)) \
