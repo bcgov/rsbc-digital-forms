@@ -3,7 +3,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from python.task_scheduler.config import Config
 import logging
 import logging.config
-from python.task_scheduler.dbfuncs import query_pending_events
+from python.task_scheduler.dbfuncs import query_pending_events,update_event_status
 from python.task_scheduler.eventqueuefuncs import add_to_event_queue
 from python.task_scheduler.rabbitmq import RabbitMQ
 
@@ -44,6 +44,13 @@ def process_pending_events():
                     if not statusval1:
                         logging.error(errmsg)
                         continue
+                    else:
+                        logging.debug("Event added to queue")
+                        logging.info("Updating processed event status")
+                        update_status,update_err=update_event_status(app,db,event['event_id'],'processed')
+                        if not update_status:
+                            logging.error("error in updating event status")
+                            raise Exception(update_err)
                 except Exception as e:
                     logging.error(e)
                     continue

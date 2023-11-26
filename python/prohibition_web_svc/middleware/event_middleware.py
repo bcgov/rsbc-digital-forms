@@ -40,6 +40,7 @@ def save_event_data(**kwargs) -> tuple:
         event = Event(
             icbc_sent_status='pending',
             vi_sent_status='pending',
+            task_processing_status='pending',
             driver_licence_no=data.get('driver_licence_no'),
             driver_jurisdiction=data.get(
                 'drivers_licence_jurisdiction', {
