@@ -4,7 +4,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    LOG_FORMAT                          = "%(asctime)s::%(levelname)s::%(name)s::%(message)s"
+    LOG_FORMAT                          = "[DF_BACKEND_API] %(asctime)s::%(levelname)s::%(name)s::%(message)s"
     LOG_LEVEL                           = os.environ.get('LOG_LEVEL', 'INFO').upper()
 
     RABBITMQ_URL                        = os.getenv('RABBITMQ_URL', 'localhost')
