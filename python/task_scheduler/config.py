@@ -92,7 +92,11 @@ class Config():
             '': {
                 'handlers': LOGGERS_IN_USE,
                 'level': LOG_LEVEL
-            }
+            },
+        'pika': {
+            'handlers': LOGGERS_IN_USE,
+            'level': 'WARNING'
+        }
         }
     }
 
