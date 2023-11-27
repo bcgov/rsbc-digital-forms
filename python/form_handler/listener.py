@@ -44,7 +44,8 @@ class Listener:
             Start listening for messages on the WATCH_QUEUE
             when a message arrives invoke the callback()
         """
-        self.listener.consume(self.config.STORAGE_WATCH_QUEUE, self.callback)
+        while True:
+            self.listener.consume(self.config.STORAGE_WATCH_QUEUE, self.callback)
 
     def callback(self, ch, method, properties, body):
         try:
