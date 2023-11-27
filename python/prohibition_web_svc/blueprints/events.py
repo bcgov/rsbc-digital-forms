@@ -51,7 +51,6 @@ def create():
     """
     # logging.debug("new event post: {}".format(request.data))
     if request.method == 'POST':
-        logging.debug("-------------Made it here---------------")
         kwargs = middle_logic(
             get_authorized_keycloak_user() + [
                 {"try": event_middleware.request_contains_a_payload, "fail": [
