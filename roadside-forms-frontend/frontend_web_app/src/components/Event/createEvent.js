@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import { toPng } from "html-to-image";
+import { ToastContainer } from "react-toastify";
 import { Checkbox } from "../common/Checkbox/checkbox";
 import { validationSchema } from "./validationSchema";
 import { DriverInfo } from "../CommonForm/driverInfo";
@@ -35,6 +36,7 @@ import { FormSubmissionApi } from "../../api/formSubmissionApi";
 import { SVGprint } from "../Forms/Print/svgPrint";
 import { db } from "../../db";
 import "./createEvent.scss";
+import "react-toastify/dist/ReactToastify.css";
 import { FormIDApi } from "../../api/formIDApi";
 import { Alert } from "react-bootstrap";
 import Warning from "@mui/icons-material/Warning";
@@ -728,6 +730,7 @@ export const CreateEvent = () => {
 
   return (
     <div id="event-container" className="text-font">
+      <ToastContainer />
       <Modal
         id="spinner-modal"
         show={isSubmitting}
