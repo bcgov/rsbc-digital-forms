@@ -27,7 +27,7 @@ export const VehicleImpoundmentReason = (props) => {
           <Checkbox name="suspended">
             Suspended
             <span className="light-text">
-              - Driving while suspended under section 89 or section 323 of the
+              - Driving while suspended under section 89 or section 232 of the
               Motor Vehicle Act.
             </span>
           </Checkbox>
