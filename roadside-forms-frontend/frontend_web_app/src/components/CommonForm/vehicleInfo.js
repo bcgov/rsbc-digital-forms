@@ -10,6 +10,7 @@ import { useFormikContext } from "formik";
 import Button from "react-bootstrap/Button";
 import { MultiSelectField } from "../common/Select/MultiSelectField";
 import { ICBCVehicleDataApi } from "../../api/icbcVehicleDataApi";
+import { toast } from "react-toastify";
 
 export const VehicleInfo = (props) => {
   const {
@@ -39,7 +40,8 @@ export const VehicleInfo = (props) => {
   const fetchICBCVehicleInfo = async () => {
     if (values["vehicle_plate_no"]) {
       await ICBCVehicleDataApi.get(values["vehicle_plate_no"]).then((resp) => {
-        if (!_.isEmpty(resp)) {
+        //ICBC sends back different responses based on sucess and fail and only real way to check is if it is an array
+        if (resp.status === "success") {
           const vehicle = resp[0];
           const party = vehicle.vehicleParties[0].party;
           const address = party.addresses[0];
@@ -78,6 +80,10 @@ export const VehicleInfo = (props) => {
             label: "BRITISH COLUMBIA",
           });
           return;
+        } else {
+          toast.error("No vehicle was found using this plate number.", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         }
       });
     }
@@ -136,7 +142,6 @@ export const VehicleInfo = (props) => {
             />
           </Col>
         </Row>
-
         <Row style={{ minHeight: "85px" }}>
           <Col sm={3}>
             <SearchableSelect
