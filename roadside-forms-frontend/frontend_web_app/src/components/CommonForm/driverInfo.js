@@ -94,12 +94,16 @@ export const DriverInfo = (props) => {
     );
     if (values["driver_licence_no"]) {
       ICBCDriverDataApi.get(values["driver_licence_no"]).then((resp) => {
+        console.log(resp);
         if (!_.isEmpty(resp.data) && resp.status === "success") {
           const party = resp.data.party;
           const address = party.addresses[0];
           setFieldValue("driver_last_name", party.lastName);
           setFieldValue("driver_given_name", party.firstName);
-          setFieldValue("driver_dob", moment(party.birthDate));
+          setFieldValue(
+            "driver_dob",
+            moment(party.birthDate).tz("America/Vancouver").toDate()
+          );
           setFieldValue("driver_address", address.addressLine1);
           setFieldValue("driver_city", address.city);
           setFieldValue("driver_postal", address.postalCode);

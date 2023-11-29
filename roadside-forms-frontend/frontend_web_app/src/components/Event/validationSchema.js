@@ -80,10 +80,10 @@ export const validationSchema = Yup.object().shape(
           // Return true if the field is empty
           return true;
         }
-
+        console.log(dob);
         const currentDate = moment();
-        const inputDate = moment(dob).utcOffset("+07:00");
-
+        const inputDate = moment(dob);
+        console.log(currentDate, inputDate);
         const currentYear = currentDate.year();
         const inputYear = inputDate.year();
 
