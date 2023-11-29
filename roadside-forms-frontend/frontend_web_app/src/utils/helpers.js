@@ -321,6 +321,7 @@ export const printFormatHelper = (values, data, key) => {
   }
 
   if (key === "RELEASE_LOCATION_KEYS") {
+    console.log("values", values);
     if (
       values["VI"] ||
       (values["TwentyFourHour"] && values["vehicle_impounded"] === "YES")
@@ -564,7 +565,11 @@ export const eventDataFormatter = (
       event["ILO-phone"] = impound.phone;
     }
     for (const field of date_fields) {
-      event[field] = pstDate(event[field]);
+      if (event[field]) {
+        event[field] = pstDate(event[field]);
+      } else {
+        event[field] = "";
+      }
     }
     eventData.push(event);
   }
