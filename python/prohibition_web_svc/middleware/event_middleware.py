@@ -78,7 +78,7 @@ def save_event_data(**kwargs) -> tuple:
                 'value': None, 'label': None}).get('value'),
             date_of_driving=data.get('date_of_driving'),
             time_of_driving=data.get('time_of_driving'),
-            nsc_no=data.get('nsc_no'),
+            nsc_no=data.get('nsc_no', None),
             nsc_prov_state=data.get('nsc_prov_state', {
                 'value': None, 'label': None}).get('value'),
             owned_by_corp=data.get('owned_by_corp'),
@@ -111,7 +111,7 @@ def save_event_data(**kwargs) -> tuple:
         )
         if data.get('VI'):
             vi_form = VIForm(
-                gender=data.get('gender'),
+                gender=(lambda x: x.get('value') if x else None)(data.get('gender', None)),
                 driver_is_regist_owner=data.get('driver_is_regist_owner'),
                 driver_licence_expiry=datetime.strptime(
                     data.get('driver_licence_expiry'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_licence_expiry') else None,

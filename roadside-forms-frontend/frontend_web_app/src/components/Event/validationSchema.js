@@ -136,7 +136,7 @@ export const validationSchema = Yup.object().shape(
     driver_city: Yup.string(),
     driver_prov_state: Yup.object(),
     driver_postal: Yup.string(),
-    gender: Yup.string(), // Only for VI
+    // gender: Yup.string(), // Only for VI
     driver_licence_expiry: Yup.date()
       .nullable()
       .when("VI", {

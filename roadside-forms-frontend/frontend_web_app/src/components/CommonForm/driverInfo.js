@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
+import { useFormikContext } from "formik";
+import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Modal from "react-bootstrap/Modal";
 import moment from "moment-timezone";
 import { toast } from "react-toastify";
-import { useFormikContext } from "formik";
+
 import { Input } from "../common/Input/Input";
 import { SearchableSelect } from "../common/Select/SearchableSelect";
 import { DateOfBirthField } from "../common/DateField/dateOfBirthField";
@@ -16,6 +17,7 @@ import { PhoneField } from "../common/Input/phoneField";
 import { dlScanner } from "../../utils/dlScanner";
 import { ICBCDriverDataApi } from "../../api/icbcDriverDataAPI";
 import { formatBCDL } from "../../utils/formatBCDL";
+import { genderDropdown } from "../../utils/constants";
 import "./commonForm.scss";
 
 export const DriverInfo = (props) => {
@@ -53,7 +55,7 @@ export const DriverInfo = (props) => {
     const dob_month = dl_data["dob"].slice(4, 6);
     const dob_day = dl_data["dob"].slice(6, 8);
 
-    values["driver_licence_no"] = dl_data["number"];
+    values["driver_licence_no"] = formatBCDL(dl_data["number"], values);
     values["driver_last_name"] = dl_data["name"]["surname"];
     values["driver_given_name"] = dl_data["name"]["given"];
     values["driver_dob"] = new Date(dob_year, dob_month - 1, dob_day);
@@ -86,6 +88,10 @@ export const DriverInfo = (props) => {
   };
 
   const fetchICBCDriverInfo = () => {
+    values["driver_licence_no"] = formatBCDL(
+      values["driver_licence_no"],
+      values
+    );
     if (values["driver_licence_no"]) {
       ICBCDriverDataApi.get(values["driver_licence_no"]).then((resp) => {
         if (!_.isEmpty(resp.data) && resp.status === "success") {
@@ -140,7 +146,7 @@ export const DriverInfo = (props) => {
                 label="Driver's Licence Number"
                 name="driver_licence_no"
                 onBlur={(event) => {
-                  event.target.value = formatBCDL(event, values);
+                  event.target.value = formatBCDL(event.target.value, values);
                   values["driver_licence_no"] = event.target.value;
                 }}
                 type="text"
@@ -248,11 +254,11 @@ export const DriverInfo = (props) => {
           {values["VI"] && (
             <Row style={{ minHeight: "85px" }}>
               <Col sm={4}>
-                <Input
+                <SearchableSelect
+                  className="field-height field-width"
                   label="Gender"
                   name="gender"
-                  className="field-height field-width"
-                  type="text"
+                  options={genderDropdown}
                 />
               </Col>
               <Col sm={4}>
