@@ -641,7 +641,7 @@ export const CreateEvent = () => {
                   <h5>12 Hour Number: {values["twelve_hour_number"]}</h5>
                 )}
               </div>
-              {(values["IRP"] ||
+              {/* {(values["IRP"] ||
                 values["VI"] ||
                 values["TwentyFourHour"] ||
                 values["TwelveHour"]) && (
@@ -649,7 +649,7 @@ export const CreateEvent = () => {
                   <span>Estimated time to complete:</span>
                   <h5>12 minutes</h5>
                 </div>
-              )}
+              )} */}
             </div>
             {(values["IRP"] ||
               values["VI"] ||
