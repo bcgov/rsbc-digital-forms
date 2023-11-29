@@ -232,7 +232,7 @@ export const CreateEvent = () => {
   };
 
   const generateYearOptions = () => {
-    const currentYear = new Date().getFullYear();
+    const currentYear = new Date().getFullYear() + 1;
     const startYear = 1900;
     const years = [];
 
