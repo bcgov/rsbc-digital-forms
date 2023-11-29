@@ -61,6 +61,16 @@ export const Dashboard = () => {
     staticResources["vehicles"]
   );
 
+  const sortTableRows = (rows) => {
+    if (rows.length > 0) {
+      return rows.sort((a, b) => {
+        return new Date(b.created_dt) - new Date(a.created_dt);
+      });
+    } else {
+      return rows;
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (isConnected) {
@@ -254,7 +264,7 @@ export const Dashboard = () => {
           </thead>
           <tbody>
             {formsData &&
-              formsData.map((data, index) => {
+              sortTableRows(formsData).map((data, index) => {
                 return !data["submitted"] ? (
                   <tr key={data["vehicle_vin_no"]}>
                     <td>
