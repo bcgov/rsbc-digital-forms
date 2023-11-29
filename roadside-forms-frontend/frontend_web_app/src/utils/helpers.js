@@ -127,12 +127,12 @@ export const getTwentyFourHourDataToSave = (formValues, event_id) => {
   return twentyFourHourFormValues;
 };
 
-export const formTypes = (form) => {
+export const formTypes = (data) => {
   const forms =
-    (form["IRP"] ? "IRP," : " ") +
-    (form["VI"] ? "VI," : " ") +
-    (form["TwentyFourHour"] ? "TwentyFourHour," : " ") +
-    (form["TwelveHour"] ? "TwelveHour" : " ");
+    (data["VI"] ? "VI, " : " ") +
+    (data["IRP"] || data["IRP_number"] ? "IRP, " : " ") +
+    (data["TwentyFourHour"] ? "TwentyFourHour, " : " ") +
+    (data["TwelveHour"] ? "TwelveHour" : " ");
   return forms;
 };
 

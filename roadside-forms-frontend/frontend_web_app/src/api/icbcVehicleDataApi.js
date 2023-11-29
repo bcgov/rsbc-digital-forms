@@ -13,11 +13,14 @@ export const ICBCVehicleDataApi = {
         headers: { ...headers },
       })
       .then((response) => {
-        return response.data;
+        return {
+          status: "success",
+          data: response.data,
+        };
       })
       .catch((error) => {
         return {
-          status: error.status,
+          status: "error",
           data: error.response,
         };
       });

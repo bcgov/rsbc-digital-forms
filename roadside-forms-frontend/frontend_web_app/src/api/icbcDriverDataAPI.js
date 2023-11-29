@@ -13,11 +13,14 @@ export const ICBCDriverDataApi = {
         headers: { ...headers },
       })
       .then((response) => {
-        return response;
+        return {
+          status: "success",
+          data: response.data,
+        };
       })
       .catch((error) => {
         return {
-          status: error.status,
+          status: "error",
           data: error.response,
         };
       });

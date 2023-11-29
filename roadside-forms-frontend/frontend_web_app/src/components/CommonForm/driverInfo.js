@@ -1,20 +1,22 @@
-import { Input } from "../common/Input/Input";
 import React, { useState, useEffect } from "react";
-import { SearchableSelect } from "../common/Select/SearchableSelect";
 import PropTypes from "prop-types";
 import _ from "lodash";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Modal from "react-bootstrap/Modal";
+import moment from "moment-timezone";
+import { toast } from "react-toastify";
+import { useFormikContext } from "formik";
+import { Input } from "../common/Input/Input";
+import { SearchableSelect } from "../common/Select/SearchableSelect";
 import { DateOfBirthField } from "../common/DateField/dateOfBirthField";
 import { DatePickerField } from "../common/DateField/DatePicker";
 import { PhoneField } from "../common/Input/phoneField";
-import { useFormikContext } from "formik";
-import "./commonForm.scss";
-import Modal from "react-bootstrap/Modal";
 import { dlScanner } from "../../utils/dlScanner";
 import { ICBCDriverDataApi } from "../../api/icbcDriverDataAPI";
 import { formatBCDL } from "../../utils/formatBCDL";
+import "./commonForm.scss";
 
 export const DriverInfo = (props) => {
   const { jurisdictions, provinces } = props;
@@ -77,25 +79,28 @@ export const DriverInfo = (props) => {
         setModalShow(false);
       })
       .catch((err) => {
-        console.error(
-          "! An error occurred reading data from the scanner: ",
-          err
-        );
+        toast.error("An error occured while trying to read the DL.", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
   };
 
   const fetchICBCDriverInfo = () => {
     if (values["driver_licence_no"]) {
       ICBCDriverDataApi.get(values["driver_licence_no"]).then((resp) => {
-        if (!_.isEmpty(resp.data)) {
+        if (!_.isEmpty(resp.data) && resp.status === "success") {
           const party = resp.data.party;
           const address = party.addresses[0];
           setFieldValue("driver_last_name", party.lastName);
           setFieldValue("driver_given_name", party.firstName);
-          setFieldValue("driver_dob", new Date(party.birthDate));
+          setFieldValue("driver_dob", moment(party.birthDate));
           setFieldValue("driver_address", address.addressLine1);
           setFieldValue("driver_city", address.city);
           setFieldValue("driver_postal", address.postalCode);
+        } else {
+          toast.error("No driver was found using this DL number.", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         }
       });
     }
