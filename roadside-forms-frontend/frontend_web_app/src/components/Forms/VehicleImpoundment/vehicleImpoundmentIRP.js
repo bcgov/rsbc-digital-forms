@@ -16,7 +16,7 @@ export const VehicleImpoundmentIRP = (props) => {
       <Row>
         <Col>
           <Radio
-            label="was an IRP issued as a part of this vehicular impound?"
+            label="Was an IRP issued as a part of this vehicular impound?"
             name="irp_impound"
             options={[
               { label: "Yes", value: "YES" },
@@ -32,7 +32,7 @@ export const VehicleImpoundmentIRP = (props) => {
           <Row>
             <Col>
               <Radio
-                label="Vehicle Impoind Duration"
+                label="Vehicle Impound Duration"
                 name="irp_impound_duration"
                 options={[
                   {
