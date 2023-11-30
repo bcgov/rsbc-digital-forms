@@ -398,7 +398,9 @@ export const validationSchema = Yup.object().shape(
             (TwentyFourHour &&
               vehicle_impounded === "NO" &&
               reason_for_not_impounding === "released") ||
-            (TwelveHour && vehicle_location === "released"),
+            (TwelveHour &&
+              (vehicle_location === "released" ||
+                vehicle_location === "private")),
           then: () =>
             Yup.date()
               .nullable()
@@ -436,13 +438,29 @@ export const validationSchema = Yup.object().shape(
             (TwentyFourHour &&
               vehicle_impounded === "NO" &&
               reason_for_not_impounding === "released") ||
-            (TwelveHour && vehicle_location === "released"),
+            (TwelveHour &&
+              (vehicle_location === "released" ||
+                vehicle_location === "private")),
           then: () =>
             Yup.string()
               .required("Time released is required")
               .matches(
                 /^([01]\d|2[0-3])[0-5]\d$/,
                 "Time Released must match 24h format HHMM"
+              )
+              .test(
+                "time_released",
+                "Time released cannot be in the future",
+                function (value) {
+                  if (value && this.parent.date_released) {
+                    return (
+                      moment(this.parent.date_released)
+                        .set("hour", value.slice(0, 2))
+                        .set("minute", value.slice(2)) <= moment()
+                    );
+                  }
+                  return true;
+                }
               ),
         }
       ), // Only for 24h / VI, required if vehicle_impounded = "No" and reason_for_not_impounding = "released"

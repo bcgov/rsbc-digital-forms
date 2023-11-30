@@ -158,7 +158,7 @@ export const ConfirmationStep = () => {
                   </Col>
                 </Row>
               </Container>
-              {values["TwelveHour"] ? (
+              {values["TwelveHour"] && (
                 <span className="mt-4">
                   The individual's licence to drive is hereby suspended under
                   section 90.3 of the Motor Vehicle Act for a period of 12
@@ -166,15 +166,16 @@ export const ConfirmationStep = () => {
                   {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},
                   {timeOfDriving ? formatStrToTimeFormat(timeOfDriving) : "N/A"}
                 </span>
-              ) : (
-                <span className="mt-4"></span>
               )}
-              <span className="mt-4">
-                The individual is prohibited under section 215 of the Motor
-                Vehicle Act from driving a motor vehicle for 24 hours commencing
-                at: {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},
-                {timeOfDriving ? formatStrToTimeFormat(timeOfDriving) : "N/A"}
-              </span>
+              {values["TwentyFourHour"] && (
+                <span className="mt-4">
+                  The individual is prohibited under section 215 of the Motor
+                  Vehicle Act from driving a motor vehicle for 24 hours
+                  commencing at:{" "}
+                  {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},
+                  {timeOfDriving ? formatStrToTimeFormat(timeOfDriving) : "N/A"}
+                </span>
+              )}
             </div>
           )}
         </div>
