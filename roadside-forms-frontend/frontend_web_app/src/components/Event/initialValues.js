@@ -22,7 +22,7 @@ export const InitialValues = () => {
     driver_city: "",
     driver_prov_state: { value: "BC", label: "BRITISH COLUMBIA" },
     driver_postal: "",
-    gender: "",
+    gender: {},
     driver_licence_expiry: null,
     driver_licence_class: "",
 
