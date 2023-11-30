@@ -82,7 +82,7 @@ export const validationSchema = Yup.object().shape(
         }
 
         const currentDate = moment();
-        const inputDate = moment(dob).utcOffset("+07:00");
+        const inputDate = moment(dob);
 
         const currentYear = currentDate.year();
         const inputYear = inputDate.year();
@@ -136,7 +136,7 @@ export const validationSchema = Yup.object().shape(
     driver_city: Yup.string(),
     driver_prov_state: Yup.object(),
     driver_postal: Yup.string(),
-    gender: Yup.string(), // Only for VI
+    // gender: Yup.string(), // Only for VI
     driver_licence_expiry: Yup.date()
       .nullable()
       .when("VI", {

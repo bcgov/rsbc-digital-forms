@@ -3,6 +3,7 @@ import moment from "moment-timezone";
 import * as staticData from "../atoms/staticData";
 
 import { pstDate } from "./dateTime";
+import { genderDropdown } from "./constants";
 import twentyFourHourDriverform from "../assets/MV2634E_082023_driver.png";
 import twentyFourHourILOform from "../assets/MV2634E_082023_ilo.png";
 import twentyFourHourPoliceform from "../assets/MV2634E_082023_icbc.png";
@@ -127,13 +128,15 @@ export const getTwentyFourHourDataToSave = (formValues, event_id) => {
   return twentyFourHourFormValues;
 };
 
-export const formTypes = (data) => {
-  const forms =
-    (data["VI"] ? "VI, " : " ") +
-    (data["IRP"] || data["IRP_number"] ? "IRP, " : " ") +
-    (data["TwentyFourHour"] ? "TwentyFourHour, " : " ") +
-    (data["TwelveHour"] ? "TwelveHour" : " ");
-  return forms;
+export const formTypes = (form) => {
+  const formTypeList = [
+    ...(form["IRP"] ? ["IRP"] : []),
+    ...(form["VI"] ? ["VI"] : []),
+    ...(form["TwentyFourHour"] ? ["24H"] : []),
+    ...(form["TwelveHour"] ? ["12H"] : []),
+  ];
+
+  return formTypeList.join(", ");
 };
 
 export const formNumbers = (data) => {
@@ -535,6 +538,14 @@ export const eventDataFormatter = (
       event["nsc_no"] === ""
         ? (event["is_nsc"] = false)
         : (event["is_nsc"] = true);
+
+      const gender = genderDropdown.filter(
+        (x) => x["value"] === event["gender"]
+      )[0];
+      event["gender"] = {
+        value: gender?.value,
+        label: gender?.label,
+      };
     }
 
     const vehicleStyl = vehicleStyles.filter(

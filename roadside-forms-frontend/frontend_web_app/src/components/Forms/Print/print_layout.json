@@ -1159,8 +1159,8 @@
         "field_name": "gender",
         "classNames": "fontSmall",
         "start": {
-          "x": 165,
-          "y": 30
+          "x": 169.5,
+          "y": 29.5
         }
       },
       "DRIVER_DL_NUMBER": {
