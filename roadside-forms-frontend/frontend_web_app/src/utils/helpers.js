@@ -3,14 +3,15 @@ import moment from "moment-timezone";
 import * as staticData from "../atoms/staticData";
 
 import { pstDate } from "./dateTime";
-import twentyFourHourDriverform from "../assets/MV2634E_101223_driver.png";
-import twentyFourHourILOform from "../assets/MV2634E_101223_ilo.png";
-import twentyFourHourPoliceform from "../assets/MV2634E_101223_police.png";
+import twentyFourHourDriverform from "../assets/MV2634E_082023_driver.png";
+import twentyFourHourILOform from "../assets/MV2634E_082023_ilo.png";
+import twentyFourHourPoliceform from "../assets/MV2634E_082023_icbc.png";
 import viDriverForm from "../assets/MV2721_201502.png";
+import viIncidentDetails from "../assets/MV2722_201502_Incident_Details.png";
 import appealsForm from "../assets/MV2721_201502_appeal.png";
 import viReportForm from "../assets/MV2722_201502.png";
-import twelveHourDriverForm from "../assets/TwelveHourDriverCopy.png";
-import twelveHourICBCForm from "../assets/TwelveHourICBCCopy.png";
+import twelveHourDriverForm from "../assets/MV2906E_082023_driver.png";
+import twelveHourICBCForm from "../assets/MV2906E_082023_icbc.png";
 
 const eventValueKeys = [
   "event_id",
@@ -91,19 +92,31 @@ export const staticResources = {
   permissions: staticData.permissions,
   provinces: staticData.provinces,
   vehicle_styles: staticData.vehicleStyles,
+  vehicle_types: staticData.vehicleTypes,
   vehicle_colours: staticData.vehicleColours,
   vehicles: staticData.vehicles,
 };
 
 export const getEventDataToSave = (formValues) => {
   const eventValues = {};
-  eventValueKeys.forEach(
-    (item) =>
-      (eventValues[item] =
+  eventValueKeys.forEach((item) => {
+    if (formValues[item] === null || formValues[item] === "") {
+      eventValues[item] = "";
+    } else {
+      eventValues[item] =
         typeof formValues[item] === "object"
           ? formValues[item]["value"]
-          : formValues[item])
-  );
+          : formValues[item];
+    }
+  });
+
+  // eventValueKeys.forEach(
+  //   (item) =>
+  //     (eventValues[item] =
+  //       typeof formValues[item] === "object"
+  //         ? formValues[item]["value"]
+  //         : formValues[item])
+  // );
   return eventValues;
 };
 
@@ -114,13 +127,30 @@ export const getTwentyFourHourDataToSave = (formValues, event_id) => {
   return twentyFourHourFormValues;
 };
 
-export const formTypes = (form) => {
+export const formTypes = (data) => {
   const forms =
-    (form["IRP"] ? "IRP," : " ") +
-    (form["VI"] ? "VI," : " ") +
-    (form["TwentyFourHour"] ? "TwentyFourHour," : " ") +
-    (form["TwelveHour"] ? "TwelveHour" : " ");
+    (data["VI"] ? "VI, " : " ") +
+    (data["IRP"] || data["IRP_number"] ? "IRP, " : " ") +
+    (data["TwentyFourHour"] ? "TwentyFourHour, " : " ") +
+    (data["TwelveHour"] ? "TwelveHour" : " ");
   return forms;
+};
+
+export const formNumbers = (data) => {
+  let formNums = [];
+  if (data["VI_number"]) {
+    formNums.push(data["VI_number"]);
+  }
+  if (data["IRP_number"]) {
+    formNums.push(data["IRP_number"]);
+  }
+  if (data["twelve_hour_number"]) {
+    formNums.push(data["twelve_hour_number"]);
+  }
+  if (data["twenty_four_hour_number"]) {
+    formNums.push(data["twenty_four_hour_number"]);
+  }
+  return formNums.join(", ");
 };
 
 export const formsPNG = {
@@ -148,6 +178,7 @@ export const formsPNG = {
     VI: {
       POLICE: { png: viDriverForm, aspectClass: "--portrait" },
       REPORT: { png: viReportForm, aspectClass: "--portrait" },
+      DETAILS: { png: viIncidentDetails, aspectClass: "--portrait" },
     },
   },
 };
@@ -157,6 +188,7 @@ const dateFieldSplit = ["date_of_driving", "driver_licence_expiry"];
 
 export const printFormatHelper = (values, data, key) => {
   let val = values[data["field_name"]];
+
   // if the value needs to be split into to fields
 
   if (key in fieldsToSplit) {
@@ -171,6 +203,7 @@ export const printFormatHelper = (values, data, key) => {
         : splitData.splice(1).join(data["delimeter"]);
     return val;
   }
+
   //if the field on the form is expecting more than one value join them together
   if (Array.isArray(data["field_name"])) {
     val = "";
@@ -190,11 +223,22 @@ export const printFormatHelper = (values, data, key) => {
         }
       }
     });
+
+    // Add province to location of DL surrender
     if (key === "DL_SURRENDER_LOCATION") {
       val = val + ", BC";
     }
+
+    // For registered owner, if owned by corp, display corp name instead of owner name
+    if (key === "OWNER_NAME") {
+      if (values["owned_by_corp"]) {
+        val = values["corporation_name"];
+      }
+    }
+
     return val;
   }
+
   //if the value is a date
   if (
     Object.prototype.toString.call(values[data["field_name"]]) ===
@@ -212,12 +256,17 @@ export const printFormatHelper = (values, data, key) => {
     val = values[data["field_name"]].join("");
     return val;
   }
+
   //temp: if the value is an object then take its value
   if (
     values[data["field_name"]] &&
     typeof values[data["field_name"]] === "object"
   ) {
-    val = values[data["field_name"]]["value"];
+    if (key === "LOCATION_CITY") {
+      val = val["label"];
+    } else {
+      val = values[data["field_name"]]["value"];
+    }
     return val;
   }
   let released_val = "";
@@ -226,9 +275,31 @@ export const printFormatHelper = (values, data, key) => {
   } else if (values["TwentyFourHour"]) {
     released_val = "reason_for_not_impounding";
   }
+  if (key === "NOT_IMPOUNDED_REASON") {
+    switch (values[released_val]) {
+      case "released":
+        val = "RELEASED TO OTHER DRIVER";
+        break;
+      case "private":
+        val = "PRIVATE TOW";
+        break;
+      case "roadside":
+        val = "LEFT AT ROADSIDE";
+        break;
+      case "investigation":
+        val = "SEIZED FOR INVESTIGATION";
+        break;
+      default:
+        val = "";
+    }
+  }
+
   if (key === "RELEASE_LOCATION_VEHICLE") {
-    if (values["VI"]) {
-      val = values["ILO-name"];
+    if (
+      values["VI"] ||
+      (values["TwentyFourHour"] && values["vehicle_impounded"] === "YES")
+    ) {
+      val = "IMPOUNDED";
     } else {
       switch (values[released_val]) {
         case "released":
@@ -250,6 +321,7 @@ export const printFormatHelper = (values, data, key) => {
   }
 
   if (key === "RELEASE_LOCATION_KEYS") {
+    console.log("values", values);
     if (
       values["VI"] ||
       (values["TwentyFourHour"] && values["vehicle_impounded"] === "YES")
@@ -273,8 +345,11 @@ export const printFormatHelper = (values, data, key) => {
   }
 
   if (key === "RELEASE_PERSON") {
-    if (values["VI"]) {
-      val = values["ILO-name"];
+    if (
+      values["VI"] ||
+      (values["TwentyFourHour"] && values["vehicle_impounded"] === "YES")
+    ) {
+      val = "";
     } else {
       switch (values[released_val]) {
         case "released":
@@ -294,8 +369,21 @@ export const printFormatHelper = (values, data, key) => {
 
   if (key === "RELEASE_DATE") {
     if (values["VI"]) {
-      val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
+      // val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
     }
+  }
+
+  if (
+    key === "REPORT_INCIDENT_DETAILS" &&
+    values["incident_details_extra_page"]
+  ) {
+    val = "";
+  }
+  if (
+    key === "DETAILS_INCIDENT_DETAILS" &&
+    !values["incident_details_extra_page"]
+  ) {
+    val = "";
   }
 
   return val;
@@ -393,6 +481,16 @@ export const eventDataFormatter = (
       value: vehicleJurisdiction.objectCd,
       label: vehicleJurisdiction.objectDsc,
     };
+    if (event["out_of_province_dl_jurisdiction"]) {
+      const outOfProvinceDlJurisdiction = jurisdictions.filter(
+        (x) => x["objectCd"] === event["out_of_province_dl_jurisdiction"]
+      )[0];
+
+      event["out_of_province_dl_jurisdiction"] = {
+        value: outOfProvinceDlJurisdiction.objectCd,
+        label: outOfProvinceDlJurisdiction.objectDsc,
+      };
+    }
     if (event["nsc_prov_state"]) {
       const nscProvState = provinces.filter(
         (x) => x["objectCd"] === event["nsc_prov_state"]
@@ -467,7 +565,11 @@ export const eventDataFormatter = (
       event["ILO-phone"] = impound.phone;
     }
     for (const field of date_fields) {
-      event[field] = pstDate(event[field]);
+      if (event[field]) {
+        event[field] = pstDate(event[field]);
+      } else {
+        event[field] = "";
+      }
     }
     eventData.push(event);
   }
