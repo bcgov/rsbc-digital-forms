@@ -155,20 +155,11 @@ export const Header = () => {
                 </Col>
                 <Col sm={2} className="links fw-bold col-right">
                   &nbsp;
-                  {userAdminInfo ? (
+                  {userAdminInfo && (
                     <div>
                       <Link className="d-block text-light" to="/admin-console">
                         Admin
                       </Link>
-                    </div>
-                  ) : (
-                    <div>
-                      <a
-                        className="d-block text-light"
-                        href="https://example.com"
-                      >
-                        Settings
-                      </a>
                     </div>
                   )}
                   <a

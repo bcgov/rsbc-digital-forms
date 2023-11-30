@@ -57,6 +57,11 @@ $font_path: ("../../../assets");
 
   #roadsafety-header {
     display: none;
+    all: unset !important;
+
+    .header {
+      display: none;
+    }
   }
 
   #roadesafety-footer {
