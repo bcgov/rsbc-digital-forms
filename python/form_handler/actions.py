@@ -590,6 +590,7 @@ def prep_vips_payload(**args)->tuple:
                 agency_data = db.session.query(AgencyCrossref) \
                     .filter(AgencyCrossref.agency_name == agency_name) \
                     .all()
+                logging.debug(agency_data)
                 if len(agency_data) == 0:
                     logging.error("agency not found")
                     pass
@@ -597,6 +598,7 @@ def prep_vips_payload(**args)->tuple:
                     for a in agency_data:
                         agency_dict = a.__dict__
                         agency_dict.pop('_sa_instance_state', None)
+                        logging.debug(agency_dict)
                         policeDetatchmentId=int(agency_dict["vips_policedetachments_agency_id"])
                         break
 
