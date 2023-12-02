@@ -744,5 +744,15 @@ class ImpoundReasonCodes(db.Model):
     vips_value_cd = db.Column(db.String)
     vips_value_dsc = db.Column(db.String)
     vips_value_abbreviated_dsc = db.Column(db.String)
+
+@dataclass
+class IloIdCrossRef(db.Model):
+    __tablename__ = 'ilo_cross_ref'
+
+    ilo_name: str
+    vips_impound_lot_operator_id: int
+
+    ilo_name = db.Column(db.String, primary_key=True)
+    vips_impound_lot_operator_id = db.Column(db.Integer)
     
     
