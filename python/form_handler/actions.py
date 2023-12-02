@@ -12,7 +12,7 @@ import json
 from datetime import datetime
 from minio import Minio
 from minio.error import S3Error
-from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef,ImpoundReasonCodes
+from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef,ImpoundReasonCodes,IloIdCrossRef,ImpoundLotOperator
 from python.form_handler.icbc_service import submit_to_icbc
 from python.form_handler.vips_service import create_vips_doc,create_vips_imp
 from python.form_handler.payloads import vips_payload,vips_document_payload
@@ -607,7 +607,35 @@ def prep_vips_payload(**args)->tuple:
         if "driver_jurisdiction" in event_data: tmp_payload["vipsImpoundCreate"]["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
         if "driver_licence_no" in event_data: tmp_payload["vipsImpoundCreate"]["driverLicenceNo"]=event_data["driver_licence_no"]
 
-        tmp_payload["vipsImpoundCreate"]["impoundLotOperatorId"]=None
+
+        # get ilo id from db
+        tmp_ilo_id=None
+        ilo_id_from_db=event_data.get("impound_lot_operator",None)
+        if ilo_id_from_db:
+            with application.app_context():
+                ilo_data_db = db.session.query(ImpoundLotOperator) \
+                    .filter(ImpoundLotOperator.id == ilo_id_from_db) \
+                    .all()
+                if len(ilo_data_db) == 0:
+                    logging.error("ilo db data not found")
+                else:
+                    for i in ilo_data_db:
+                        ilo_dict = i.__dict__
+                        ilo_dict.pop('_sa_instance_state', None)
+                        tmp_ilo_name=ilo_dict["name"]
+                        ilo_cross_ref = db.session.query(IloIdCrossRef) \
+                            .filter(IloIdCrossRef.ilo_name == tmp_ilo_name) \
+                            .all()
+                        if len(ilo_cross_ref) == 0:
+                            logging.error("ilo cross ref data not found")
+                        else:
+                            for c in ilo_cross_ref:
+                                ilo_cross_ref_dict = c.__dict__
+                                ilo_cross_ref_dict.pop('_sa_instance_state', None)
+                                tmp_ilo_id=ilo_cross_ref_dict["vips_impound_lot_operator_id"]
+                                break
+                        break
+        tmp_payload["vipsImpoundCreate"]["impoundLotOperatorId"]=tmp_ilo_id
 
         # convert impoundment_dt to string
         impoundment_dt=form_data.get("date_of_impound")
@@ -626,7 +654,7 @@ def prep_vips_payload(**args)->tuple:
         tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]="VEHI"
 
         # get reason codes from DB
-        # TODO: Check the reason list
+        # DONE: Check the reason list
         reason_list=[]
         payload_reason_list=[]
         excessive_speeding=form_data.get("excessive_speed",False)
@@ -657,8 +685,6 @@ def prep_vips_payload(**args)->tuple:
                 reason_list.append("BACWARN3")
         with application.app_context():
             # get reason data
-            policeDetatchmentId=''
-            agency_name=''
             for v in reason_list:
                 reason_data = db.session.query(ImpoundReasonCodes) \
                     .filter(ImpoundReasonCodes.df_unique_code == v) \
