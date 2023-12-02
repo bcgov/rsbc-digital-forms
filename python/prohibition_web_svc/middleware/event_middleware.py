@@ -112,7 +112,8 @@ def save_event_data(**kwargs) -> tuple:
         )
         if data.get('VI'):
             vi_form = VIForm(
-                gender=(lambda x: x.get('value') if x else None)(data.get('gender', None)),
+                # gender=(lambda x: x.get('value') if x else None)(data.get('gender', None)),
+                gender=data.get('gender',''),
                 driver_is_regist_owner=data.get('driver_is_regist_owner'),
                 driver_licence_expiry=datetime.strptime(
                     data.get('driver_licence_expiry'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_licence_expiry') else None,
