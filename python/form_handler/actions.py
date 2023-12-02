@@ -12,7 +12,7 @@ import json
 from datetime import datetime
 from minio import Minio
 from minio.error import S3Error
-from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef
+from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef,ImpoundReasonCodes
 from python.form_handler.icbc_service import submit_to_icbc
 from python.form_handler.vips_service import create_vips_doc,create_vips_imp
 from python.form_handler.payloads import vips_payload,vips_document_payload
@@ -621,7 +621,54 @@ def prep_vips_payload(**args)->tuple:
             tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=None
         
         tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]="VEHI"
-        tmp_payload["vipsImpoundCreate"]["originalCauseCds"]=[]
+
+        # get reason codes from DB
+        # TODO: Check the reason list
+        reason_list=[]
+        payload_reason_list=[]
+        excessive_speeding=form_data.get("excessive_speed",False)
+        street_racing=form_data.get("street_racing",False)
+        stunt_driving=form_data.get("stunt_driving",False)
+        motor_seating=form_data.get("motorcycle_seating",False)
+        motor_restriction=form_data.get("motorcycle_restrictions",False)
+        unlicensed=form_data.get("unlicensed",False)
+        irp_impound_dur=form_data.get("irp_impound_duration",False)
+        if excessive_speeding:
+            reason_list.append("EXSPEED")
+        if street_racing:
+            reason_list.append("RACE")
+        if stunt_driving:
+            reason_list.append("STUNT")
+        if motor_seating:
+            reason_list.append("SITTING")
+        if motor_restriction:
+            reason_list.append("MCUNLIC")
+        if unlicensed:
+            reason_list.append("IDEPUNLIC")
+        if irp_impound_dur:
+            if irp_impound_dur == "7DAY":
+                reason_list.append("BACWARN7")
+            elif irp_impound_dur == "30DAY":
+                reason_list.append("BACWARN30")
+            elif irp_impound_dur == "3DAY":
+                reason_list.append("BACWARN3")
+        with application.app_context():
+            # get reason data
+            policeDetatchmentId=''
+            agency_name=''
+            for v in reason_list:
+                reason_data = db.session.query(ImpoundReasonCodes) \
+                    .filter(ImpoundReasonCodes.df_unique_code == v) \
+                    .all()
+                if len(reason_data) == 0:
+                    logging.error("reason not found")
+                else:
+                    for r in reason_data:
+                        reason_dict = r.__dict__
+                        reason_dict.pop('_sa_instance_state', None)
+                        payload_reason_list.append(reason_dict["vips_value_cd"])
+                        break
+        tmp_payload["vipsImpoundCreate"]["originalCauseCds"]=payload_reason_list
 
         # if "notice_type_cd" in form_data: tmp_payload["vipsImpoundCreate"]["noticeTypeCd"]="IMP"
         tmp_payload["vipsImpoundCreate"]["noticeTypeCd"]="IMP"
@@ -734,6 +781,7 @@ def prep_vips_payload(**args)->tuple:
         tmp_payload["vipsImpoundmentArray"]=vipsImpoundmentArray
 
         args['vips_payload']=tmp_payload
+        logging.debug(tmp_payload)
     except Exception as e:
         logging.error(e)
         logging.error(tmp_payload)
