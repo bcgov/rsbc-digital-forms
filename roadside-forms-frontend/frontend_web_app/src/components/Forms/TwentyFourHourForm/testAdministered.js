@@ -109,11 +109,7 @@ export const TestAdministered = (props) => {
                     label="Which test was used?"
                     name="reasonable_test_used_drugs"
                     options={[
-                      { label: "Approved Drug", value: "approved-drug" },
-                      {
-                        label: "Screening Equipment",
-                        value: "screening-equipment",
-                      },
+                      { label: "Approved Instrument", value: "approved-drug" },
                       {
                         label: "Prescribed Physical Coordination Test",
                         value: "PPCT",

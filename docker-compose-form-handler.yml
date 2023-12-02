@@ -2,26 +2,43 @@ version: '3.8'
  
 services:
 
-    form_handler:
+    # form_handler:
+    #   build:
+    #     context: python
+    #     dockerfile: form_handler/Dockerfile-local
+    #   environment:
+    #     RABBITMQ_USER: admin
+    #     RABBITMQ_PASS: password
+    #     DB_HOST: localhost
+    #     LOG_LEVEL: "DEBUG"
+    #     ENCRYPT_KEY: "${ENCRYPT_KEY}"
+    #     ENCRYPT_KEY_SALT: "${ENCRYPT_KEY_SALT}"
+    #     TMP_STORAGE_LOCAL: "${TMP_STORAGE_LOCAL}"
+    #   x-develop:
+    #     watch:
+    #       - action: rebuild
+    #         path: './python/form_handler'
+    #   # depends_on:
+    #   #   rabbitmq:
+    #   #     condition: service_healthy
+    #   restart: on-failure:20
+    #   # networks:
+    #   #   - host
+    #   network_mode: "host"
+
+    task_scheduler:
       build:
         context: python
-        dockerfile: form_handler/Dockerfile-local
+        dockerfile: task_scheduler/Dockerfile
+      restart: on-failure:20
+      network_mode: "host"
+      ports:
+        - 5010:5000
       environment:
         RABBITMQ_USER: admin
         RABBITMQ_PASS: password
         DB_HOST: localhost
         LOG_LEVEL: "DEBUG"
-        ENCRYPT_KEY: "${ENCRYPT_KEY}"
-        ENCRYPT_KEY_SALT: "${ENCRYPT_KEY_SALT}"
-        TMP_STORAGE_LOCAL: "${TMP_STORAGE_LOCAL}"
-      x-develop:
-        watch:
-          - action: rebuild
-            path: './python/form_handler'
-      # depends_on:
-      #   rabbitmq:
-      #     condition: service_healthy
-      restart: on-failure:20
-      # networks:
-      #   - host
-      network_mode: "host"
+        DB_USER: "testuser"
+        DB_PASS: "pass"
+
