@@ -601,6 +601,7 @@ def prep_vips_payload(**args)->tuple:
                         logging.debug(agency_dict)
                         policeDetatchmentId=int(agency_dict["vips_policedetachments_agency_id"])
                         break
+            tmp_payload["vipsImpoundCreate"]["policeDetatchmentId"]=policeDetatchmentId
 
         # vipsImpoundCreate payload
         if "driver_jurisdiction" in event_data: tmp_payload["vipsImpoundCreate"]["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
@@ -674,7 +675,7 @@ def prep_vips_payload(**args)->tuple:
 
         # if "notice_type_cd" in form_data: tmp_payload["vipsImpoundCreate"]["noticeTypeCd"]="IMP"
         tmp_payload["vipsImpoundCreate"]["noticeTypeCd"]="IMP"
-        tmp_payload["vipsImpoundCreate"]["policeDetatchmentId"]=policeDetatchmentId
+        # tmp_payload["vipsImpoundCreate"]["policeDetatchmentId"]=policeDetatchmentId
         # if "agency" in user_data: tmp_payload["vipsImpoundCreate"]["policeDetatchmentId"]=user_data["agency"].upper()
 
 
