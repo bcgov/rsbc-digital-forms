@@ -3,8 +3,16 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Checkbox } from "../../common/Checkbox/checkbox";
 import "./vehicleImpound.scss";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 export const VehicleImpoundmentReason = (props) => {
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      This impound reason is currently under review by RSBC policy and is
+      currently unenforceable under the MVA until changes are enacted.{" "}
+    </Tooltip>
+  );
+
   return (
     <div className="border-design-form left text-font">
       <h3>Impoundment for Driving Behaviour</h3>
@@ -54,14 +62,23 @@ export const VehicleImpoundmentReason = (props) => {
               Vehicle Act.
             </span>
           </Checkbox>
-          <Checkbox name="motorcycle_restrictions" disabled>
-            Motorcycle (restrictions)
-            <span className="light-text">
-              - Committing an offence under section 25(15) of the Motor Vehicle
-              Act relating to a restriction or condition of a motorcycle learner
-              or novice driver's licence.
-            </span>
-          </Checkbox>
+          <OverlayTrigger
+            placement="top"
+            delay={{ show: 250, hide: 400 }}
+            overlay={renderTooltip}
+            trigger={["hover", "focus"]}
+          >
+            <div>
+              <Checkbox name="motorcycle_restrictions" disabled>
+                Motorcycle (restrictions)
+                <span className="light-text">
+                  - Committing an offence under section 25(15) of the Motor
+                  Vehicle Act relating to a restriction or condition of a
+                  motorcycle learner or novice driver's licence.
+                </span>
+              </Checkbox>
+            </div>
+          </OverlayTrigger>
           <Checkbox name="unlicensed">
             Unlicensed (UL)
             <span className="light-text">
