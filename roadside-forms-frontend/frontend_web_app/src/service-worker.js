@@ -27,46 +27,46 @@ const manifest = (self.__WB_MANIFEST || []).concat([
   //     url: "/roadside-forms/static/media/BCID_RoadSafetyBC_logo_transparent.png",
   //     revision: null,
   //   },
-    {
-      url: "/roadside-forms/assets/libre-barcode-39-v19-latin-regular.woff",
-      revision: null,
-    },
-    {
-      url: "/roadside-forms/assets/MV2634E_082023_driver.png",
-      revision: null,
-    },
-    {
-      url: "/roadside-forms/assets/MV2634E_082023_icbc.png",
-      revision: null,
-    },
-    {
-      url: "/roadside-forms/assets/MV2634E_082023_ilo.png",
-      revision: null,
-    },
-    {
-      url: "/roadside-forms/assets/MV2721_201502_appeal.png",
-      revision: null,
-    },
-    {
-      url: "/roadside-forms/assets/MV2721_201502.png",
-      revision: null,
-    },
-    {
-      url: "/roadside-forms/assets/MV2722_201502_Incident_Details.png",
-      revision: null,
-    },
-    {
-      url: "/roadside-forms/assets/MV2722_201502.png",
-      revision: null,
-    },
-    {
-      url: "/roadside-forms/assets/MV2906E_082023_driver.png",
-      revision: null,
-    },
-    {
-      url: "/roadside-forms/assets/MV2906E_082023_icbc.png",
-      revision: null,
-    },
+  {
+    url: "/roadside-forms/assets/libre-barcode-39-v19-latin-regular.woff",
+    revision: null,
+  },
+  {
+    url: "/roadside-forms/assets/MV2634E_082023_driver.png",
+    revision: null,
+  },
+  {
+    url: "/roadside-forms/assets/MV2634E_082023_icbc.png",
+    revision: null,
+  },
+  {
+    url: "/roadside-forms/assets/MV2634E_082023_ilo.png",
+    revision: null,
+  },
+  {
+    url: "/roadside-forms/assets/MV2721_201502_appeal.png",
+    revision: null,
+  },
+  {
+    url: "/roadside-forms/assets/MV2721_201502.png",
+    revision: null,
+  },
+  {
+    url: "/roadside-forms/assets/MV2722_201502_Incident_Details.png",
+    revision: null,
+  },
+  {
+    url: "/roadside-forms/assets/MV2722_201502.png",
+    revision: null,
+  },
+  {
+    url: "/roadside-forms/assets/MV2906E_082023_driver.png",
+    revision: null,
+  },
+  {
+    url: "/roadside-forms/assets/MV2906E_082023_icbc.png",
+    revision: null,
+  },
   // {
   //   url: "/roadside-forms/createEvent",
   //   revision: null,
@@ -104,6 +104,12 @@ registerRoute(
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
+self.addEventListener("waiting", (event) => {
+  if (confirm("A new version is available. Do you want to update?")) {
     self.skipWaiting();
   }
 });
