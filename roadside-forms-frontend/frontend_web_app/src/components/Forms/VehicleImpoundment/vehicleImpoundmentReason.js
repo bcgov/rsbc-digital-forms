@@ -28,7 +28,7 @@ export const VehicleImpoundmentReason = (props) => {
           <Checkbox name="prohibited">
             Prohibited
             <span className="light-text">
-              - Driving while prohibited under the Motor Vehicle Act, "Criminal
+              - Driving while prohibited under the Motor Vehicle Act, Criminal
               Code, Youth Justice Act or Youth Criminal Justice Act (Canada).
             </span>
           </Checkbox>
