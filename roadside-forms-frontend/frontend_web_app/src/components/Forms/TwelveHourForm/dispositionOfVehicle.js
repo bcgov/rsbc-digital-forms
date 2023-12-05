@@ -135,6 +135,24 @@ export const Disposition = (props) => {
                 </Col>
               </Row>
             </div>
+            <Row>
+              <Col sm={4}>
+                <DatePickerField
+                  name="date_released"
+                  label="Date Released"
+                  className="field-height field-width"
+                  required
+                />
+              </Col>
+              <Col sm={4}>
+                <TimeInputField
+                  label="Time Released"
+                  className="field-height field-width"
+                  name="time_released"
+                  required
+                />
+              </Col>
+            </Row>
           </div>
         </>
       )}
