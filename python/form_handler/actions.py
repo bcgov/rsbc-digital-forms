@@ -468,7 +468,8 @@ def send_to_icbc(**args)->tuple:
     try:
         logging.debug(args['icbc_payload'])
         icbc_payload=args.get('icbc_payload')
-        send_status, icbc_response_txt,icbc_resp_code = submit_to_icbc(icbc_payload)
+        logging.debug(icbc_payload)
+        send_status, icbc_response_txt,icbc_resp_code = submit_to_icbc(icbc_payload,logging)
         args['icbc_response_txt']=icbc_response_txt
         args['icbc_resp_code']=icbc_resp_code
         if send_status is False:
@@ -548,7 +549,8 @@ def create_vips_document(**args)->tuple:
     logging.debug(args)
     try:
         vips_document_payload=args.get('vips_document_payload')
-        vips_doc_status, vips_doc_response_txt, vips_doc_resp_code = create_vips_doc(vips_document_payload)
+        logging.debug(vips_document_payload)
+        vips_doc_status, vips_doc_response_txt, vips_doc_resp_code = create_vips_doc(vips_document_payload,logging)
         args['vips_doc_response_txt']=vips_doc_response_txt
         args['vips_doc_resp_code']=vips_doc_resp_code
         
@@ -823,7 +825,9 @@ def create_vips_impoundment(**args)->tuple:
     logging.debug(args)
     try:
         vips_payload=args.get('vips_payload')
-        vips_status, vips_response_txt, vips_resp_code = create_vips_imp(vips_payload)
+        logging.debug('This is the payload sent to VIPS')
+        logging.debug(json.dumps(vips_payload))
+        vips_status, vips_response_txt, vips_resp_code = create_vips_imp(vips_payload,logging)
         args['vips_response_txt']=vips_response_txt
         args['vips_resp_code']=vips_resp_code
         
