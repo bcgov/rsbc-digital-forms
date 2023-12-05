@@ -16,6 +16,7 @@ export const VehicleImpoundmentReason = (props) => {
   return (
     <div className="border-design-form left text-font">
       <h3>Impoundment for Driving Behaviour</h3>
+      <p>7-Day Impoundment for the following reason(s):</p>
       <Row>
         <Col className="left checkboxs">
           <Checkbox name="excessive_speed">
