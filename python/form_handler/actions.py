@@ -606,7 +606,32 @@ def prep_vips_payload(**args)->tuple:
             tmp_payload["vipsImpoundCreate"]["policeDetatchmentId"]=policeDetatchmentId
 
         # vipsImpoundCreate payload
-        if "driver_jurisdiction" in event_data: tmp_payload["vipsImpoundCreate"]["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
+        # get jursdiction value
+        tmp_jursdiction_val=None
+        if "driver_jurisdiction" in event_data:
+            application = args.get('app')
+            db = args.get('db')
+            tmp_jurisdictionvalue=event_data["driver_jurisdiction"]
+            with application.app_context():
+                # get jurisdiction data
+                vips_jurisdiction_code=''
+                juris_data = db.session.query(JurisdictionCrossRef) \
+                        .filter(JurisdictionCrossRef.prime_jurisdiction_code == tmp_jurisdictionvalue) \
+                        .all()
+                if len(juris_data) == 0:
+                    logging.error("jurisdiction not found")
+                else:
+                    for j in juris_data:
+                        juris_dict = j.__dict__
+                        juris_dict.pop('_sa_instance_state', None)
+                        vips_jurisdiction_code= juris_dict["vips_jurisdictions_objectCd"]
+                        break
+                tmp_jursdiction_val=vips_jurisdiction_code
+        tmp_payload["vipsImpoundCreate"]["dlJurisdictionCd"]=tmp_jursdiction_val
+        # if "driver_jurisdiction" in event_data: tmp_payload["vipsImpoundCreate"]["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
+
+
+
         if "driver_licence_no" in event_data: tmp_payload["vipsImpoundCreate"]["driverLicenceNo"]=event_data["driver_licence_no"]
 
 
@@ -762,7 +787,8 @@ def prep_vips_payload(**args)->tuple:
             vips_licence_create_obj["birthDt"]=birthdate
 
         if "driver_licence_no" in event_data: vips_licence_create_obj["driverLicenceNo"]=event_data["driver_licence_no"]
-        if "driver_jurisdiction" in event_data: vips_licence_create_obj["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
+        vips_licence_create_obj["dlJurisdictionCd"]=tmp_jursdiction_val
+        # if "driver_jurisdiction" in event_data: vips_licence_create_obj["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
         vipsRegigCreateObj["vipsLicenceCreateObj"]=vips_licence_create_obj
         vipsRegistrationCreateArray.append(vipsRegigCreateObj)
         tmp_payload["vipsRegistrationCreateArray"]=vipsRegistrationCreateArray
@@ -775,7 +801,34 @@ def prep_vips_payload(**args)->tuple:
         if "vehicle_plate_no" in event_data: tmp_payload["vipsVehicleCreate"]["licencePlateNo"]=event_data["vehicle_plate_no"].upper()
         tmp_payload["vipsVehicleCreate"]["lpDecalValidYy"]=None
 
-        if "vehicle_jurisdiction" in event_data: tmp_payload["vipsVehicleCreate"]["lpJurisdictionCd"]=event_data["vehicle_jurisdiction"]
+
+        # get vehicle jurisdiction value
+        tmp_vehicle_jursdiction_val=None
+        if "vehicle_jurisdiction" in event_data:
+            application = args.get('app')
+            db = args.get('db')
+            tmp_vehi_jurisdictionvalue=event_data["vehicle_jurisdiction"]
+            with application.app_context():
+                # get jurisdiction data
+                vips_jurisdiction_code=''
+                juris_data = db.session.query(JurisdictionCrossRef) \
+                        .filter(JurisdictionCrossRef.prime_jurisdiction_code == tmp_vehi_jurisdictionvalue) \
+                        .all()
+                if len(juris_data) == 0:
+                    logging.error("jurisdiction not found")
+                else:
+                    for j in juris_data:
+                        juris_dict = j.__dict__
+                        juris_dict.pop('_sa_instance_state', None)
+                        vips_jurisdiction_code= juris_dict["vips_jurisdictions_objectCd"]
+                        break
+                tmp_vehicle_jursdiction_val=vips_jurisdiction_code
+        tmp_payload["vipsVehicleCreate"]["lpJurisdictionCd"]=tmp_vehicle_jursdiction_val
+
+        # if "vehicle_jurisdiction" in event_data: tmp_payload["vipsVehicleCreate"]["lpJurisdictionCd"]=event_data["vehicle_jurisdiction"]
+
+
+
 
         if "vehicle_registration_no" in event_data: tmp_payload["vipsVehicleCreate"]["registrationNo"]=event_data["vehicle_registration_no"].upper()
 
