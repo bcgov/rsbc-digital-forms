@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const getCurrentDateTime = () => {
   const now = new Date();
   const dayString = now.toLocaleDateString("en-CA", { weekday: "long" });
@@ -20,19 +22,7 @@ export const convertToPST = (datetime) => {
 
 // 2023-10-23 16:04:44
 export const convertToPSTFormat = (datetime) => {
-  let myDate = new Date(datetime);
-  let pstDate = myDate.toLocaleString("en-US", {
-    timeZone: "America/Los_Angeles"
-  });
-  let newDate = new Date(pstDate);
-  let day = newDate.getDate();
-  let month = newDate.getMonth();
-  let year = newDate.getFullYear();
-  let hours = newDate.getHours();
-  let minutes = newDate.getMinutes();
-  let seconds = newDate.getSeconds();
-  const formattedPSTDate = `${year}-${month + 1}-${day} ${hours}:${minutes}:${seconds}`;
-  return formattedPSTDate;
+  return moment(datetime).tz("America/Vancouver").format("YYYY-MM-DD HH:mm:ss");
 };
 
 export const pstDate = (datetime) => {
@@ -44,5 +34,3 @@ export const pstDate = (datetime) => {
   );
   return pstDate;
 };
-
-
