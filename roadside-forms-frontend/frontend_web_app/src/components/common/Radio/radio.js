@@ -1,7 +1,7 @@
 import React from "react";
 import { useField } from "formik";
 
-export const Radio = ({ name, options, required, label }) => {
+export const Radio = ({ name, options, required, label, lightLabel }) => {
   const [field, meta] = useField(name);
 
   return (
@@ -10,6 +10,7 @@ export const Radio = ({ name, options, required, label }) => {
         <label htmlFor={name}>
           {label}
           {required && <span className="required-asterisk"> *</span>}
+          {lightLabel && <span className="light-text">{lightLabel}</span>}
         </label>
       )}
       {options.map((option) => (
