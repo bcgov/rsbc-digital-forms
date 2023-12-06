@@ -834,8 +834,31 @@ def prep_vips_payload(**args)->tuple:
 
         if "vehicle_year" in event_data: tmp_payload["vipsVehicleCreate"]["manufacturedYy"]=event_data["vehicle_year"]
 
+        # get nsc jurisdiction value
+        tmp_nsc_jursdiction_val=None
+        if "nsc_prov_state" in event_data:
+            application = args.get('app')
+            db = args.get('db')
+            tmp_nsc_jurisdictionvalue=event_data["nsc_prov_state"]
+            with application.app_context():
+                # get jurisdiction data
+                vips_jurisdiction_code=''
+                juris_data = db.session.query(JurisdictionCrossRef) \
+                        .filter(JurisdictionCrossRef.prime_jurisdiction_code == tmp_nsc_jurisdictionvalue) \
+                        .all()
+                if len(juris_data) == 0:
+                    logging.error("jurisdiction not found")
+                else:
+                    for j in juris_data:
+                        juris_dict = j.__dict__
+                        juris_dict.pop('_sa_instance_state', None)
+                        vips_jurisdiction_code= juris_dict["vips_jurisdictions_objectCd"]
+                        break
+                tmp_nsc_jursdiction_val=vips_jurisdiction_code
+        tmp_payload["vipsVehicleCreate"]["nscJurisdictionTxt"]=tmp_nsc_jursdiction_val
+
         # if "nsc_prov_state" in event_data: tmp_payload["vipsVehicleCreate"]["nscJurisdictionTxt"]=event_data["nsc_prov_state"].upper()
-        tmp_payload["vipsVehicleCreate"]["nscJurisdictionTxt"]=None
+        # tmp_payload["vipsVehicleCreate"]["nscJurisdictionTxt"]=None
         if "vehicle_colour" in event_data: 
             tmp_vehicle_color=event_data["vehicle_colour"].upper()
             tmp_vehicle_color=tmp_vehicle_color.replace("{","")
