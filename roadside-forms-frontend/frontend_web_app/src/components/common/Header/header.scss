@@ -13,19 +13,19 @@ $primary-color: #003366;
   justify-content: space-between;
 }
 
-.row {
+.header {
   margin-left: 0 !important;
   margin-right: 0 !important;
   width: 100%;
   min-height: 120px;
 }
 
-.col-right{
+.col-right {
   text-align: right;
   margin-top: 1.5rem !important;
 }
 
-.container {
+.header-container {
   background-color: $primary-color;
   min-height: 120px;
 }
