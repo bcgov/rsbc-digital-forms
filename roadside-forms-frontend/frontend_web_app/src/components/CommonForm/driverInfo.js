@@ -68,6 +68,20 @@ export const DriverInfo = (props) => {
       (province) => province.value === dl_data["address"]["province"]
     )[0];
     values["driver_postal"] = dl_data["address"]["postalCode"];
+
+    const dl_expiry_year = "20" + dl_data["expiration"].slice(0, 2);
+    const dl_expiry_month = dl_data["dob"].slice(4, 6);
+    const dl_expiry_day = dl_data["dob"].slice(6, 8);
+    values["driver_licence_expiry"] = new Date(
+      dl_expiry_year + "/" + dl_expiry_month + "/" + dl_expiry_day
+    );
+
+    if (dl_data["gender"] === "M") {
+      values["gender"] = genderDropdown[0];
+    }
+    if (dl_data["gender"] === "F") {
+      values["gender"] = genderDropdown[1];
+    }
   };
 
   const handleScannedBarcode = (event) => {

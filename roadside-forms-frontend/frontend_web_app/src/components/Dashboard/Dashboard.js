@@ -330,11 +330,11 @@ export const Dashboard = () => {
           <thead>
             <tr>
               <th>Date & Time</th>
-              <th>Form #</th>
-              <th>Form Type</th>
-              <th>Location</th>
               <th>Surname</th>
+              <th>Form Type</th>
+              <th>Form #</th>
               <th>Plate #</th>
+              <th>Location</th>
             </tr>
           </thead>
           <tbody>
@@ -342,30 +342,38 @@ export const Dashboard = () => {
               return data["submitted"] ? (
                 <tr key={data["vehicle_vin_no"]}>
                   <td>
+                    {data["created_dt"]
+                      ? convertToPSTFormat(data["created_dt"])
+                      : "N/A"}
+                  </td>
+                  <td>
                     <Link
                       to="/view-previous"
                       state={{ eventId: data["event_id"] }}
                     >
-                      {data["created_dt"]
-                        ? convertToPSTFormat(data["created_dt"])
+                      {data["driver_last_name"]
+                        ? data["driver_last_name"]
                         : "N/A"}
                     </Link>
                   </td>
-                  <td>{formNumbers(data)}</td>
                   <td>{formTypes(data)}</td>
+
                   <td>
-                    {data["intersection_or_address_of_offence"]
-                      ? data["intersection_or_address_of_offence"]
-                      : "N/A"}
-                  </td>
-                  <td>
-                    {data["driver_last_name"]
-                      ? data["driver_last_name"]
-                      : "N/A"}
+                    <Link
+                      to="/view-previous"
+                      state={{ eventId: data["event_id"] }}
+                    >
+                      {formNumbers(data)}
+                    </Link>
                   </td>
                   <td>
                     {data["vehicle_plate_no"]
                       ? data["vehicle_plate_no"]
+                      : "N/A"}
+                  </td>
+                  <td>
+                    {data["intersection_or_address_of_offence"]
+                      ? data["intersection_or_address_of_offence"]
                       : "N/A"}
                   </td>
                 </tr>
