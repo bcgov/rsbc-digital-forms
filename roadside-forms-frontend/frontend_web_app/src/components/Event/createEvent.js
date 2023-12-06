@@ -240,7 +240,7 @@ export const CreateEvent = () => {
       years.push({ value: year, label: year.toString() });
     }
 
-    return years;
+    return years.sort((a, b) => b.value - a.value);
   };
 
   const setNSCVI = (values) => {

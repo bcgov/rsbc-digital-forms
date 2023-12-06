@@ -58,6 +58,8 @@ export const dlScanner = {
       /;(\d{6})(\d{0,13})(=)(\d{4})(\d{8})(\d{0,5})?/
     );
 
+    var track3 = tracks[2].match(/%0A.{11}.{2}.{10}.{4}(.{1})/);
+
     var province = track1[1];
     var city = track1[2];
     var name = track1[3].match(/([^$]{0,35}),\$?([^$]{0,35})?/);
@@ -94,6 +96,7 @@ export const dlScanner = {
         if (!dob) return;
         return dob[1] + dob[2] + dob[3];
       })(),
+      gender: track3[1],
     };
   },
 
