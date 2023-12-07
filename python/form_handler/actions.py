@@ -630,9 +630,9 @@ def prep_vips_payload(**args)->tuple:
         tmp_payload["vipsImpoundCreate"]["dlJurisdictionCd"]=tmp_jursdiction_val
         # if "driver_jurisdiction" in event_data: tmp_payload["vipsImpoundCreate"]["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
 
-
-
-        if "driver_licence_no" in event_data: tmp_payload["vipsImpoundCreate"]["driverLicenceNo"]=event_data["driver_licence_no"]
+        # RSBC DF does not collect RO DL number. Default to blank for VIPS
+        tmp_payload["vipsImpoundCreate"]["driverLicenceNo"]=None
+        # if "driver_licence_no" in event_data: tmp_payload["vipsImpoundCreate"]["driverLicenceNo"]=event_data["driver_licence_no"]
 
 
         # get ilo id from db
@@ -1131,7 +1131,3 @@ def add_unknown_event_error_to_message(**args)->tuple:
         logging.error(e)
         return False, args
     return True,args
-
-
-
-
