@@ -691,6 +691,10 @@ def prep_vips_payload(**args)->tuple:
         motor_restriction=form_data.get("motorcycle_restrictions",False)
         unlicensed=form_data.get("unlicensed",False)
         irp_impound_dur=form_data.get("irp_impound_duration",False)
+        prohibited_val=form_data.get("prohibited",False)
+        suspended_val=form_data.get("suspended",False)
+        if prohibited_val or suspended_val:
+            reason_list.append("IDEPPROHIB")
         if excessive_speeding:
             reason_list.append("EXSPEED")
         if street_racing:
@@ -874,7 +878,12 @@ def prep_vips_payload(**args)->tuple:
             tmp_payload["vipsVehicleCreate"]["vehicleMakeTxt"]=mk.upper()  
 
         if "vehicle_style" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleStyleTxt"]=event_data["vehicle_style"].upper()  
-        if "vehicle_type" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=str(event_data["vehicle_type"])
+        if "vehicle_type" in event_data: 
+            if event_data["vehicle_type"] == None:
+                tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=None
+            else:
+                tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=event_data["vehicle_type"]
+                # tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=str(event_data["vehicle_type"])
 
         # vipsDocumentIdArray payload
         vipsDocumentIdArray=[]
