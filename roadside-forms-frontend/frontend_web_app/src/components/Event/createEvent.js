@@ -697,7 +697,7 @@ export const CreateEvent = () => {
                       <Unlicensed jurisdictions={jurisdictions} />
                     )}
                     <LinkageFactors />
-                    <IncidentDetails />
+                    <IncidentDetails values={values} />
                   </>
                 )}
                 {values["TwentyFourHour"] && (
