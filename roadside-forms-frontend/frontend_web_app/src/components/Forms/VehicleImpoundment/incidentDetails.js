@@ -5,10 +5,12 @@ import { Checkbox } from "../../common/Checkbox/checkbox";
 import { TextAreaInput } from "../../common/Input/TextAreaInput";
 
 export const IncidentDetails = (props) => {
-  const [input, setInput] = useState("");
+  const { values } = props;
+  const [input, setInput] = useState(values["incident_details"]);
   const handleChange = (event) => {
     setInput(event.target.value);
   };
+
   return (
     <div className="border-design-form left text-font">
       <h3>Incident Details</h3>
