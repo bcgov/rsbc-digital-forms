@@ -39,3 +39,9 @@ $primary-color: #003366;
   top: 0;
   width: 25%;
 }
+
+@media print {
+  header {
+    display: none;
+  }
+}
