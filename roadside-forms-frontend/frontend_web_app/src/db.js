@@ -12,7 +12,7 @@ db.version(3).stores({
   vehicleColours: "code, display_name, colour_class",
   provinces: "id, objectCd, objectDsc",
   jurisdictions: "id, objectCd, objectDsc",
-  impoundLotOperators: "id, name, lot_address, city, phone",
+  impoundLotOperators: "id, name, lot_address, city, phone, name_print",
   countries: "id, objectCd, objectDsc",
   cities: "id, objectCd, objectDsc",
   agencies: "id, vjur, agency_name",
