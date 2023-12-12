@@ -43,8 +43,8 @@ export const VehicleImpoundment = (props) => {
     } else if (values["vehicle_impounded"] === "YES") {
       setFieldValue("reason_for_not_impounding", "");
       setFieldValue("date_released", null);
-      setFieldValue("time_released", null);
-      setFieldValue("vehicle_released_to", null);
+      setFieldValue("time_released", "");
+      setFieldValue("vehicle_released_to", "");
     }
   }, [values["vehicle_impounded"], values["VI"], setFieldValue]);
 
