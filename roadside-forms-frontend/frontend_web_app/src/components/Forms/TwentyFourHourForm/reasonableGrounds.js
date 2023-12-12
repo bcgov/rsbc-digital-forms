@@ -20,6 +20,9 @@ export const ReasonableGrounds = () => {
       values["reasonable_date_of_test"] = "";
       values["reasonable_time_of_test"] = "";
     }
+    if (values["prescribed_test_used"] === "YES") {
+      values["reason_for_not_using_prescribed_test"] = "";
+    }
   }, [values["prescribed_test_used"]]);
 
   return (
