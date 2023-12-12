@@ -14,6 +14,14 @@ export const ReasonableGrounds = () => {
       values["reasonable_ground_other_reason"] = "";
     }
   }, [values["reasonable_ground_other"]]);
+
+  useEffect(() => {
+    if (values["prescribed_test_used"] === "NO") {
+      values["reasonable_date_of_test"] = "";
+      values["reasonable_time_of_test"] = "";
+    }
+  }, [values["prescribed_test_used"]]);
+
   return (
     <div className="border-design-form left text-font">
       <h3>Reasonable Grounds</h3>
