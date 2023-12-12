@@ -1,6 +1,6 @@
 {
     "name": "RSBC Roadside Forms auto-fill extension",
-    "version": "2.6",
+    "version": "2.9",
     "manifest_version": 3,
     "description": "A minimal extension to make filling out roadside digital forms easier.",
     "permissions": [
@@ -20,6 +20,7 @@
                 "*://test.jag.gov.bc.ca/roadside-forms/*",
                 "*://rsbc-roadside-forms-app-frontend-dev.apps.silver.devops.gov.bc.ca/roadside-forms/*",
                 "*://rsbc-roadside-forms-app-frontend-test.apps.silver.devops.gov.bc.ca/roadside-forms/*",
+                "*://rsbc-roadside-forms-app-frontend-stage.apps.silver.devops.gov.bc.ca/roadside-forms/*",
                 "*://localhost:*/*",
                 "*://127.0.0.1:*/*"
             ],

@@ -1,10 +1,35 @@
 // Tweak this if it's taking too long to load drop-downs to populate
 const secondsToWaitForDropdownsToAppear = 25;
 
+// ICBC values for TST6
+const icbcTst6Values = [{
+    "driver_licence_no": "30000598",
+    "driver_last_name": "DLNP",
+    "driver_given_name": "CONTRAVENTIONS",
+    "driver_dob": "19900909",
+    "vehice_plate_no": "AA711A"
+},
+{
+    "driver_licence_no": "01695672",
+    "driver_last_name": "SHARCC",
+    "driver_given_name": "COMBO",
+    "driver_dob": "19650403",
+    "vehice_plate_no": "AA714A"
+}];
+
+
 // Helper to call all the sections to be filled
 function FillAllSections() {
-    FillDriverSection();
-    FillVehicleSection();
+  
+    // When filling a form that will go to ICBC always use ICBC TST6 test values
+    icbcTestRecord = null;
+    if (document.getElementById('TwentyFourHour').value === 'true' || document.getElementById('TwelveHour').value === 'true')
+    {
+        icbcTestRecord = icbcTst6Values[Math.floor(Math.random() * icbcTst6Values.length)];
+    }
+
+    FillDriverSection(icbcTestRecord);
+    FillVehicleSection(icbcTestRecord);
     FillOwnerSection();
     FillDispositionOfVehicleSection();
     FillVehicleImpoundmentSection();
@@ -20,31 +45,54 @@ function FillAllSections() {
     //FillOfficerSection();
 }
 
-function FillDriverSection() {
+function FillDriverSection(icbcTestRecord) {
     const dl_no = GenerateDL();
     const dl_surname = chance.last();
     const dl_given = GenerateGivenNames();
-    console.log("RSF test extension: filling form for DL " + dl_no + ": " + dl_given + " " + dl_surname + ".");
+    
+    if (icbcTestRecord)
+    {
+        // Use ICBC TST6 test values
+        console.log("RSF test extension: filling form with ICBC TST6 test values " + icbcTestRecord.driver_licence_no + ": " + icbcTestRecord.driver_last_name + ", " + icbcTestRecord.driver_given_name + ".")
+        SetField('driver_licence_no', icbcTestRecord.driver_licence_no);
+        SetField('driver_last_name', icbcTestRecord.driver_last_name);
+        SetField('driver_given_name', icbcTestRecord.driver_given_name);
+        SetField('driver_dob', icbcTestRecord.driver_dob);
+        }
+    else {
+        console.log("RSF test extension: filling form for DL " + dl_no + ": " + dl_given + " " + dl_surname + ".");
+        SetField('driver_licence_no', dl_no);
+        SetField('driver_last_name', dl_surname);
+        SetField('driver_given_name', dl_given);
+        SetField('driver_dob', GenerateDateOfBirth());
+    }
 
-    SetField('driver_licence_no', dl_no);
-    SetField('driver_last_name', dl_surname);
-    SetField('driver_given_name', dl_given);
-    SetField('driver_dob', GenerateDateOfBirth());
     SetField('driver_address', GenerateStreetAddress());
     SetField('driver_phone', GeneratePhoneNumber());
     SetField('driver_city', GenerateCity())
     SetField('driver_postal', GeneratePostalCode());
-    SetField('gender', RandomGender());
+    SetCustomSelect('gender-select', RandomGender());
     SetField('driver_licence_expiry', GenerateDLExpiryDate());
     SetField('driver_licence_class', GenerateRandomDlClass());
 }
 
-function FillVehicleSection(){
-    SetField('vehicle_plate_no', GenerateLicencePlate());
+function FillVehicleSection(icbcTestRecord){
+    if (icbcTestRecord)
+    {
+        SetField('vehicle_plate_no', icbcTestRecord.vehice_plate_no);
+    }
+    else{
+        SetField('vehicle_plate_no', GenerateLicencePlate());
+    }
     SetField('vehicle_registration_no', GenerateRegistrationNumber());
-    SelectRandomVehicleType('vehicle_type-select');
+    //SelectRandomVehicleType('vehicle_type-select');
     SetField('vehicle_vin_no', GenerateVIN());
-    SetField('nsc_no', GenerateNSC());
+
+    // Occasionally, pick a random NSC number
+    if (Math.floor(Math.random() * 100) + 1 < 30) {
+        SetCustomSelect('nsc_prov_state-select', "BRITISH COLUMBIA");
+        SetField('nsc_no', GenerateNSC());
+    }
 
     //SetMultiSelect('vehicle_year-select', "1979");
     SelectRandomVehicleYear('vehicle_year-select');
@@ -74,11 +122,27 @@ function FillOwnerSection() {
 }
 
 function FillDispositionOfVehicleSection() {
+    // 90% of the time, select vehicle impounded, 10% of the time, select vehicle not impounded
+    //RandomlyChooseRadio('vehicle_impounded-YES','vehicle_impounded-NO');
+    if (Math.floor(Math.random() * 100) + 1 < 90) {
+        SelectRadioButton('vehicle_impounded-YES');
+    }
+    else {
+        SelectRadioButton('vehicle_impounded-NO');
+    }
+
+    // Yes, vehicle impounded
+    RandomlyChooseRadio('location_of_keys-WITH VEHICLE', 'location_of_keys-WITH DRIVER');
+
+    // No, vehicle not impounded
     RandomlyChooseRadio('vehicle_location-released', 'vehicle_location-roadside', 'vehicle_location-private');
+    RandomlyChooseRadio('reason_for_not_impounding-released','reason_for_not_impounding-roadside','reason_for_not_impounding-private','reason_for_not_impounding-investigation');
+
+    // Released to other driver
     SetField('vehicle_released_to', chance.name());
     SetField('date_released', GetCurrentDate());
     SetField('time_released', GetTimeFiveMinutesAgo());
-    RandomlyChooseRadio('location_of_keys-WITH VEHICLE', 'location_of_keys-WITH DRIVER');
+
 }
 
 function FillVehicleImpoundmentSection() {
@@ -86,8 +150,11 @@ function FillVehicleImpoundmentSection() {
     SetField('date_of_impound', GetCurrentDate())
     //SelectRadioButton('vehicle-impounded-YES');
     RandomlyChooseRadio('location_of_keys-WITH VEHICLE', 'location_of_keys-WITH DRIVER');
+
+
     //SetMultiSelect('ILO-options-select', 'COLD COUNTRY TOWING (CRANBROOK), 3584 COLLINSON RD, CRANBROOK, 250-426-3680');
     SelectRandomIlo('ILO-options-select');
+
 }
 
 function FillProhibitionSection() {
@@ -144,7 +211,7 @@ function FillLinkageFactorsSection() {
 }
 
 function FillIncidentDetailsSection() {
-    RandomlySelectRadioButton('incident_details_extra_page');
+    SelectRadioButton('incident_details_extra_page');
     var numberOfSentences = Math.floor(Math.random() * 10) + 10;
     SetField('incident_details', chance.paragraph({ sentences: numberOfSentences }));
 }
@@ -253,7 +320,21 @@ function SelectRandomOOPJurisdiction(id){
 
 function SelectRandomIlo(id){
     // Select a random ILO
-    const ilo = ilos[Math.floor(Math.random() * ilos.length)];
+    // Unfortunately, the ILO list in VIPS DEV, TEST, and PROD are all different. The only overlap is
+    // in the id number. So we need to check the URL to see which environment we're in, and set
+    // the ILO list to a known valid list for that environment.
+
+    // Check if the current page contains the string "-dev" or "-test" or "-prod" in the URL:
+    if (window.location.href.includes("test")) {
+        ilo = ilos_test[Math.floor(Math.random() * ilos_test.length)];
+    }
+    else if (window.location.href.includes("dev")) {
+        ilo = ilos_dev[Math.floor(Math.random() * ilos_dev.length)];
+    }
+    else {
+        ilo = ilos_prod[Math.floor(Math.random() * ilos_prod.length)];
+    }
+
     SetCustomSelect(id, ilo);
 }
 
@@ -381,7 +462,7 @@ function GenerateDLExpiryDate() {
 }
 
 function RandomGender() {
-    const genders = ["Male", "Female", "Gender Diverse", "Unknown"];
+    const genders = ["MALE", "FEMALE", "GENDER DIVERSE", "UNKNOWN"];
     return genders[Math.floor(Math.random() * genders.length)];
 }
 
