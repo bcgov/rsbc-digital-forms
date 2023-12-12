@@ -1980,7 +1980,7 @@
         "field_name": "incident_details",
         "classNames": "fontXXSmall textArea",
         "start": {
-          "x": 52.75,
+          "x": 53,
           "y": 144
         }
       },
@@ -1989,7 +1989,7 @@
         "field_name": "incident_details",
         "classNames": "fontXXSmall textArea",
         "start": {
-          "x": 52.75,
+          "x": 53,
           "y": 30
         }
       },
