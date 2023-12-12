@@ -404,6 +404,7 @@ export const CreateEvent = () => {
   };
 
   const handlePrintForms = async (values) => {
+    await handleModalClose();
     window.print();
   };
 
