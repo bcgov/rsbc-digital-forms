@@ -23,6 +23,7 @@ import "./dashboard.scss";
 import { FormIDApi } from "../../api/formIDApi";
 import { getAllFormIDs } from "../../utils/dbHelpers";
 import { useSharedIsOnline } from "../../utils/connectivity";
+// import BootstrapTable from "react-bootstrap-table-next";
 
 export const Dashboard = () => {
   const { isConnected } = useSharedIsOnline();
@@ -60,6 +61,8 @@ export const Dashboard = () => {
   const [vehicleResource, setVehicleResource] = useRecoilState(
     staticResources["vehicles"]
   );
+
+  const [lastUpdatedDate, setLastUpdatedDate] = useState(null);
 
   const sortTableRows = (rows) => {
     if (rows.length > 0) {
@@ -131,6 +134,7 @@ export const Dashboard = () => {
     };
 
     fetchData();
+    setLastUpdatedDate(new Date().toLocaleString());
   }, [
     setVehicleResource,
     setVehicleColourResource,
@@ -234,6 +238,54 @@ export const Dashboard = () => {
   const handleClick = () => {
     navigate("/createEvent");
   };
+
+  // const tableColumns = [
+  //   {
+  //     dataField: "created_dt",
+  //     text: "Date & Time",
+  //     formatter: (cell) => {
+  //       return convertToPSTFormat(cell);
+  //     },
+  //     sort: true,
+  //   },
+  //   {
+  //     dataField: "driver_last_name",
+  //     text: "Surname",
+  //     formatter: (cell, row) => {
+  //       return (
+  //         <Link to="/view-previous" state={{ eventId: row["event_id"] }}>
+  //           {cell ? cell : "N/A"}
+  //         </Link>
+  //       );
+  //     },
+  //   },
+  //   {
+  //     text: "Form Type",
+  //     formatter: (cell, row) => {
+  //       return formTypes(row);
+  //     },
+  //   },
+  //   {
+  //     dataField: "event_id",
+  //     text: "Form #",
+  //     formatter: (cell, row) => {
+  //       return (
+  //         <Link to="/view-previous" state={{ eventId: row["event_id"] }}>
+  //           {formNumbers(row)}
+  //         </Link>
+  //       );
+  //     },
+  //   },
+  //   {
+  //     dataField: "vehicle_plate_no",
+  //     text: "Plate #",
+  //   },
+  //   {
+  //     dataField: "intersection_or_address_of_offence",
+  //     text: "Location",
+  //   },
+  // ];
+
   return (
     <>
       <div className="border-design text-font">
@@ -301,7 +353,7 @@ export const Dashboard = () => {
             <ErrorOutlineIcon />
             Waiting for Transmission to Server
           </h3>
-          <span>Automatically re-trying in x seconds</span>
+          {/* <span>Automatically re-trying in x seconds</span> */}
         </div>
         <hr className="hr" />
         <Table>
@@ -323,9 +375,14 @@ export const Dashboard = () => {
             <CheckCircleOutlineIcon />
             Completed
           </h3>
-          <span>Last updated on date</span>
+          <span>Last updated at {lastUpdatedDate}</span>
         </div>
         <hr className="hr" />
+        {/* <BootstrapTable
+          keyField="event_id"
+          data={formsData}
+          columns={tableColumns}
+        /> */}
         <Table>
           <thead>
             <tr>
