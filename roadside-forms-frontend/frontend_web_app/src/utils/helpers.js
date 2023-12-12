@@ -389,6 +389,17 @@ export const printFormatHelper = (values, data, key) => {
     val = "";
   }
 
+  if (
+    key === "IMPOUND_LOT_NAME" ||
+    key === "IMPOUNDED_LOT" ||
+    (key === "RELEASE_PERSON" &&
+      values["TwelveHour"] &&
+      !values["VI"] &&
+      values["vehicle_location"] === "private")
+  ) {
+    val = values["ILO-name-print"];
+  }
+
   return val;
 };
 

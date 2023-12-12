@@ -63,6 +63,7 @@ export const InitialValues = () => {
     "ILO-city": "",
     "ILO-phone": "",
     "ILO-options": {},
+    "ILO-name-print": "",
 
     /** Prohibition */
     type_of_prohibition: "",

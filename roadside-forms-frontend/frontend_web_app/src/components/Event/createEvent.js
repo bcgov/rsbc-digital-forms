@@ -678,13 +678,17 @@ export const CreateEvent = () => {
                   <>
                     <VehicleImpoundment
                       impoundLotOperators={impoundLotOperators}
+                      allILOs={impoundAtom}
                     />
                     <Prohibition cities={cities} />
                   </>
                 )}
                 {values["TwelveHour"] && !values["VI"] && (
                   <>
-                    <Disposition impoundLotOperators={impoundLotOperators} />
+                    <Disposition
+                      impoundLotOperators={impoundLotOperators}
+                      allILOs={impoundAtom}
+                    />
                     <Prohibition cities={cities} />
                   </>
                 )}

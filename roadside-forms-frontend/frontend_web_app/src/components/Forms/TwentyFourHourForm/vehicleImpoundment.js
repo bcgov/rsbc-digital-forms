@@ -11,7 +11,7 @@ import { PhoneField } from "../../common/Input/phoneField";
 import { SearchableSelect } from "../../common/Select/SearchableSelect";
 
 export const VehicleImpoundment = (props) => {
-  const { impoundLotOperators } = props;
+  const { impoundLotOperators, allILOs } = props;
   const { values, setFieldValue } = useFormikContext();
 
   const handleILOChange = (selectedOption) => {
@@ -21,11 +21,16 @@ export const VehicleImpoundment = (props) => {
       setFieldValue("ILO-address", address);
       setFieldValue("ILO-city", city);
       setFieldValue("ILO-phone", phone);
+      setFieldValue(
+        "ILO-name-print",
+        allILOs.find((operator) => operator.name === name).name_print
+      );
     } else {
       setFieldValue("ILO-name", "");
       setFieldValue("ILO-address", "");
       setFieldValue("ILO-city", "");
       setFieldValue("ILO-phone", "");
+      setFieldValue("ILO-name-print", "");
     }
   };
 
@@ -40,6 +45,7 @@ export const VehicleImpoundment = (props) => {
       setFieldValue("ILO-city", "");
       setFieldValue("ILO-phone", "");
       setFieldValue("ILO-options", {});
+      setFieldValue("ILO-name-print", "");
     } else if (values["vehicle_impounded"] === "YES") {
       setFieldValue("reason_for_not_impounding", "");
       setFieldValue("date_released", null);
