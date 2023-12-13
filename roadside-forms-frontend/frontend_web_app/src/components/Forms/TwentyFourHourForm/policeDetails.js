@@ -10,7 +10,6 @@ import { DatePickerField } from "../../common/DateField/DatePicker";
 
 export const PoliceDetails = (props) => {
   const { values } = useFormikContext();
-  console.log(values["requested_prescribed_test"]);
   return (
     <div className="border-design-form left text-font">
       <Row>
@@ -120,7 +119,7 @@ export const PoliceDetails = (props) => {
                     label="Which test was used?"
                     name="requested_test_used_drug"
                     options={[
-                      { label: "Approved Drug", value: "approved-drug" },
+                      { label: "Approved Instrument", value: "approved-drug" },
                       {
                         label: "Prescribed Physical Coordination Test",
                         value: "PPCT",
