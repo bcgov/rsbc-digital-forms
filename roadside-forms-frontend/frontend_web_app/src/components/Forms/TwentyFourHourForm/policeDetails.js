@@ -142,25 +142,27 @@ export const PoliceDetails = (props) => {
               </Col>
             </Row>
           )}
-          {values["requested_test_used_drug"] === "PPCT" && (
-            <Row>
-              <Col sm={4}>
-                <Checkbox name="requested_can_drive_drug">
-                  Ability to drive affected by a drug?
-                </Checkbox>
-              </Col>
-            </Row>
-          )}
-          {values["requested_test_used_alcohol"] === "PPCT" && (
-            <Row>
-              <Col sm={6}>
-                <Checkbox name="requested_can_drive_alcohol">
-                  Ability to drive affected by alcohol?(only select if PPCT test
-                  used)
-                </Checkbox>
-              </Col>
-            </Row>
-          )}
+          {values["type_of_prohibition"] === "drugs" &&
+            values["requested_test_used_drug"] === "PPCT" && (
+              <Row>
+                <Col sm={4}>
+                  <Checkbox name="requested_can_drive_drug">
+                    Ability to drive affected by a drug?
+                  </Checkbox>
+                </Col>
+              </Row>
+            )}
+          {values["type_of_prohibition"] === "alcohol" &&
+            values["requested_test_used_alcohol"] === "PPCT" && (
+              <Row>
+                <Col sm={6}>
+                  <Checkbox name="requested_can_drive_alcohol">
+                    Ability to drive affected by alcohol? (only select if PPCT
+                    test used)
+                  </Checkbox>
+                </Col>
+              </Row>
+            )}
         </div>
       )}
     </div>
