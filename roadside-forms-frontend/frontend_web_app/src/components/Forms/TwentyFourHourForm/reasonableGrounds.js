@@ -4,9 +4,27 @@ import { Input } from "../../common/Input/Input";
 import { useFormikContext } from "formik";
 import { DatePickerField } from "../../common/DateField/DatePicker";
 import { TimeInputField } from "../../common/Input/TimeInputField";
+import { useEffect } from "react";
 
 export const ReasonableGrounds = () => {
   const { values } = useFormikContext();
+
+  useEffect(() => {
+    if (!values["reasonable_ground_other"]) {
+      values["reasonable_ground_other_reason"] = "";
+    }
+  }, [values["reasonable_ground_other"]]);
+
+  useEffect(() => {
+    if (values["prescribed_test_used"] === "NO") {
+      values["reasonable_date_of_test"] = "";
+      values["reasonable_time_of_test"] = "";
+    }
+    if (values["prescribed_test_used"] === "YES") {
+      values["reason_for_not_using_prescribed_test"] = "";
+    }
+  }, [values["prescribed_test_used"]]);
+
   return (
     <div className="border-design-form left text-font">
       <h3>Reasonable Grounds</h3>
