@@ -307,28 +307,23 @@ export const CreateEvent = () => {
   };
 
   const unleaseIDs = async (values) => {
-    if (!values["TwentyFourHour"]) {
-      // unlease the TwentyFourHour ID
-      await db.formID
-        .where("id")
-        .equals(formIDs["TwentyFourHour"])
-        .modify({ leased: 0 });
-    }
-    if (!values["TwelveHour"]) {
-      // unlease the TwelveHour ID
-      await db.formID
-        .where("id")
-        .equals(formIDs["TwelveHour"])
-        .modify({ leased: 0 });
-    }
-    if (!values["IRP"]) {
-      // unlease the IRP ID
-      await db.formID.where("id").equals(formIDs["IRP"]).modify({ leased: 0 });
-    }
-    if (!values["VI"]) {
-      // unlease the VI ID
-      await db.formID.where("id").equals(formIDs["VI"]).modify({ leased: 0 });
-    }
+    // unlease the TwentyFourHour ID
+    await db.formID
+      .where("id")
+      .equals(formIDs["TwentyFourHour"])
+      .modify({ leased: 0 });
+
+    // unlease the TwelveHour ID
+    await db.formID
+      .where("id")
+      .equals(formIDs["TwelveHour"])
+      .modify({ leased: 0 });
+
+    // unlease the IRP ID
+    await db.formID.where("id").equals(formIDs["IRP"]).modify({ leased: 0 });
+
+    // unlease the VI ID
+    await db.formID.where("id").equals(formIDs["VI"]).modify({ leased: 0 });
   };
 
   // Should we account for when the user presses the back button in their browser?
@@ -404,6 +399,7 @@ export const CreateEvent = () => {
   };
 
   const handlePrintForms = async (values) => {
+    await handleModalClose();
     window.print();
   };
 
