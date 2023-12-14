@@ -114,7 +114,7 @@ export const ConfirmationStep = () => {
             name="document_served"
             options={[
               { label: "Yes", value: "YES" },
-              { label: "No", value: "NO", disabled: true },
+              { label: "No", value: "NO" },
             ]}
             required
           />

@@ -1957,8 +1957,8 @@
       },
       "INCIDENT_DETAILS_EXPLAINED_BELOW": {
         "field_type": "checkbox",
-        "field_name": "incident_details_extra_page",
-        "field_val": "false",
+        "field_name": "incident_details_explained_below",
+        "field_val": "true",
         "classNames": "fontSmall",
         "start": {
           "x": 52.75,
