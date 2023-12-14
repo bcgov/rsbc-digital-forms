@@ -14,7 +14,7 @@ ENV REACT_APP_BASE_URL=$REACT_APP_BASE_URL
 ENV REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 COPY . .
 RUN ls -a
 
