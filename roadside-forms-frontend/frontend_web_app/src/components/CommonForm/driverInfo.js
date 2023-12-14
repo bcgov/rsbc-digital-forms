@@ -19,6 +19,7 @@ import { ICBCDriverDataApi } from "../../api/icbcDriverDataAPI";
 import { formatBCDL } from "../../utils/formatBCDL";
 import { genderDropdown } from "../../utils/constants";
 import "./commonForm.scss";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 export const DriverInfo = (props) => {
   const { jurisdictions, provinces, jurisdictionCountry } = props;
@@ -42,6 +43,26 @@ export const DriverInfo = (props) => {
       setdisableBtn(true);
     }
   }, [driversLicenceJurisdiction]);
+
+  useEffect(() => {
+    if (values["TwelveHour"]) {
+      values["driver_prov_state"] = provinces.filter(
+        (province) => province.value === "BC"
+      )[0];
+    }
+  }, [values["TwelveHour"]]);
+
+  const renderTooltip = (props) => {
+    if (values["TwelveHour"]) {
+      return (
+        <Tooltip id="button-tooltip" {...props}>
+          Driver must be a BC resident for 12 hour Driving Prohibition
+        </Tooltip>
+      );
+    } else {
+      return <></>;
+    }
+  };
 
   const launchDlScanner = async () => {
     setModalShow(true);
@@ -271,15 +292,22 @@ export const DriverInfo = (props) => {
               />
             </Col>
             <Col sm={4}>
-              <SearchableSelect
-                className="field-height field-width"
-                label="Province / State / International"
-                name="driver_prov_state"
-                onChange={(event) =>
-                  handleJurisdictionChange(event, setDriverJurisdictionOptions)
-                }
-                options={driverJurisdictionOptions}
-              />
+              <OverlayTrigger placement="top" overlay={renderTooltip}>
+                <div>
+                  <SearchableSelect
+                    className="field-height field-width"
+                    label="Province / State / International"
+                    name="driver_prov_state"
+                    onChange={(event) =>
+                      handleJurisdictionChange(
+                        event,
+                        setDriverJurisdictionOptions
+                      )
+                    }
+                    options={driverJurisdictionOptions}
+                  />
+                </div>
+              </OverlayTrigger>
             </Col>
             <Col sm={4}>
               <Input
