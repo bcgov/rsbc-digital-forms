@@ -466,7 +466,6 @@ export const CreateEvent = () => {
     } else {
       // Schema not valid, display errors
       validationSchema.validate(values, { abortEarly: false }).catch((err) => {
-        console.log("Validation Errors: ", err.errors);
         setFormHasErrors(true);
         setFormErrors(err.errors);
         // scroll to the top of the page

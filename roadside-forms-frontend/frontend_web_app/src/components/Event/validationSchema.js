@@ -15,6 +15,7 @@ const validateRequiredDateWithMax = (
   errorMessage
 ) => {
   return function (value) {
+    console.log(" Got value: ", value);
     if (selectedValue && !value) {
       return this.createError({
         path: errorPath,
@@ -23,21 +24,11 @@ const validateRequiredDateWithMax = (
     }
 
     if (selectedValue && value) {
-      const today = new Date();
-      const yesterdayPST = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate() - 1
-      );
-      const todayPST = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      );
-
+      const today = moment().startOf("day");
+      const yesterday = moment().subtract(1, "days").startOf("day");
       if (
-        value.getTime() !== yesterdayPST.getTime() &&
-        value.getTime() !== todayPST.getTime()
+        !moment(value).isSame(today, "day") &&
+        !moment(value).isSame(yesterday, "day")
       ) {
         return this.createError({
           path: errorPath,
