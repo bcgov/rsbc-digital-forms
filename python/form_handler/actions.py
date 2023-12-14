@@ -708,12 +708,7 @@ def prep_vips_payload(**args)->tuple:
         if unlicensed:
             reason_list.append("IDEPUNLIC")
         if irp_impound_dur:
-            if irp_impound_dur == "7DAY":
-                reason_list.append("BACWARN7")
-            elif irp_impound_dur == "30DAY":
-                reason_list.append("BACWARN30")
-            elif irp_impound_dur == "3DAY":
-                reason_list.append("BACWARN3")
+            reason_list.append(irp_impound_dur)
         with application.app_context():
             # get reason data
             for v in reason_list:
