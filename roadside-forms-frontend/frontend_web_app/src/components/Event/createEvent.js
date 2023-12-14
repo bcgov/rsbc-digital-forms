@@ -551,7 +551,8 @@ export const CreateEvent = () => {
           //   break;
           // }
 
-          if (form === "DETAILS" && !values["incident_details_extra_page"]) {
+          // We don't need an extra page if our incident details will fit on the first.
+          if (form === "DETAILS" && values["incident_details"].length < 500) {
             break;
           }
 

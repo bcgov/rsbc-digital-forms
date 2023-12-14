@@ -1957,8 +1957,8 @@
       },
       "INCIDENT_DETAILS_EXPLAINED_BELOW": {
         "field_type": "checkbox",
-        "field_name": "incident_details_extra_page",
-        "field_val": "false",
+        "field_name": "incident_details_explained_below",
+        "field_val": "true",
         "classNames": "fontSmall",
         "start": {
           "x": 52.75,
@@ -1986,7 +1986,7 @@
       },
       "DETAILS_INCIDENT_DETAILS": {
         "field_type": "textArea",
-        "field_name": "incident_details",
+        "field_name": "incident_details_continued",
         "classNames": "fontXXSmall textArea",
         "start": {
           "x": 53,

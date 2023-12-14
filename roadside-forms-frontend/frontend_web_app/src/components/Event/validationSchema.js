@@ -840,19 +840,10 @@ export const validationSchema = Yup.object().shape(
     }), // Only for VI
 
     /** Incident Details */
-    incident_details_extra_page: Yup.boolean().when(
-      ["VI", "incident_details"],
-      {
-        is: (VI, incident_details) => {
-          return VI && incident_details && incident_details.length > 600;
-        },
-        then: () =>
-          Yup.boolean().oneOf(
-            [true],
-            "Please incude an extra page of incident details"
-          ),
-      }
-    ), // Only for VI
+    incident_details_extra_page: Yup.boolean().when("VI", {
+      is: true,
+      then: () => Yup.boolean(),
+    }), // Only for VI
     incident_details: Yup.string().when("VI", {
       is: true,
       then: () =>
