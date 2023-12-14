@@ -1,9 +1,8 @@
-import React, { useRef, useEffect } from 'react';
-import { useField } from 'formik';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import { CalendarToday } from '@mui/icons-material';
-
+import React, { useRef, useEffect } from "react";
+import { useField } from "formik";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { CalendarToday } from "@mui/icons-material";
 
 export const DatePickerField = ({ required, label, ...props }) => {
   const [field, meta, helpers] = useField(props.name);
@@ -23,11 +22,11 @@ export const DatePickerField = ({ required, label, ...props }) => {
     }
   }, [meta.value, helpers]);
 
-
   return (
     <div>
       <label htmlFor={props.name}>
-        {label}{required && <span className="required-asterisk"> *</span>}
+        {label}
+        {required && <span className="required-asterisk"> *</span>}
       </label>
       <div className="d-flex align-items-center">
         <DatePicker
@@ -42,16 +41,19 @@ export const DatePickerField = ({ required, label, ...props }) => {
           showYearDropdown
           placeholderText="YYYYMMDD"
           minDate={new Date(1900, 0, 1)}
-          className={`form-control ${meta.touched && meta.error && 'is-invalid'}`}
+          className={`form-control ${
+            meta.touched && meta.error && "is-invalid"
+          }`}
           ref={datepickerRef}
+          autoComplete="off"
         />
         <div onClick={openDatePicker}>
           <CalendarToday />
         </div>
       </div>
       {meta.touched && meta.error ? (
-          <div className="error-message">{meta.error}</div>
-        ) : null}
-      </div>
+        <div className="error-message">{meta.error}</div>
+      ) : null}
+    </div>
   );
 };

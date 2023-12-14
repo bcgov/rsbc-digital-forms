@@ -12,7 +12,8 @@ def log_to_splunk(**kwargs) -> tuple:
     config = kwargs.get('config')
     splunk_data = kwargs.get('splunk_data')
     splunk_payload = dict({})
-    splunk_payload['event'] = splunk_data
+    # From DF-2908: Need to ensure that splunk_data is not None
+    splunk_payload['event'] = splunk_data if splunk_data is not None else {}
     splunk_payload['source'] = config.OPENSHIFT_PLATE
     _post_to_splunk(splunk_payload, **kwargs)
     return True, kwargs
@@ -32,6 +33,6 @@ def _post_to_splunk(splunk_payload: dict, **args) -> bool:
         logging.warning('No response from the Splunk API: {}'.format(error))
         return False
     if response.status_code != 200:
-        logging.warning('response from Splunk was not successful: {}'.format(response.text))
+        logging.warning('response from Splunk was not successful: {}: {}'.format(response.status_code, response.text))
         return False
     return True
