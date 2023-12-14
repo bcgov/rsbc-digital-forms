@@ -307,11 +307,11 @@ export const Dashboard = () => {
           <thead>
             <tr>
               <th>Date & Time</th>
-              <th>Form Types</th>
-              <th>Location</th>
               <th>Surname</th>
+              <th>Form Type</th>
+              <th>Form #</th>
               <th>Plate #</th>
-              <th>Next Step</th>
+              <th>Location</th>
             </tr>
           </thead>
           <tbody>
@@ -321,26 +321,27 @@ export const Dashboard = () => {
                   <tr key={data["vehicle_vin_no"]}>
                     <td>
                       {data["created_dt"]
-                        ? convertToPST(data["created_dt"])
-                        : "N/A"}
-                    </td>
-                    <td>{formTypes(data)}</td>
-                    <td>
-                      {data["intersection_or_address_of_offence"]
-                        ? data["intersection_or_address_of_offence"]
+                        ? convertToPSTFormat(data["created_dt"])
                         : "N/A"}
                     </td>
                     <td>
+                      to="/view-previous" state={{ eventId: data["event_id"] }}
                       {data["driver_last_name"]
                         ? data["driver_last_name"]
                         : "N/A"}
                     </td>
+                    <td>{formTypes(data)}</td>
+                    <td>{formNumbers(data)}\ </td>
                     <td>
                       {data["vehicle_plate_no"]
                         ? data["vehicle_plate_no"]
                         : "N/A"}
                     </td>
-                    <td>Print</td>
+                    <td>
+                      {data["intersection_or_address_of_offence"]
+                        ? data["intersection_or_address_of_offence"]
+                        : "N/A"}
+                    </td>
                   </tr>
                 ) : null;
               })}
@@ -360,11 +361,11 @@ export const Dashboard = () => {
           <thead>
             <tr>
               <th>Date & Time</th>
-              <th>Form #</th>
-              <th>Form Type</th>
-              <th>Location</th>
               <th>Surname</th>
+              <th>Form Type</th>
+              <th>Form #</th>
               <th>Plate #</th>
+              <th>Location</th>
             </tr>
           </thead>
         </Table>

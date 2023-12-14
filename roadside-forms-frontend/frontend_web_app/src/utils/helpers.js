@@ -411,6 +411,12 @@ export const printCheckHelper = (values, data, key) => {
     }
     return values[data["field_name"]];
   }
+
+  if (Array.isArray(data["field_val"])) {
+    if (data["field_val"].includes(values[data["field_name"]])) {
+      return true;
+    }
+  }
   //if value is a string check to see that it matches what is expected
   if (values[data["field_name"]] === data["field_val"]) {
     return true;

@@ -17,7 +17,7 @@ export const ReasonableGrounds = () => {
 
   useEffect(() => {
     if (values["prescribed_test_used"] === "NO") {
-      values["reasonable_date_of_test"] = "";
+      values["reasonable_date_of_test"] = null;
       values["reasonable_time_of_test"] = "";
     }
     if (values["prescribed_test_used"] === "YES") {
@@ -32,8 +32,8 @@ export const ReasonableGrounds = () => {
         <div className="col-sm-12">
           <span>
             The driver was operating a motor vehicle or had care and control of
-            a motor vehicle for the purposes of MVA section 215(1) based on
-            (select at least one):
+            a motor vehicle for the purposes of MVA section 215(1) based on:
+            <span className="required-asterisk">*</span>
           </span>
         </div>
         <div className="col-sm-12 left checkboxs">
