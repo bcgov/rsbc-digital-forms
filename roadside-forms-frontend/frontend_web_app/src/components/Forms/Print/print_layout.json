@@ -1986,7 +1986,7 @@
       },
       "DETAILS_INCIDENT_DETAILS": {
         "field_type": "textArea",
-        "field_name": "incident_details_continued",
+        "field_name": "incident_details",
         "classNames": "fontXXSmall textArea",
         "start": {
           "x": 53,
