@@ -730,8 +730,8 @@ class JurisdictionCrossRef(db.Model):
     vips_jurisdictions_objectCd: str
     vips_jurisdictions_objectDsc: str
 
-    jurisdiction_name = db.Column(db.String, primary_key=True)
-    jurisdiction_code = db.Column(db.String)
+    jurisdiction_name = db.Column(db.String)
+    jurisdiction_code = db.Column(db.String, primary_key=True)
     prime_jurisdiction_code = db.Column(db.String)
     prime_jurisdiction_name = db.Column(db.String)
     icbc_jurisdiction_code = db.Column(db.String)
