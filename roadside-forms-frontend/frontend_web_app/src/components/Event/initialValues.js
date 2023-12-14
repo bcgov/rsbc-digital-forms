@@ -114,6 +114,7 @@ export const InitialValues = () => {
 
     /** Incedent Details */
     incident_details_extra_page: false,
+    incident_details_explained_below: false,
     incident_details: "",
 
     /** Reasonable Grounds */
