@@ -346,6 +346,43 @@ export const CreateEvent = () => {
     await db.formID.where("id").equals(formIDs["VI"]).modify({ leased: 0 });
   };
 
+  const renderNextButton = (values, errors) => {
+    if (currentStep < 4) {
+      if (currentStep === 1) {
+        return (
+          <Button type="button" onClick={() => printForms(values)}>
+            Print
+          </Button>
+        );
+      } else if (currentStep === 2 && values["document_served"] === "NO") {
+        return (
+          <Button type="button" onClick={() => navigate("/")}>
+            Exit Form
+          </Button>
+        );
+      } else {
+        return (
+          <Button type="button" onClick={() => nextPage(values)}>
+            Next
+          </Button>
+        );
+      }
+    } else {
+      return (
+        <Button
+          variant="primary"
+          onClick={() => {
+            console.log(errors);
+            onSubmit(values);
+          }}
+          disabled={isSubmitting}
+        >
+          Submit
+        </Button>
+      );
+    }
+  };
+
   // Should we account for when the user presses the back button in their browser?
   // If not, can just call handleExitForm() and then programatically navigate to main menu after user confirms
   // If so, need to block navigation away from the page and prompt user to confirm they want to exit the form
@@ -888,35 +925,8 @@ export const CreateEvent = () => {
                 {(values["IRP"] ||
                   values["VI"] ||
                   values["TwentyFourHour"] ||
-                  values["TwelveHour"]) && (
-                  <div className="right">
-                    {currentStep < 4 ? (
-                      currentStep === 1 ? (
-                        <Button
-                          type="button"
-                          onClick={() => printForms(values)}
-                        >
-                          Print
-                        </Button>
-                      ) : (
-                        <Button type="button" onClick={() => nextPage(values)}>
-                          Next
-                        </Button>
-                      )
-                    ) : (
-                      <Button
-                        variant="primary"
-                        onClick={() => {
-                          console.log(errors);
-                          onSubmit(values);
-                        }}
-                        disabled={isSubmitting}
-                      >
-                        Submit
-                      </Button>
-                    )}
-                  </div>
-                )}
+                  values["TwelveHour"]) &&
+                  renderNextButton(values, errors)}
               </div>
             </Form>
           )}
