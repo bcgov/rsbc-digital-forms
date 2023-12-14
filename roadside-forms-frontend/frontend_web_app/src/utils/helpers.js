@@ -495,7 +495,7 @@ export const eventDataFormatter = (
       label: driverJurisdiction.objectDsc,
     };
     delete event["drivers_jurisdiction"];
-    let driverProvState = provinces.filter(
+    let driverProvState = jurisdictions.filter(
       (x) => x["objectCd"] === event["driver_prov"]
     )[0];
     if (driverProvState === null) {
