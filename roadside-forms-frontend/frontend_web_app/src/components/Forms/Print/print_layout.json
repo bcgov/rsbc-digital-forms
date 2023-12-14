@@ -1407,7 +1407,7 @@
       "IMPOUNDMENT_DURATION_3": {
         "field_type": "checkbox",
         "field_name": "irp_impound_duration",
-        "field_val": "3DAY",
+        "field_val": "BACWARN3",
         "classNames": "fontSmall",
         "start": {
           "x": 52,
@@ -1417,7 +1417,7 @@
       "IMPOUNDMENT_DURATION_7": {
         "field_type": "checkbox",
         "field_name": "irp_impound_duration",
-        "field_val": "7DAY",
+        "field_val": "BACWARN7",
         "classNames": "fontSmall",
         "start": {
           "x": 80,
@@ -1427,7 +1427,7 @@
       "IMPOUNDMENT_DURATION_30": {
         "field_type": "checkbox",
         "field_name": "irp_impound_duration",
-        "field_val": "30DAY",
+        "field_val": ["BACWARN30", "BACFAIL"],
         "classNames": "fontSmall",
         "start": {
           "x": 109.5,

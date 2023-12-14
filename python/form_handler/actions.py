@@ -630,9 +630,7 @@ def prep_vips_payload(**args)->tuple:
         tmp_payload["vipsImpoundCreate"]["dlJurisdictionCd"]=tmp_jursdiction_val
         # if "driver_jurisdiction" in event_data: tmp_payload["vipsImpoundCreate"]["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
 
-        # RSBC DF does not collect RO DL number. Default to blank for VIPS
-        tmp_payload["vipsImpoundCreate"]["driverLicenceNo"]=None
-        # if "driver_licence_no" in event_data: tmp_payload["vipsImpoundCreate"]["driverLicenceNo"]=event_data["driver_licence_no"]
+        if "driver_licence_no" in event_data: tmp_payload["vipsImpoundCreate"]["driverLicenceNo"]=event_data["driver_licence_no"]
 
 
         # get ilo id from db
@@ -708,12 +706,7 @@ def prep_vips_payload(**args)->tuple:
         if unlicensed:
             reason_list.append("IDEPUNLIC")
         if irp_impound_dur:
-            if irp_impound_dur == "7DAY":
-                reason_list.append("BACWARN7")
-            elif irp_impound_dur == "30DAY":
-                reason_list.append("BACWARN30")
-            elif irp_impound_dur == "3DAY":
-                reason_list.append("BACWARN3")
+            reason_list.append(irp_impound_dur)
         with application.app_context():
             # get reason data
             for v in reason_list:
@@ -789,11 +782,13 @@ def prep_vips_payload(**args)->tuple:
             birthdate= convertDateTime(birthdate)
             # birthdate=birthdate.strftime('%Y%m%d')
             vips_licence_create_obj["birthDt"]=birthdate
-
-        if "driver_licence_no" in event_data: vips_licence_create_obj["driverLicenceNo"]=event_data["driver_licence_no"]
+        # TODO: Confirm this fixes DF-2870 (2023-12-13)
+        # if "driver_licence_no" in event_data: vips_licence_create_obj["driverLicenceNo"]=event_data["driver_licence_no"]
+        vips_licence_create_obj["driverLicenceNo"]=None
         vips_licence_create_obj["dlJurisdictionCd"]=tmp_jursdiction_val
         # if "driver_jurisdiction" in event_data: vips_licence_create_obj["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
         vipsRegigCreateObj["vipsLicenceCreateObj"]=vips_licence_create_obj
+        
         vipsRegistrationCreateArray.append(vipsRegigCreateObj)
         tmp_payload["vipsRegistrationCreateArray"]=vipsRegistrationCreateArray
 

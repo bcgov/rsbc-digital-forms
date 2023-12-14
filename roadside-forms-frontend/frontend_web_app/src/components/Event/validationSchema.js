@@ -23,21 +23,11 @@ const validateRequiredDateWithMax = (
     }
 
     if (selectedValue && value) {
-      const today = new Date();
-      const yesterdayPST = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate() - 1
-      );
-      const todayPST = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      );
-
+      const today = moment().startOf("day");
+      const yesterday = moment().subtract(1, "days").startOf("day");
       if (
-        value.getTime() !== yesterdayPST.getTime() &&
-        value.getTime() !== todayPST.getTime()
+        !moment(value).isSame(today, "day") &&
+        !moment(value).isSame(yesterday, "day")
       ) {
         return this.createError({
           path: errorPath,
@@ -521,9 +511,15 @@ export const validationSchema = Yup.object().shape(
     ), // Only for 24h / VI, required if vehicle_impounded = "Yes"
 
     /** Prohibition */
-    type_of_prohibition: Yup.mixed().when(["TwentyFourHour", "TwelveHour"], {
+    type_of_prohibition: Yup.string().when(["TwentyFourHour", "TwelveHour"], {
       is: (TwentyFourHour, TwelveHour) => TwentyFourHour || TwelveHour,
-      then: () => Yup.mixed().required("Type of prohibition is required"),
+      then: () =>
+        Yup.string()
+          .required("Type of prohibition is required")
+          .oneOf(
+            ["alcohol", "drugs"],
+            "Please select an option for type of prohibition"
+          ),
     }), // Required for 12h and 24h forms
     intersection_or_address_of_offence: Yup.string().when(
       ["TwentyFourHour", "TwelveHour", "VI"],
