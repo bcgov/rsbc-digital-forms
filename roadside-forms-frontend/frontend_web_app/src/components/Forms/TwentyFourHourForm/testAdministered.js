@@ -35,6 +35,40 @@ export const TestAdministered = (props) => {
     values["type_of_prohibition"],
   ]);
 
+  useEffect(() => {
+    if (values["prescribed_test_used"] === "NO") {
+      values["reasonable_test_used_alcohol"] = "";
+      values["reasonable_test_used_drugs"] = "";
+      values["reasonable_asd_expiry_date"] = null;
+      values["reasonable_result_alcohol"] = "";
+      values["reasonable_bac_result_mg"] = null;
+      values["resonable_approved_instrument_used"] = "";
+      values["reasonable_can_drive_drug"] = false;
+      values["reasonable_can_drive_alcohol"] = false;
+    }
+  }, [values["prescribed_test_used"]]);
+
+  useEffect(() => {
+    // alco-sensor / instrument / PPCT
+    if (values["reasonable_test_used_alcohol"] !== "alco-sensor") {
+      values["reasonable_asd_expiry_date"] = null;
+      values["reasonable_result_alcohol"] = "";
+    }
+    if (values["reasonable_test_used_alcohol"] !== "instrument") {
+      values["reasonable_bac_result_mg"] = null;
+      values["resonable_approved_instrument_used"] = "";
+    }
+    if (values["reasonable_test_used_alcohol"] !== "PPCT") {
+      values["reasonable_can_drive_alcohol"] = false;
+    }
+  }, [values["reasonable_test_used_alcohol"]]);
+
+  useEffect(() => {
+    if (values["reasonable_test_used_drugs"] !== "PPCT") {
+      values["reasonable_can_drive_drug"] = false;
+    }
+  }, [values["reasonable_test_used_drugs"]]);
+
   return (
     <>
       {values["prescribed_test_used"] === "YES" && (
@@ -109,11 +143,7 @@ export const TestAdministered = (props) => {
                     label="Which test was used?"
                     name="reasonable_test_used_drugs"
                     options={[
-                      { label: "Approved Drug", value: "approved-drug" },
-                      {
-                        label: "Screening Equipment",
-                        value: "screening-equipment",
-                      },
+                      { label: "Approved Instrument", value: "approved-drug" },
                       {
                         label: "Prescribed Physical Coordination Test",
                         value: "PPCT",
@@ -134,25 +164,27 @@ export const TestAdministered = (props) => {
               </Row> */}
             </div>
           )}
-          {values["reasonable_test_used_drugs"] === "PPCT" && (
-            <Row>
-              <Col sm={4}>
-                <Checkbox name="reasonable_can_drive_drug">
-                  Ability to drive affected by a drug?
-                </Checkbox>
-              </Col>
-            </Row>
-          )}
-          {values["resonable_test_used_alcohol"] === "PPCT" && (
-            <Row>
-              <Col sm={6}>
-                <Checkbox name="reasonable_can_drive_alcohol">
-                  Ability to drive affected by alcohol?(only select if PPCT test
-                  used)
-                </Checkbox>
-              </Col>
-            </Row>
-          )}
+          {values["type_of_prohibition"] === "drugs" &&
+            values["reasonable_test_used_drugs"] === "PPCT" && (
+              <Row>
+                <Col sm={4}>
+                  <Checkbox name="reasonable_can_drive_drug">
+                    Ability to drive affected by a drug?
+                  </Checkbox>
+                </Col>
+              </Row>
+            )}
+          {values["type_of_prohibition"] === "alcohol" &&
+            values["resonable_test_used_alcohol"] === "PPCT" && (
+              <Row>
+                <Col sm={6}>
+                  <Checkbox name="reasonable_can_drive_alcohol">
+                    Ability to drive affected by alcohol? (only select if PPCT
+                    test used)
+                  </Checkbox>
+                </Col>
+              </Row>
+            )}
         </div>
       )}
     </>

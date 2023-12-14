@@ -7,11 +7,10 @@ import { Radio } from "../../common/Radio/radio";
 import { Input } from "../../common/Input/Input";
 import { DatePickerField } from "../../common/DateField/DatePicker";
 import { TimeInputField } from "../../common/Input/TimeInputField";
-import { PhoneField } from "../../common/Input/phoneField";
 import { SearchableSelect } from "../../common/Select/SearchableSelect";
 
 export const Disposition = (props) => {
-  const { impoundLotOperators } = props;
+  const { impoundLotOperators, allILOs } = props;
   const { values, setFieldValue } = useFormikContext();
 
   const handleILOChange = (selectedOption) => {
@@ -21,11 +20,16 @@ export const Disposition = (props) => {
       setFieldValue("ILO-address", address);
       setFieldValue("ILO-city", city);
       setFieldValue("ILO-phone", phone);
+      setFieldValue(
+        "ILO-name-print",
+        allILOs.find((operator) => operator.name === name).name_print
+      );
     } else {
       setFieldValue("ILO-name", "");
       setFieldValue("ILO-address", "");
       setFieldValue("ILO-city", "");
       setFieldValue("ILO-phone", "");
+      setFieldValue("ILO-name-print", "");
     }
   };
 
@@ -37,6 +41,7 @@ export const Disposition = (props) => {
       setFieldValue("ILO-city", "");
       setFieldValue("ILO-phone", "");
       setFieldValue("ILO-options", {});
+      setFieldValue("ILO-name-print", "");
     }
   }, [values["vehicle_location"], setFieldValue]);
 
@@ -135,6 +140,24 @@ export const Disposition = (props) => {
                 </Col>
               </Row>
             </div>
+            <Row>
+              <Col sm={4}>
+                <DatePickerField
+                  name="date_released"
+                  label="Date Released"
+                  className="field-height field-width"
+                  required
+                />
+              </Col>
+              <Col sm={4}>
+                <TimeInputField
+                  label="Time Released"
+                  className="field-height field-width"
+                  name="time_released"
+                  required
+                />
+              </Col>
+            </Row>
           </div>
         </>
       )}
