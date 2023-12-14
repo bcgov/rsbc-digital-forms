@@ -96,6 +96,8 @@ export const staticResources = {
   vehicle_types: staticData.vehicleTypes,
   vehicle_colours: staticData.vehicleColours,
   vehicles: staticData.vehicles,
+  nscPuj: staticData.nscPuj,
+  jurisdictionCountry: staticData.jurisdictionCountry,
 };
 
 export const getEventDataToSave = (formValues) => {
@@ -462,7 +464,9 @@ export const eventDataFormatter = (
   vehicleStyles,
   jurisdictions,
   cities,
-  impoundLots
+  impoundLots,
+  jurisdictionCountry,
+  nscPuj
 ) => {
   const eventData = [];
   const date_fields = [
@@ -478,25 +482,40 @@ export const eventDataFormatter = (
   ];
   for (const item in data) {
     const event = data[item];
-    const driverJurisdiction = jurisdictions.filter(
+    let driverJurisdiction = jurisdictions.filter(
       (x) => x["objectCd"] === event["driver_jurisdiction"]
     )[0];
+    if (driverJurisdiction === null) {
+      driverJurisdiction = jurisdictionCountry.filter(
+        (x) => x["objectCd"] === event["driver_jurisdiction"]
+      )[0];
+    }
     event["drivers_licence_jurisdiction"] = {
       value: driverJurisdiction.objectCd,
       label: driverJurisdiction.objectDsc,
     };
     delete event["drivers_jurisdiction"];
-    const driverProvState = provinces.filter(
+    let driverProvState = provinces.filter(
       (x) => x["objectCd"] === event["driver_prov"]
     )[0];
+    if (driverProvState === null) {
+      driverProvState = jurisdictionCountry.filter(
+        (x) => x["objectCd"] === event["driver_prov"]
+      )[0];
+    }
     event["driver_prov_state"] = {
       value: driverProvState.objectCd,
       label: driverProvState.objectDsc,
     };
     delete event["driver_prov"];
-    const vehicleJurisdiction = jurisdictions.filter(
+    let vehicleJurisdiction = jurisdictions.filter(
       (x) => x["objectCd"] === event["vehicle_jurisdiction"]
     )[0];
+    if (vehicleJurisdiction === null) {
+      vehicleJurisdiction = jurisdictionCountry.filter(
+        (x) => x["objectCd"] === event["vehicle_jurisdiction"]
+      )[0];
+    }
     event["vehicle_jurisdiction"] = {
       value: vehicleJurisdiction.objectCd,
       label: vehicleJurisdiction.objectDsc,
@@ -512,7 +531,7 @@ export const eventDataFormatter = (
       };
     }
     if (event["nsc_prov_state"]) {
-      const nscProvState = provinces.filter(
+      const nscProvState = nscPuj.filter(
         (x) => x["objectCd"] === event["nsc_prov_state"]
       )[0];
       event["nsc_prov_state"] = {
@@ -522,9 +541,14 @@ export const eventDataFormatter = (
     }
 
     if (!event["TwelveHour"] || (event["TwelveHour"] && event["VI"])) {
-      const registOwnerProvState = provinces.filter(
+      let registOwnerProvState = jurisdictions.filter(
         (x) => x["objectCd"] === event["regist_owner_prov"]
       )[0];
+      if (registOwnerProvState === null) {
+        registOwnerProvState = jurisdictionCountry.filter(
+          (x) => x["objectCd"] === event["regist_owner_prov"]
+        )[0];
+      }
       event["regist_owner_prov_state"] = {
         value: registOwnerProvState.objectCd,
         label: registOwnerProvState.objectDsc,

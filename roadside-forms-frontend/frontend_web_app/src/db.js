@@ -22,6 +22,11 @@ db.version(3).stores({
   vehicleTypes: "type_cd, description",
 });
 
+db.version(4).stores({
+  nscPuj: "id, objectCd, objectDsc",
+  jurisdictionCountry: "id, objectCd, objectDsc",
+});
+
 const initDB = async () => {
   await db.open();
 };

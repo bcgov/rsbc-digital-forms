@@ -21,11 +21,15 @@ import { genderDropdown } from "../../utils/constants";
 import "./commonForm.scss";
 
 export const DriverInfo = (props) => {
-  const { jurisdictions, provinces } = props;
+  const { jurisdictions, provinces, jurisdictionCountry } = props;
   const { values, setFieldValue } = useFormikContext();
   const [disableBtn, setdisableBtn] = useState(true);
   const [modalShow, setModalShow] = useState(false);
   const [scannerOpened, setScannerOpened] = useState(false);
+  const [dlJurisdictionOptions, setDlJurisdictionOptions] =
+    useState(jurisdictions);
+  const [driverJurisdictionOptions, setDriverJurisdictionOptions] =
+    useState(jurisdictions);
   const driversLicenceJurisdiction = values["drivers_licence_jurisdiction"];
 
   useEffect(() => {
@@ -130,6 +134,16 @@ export const DriverInfo = (props) => {
     }
   };
 
+  const handleJurisdictionChange = (event, setter) => {
+    const newValue = event.value;
+    // Update options based on the selected value
+    if (newValue === "XX") {
+      setter(jurisdictionCountry);
+    } else if (newValue === "XZ") {
+      setter(jurisdictions);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -196,7 +210,10 @@ export const DriverInfo = (props) => {
                   className="field-height field-width"
                   label="Province / State/ International"
                   name="drivers_licence_jurisdiction"
-                  options={jurisdictions}
+                  onChange={(event) =>
+                    handleJurisdictionChange(event, setDlJurisdictionOptions)
+                  }
+                  options={dlJurisdictionOptions}
                 />
               </Col>
             )}
@@ -256,9 +273,12 @@ export const DriverInfo = (props) => {
             <Col sm={4}>
               <SearchableSelect
                 className="field-height field-width"
-                label="Province / State"
+                label="Province / State/ International"
                 name="driver_prov_state"
-                options={provinces}
+                onChange={(event) =>
+                  handleJurisdictionChange(event, setDriverJurisdictionOptions)
+                }
+                options={driverJurisdictionOptions}
               />
             </Col>
             <Col sm={4}>

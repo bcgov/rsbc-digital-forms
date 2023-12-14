@@ -59,7 +59,16 @@ export const validationSchema = Yup.object().shape(
     driver_licence_no: Yup.string(),
     drivers_licence_jurisdiction: Yup.object().when(["VI", "TwentyFourHour"], {
       is: (VI, TwentyFourHour) => VI || TwentyFourHour,
-      then: () => Yup.object().required("Jurisdiction is required"),
+      then: () =>
+        Yup.object()
+          .required("Jurisdiction is required")
+          .test(
+            "jurisdiction_valid",
+            "Please select a valid jurisdiction for drivers licence.",
+            (option) => {
+              return option.value !== "XX" && option.value !== "XZ";
+            }
+          ),
     }), // Only for 24h / VI
     driver_last_name: Yup.string().required("Last Name is required"),
     driver_given_name: Yup.string(),
@@ -124,7 +133,13 @@ export const validationSchema = Yup.object().shape(
       .notRequired()
       .matches(/^$|^\d{3}-\d{3}-\d{4}$/, "Phone Number format ###-###-####"),
     driver_city: Yup.string(),
-    driver_prov_state: Yup.object(),
+    driver_prov_state: Yup.object().test(
+      "driver_provState_valid",
+      "Please select a valid province, state, or country for driver.",
+      (option) => {
+        return option.value !== "XX" && option.value !== "XZ";
+      }
+    ),
     driver_postal: Yup.string(),
     // gender: Yup.string(), // Only for VI
     driver_licence_expiry: Yup.date()
@@ -151,7 +166,13 @@ export const validationSchema = Yup.object().shape(
     }),
 
     /** Vehicle Information */
-    vehicle_jurisdiction: Yup.object(), // Select one
+    vehicle_jurisdiction: Yup.object().test(
+      "vehicle_jurisdiction_valid",
+      "Please select a valid province, state, or country for vehicle info.",
+      (option) => {
+        return option.value !== "XX" && option.value !== "XZ";
+      }
+    ), // Select one
     vehicle_plate_no: Yup.string(),
     vehicle_registration_no: Yup.string().when(["VI", "TwentyFourHour"], {
       is: (VI, TwentyFourHour) => VI || TwentyFourHour,
@@ -297,7 +318,14 @@ export const validationSchema = Yup.object().shape(
     }), // Only for 24h / VI
     regist_owner_prov_state: Yup.object().when(["VI", "TwentyFourHour"], {
       is: (VI, TwentyFourHour) => VI || TwentyFourHour,
-      then: () => Yup.object(),
+      then: () =>
+        Yup.object().test(
+          "regist_owner_prov_state_valid",
+          "Please select a valid province, state, or country for vehicle's registered owner.",
+          (option) => {
+            return option.value !== "XX" && option.value !== "XZ";
+          }
+        ),
     }), // Only for 24h / VI
     regist_owner_postal: Yup.string().when(["VI", "TwentyFourHour"], {
       is: (VI, TwentyFourHour) => VI || TwentyFourHour,
@@ -644,6 +672,62 @@ export const validationSchema = Yup.object().shape(
       is: true,
       then: () => Yup.boolean(),
     }), // Only for VI
+
+    impoundment_reason: Yup.object()
+      .shape({
+        /** Reasonable Grounds */
+        excessive_speed: Yup.boolean().when("VI", {
+          is: true,
+          then: () => Yup.boolean(),
+        }), // Only for VI
+        prohibited: Yup.boolean().when("VI", {
+          is: true,
+          then: () => Yup.boolean(),
+        }), // Only for VI
+        suspended: Yup.boolean().when("VI", {
+          is: true,
+          then: () => Yup.boolean(),
+        }), // Only for VI
+        street_racing: Yup.boolean().when("VI", {
+          is: true,
+          then: () => Yup.boolean(),
+        }), // Only for VI
+        stunt_driving: Yup.boolean().when("VI", {
+          is: true,
+          then: () => Yup.boolean(),
+        }), // Only for VI
+        motorcycle_seating: Yup.boolean().when("VI", {
+          is: true,
+          then: () => Yup.boolean(),
+        }), // Only for VI
+        motorcycle_restrictions: Yup.boolean().when("VI", {
+          is: true,
+          then: () => Yup.boolean(),
+        }), // Only for VI
+        unlicensed: Yup.boolean().when("VI", {
+          is: true,
+          then: () => Yup.boolean(),
+        }), // Only for VI
+      })
+      .test(
+        "at_least_one_impoundment_reason",
+        "Please select at least one option from the list of Impoundment for Driving Behaviour",
+        function (value) {
+          if (this.parent.VI) {
+            return (
+              this.parent.excessive_speed ||
+              this.parent.prohibited ||
+              this.parent.suspended ||
+              this.parent.street_racing ||
+              this.parent.stunt_driving ||
+              this.parent.motorcycle_seating ||
+              this.parent.motorcycle_restrictions ||
+              this.parent.unlicensed
+            );
+          }
+          return true;
+        }
+      ),
 
     /** Excessive Speed */
     speed_limit: Yup.number()
