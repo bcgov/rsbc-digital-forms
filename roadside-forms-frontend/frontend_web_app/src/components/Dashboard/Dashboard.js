@@ -23,7 +23,7 @@ import "./dashboard.scss";
 import { FormIDApi } from "../../api/formIDApi";
 import { getAllFormIDs } from "../../utils/dbHelpers";
 import { useSharedIsOnline } from "../../utils/connectivity";
-// import BootstrapTable from "react-bootstrap-table-next";
+import BootstrapTable from "react-bootstrap-table-next";
 
 export const Dashboard = () => {
   const { isConnected } = useSharedIsOnline();
@@ -273,52 +273,53 @@ export const Dashboard = () => {
     navigate("/createEvent");
   };
 
-  // const tableColumns = [
-  //   {
-  //     dataField: "created_dt",
-  //     text: "Date & Time",
-  //     formatter: (cell) => {
-  //       return convertToPSTFormat(cell);
-  //     },
-  //     sort: true,
-  //   },
-  //   {
-  //     dataField: "driver_last_name",
-  //     text: "Surname",
-  //     formatter: (cell, row) => {
-  //       return (
-  //         <Link to="/view-previous" state={{ eventId: row["event_id"] }}>
-  //           {cell ? cell : "N/A"}
-  //         </Link>
-  //       );
-  //     },
-  //   },
-  //   {
-  //     text: "Form Type",
-  //     formatter: (cell, row) => {
-  //       return formTypes(row);
-  //     },
-  //   },
-  //   {
-  //     dataField: "event_id",
-  //     text: "Form #",
-  //     formatter: (cell, row) => {
-  //       return (
-  //         <Link to="/view-previous" state={{ eventId: row["event_id"] }}>
-  //           {formNumbers(row)}
-  //         </Link>
-  //       );
-  //     },
-  //   },
-  //   {
-  //     dataField: "vehicle_plate_no",
-  //     text: "Plate #",
-  //   },
-  //   {
-  //     dataField: "intersection_or_address_of_offence",
-  //     text: "Location",
-  //   },
-  // ];
+  const tableColumns = [
+    {
+      dataField: "created_dt",
+      text: "Date & Time",
+      formatter: (cell) => {
+        return convertToPSTFormat(cell);
+      },
+      sort: true,
+    },
+    {
+      dataField: "driver_last_name",
+      text: "Surname",
+      formatter: (cell, row) => {
+        return (
+          <Link to="/view-previous" state={{ eventId: row["event_id"] }}>
+            {cell ? cell : "N/A"}
+          </Link>
+        );
+      },
+      sort: true,
+    },
+    {
+      text: "Form Type",
+      formatter: (cell, row) => {
+        return formTypes(row);
+      },
+    },
+    {
+      dataField: "event_id",
+      text: "Form #",
+      formatter: (cell, row) => {
+        return (
+          <Link to="/view-previous" state={{ eventId: row["event_id"] }}>
+            {formNumbers(row)}
+          </Link>
+        );
+      },
+    },
+    {
+      dataField: "vehicle_plate_no",
+      text: "Plate #",
+    },
+    {
+      dataField: "intersection_or_address_of_offence",
+      text: "Location",
+    },
+  ];
 
   return (
     <>
@@ -388,7 +389,6 @@ export const Dashboard = () => {
             <ErrorOutlineIcon />
             Waiting for Transmission to Server
           </h3>
-          {/* <span>Automatically re-trying in x seconds</span> */}
         </div>
         <hr className="hr" />
         <Table>
@@ -413,66 +413,11 @@ export const Dashboard = () => {
           <span>Last updated at {lastUpdatedDate}</span>
         </div>
         <hr className="hr" />
-        {/* <BootstrapTable
+        <BootstrapTable
           keyField="event_id"
           data={formsData}
           columns={tableColumns}
-        /> */}
-        <Table>
-          <thead>
-            <tr>
-              <th>Date & Time</th>
-              <th>Surname</th>
-              <th>Form Type</th>
-              <th>Form #</th>
-              <th>Plate #</th>
-              <th>Location</th>
-            </tr>
-          </thead>
-          <tbody>
-            {formsData.map((data, index) => {
-              return data["submitted"] ? (
-                <tr key={data["vehicle_vin_no"]}>
-                  <td>
-                    {data["created_dt"]
-                      ? convertToPSTFormat(data["created_dt"])
-                      : "N/A"}
-                  </td>
-                  <td>
-                    <Link
-                      to="/view-previous"
-                      state={{ eventId: data["event_id"] }}
-                    >
-                      {data["driver_last_name"]
-                        ? data["driver_last_name"]
-                        : "N/A"}
-                    </Link>
-                  </td>
-                  <td>{formTypes(data)}</td>
-
-                  <td>
-                    <Link
-                      to="/view-previous"
-                      state={{ eventId: data["event_id"] }}
-                    >
-                      {formNumbers(data)}
-                    </Link>
-                  </td>
-                  <td>
-                    {data["vehicle_plate_no"]
-                      ? data["vehicle_plate_no"]
-                      : "N/A"}
-                  </td>
-                  <td>
-                    {data["intersection_or_address_of_offence"]
-                      ? data["intersection_or_address_of_offence"]
-                      : "N/A"}
-                  </td>
-                </tr>
-              ) : null;
-            })}
-          </tbody>
-        </Table>
+        />
       </div>
     </>
   );
