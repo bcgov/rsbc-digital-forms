@@ -223,6 +223,30 @@ class Jurisdiction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     objectCd = db.Column(db.String)
     objectDsc = db.Column(db.String)
+    
+@dataclass
+class JurisdictionCountry(db.Model):
+    __tablename__ = 'jurisdiction_country'
+
+    id: int
+    objectCd: str
+    objectDsc: str
+
+    id = db.Column(db.Integer, primary_key=True)
+    objectCd = db.Column(db.String)
+    objectDsc = db.Column(db.String)
+    
+@dataclass
+class NSCPuj(db.Model):
+    __tablename__ = 'nsc_puj'
+
+    id: int
+    objectCd: str
+    objectDsc: str
+
+    id = db.Column(db.Integer, primary_key=True)
+    objectCd = db.Column(db.String)
+    objectDsc = db.Column(db.String)
 
 
 @dataclass
@@ -700,14 +724,16 @@ class JurisdictionCrossRef(db.Model):
     jurisdiction_name: str
     jurisdiction_code: str
     prime_jurisdiction_code: str
+    prime_jurisdiction_name: str
     icbc_jurisdiction_code: str
     icbc_jurisdiction: str
     vips_jurisdictions_objectCd: str
     vips_jurisdictions_objectDsc: str
 
-    jurisdiction_name = db.Column(db.String, primary_key=True)
-    jurisdiction_code = db.Column(db.String)
+    jurisdiction_name = db.Column(db.String)
+    jurisdiction_code = db.Column(db.String, primary_key=True)
     prime_jurisdiction_code = db.Column(db.String)
+    prime_jurisdiction_name = db.Column(db.String)
     icbc_jurisdiction_code = db.Column(db.String)
     icbc_jurisdiction = db.Column(db.String)
     vips_jurisdictions_objectCd = db.Column(db.String)

@@ -52,6 +52,10 @@ export const CreateEvent = () => {
   const cityAtom = useRecoilValue(staticResources["cities"]);
   const vehiclesAtom = useRecoilValue(staticResources["vehicles"]);
   const impoundAtom = useRecoilValue(staticResources["impound_lot_operators"]);
+  const nscPujAtom = useRecoilValue(staticResources["nscPuj"]);
+  const jurisdictionCountryAtom = useRecoilValue(
+    staticResources["jurisdictionCountry"]
+  );
   const [formValues, setFormValues] = useState([]);
   const [formIDs, setFormIDs] = useState({
     VI: "",
@@ -61,6 +65,8 @@ export const CreateEvent = () => {
   });
   const [formIDsFetched, setFormIDsFetched] = useState(false);
   const [jurisdictions, setJurisdictions] = useState([]);
+  const [jurisdictionCountry, setJurisdictionCountry] = useState([]);
+  const [nscPuj, setNscPuj] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [vehicleStyles, setVehicleStyles] = useState([]);
   const [vehicleTypes, setVehicleTypes] = useState([]);
@@ -164,6 +170,18 @@ export const CreateEvent = () => {
         value: each.objectCd,
       }))
     );
+    setJurisdictionCountry(
+      jurisdictionCountryAtom.map((each) => ({
+        label: each.objectDsc,
+        value: each.objectCd,
+      }))
+    );
+    setNscPuj(
+      nscPujAtom.map((each) => ({
+        label: each.objectDsc,
+        value: each.objectCd,
+      }))
+    );
     setVehicleStyles(
       vehicleStylesAtom.map((each) => ({ label: each.name, value: each.code }))
     );
@@ -200,6 +218,8 @@ export const CreateEvent = () => {
     cityAtom,
     impoundAtom,
     vehicleTypesAtom,
+    jurisdictionCountryAtom,
+    nscPujAtom,
     formIDsFetched,
   ]);
 
@@ -654,19 +674,24 @@ export const CreateEvent = () => {
                 <div className="common-fields">
                   <DriverInfo
                     jurisdictions={jurisdictions}
+                    jurisdictionCountry={jurisdictionCountry}
                     provinces={provinces}
                   />
                   <VehicleInfo
                     vehicleColours={vehicleColours}
                     years={generateYearOptions()}
-                    provinces={provinces}
+                    nscPuj={nscPuj}
                     jurisdictions={jurisdictions}
+                    jurisdictionCountry={jurisdictionCountry}
                     vehicles={vehicles}
                     vehicleStyles={vehicleStyles}
                     vehicleTypes={vehicleTypes}
                   />
                   {(values["TwentyFourHour"] || values["VI"]) && (
-                    <RegisteredOwnerInfo provinces={provinces} />
+                    <RegisteredOwnerInfo
+                      jurisdictions={jurisdictions}
+                      jurisdictionCountry={jurisdictionCountry}
+                    />
                   )}
                 </div>
                 {(values["TwentyFourHour"] || values["VI"]) && (
@@ -693,7 +718,10 @@ export const CreateEvent = () => {
                     <VehicleImpoundmentReason />
                     {values["excessive_speed"] && <Excessive />}
                     {values["unlicensed"] && (
-                      <Unlicensed jurisdictions={jurisdictions} />
+                      <Unlicensed
+                        jurisdictions={jurisdictions}
+                        jurisdictionCountry={jurisdictionCountry}
+                      />
                     )}
                     <LinkageFactors />
                     <IncidentDetails values={values} />

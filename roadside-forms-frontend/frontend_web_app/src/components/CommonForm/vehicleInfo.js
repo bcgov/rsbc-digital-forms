@@ -19,11 +19,14 @@ export const VehicleInfo = (props) => {
     vehicleStyles,
     vehicleColours,
     jurisdictions,
-    provinces,
+    jurisdictionCountry,
     vehicleTypes,
+    nscPuj,
   } = props;
   const { values, setFieldValue } = useFormikContext();
   const [disableBtn, setdisableBtn] = useState(true);
+  const [vehicleJurisdictionOptions, setVehicleJurisdictionOptions] =
+    useState(jurisdictions);
   const driversLicenceJurisdiction = values["vehicle_jurisdiction"];
 
   useEffect(() => {
@@ -89,6 +92,16 @@ export const VehicleInfo = (props) => {
     }
   };
 
+  const handleJurisdictionChange = (event) => {
+    const newValue = event.value;
+    // Update options based on the selected value
+    if (newValue === "XX") {
+      setVehicleJurisdictionOptions(jurisdictionCountry);
+    } else if (newValue === "XZ") {
+      setVehicleJurisdictionOptions(jurisdictions);
+    }
+  };
+
   return (
     <div className="vehicle-info border-design-form left">
       <h3>Vehicle Information</h3>
@@ -99,7 +112,8 @@ export const VehicleInfo = (props) => {
               className="field-height field-width"
               label="Jurisdiction"
               name="vehicle_jurisdiction"
-              options={jurisdictions}
+              onChange={handleJurisdictionChange}
+              options={vehicleJurisdictionOptions}
             />
           </Col>
           <Col sm={5}>
@@ -197,7 +211,7 @@ export const VehicleInfo = (props) => {
               className="field-height field-width"
               label="NSC Prov / State"
               name="nsc_prov_state"
-              options={provinces}
+              options={nscPuj}
             />
           </Col>
           <Col sm={4}>
@@ -219,6 +233,7 @@ VehicleInfo.propTypes = {
   vehicleStyles: PropTypes.array.isRequired,
   vehicleColours: PropTypes.array.isRequired,
   jurisdictions: PropTypes.array.isRequired,
-  provinces: PropTypes.array.isRequired,
+  jurisdictionCountry: PropTypes.array.isRequired,
+  nscPuj: PropTypes.array.isRequired,
   years: PropTypes.array.isRequired,
 };

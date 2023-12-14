@@ -1,18 +1,20 @@
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import Button from "react-bootstrap/Button";
+import { Row, Col } from "react-bootstrap";
+import { useFormikContext } from "formik";
 import { Checkbox } from "../common/Checkbox/checkbox";
 import { Input } from "../common/Input/Input";
-import Button from "react-bootstrap/Button";
 import { PhoneField } from "../common/Input/phoneField";
-import { useEffect } from "react";
-import PropTypes from "prop-types";
 import { SearchableSelect } from "../common/Select/SearchableSelect";
-import { useFormikContext } from "formik";
 import "./commonForm.scss";
-import { Row, Col } from "react-bootstrap";
 import { DateOfBirthField } from "../common/DateField/dateOfBirthField";
 
 export const RegisteredOwnerInfo = (props) => {
-  const { provinces } = props;
+  const { jurisdictions, jurisdictionCountry } = props;
   const { values, setValues } = useFormikContext();
+  const [ownerJurisdictionOptions, setOwnerJurisdictionOptions] =
+    useState(jurisdictions);
   const ownedByCorp = values["owned_by_corp"];
 
   useEffect(() => {
@@ -51,6 +53,16 @@ export const RegisteredOwnerInfo = (props) => {
       ...values,
       ...driverInfo,
     });
+  };
+
+  const handleJurisdictionChange = (event) => {
+    const newValue = event.value;
+    // Update options based on the selected value
+    if (newValue === "XX") {
+      setOwnerJurisdictionOptions(jurisdictionCountry);
+    } else if (newValue === "XZ") {
+      setOwnerJurisdictionOptions(jurisdictions);
+    }
   };
 
   return (
@@ -155,7 +167,8 @@ export const RegisteredOwnerInfo = (props) => {
             className="field-height field-width"
             label="Province / State"
             name="regist_owner_prov_state"
-            options={provinces}
+            onChange={handleJurisdictionChange}
+            options={ownerJurisdictionOptions}
           />
         </Col>
         <Col className=" col-sm-4">
@@ -171,5 +184,6 @@ export const RegisteredOwnerInfo = (props) => {
 };
 
 RegisteredOwnerInfo.propTypes = {
-  provinces: PropTypes.array.isRequired,
+  jurisdictions: PropTypes.array.isRequired,
+  jurisdictionCountry: PropTypes.array.isRequired,
 };
