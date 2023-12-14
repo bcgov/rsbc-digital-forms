@@ -208,7 +208,7 @@ export const DriverInfo = (props) => {
               <Col sm={6}>
                 <SearchableSelect
                   className="field-height field-width"
-                  label="Province / State/ International"
+                  label="Province / State / International"
                   name="drivers_licence_jurisdiction"
                   onChange={(event) =>
                     handleJurisdictionChange(event, setDlJurisdictionOptions)
@@ -273,7 +273,7 @@ export const DriverInfo = (props) => {
             <Col sm={4}>
               <SearchableSelect
                 className="field-height field-width"
-                label="Province / State/ International"
+                label="Province / State / International"
                 name="driver_prov_state"
                 onChange={(event) =>
                   handleJurisdictionChange(event, setDriverJurisdictionOptions)
