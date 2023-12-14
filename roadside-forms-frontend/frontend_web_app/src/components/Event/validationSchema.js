@@ -1094,7 +1094,11 @@ export const validationSchema = Yup.object().shape(
           TwentyFourHour &&
           type_of_prohibition === "drugs" &&
           reasonable_test_used_drugs === "PPCT",
-        then: () => Yup.boolean(),
+        then: () =>
+          Yup.boolean().oneOf(
+            [true],
+            "Ability to drive affected by a drug must be checked"
+          ),
       }
     ), // Only for 24h, required if prescribed_test_used = "Yes" and reasonable_test_used_acohol = "PPCT"
     reasonable_can_drive_alcohol: Yup.boolean().when(
@@ -1108,7 +1112,11 @@ export const validationSchema = Yup.object().shape(
           TwentyFourHour &&
           type_of_prohibition === "alcohol" &&
           resonable_test_used_alcohol === "PPCT",
-        then: () => Yup.boolean(),
+        then: () =>
+          Yup.boolean().oneOf(
+            [true],
+            "Ability to drive affected by alcohol must be checked"
+          ),
       }
     ), // Only for 24h, required if prescribed_test_used = "Yes" and type_of_prohibition = "alcohol" reasonable_test_used_alcohol = "PPCT"
 
