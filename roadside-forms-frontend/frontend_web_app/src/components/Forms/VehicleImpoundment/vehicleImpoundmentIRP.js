@@ -16,7 +16,7 @@ export const VehicleImpoundmentIRP = (props) => {
       <Row>
         <Col>
           <Radio
-            label="was an IRP issued as a part of this vehicular impound?"
+            label="Was an IRP issued as a part of this vehicular impound?"
             name="irp_impound"
             options={[
               { label: "Yes", value: "YES" },
@@ -32,27 +32,43 @@ export const VehicleImpoundmentIRP = (props) => {
           <Row>
             <Col>
               <Radio
-                label="Vehicle Impoind Duration"
+                label="IRP Duration"
                 name="irp_impound_duration"
                 options={[
                   {
-                    label: "3-day Vehicle Impoundment(Optional for 3-Day IRPs",
-                    value: "3DAY",
+                    label: "3-Day IRP (Warn)",
+                    value: "BACWARN3",
                   },
                   {
-                    label: "7-day Vehicle Impoundment(Optional for 7-Day IRPs",
-                    value: "7DAY",
+                    label: "7-Day IRP (Warn)",
+                    value: "BACWARN7",
                   },
                   {
-                    label:
-                      "30-day Vehicle Impoundment(MANDATORY for 30-Day and 90-Day IRPs",
-                    value: "30DAY",
+                    label: "30-day IRP (Warn)",
+                    value: "BACWARN30",
+                  },
+                  {
+                    label: "90-day IRP (Fail or Refusal)",
+                    value: "BACFAIL",
                   },
                 ]}
                 required
               />
             </Col>
           </Row>
+          {(values["irp_impound_duration"] === "BACWARN3" ||
+            values["irp_impound_duration"] === "BACWARN7") && (
+            <p style={{ color: "gray" }}>
+              Vehicle <strong>could</strong> be impounded for:{" "}
+              {values["irp_impound_duration"][7]} days
+            </p>
+          )}
+          {(values["irp_impound_duration"] === "BACWARN30" ||
+            values["irp_impound_duration"] === "BACFAIL") && (
+            <p style={{ color: "gray" }}>
+              Vehicle <strong>must</strong> be impounded for: 30 days
+            </p>
+          )}
           <Row>
             <Col sm={6}>
               <Input
