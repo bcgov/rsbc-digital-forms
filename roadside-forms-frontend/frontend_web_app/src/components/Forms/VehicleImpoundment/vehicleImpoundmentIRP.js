@@ -32,27 +32,43 @@ export const VehicleImpoundmentIRP = (props) => {
           <Row>
             <Col>
               <Radio
-                label="Vehicle Impound Duration"
+                label="IRP Duration"
                 name="irp_impound_duration"
                 options={[
                   {
-                    label: "3-day Vehicle Impoundment(Optional for 3-Day IRPs",
+                    label: "3 Day IRP",
                     value: "3DAY",
                   },
                   {
-                    label: "7-day Vehicle Impoundment(Optional for 7-Day IRPs",
+                    label: "7 Day IRP",
                     value: "7DAY",
                   },
                   {
-                    label:
-                      "30-day Vehicle Impoundment(MANDATORY for 30-Day and 90-Day IRPs",
+                    label: "30 day IRP",
                     value: "30DAY",
+                  },
+                  {
+                    label: "90 day IRP",
+                    value: "90DAY",
                   },
                 ]}
                 required
               />
             </Col>
           </Row>
+          {(values["irp_impound_duration"] === "3DAY" ||
+            values["irp_impound_duration"] === "7DAY") && (
+            <p style={{ color: "gray" }}>
+              Vehicle <strong>could</strong> be impounded for:{" "}
+              {values["irp_impound_duration"][0]} days
+            </p>
+          )}
+          {(values["irp_impound_duration"] === "30DAY" ||
+            values["irp_impound_duration"] === "90DAY") && (
+            <p style={{ color: "gray" }}>
+              Vehicle <strong>must</strong> be impounded for: 30 days
+            </p>
+          )}
           <Row>
             <Col sm={6}>
               <Input
