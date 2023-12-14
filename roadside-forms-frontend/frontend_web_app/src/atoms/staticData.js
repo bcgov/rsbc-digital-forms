@@ -54,3 +54,13 @@ export const agencies = atom({
   key: "allAgencies",
   default: [],
 });
+
+export const nscPuj = atom({
+  key: "allNscPuj",
+  default: [],
+});
+
+export const jurisdictionCountry = atom({
+  key: "allJurisdictionCountry",
+  default: [],
+});

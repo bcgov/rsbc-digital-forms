@@ -17,6 +17,7 @@ export const VehicleImpoundmentIRP = (props) => {
         <Col>
           <Radio
             label="Was an IRP issued as a part of this vehicular impound?"
+            lightLabel=" In accordance with section 215.46 and 253 of the Motor VehicleAct"
             name="irp_impound"
             options={[
               { label: "Yes", value: "YES" },

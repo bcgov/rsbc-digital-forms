@@ -5,6 +5,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import AddIcon from "@mui/icons-material/Add";
 import Table from "react-bootstrap/Table";
 import { useRecoilState } from "recoil";
+import { useNavigate, Link } from "react-router-dom";
 import { FormSubmissionApi } from "../../api/formSubmissionApi";
 import {
   staticResources,
@@ -16,7 +17,6 @@ import {
 import { convertToPST, convertToPSTFormat } from "../../utils/dateTime";
 import { StaticDataApi } from "../../api/staticDataApi";
 import { Button } from "../common/Button/Button";
-import { useNavigate, Link } from "react-router-dom";
 import { db } from "../../db";
 import { userAtom } from "../../atoms/users";
 import "./dashboard.scss";
@@ -61,6 +61,11 @@ export const Dashboard = () => {
   const [vehicleResource, setVehicleResource] = useRecoilState(
     staticResources["vehicles"]
   );
+  const [nscPujResource, setNscPujResource] = useRecoilState(
+    staticResources["nscPuj"]
+  );
+  const [jurisdictionCountryResource, setJurisdictionCountryResource] =
+    useRecoilState(staticResources["jurisdictionCountry"]);
 
   const [lastUpdatedDate, setLastUpdatedDate] = useState(null);
 
@@ -88,6 +93,10 @@ export const Dashboard = () => {
           const vehicleTypeData = await StaticDataApi.get("vehicle_types");
           const vehicleColourData = await StaticDataApi.get("vehicle_colours");
           const vehicleData = await StaticDataApi.get("vehicles");
+          const nscPujData = await StaticDataApi.get("nsc_puj");
+          const jurisdictionCountryData = await StaticDataApi.get(
+            "jurisdiction_country"
+          );
 
           setVehicleResource(vehicleData.data);
           setVehicleStyleResource(vehicleStyleData.data);
@@ -99,9 +108,24 @@ export const Dashboard = () => {
           setCityResource(cityData.data);
           setAgencyResource(agencyData.data);
           setVehicleTypeResource(vehicleTypeData.data);
+          setNscPujResource(nscPujData.data);
+          setJurisdictionCountryResource(jurisdictionCountryData.data);
           setStaticDataLoaded(true);
 
           try {
+            await db.vehicles.clear();
+            await db.vehicleStyles.clear();
+            await db.vehicleColours.clear();
+            await db.provinces.clear();
+            await db.impoundLotOperators.clear();
+            await db.jurisdictions.clear();
+            await db.countries.clear();
+            await db.cities.clear();
+            await db.vehicleTypes.clear();
+            await db.agencies.clear();
+            await db.nscPuj.clear();
+            await db.jurisdictionCountry.clear();
+
             await db.vehicles.bulkPut(vehicleData.data);
             await db.vehicleStyles.bulkPut(vehicleStyleData.data);
             await db.vehicleColours.bulkPut(vehicleColourData.data);
@@ -112,6 +136,8 @@ export const Dashboard = () => {
             await db.cities.bulkPut(cityData.data);
             await db.vehicleTypes.bulkPut(vehicleTypeData.data);
             await db.agencies.bulkPut(agencyData.data);
+            await db.nscPuj.bulkPut(nscPujData.data);
+            await db.jurisdictionCountry.bulkPut(jurisdictionCountryData.data);
           } catch (error) {
             console.log(error);
           }
@@ -129,6 +155,8 @@ export const Dashboard = () => {
         setCityResource(await db.cities.toArray());
         setAgencyResource(await db.agencies.toArray());
         setVehicleTypeResource(await db.vehicleTypes.toArray());
+        setNscPujResource(await db.nscPuj.toArray());
+        setJurisdictionCountryResource(await db.jurisdictionCountry.toArray());
         setStaticDataLoaded(true);
       }
     };
@@ -148,6 +176,8 @@ export const Dashboard = () => {
     setFormsData,
     setStaticDataLoaded,
     setVehicleTypeResource,
+    setJurisdictionCountryResource,
+    setNscPujResource,
     isConnected,
   ]);
 
@@ -163,7 +193,9 @@ export const Dashboard = () => {
           vehicleStyleResource,
           jusrisdictionResource,
           cityResource,
-          impoundResource
+          impoundResource,
+          jurisdictionCountryResource,
+          nscPujResource
         );
         if (flattenedEventData.length) {
           await db.event.bulkPut(flattenedEventData);
@@ -186,6 +218,8 @@ export const Dashboard = () => {
     cityResource,
     impoundResource,
     staticDataLoaded,
+    jurisdictionCountryResource,
+    nscPujResource,
     isConnected,
   ]);
 
