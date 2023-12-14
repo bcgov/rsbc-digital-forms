@@ -39,9 +39,9 @@ export const TestAdministered = (props) => {
     if (values["prescribed_test_used"] === "NO") {
       values["reasonable_test_used_alcohol"] = "";
       values["reasonable_test_used_drugs"] = "";
-      values["reasonable_asd_expiry_date"] = "";
+      values["reasonable_asd_expiry_date"] = null;
       values["reasonable_result_alcohol"] = "";
-      values["reasonable_bac_result_mg"] = "";
+      values["reasonable_bac_result_mg"] = null;
       values["resonable_approved_instrument_used"] = "";
       values["reasonable_can_drive_drug"] = false;
       values["reasonable_can_drive_alcohol"] = false;
@@ -51,11 +51,11 @@ export const TestAdministered = (props) => {
   useEffect(() => {
     // alco-sensor / instrument / PPCT
     if (values["reasonable_test_used_alcohol"] !== "alco-sensor") {
-      values["reasonable_asd_expiry_date"] = "";
+      values["reasonable_asd_expiry_date"] = null;
       values["reasonable_result_alcohol"] = "";
     }
     if (values["reasonable_test_used_alcohol"] !== "instrument") {
-      values["reasonable_bac_result_mg"] = "";
+      values["reasonable_bac_result_mg"] = null;
       values["resonable_approved_instrument_used"] = "";
     }
     if (values["reasonable_test_used_alcohol"] !== "PPCT") {
