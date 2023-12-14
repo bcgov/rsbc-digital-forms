@@ -262,6 +262,11 @@ export const printFormatHelper = (values, data, key) => {
     return val;
   }
 
+  if (key === "REPORT_DRIVER_DL_EXPIRY") {
+    val = moment(values["driver_licence_expiry"]).format("YYYY");
+    return val;
+  }
+
   //temp: if the value is an object then take its value
   if (
     values[data["field_name"]] &&
@@ -378,17 +383,21 @@ export const printFormatHelper = (values, data, key) => {
     }
   }
 
-  if (
-    key === "REPORT_INCIDENT_DETAILS" &&
-    values["incident_details_extra_page"]
-  ) {
-    val = "";
+  if (values["incident_details"] && values["incident_details"].length > 0) {
+    values["incident_details_explained_below"] = true;
   }
-  if (
-    key === "DETAILS_INCIDENT_DETAILS" &&
-    !values["incident_details_extra_page"]
-  ) {
-    val = "";
+
+  // Split into two fields
+  if (key === "REPORT_INCIDENT_DETAILS") {
+    if (values["incident_details"] && values["incident_details"].length > 500) {
+      val = values["incident_details"].substring(0, 500);
+    }
+  }
+
+  if (key === "DETAILS_INCIDENT_DETAILS") {
+    if (values["incident_details"] && values["incident_details"].length > 500) {
+      val = values["incident_details"].substring(500);
+    }
   }
 
   if (
