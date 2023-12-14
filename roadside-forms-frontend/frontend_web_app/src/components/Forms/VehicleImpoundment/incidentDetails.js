@@ -19,11 +19,11 @@ export const IncidentDetails = (props) => {
           <Checkbox name="incident_details_extra_page">
             Will a separate document be attached?
           </Checkbox>
-          <span>{input.length + "/3600"}</span>
+          <span>{input.length + "/3000"}</span>
           <TextAreaInput
             name="incident_details"
             className="text-area-height field-width"
-            maxLength="3600"
+            maxLength="3000"
             onChange={handleChange}
             value={input}
             placeholder="Enter details here..."
