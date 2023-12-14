@@ -15,7 +15,6 @@ const validateRequiredDateWithMax = (
   errorMessage
 ) => {
   return function (value) {
-    console.log(" Got value: ", value);
     if (selectedValue && !value) {
       return this.createError({
         path: errorPath,

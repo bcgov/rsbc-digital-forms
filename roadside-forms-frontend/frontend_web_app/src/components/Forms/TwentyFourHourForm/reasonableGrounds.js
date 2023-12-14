@@ -17,7 +17,7 @@ export const ReasonableGrounds = () => {
 
   useEffect(() => {
     if (values["prescribed_test_used"] === "NO") {
-      values["reasonable_date_of_test"] = "";
+      values["reasonable_date_of_test"] = null;
       values["reasonable_time_of_test"] = "";
     }
     if (values["prescribed_test_used"] === "YES") {
