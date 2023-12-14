@@ -13,21 +13,21 @@ export const InitialValues = () => {
 
     /** Driver's Information */
     driver_licence_no: "",
-    drivers_licence_jurisdiction: { value: "BC", label: "BRITISH COLUMBIA" },
+    drivers_licence_jurisdiction: { value: "CA_BC", label: "BRITISH COLUMBIA" },
     driver_last_name: "",
     driver_given_name: "",
     driver_dob: "",
     driver_address: "",
     driver_phone: "",
     driver_city: "",
-    driver_prov_state: { value: "BC", label: "BRITISH COLUMBIA" },
+    driver_prov_state: { value: "CA_BC", label: "BRITISH COLUMBIA" },
     driver_postal: "",
     gender: {},
     driver_licence_expiry: null,
     driver_licence_class: "",
 
     /** Vehicle Information */
-    vehicle_jurisdiction: { value: "BC", label: "BRITISH COLUMBIA" },
+    vehicle_jurisdiction: { value: "CA_BC", label: "BRITISH COLUMBIA" },
     vehicle_plate_no: "",
     vehicle_registration_no: "",
     vehicle_year: null,
@@ -47,7 +47,7 @@ export const InitialValues = () => {
     regist_owner_phone: "",
     regist_owner_email: "",
     regist_owner_city: "",
-    regist_owner_prov_state: { value: "BC", label: "BRITISH COLUMBIA" },
+    regist_owner_prov_state: { value: "CA_BC", label: "BRITISH COLUMBIA" },
     regist_owner_postal: "",
 
     /** Vehicle Impoundment or Disposition (24h/VI Only) */
