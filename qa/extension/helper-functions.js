@@ -7,14 +7,14 @@ const icbcTst6Values = [{
     "driver_last_name": "DLNP",
     "driver_given_name": "CONTRAVENTIONS",
     "driver_dob": "19900909",
-    "vehice_plate_no": "AA711A"
+    "vehice_plate_no": "CF069C"
 },
 {
     "driver_licence_no": "01695672",
     "driver_last_name": "SHARCC",
     "driver_given_name": "COMBO",
     "driver_dob": "19650403",
-    "vehice_plate_no": "AA714A"
+    "vehice_plate_no": "AA296A"
 }];
 
 
@@ -85,7 +85,12 @@ function FillVehicleSection(icbcTestRecord){
         SetField('vehicle_plate_no', GenerateLicencePlate());
     }
     SetField('vehicle_registration_no', GenerateRegistrationNumber());
-    //SelectRandomVehicleType('vehicle_type-select');
+
+    // Occasionally, pick a random vehicle type
+    if (Math.floor(Math.random() * 100) + 1 < 50) {
+        SelectRandomVehicleType('vehicle_type-select');
+    }
+    
     SetField('vehicle_vin_no', GenerateVIN());
 
     // Occasionally, pick a random NSC number
@@ -102,6 +107,10 @@ function FillVehicleSection(icbcTestRecord){
     SelectRandomVehicleStyle('vehicle_style-select');
     //SetMultiSelect('vehicle_colour', "YELLOW");
     SelectRandomVehicleColour('vehicle_colour');
+
+    // Get the number of selected colours
+    
+
 }
 
 function FillOwnerSection() {
@@ -159,11 +168,44 @@ function FillVehicleImpoundmentSection() {
 
 function FillProhibitionSection() {
     RandomlyChooseRadio('type_of_prohibition-alcohol','type_of_prohibition-drugs');
-    SetField('intersection_or_address_of_offence', GenerateStreetAddress());
     SetCustomSelect('offence_city-select', GenerateCity())
     SetField('agency_file_no', "RSI" + GenerateRandomNumberLength(4));
     SetField('date_of_driving', GetCurrentDate());
     SetField('time_of_driving', GetTimeFiveMinutesAgo());
+
+    // 50% of the time, fill out an offence intersection
+    if (Math.floor(Math.random() * 100) + 1 > 30) {
+        var location = "";
+
+        // 
+        if (Math.floor(Math.random() * 100) + 1 > 50) 
+        {
+            var blockNumber = Math.floor(Math.random() * 100) + 1 + "00";
+            var street = GenerateStreet();
+            
+            if (Math.floor(Math.random() * 100) + 1 > 50) 
+            {
+                location = blockNumber + " BLOCK " + street;
+            } else { 
+                location = blockNumber + " BLK " + street;
+            }
+        }
+        else {
+            street1 = GenerateStreet();
+            street2 = GenerateStreet();
+
+            // Randomly choose from array of delimiter options
+            var delimiters = ["/", "/", "/", "@", "AND", "&", "AT", "NEAR", "BY", "+", "x"];
+            var delimiter = delimiters[Math.floor(Math.random() * delimiters.length)]; 
+            location = street1 + " " + delimiter + " " + street2;
+        }
+        SetField('intersection_or_address_of_offence', location);
+    }
+    else {
+        SetField('intersection_or_address_of_offence', GenerateStreetAddress());
+    }
+    
+
 }
 
 function FillImpoundmentForIrpSection() {
@@ -217,11 +259,20 @@ function FillIncidentDetailsSection() {
 }
 
 function FillReasonableGroundsSection() {
-    RandomlySelectRadioButton('witnessed-by-officer');
-    RandomlySelectRadioButton('admission-by-driver');
-    RandomlySelectRadioButton('independent-witness');
-    RandomlySelectRadioButton('video-surveillance');
+    RandomlySelectRadioButton('witnessed_by_officer');
+    RandomlySelectRadioButton('admission_by_driver');
+    RandomlySelectRadioButton('independent_witness');
     RandomlySelectRadioButton('reasonable_ground_other');
+
+    // Ensure that at least one option is selected
+    if (document.getElementById('witnessed_by_officer').checked === false &&
+        document.getElementById('admission_by_driver').checked === false &&
+        document.getElementById('independent_witness').checked === false &&
+        document.getElementById('reasonable_ground_other').checked === false) 
+        {
+            RandomlyChooseRadio('witnessed_by_officer', 'admission_by_driver', 'independent_witness', 'reasonable_ground_other');
+    }
+
     SetField('reasonable_ground_other_reason', chance.sentence({ words: 6 }));
     RandomlyChooseRadio('prescribed_test_used-YES', 'prescribed_test_used-NO');
     SetField('reasonable_date_of_test', GetCurrentDate());
@@ -239,15 +290,19 @@ function FillTestAdministeredSection() {
     SetField('reasonable_bac_result_mg', Math.floor(Math.random() * 1000));
     SetField('resonable_approved_instrument_used', 'Instrument 1');
     // When Prescribed Pyhsical Coordination Test option is selected:
-    RandomlySelectRadioButton('reasonable_can_drive_alcohol');
+    if (document.getElementById('resonable_test_used_alcohol-PPCT') !== null && document.getElementById('resonable_test_used_alcohol-PPCT').checked === true) {
+        SelectCheckbox('reasonable_can_drive_alcohol');
+    }
 
     // DRUGS
     RandomlyChooseRadio('reasonable_test_used_drugs-approved-drug',
-        'reasonable_test_used_drugs-screening-equipment',
         'reasonable_test_used_drugs-PPCT'); 
     RandomlySelectRadioButton('THC');
     RandomlySelectRadioButton('Cocaine');
-    RandomlySelectRadioButton('reasonable_can_drive_drug');
+    
+    if (document.getElementById('reasonable_test_used_drugs-PPCT') !== null && document.getElementById('reasonable_test_used_drugs-PPCT').checked === true) {
+        SelectCheckbox('reasonable_can_drive_drug');
+    }
 }
 
 function FillOfficerSection() {
@@ -402,6 +457,21 @@ function GenerateLastName() {
     return chance.last();
 }
 
+function GenerateStreet() {
+    var streetName = ""
+    // randomly select a number between 1 and 100
+    if (Math.floor(Math.random() * 100) + 1 > 50) {
+        streenName = chance.last();
+    }
+    else {
+        streenName = chance.first();
+    }
+
+    // Randomly choose from a list of street type abbreviations
+    var streetTypes = ["ST", "AVE", "DR", "RD", "CRES", "BLVD", "WAY", "PL", "CIR", "CRT", "LN", "TR", "PKY", "HWY"];
+    return streenName + " " + streetTypes[Math.floor(Math.random() * streetTypes.length)]; 
+}
+
 // Helper function to generate a male or female given name
 function GenerateGivenName(gender) {
     if (gender === 'male') {
@@ -414,10 +484,10 @@ function GenerateGivenName(gender) {
     return chance.first();
 }
 
-// Helper function to generate a 1-5 given names. Male, female, or either.
+// Helper function to generate a 1-3 given names. Male, female, or either.
 function GenerateGivenNames(gender) {
     let names = [];
-    let numNames = chance.integer({min: 1, max: 4});
+    let numNames = chance.integer({min: 1, max: 3});
 
     for (let i = 0; i < numNames; i++) {
         if (gender === 'male') {
@@ -569,6 +639,10 @@ function SelectRadioButton(id) {
     if (el !== null) {
         el.click();
     }
+}
+
+function SelectCheckbox(id) {
+    SelectRadioButton(id);
 }
 
 function RandomlySelectRadioButton(id) {
