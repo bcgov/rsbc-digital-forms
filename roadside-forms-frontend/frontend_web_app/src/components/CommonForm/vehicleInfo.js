@@ -32,7 +32,7 @@ export const VehicleInfo = (props) => {
   useEffect(() => {
     if (
       driversLicenceJurisdiction &&
-      driversLicenceJurisdiction.value === "BC"
+      driversLicenceJurisdiction.value === "CA_BC"
     ) {
       setdisableBtn(false);
     } else {
@@ -69,7 +69,7 @@ export const VehicleInfo = (props) => {
             )
           );
           setFieldValue("vehicle_jurisdiction", {
-            value: "BC",
+            value: "CA_BC",
             label: "BRITISH COLUMBIA",
           });
           setFieldValue("regist_owner_last_name", party.lastName);
@@ -79,7 +79,7 @@ export const VehicleInfo = (props) => {
           setFieldValue("regist_owner_city", address.city);
           setFieldValue("regist_owner_postal", address.postalCode);
           setFieldValue("regist_owner_prov_state", {
-            value: "BC",
+            value: "CA_BC",
             label: "BRITISH COLUMBIA",
           });
           return;

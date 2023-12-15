@@ -110,7 +110,6 @@ export const Dashboard = () => {
           setVehicleTypeResource(vehicleTypeData.data);
           setNscPujResource(nscPujData.data);
           setJurisdictionCountryResource(jurisdictionCountryData.data);
-          setStaticDataLoaded(true);
 
           try {
             await db.vehicles.clear();
@@ -144,6 +143,7 @@ export const Dashboard = () => {
         } catch (error) {
           console.error("Error fetching data:", error);
         }
+        setStaticDataLoaded(true);
       } else {
         setVehicleResource(await db.vehicles.toArray());
         setVehicleStyleResource(await db.vehicleStyles.toArray());
