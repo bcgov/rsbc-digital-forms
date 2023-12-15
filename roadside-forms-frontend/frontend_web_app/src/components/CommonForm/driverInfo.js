@@ -36,7 +36,7 @@ export const DriverInfo = (props) => {
   useEffect(() => {
     if (
       driversLicenceJurisdiction &&
-      driversLicenceJurisdiction.value === "BC"
+      driversLicenceJurisdiction.value === "CA_BC"
     ) {
       setdisableBtn(false);
     } else {
@@ -46,8 +46,8 @@ export const DriverInfo = (props) => {
 
   useEffect(() => {
     if (values["TwelveHour"]) {
-      values["driver_prov_state"] = provinces.filter(
-        (province) => province.value === "BC"
+      values["driver_prov_state"] = jurisdictions.filter(
+        (province) => province.value === "CA_BC"
       )[0];
     }
   }, [values["TwelveHour"]]);
