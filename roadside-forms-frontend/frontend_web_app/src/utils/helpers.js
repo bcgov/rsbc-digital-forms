@@ -494,7 +494,7 @@ export const eventDataFormatter = (
     let driverJurisdiction = jurisdictions.filter(
       (x) => x["objectCd"] === event["driver_jurisdiction"]
     )[0];
-    if (driverJurisdiction === undefined) {
+    if (driverJurisdiction === null) {
       driverJurisdiction = jurisdictionCountry.filter(
         (x) => x["objectCd"] === event["driver_jurisdiction"]
       )[0];
@@ -507,7 +507,7 @@ export const eventDataFormatter = (
     let driverProvState = jurisdictions.filter(
       (x) => x["objectCd"] === event["driver_prov"]
     )[0];
-    if (driverProvState === undefined) {
+    if (driverProvState === null) {
       driverProvState = jurisdictionCountry.filter(
         (x) => x["objectCd"] === event["driver_prov"]
       )[0];
@@ -520,7 +520,7 @@ export const eventDataFormatter = (
     let vehicleJurisdiction = jurisdictions.filter(
       (x) => x["objectCd"] === event["vehicle_jurisdiction"]
     )[0];
-    if (vehicleJurisdiction === undefined) {
+    if (vehicleJurisdiction === null) {
       vehicleJurisdiction = jurisdictionCountry.filter(
         (x) => x["objectCd"] === event["vehicle_jurisdiction"]
       )[0];
@@ -553,7 +553,7 @@ export const eventDataFormatter = (
       let registOwnerProvState = jurisdictions.filter(
         (x) => x["objectCd"] === event["regist_owner_prov"]
       )[0];
-      if (registOwnerProvState === undefined) {
+      if (registOwnerProvState === null) {
         registOwnerProvState = jurisdictionCountry.filter(
           (x) => x["objectCd"] === event["regist_owner_prov"]
         )[0];
