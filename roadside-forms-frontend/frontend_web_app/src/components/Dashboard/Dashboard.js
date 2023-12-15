@@ -23,7 +23,7 @@ import "./dashboard.scss";
 import { FormIDApi } from "../../api/formIDApi";
 import { getAllFormIDs } from "../../utils/dbHelpers";
 import { useSharedIsOnline } from "../../utils/connectivity";
-import BootstrapTable from "react-bootstrap-table-next";
+import { ArrowDownwardRounded, ArrowUpwardRounded } from "@mui/icons-material";
 
 export const Dashboard = () => {
   const { isConnected } = useSharedIsOnline();
@@ -66,16 +66,29 @@ export const Dashboard = () => {
   );
   const [jurisdictionCountryResource, setJurisdictionCountryResource] =
     useRecoilState(staticResources["jurisdictionCountry"]);
-
   const [lastUpdatedDate, setLastUpdatedDate] = useState(null);
+  const [sortMode, setSortMode] = useState("");
 
   const sortTableRows = (rows) => {
-    if (rows.length > 0) {
-      return rows.sort((a, b) => {
-        return new Date(b.created_dt) - new Date(a.created_dt);
-      });
-    } else {
-      return rows;
+    switch (sortMode) {
+      case "DATE_ASC":
+        return rows.sort((a, b) => {
+          return new Date(a.created_dt) - new Date(b.created_dt);
+        });
+      case "DATE_DESC":
+        return rows.sort((a, b) => {
+          return new Date(b.created_dt) - new Date(a.created_dt);
+        });
+      case "SURNAME_ASC":
+        return rows.sort((a, b) => {
+          return a.driver_last_name.localeCompare(b.driver_last_name);
+        });
+      case "SURNAME_DESC":
+        return rows.sort((a, b) => {
+          return b.driver_last_name.localeCompare(a.driver_last_name);
+        });
+      default:
+        return rows;
     }
   };
 
@@ -273,54 +286,6 @@ export const Dashboard = () => {
     navigate("/createEvent");
   };
 
-  const tableColumns = [
-    {
-      dataField: "created_dt",
-      text: "Date & Time",
-      formatter: (cell) => {
-        return convertToPSTFormat(cell);
-      },
-      sort: true,
-    },
-    {
-      dataField: "driver_last_name",
-      text: "Surname",
-      formatter: (cell, row) => {
-        return (
-          <Link to="/view-previous" state={{ eventId: row["event_id"] }}>
-            {cell ? cell : "N/A"}
-          </Link>
-        );
-      },
-      sort: true,
-    },
-    {
-      text: "Form Type",
-      formatter: (cell, row) => {
-        return formTypes(row);
-      },
-    },
-    {
-      dataField: "event_id",
-      text: "Form #",
-      formatter: (cell, row) => {
-        return (
-          <Link to="/view-previous" state={{ eventId: row["event_id"] }}>
-            {formNumbers(row)}
-          </Link>
-        );
-      },
-    },
-    {
-      dataField: "vehicle_plate_no",
-      text: "Plate #",
-    },
-    {
-      dataField: "intersection_or_address_of_offence",
-      text: "Location",
-    },
-  ];
-
   return (
     <>
       <div className="border-design text-font">
@@ -413,11 +378,93 @@ export const Dashboard = () => {
           <span>Last updated at {lastUpdatedDate}</span>
         </div>
         <hr className="hr" />
-        <BootstrapTable
-          keyField="event_id"
-          data={formsData}
-          columns={tableColumns}
-        />
+        <Table>
+          <thead>
+            <tr>
+              <th>
+                Date & Time
+                <ArrowUpwardRounded
+                  onClick={() => setSortMode("DATE_ASC")}
+                  style={{
+                    cursor: "pointer",
+                    color: sortMode === "DATE_ASC" ? "black" : "gray",
+                  }}
+                />
+                <ArrowDownwardRounded
+                  onClick={() => setSortMode("DATE_DESC")}
+                  style={{
+                    cursor: "pointer",
+                    color: sortMode === "DATE_DESC" ? "black" : "gray",
+                  }}
+                />
+              </th>
+              <th>
+                Surname
+                <ArrowUpwardRounded
+                  onClick={() => setSortMode("SURNAME_ASC")}
+                  style={{
+                    cursor: "pointer",
+                    color: sortMode === "SURNAME_ASC" ? "black" : "gray",
+                  }}
+                />
+                <ArrowDownwardRounded
+                  onClick={() => setSortMode("SURNAME_DESC")}
+                  style={{
+                    cursor: "pointer",
+                    color: sortMode === "SURNAME_DESC" ? "black" : "gray",
+                  }}
+                />
+              </th>
+              <th>Form Type</th>
+              <th>Form #</th>
+              <th>Plate #</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortTableRows(formsData).map((data, index) => {
+              return data["submitted"] ? (
+                <tr key={data["vehicle_vin_no"]}>
+                  <td>
+                    {data["created_dt"]
+                      ? convertToPSTFormat(data["created_dt"])
+                      : "N/A"}
+                  </td>
+                  <td>
+                    <Link
+                      to="/view-previous"
+                      state={{ eventId: data["event_id"] }}
+                    >
+                      {data["driver_last_name"]
+                        ? data["driver_last_name"]
+                        : "N/A"}
+                    </Link>
+                  </td>
+                  <td>{formTypes(data)}</td>
+
+                  <td>
+                    <Link
+                      to="/view-previous"
+                      state={{ eventId: data["event_id"] }}
+                    >
+                      {formNumbers(data)}
+                    </Link>
+                  </td>
+                  <td>
+                    {data["vehicle_plate_no"]
+                      ? data["vehicle_plate_no"]
+                      : "N/A"}
+                  </td>
+                  <td>
+                    {data["intersection_or_address_of_offence"]
+                      ? data["intersection_or_address_of_offence"]
+                      : "N/A"}
+                  </td>
+                </tr>
+              ) : null;
+            })}
+          </tbody>
+        </Table>
       </div>
     </>
   );
