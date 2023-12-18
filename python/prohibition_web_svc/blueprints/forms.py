@@ -91,11 +91,7 @@ def update():
                 # Request contains a payload - process submitted form
                 # {"try": splunk_middleware.form_submitted, "fail": []},
                 # {"try": splunk.log_to_splunk, "fail": []},
-                {"try": form_middleware.mark_form_as_printed, "fail": [
-                    # TODO - Write to RabbitMQ fail queue
-                    {"try": http_responses.record_not_found, "fail": []},
-                ]},
-                {"try": form_middleware.mark_form_as_spoiled, "fail": [
+                {"try": form_middleware.mark_form_as_printed_or_spoiled, "fail": [
                     # TODO - Write to RabbitMQ fail queue
                     {"try": http_responses.record_not_found, "fail": []},
                 ]},
