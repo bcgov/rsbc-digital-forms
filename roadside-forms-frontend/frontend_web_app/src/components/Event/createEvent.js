@@ -83,6 +83,7 @@ export const CreateEvent = () => {
   const [isPrinted, setIsPrinted] = useState(false);
   const [modalCloseFunc, setmodalCloseFunc] = useState(() => () => null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isBlockerActive, setisBlockerActive] = useState(true);
   const [formHasErrors, setFormHasErrors] = useState(false);
   const [formErrors, setFormErrors] = useState([]);
   const [exitWindowModalOpen, setExitWindowModalOpen] = useState(false);
@@ -95,7 +96,7 @@ export const CreateEvent = () => {
     return (
       currentLocation.pathname !== nextLocation.pathname &&
       currentLocation.pathname === "/createEvent" &&
-      currentStep !== 4
+      isBlockerActive
     );
   });
 
@@ -297,6 +298,7 @@ export const CreateEvent = () => {
     await FormSubmissionApi.post(values)
       .then((resp) => {
         setIsSubmitting(false);
+        setisBlockerActive(false);
         navigate("/");
       })
       .catch((err) => {
