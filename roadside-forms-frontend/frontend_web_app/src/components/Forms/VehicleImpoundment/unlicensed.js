@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useFormikContext } from "formik";
@@ -10,6 +10,15 @@ import { SearchableSelect } from "../../common/Select/SearchableSelect";
 export const Unlicensed = (props) => {
   const { jurisdictions } = props;
   const { values } = useFormikContext();
+
+  useEffect(() => {
+    if (values["out_of_province_dl"] === "NO") {
+      values["out_of_province_dl_number"] = "";
+      values["out_of_province_dl_jurisdiction"] = null;
+      values["out_of_province_dl_expiry"] = null;
+    }
+  }, [values["out_of_province_dl"]]);
+
   return (
     <div className="border-design-form left text-font">
       <h3>Unlicensed Driver</h3>

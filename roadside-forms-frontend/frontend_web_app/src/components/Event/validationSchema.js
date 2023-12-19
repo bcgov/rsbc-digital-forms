@@ -907,7 +907,13 @@ export const validationSchema = Yup.object().shape(
       .when(["TwentyFourHour", "prescribed_test_used"], {
         is: (TwentyFourHour, prescribed_test_used) =>
           TwentyFourHour && prescribed_test_used === "YES",
-        then: () => Yup.date().required("Date of Test is required"),
+        then: () =>
+          Yup.date()
+            .required("Date of Test is required")
+            .max(
+              moment().startOf("day"),
+              "Date of Test cannot be a future date"
+            ),
       }), // Only for 24h required if prescribed_test_used is "Yes"
     reasonable_time_of_test: Yup.string().when(
       ["TwentyFourHour", "prescribed_test_used"],
@@ -1012,7 +1018,11 @@ export const validationSchema = Yup.object().shape(
             Yup.date()
               .nullable()
               .required("ASD Expiry Date is required")
-              .min(new Date(), "ASD Test is expired"),
+              .min(moment().startOf("day"), "ASD Test is expired")
+              .max(
+                moment().add(28, "days").startOf("day").toDate(),
+                "ASD Test is expired"
+              ),
         }
       ), // Only for 24h, required if prescribed_test_used = "Yes" and type_of_prohibition = "alcohol" and reasonable_test_used_alcohol = "alco-sensor", min. value: date_of_driving, max. value: date_of_driving + 28 days
     reasonable_result_alcohol: Yup.string().when(
@@ -1214,7 +1224,11 @@ export const validationSchema = Yup.object().shape(
           Yup.date()
             .nullable()
             .required("ASD Expiry Date is required")
-            .min(new Date(), "ASD Test is expired"),
+            .min(moment().startOf("day"), "ASD Test is expired")
+            .max(
+              moment().add(28, "days").startOf("day").toDate(),
+              "ASD Test is expired"
+            ),
       }),
     requested_alcohol_test_result: Yup.string().when(
       ["requested_prescribed_test", "requested_test_used_alcohol"],
@@ -1264,7 +1278,11 @@ export const validationSchema = Yup.object().shape(
         is: (requested_prescribed_test, requested_test_used_drug) =>
           requested_prescribed_test === "YES" &&
           requested_test_used_drug === "PPCT",
-        then: () => Yup.boolean(),
+        then: () =>
+          Yup.boolean().oneOf(
+            [true],
+            "Ability to drive affected by a drug must be checked"
+          ),
       }
     ),
     requested_can_drive_alcohol: Yup.boolean().when(
@@ -1273,7 +1291,11 @@ export const validationSchema = Yup.object().shape(
         is: (requested_prescribed_test, requested_test_used_alcohol) =>
           requested_prescribed_test === "YES" &&
           requested_test_used_alcohol === "PPCT",
-        then: () => Yup.boolean(),
+        then: () =>
+          Yup.boolean().oneOf(
+            [true],
+            "Ability to drive affected by alcohol must be checked"
+          ),
       }
     ),
   },

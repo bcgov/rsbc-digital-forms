@@ -755,7 +755,7 @@ export const CreateEvent = () => {
                 {values["VI"] && (
                   <>
                     <VehicleImpoundmentIRP />
-                    <VehicleImpoundmentReason />
+                    <VehicleImpoundmentReason values={values} />
                     {values["excessive_speed"] && <Excessive />}
                     {values["unlicensed"] && (
                       <Unlicensed
