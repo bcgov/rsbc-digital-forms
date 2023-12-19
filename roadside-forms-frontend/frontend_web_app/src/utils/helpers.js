@@ -191,7 +191,7 @@ export const formsPNG = {
 const fieldsToSplit = { VEHICLE_MAKE: 0, VEHICLE_MODEL: 1 };
 const dateFieldSplit = ["date_of_driving", "driver_licence_expiry"];
 
-export const printFormatHelper = (values, data, key) => {
+export const printFormatHelper = (values, data, key, impoundLotOperators) => {
   let val = values[data["field_name"]];
 
   // if the value needs to be split into to fields
@@ -331,7 +331,6 @@ export const printFormatHelper = (values, data, key) => {
   }
 
   if (key === "RELEASE_LOCATION_KEYS") {
-    console.log("values", values);
     if (
       values["VI"] ||
       (values["TwentyFourHour"] && values["vehicle_impounded"] === "YES")
@@ -408,7 +407,8 @@ export const printFormatHelper = (values, data, key) => {
       !values["VI"] &&
       values["vehicle_location"] === "private")
   ) {
-    val = values["ILO-name-print"];
+    val = impoundLotOperators.filter((x) => x["name"] === values["ILO-name"])[0]
+      .name_print;
   }
 
   return val;

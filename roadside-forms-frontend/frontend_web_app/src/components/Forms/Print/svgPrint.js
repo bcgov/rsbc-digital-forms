@@ -10,6 +10,7 @@ export const SVGprint = ({
   formLayout,
   formType,
   values,
+  impoundLotOperators,
 }) => {
   const formFields = formFieldLayout[formLayout][formType];
   const allFormFields = formFieldLayout[formLayout]["fields"];
@@ -34,7 +35,12 @@ export const SVGprint = ({
                   className={allFormFields[item]["classNames"]}
                   fill="black"
                 >
-                  {printFormatHelper(values, allFormFields[item], item)}
+                  {printFormatHelper(
+                    values,
+                    allFormFields[item],
+                    item,
+                    impoundLotOperators
+                  )}
                 </text>
               );
             } else if (allFormFields[item]["field_type"] === "checkbox") {
@@ -70,7 +76,12 @@ export const SVGprint = ({
                   className={allFormFields[item]["classNames"]}
                   fill="black"
                 >
-                  {printFormatHelper(values, allFormFields[item], item)}
+                  {printFormatHelper(
+                    values,
+                    allFormFields[item],
+                    item,
+                    impoundLotOperators
+                  )}
                 </foreignObject>
               );
             }
