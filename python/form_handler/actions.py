@@ -370,7 +370,18 @@ def prep_icbc_payload(**args)->tuple:
             tmp_payload["plateNumber"]=tmp_plate_no
 
         if event_data["nsc_prov_state"]: 
-            tmp_payload["pujCode"]=event_data["nsc_prov_state"]
+            tmp_jurisdictionvalue=event_data["driver_jurisdiction"]
+            with application.app_context():
+                # get jurisdiction data
+                juris_data = db.session.query(JurisdictionCrossRef) \
+                        .filter(JurisdictionCrossRef.jurisdiction_code == tmp_jurisdictionvalue) \
+                        .all()
+                if len(juris_data) == 0:
+                    logging.error("jurisdiction not found")
+                    tmp_payload["pujCode"]= ''
+                else:
+                    tmp_payload["pujCode"]= juris_data[0].icbc_jurisdiction_code
+            
         else:
             tmp_payload["pujCode"]="BC"
 
