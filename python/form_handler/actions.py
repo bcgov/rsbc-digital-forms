@@ -769,7 +769,20 @@ def prep_vips_payload(**args)->tuple:
         # if "regist_owner_address3" in event_data: vips_addr_obj["addressThirdLineTxt"]=event_data["regist_owner_address3"].upper()
         if "regist_owner_city" in event_data: vips_addr_obj["cityNm"]=event_data["regist_owner_city"].upper()
         if "regist_owner_postal" in event_data: vips_addr_obj["postalCodeTxt"]=event_data["regist_owner_postal"].upper()
-        if "regist_owner_prov" in event_data: vips_addr_obj["provinceCd"]=event_data["regist_owner_prov"].upper()
+        if "regist_owner_prov" in event_data:
+            application = args.get('app')
+            db = args.get('db')
+            tmp_jurisdictionvalue=event_data["regist_owner_prov"]
+            with application.app_context():
+                # get jurisdiction data
+                juris_data = db.session.query(JurisdictionCrossRef) \
+                        .filter(JurisdictionCrossRef.jurisdiction_code == tmp_jurisdictionvalue) \
+                        .all()
+                if len(juris_data) == 0:
+                    logging.error("jurisdiction not found")
+                    vips_addr_obj["provinceCd"] = ''
+                else:
+                    vips_addr_obj["provinceCd"] = juris_data[0].vips_jurisdictions_objectCd
         vips_address_array.append(vips_addr_obj)
         vipsRegigCreateObj["vipsAddressArray"]=vips_address_array
 
