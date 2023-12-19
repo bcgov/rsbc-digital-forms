@@ -339,7 +339,7 @@ def prep_icbc_payload(**args)->tuple:
                 # get jurisdiction data
                 icbc_jurisdiction_code=''
                 juris_data = db.session.query(JurisdictionCrossRef) \
-                        .filter(JurisdictionCrossRef.prime_jurisdiction_code == tmp_jurisdictionvalue) \
+                        .filter(JurisdictionCrossRef.jurisdiction_code == tmp_jurisdictionvalue) \
                         .all()
                 if len(juris_data) == 0:
                     logging.error("jurisdiction not found")
@@ -616,7 +616,7 @@ def prep_vips_payload(**args)->tuple:
                 # get jurisdiction data
                 vips_jurisdiction_code=''
                 juris_data = db.session.query(JurisdictionCrossRef) \
-                        .filter(JurisdictionCrossRef.prime_jurisdiction_code == tmp_jurisdictionvalue) \
+                        .filter(JurisdictionCrossRef.jurisdiction_code == tmp_jurisdictionvalue) \
                         .all()
                 if len(juris_data) == 0:
                     logging.error("jurisdiction not found")
@@ -811,7 +811,7 @@ def prep_vips_payload(**args)->tuple:
                 # get jurisdiction data
                 vips_jurisdiction_code=''
                 juris_data = db.session.query(JurisdictionCrossRef) \
-                        .filter(JurisdictionCrossRef.prime_jurisdiction_code == tmp_vehi_jurisdictionvalue) \
+                        .filter(JurisdictionCrossRef.jurisdiction_code == tmp_vehi_jurisdictionvalue) \
                         .all()
                 if len(juris_data) == 0:
                     logging.error("jurisdiction not found")
@@ -843,7 +843,7 @@ def prep_vips_payload(**args)->tuple:
                 # get jurisdiction data
                 vips_jurisdiction_code=''
                 juris_data = db.session.query(JurisdictionCrossRef) \
-                        .filter(JurisdictionCrossRef.prime_jurisdiction_code == tmp_nsc_jurisdictionvalue) \
+                        .filter(JurisdictionCrossRef.jurisdiction_code == tmp_nsc_jurisdictionvalue) \
                         .all()
                 if len(juris_data) == 0:
                     logging.error("jurisdiction not found")
