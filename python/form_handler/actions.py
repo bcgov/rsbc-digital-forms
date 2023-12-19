@@ -735,7 +735,7 @@ def prep_vips_payload(**args)->tuple:
         if "badge_number" in user_data: tmp_payload["vipsImpoundCreate"]["policeOfficerNo"]=user_data["badge_number"].upper()  
         if "agency_file_no" in event_data: tmp_payload["vipsImpoundCreate"]["policeFileNo"]=event_data["agency_file_no"]  
         # if "projected_release_dt" in form_data: tmp_payload["vipsImpoundCreate"]["projectedReleaseDt"]=None
-        tmp_payload["vipsImpoundCreate"]["projectedReleaseDt"]=""
+        tmp_payload["vipsImpoundCreate"]["projectedReleaseDt"]=None
 
         # TODO: to confirm
         tmp_payload["vipsImpoundCreate"]["seizureLocationTxt"]=""
