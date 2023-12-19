@@ -11,7 +11,7 @@ import { PhoneField } from "../../common/Input/phoneField";
 import { SearchableSelect } from "../../common/Select/SearchableSelect";
 
 export const VehicleImpoundment = (props) => {
-  const { impoundLotOperators } = props;
+  const { impoundLotOperators, allILOs } = props;
   const { values, setFieldValue } = useFormikContext();
 
   const handleILOChange = (selectedOption) => {
@@ -21,11 +21,16 @@ export const VehicleImpoundment = (props) => {
       setFieldValue("ILO-address", address);
       setFieldValue("ILO-city", city);
       setFieldValue("ILO-phone", phone);
+      setFieldValue(
+        "ILO-name-print",
+        allILOs.find((operator) => operator.name === name).name_print
+      );
     } else {
       setFieldValue("ILO-name", "");
       setFieldValue("ILO-address", "");
       setFieldValue("ILO-city", "");
       setFieldValue("ILO-phone", "");
+      setFieldValue("ILO-name-print", "");
     }
   };
 
@@ -40,8 +45,12 @@ export const VehicleImpoundment = (props) => {
       setFieldValue("ILO-city", "");
       setFieldValue("ILO-phone", "");
       setFieldValue("ILO-options", {});
+      setFieldValue("ILO-name-print", "");
     } else if (values["vehicle_impounded"] === "YES") {
       setFieldValue("reason_for_not_impounding", "");
+      setFieldValue("date_released", null);
+      setFieldValue("time_released", "");
+      setFieldValue("vehicle_released_to", "");
     }
   }, [values["vehicle_impounded"], values["VI"], setFieldValue]);
 
@@ -53,7 +62,7 @@ export const VehicleImpoundment = (props) => {
   ];
   return (
     <div className="border-design-form left text-font">
-      <h3>Vehicle Impoundment or Dispostion</h3>
+      <h3>Vehicle Impoundment or Disposition</h3>
       {!values["VI"] && (
         <Row>
           <Col>
