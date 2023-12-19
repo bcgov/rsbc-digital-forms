@@ -331,7 +331,6 @@ export const printFormatHelper = (values, data, key, impoundLotOperators) => {
   }
 
   if (key === "RELEASE_LOCATION_KEYS") {
-    console.log("values", values);
     if (
       values["VI"] ||
       (values["TwentyFourHour"] && values["vehicle_impounded"] === "YES")
@@ -399,7 +398,7 @@ export const printFormatHelper = (values, data, key, impoundLotOperators) => {
       val = values["incident_details"].substring(500);
     }
   }
-  console.log("values: ", values);
+
   if (
     key === "IMPOUND_LOT_NAME" ||
     key === "IMPOUNDED_LOT" ||
