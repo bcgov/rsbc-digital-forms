@@ -67,8 +67,10 @@ export const DriverInfo = (props) => {
   const launchDlScanner = async () => {
     setModalShow(true);
     let scanner = await dlScanner.openScanner();
-    scanner.addEventListener("inputreport", handleScannedBarcode);
-    setScannerOpened(true);
+    if (scanner) {
+      scanner.addEventListener("inputreport", handleScannedBarcode);
+      setScannerOpened(true);
+    }
   };
 
   const cancelDlScan = () => {
