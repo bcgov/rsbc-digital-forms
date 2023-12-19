@@ -594,7 +594,6 @@ export const CreateEvent = () => {
           if (form === "DETAILS" && values["incident_details"].length < 500) {
             break;
           }
-
           components.push(
             <SVGprint
               key={item + form}
@@ -603,6 +602,7 @@ export const CreateEvent = () => {
               formLayout={item}
               formType={form}
               values={valuesCopy}
+              impoundLotOperators={impoundAtom}
             />
           );
         }

@@ -5,9 +5,10 @@ import Button from "react-bootstrap/Button";
 import Select from "react-select";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SVGprint } from "../Forms/Print/svgPrint";
-import { formsPNG } from "../../utils/helpers";
+import { formsPNG, staticResources } from "../../utils/helpers";
 import { db } from "../../db";
 import { ArrowBack } from "@mui/icons-material";
+import { useRecoilValue } from "recoil";
 
 export const ViewPastEvent = () => {
   const location = useLocation();
@@ -15,6 +16,7 @@ export const ViewPastEvent = () => {
   const [selected, setSelected] = useState("stageTwo");
   const state = location.state;
   const navigate = useNavigate();
+  const impoundAtom = useRecoilValue(staticResources["impound_lot_operators"]);
 
   useEffect(() => {
     try {
@@ -55,6 +57,7 @@ export const ViewPastEvent = () => {
               formLayout={item}
               formType={form}
               values={values}
+              impoundLotOperators={impoundAtom}
             />
           );
         }
