@@ -907,7 +907,13 @@ export const validationSchema = Yup.object().shape(
       .when(["TwentyFourHour", "prescribed_test_used"], {
         is: (TwentyFourHour, prescribed_test_used) =>
           TwentyFourHour && prescribed_test_used === "YES",
-        then: () => Yup.date().required("Date of Test is required"),
+        then: () =>
+          Yup.date()
+            .required("Date of Test is required")
+            .max(
+              moment().startOf("day"),
+              "Date of Test cannot be a future date"
+            ),
       }), // Only for 24h required if prescribed_test_used is "Yes"
     reasonable_time_of_test: Yup.string().when(
       ["TwentyFourHour", "prescribed_test_used"],
@@ -1218,7 +1224,11 @@ export const validationSchema = Yup.object().shape(
           Yup.date()
             .nullable()
             .required("ASD Expiry Date is required")
-            .min(new Date(), "ASD Test is expired"),
+            .min(moment().startOf("day"), "ASD Test is expired")
+            .max(
+              moment().add(28, "days").startOf("day").toDate(),
+              "ASD Test is expired"
+            ),
       }),
     requested_alcohol_test_result: Yup.string().when(
       ["requested_prescribed_test", "requested_test_used_alcohol"],
