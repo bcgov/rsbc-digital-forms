@@ -1012,7 +1012,11 @@ export const validationSchema = Yup.object().shape(
             Yup.date()
               .nullable()
               .required("ASD Expiry Date is required")
-              .min(new Date(), "ASD Test is expired"),
+              .min(moment().startOf("day"), "ASD Test is expired")
+              .max(
+                moment().add(28, "days").startOf("day").toDate(),
+                "ASD Test is expired"
+              ),
         }
       ), // Only for 24h, required if prescribed_test_used = "Yes" and type_of_prohibition = "alcohol" and reasonable_test_used_alcohol = "alco-sensor", min. value: date_of_driving, max. value: date_of_driving + 28 days
     reasonable_result_alcohol: Yup.string().when(
