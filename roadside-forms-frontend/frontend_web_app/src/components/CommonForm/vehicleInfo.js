@@ -50,11 +50,10 @@ export const VehicleInfo = (props) => {
           const address = party.addresses[0];
           setFieldValue("nsc_no", vehicle.nscNumber);
           setFieldValue("vehicle_registration_no", vehicle.registrationNumber);
-          setFieldValue("vehicle_colour", [
-            vehicleColours.filter(
-              (item) => item.label === vehicle.vehicleColour.toUpperCase()
-            )[0].value,
-          ]);
+          const colour = vehicleColours.filter(
+            (item) => item.label === vehicle.vehicleColour.toUpperCase()
+          )[0].value;
+          setFieldValue("vehicle_colour", [colour]);
           setFieldValue("vehicle_mk_md", vehicle.vehicleMake + " - ");
           setFieldValue("vehicle_vin_no", vehicle.vehicleIdNumber);
           setFieldValue(
