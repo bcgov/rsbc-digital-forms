@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Checkbox } from "../../common/Checkbox/checkbox";
@@ -6,12 +6,22 @@ import "./vehicleImpound.scss";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 export const VehicleImpoundmentReason = (props) => {
+  const { values } = props;
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       This impound reason is currently under review by RSBC policy and is
       currently unenforceable under the MVA until changes are enacted.{" "}
     </Tooltip>
   );
+
+  useEffect(() => {
+    if (values["excessive_speed"] === false) {
+      values["speed_limit"] = "";
+      values["vehicle_speed"] = "";
+      values["speed_estimation_technique"] = "";
+      values["speed_confirmation_technique"] = "";
+    }
+  }, [values["excessive_speed"]]);
 
   return (
     <div className="border-design-form left text-font">

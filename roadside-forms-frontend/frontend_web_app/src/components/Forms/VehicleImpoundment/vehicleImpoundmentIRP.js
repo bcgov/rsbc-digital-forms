@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useFormikContext } from "formik";
@@ -8,6 +8,14 @@ import { Input } from "../../common/Input/Input";
 
 export const VehicleImpoundmentIRP = (props) => {
   const { values } = useFormikContext();
+
+  useEffect(() => {
+    if (values["irp_impound"] === "NO") {
+      values["irp_impound_duration"] = "";
+      values["IRP_number"] = "";
+      values["VI_number"] = "";
+    }
+  }, [values["irp_impound"]]);
 
   return (
     <div className="border-design-form left text-font">
