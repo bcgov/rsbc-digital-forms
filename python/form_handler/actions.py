@@ -361,8 +361,18 @@ def prep_icbc_payload(**args)->tuple:
             birthdate= birthdate.strftime('%Y%m%d')
             tmp_payload["birthdate"]=birthdate
 
-        if "vehicle_jurisdiction" in event_data : 
-            tmp_payload["plateJurisdiction"]=event_data["vehicle_jurisdiction"]
+        if event_data["vehicle_jurisdiction"]:
+            tmp_jurisdictionvalue=event_data["vehicle_jurisdiction"]
+            with application.app_context():
+                # get jurisdiction data
+                juris_data = db.session.query(JurisdictionCrossRef) \
+                        .filter(JurisdictionCrossRef.jurisdiction_code == tmp_jurisdictionvalue) \
+                        .all()
+                if len(juris_data) == 0:
+                    logging.error("jurisdiction not found")
+                    tmp_payload["plateJurisdiction"]= ''
+                else:
+                    tmp_payload["plateJurisdiction"]= juris_data[0].icbc_jurisdiction_code
 
         if "vehicle_plate_no" in event_data: 
             tmp_plate_no=event_data["vehicle_plate_no"].upper()
