@@ -20,16 +20,20 @@ export const dlScanner = {
 
   // asynchronously get the scanner
   async openScanner() {
-    let scanner = await this.getScanner();
-    if (!scanner) {
-      scanner = await this.requestAccessToScanner();
-    }
+    try {
+      let scanner = await this.getScanner();
+      if (!scanner) {
+        scanner = await this.requestAccessToScanner();
+      }
 
-    if (scanner.opened) {
-      return scanner;
-    } else {
-      await scanner.open();
-      return scanner;
+      if (scanner && scanner.opened) {
+        return scanner;
+      } else {
+        await scanner.open();
+        return scanner;
+      }
+    } catch (e) {
+      console.log(e);
     }
   },
 
