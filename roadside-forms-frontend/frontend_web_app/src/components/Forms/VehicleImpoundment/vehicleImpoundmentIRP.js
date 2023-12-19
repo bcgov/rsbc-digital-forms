@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useFormikContext } from "formik";
@@ -9,6 +9,14 @@ import { Input } from "../../common/Input/Input";
 export const VehicleImpoundmentIRP = (props) => {
   const { values } = useFormikContext();
 
+  useEffect(() => {
+    if (values["irp_impound"] === "NO") {
+      values["irp_impound_duration"] = "";
+      values["IRP_number"] = "";
+      values["VI_number"] = "";
+    }
+  }, [values["irp_impound"]]);
+
   return (
     <div className="border-design-form left text-font">
       <h3>Impoundment for Immediate Roadside Prohibition</h3>
@@ -17,7 +25,7 @@ export const VehicleImpoundmentIRP = (props) => {
         <Col>
           <Radio
             label="Was an IRP issued as a part of this vehicular impound?"
-            lightLabel=" In accordance with section 215.46 and 253 of the Motor VehicleAct"
+            lightLabel=" In accordance with section 215.46 and 253 of the Motor Vehicle Act"
             name="irp_impound"
             options={[
               { label: "Yes", value: "YES" },

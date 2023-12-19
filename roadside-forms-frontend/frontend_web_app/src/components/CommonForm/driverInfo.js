@@ -67,8 +67,10 @@ export const DriverInfo = (props) => {
   const launchDlScanner = async () => {
     setModalShow(true);
     let scanner = await dlScanner.openScanner();
-    scanner.addEventListener("inputreport", handleScannedBarcode);
-    setScannerOpened(true);
+    if (scanner) {
+      scanner.addEventListener("inputreport", handleScannedBarcode);
+      setScannerOpened(true);
+    }
   };
 
   const cancelDlScan = () => {
@@ -84,13 +86,11 @@ export const DriverInfo = (props) => {
     values["driver_last_name"] = dl_data["name"]["surname"];
     values["driver_given_name"] = dl_data["name"]["given"];
     values["driver_dob"] = new Date(dob_year, dob_month - 1, dob_day);
-    values["drivers_licence_jurisdiction"] = jurisdictions.filter(
-      (jurisdiction) => jurisdiction.value === dl_data["province"]
-    )[0];
     values["driver_address"] = dl_data["address"]["street"];
     values["driver_city"] = dl_data["address"]["city"];
+    // DL scanning only for BC DLs
     values["driver_prov_state"] = provinces.filter(
-      (province) => province.value === dl_data["address"]["province"]
+      (province) => province.value === "CA_BC"
     )[0];
     values["driver_postal"] = dl_data["address"]["postalCode"];
 
