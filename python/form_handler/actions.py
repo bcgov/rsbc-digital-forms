@@ -674,7 +674,7 @@ def prep_vips_payload(**args)->tuple:
             tmp_vi_number=tmp_vi_number[:-1]
             tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=tmp_vi_number
         else:
-            tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=None
+            tmp_payload["vipsImpoundCreate"]["impoundmentNoticeNo"]=""
         
         tmp_payload["vipsImpoundCreate"]["noticeSubjectCd"]="VEHI"
 
@@ -735,10 +735,10 @@ def prep_vips_payload(**args)->tuple:
         if "badge_number" in user_data: tmp_payload["vipsImpoundCreate"]["policeOfficerNo"]=user_data["badge_number"].upper()  
         if "agency_file_no" in event_data: tmp_payload["vipsImpoundCreate"]["policeFileNo"]=event_data["agency_file_no"]  
         # if "projected_release_dt" in form_data: tmp_payload["vipsImpoundCreate"]["projectedReleaseDt"]=None
-        tmp_payload["vipsImpoundCreate"]["projectedReleaseDt"]=None
+        tmp_payload["vipsImpoundCreate"]["projectedReleaseDt"]=""
 
         # TODO: to confirm
-        tmp_payload["vipsImpoundCreate"]["seizureLocationTxt"]=None
+        tmp_payload["vipsImpoundCreate"]["seizureLocationTxt"]=""
         if "offence_city" in form_data: tmp_payload["vipsImpoundCreate"]["seizureLocationTxt"]=form_data["offence_city"].upper()
         
         # vipsRegistrationCreateArray payload
@@ -784,7 +784,7 @@ def prep_vips_payload(**args)->tuple:
             vips_licence_create_obj["birthDt"]=birthdate
         # TODO: Confirm this fixes DF-2870 (2023-12-13)
         # if "driver_licence_no" in event_data: vips_licence_create_obj["driverLicenceNo"]=event_data["driver_licence_no"]
-        vips_licence_create_obj["driverLicenceNo"]=None
+        vips_licence_create_obj["driverLicenceNo"]=""
         vips_licence_create_obj["dlJurisdictionCd"]=tmp_jursdiction_val
         # if "driver_jurisdiction" in event_data: vips_licence_create_obj["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
         vipsRegigCreateObj["vipsLicenceCreateObj"]=vips_licence_create_obj
@@ -795,7 +795,7 @@ def prep_vips_payload(**args)->tuple:
         # vipsVehicleCreate payload
         # TODO: to confirm
         # if "nsc_no" in event_data: tmp_payload["vipsVehicleCreate"]["commercialMotorCarrierId"]=event_data["nsc_no"]
-        tmp_payload["vipsVehicleCreate"]["commercialMotorCarrierId"]=None
+        tmp_payload["vipsVehicleCreate"]["commercialMotorCarrierId"]=""
         
         if "vehicle_plate_no" in event_data: tmp_payload["vipsVehicleCreate"]["licencePlateNo"]=event_data["vehicle_plate_no"].upper()
         tmp_payload["vipsVehicleCreate"]["lpDecalValidYy"]=None
@@ -875,7 +875,7 @@ def prep_vips_payload(**args)->tuple:
         if "vehicle_style" in event_data: tmp_payload["vipsVehicleCreate"]["vehicleStyleTxt"]=event_data["vehicle_style"].upper()  
         if "vehicle_type" in event_data: 
             if event_data["vehicle_type"] == None:
-                tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=None
+                tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=""
             else:
                 tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=event_data["vehicle_type"]
                 # tmp_payload["vipsVehicleCreate"]["vehicleTypeCd"]=str(event_data["vehicle_type"])
