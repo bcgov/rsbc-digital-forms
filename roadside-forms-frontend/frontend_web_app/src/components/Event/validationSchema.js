@@ -1264,7 +1264,11 @@ export const validationSchema = Yup.object().shape(
         is: (requested_prescribed_test, requested_test_used_drug) =>
           requested_prescribed_test === "YES" &&
           requested_test_used_drug === "PPCT",
-        then: () => Yup.boolean(),
+        then: () =>
+          Yup.boolean().oneOf(
+            [true],
+            "Ability to drive affected by a drug must be checked"
+          ),
       }
     ),
     requested_can_drive_alcohol: Yup.boolean().when(
@@ -1273,7 +1277,11 @@ export const validationSchema = Yup.object().shape(
         is: (requested_prescribed_test, requested_test_used_alcohol) =>
           requested_prescribed_test === "YES" &&
           requested_test_used_alcohol === "PPCT",
-        then: () => Yup.boolean(),
+        then: () =>
+          Yup.boolean().oneOf(
+            [true],
+            "Ability to drive affected by alcohol must be checked"
+          ),
       }
     ),
   },
