@@ -391,7 +391,7 @@ exports[`CreateEvent component renders create event component correctly 1`] = `
                     <label
                       for="driver_phone"
                     >
-                      Phone number
+                      Phone Number
                     </label>
                     <input
                       class="field-height field-width"
