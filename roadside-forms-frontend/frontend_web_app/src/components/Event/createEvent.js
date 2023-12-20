@@ -682,7 +682,7 @@ export const CreateEvent = () => {
                       setFormNumbers(e, setFieldValue, "TwelveHour")
                     }
                   >
-                    12-hour Driving Prohibition
+                    12-hour Driving Suspension
                   </Checkbox>
                 </h5>
               </div>
