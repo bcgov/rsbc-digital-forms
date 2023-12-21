@@ -13,7 +13,6 @@ export const VehicleImpoundmentIRP = (props) => {
     if (values["irp_impound"] === "NO") {
       values["irp_impound_duration"] = "";
       values["IRP_number"] = "";
-      values["VI_number"] = "";
     }
   }, [values["irp_impound"]]);
 
@@ -95,6 +94,7 @@ export const VehicleImpoundmentIRP = (props) => {
                 className="field-height field-width"
                 type="text"
                 required
+                disabled
               ></Input>
             </Col>
           </Row>
