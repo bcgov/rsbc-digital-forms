@@ -49,6 +49,7 @@ export const VehicleInfo = (props) => {
         //ICBC sends back different responses based on sucess and fail and only real way to check is if it is an array
         if (resp.status === "success") {
           const vehicle = resp.data[0];
+          console.log(vehicle);
           const party = vehicle.vehicleParties[0].party;
           const address = party.addresses[0];
           setFieldValue("nsc_no", vehicle.nscNumber);
@@ -61,13 +62,13 @@ export const VehicleInfo = (props) => {
           setFieldValue("vehicle_vin_no", vehicle.vehicleIdNumber);
           setFieldValue(
             "vehicle_year",
-            years.filter((item) => item.label === vehicle.vehicleModelYear)
+            years.filter((item) => item.label === vehicle.vehicleModelYear)[0]
           );
           setFieldValue(
             "vehicle_type",
             vehicleTypes.filter(
               (item) => item.label === vehicle.vehicleType.toUpperCase()
-            )
+            )[0]
           );
           setFieldValue("vehicle_jurisdiction", {
             value: "CA_BC",
