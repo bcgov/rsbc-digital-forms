@@ -28,6 +28,9 @@ export const VehicleInfo = (props) => {
   const [vehicleJurisdictionOptions, setVehicleJurisdictionOptions] =
     useState(jurisdictions);
   const driversLicenceJurisdiction = values["vehicle_jurisdiction"];
+  if (nscPuj[0].value !== "") {
+    nscPuj.unshift({ value: "", label: "---" });
+  }
 
   useEffect(() => {
     if (

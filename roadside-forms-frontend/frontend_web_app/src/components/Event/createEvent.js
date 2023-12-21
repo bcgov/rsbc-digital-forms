@@ -614,9 +614,7 @@ export const CreateEvent = () => {
   };
 
   const renderPage = (currentStep, values, setFieldValue) => {
-    // console.log("FORM IDS: ", formIDs);
-    // console.log(values);
-    window.onunload = async () => {
+    window.onbeforeunload = async () => {
       await handleExitForm(values);
     };
 
@@ -682,7 +680,7 @@ export const CreateEvent = () => {
                       setFormNumbers(e, setFieldValue, "TwelveHour")
                     }
                   >
-                    12-hour Driving Prohibition
+                    12-hour Driving Suspension
                   </Checkbox>
                 </h5>
               </div>

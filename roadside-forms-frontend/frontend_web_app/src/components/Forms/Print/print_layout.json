@@ -1212,7 +1212,7 @@
       },
       "OWNER_NAME": {
         "field_type": "text",
-        "field_name": ["regist_owner_first_name", "regist_owner_last_name"],
+        "field_name": ["regist_owner_last_name", "regist_owner_first_name"],
         "classNames": "fontSmall",
         "start": {
           "x": 53,

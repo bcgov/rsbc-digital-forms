@@ -52,7 +52,7 @@ export const Disposition = (props) => {
   ];
   return (
     <div className="border-design-form left text-font">
-      <h3>Disposition of Vehcile</h3>
+      <h3>Disposition of Vehicle</h3>
       <Row style={{ minHeight: "85px" }}>
         <Col>
           <Radio
