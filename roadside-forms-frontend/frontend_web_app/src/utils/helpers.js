@@ -108,7 +108,9 @@ export const getEventDataToSave = (formValues) => {
     } else {
       eventValues[item] =
         typeof formValues[item] === "object"
-          ? formValues[item]["value"]
+          ? formValues[item]["value"].includes("_")
+            ? formValues[item]["value"].split("_")[1]
+            : formValues[item]["value"]
           : formValues[item];
     }
   });
@@ -276,6 +278,9 @@ export const printFormatHelper = (values, data, key, impoundLotOperators) => {
       val = val["label"];
     } else {
       val = values[data["field_name"]]["value"];
+      String(val).includes("_")
+        ? (val = values[data["field_name"]]["value"].split("_")[1])
+        : (val = values[data["field_name"]]["value"]);
     }
     return val;
   }
