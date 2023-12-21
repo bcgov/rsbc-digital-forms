@@ -10,6 +10,11 @@ export const vehicleStyles = atom({
   default: [],
 });
 
+export const vehicleTypes = atom({
+  key: "allVehicleTypes",
+  default: [],
+});
+
 export const vehicleColours = atom({
   key: "allVehicleColours",
   default: [],
@@ -47,5 +52,15 @@ export const cities = atom({
 
 export const agencies = atom({
   key: "allAgencies",
+  default: [],
+});
+
+export const nscPuj = atom({
+  key: "allNscPuj",
+  default: [],
+});
+
+export const jurisdictionCountry = atom({
+  key: "allJurisdictionCountry",
   default: [],
 });
