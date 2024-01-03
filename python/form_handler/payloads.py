@@ -41,11 +41,11 @@ vips_payload ={
                     "registrationAddressTypeCd": ""
                 }
             ],
-            "vipsLicenceCreateObj": {
-                "birthDt": "",
-                "driverLicenceNo": "",
-                "dlJurisdictionCd": ""
-            }
+            # "vipsLicenceCreateObj": {
+            #     "birthDt": "",
+            #     "driverLicenceNo": "",
+            #     "dlJurisdictionCd": ""
+            # }
         }
     ],
     "vipsVehicleCreate": {
