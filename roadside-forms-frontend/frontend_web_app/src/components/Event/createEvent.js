@@ -762,7 +762,6 @@ export const CreateEvent = () => {
                       />
                     )}
                     <LinkageFactors />
-                    <IncidentDetails values={values} />
                   </>
                 )}
                 {values["TwentyFourHour"] && (
@@ -771,6 +770,7 @@ export const CreateEvent = () => {
                     <TestAdministered />
                   </>
                 )}
+                {values["VI"] && <IncidentDetails values={values} />}
                 <OfficerInfo />
               </div>
             )}
