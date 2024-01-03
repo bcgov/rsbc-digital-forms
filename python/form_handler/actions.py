@@ -821,7 +821,7 @@ def prep_vips_payload(**args)->tuple:
         vips_licence_create_obj["driverLicenceNo"]=""
         vips_licence_create_obj["dlJurisdictionCd"]=tmp_jursdiction_val
         # if "driver_jurisdiction" in event_data: vips_licence_create_obj["dlJurisdictionCd"]=event_data["driver_jurisdiction"]
-        vipsRegigCreateObj["vipsLicenceCreateObj"]=vips_licence_create_obj
+        # vipsRegigCreateObj["vipsLicenceCreateObj"]=vips_licence_create_obj
         
         vipsRegistrationCreateArray.append(vipsRegigCreateObj)
         tmp_payload["vipsRegistrationCreateArray"]=vipsRegistrationCreateArray
