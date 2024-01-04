@@ -110,20 +110,20 @@ export const VehicleInfo = (props) => {
       <div>
         <Row style={{ minHeight: "85px" }}>
           <Col sm={5}>
+            <Input
+              className="field-height field-width"
+              label="Plate Number"
+              name="vehicle_plate_no"
+              type="text"
+            />
+          </Col>
+          <Col sm={5}>
             <SearchableSelect
               className="field-height field-width"
               label="Jurisdiction"
               name="vehicle_jurisdiction"
               onChange={handleJurisdictionChange}
               options={vehicleJurisdictionOptions}
-            />
-          </Col>
-          <Col sm={5}>
-            <Input
-              className="field-height field-width"
-              label="Plate Number"
-              name="vehicle_plate_no"
-              type="text"
             />
           </Col>
           <Col sm={1} className="mt-4">
