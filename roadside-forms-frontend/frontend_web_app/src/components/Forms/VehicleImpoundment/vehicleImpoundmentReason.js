@@ -16,8 +16,8 @@ export const VehicleImpoundmentReason = (props) => {
 
   useEffect(() => {
     if (values["excessive_speed"] === false) {
-      values["speed_limit"] = "";
-      values["vehicle_speed"] = "";
+      values["speed_limit"] = null;
+      values["vehicle_speed"] = null;
       values["speed_estimation_technique"] = "";
       values["speed_confirmation_technique"] = "";
     }
