@@ -219,6 +219,16 @@ export const printFormatHelper = (values, data, key, impoundLotOperators) => {
         if (typeof values[data["field_name"][index]] === "object") {
           if (value === "offence_city") {
             val += values[data["field_name"][index]]["label"];
+          } else if (value === "driver_prov_state") {
+            console.log(
+              "PROVINCE/STATE: ",
+              values[data["field_name"][index]]["value"]
+            );
+            if (values[data["field_name"][index]]["value"].includes("_")) {
+              val += values[data["field_name"][index]]["value"].split("_")[1];
+            } else {
+              val += values[data["field_name"][index]]["value"];
+            }
           } else {
             val += values[data["field_name"][index]]["value"];
           }
