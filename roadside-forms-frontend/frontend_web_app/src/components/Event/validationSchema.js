@@ -1080,6 +1080,7 @@ export const validationSchema = Yup.object().shape(
         "TwentyFourHour",
         "type_of_prohibition",
         "resonable_test_used_alcohol",
+        "reasonable_test_used_drugs",
         "prescribed_test_used",
       ],
       {
@@ -1087,14 +1088,18 @@ export const validationSchema = Yup.object().shape(
           TwentyFourHour,
           type_of_prohibition,
           resonable_test_used_alcohol,
+          reasonable_test_used_drugs,
           prescribed_test_used
         ) =>
-          TwentyFourHour &&
-          type_of_prohibition === "alcohol" &&
-          resonable_test_used_alcohol === "instrument" &&
-          prescribed_test_used === "YES",
+          (TwentyFourHour &&
+            prescribed_test_used === "YES" &&
+            type_of_prohibition === "alcohol" &&
+            resonable_test_used_alcohol === "instrument") ||
+          (type_of_prohibition === "drugs" &&
+            reasonable_test_used_drugs === "approved-drug"),
+
         then: () =>
-          Yup.string().required("Approved Instrument used is required"),
+          Yup.string().required("Approved Instrument Used is required"),
       }
     ), // Only for 24h, required if prescribed_test_used = "Yes" and type_of_prohibition = "alcohol" and reasonable_test_used_alcohol = "instrument"
     reasonable_can_drive_drug: Yup.boolean().when(
@@ -1269,7 +1274,7 @@ export const validationSchema = Yup.object().shape(
           (requested_test_used_alcohol === "instrument" ||
             requested_test_used_drug === "approved-drug"),
         then: () =>
-          Yup.string().required("Approved Instrument used is required"),
+          Yup.string().required("Approved Instrument Used is required"),
       }
     ),
     requested_can_drive_drug: Yup.boolean().when(
