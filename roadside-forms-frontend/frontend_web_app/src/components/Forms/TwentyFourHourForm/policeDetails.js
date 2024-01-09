@@ -102,7 +102,7 @@ export const PoliceDetails = (props) => {
                   </Col>
                   <Col sm={4}>
                     <Input
-                      label="Approved Instrument used"
+                      label="Approved Instrument Used"
                       name="requested_approved_instrument_used"
                       required
                     />
@@ -135,7 +135,7 @@ export const PoliceDetails = (props) => {
             <Row>
               <Col sm={4}>
                 <Input
-                  label="Approved Instrument used"
+                  label="Approved Instrument Used"
                   name="requested_approved_instrument_used"
                   required
                 />
