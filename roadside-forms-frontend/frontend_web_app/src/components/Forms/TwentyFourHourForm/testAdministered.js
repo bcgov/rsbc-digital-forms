@@ -49,23 +49,30 @@ export const TestAdministered = (props) => {
   }, [values["prescribed_test_used"]]);
 
   useEffect(() => {
-    // alco-sensor / instrument / PPCT
-    if (values["reasonable_test_used_alcohol"] !== "alco-sensor") {
-      values["reasonable_asd_expiry_date"] = null;
-      values["reasonable_result_alcohol"] = "";
-    }
-    if (values["reasonable_test_used_alcohol"] !== "instrument") {
-      values["reasonable_bac_result_mg"] = null;
-      values["resonable_approved_instrument_used"] = "";
-    }
-    if (values["reasonable_test_used_alcohol"] !== "PPCT") {
-      values["reasonable_can_drive_alcohol"] = false;
+    if (values["type_of_prohibition"] === "alcohol") {
+      // alco-sensor / instrument / PPCT
+      if (values["reasonable_test_used_alcohol"] !== "alco-sensor") {
+        values["reasonable_asd_expiry_date"] = null;
+        values["reasonable_result_alcohol"] = "";
+      }
+      if (values["reasonable_test_used_alcohol"] !== "instrument") {
+        values["reasonable_bac_result_mg"] = null;
+        values["resonable_approved_instrument_used"] = "";
+      }
+      if (values["reasonable_test_used_alcohol"] !== "PPCT") {
+        values["reasonable_can_drive_alcohol"] = false;
+      }
     }
   }, [values["reasonable_test_used_alcohol"]]);
 
   useEffect(() => {
-    if (values["reasonable_test_used_drugs"] !== "PPCT") {
-      values["reasonable_can_drive_drug"] = false;
+    if (values["type_of_prohibition"] === "drugs") {
+      if (values["reasonable_test_used_drugs"] !== "PPCT") {
+        values["reasonable_can_drive_drug"] = false;
+      }
+      if (values["reasonable_test_used_drugs"] !== "approved-drug") {
+        values["reasonable_approved_instrument_used"] = "";
+      }
     }
   }, [values["reasonable_test_used_drugs"]]);
 
@@ -126,7 +133,7 @@ export const TestAdministered = (props) => {
                   </Col>
                   <Col sm={4}>
                     <Input
-                      label="Approved Instrument used"
+                      label="Approved Instrument Used"
                       name="resonable_approved_instrument_used"
                       required
                     />
@@ -171,6 +178,18 @@ export const TestAdministered = (props) => {
                   <Checkbox name="reasonable_can_drive_drug">
                     Ability to drive affected by a drug?
                   </Checkbox>
+                </Col>
+              </Row>
+            )}
+          {values["type_of_prohibition"] === "drugs" &&
+            values["reasonable_test_used_drugs"] === "approved-drug" && (
+              <Row>
+                <Col sm={4}>
+                  <Input
+                    label="Approved Instrument Used"
+                    name="resonable_approved_instrument_used"
+                    required
+                  />
                 </Col>
               </Row>
             )}
