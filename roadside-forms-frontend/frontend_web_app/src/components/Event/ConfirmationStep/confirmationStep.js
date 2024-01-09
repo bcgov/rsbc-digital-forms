@@ -42,8 +42,8 @@ export const ConfirmationStep = () => {
     let formNames = [];
 
     if (vi) formNames.push("Vehicle Impound");
-    if (twentyFourHourForm) formNames.push("24-hour Driving Suspended");
-    if (twelveHourForm) formNames.push("12-hour Driving Suspended");
+    if (twentyFourHourForm) formNames.push("24-hour Driving Prohibition");
+    if (twelveHourForm) formNames.push("12-hour Driving Suspension");
 
     let formNamesString = formNames.join(" and ");
 
@@ -67,7 +67,7 @@ export const ConfirmationStep = () => {
     const formSubmittedDate = formattedPacificDate;
 
     let formNumbers = [];
-    if (vi) formNumbers.push(viNumber);
+    if (vi && !twentyFourHourForm) formNumbers.push(viNumber);
     if (twentyFourHourForm) formNumbers.push(twentyFourHourNumber);
     if (twelveHourForm) formNumbers.push(twelveHourNumber);
     // const noticeNumber = "mock-232323";
