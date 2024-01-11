@@ -145,6 +145,7 @@
       "REASONABLE_GROUNDS_TEST_ALCO_SENSOR",
       "REASONABLE_GROUNDS_TEST_ASD_EXPIRY_DATE",
       "REASONABLE_GROUNDS_TEST_APPROVED_INSTRUMENT",
+      "REASONABLE_GROUNDS_TEST_APPROVED_INSTRUMENT_DRUGS",
       "REASONABLE_GROUNDS_TEST_APPROVED_INSTRUMENT_SPECIFY",
       "REASONABLE_GROUNDS_TEST_PHYSICAL_COORDINATION",
       "REASONABLE_GROUNDS_TEST_PHYSICAL_COORDINATION_DRUG",
@@ -659,6 +660,16 @@
         "field_type": "checkbox",
         "field_name": "resonable_test_used_alcohol",
         "field_val": "instrument",
+        "classNames": "fontSmall",
+        "start": {
+          "x": 121.5,
+          "y": 70.5
+        }
+      },
+      "REASONABLE_GROUNDS_TEST_APPROVED_INSTRUMENT_DRUGS": {
+        "field_type": "checkbox",
+        "field_name": "reasonable_test_used_drugs",
+        "field_val": "approved-drug",
         "classNames": "fontSmall",
         "start": {
           "x": 121.5,
