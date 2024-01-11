@@ -422,8 +422,15 @@ export const printFormatHelper = (values, data, key, impoundLotOperators) => {
       !values["VI"] &&
       values["vehicle_location"] === "private")
   ) {
-    val = impoundLotOperators.filter((x) => x["name"] === values["ILO-name"])[0]
-      .name_print;
+    console.log("ILO: ", values["ILO-name"]);
+    const tmp = impoundLotOperators.filter(
+      (x) => x["name"] === values["ILO-name"]
+    )[0];
+    if (tmp && tmp.name_print) {
+      val = tmp.name_print;
+    } else {
+      val = values["ILO-name"];
+    }
   }
 
   return val;
