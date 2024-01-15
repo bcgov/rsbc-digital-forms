@@ -469,8 +469,8 @@ export const validationSchema = Yup.object().shape(
             Yup.string()
               .required("Time released is required")
               .matches(
-                /^([01]\d|2[0-3])[0-5]\d$/,
-                "Time Released must match 24h format HHMM"
+                /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+                "Time Released must match 24h format HH:MM"
               )
               .test(
                 "time_released",
@@ -608,8 +608,8 @@ export const validationSchema = Yup.object().shape(
         Yup.string()
           .required("Time of Driving is required")
           .matches(
-            /^([01]\d|2[0-3])[0-5]\d$/,
-            "Time of Driving must match 24h format HHMM"
+            /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+            "Time of Driving must match 24h format HH:MM"
           )
           .test(
             "time_of_driving",
@@ -930,8 +930,8 @@ export const validationSchema = Yup.object().shape(
           Yup.string()
             .required("Time of Test is required")
             .matches(
-              /^([01]\d|2[0-3])[0-5]\d$/,
-              "Time of Test must match 24h format HHMM"
+              /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+              "Time of Test must match 24h format HH:MM"
             )
             .test(
               "reasonable_time_of_test",
@@ -1220,8 +1220,8 @@ export const validationSchema = Yup.object().shape(
           Yup.string()
             .required("Time of requested test is required")
             .matches(
-              /^([01]\d|2[0-3])[0-5]\d$/,
-              "Time of requested test must match 24h format HHMM"
+              /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+              "Time of requested test must match 24h format HH:MM"
             ),
       }
     ),
