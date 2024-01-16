@@ -379,7 +379,7 @@ def prep_icbc_payload(**args)->tuple:
             tmp_plate_no=tmp_plate_no.replace(" ", "")
             tmp_payload["plateNumber"]=tmp_plate_no
 
-        if event_data["nsc_prov_state"]: 
+        if event_data["nsc_prov_state"] and event_data["nsc_no"]: 
             tmp_jurisdictionvalue=event_data["driver_jurisdiction"]
             with application.app_context():
                 # get jurisdiction data
@@ -390,10 +390,12 @@ def prep_icbc_payload(**args)->tuple:
                     logging.error("jurisdiction not found")
                     tmp_payload["pujCode"]= ''
                 else:
-                    tmp_payload["pujCode"]= juris_data[0].icbc_jurisdiction_code
+                    tmp_payload["pujCode"] = juris_data[0].icbc_jurisdiction_code
+                    tmp_payload["nscNumber"] = event_data["nsc_no"]
             
         else:
-            tmp_payload["pujCode"]="BC"
+            tmp_payload["pujCode"]=""
+            tmp_payload["nscNumber"]=""
 
         #Some validation required for NSC-Number. ICBC does not accept all values.
         # if "nsc_no" in event_data: tmp_payload["nscNumber"]=event_data["nsc_no"]
