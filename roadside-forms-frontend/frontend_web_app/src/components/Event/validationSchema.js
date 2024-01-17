@@ -733,16 +733,23 @@ export const validationSchema = Yup.object().shape(
         "Please select at least one option from the list of Impoundment for Driving Behaviour",
         function (value) {
           if (this.parent.VI) {
-            return (
-              this.parent.excessive_speed ||
-              this.parent.prohibited ||
-              this.parent.suspended ||
-              this.parent.street_racing ||
-              this.parent.stunt_driving ||
-              this.parent.motorcycle_seating ||
-              this.parent.motorcycle_restrictions ||
-              this.parent.unlicensed
-            );
+            if (
+              this.parent.irp_impound === "NO" ||
+              (this.parent.irp_impound === "YES" &&
+                !this.parent.irp_impound_duration !== "BACWARN3")
+            ) {
+              // At least one is required
+              return (
+                this.parent.excessive_speed ||
+                this.parent.prohibited ||
+                this.parent.suspended ||
+                this.parent.street_racing ||
+                this.parent.stunt_driving ||
+                this.parent.motorcycle_seating ||
+                this.parent.motorcycle_restrictions ||
+                this.parent.unlicensed
+              );
+            }
           }
           return true;
         }
