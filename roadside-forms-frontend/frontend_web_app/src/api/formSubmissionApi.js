@@ -6,25 +6,42 @@ export const FormSubmissionApi = {
     const headers = {
       ...createRequestHeader(),
     };
-    const response = await api.request({
-      url: "/api/v1/event",
-      method: "POST",
-      headers: { ...headers },
-      data: { ...data },
-    });
-    console.log(response);
-    return response;
+    return await api
+      .request({
+        url: "/api/v1/event",
+        method: "POST",
+        headers: { ...headers },
+        data: { ...data },
+      })
+      .then((response) => {
+        return response;
+      })
+      .catch((error) => {
+        return {
+          status: error.status,
+          data: error.response,
+        };
+      });
   },
 
   get: async function () {
     const headers = {
       ...createRequestHeader(),
     };
-    const response = await api.request({
-      url: "/api/v1/event",
-      method: "GET",
-      headers: { ...headers },
-    });
-    return response.data;
+    return await api
+      .request({
+        url: "/api/v1/event",
+        method: "GET",
+        headers: { ...headers },
+      })
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error) => {
+        return {
+          status: error.status,
+          data: error.response,
+        };
+      });
   },
 };
