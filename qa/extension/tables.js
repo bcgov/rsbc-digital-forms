@@ -38,8 +38,7 @@ const oopJurisdictions = [
     "BRITISH COLUMBIA",
     "MANITOBA",
     "WASHINGTON",
-    "ALASKA",
-    "OTHER"
+    "ALASKA"
 ];
 
 const vehicleColours = [

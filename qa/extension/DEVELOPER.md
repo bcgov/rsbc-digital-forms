@@ -28,7 +28,7 @@ The forms contain a custom React drop-down selection fields. These were very dif
 - Vehicle colour
 - ILO
 
-The code to handle these custom controls is in helper-functions.js and the function name is SetCustomSelect(id, value). If the custom controls fail to update at some point, this is where you need to look.
+The code to handle these custom controls is in extension-helpers.js and the function name is SetCustomSelect(id, value). If the custom controls fail to update at some point, this is where you need to look.
 
 
 ## Workflow description
@@ -52,7 +52,7 @@ function FillDriverSection() {
 }
 ```
 
-In the function above, you can see the driver's licence number is filled first. It finds the field with the element id `drivers_licence_no` and simulates the entry of the value returned from the `GenerateDL()` function. The `SetField` and `GenerateDL` functions are in helper-functions.js.
+In the function above, you can see the driver's licence number is filled first. It finds the field with the element id `drivers_licence_no` and simulates the entry of the value returned from the `GenerateDL()` function. The `SetField` and `GenerateDL` functions are in extension-helpers.js.
 
 This workflow is used for all the forms on the field. If an id for an element changes, you need to change the id for the appropriate section in content.js.
 

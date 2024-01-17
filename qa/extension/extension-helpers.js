@@ -7,16 +7,45 @@ const icbcTst6Values = [{
     "driver_last_name": "DLNP",
     "driver_given_name": "CONTRAVENTIONS",
     "driver_dob": "19900909",
+    "vehice_plate_no": "AA811A"
+},
+{
+    "driver_licence_no": "1660300",
+    "driver_last_name": "DFFT-NOVICE",
+    "driver_given_name": "GERRY",
+    "driver_dob": "19780305",
     "vehice_plate_no": "CF069C"
 },
 {
-    "driver_licence_no": "01695672",
-    "driver_last_name": "SHARCC",
-    "driver_given_name": "COMBO",
-    "driver_dob": "19650403",
+    "driver_licence_no": "1660301 ",
+    "driver_last_name": "DFFT-FIVE",
+    "driver_given_name": "MIKE",
+    "driver_dob": "19580918",
+    "vehice_plate_no": "AA294A"
+},
+{
+    "driver_licence_no": "1660302",
+    "driver_last_name": "DFFT-SIX",
+    "driver_given_name": "DECEMBER",
+    "driver_dob": "19370914",
+    "vehice_plate_no": "AA809A"
+},
+{
+    "driver_licence_no": "1660303",
+    "driver_last_name": "GLP",
+    "driver_given_name": "BRENDA",
+    "driver_dob": "19740708",
+    "vehice_plate_no": "AA649A"
+},
+{
+    "driver_licence_no": "1660304",
+    "driver_last_name": "JACKSON",
+    "driver_given_name": "AKASHA",
+    "driver_dob": "19501026",
     "vehice_plate_no": "AA296A"
-}];
+}
 
+];
 
 // Helper to call all the sections to be filled
 function FillAllSections() {
@@ -210,7 +239,7 @@ function FillProhibitionSection() {
 
 function FillImpoundmentForIrpSection() {
     RandomlyChooseRadio('irp_impound-YES', 'irp_impound-NO');
-    RandomlyChooseRadio('irp_impound_duration-3DAY', 'irp_impound_duration-7DAY', 'irp_impound_duration-30DAY');
+    RandomlyChooseRadio('irp_impound_duration-BACWARN3', 'irp_impound_duration-BACWARN7', 'irp_impound_duration-BACWARN7', 'irp_impound_duration-BACFAIL');
     SetField('IRP_number', "01-000001");
 }
 
@@ -270,6 +299,7 @@ function FillReasonableGroundsSection() {
         document.getElementById('independent_witness').checked === false &&
         document.getElementById('reasonable_ground_other').checked === false) 
         {
+            console.log ("No reasonable grounds selected. Selecting one at random.")
             RandomlyChooseRadio('witnessed_by_officer', 'admission_by_driver', 'independent_witness', 'reasonable_ground_other');
     }
 
