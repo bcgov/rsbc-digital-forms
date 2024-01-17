@@ -628,22 +628,35 @@ export const validationSchema = Yup.object().shape(
     }),
 
     /** Impoundment for Immediate Roadside Prohibition */
-    irp_impound: Yup.string().when("VI", {
-      is: true,
+    irp_impound: Yup.string().when(["VI", "TwelveHour", "TwentyFourHour"], {
+      is: (VI, TwelveHour, TwentyFourHour) =>
+        VI && !TwelveHour && !TwentyFourHour,
       then: () => Yup.string().required("Was an IRP issued? is required"),
     }), // Only for VI, required
-    irp_impound_duration: Yup.string().when(["VI", "irp_impound"], {
-      is: (VI, irp_impound) => VI && irp_impound === "YES",
-      then: () => Yup.string().required("IRP Impound Duration is required"),
-    }), // Only for VI, only if irp_impound === "Yes"
-    IRP_number: Yup.string().when(["VI", "irp_impound"], {
-      is: (VI, irp_impound) => VI && irp_impound === "YES",
-      then: () => Yup.string().required("IRP Number is required"),
-    }), // Only for VI, required
-    VI_number: Yup.string().when(["VI", "irp_impound"], {
-      is: (VI, irp_impound) => VI && irp_impound === "YES",
-      then: () => Yup.string().required("This VI Number is required"),
-    }), // Only for VI, required
+    irp_impound_duration: Yup.string().when(
+      ["VI", "TwelveHour", "TwentyFourHour", "irp_impound"],
+      {
+        is: (VI, TwelveHour, TwentyFourHour, irp_impound) =>
+          VI && !TwelveHour && !TwentyFourHour && irp_impound === "YES",
+        then: () => Yup.string().required("IRP Impound Duration is required"),
+      }
+    ), // Only for VI, only if irp_impound === "Yes"
+    IRP_number: Yup.string().when(
+      ["VI", "TwelveHour", "TwentyFourHour", "irp_impound"],
+      {
+        is: (VI, TwelveHour, TwentyFourHour, irp_impound) =>
+          VI && !TwelveHour && !TwentyFourHour && irp_impound === "YES",
+        then: () => Yup.string().required("IRP Number is required"),
+      }
+    ), // Only for VI, required
+    VI_number: Yup.string().when(
+      ["VI", "TwelveHour", "TwentyFourHour", "irp_impound"],
+      {
+        is: (VI, TwelveHour, TwentyFourHour, irp_impound) =>
+          VI && !TwelveHour && !TwentyFourHour && irp_impound === "YES",
+        then: () => Yup.string().required("This VI Number is required"),
+      }
+    ), // Only for VI, required
 
     /** Impoundment for Driving Behaviour */
     excessive_speed: Yup.boolean().when("VI", {

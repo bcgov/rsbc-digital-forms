@@ -646,6 +646,12 @@ export const CreateEvent = () => {
       }
     };
 
+    if (values["VI"] && (values["TwelveHour"] || values["TwentyFourHour"])) {
+      values["irp_impound"] = "";
+      values["irp_impound_duration"] = "";
+      values["IRP_number"] = "";
+    }
+
     switch (currentStep) {
       case 0:
         return (
@@ -761,7 +767,9 @@ export const CreateEvent = () => {
                 )}
                 {values["VI"] && (
                   <>
-                    <VehicleImpoundmentIRP />
+                    {!values["TwelveHour"] && !values["TwentyFourHour"] && (
+                      <VehicleImpoundmentIRP />
+                    )}
                     <VehicleImpoundmentReason values={values} />
                     {values["excessive_speed"] && <Excessive />}
                     {values["unlicensed"] && (
