@@ -202,8 +202,14 @@ export const validationSchema = Yup.object().shape(
         then: () =>
           Yup.object()
             .nullable()
-            .required(
-              "NSC Province/State is required when NSC no. is provided"
+            .required("NSC Province/State is required when NSC no. is provided")
+            .test(
+              "nsc_prov_state",
+              "Please select a valid NSC Province/State.",
+              (option) => {
+                console.log(option);
+                return option.value !== "";
+              }
             ),
         otherwise: () => Yup.object().nullable(),
       }),

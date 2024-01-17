@@ -23,7 +23,6 @@
       "OWNER_PROVINCE",
       "OWNER_POSTAL_CODE",
       "VEHICLE_LICENSE_NUMBER",
-      "VEHICLE_PROVINCE",
       "VEHICLE_JURISDICTION",
       "VEHICLE_LICENSE_YEAR",
       "VEHICLE_TAG_NUMBER",
@@ -65,7 +64,6 @@
       "OWNER_PROVINCE",
       "OWNER_POSTAL_CODE",
       "VEHICLE_LICENSE_NUMBER",
-      "VEHICLE_PROVINCE",
       "VEHICLE_JURISDICTION",
       "VEHICLE_LICENSE_YEAR",
       "VEHICLE_TAG_NUMBER",
@@ -114,7 +112,6 @@
       "OWNER_PROVINCE",
       "OWNER_POSTAL_CODE",
       "VEHICLE_LICENSE_NUMBER",
-      "VEHICLE_PROVINCE",
       "VEHICLE_JURISDICTION",
       "VEHICLE_LICENSE_YEAR",
       "VEHICLE_TAG_NUMBER",
@@ -406,15 +403,6 @@
         "classNames": "fontSmall",
         "start": {
           "x": 32,
-          "y": 120.5
-        }
-      },
-      "VEHICLE_PROVINCE": {
-        "field_type": "text",
-        "field_name": "nsc_prov_state",
-        "classNames": "fontSmall",
-        "start": {
-          "x": 33.5,
           "y": 120.5
         }
       },
