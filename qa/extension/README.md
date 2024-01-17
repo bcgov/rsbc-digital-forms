@@ -1,6 +1,8 @@
 # Roadside forms automation browser extension
 *A minimal browser extension to make filling out roadside digital forms easier.*
 
+See this README and the source code on GitHub repo: https://github.com/bcgov/rsbc-digital-forms/tree/qa/chromium-test-extension
+
 ## Description
 When you install this extension in your browser and go to the Digital Forms DEV or TEST environment (refresh the page if you already have it open), a "Fill" button will be added to the top-left corner of the page. When you click "Fill", Every selection option and field vallue will be filled at random. It may take a second or two for the fields to fill, depending on your system resources. Make adjustments to the  selections and values as needed. Click the Fill button again to get different selections.
 
