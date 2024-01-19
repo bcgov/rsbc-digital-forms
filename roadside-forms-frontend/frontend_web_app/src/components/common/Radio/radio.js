@@ -1,14 +1,16 @@
-import React from 'react';
-import { useField } from 'formik';
+import React from "react";
+import { useField } from "formik";
 
-export const Radio = ({ name, options, required, label }) => {
+export const Radio = ({ name, options, required, label, lightLabel }) => {
   const [field, meta] = useField(name);
-  
+
   return (
     <div>
       {label && (
         <label htmlFor={name}>
-          {label}{required && (<span className="required-asterisk"> *</span>)}
+          {label}
+          {required && <span className="required-asterisk"> *</span>}
+          {lightLabel && <span className="light-text">{lightLabel}</span>}
         </label>
       )}
       {options.map((option) => (
@@ -21,12 +23,19 @@ export const Radio = ({ name, options, required, label }) => {
             value={option.value}
             checked={field.value === option.value}
             required={required}
-            disabled={option?.disabled} 
+            disabled={option?.disabled}
           />
-          <label style={{ marginLeft: "5px" }} htmlFor={`${name}-${option.value}`}>{option.label}</label>
+          <label
+            style={{ marginLeft: "5px" }}
+            htmlFor={`${name}-${option.value}`}
+          >
+            {option.label}
+          </label>
         </div>
       ))}
-      {meta.touched && meta.error && <div className="error-message">{meta.error}</div>}
+      {meta.touched && meta.error && (
+        <div className="error-message">{meta.error}</div>
+      )}
     </div>
   );
 };
