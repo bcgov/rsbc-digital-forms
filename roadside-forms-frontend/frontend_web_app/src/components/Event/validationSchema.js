@@ -469,8 +469,8 @@ export const validationSchema = Yup.object().shape(
             Yup.string()
               .required("Time released is required")
               .matches(
-                /^([01]\d|2[0-3])[0-5]\d$/,
-                "Time Released must match 24h format HHMM"
+                /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+                "Time Released must match 24h format HH:MM"
               )
               .test(
                 "time_released",
@@ -608,8 +608,8 @@ export const validationSchema = Yup.object().shape(
         Yup.string()
           .required("Time of Driving is required")
           .matches(
-            /^([01]\d|2[0-3])[0-5]\d$/,
-            "Time of Driving must match 24h format HHMM"
+            /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+            "Time of Driving must match 24h format HH:MM"
           )
           .test(
             "time_of_driving",
@@ -628,22 +628,35 @@ export const validationSchema = Yup.object().shape(
     }),
 
     /** Impoundment for Immediate Roadside Prohibition */
-    irp_impound: Yup.string().when("VI", {
-      is: true,
+    irp_impound: Yup.string().when(["VI", "TwelveHour", "TwentyFourHour"], {
+      is: (VI, TwelveHour, TwentyFourHour) =>
+        VI && !TwelveHour && !TwentyFourHour,
       then: () => Yup.string().required("Was an IRP issued? is required"),
     }), // Only for VI, required
-    irp_impound_duration: Yup.string().when(["VI", "irp_impound"], {
-      is: (VI, irp_impound) => VI && irp_impound === "YES",
-      then: () => Yup.string().required("IRP Impound Duration is required"),
-    }), // Only for VI, only if irp_impound === "Yes"
-    IRP_number: Yup.string().when(["VI", "irp_impound"], {
-      is: (VI, irp_impound) => VI && irp_impound === "YES",
-      then: () => Yup.string().required("IRP Number is required"),
-    }), // Only for VI, required
-    VI_number: Yup.string().when(["VI", "irp_impound"], {
-      is: (VI, irp_impound) => VI && irp_impound === "YES",
-      then: () => Yup.string().required("This VI Number is required"),
-    }), // Only for VI, required
+    irp_impound_duration: Yup.string().when(
+      ["VI", "TwelveHour", "TwentyFourHour", "irp_impound"],
+      {
+        is: (VI, TwelveHour, TwentyFourHour, irp_impound) =>
+          VI && !TwelveHour && !TwentyFourHour && irp_impound === "YES",
+        then: () => Yup.string().required("IRP Impound Duration is required"),
+      }
+    ), // Only for VI, only if irp_impound === "Yes"
+    IRP_number: Yup.string().when(
+      ["VI", "TwelveHour", "TwentyFourHour", "irp_impound"],
+      {
+        is: (VI, TwelveHour, TwentyFourHour, irp_impound) =>
+          VI && !TwelveHour && !TwentyFourHour && irp_impound === "YES",
+        then: () => Yup.string().required("IRP Number is required"),
+      }
+    ), // Only for VI, required
+    VI_number: Yup.string().when(
+      ["VI", "TwelveHour", "TwentyFourHour", "irp_impound"],
+      {
+        is: (VI, TwelveHour, TwentyFourHour, irp_impound) =>
+          VI && !TwelveHour && !TwentyFourHour && irp_impound === "YES",
+        then: () => Yup.string().required("This VI Number is required"),
+      }
+    ), // Only for VI, required
 
     /** Impoundment for Driving Behaviour */
     excessive_speed: Yup.boolean().when("VI", {
@@ -719,7 +732,8 @@ export const validationSchema = Yup.object().shape(
         "at_least_one_impoundment_reason",
         "Please select at least one option from the list of Impoundment for Driving Behaviour",
         function (value) {
-          if (this.parent.VI) {
+          if (this.parent.VI && this.parent.irp_impound === "NO") {
+            // At least one is required
             return (
               this.parent.excessive_speed ||
               this.parent.prohibited ||
@@ -930,8 +944,8 @@ export const validationSchema = Yup.object().shape(
           Yup.string()
             .required("Time of Test is required")
             .matches(
-              /^([01]\d|2[0-3])[0-5]\d$/,
-              "Time of Test must match 24h format HHMM"
+              /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+              "Time of Test must match 24h format HH:MM"
             )
             .test(
               "reasonable_time_of_test",
@@ -1220,8 +1234,8 @@ export const validationSchema = Yup.object().shape(
           Yup.string()
             .required("Time of requested test is required")
             .matches(
-              /^([01]\d|2[0-3])[0-5]\d$/,
-              "Time of requested test must match 24h format HHMM"
+              /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+              "Time of requested test must match 24h format HH:MM"
             ),
       }
     ),

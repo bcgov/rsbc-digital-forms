@@ -17,6 +17,10 @@ export const TimeInputField = ({ required, label, ...props }) => {
 
     // Ensure the value has at most 4 digits
     const formattedValue = digitsOnly.slice(0, 4);
+    if (formattedValue.length > 2) {
+      // If the value has more than 2 digits, insert a colon after the first 2 digits
+      return formattedValue.slice(0, 2) + ":" + formattedValue.slice(2);
+    }
 
     return formattedValue;
   };
