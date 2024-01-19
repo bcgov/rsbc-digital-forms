@@ -1,0 +1,34 @@
+name: task_scheduler-ci
+
+# on:
+#   push:
+#     branches_ignore:
+#       - master
+#     paths:
+#       - python/*.py
+#       - python/common/**
+#       - python/form_handler/**
+#       - .github/workflows/form_handler-ci.yml
+#       - trigger.txt
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches-ignore:
+      - master
+      - main
+    paths:
+      # - python/*.py
+      # - python/common/**
+      - python/task_scheduler/**
+      - .github/workflows/task_scheduler-ci.yml
+      # - trigger.txt
+
+jobs:
+  CI:
+    uses: ./.github/workflows/ci-workflow.yml
+    with:
+      DOCKER_CONTEXT: python
+      DOCKER_FILE: python/task_scheduler/Dockerfile
+      DOCKER_IMAGE_NAME: rsbc-roadside-forms-task-scheduler
+    secrets: inherit
