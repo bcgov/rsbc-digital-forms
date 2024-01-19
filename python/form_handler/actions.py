@@ -445,9 +445,7 @@ def prep_icbc_payload(**args)->tuple:
             date_of_driving=date_of_driving.strftime('%Y%m%d')
             tmp_payload["violationDate"]=date_of_driving
         if "time_of_driving" in event_data: 
-            tmp_time_str=event_data["time_of_driving"]
-            tmp_time_str=tmp_time_str[:2] + ":" + tmp_time_str[2:]
-            tmp_payload["violationTime"]=tmp_time_str.replace(" ", "")
+            tmp_payload["violationTime"]=event_data["time_of_driving"].replace(" ", "")
 
         # TODO: get agency from user table for the event
         if "agency" in user_data: 
