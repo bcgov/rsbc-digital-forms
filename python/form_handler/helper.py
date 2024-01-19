@@ -83,23 +83,31 @@ def get_storage_ref_event_type(message,app,db,event_types) -> str:
         event_id=None
         tmp_key=message.get('Key',None)
         if tmp_key is None:
+            logging.error("tmp_key is None")
             return event_type
         # storage_key=tmp_key.split('/')[1]
         storage_key = tmp_key
+        logging.debug("storage_key: {}".format(storage_key))
         # print(storage_key)
         with application.app_context():
             form = db.session.query(FormStorageRefs) \
                 .filter(FormStorageRefs.storage_key == storage_key) \
                 .all()
             # db.session.commit()
+            logging.debug("Form returned from query: {}".format(form))
             print(form)
             if len(form) == 0 or len(form) > 1:
+                logging.debug("Unexpected number of records returned from db. Setting event_type to unknown_event. Number of Records: {}".format(len(form)))
                 return "unknown_event"
             for f in form:
+                logging.debug("Parsing event type and event ID from form: {}".format(f))
                 # read form_ype as lower
                 event_type=f.form_type.lower()
                 event_id=f.event_id
+                logging.debug("event_type: {}".format(event_type))
+                logging.debug("event_id: {}".format(event_id))
         if event_type not in event_types:
+            logging.error("event type not found: {}".format(event_type))
             raise Exception("event type not found")
         # args['event_type']=storage_key
     except Exception as e:

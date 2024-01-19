@@ -51,8 +51,10 @@ class Listener:
         try:
             # convert body (in bytes) to string
             message_dict = decode_message(body, self.config.ENCRYPT_KEY)
+            logging.info('message_dict: {}'.format(message_dict))
             # DONE: Get event type by querying db
             message_dict['event_type'],event_id_val = get_storage_ref_event_type(message_dict,application,db,Config.EVENT_TYPES)
+            logging.info('event id: {}'.format(event_id_val))
             event_status_val = get_event_status(message_dict, application, db, Config.EVENT_TYPES,message_dict['event_type'],event_id_val)
             logging.info('event type: {}'.format(message_dict['event_type']))
             logging.info('event status: {}'.format(event_status_val))
