@@ -86,21 +86,6 @@ export const ConfirmationStep = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const formatStrToTimeFormat = (timeString) => {
-    const formattedTime = `${timeString.substring(0, 2)}:${timeString.substring(
-      2,
-      4
-    )}`;
-    return formattedTime;
-  };
-
-  const formatTime = (timeString) => {
-    const date = new Date(timeString);
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
-
   let label = generateLabel();
   let certifyNoticeText = generateCertifyNotice();
 
@@ -164,7 +149,7 @@ export const ConfirmationStep = () => {
                   section 90.3 of the Motor Vehicle Act for a period of 12
                   hours, commencing at:{" "}
                   {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},
-                  {timeOfDriving ? formatStrToTimeFormat(timeOfDriving) : "N/A"}
+                  {timeOfDriving ? timeOfDriving : "N/A"}
                 </span>
               )}
               {values["TwentyFourHour"] && (
@@ -173,7 +158,7 @@ export const ConfirmationStep = () => {
                   Vehicle Act from driving a motor vehicle for 24 hours
                   commencing at:{" "}
                   {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},
-                  {timeOfDriving ? formatStrToTimeFormat(timeOfDriving) : "N/A"}
+                  {timeOfDriving ? timeOfDriving : "N/A"}
                 </span>
               )}
             </div>
