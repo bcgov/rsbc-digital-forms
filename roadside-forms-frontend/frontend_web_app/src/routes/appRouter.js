@@ -1,6 +1,8 @@
 import React from "react";
 import {
+  Navigate,
   Route,
+  Routes,
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
@@ -15,7 +17,7 @@ import { Layout } from "../components/common/Layout/Layout";
 
 export const appRouter = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<Layout />}>
+    <Route element={<Layout />}>
       <Route path="/login" element={<Login />} />
       <Route path="/requestAccess" element={<RequestAccess />} />
       <Route element={<PrivateRoutes />}>
