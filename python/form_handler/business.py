@@ -79,11 +79,11 @@ def process_incoming_form() -> dict:
                 {"try": actions.add_to_persistent_failed_queue, "fail": []},
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
-            {"try": actions.create_vips_impoundment, "fail": [
-                {"try": actions.add_to_retry_queue, "fail": []},
-                {"try": actions.update_event_status_hold, "fail": []},
-            ]},
-            {"try": actions.update_event_status, "fail": []},
+            # {"try": actions.create_vips_impoundment, "fail": [
+            #     {"try": actions.add_to_retry_queue, "fail": []},
+            #     {"try": actions.update_event_status_hold, "fail": []},
+            # ]},
+            # {"try": actions.update_event_status, "fail": []},
 
         ],
         "24h": [
