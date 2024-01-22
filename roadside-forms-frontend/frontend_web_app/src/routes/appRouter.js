@@ -26,6 +26,7 @@ export const appRouter = createBrowserRouter(
         <Route path="/admin-console" element={<UserAdminDashboard />} exact />
         <Route path="/view-previous" element={<ViewPastEvent />} exact />
       </Route>
+      <Route path="*" element={<Navigate to="/login" />} />
     </Route>
   ),
   {
