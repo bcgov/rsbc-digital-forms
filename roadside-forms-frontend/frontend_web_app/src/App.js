@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ReactKeycloakProvider } from "@react-keycloak/web";
 import keycloak, { keycloakInitConfig } from "./keycloak";
 import "../src/utils/commonStyles.scss";
@@ -22,6 +22,12 @@ function App() {
     (state) => state.serviceWorkerRegistration
   );
 
+  useEffect(() => {
+    if (isServiceWorkerUpdated) {
+      updateServiceWorker();
+    }
+  }, [isServiceWorkerUpdated, serviceWorkerRegistration]);
+
   const updateServiceWorker = () => {
     if (!serviceWorkerRegistration) return;
     const registrationWaiting = serviceWorkerRegistration.waiting;
@@ -39,7 +45,7 @@ function App() {
 
   return (
     <div className="App">
-      <Modal show={isServiceWorkerUpdated}>
+      {/* <Modal show={isServiceWorkerUpdated}>
         <Modal.Header>
           <h3>A new version of this app is available!</h3>
         </Modal.Header>
@@ -55,7 +61,7 @@ function App() {
             Refresh
           </button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
       <ReactKeycloakProvider
         authClient={keycloak}
         initOptions={keycloakInitConfig}
