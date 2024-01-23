@@ -30,6 +30,11 @@ serviceWorkerRegistration.register({
     store.dispatch({ type: SW_UPDATE, payload: registration }),
 });
 
+// Catch routes like /roadside-blueberry/ and redirect to /roadside-forms/
+if (!window.location.pathname.includes("/roadside-forms")) {
+  window.location.replace("/roadside-forms");
+}
+
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
