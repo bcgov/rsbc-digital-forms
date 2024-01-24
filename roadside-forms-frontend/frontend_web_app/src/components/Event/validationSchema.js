@@ -207,7 +207,6 @@ export const validationSchema = Yup.object().shape(
               "nsc_prov_state",
               "Please select a valid NSC Province/State.",
               (option) => {
-                console.log(option);
                 return option.value !== "";
               }
             ),
@@ -480,7 +479,7 @@ export const validationSchema = Yup.object().shape(
                     return (
                       moment(this.parent.date_released)
                         .set("hour", value.slice(0, 2))
-                        .set("minute", value.slice(2)) <= moment()
+                        .set("minute", value.slice(3)) <= moment()
                     );
                   }
                   return true;
@@ -619,7 +618,7 @@ export const validationSchema = Yup.object().shape(
                 return (
                   moment(this.parent.date_of_driving)
                     .set("hour", value.slice(0, 2))
-                    .set("minute", value.slice(2)) <= moment()
+                    .set("minute", value.slice(3)) <= moment()
                 );
               }
               return true;
@@ -977,6 +976,20 @@ export const validationSchema = Yup.object().shape(
 
                   return timeOfDrivingCareOrControl.isBefore(testTime);
                 }
+              }
+            )
+            .test(
+              "reasonable_time_of_test",
+              "Time of test cannot be in the future",
+              function (value) {
+                if (value && this.parent.reasonable_date_of_test) {
+                  return (
+                    moment(this.parent.reasonable_date_of_test)
+                      .set("hour", value.slice(0, 2))
+                      .set("minute", value.slice(3)) <= moment()
+                  );
+                }
+                return true;
               }
             ),
       }

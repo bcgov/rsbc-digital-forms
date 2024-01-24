@@ -67,7 +67,7 @@ export const Dashboard = () => {
   const [jurisdictionCountryResource, setJurisdictionCountryResource] =
     useRecoilState(staticResources["jurisdictionCountry"]);
   const [lastUpdatedDate, setLastUpdatedDate] = useState(null);
-  const [sortMode, setSortMode] = useState("");
+  const [sortMode, setSortMode] = useState("DATE_DESC");
 
   const sortTableRows = (rows) => {
     switch (sortMode) {

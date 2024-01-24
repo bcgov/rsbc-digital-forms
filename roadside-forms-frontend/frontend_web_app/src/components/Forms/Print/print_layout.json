@@ -1107,7 +1107,7 @@
       "POLICE_COPY": {
         "field_type": "always",
         "field_name": "",
-        "field_value": "POLICE/ICBC COPY",
+        "field_value": "ICBC COPY",
         "classNames": "fontSmall",
         "start": {
           "x": 31,
@@ -1800,7 +1800,7 @@
       },
       "LINKAGE_OTHER": {
         "field_type": "checkbox",
-        "field_name": "street_racing",
+        "field_name": "linkage_other",
         "field_val": "",
         "classNames": "fontSmall",
         "start": {
@@ -2767,7 +2767,7 @@
       "POLICE_COPY": {
         "field_type": "always",
         "field_name": "",
-        "field_value": "POLICE/ICBC COPY",
+        "field_value": "ICBC COPY",
         "classNames": "fontSmall",
         "start": {
           "x": 30,
