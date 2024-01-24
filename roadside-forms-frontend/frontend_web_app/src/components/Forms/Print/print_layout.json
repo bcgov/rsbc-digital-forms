@@ -1107,7 +1107,7 @@
       "POLICE_COPY": {
         "field_type": "always",
         "field_name": "",
-        "field_value": "POLICE/ICBC COPY",
+        "field_value": "ICBC COPY",
         "classNames": "fontSmall",
         "start": {
           "x": 31,
@@ -2767,7 +2767,7 @@
       "POLICE_COPY": {
         "field_type": "always",
         "field_name": "",
-        "field_value": "POLICE/ICBC COPY",
+        "field_value": "ICBC COPY",
         "classNames": "fontSmall",
         "start": {
           "x": 30,
