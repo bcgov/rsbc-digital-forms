@@ -145,7 +145,7 @@ export const ConfirmationStep = () => {
                   section 90.3 of the Motor Vehicle Act for a period of 12
                   hours, commencing at:{" "}
                   {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},
-                  {timeOfDriving ? timeOfDriving : "N/A"}
+                  {timeOfDriving ? timeOfDriving : "N/A"} PACIFIC TIME
                 </span>
               )}
               {values["TwentyFourHour"] && (
@@ -154,7 +154,7 @@ export const ConfirmationStep = () => {
                   Vehicle Act from driving a motor vehicle for 24 hours
                   commencing at:{" "}
                   {dateOfDriving ? formatDate(dateOfDriving) : "N/A"},
-                  {timeOfDriving ? timeOfDriving : "N/A"}
+                  {timeOfDriving ? timeOfDriving : "N/A"} PACIFIC TIME
                 </span>
               )}
             </div>
