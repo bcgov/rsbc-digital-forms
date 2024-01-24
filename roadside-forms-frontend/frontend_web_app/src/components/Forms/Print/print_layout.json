@@ -1800,7 +1800,7 @@
       },
       "LINKAGE_OTHER": {
         "field_type": "checkbox",
-        "field_name": "street_racing",
+        "field_name": "linkage_other",
         "field_val": "",
         "classNames": "fontSmall",
         "start": {
