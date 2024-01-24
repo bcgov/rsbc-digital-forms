@@ -274,9 +274,19 @@ export const printFormatHelper = (values, data, key, impoundLotOperators) => {
     return val;
   }
 
+  if (key === "DRIVER_DL_EXPIRY") {
+    if (values["driver_licence_expiry"]) {
+      val = moment(values["driver_licence_expiry"]).format("YYYY");
+      return val;
+    }
+  }
+
   if (key === "REPORT_DRIVER_DL_EXPIRY") {
-    val = moment(values["driver_licence_expiry"]).format("YYYY");
-    return val;
+    console.log("DL EXPIRY: ", values["out_of_province_dl_expiry"]);
+    if (values["out_of_province_dl_expiry"]) {
+      val = moment(values["out_of_province_dl_expiry"]).format("YYYY");
+      return val;
+    }
   }
 
   //temp: if the value is an object then take its value
@@ -422,11 +432,14 @@ export const printFormatHelper = (values, data, key, impoundLotOperators) => {
       !values["VI"] &&
       values["vehicle_location"] === "private")
   ) {
+    console.log("ILO: ", values["ILO-name"]);
     const tmp = impoundLotOperators.filter(
       (x) => x["name"] === values["ILO-name"]
-    );
-    if (tmp && tmp.length > 0 && tmp[0] && tmp[0].name_print) {
-      val = tmp[0].name_print;
+    )[0];
+    if (tmp && tmp.name_print) {
+      val = tmp.name_print;
+    } else {
+      val = values["ILO-name"];
     }
   }
 
