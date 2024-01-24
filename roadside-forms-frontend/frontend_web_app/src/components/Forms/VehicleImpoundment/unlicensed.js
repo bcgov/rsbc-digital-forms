@@ -11,14 +11,6 @@ export const Unlicensed = (props) => {
   const { jurisdictions } = props;
   const { values } = useFormikContext();
 
-  useEffect(() => {
-    if (values["out_of_province_dl"] === "NO") {
-      values["out_of_province_dl_number"] = "";
-      values["out_of_province_dl_jurisdiction"] = null;
-      values["out_of_province_dl_expiry"] = null;
-    }
-  }, [values["out_of_province_dl"]]);
-
   return (
     <div className="border-design-form left text-font">
       <h3>Unlicensed Driver</h3>
