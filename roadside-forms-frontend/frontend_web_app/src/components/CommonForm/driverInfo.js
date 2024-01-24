@@ -133,7 +133,6 @@ export const DriverInfo = (props) => {
     );
     if (values["driver_licence_no"]) {
       ICBCDriverDataApi.get(values["driver_licence_no"]).then((resp) => {
-        console.log(resp);
         if (!_.isEmpty(resp.data) && resp.status === "success") {
           const party = resp.data.party;
           const address = party.addresses[0];

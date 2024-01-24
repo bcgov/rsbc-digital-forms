@@ -207,7 +207,6 @@ export const validationSchema = Yup.object().shape(
               "nsc_prov_state",
               "Please select a valid NSC Province/State.",
               (option) => {
-                console.log(option);
                 return option.value !== "";
               }
             ),
