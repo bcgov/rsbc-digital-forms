@@ -413,7 +413,6 @@ export const CreateEvent = () => {
   // If not, can just call handleExitForm() and then programatically navigate to main menu after user confirms
   // If so, need to block navigation away from the page and prompt user to confirm they want to exit the form
   const handleExitForm = async (values) => {
-    console.log("Values: ", values);
     setExitFormLoading(true);
     // If the form is printed, we need to mark the form as spoiled and void it in the system. Otherwise nothing to do here.
 
@@ -944,7 +943,6 @@ export const CreateEvent = () => {
                   {VIPrinted ? (
                     <Button
                       onClick={async () => {
-                        console.log("SUBMITTING: ", values);
                         await onSubmit(values);
                       }}
                     >
