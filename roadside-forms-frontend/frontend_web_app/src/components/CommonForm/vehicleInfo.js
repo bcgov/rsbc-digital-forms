@@ -49,7 +49,6 @@ export const VehicleInfo = (props) => {
         //ICBC sends back different responses based on sucess and fail and only real way to check is if it is an array
         if (resp.status === "success") {
           const vehicle = resp.data[0];
-          console.log(vehicle);
           const party = vehicle.vehicleParties[0].party;
           const address = party.addresses[0];
           setFieldValue("nsc_no", vehicle.nscNumber);
