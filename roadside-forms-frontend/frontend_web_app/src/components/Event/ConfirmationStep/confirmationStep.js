@@ -18,12 +18,10 @@ export const ConfirmationStep = () => {
   const certifyNoticeDelivery = values["confirmation_of_service"];
   const twentyFourHourForm = values["TwentyFourHour"];
   const twelveHourForm = values["TwelveHour"];
-  const vi = values["VI"];
   const driverGivenName = values["driver_given_name"];
   const driverLastName = values["driver_last_name"];
   const dateOfDriving = values["date_of_driving"];
   const timeOfDriving = values["time_of_driving"];
-  const viNumber = values["VI_number"] ? values["VI_number"] : "";
   const irpNumber = values["IRP_number"] ? values["IRP_number"] : "";
   const twentyFourHourNumber = values["twenty_four_hour_number"]
     ? values["twenty_four_hour_number"]
@@ -41,7 +39,6 @@ export const ConfirmationStep = () => {
   const generateLabel = () => {
     let formNames = [];
 
-    if (vi) formNames.push("Vehicle Impound");
     if (twentyFourHourForm) formNames.push("24-hour Driving Prohibition");
     if (twelveHourForm) formNames.push("12-hour Driving Suspension");
 
@@ -67,7 +64,6 @@ export const ConfirmationStep = () => {
     const formSubmittedDate = formattedPacificDate;
 
     let formNumbers = [];
-    if (vi && !twentyFourHourForm) formNumbers.push(viNumber);
     if (twentyFourHourForm) formNumbers.push(twentyFourHourNumber);
     if (twelveHourForm) formNumbers.push(twelveHourNumber);
     // const noticeNumber = "mock-232323";
