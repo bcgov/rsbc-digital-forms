@@ -16,8 +16,7 @@ vips_payload ={
         "policeOfficerNo": "",
         "policeFileNo": "",
         "projectedReleaseDt": "",
-        "seizureLocationTxt": "",
-        "vehicleReturnedDt": ""
+        "seizureLocationTxt": ""
     },
     "vipsRegistrationCreateArray": [
         {
@@ -42,11 +41,11 @@ vips_payload ={
                     "registrationAddressTypeCd": ""
                 }
             ],
-            "vipsLicenceCreateObj": {
-                "birthDt": "",
-                "driverLicenceNo": "",
-                "dlJurisdictionCd": ""
-            }
+            # "vipsLicenceCreateObj": {
+            #     "birthDt": "",
+            #     "driverLicenceNo": "",
+            #     "dlJurisdictionCd": ""
+            # }
         }
     ],
     "vipsVehicleCreate": {
@@ -67,6 +66,8 @@ vips_payload ={
     "vipsDocumentIdArray": [],
     "vipsImpoundmentArray": []
 }
+
+
 
 vips_document_payload = {
   "notice_subject_code": "PERS",
