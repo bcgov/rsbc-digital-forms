@@ -19,10 +19,10 @@ clientsClaim();
 // This variable must be present somewhere in your service worker file,
 // even if you decide not to use precaching.
 const manifest = (self.__WB_MANIFEST || []).concat([
-  {
-    url: "/roadside-forms/",
-    revision: null,
-  },
+  // {
+  //   url: "/roadside-forms/",
+  //   revision: null,
+  // },
   // {
   //     url: "/roadside-forms/static/media/BCID_RoadSafetyBC_logo_transparent.png",
   //     revision: null,
