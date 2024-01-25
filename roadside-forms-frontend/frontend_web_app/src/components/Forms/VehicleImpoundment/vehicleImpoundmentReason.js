@@ -23,6 +23,14 @@ export const VehicleImpoundmentReason = (props) => {
     }
   }, [values["excessive_speed"]]);
 
+  useEffect(() => {
+    if (values["out_of_province_dl"] === "NO") {
+      values["out_of_province_dl_number"] = "";
+      values["out_of_province_dl_jurisdiction"] = null;
+      values["out_of_province_dl_expiry"] = null;
+    }
+  }, [values["out_of_province_dl"]]);
+
   return (
     <div className="border-design-form left text-font">
       <h3>Impoundment for Driving Behaviour</h3>

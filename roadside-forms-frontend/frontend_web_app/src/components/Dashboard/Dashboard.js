@@ -325,7 +325,6 @@ export const Dashboard = () => {
                         : "N/A"}
                     </td>
                     <td>
-                      to="/view-previous" state={{ eventId: data["event_id"] }}
                       {data["driver_last_name"]
                         ? data["driver_last_name"]
                         : "N/A"}
