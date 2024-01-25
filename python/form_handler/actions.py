@@ -380,7 +380,7 @@ def prep_icbc_payload(**args)->tuple:
             tmp_payload["plateNumber"]=tmp_plate_no
 
         if event_data["nsc_prov_state"] and event_data["nsc_no"]: 
-            tmp_jurisdictionvalue=event_data["driver_jurisdiction"]
+            tmp_jurisdictionvalue=event_data["nsc_prov_state"]
             with application.app_context():
                 # get jurisdiction data
                 juris_data = db.session.query(JurisdictionCrossRef) \
