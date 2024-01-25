@@ -18,6 +18,7 @@ import { Layout } from "../components/common/Layout/Layout";
 export const appRouter = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<Layout />}>
+      <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
       <Route path="/requestAccess" element={<RequestAccess />} />
       <Route element={<PrivateRoutes />}>
