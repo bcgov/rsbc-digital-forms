@@ -3,16 +3,20 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Select from "react-select";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SVGprint } from "../Forms/Print/svgPrint";
-import { formsPNG } from "../../utils/helpers";
+import { formsPNG, staticResources } from "../../utils/helpers";
 import { db } from "../../db";
+import { ArrowBack } from "@mui/icons-material";
+import { useRecoilValue } from "recoil";
 
 export const ViewPastEvent = () => {
   const location = useLocation();
   const [event, setEvent] = useState({});
-  const [selected, setSelected] = useState("stageTwo");
+  const [selected, setSelected] = useState("pastEvent");
   const state = location.state;
+  const navigate = useNavigate();
+  const impoundAtom = useRecoilValue(staticResources["impound_lot_operators"]);
 
   useEffect(() => {
     try {
@@ -26,9 +30,8 @@ export const ViewPastEvent = () => {
     }
   }, [setEvent, state]);
 
-  console.log(event);
   const options = [
-    { value: "stageTwo", label: "Police/ICBC" },
+    { value: "pastEvent", label: "Police/ICBC" },
     { value: "stageOne", label: "Driver/ILO" },
   ];
 
@@ -54,6 +57,7 @@ export const ViewPastEvent = () => {
               formLayout={item}
               formType={form}
               values={values}
+              impoundLotOperators={impoundAtom}
             />
           );
         }
@@ -62,9 +66,19 @@ export const ViewPastEvent = () => {
     return componentsToRender;
   };
   return (
-    <div>
+    <div style={{ marginTop: "15px" }}>
       <Row id="history-button-container">
-        <Col sm={{ span: 4, offset: 4 }}>
+        <Col sm={2}>
+          <Button
+            style={{ marginLeft: "10px" }}
+            variant="primary"
+            onClick={() => navigate("/")}
+          >
+            <ArrowBack />
+            Return to Dashboard
+          </Button>
+        </Col>
+        <Col sm={{ span: 4, offset: 2 }}>
           <Select
             defaultValue={options[0]}
             name="Print"
@@ -74,7 +88,7 @@ export const ViewPastEvent = () => {
             }}
           />
         </Col>
-        <Col sm={4}>
+        <Col sm={2}>
           <Button variant="primary" onClick={() => window.print()}>
             Print
           </Button>
