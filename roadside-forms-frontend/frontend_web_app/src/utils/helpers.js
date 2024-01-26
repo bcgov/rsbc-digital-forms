@@ -176,6 +176,19 @@ export const formsPNG = {
     },
   },
   stageTwo: {
+    // TwentyFourHour: {
+    //   POLICE: { png: twentyFourHourPoliceform, aspectClass: "--landscape" },
+    // },
+    // TwelveHour: {
+    //   POLICE: { png: twelveHourICBCForm, aspectClass: "--landscape" },
+    // },
+    VI: {
+      POLICE: { png: viDriverForm, aspectClass: "--portrait" },
+      REPORT: { png: viReportForm, aspectClass: "--portrait" },
+      DETAILS: { png: viIncidentDetails, aspectClass: "--portrait" },
+    },
+  },
+  pastEvent: {
     TwentyFourHour: {
       POLICE: { png: twentyFourHourPoliceform, aspectClass: "--landscape" },
     },
