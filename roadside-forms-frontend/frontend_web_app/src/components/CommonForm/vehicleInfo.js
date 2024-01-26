@@ -116,15 +116,6 @@ export const VehicleInfo = (props) => {
               type="text"
             />
           </Col>
-          <Col sm={5}>
-            <SearchableSelect
-              className="field-height field-width"
-              label="Jurisdiction"
-              name="vehicle_jurisdiction"
-              onChange={handleJurisdictionChange}
-              options={vehicleJurisdictionOptions}
-            />
-          </Col>
           <Col sm={1} className="mt-4">
             <Button
               className="slim-button"
@@ -134,6 +125,15 @@ export const VehicleInfo = (props) => {
             >
               ICBC Prefill
             </Button>
+          </Col>
+          <Col sm={5}>
+            <SearchableSelect
+              className="field-height field-width"
+              label="Province / State / International"
+              name="vehicle_jurisdiction"
+              onChange={handleJurisdictionChange}
+              options={vehicleJurisdictionOptions}
+            />
           </Col>
         </Row>
 
