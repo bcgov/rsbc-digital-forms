@@ -1110,7 +1110,7 @@
         "field_value": "ICBC COPY",
         "classNames": "fontSmall",
         "start": {
-          "x": 31,
+          "x": 47,
           "y": 201
         }
       },
@@ -2770,7 +2770,7 @@
         "field_value": "ICBC COPY",
         "classNames": "fontSmall",
         "start": {
-          "x": 30,
+          "x": 47,
           "y": 185
         }
       },
