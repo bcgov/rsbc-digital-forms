@@ -49,6 +49,10 @@ export const ViewPastEvent = () => {
           if (form === "ILO" && values["vehicle_impounded"] === "NO") {
             break;
           }
+          // If our incident details fit on the first page, there is no reason to render the second page.
+          if (form === "DETAILS" && values["incident_details"].length < 500) {
+            break;
+          }
           componentsToRender.push(
             <SVGprint
               key={item + form}
