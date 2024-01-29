@@ -131,26 +131,48 @@ export const DriverInfo = (props) => {
       values["driver_licence_no"],
       values
     );
+    console.log("Attempting to fetch info for DL", values["driver_licence_no"]);
     if (values["driver_licence_no"]) {
-      ICBCDriverDataApi.get(values["driver_licence_no"]).then((resp) => {
-        if (!_.isEmpty(resp.data) && resp.status === "success") {
-          const party = resp.data.party;
-          const address = party.addresses[0];
-          setFieldValue("driver_last_name", party.lastName);
-          setFieldValue("driver_given_name", party.firstName);
-          setFieldValue(
-            "driver_dob",
-            moment(party.birthDate).tz("America/Vancouver").toDate()
+      ICBCDriverDataApi.get(values["driver_licence_no"])
+        .then((resp) => {
+          console.log("ICBC Response Status: ", resp.status);
+          if (!_.isEmpty(resp.data) && resp.status === "success") {
+            console.log("Found driver!", resp.data);
+            const party = resp.data.party;
+            const address = party.addresses[0];
+            setFieldValue("driver_last_name", party.lastName);
+            setFieldValue("driver_given_name", party.firstName);
+            setFieldValue(
+              "driver_dob",
+              moment(party.birthDate).tz("America/Vancouver").toDate()
+            );
+            setFieldValue("driver_address", address.addressLine1);
+            setFieldValue("driver_city", address.city);
+            setFieldValue("driver_postal", address.postalCode);
+          } else {
+            toast.error("No driver was found using this DL number.", {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+            console.error(
+              "No driver was found for DL" + values["driver_licence_no"],
+              resp
+            );
+          }
+        })
+        .catch((err) => {
+          toast.error(
+            "An unexpected error occured while trying to fetch the DL.",
+            {
+              position: toast.POSITION.TOP_RIGHT,
+            }
           );
-          setFieldValue("driver_address", address.addressLine1);
-          setFieldValue("driver_city", address.city);
-          setFieldValue("driver_postal", address.postalCode);
-        } else {
-          toast.error("No driver was found using this DL number.", {
-            position: toast.POSITION.TOP_RIGHT,
-          });
-        }
-      });
+          console.error(
+            "An unexpected error occurred trying to fetch DL" +
+              values["driver_licence_no"] +
+              ": ",
+            err
+          );
+        });
     }
   };
 
