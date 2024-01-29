@@ -6,7 +6,7 @@ import python.prohibition_web_svc.middleware.splunk_middleware as splunk_middlew
 from flask import request, make_response, Blueprint
 from python.common.splunk import log_to_splunk
 from flask_cors import CORS
-from python.prohibition_web_svc.models import db, Agency, City, Country, ImpoundLotOperator, Jurisdiction, Permission, Province, Vehicle, VehicleStyle, VehicleColour
+from python.prohibition_web_svc.models import db, Agency, City, Country, ImpoundLotOperator, Jurisdiction, Permission, Province, Vehicle, VehicleStyle, VehicleType, VehicleColour, NSCPuj, JurisdictionCountry
 
 import logging.config
 from flask import jsonify
@@ -20,8 +20,11 @@ resource_map = {
     "permissions": Permission,
     "provinces": Province,
     "vehicle_styles": VehicleStyle,
+    "vehicle_types": VehicleType,
     "vehicle_colours": VehicleColour,
-    "vehicles": Vehicle
+    "vehicles": Vehicle,
+    "nsc_puj": NSCPuj,
+    "jurisdiction_country": JurisdictionCountry
 }
 
 logging.config.dictConfig(Config.LOGGING)
@@ -122,8 +125,11 @@ def _is_known_resource(**kwargs) -> tuple:
         'keycloak',
         'provinces',
         'vehicle_styles',
+        'vehicle_types',
         'vehicle_colours',
         'vehicles',
+        "nsc_puj",
+        "jurisdiction_country",
     ]
     return kwargs.get('resource') in known_resources, kwargs
 
