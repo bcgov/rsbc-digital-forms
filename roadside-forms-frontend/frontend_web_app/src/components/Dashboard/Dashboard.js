@@ -29,6 +29,7 @@ export const Dashboard = () => {
   const { isConnected } = useSharedIsOnline();
   const navigate = useNavigate();
   const [formsData, setFormsData] = useState([]);
+  const [completedTableRows, setCompletedTableRows] = useState([]);
   const [staticDataLoaded, setStaticDataLoaded] = useState(false);
   const [userResource, setUserResource] = useRecoilState(userAtom);
   const [agencyResource, setAgencyResource] = useRecoilState(
@@ -68,6 +69,16 @@ export const Dashboard = () => {
     useRecoilState(staticResources["jurisdictionCountry"]);
   const [lastUpdatedDate, setLastUpdatedDate] = useState(null);
   const [sortMode, setSortMode] = useState("DATE_DESC");
+
+  useEffect(() => {
+    async function sortRows() {
+      if (formsData && formsData.length > 0) {
+        const rows = await sortTableRows(formsData);
+        await setCompletedTableRows(rows);
+      }
+    }
+    sortRows();
+  }, [formsData, sortMode]);
 
   const sortTableRows = (rows) => {
     switch (sortMode) {
@@ -421,7 +432,7 @@ export const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {sortTableRows(formsData).map((data, index) => {
+            {completedTableRows.map((data, index) => {
               return data["submitted"] ? (
                 <tr key={data["vehicle_vin_no"]}>
                   <td>
