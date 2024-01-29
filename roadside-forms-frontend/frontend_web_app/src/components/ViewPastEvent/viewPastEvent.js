@@ -13,7 +13,7 @@ import { useRecoilValue } from "recoil";
 export const ViewPastEvent = () => {
   const location = useLocation();
   const [event, setEvent] = useState({});
-  const [selected, setSelected] = useState("pastEvent");
+  const [selected, setSelected] = useState("stageTwo");
   const state = location.state;
   const navigate = useNavigate();
   const impoundAtom = useRecoilValue(staticResources["impound_lot_operators"]);
@@ -31,7 +31,7 @@ export const ViewPastEvent = () => {
   }, [setEvent, state]);
 
   const options = [
-    { value: "pastEvent", label: "Police/ICBC" },
+    { value: "stageTwo", label: "Police/ICBC" },
     { value: "stageOne", label: "Driver/ILO" },
   ];
 
