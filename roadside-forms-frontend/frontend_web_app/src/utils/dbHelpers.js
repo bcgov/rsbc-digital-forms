@@ -5,7 +5,7 @@ export const getAllFormIDs = async () => {
   //count each type remaining
   //add all types and counts to dict
 
-  const idDict = { "12Hour": 0, "24Hour": 0, IRP: 0, VI: 0 };
+  const idDict = { "12Hour": 0, "24Hour": 0, VI: 0 };
 
   const keys = Object.keys(idDict);
   for (const key of keys) {
