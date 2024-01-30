@@ -59,7 +59,7 @@ export const CreateEvent = () => {
   const [formValues, setFormValues] = useState([]);
   const [formIDs, setFormIDs] = useState({
     VI: "",
-    IRP: "",
+    // IRP: "",
     TwentyFourHour: "",
     TwelveHour: "",
   });
@@ -119,10 +119,10 @@ export const CreateEvent = () => {
         .where("[form_type+leased]")
         .anyOf([["VI", 0]])
         .first();
-      const IRPNum = await db.formID
-        .where("[form_type+leased]")
-        .anyOf([["IRP", 0]])
-        .first();
+      // const IRPNum = await db.formID
+      //   .where("[form_type+leased]")
+      //   .anyOf([["IRP", 0]])
+      //   .first();
       const twentyFourNum = await db.formID
         .where("[form_type+leased]")
         .anyOf([["24Hour", 0]])
@@ -134,14 +134,14 @@ export const CreateEvent = () => {
 
       await setFormIDs({
         VI: VINum.id,
-        IRP: IRPNum.id,
+        // IRP: IRPNum.id,
         TwentyFourHour: twentyFourNum.id,
         TwelveHour: twelveNum.id,
       });
 
       // Go into indexedDB and mark all form IDs we are leasing for this form as "leased"
       await db.formID.where("id").equals(VINum.id).modify({ leased: 1 });
-      await db.formID.where("id").equals(IRPNum.id).modify({ leased: 1 });
+      // await db.formID.where("id").equals(IRPNum.id).modify({ leased: 1 });
       await db.formID
         .where("id")
         .equals(twentyFourNum.id)
@@ -345,7 +345,7 @@ export const CreateEvent = () => {
       .modify({ leased: 0 });
 
     // unlease the IRP ID
-    await db.formID.where("id").equals(formIDs["IRP"]).modify({ leased: 0 });
+    // await db.formID.where("id").equals(formIDs["IRP"]).modify({ leased: 0 });
 
     // unlease the VI ID
     await db.formID.where("id").equals(formIDs["VI"]).modify({ leased: 0 });
@@ -564,7 +564,7 @@ export const CreateEvent = () => {
     const formFieldNames = {
       TwelveHour: "twelve_hour_number",
       TwentyFourHour: "twenty_four_hour_number",
-      IRP: "IRP_number",
+      // IRP: "IRP_number",
       VI: "VI_number",
     };
     setFieldValue(
@@ -590,7 +590,7 @@ export const CreateEvent = () => {
     const forms = {
       TwentyFourHour: values["TwentyFourHour"],
       TwelveHour: values["TwelveHour"],
-      IRP: values["IRP"],
+      // IRP: values["IRP"],
       VI: values["VI"],
     };
     const valuesCopy = { ...values };
@@ -726,7 +726,7 @@ export const CreateEvent = () => {
                 </h5>
               </div>
               <div className="col-sm-4 form-id-border">
-                {values["IRP"] && <h5>IRP Number: {values["IRP_number"]}</h5>}
+                {/* {values["IRP"] && <h5>IRP Number: {values["IRP_number"]}</h5>} */}
                 {values["VI"] && <h5>VI Number: {values["VI_number"]}</h5>}
                 {values["TwentyFourHour"] && (
                   <h5>24 Hour Number: {values["twenty_four_hour_number"]}</h5>
