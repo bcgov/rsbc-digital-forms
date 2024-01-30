@@ -31,6 +31,17 @@ export const VehicleImpoundmentReason = (props) => {
     }
   }, [values["out_of_province_dl"]]);
 
+  useEffect(() => {
+    if (!values["unlicensed"]) {
+      values["unlicenced_prohibition_number"] = "";
+      values["belief_driver_bc_resident"] = "";
+      values["out_of_province_dl"] = "";
+      values["out_of_province_dl_number"] = "";
+      values["out_of_province_dl_jurisdiction"] = null;
+      values["out_of_province_dl_expiry"] = null;
+    }
+  }, [values["unlicensed"]]);
+
   return (
     <div className="border-design-form left text-font">
       <h3>Impoundment for Driving Behaviour</h3>
