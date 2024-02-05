@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import { toPng } from "html-to-image";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { Checkbox } from "../common/Checkbox/checkbox";
 import { validationSchema } from "./validationSchema";
 import { DriverInfo } from "../CommonForm/driverInfo";
@@ -318,8 +318,6 @@ export const CreateEvent = () => {
           setEventCreationFailed(true);
           setIsSubmitting(false);
           setEventCreationFailedModalOpen(true);
-          // setSubmitModalOpen(false);
-          // setConfirmSubmitModalOpen(false);
         }
       })
       .catch((err) => {
