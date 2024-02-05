@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import { toPng } from "html-to-image";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { Checkbox } from "../common/Checkbox/checkbox";
 import { validationSchema } from "./validationSchema";
 import { DriverInfo } from "../CommonForm/driverInfo";
@@ -40,7 +40,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FormIDApi } from "../../api/formIDApi";
 import { Alert } from "react-bootstrap";
 import Warning from "@mui/icons-material/Warning";
-import { ArrowBack } from "@mui/icons-material";
+import { ArrowBack, Error } from "@mui/icons-material";
 const { v4: uuidv4 } = require("uuid");
 
 export const CreateEvent = () => {
@@ -91,6 +91,14 @@ export const CreateEvent = () => {
   const [confirmSubmitModalOpen, setConfirmSubmitModalOpen] = useState(false);
   const [submitModalOpen, setSubmitModalOpen] = useState(false);
   const [VIPrinted, setVIPrinted] = useState(false);
+  const [eventCreationFailed, setEventCreationFailed] = useState(false);
+  const [eventCreationFailedModalOpen, setEventCreationFailedModalOpen] =
+    useState(false);
+  const [
+    eventCreationFailedConfirmModalOpen,
+    setEventCreationFailedConfirmModalOpen,
+  ] = useState(false);
+  const [messageAcknowledged, setMessageAcknowledged] = useState(false);
 
   const navigate = useNavigate();
 
@@ -300,12 +308,23 @@ export const CreateEvent = () => {
 
     await FormSubmissionApi.post(values)
       .then((resp) => {
-        setIsSubmitting(false);
-        setisBlockerActive(false);
-        navigate("/");
+        console.log("response: ", resp);
+        if (resp.status === 201) {
+          setIsSubmitting(false);
+          setisBlockerActive(false);
+          navigate("/");
+        } else {
+          // The form did not submit correctly. Cancel submit and display error message.
+          setEventCreationFailed(true);
+          setIsSubmitting(false);
+          setEventCreationFailedModalOpen(true);
+          // setSubmitModalOpen(false);
+          // setConfirmSubmitModalOpen(false);
+        }
       })
       .catch((err) => {
-        console.error(err);
+        console.error("An error occurred submitting the event: ", err);
+        setEventCreationFailed(true);
         setIsSubmitting(false);
       });
   };
@@ -373,6 +392,18 @@ export const CreateEvent = () => {
         );
       }
     } else {
+      if (eventCreationFailed) {
+        return (
+          <Button
+            variant="primary"
+            onClick={() => {
+              window.print();
+            }}
+          >
+            Print Police Version for Manual Submission
+          </Button>
+        );
+      }
       if (values["VI"] && !values["TwentyFourHour"] && !values["TwelveHour"]) {
         return (
           <Button variant="primary" onClick={() => window.print()}>
@@ -666,9 +697,21 @@ export const CreateEvent = () => {
             () => handleModalClose()
           );
         }
-      } else if (currentStep === 4 && values["VI"]) {
+      } else if (currentStep === 4 && values["VI"] && !eventCreationFailed) {
         // Special case for hybrid VI workflow
         setSubmitModalOpen(true);
+      } else if (eventCreationFailed) {
+        handleShow(
+          "Print Form",
+          "Did the form print correctly?",
+          "No",
+          "Yes",
+          async () => {
+            // Show new dialog that says "Please fax the documents as per existing paper process"
+            await handleClose();
+            await setEventCreationFailedConfirmModalOpen(true);
+          }
+        );
       }
     };
 
@@ -836,12 +879,33 @@ export const CreateEvent = () => {
     }
   };
 
+  const getFormNames = (values) => {
+    const forms = [];
+    if (values["VI"]) {
+      forms.push("VI");
+    }
+    if (values["TwentyFourHour"]) {
+      forms.push("24-hour");
+    }
+    if (values["TwelveHour"]) {
+      forms.push("12-hour");
+    }
+    let formNames = forms.join(" and ");
+    if (forms.length > 1) {
+      formNames += " forms";
+    } else {
+      formNames += " form";
+    }
+
+    return formNames;
+  };
+
   return (
     <div id="event-container" className="text-font">
       <ToastContainer />
       <Modal
         id="spinner-modal"
-        show={isSubmitting}
+        show={isSubmitting && !eventCreationFailed}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
@@ -930,7 +994,10 @@ export const CreateEvent = () => {
                 </Modal.Footer>
               </Modal>
               {/* Form Submit Modal */}
-              <Modal show={submitModalOpen && !isSubmitting} centered>
+              <Modal
+                show={submitModalOpen && !isSubmitting && !eventCreationFailed}
+                centered
+              >
                 <Modal.Header>
                   <h3>{VIPrinted ? "Next Steps" : "Print Form"}</h3>
                 </Modal.Header>
@@ -990,6 +1057,76 @@ export const CreateEvent = () => {
                     }}
                   >
                     OK
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+              <Modal show={eventCreationFailedConfirmModalOpen} centered>
+                <Modal.Header>
+                  <h3>Next Steps</h3>
+                </Modal.Header>
+                <Modal.Body>
+                  Please fax the {getFormNames(values)} as per the existing
+                  paper process.
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    onClick={async () => {
+                      await setisBlockerActive(false);
+                      navigate("/");
+                    }}
+                  >
+                    OK
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+              <Modal
+                show={eventCreationFailedModalOpen}
+                backdrop="static"
+                centered
+              >
+                <Modal.Header
+                  style={{
+                    background: "#D8292F",
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <Error
+                    style={{
+                      color: "white",
+                      marginRight: "10px",
+                      marginBottom: "5px",
+                    }}
+                  />
+                  <h3 style={{ color: "white" }}>Unable to Save Form</h3>
+                </Modal.Header>
+                <Modal.Body>
+                  <p>
+                    Form could not be saved and submitted due to a fatal network
+                    error. As such, this form will not appear in your list of
+                    Completed forms. Please click "Print Police Version for
+                    Manual Submission" below to print hard copies of the form(s)
+                    and handle as per existing paper process.
+                  </p>
+                  <Checkbox
+                    name="acknowledgement_checkbox"
+                    onClick={(event) => {
+                      setMessageAcknowledged(event.target.checked);
+                    }}
+                  >
+                    I will manually submit the printed form(s) and understand
+                    that no form data could be saved to the server.
+                  </Checkbox>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    variant="primary"
+                    disabled={!messageAcknowledged}
+                    onClick={async () => {
+                      await setEventCreationFailedModalOpen(false);
+                      window.print();
+                    }}
+                  >
+                    Print Police Version for Manual Submission
                   </Button>
                 </Modal.Footer>
               </Modal>
