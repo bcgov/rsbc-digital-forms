@@ -41,6 +41,7 @@ import { FormIDApi } from "../../api/formIDApi";
 import { Alert } from "react-bootstrap";
 import Warning from "@mui/icons-material/Warning";
 import { ArrowBack, Error } from "@mui/icons-material";
+import { useKeycloak } from "@react-keycloak/web";
 const { v4: uuidv4 } = require("uuid");
 
 export const CreateEvent = () => {
@@ -102,6 +103,7 @@ export const CreateEvent = () => {
   const [criticalErrorModalOpen, setCriticalErrorModelOpen] = useState(false);
 
   const navigate = useNavigate();
+  const { keycloak } = useKeycloak();
 
   // Blocker
   const blocker = useBlocker(({ currentLocation, nextLocation }) => {
@@ -986,7 +988,12 @@ export const CreateEvent = () => {
         >
           {({ values, errors, setFieldValue }) => (
             <Form>
-              <Modal show={criticalErrorModalOpen} backdrop="static" centered>
+              <Modal
+                size={"md"}
+                show={criticalErrorModalOpen}
+                backdrop="static"
+                centered
+              >
                 <Modal.Header
                   style={{
                     background: "#D8292F",
@@ -1000,16 +1007,35 @@ export const CreateEvent = () => {
                       marginBottom: "5px",
                     }}
                   />
-                  <h3 style={{ color: "white" }}>CRITICAL ERROR</h3>
+                  <h3 style={{ color: "white" }}>Form Numbers Not Available</h3>
                 </Modal.Header>
                 <Modal.Body>
                   <p>
-                    A critical error has occurred in the application.
-                    Unfortunately, at this time, you cannot proceed with Digital
-                    Forms. Please try again later and contact support if the
-                    issue persists.
+                    A fatal technical issue has occurred. One or more form
+                    number types could be retrieved. Please try logging out and
+                    logging back in again.
                   </p>
                 </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    variant="secondary"
+                    onClick={async () => {
+                      await setisBlockerActive(false);
+                      navigate("/");
+                    }}
+                  >
+                    Return to Dashboard
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={async () => {
+                      await setisBlockerActive(false);
+                      keycloak.logout();
+                    }}
+                  >
+                    Log Out of Digital Forms
+                  </Button>
+                </Modal.Footer>
               </Modal>
               <Modal
                 id="popconfirm-modal"
