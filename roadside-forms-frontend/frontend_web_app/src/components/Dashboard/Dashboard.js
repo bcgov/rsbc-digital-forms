@@ -288,7 +288,8 @@ export const Dashboard = () => {
 
     if (staticDataLoaded) {
       if (isConnected) {
-        fetchCurrentIDs().then(() => fetchNeededIDs());
+        fetchNeededIDs();
+        // fetchCurrentIDs().then(() => );
       }
     }
   }, [staticDataLoaded, isConnected]);
