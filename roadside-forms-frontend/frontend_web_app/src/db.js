@@ -33,6 +33,9 @@ const initDB = async () => {
 
 initDB()
   .then(() => {
+    db.formID.clear().then(() => {
+      console.log("Form ID's Cleared.");
+    });
     console.log("Idexed DB is open");
   })
   .catch(function (e) {
