@@ -41,6 +41,7 @@ import { FormIDApi } from "../../api/formIDApi";
 import { Alert } from "react-bootstrap";
 import Warning from "@mui/icons-material/Warning";
 import { ArrowBack, Error } from "@mui/icons-material";
+import { useKeycloak } from "@react-keycloak/web";
 const { v4: uuidv4 } = require("uuid");
 
 export const CreateEvent = () => {
@@ -99,8 +100,10 @@ export const CreateEvent = () => {
     setEventCreationFailedConfirmModalOpen,
   ] = useState(false);
   const [messageAcknowledged, setMessageAcknowledged] = useState(false);
+  const [criticalErrorModalOpen, setCriticalErrorModelOpen] = useState(false);
 
   const navigate = useNavigate();
+  const { keycloak } = useKeycloak();
 
   // Blocker
   const blocker = useBlocker(({ currentLocation, nextLocation }) => {
@@ -140,22 +143,34 @@ export const CreateEvent = () => {
         .anyOf([["12Hour", 0]])
         .first();
 
-      await setFormIDs({
-        VI: VINum.id,
-        // IRP: IRPNum.id,
-        TwentyFourHour: twentyFourNum.id,
-        TwelveHour: twelveNum.id,
-      });
+      if (
+        !VINum ||
+        !twentyFourNum ||
+        !twelveNum ||
+        !VINum.id ||
+        !twentyFourNum.id ||
+        !twelveNum.id
+      ) {
+        // If we could not get IDs, show critical error modal
+        setCriticalErrorModelOpen(true);
+      } else {
+        await setFormIDs({
+          VI: VINum.id,
+          // IRP: IRPNum.id,
+          TwentyFourHour: twentyFourNum.id,
+          TwelveHour: twelveNum.id,
+        });
 
-      // Go into indexedDB and mark all form IDs we are leasing for this form as "leased"
-      await db.formID.where("id").equals(VINum.id).modify({ leased: 1 });
-      // await db.formID.where("id").equals(IRPNum.id).modify({ leased: 1 });
-      await db.formID
-        .where("id")
-        .equals(twentyFourNum.id)
-        .modify({ leased: 1 });
-      await db.formID.where("id").equals(twelveNum.id).modify({ leased: 1 });
-      await setFormIDsFetched(true);
+        // Go into indexedDB and mark all form IDs we are leasing for this form as "leased"
+        await db.formID.where("id").equals(VINum.id).modify({ leased: 1 });
+        // await db.formID.where("id").equals(IRPNum.id).modify({ leased: 1 });
+        await db.formID
+          .where("id")
+          .equals(twentyFourNum.id)
+          .modify({ leased: 1 });
+        await db.formID.where("id").equals(twelveNum.id).modify({ leased: 1 });
+        await setFormIDsFetched(true);
+      }
     };
     setJurisdictions(
       jurisdictionsAtom.map((each) => ({
@@ -973,6 +988,55 @@ export const CreateEvent = () => {
         >
           {({ values, errors, setFieldValue }) => (
             <Form>
+              <Modal
+                size={"md"}
+                show={criticalErrorModalOpen}
+                backdrop="static"
+                centered
+              >
+                <Modal.Header
+                  style={{
+                    background: "#D8292F",
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <Error
+                    style={{
+                      color: "white",
+                      marginRight: "10px",
+                      marginBottom: "5px",
+                    }}
+                  />
+                  <h3 style={{ color: "white" }}>Form Numbers Not Available</h3>
+                </Modal.Header>
+                <Modal.Body>
+                  <p>
+                    A fatal technical issue has occurred. One or more form
+                    number types could be retrieved. Please try logging out and
+                    logging back in again.
+                  </p>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    variant="secondary"
+                    onClick={async () => {
+                      await setisBlockerActive(false);
+                      navigate("/");
+                    }}
+                  >
+                    Return to Dashboard
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={async () => {
+                      await setisBlockerActive(false);
+                      keycloak.logout();
+                    }}
+                  >
+                    Log Out of Digital Forms
+                  </Button>
+                </Modal.Footer>
+              </Modal>
               <Modal
                 id="popconfirm-modal"
                 show={show}

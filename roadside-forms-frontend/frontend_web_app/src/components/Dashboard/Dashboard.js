@@ -69,6 +69,7 @@ export const Dashboard = () => {
     useRecoilState(staticResources["jurisdictionCountry"]);
   const [lastUpdatedDate, setLastUpdatedDate] = useState(null);
   const [sortMode, setSortMode] = useState("DATE_DESC");
+  const [formIDsLoaded, setFormIDsLoaded] = useState(false);
 
   useEffect(() => {
     async function sortRows() {
@@ -278,6 +279,7 @@ export const Dashboard = () => {
       const newIDs = await FormIDApi.post(neededFormID);
       const seededIDs = await seedLeasedValues(newIDs.forms);
       await db.formID.bulkPut(seededIDs);
+      setFormIDsLoaded(true);
     };
 
     const fetchCurrentIDs = async () => {
@@ -308,6 +310,7 @@ export const Dashboard = () => {
           </h3>
           <Button
             primary
+            disabled={!formIDsLoaded}
             size="large"
             onClick={handleClick}
             label="New Event"
