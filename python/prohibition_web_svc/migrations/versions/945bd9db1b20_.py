@@ -112,959 +112,938 @@ def upgrade():
     op.bulk_insert(country,
                             [
                                 {
-                                "objectCd": "AD",
-                                "objectDsc": "ANDORRA"
+                                    "objectCd": "CA",
+                                    "objectDsc": "CANADA"
                                 },
                                 {
-                                "objectCd": "AE",
-                                "objectDsc": "UNITED ARAB EMIRATES"
+                                    "objectCd": "US",
+                                    "objectDsc": "UNITED STATES"
                                 },
                                 {
-                                "objectCd": "AF",
-                                "objectDsc": "AFGHANISTAN"
+                                    "objectCd": "AF",
+                                    "objectDsc": "AFGHANISTAN"
                                 },
                                 {
-                                "objectCd": "AG",
-                                "objectDsc": "ANTIGUA AND BARBUDA"
+                                    "objectCd": "AL",
+                                    "objectDsc": "ALBANIA"
                                 },
                                 {
-                                "objectCd": "AI",
-                                "objectDsc": "ANGUILLA"
+                                    "objectCd": "DZ",
+                                    "objectDsc": "ALGERIA"
                                 },
                                 {
-                                "objectCd": "AL",
-                                "objectDsc": "ALBANIA"
+                                    "objectCd": "AD",
+                                    "objectDsc": "ANDORRA"
                                 },
                                 {
-                                "objectCd": "AM",
-                                "objectDsc": "ARMENIA"
+                                    "objectCd": "AO",
+                                    "objectDsc": "ANGOLA"
                                 },
                                 {
-                                "objectCd": "AN",
-                                "objectDsc": "NETHERLANDS ANTILLES"
+                                    "objectCd": "AI",
+                                    "objectDsc": "ANGUILLA"
                                 },
                                 {
-                                "objectCd": "AO",
-                                "objectDsc": "ANGOLA"
+                                    "objectCd": "AQ",
+                                    "objectDsc": "ANTARCTICA"
                                 },
                                 {
-                                "objectCd": "AQ",
-                                "objectDsc": "ANTARCTICA"
+                                    "objectCd": "AG",
+                                    "objectDsc": "ANTIGUA & BARBUDA"
                                 },
                                 {
-                                "objectCd": "AR",
-                                "objectDsc": "ARGENTINA"
+                                    "objectCd": "AR",
+                                    "objectDsc": "ARGENTINA"
                                 },
                                 {
-                                "objectCd": "AS",
-                                "objectDsc": "AMERICAN SAMOA"
+                                    "objectCd": "AM",
+                                    "objectDsc": "ARMENIA"
                                 },
                                 {
-                                "objectCd": "AT",
-                                "objectDsc": "AUSTRIA"
+                                    "objectCd": "AW",
+                                    "objectDsc": "ARUBA"
                                 },
                                 {
-                                "objectCd": "AU",
-                                "objectDsc": "AUSTRALIA"
+                                    "objectCd": "AU",
+                                    "objectDsc": "AUSTRALIA"
                                 },
                                 {
-                                "objectCd": "AW",
-                                "objectDsc": "ARUBA"
+                                    "objectCd": "AT",
+                                    "objectDsc": "AUSTRIA"
                                 },
                                 {
-                                "objectCd": "AZ",
-                                "objectDsc": "AZERBAIJAN"
+                                    "objectCd": "AZ",
+                                    "objectDsc": "AZERBAIJAN"
                                 },
                                 {
-                                "objectCd": "BA",
-                                "objectDsc": "BOSNIA AND HERZEGOVINA"
+                                    "objectCd": "BS",
+                                    "objectDsc": "BAHAMAS"
                                 },
                                 {
-                                "objectCd": "BB",
-                                "objectDsc": "BARBADOS"
+                                    "objectCd": "BH",
+                                    "objectDsc": "BAHRAIN"
                                 },
                                 {
-                                "objectCd": "BD",
-                                "objectDsc": "BANGLADESH"
+                                    "objectCd": "BD",
+                                    "objectDsc": "BANGLADESH"
                                 },
                                 {
-                                "objectCd": "BE",
-                                "objectDsc": "BELGIUM"
+                                    "objectCd": "BB",
+                                    "objectDsc": "BARBADOS"
                                 },
                                 {
-                                "objectCd": "BF",
-                                "objectDsc": "BURKINA FASO"
+                                    "objectCd": "BY",
+                                    "objectDsc": "BELARUS"
                                 },
                                 {
-                                "objectCd": "BG",
-                                "objectDsc": "BULGARIA"
+                                    "objectCd": "BE",
+                                    "objectDsc": "BELGIUM"
                                 },
                                 {
-                                "objectCd": "BH",
-                                "objectDsc": "BAHRAIN"
+                                    "objectCd": "BZ",
+                                    "objectDsc": "BELIZE"
                                 },
                                 {
-                                "objectCd": "BI",
-                                "objectDsc": "BURUNDI"
+                                    "objectCd": "BJ",
+                                    "objectDsc": "BENIN"
                                 },
                                 {
-                                "objectCd": "BJ",
-                                "objectDsc": "BENIN"
+                                    "objectCd": "BM",
+                                    "objectDsc": "BERMUDA"
                                 },
                                 {
-                                "objectCd": "BM",
-                                "objectDsc": "BERMUDA"
+                                    "objectCd": "BT",
+                                    "objectDsc": "BHUTAN"
                                 },
                                 {
-                                "objectCd": "BN",
-                                "objectDsc": "BRUNEI DARUSSALAM"
+                                    "objectCd": "BO",
+                                    "objectDsc": "BOLIVIA"
                                 },
                                 {
-                                "objectCd": "BO",
-                                "objectDsc": "BOLIVIA"
+                                    "objectCd": "BA",
+                                    "objectDsc": "BOSNIA & HERZEGOVINA"
                                 },
                                 {
-                                "objectCd": "BR",
-                                "objectDsc": "BRAZIL"
+                                    "objectCd": "BW",
+                                    "objectDsc": "BOTSWANA"
                                 },
                                 {
-                                "objectCd": "BS",
-                                "objectDsc": "BAHAMAS"
+                                    "objectCd": "BV",
+                                    "objectDsc": "BOUVET ISLAND"
                                 },
                                 {
-                                "objectCd": "BT",
-                                "objectDsc": "BHUTAN"
+                                    "objectCd": "BR",
+                                    "objectDsc": "BRAZIL"
                                 },
                                 {
-                                "objectCd": "BV",
-                                "objectDsc": "BOUVET ISLAND"
+                                    "objectCd": "IO",
+                                    "objectDsc": "BRITISH INDIAN OCEAN TERRITORY"
                                 },
                                 {
-                                "objectCd": "BW",
-                                "objectDsc": "BOTSWANA"
+                                    "objectCd": "BN",
+                                    "objectDsc": "BRUNEI DARUSSALAM"
                                 },
                                 {
-                                "objectCd": "BY",
-                                "objectDsc": "BELARUS"
+                                    "objectCd": "BG",
+                                    "objectDsc": "BULGARIA"
                                 },
                                 {
-                                "objectCd": "BZ",
-                                "objectDsc": "BELIZE"
+                                    "objectCd": "BF",
+                                    "objectDsc": "BURKINA FASO"
                                 },
                                 {
-                                "objectCd": "CA",
-                                "objectDsc": "CANADA"
+                                    "objectCd": "BI",
+                                    "objectDsc": "BURUNDI"
                                 },
                                 {
-                                "objectCd": "CC",
-                                "objectDsc": "COCOS (KEELING) ISLANDS"
+                                    "objectCd": "KH",
+                                    "objectDsc": "CAMBODIA"
                                 },
                                 {
-                                "objectCd": "CF",
-                                "objectDsc": "CENTRAL AFRICAN REPUBLIC"
+                                    "objectCd": "CM",
+                                    "objectDsc": "CAMEROON"
                                 },
                                 {
-                                "objectCd": "CG",
-                                "objectDsc": "CONGO"
+                                    "objectCd": "CV",
+                                    "objectDsc": "CAPE VERDE"
                                 },
                                 {
-                                "objectCd": "CH",
-                                "objectDsc": "SWITZERLAND"
+                                    "objectCd": "KY",
+                                    "objectDsc": "CAYMAN ISLANDS"
                                 },
                                 {
-                                "objectCd": "CI",
-                                "objectDsc": "COTE D'IVOIRE"
+                                    "objectCd": "CF",
+                                    "objectDsc": "CENTRAL AFRICAN REPUBLIC"
                                 },
                                 {
-                                "objectCd": "CK",
-                                "objectDsc": "COOK ISLANDS"
+                                    "objectCd": "TD",
+                                    "objectDsc": "CHAD"
                                 },
                                 {
-                                "objectCd": "CL",
-                                "objectDsc": "CHILE"
+                                    "objectCd": "CL",
+                                    "objectDsc": "CHILE"
                                 },
                                 {
-                                "objectCd": "CM",
-                                "objectDsc": "CAMEROON"
+                                    "objectCd": "CN",
+                                    "objectDsc": "CHINA"
                                 },
                                 {
-                                "objectCd": "CN",
-                                "objectDsc": "CHINA"
+                                    "objectCd": "CX",
+                                    "objectDsc": "CHRISTMAS ISLAND"
                                 },
                                 {
-                                "objectCd": "CO",
-                                "objectDsc": "COLOMBIA"
+                                    "objectCd": "CC",
+                                    "objectDsc": "COCOS (KEELING) ISLANDS"
                                 },
                                 {
-                                "objectCd": "CR",
-                                "objectDsc": "COSTA RICA"
+                                    "objectCd": "CO",
+                                    "objectDsc": "COLOMBIA"
                                 },
                                 {
-                                "objectCd": "CU",
-                                "objectDsc": "CUBA"
+                                    "objectCd": "KM",
+                                    "objectDsc": "COMOROS"
                                 },
                                 {
-                                "objectCd": "CV",
-                                "objectDsc": "CAPE VERDE"
+                                    "objectCd": "CG",
+                                    "objectDsc": "CONGO"
                                 },
                                 {
-                                "objectCd": "CX",
-                                "objectDsc": "CHRISTMAS ISLAND"
+                                    "objectCd": "CK",
+                                    "objectDsc": "COOK ISLANDS"
                                 },
                                 {
-                                "objectCd": "CY",
-                                "objectDsc": "CYPRUS"
+                                    "objectCd": "CR",
+                                    "objectDsc": "COSTA RICA"
                                 },
                                 {
-                                "objectCd": "CZ",
-                                "objectDsc": "CZECH REPUBLIC"
+                                    "objectCd": "CI",
+                                    "objectDsc": "COTE D'IVOIRE"
                                 },
                                 {
-                                "objectCd": "DE",
-                                "objectDsc": "GERMANY"
+                                    "objectCd": "HR",
+                                    "objectDsc": "CROATIA"
                                 },
                                 {
-                                "objectCd": "DJ",
-                                "objectDsc": "DJIBOUTI"
+                                    "objectCd": "CU",
+                                    "objectDsc": "CUBA"
                                 },
                                 {
-                                "objectCd": "DK",
-                                "objectDsc": "DENMARK"
+                                    "objectCd": "CY",
+                                    "objectDsc": "CYPRUS"
                                 },
                                 {
-                                "objectCd": "DM",
-                                "objectDsc": "DOMINICA"
+                                    "objectCd": "CZ",
+                                    "objectDsc": "CZECH REPUBLIC"
                                 },
                                 {
-                                "objectCd": "DO",
-                                "objectDsc": "DOMINICAN REPUBLIC"
+                                    "objectCd": "DK",
+                                    "objectDsc": "DENMARK"
                                 },
                                 {
-                                "objectCd": "DZ",
-                                "objectDsc": "ALGERIA"
+                                    "objectCd": "DJ",
+                                    "objectDsc": "DJIBOUTI"
                                 },
                                 {
-                                "objectCd": "EC",
-                                "objectDsc": "ECUADOR"
+                                    "objectCd": "DM",
+                                    "objectDsc": "DOMINICA"
                                 },
                                 {
-                                "objectCd": "EE",
-                                "objectDsc": "ESTONIA"
+                                    "objectCd": "DO",
+                                    "objectDsc": "DOMINICAN REPUBLIC"
                                 },
                                 {
-                                "objectCd": "EG",
-                                "objectDsc": "EGYPT"
+                                    "objectCd": "TP",
+                                    "objectDsc": "EAST TIMOR"
                                 },
                                 {
-                                "objectCd": "EH",
-                                "objectDsc": "WESTERN SAHARA"
+                                    "objectCd": "EC",
+                                    "objectDsc": "ECUADOR"
                                 },
                                 {
-                                "objectCd": "ER",
-                                "objectDsc": "ERITREA"
+                                    "objectCd": "EG",
+                                    "objectDsc": "EGYPT"
                                 },
                                 {
-                                "objectCd": "ES",
-                                "objectDsc": "SPAIN"
+                                    "objectCd": "SV",
+                                    "objectDsc": "EL SALVADOR"
                                 },
                                 {
-                                "objectCd": "ET",
-                                "objectDsc": "ETHIOPIA"
+                                    "objectCd": "GQ",
+                                    "objectDsc": "EQUATORIAL GUINEA"
                                 },
                                 {
-                                "objectCd": "FI",
-                                "objectDsc": "FINLAND"
+                                    "objectCd": "ER",
+                                    "objectDsc": "ERITREA"
                                 },
                                 {
-                                "objectCd": "FJ",
-                                "objectDsc": "FIJI"
+                                    "objectCd": "EE",
+                                    "objectDsc": "ESTONIA"
                                 },
                                 {
-                                "objectCd": "FK",
-                                "objectDsc": "FALKLAND ISLANDS (MALVINAS)"
+                                    "objectCd": "ET",
+                                    "objectDsc": "ETHIOPIA"
                                 },
                                 {
-                                "objectCd": "FM",
-                                "objectDsc": "MICRONESIA, FEDERATED STATES OF"
+                                    "objectCd": "FK",
+                                    "objectDsc": "FALKLAND ISLANDS (MALVINAS)"
                                 },
                                 {
-                                "objectCd": "FO",
-                                "objectDsc": "FAROE ISLANDS"
+                                    "objectCd": "FO",
+                                    "objectDsc": "FAROE ISLANDS"
                                 },
                                 {
-                                "objectCd": "FR",
-                                "objectDsc": "FRANCE"
+                                    "objectCd": "FJ",
+                                    "objectDsc": "FIJI"
                                 },
                                 {
-                                "objectCd": "GA",
-                                "objectDsc": "GABON"
+                                    "objectCd": "FI",
+                                    "objectDsc": "FINLAND"
                                 },
                                 {
-                                "objectCd": "GB",
-                                "objectDsc": "UNITED KINGDOM"
+                                    "objectCd": "FR",
+                                    "objectDsc": "FRANCE"
                                 },
                                 {
-                                "objectCd": "GD",
-                                "objectDsc": "GRENADA"
+                                    "objectCd": "GF",
+                                    "objectDsc": "FRENCH GUIANA"
                                 },
                                 {
-                                "objectCd": "GE",
-                                "objectDsc": "GEORGIA"
+                                    "objectCd": "PF",
+                                    "objectDsc": "FRENCH POLYNESIA"
                                 },
                                 {
-                                "objectCd": "GF",
-                                "objectDsc": "FRENCH GUIANA"
+                                    "objectCd": "TF",
+                                    "objectDsc": "FRENCH SOUTHERN & ANTARCTIC LANDS"
                                 },
                                 {
-                                "objectCd": "GH",
-                                "objectDsc": "GHANA"
+                                    "objectCd": "GA",
+                                    "objectDsc": "GABON"
                                 },
                                 {
-                                "objectCd": "GI",
-                                "objectDsc": "GIBRALTAR"
+                                    "objectCd": "GM",
+                                    "objectDsc": "GAMBIA"
                                 },
                                 {
-                                "objectCd": "GL",
-                                "objectDsc": "GREENLAND"
+                                    "objectCd": "GE",
+                                    "objectDsc": "GEORGIA"
                                 },
                                 {
-                                "objectCd": "GM",
-                                "objectDsc": "GAMBIA"
+                                    "objectCd": "DE",
+                                    "objectDsc": "GERMANY"
                                 },
                                 {
-                                "objectCd": "GN",
-                                "objectDsc": "GUINEA"
+                                    "objectCd": "GH",
+                                    "objectDsc": "GHANA"
                                 },
                                 {
-                                "objectCd": "GP",
-                                "objectDsc": "GUADELOUPE"
+                                    "objectCd": "GI",
+                                    "objectDsc": "GIBRALTAR"
                                 },
                                 {
-                                "objectCd": "GQ",
-                                "objectDsc": "EQUATORIAL GUINEA"
+                                    "objectCd": "GR",
+                                    "objectDsc": "GREECE"
                                 },
                                 {
-                                "objectCd": "GR",
-                                "objectDsc": "GREECE"
+                                    "objectCd": "GL",
+                                    "objectDsc": "GREENLAND"
                                 },
                                 {
-                                "objectCd": "GS",
-                                "objectDsc": "SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS"
+                                    "objectCd": "GD",
+                                    "objectDsc": "GRENADA"
                                 },
                                 {
-                                "objectCd": "GT",
-                                "objectDsc": "GUATEMALA"
+                                    "objectCd": "GP",
+                                    "objectDsc": "GUADELOUPE"
                                 },
                                 {
-                                "objectCd": "GU",
-                                "objectDsc": "GUAM"
+                                    "objectCd": "GT",
+                                    "objectDsc": "GUATEMALA"
                                 },
                                 {
-                                "objectCd": "GW",
-                                "objectDsc": "GUINEA-BISSAU"
+                                    "objectCd": "GN",
+                                    "objectDsc": "GUINEA"
                                 },
                                 {
-                                "objectCd": "GY",
-                                "objectDsc": "GUYANA"
+                                    "objectCd": "GW",
+                                    "objectDsc": "GUINEA-BISSAU"
                                 },
                                 {
-                                "objectCd": "HK",
-                                "objectDsc": "HONG KONG"
+                                    "objectCd": "GY",
+                                    "objectDsc": "GUYANA"
                                 },
                                 {
-                                "objectCd": "HM",
-                                "objectDsc": "HEARD AND MCDONALD ISLANDS"
+                                    "objectCd": "HT",
+                                    "objectDsc": "HAITI"
                                 },
                                 {
-                                "objectCd": "HN",
-                                "objectDsc": "HONDURAS"
+                                    "objectCd": "HM",
+                                    "objectDsc": "HEARD & MCDONALD ISLANDS"
                                 },
                                 {
-                                "objectCd": "HR",
-                                "objectDsc": "CROATIA (LOCAL NAME: HRVATSKA)"
+                                    "objectCd": "HN",
+                                    "objectDsc": "HONDURAS"
                                 },
                                 {
-                                "objectCd": "HT",
-                                "objectDsc": "HAITI"
+                                    "objectCd": "HK",
+                                    "objectDsc": "HONG KONG"
                                 },
                                 {
-                                "objectCd": "HU",
-                                "objectDsc": "HUNGARY"
+                                    "objectCd": "HU",
+                                    "objectDsc": "HUNGARY"
                                 },
                                 {
-                                "objectCd": "ID",
-                                "objectDsc": "INDONESIA"
+                                    "objectCd": "IS",
+                                    "objectDsc": "ICELAND"
                                 },
                                 {
-                                "objectCd": "IE",
-                                "objectDsc": "IRELAND"
+                                    "objectCd": "IN",
+                                    "objectDsc": "INDIA"
                                 },
                                 {
-                                "objectCd": "IL",
-                                "objectDsc": "ISRAEL"
+                                    "objectCd": "ID",
+                                    "objectDsc": "INDONESIA"
                                 },
                                 {
-                                "objectCd": "IN",
-                                "objectDsc": "INDIA"
+                                    "objectCd": "IR",
+                                    "objectDsc": "IRAN"
                                 },
                                 {
-                                "objectCd": "IO",
-                                "objectDsc": "BRITISH INDIAN OCEAN TERRITORY"
+                                    "objectCd": "IQ",
+                                    "objectDsc": "IRAQ"
                                 },
                                 {
-                                "objectCd": "IQ",
-                                "objectDsc": "IRAQ"
+                                    "objectCd": "IE",
+                                    "objectDsc": "IRELAND"
                                 },
                                 {
-                                "objectCd": "IR",
-                                "objectDsc": "IRAN (ISLAMIC REPUBLIC OF)"
+                                    "objectCd": "IL",
+                                    "objectDsc": "ISRAEL"
                                 },
                                 {
-                                "objectCd": "IS",
-                                "objectDsc": "ICELAND"
+                                    "objectCd": "IT",
+                                    "objectDsc": "ITALY"
                                 },
                                 {
-                                "objectCd": "IT",
-                                "objectDsc": "ITALY"
+                                    "objectCd": "JM",
+                                    "objectDsc": "JAMAICA"
                                 },
                                 {
-                                "objectCd": "JM",
-                                "objectDsc": "JAMAICA"
+                                    "objectCd": "JP",
+                                    "objectDsc": "JAPAN"
                                 },
                                 {
-                                "objectCd": "JO",
-                                "objectDsc": "JORDAN"
+                                    "objectCd": "JO",
+                                    "objectDsc": "JORDAN"
                                 },
                                 {
-                                "objectCd": "JP",
-                                "objectDsc": "JAPAN"
+                                    "objectCd": "KZ",
+                                    "objectDsc": "KAZAKHSTAN"
                                 },
                                 {
-                                "objectCd": "KE",
-                                "objectDsc": "KENYA"
+                                    "objectCd": "KE",
+                                    "objectDsc": "KENYA"
                                 },
                                 {
-                                "objectCd": "KG",
-                                "objectDsc": "KYRGYZSTAN"
+                                    "objectCd": "KI",
+                                    "objectDsc": "KIRIBATI"
                                 },
                                 {
-                                "objectCd": "KH",
-                                "objectDsc": "CAMBODIA"
+                                    "objectCd": "KW",
+                                    "objectDsc": "KUWAIT"
                                 },
                                 {
-                                "objectCd": "KI",
-                                "objectDsc": "KIRIBATI"
+                                    "objectCd": "KG",
+                                    "objectDsc": "KYRGYZSTAN"
                                 },
                                 {
-                                "objectCd": "KM",
-                                "objectDsc": "COMOROS"
+                                    "objectCd": "LA",
+                                    "objectDsc": "LAOS"
                                 },
                                 {
-                                "objectCd": "KN",
-                                "objectDsc": "SAINT KITTS AND NEVIS"
+                                    "objectCd": "LV",
+                                    "objectDsc": "LATVIA"
                                 },
                                 {
-                                "objectCd": "KP",
-                                "objectDsc": "KOREA, DEMOCRATIC PEOPLE'S REPUBLIC OF"
+                                    "objectCd": "LB",
+                                    "objectDsc": "LEBANON"
                                 },
                                 {
-                                "objectCd": "KR",
-                                "objectDsc": "KOREA, REPUBLIC OF"
+                                    "objectCd": "LS",
+                                    "objectDsc": "LESOTHO"
                                 },
                                 {
-                                "objectCd": "KW",
-                                "objectDsc": "KUWAIT"
+                                    "objectCd": "LR",
+                                    "objectDsc": "LIBERIA"
                                 },
                                 {
-                                "objectCd": "KY",
-                                "objectDsc": "CAYMAN ISLANDS"
+                                    "objectCd": "LY",
+                                    "objectDsc": "LIBYA"
                                 },
                                 {
-                                "objectCd": "KZ",
-                                "objectDsc": "KAZAKHSTAN"
+                                    "objectCd": "LI",
+                                    "objectDsc": "LIECHTENSTEIN"
                                 },
                                 {
-                                "objectCd": "LA",
-                                "objectDsc": "LAO PEOPLE'S DEMOCRATIC REPUBLIC"
+                                    "objectCd": "LT",
+                                    "objectDsc": "LITHUANIA"
                                 },
                                 {
-                                "objectCd": "LB",
-                                "objectDsc": "LEBANON"
+                                    "objectCd": "LU",
+                                    "objectDsc": "LUXEMBOURG"
                                 },
                                 {
-                                "objectCd": "LC",
-                                "objectDsc": "SAINT LUCIA"
+                                    "objectCd": "MO",
+                                    "objectDsc": "MACAU"
                                 },
                                 {
-                                "objectCd": "LI",
-                                "objectDsc": "LIECHTENSTEIN"
+                                    "objectCd": "MK",
+                                    "objectDsc": "MACEDONIA"
                                 },
                                 {
-                                "objectCd": "LK",
-                                "objectDsc": "SRI LANKA"
+                                    "objectCd": "MG",
+                                    "objectDsc": "MADAGASCAR"
                                 },
                                 {
-                                "objectCd": "LR",
-                                "objectDsc": "LIBERIA"
+                                    "objectCd": "MW",
+                                    "objectDsc": "MALAWI"
                                 },
                                 {
-                                "objectCd": "LS",
-                                "objectDsc": "LESOTHO"
+                                    "objectCd": "MY",
+                                    "objectDsc": "MALAYSIA"
                                 },
                                 {
-                                "objectCd": "LT",
-                                "objectDsc": "LITHUANIA"
+                                    "objectCd": "MV",
+                                    "objectDsc": "MALDIVES"
                                 },
                                 {
-                                "objectCd": "LU",
-                                "objectDsc": "LUXEMBOURGE"
+                                    "objectCd": "ML",
+                                    "objectDsc": "MALI"
                                 },
                                 {
-                                "objectCd": "LV",
-                                "objectDsc": "LATVIA"
+                                    "objectCd": "MT",
+                                    "objectDsc": "MALTA"
                                 },
                                 {
-                                "objectCd": "LY",
-                                "objectDsc": "LIBYAN ARAB JAMAHIRIYA"
+                                    "objectCd": "MH",
+                                    "objectDsc": "MARSHALL ISLANDS"
                                 },
                                 {
-                                "objectCd": "MA",
-                                "objectDsc": "MOROCCO"
+                                    "objectCd": "MQ",
+                                    "objectDsc": "MARTINIQUE"
                                 },
                                 {
-                                "objectCd": "MC",
-                                "objectDsc": "MONACO"
+                                    "objectCd": "MR",
+                                    "objectDsc": "MAURITANIA"
                                 },
                                 {
-                                "objectCd": "MD",
-                                "objectDsc": "MOLDOVA, REPUBLIC OF"
+                                    "objectCd": "MU",
+                                    "objectDsc": "MAURITIUS"
                                 },
                                 {
-                                "objectCd": "MG",
-                                "objectDsc": "MADAGASCAR"
+                                    "objectCd": "YT",
+                                    "objectDsc": "MAYOTTE"
                                 },
                                 {
-                                "objectCd": "MH",
-                                "objectDsc": "MARSHALL ISLANDS"
+                                    "objectCd": "MX",
+                                    "objectDsc": "MEXICO"
                                 },
                                 {
-                                "objectCd": "MK",
-                                "objectDsc": "MACEDONIA, THE FORMER YUGOSLAVIA REPUBLIC OF"
+                                    "objectCd": "FM",
+                                    "objectDsc": "MICRONESIA"
                                 },
                                 {
-                                "objectCd": "ML",
-                                "objectDsc": "MALI"
+                                    "objectCd": "MD",
+                                    "objectDsc": "MOLDOVA"
                                 },
                                 {
-                                "objectCd": "MM",
-                                "objectDsc": "MYANMAR"
+                                    "objectCd": "MC",
+                                    "objectDsc": "MONACO"
                                 },
                                 {
-                                "objectCd": "MN",
-                                "objectDsc": "MONGOLIA"
+                                    "objectCd": "MN",
+                                    "objectDsc": "MONGOLIA"
                                 },
                                 {
-                                "objectCd": "MO",
-                                "objectDsc": "MACAU"
+                                    "objectCd": "MS",
+                                    "objectDsc": "MONTSERRAT"
                                 },
                                 {
-                                "objectCd": "MP",
-                                "objectDsc": "NORTHERN MARIANA ISLANDS"
+                                    "objectCd": "MA",
+                                    "objectDsc": "MOROCCO"
                                 },
                                 {
-                                "objectCd": "MQ",
-                                "objectDsc": "MARTINIQUE"
+                                    "objectCd": "MZ",
+                                    "objectDsc": "MOZAMBIQUE"
                                 },
                                 {
-                                "objectCd": "MR",
-                                "objectDsc": "MAURITANIA"
+                                    "objectCd": "MM",
+                                    "objectDsc": "MYANMAR"
                                 },
                                 {
-                                "objectCd": "MS",
-                                "objectDsc": "MONTSERRAT"
+                                    "objectCd": "NA",
+                                    "objectDsc": "NAMIBIA"
                                 },
                                 {
-                                "objectCd": "MT",
-                                "objectDsc": "MALTA"
+                                    "objectCd": "NR",
+                                    "objectDsc": "NAURU"
                                 },
                                 {
-                                "objectCd": "MU",
-                                "objectDsc": "MAURITIUS"
+                                    "objectCd": "NP",
+                                    "objectDsc": "NEPAL"
                                 },
                                 {
-                                "objectCd": "MV",
-                                "objectDsc": "MALDIVES"
+                                    "objectCd": "NL",
+                                    "objectDsc": "NETHERLANDS"
                                 },
                                 {
-                                "objectCd": "MW",
-                                "objectDsc": "MALAWI"
+                                    "objectCd": "AN",
+                                    "objectDsc": "NETHERLANDS ANTILLES"
                                 },
                                 {
-                                "objectCd": "MX",
-                                "objectDsc": "MEXICO"
+                                    "objectCd": "NC",
+                                    "objectDsc": "NEW CALEDONIA"
                                 },
                                 {
-                                "objectCd": "MY",
-                                "objectDsc": "MALAYSIA"
+                                    "objectCd": "NZ",
+                                    "objectDsc": "NEW ZEALAND"
                                 },
                                 {
-                                "objectCd": "MZ",
-                                "objectDsc": "MOZAMBIQUE"
+                                    "objectCd": "NI",
+                                    "objectDsc": "NICARAGUA"
                                 },
                                 {
-                                "objectCd": "NA",
-                                "objectDsc": "NAMIBIA"
+                                    "objectCd": "NE",
+                                    "objectDsc": "NIGER"
                                 },
                                 {
-                                "objectCd": "NC",
-                                "objectDsc": "NEW CALEDONIA"
+                                    "objectCd": "NG",
+                                    "objectDsc": "NIGERIA"
                                 },
                                 {
-                                "objectCd": "NE",
-                                "objectDsc": "NIGER"
+                                    "objectCd": "NU",
+                                    "objectDsc": "NIUE"
                                 },
                                 {
-                                "objectCd": "NF",
-                                "objectDsc": "NORFOLK ISLAND"
+                                    "objectCd": "NF",
+                                    "objectDsc": "NORFOLK ISLAND"
                                 },
                                 {
-                                "objectCd": "NG",
-                                "objectDsc": "NIGERIA"
+                                    "objectCd": "KP",
+                                    "objectDsc": "NORTH KOREA"
                                 },
                                 {
-                                "objectCd": "NI",
-                                "objectDsc": "NICARAGUA"
+                                    "objectCd": "NO",
+                                    "objectDsc": "NORWAY"
                                 },
                                 {
-                                "objectCd": "NL",
-                                "objectDsc": "NETHERLANDS"
+                                    "objectCd": "OM",
+                                    "objectDsc": "OMAN"
                                 },
                                 {
-                                "objectCd": "NO",
-                                "objectDsc": "NORWAY"
+                                    "objectCd": "PK",
+                                    "objectDsc": "PAKISTAN"
                                 },
                                 {
-                                "objectCd": "NP",
-                                "objectDsc": "NEPAL"
+                                    "objectCd": "PW",
+                                    "objectDsc": "PALAU"
                                 },
                                 {
-                                "objectCd": "NR",
-                                "objectDsc": "NAURU"
+                                    "objectCd": "PA",
+                                    "objectDsc": "PANAMA"
                                 },
                                 {
-                                "objectCd": "NU",
-                                "objectDsc": "NIUE"
+                                    "objectCd": "PG",
+                                    "objectDsc": "PAPUA NEW GUINEA"
                                 },
                                 {
-                                "objectCd": "NZ",
-                                "objectDsc": "NEW ZEALAND"
+                                    "objectCd": "PY",
+                                    "objectDsc": "PARAGUAY"
                                 },
                                 {
-                                "objectCd": "OM",
-                                "objectDsc": "OMAN"
+                                    "objectCd": "PE",
+                                    "objectDsc": "PERU"
                                 },
                                 {
-                                "objectCd": "PA",
-                                "objectDsc": "PANAMA"
+                                    "objectCd": "PH",
+                                    "objectDsc": "PHILIPPINES"
                                 },
                                 {
-                                "objectCd": "PE",
-                                "objectDsc": "PERU"
+                                    "objectCd": "PN",
+                                    "objectDsc": "PITCAIRN ISLANDS"
                                 },
                                 {
-                                "objectCd": "PF",
-                                "objectDsc": "FRENCH POLYNESIA"
+                                    "objectCd": "PL",
+                                    "objectDsc": "POLAND"
                                 },
                                 {
-                                "objectCd": "PG",
-                                "objectDsc": "PAPUA NEW GUINEA"
+                                    "objectCd": "PT",
+                                    "objectDsc": "PORTUGAL"
                                 },
                                 {
-                                "objectCd": "PH",
-                                "objectDsc": "PHILIPPINES"
+                                    "objectCd": "QA",
+                                    "objectDsc": "QATAR"
                                 },
                                 {
-                                "objectCd": "PK",
-                                "objectDsc": "PAKISTAN"
+                                    "objectCd": "RE",
+                                    "objectDsc": "REUNION"
                                 },
                                 {
-                                "objectCd": "PL",
-                                "objectDsc": "POLAND"
+                                    "objectCd": "RO",
+                                    "objectDsc": "ROMANIA"
                                 },
                                 {
-                                "objectCd": "PM",
-                                "objectDsc": "ST. PIERRE AND MIQUELON"
+                                    "objectCd": "RU",
+                                    "objectDsc": "RUSSIAN FEDERATION"
                                 },
                                 {
-                                "objectCd": "PN",
-                                "objectDsc": "PITCAIRN"
+                                    "objectCd": "RW",
+                                    "objectDsc": "RWANDA"
                                 },
                                 {
-                                "objectCd": "PR",
-                                "objectDsc": "PUERTO RICO"
+                                    "objectCd": "WS",
+                                    "objectDsc": "SAMOA"
                                 },
                                 {
-                                "objectCd": "PT",
-                                "objectDsc": "PORTUGAL"
+                                    "objectCd": "SM",
+                                    "objectDsc": "SAN MARINO"
                                 },
                                 {
-                                "objectCd": "PW",
-                                "objectDsc": "PALAU"
+                                    "objectCd": "ST",
+                                    "objectDsc": "SAO TOME & PRINCIPE"
                                 },
                                 {
-                                "objectCd": "PY",
-                                "objectDsc": "PARAGUAY"
+                                    "objectCd": "SA",
+                                    "objectDsc": "SAUDI ARABIA"
                                 },
                                 {
-                                "objectCd": "QA",
-                                "objectDsc": "QATAR"
+                                    "objectCd": "SN",
+                                    "objectDsc": "SENEGAL"
                                 },
                                 {
-                                "objectCd": "RE",
-                                "objectDsc": "REUNION"
+                                    "objectCd": "SC",
+                                    "objectDsc": "SEYCHELLES"
                                 },
                                 {
-                                "objectCd": "RO",
-                                "objectDsc": "ROMANIA"
+                                    "objectCd": "SL",
+                                    "objectDsc": "SIERRA LEONE"
                                 },
                                 {
-                                "objectCd": "RU",
-                                "objectDsc": "RUSSIAN FEDERATION"
+                                    "objectCd": "SG",
+                                    "objectDsc": "SINGAPORE"
                                 },
                                 {
-                                "objectCd": "RW",
-                                "objectDsc": "RWANDA"
+                                    "objectCd": "SK",
+                                    "objectDsc": "SLOVAKIA"
                                 },
                                 {
-                                "objectCd": "SA",
-                                "objectDsc": "SAUDI ARABIA"
+                                    "objectCd": "SI",
+                                    "objectDsc": "SLOVENIA"
                                 },
                                 {
-                                "objectCd": "SB",
-                                "objectDsc": "SOLOMON ISLANDS"
+                                    "objectCd": "SB",
+                                    "objectDsc": "SOLOMON ISLANDS"
                                 },
                                 {
-                                "objectCd": "SC",
-                                "objectDsc": "SEYCHELLES"
+                                    "objectCd": "SO",
+                                    "objectDsc": "SOMALIA"
                                 },
                                 {
-                                "objectCd": "SD",
-                                "objectDsc": "SUDAN"
+                                    "objectCd": "ZA",
+                                    "objectDsc": "SOUTH AFRICA"
                                 },
                                 {
-                                "objectCd": "SE",
-                                "objectDsc": "SWEDEN"
+                                    "objectCd": "GS",
+                                    "objectDsc": "SOUTH GEORGIA & THE SOUTH SANDWICH ISLANDS"
                                 },
                                 {
-                                "objectCd": "SG",
-                                "objectDsc": "SINGAPORE"
+                                    "objectCd": "KR",
+                                    "objectDsc": "SOUTH KOREA"
                                 },
                                 {
-                                "objectCd": "SH",
-                                "objectDsc": "ST. HELENA"
+                                    "objectCd": "ES",
+                                    "objectDsc": "SPAIN"
                                 },
                                 {
-                                "objectCd": "SI",
-                                "objectDsc": "SLOVENIA"
+                                    "objectCd": "LK",
+                                    "objectDsc": "SRI LANKA"
                                 },
                                 {
-                                "objectCd": "SJ",
-                                "objectDsc": "SVALBARD AND JAN MAYEN ISLANDS"
+                                    "objectCd": "SH",
+                                    "objectDsc": "ST. HELENA, ASCENSION & TRISTAN DA CUNHA"
                                 },
                                 {
-                                "objectCd": "SK",
-                                "objectDsc": "SLOVAKIA (SLOVAK REPUBLIC)"
+                                    "objectCd": "KN",
+                                    "objectDsc": "ST. KITTS & NEVIS"
                                 },
                                 {
-                                "objectCd": "SL",
-                                "objectDsc": "SIERRA LEONE"
+                                    "objectCd": "LC",
+                                    "objectDsc": "ST. LUCIA"
                                 },
                                 {
-                                "objectCd": "SM",
-                                "objectDsc": "SAN MARINO"
+                                    "objectCd": "PM",
+                                    "objectDsc": "ST. PIERRE & MIQUELON"
                                 },
                                 {
-                                "objectCd": "SN",
-                                "objectDsc": "SENEGAL"
+                                    "objectCd": "VC",
+                                    "objectDsc": "ST. VINCENT & THE GRENADINES"
                                 },
                                 {
-                                "objectCd": "SO",
-                                "objectDsc": "SOMALIA"
+                                    "objectCd": "SD",
+                                    "objectDsc": "SUDAN"
                                 },
                                 {
-                                "objectCd": "SR",
-                                "objectDsc": "SURINAME"
+                                    "objectCd": "SR",
+                                    "objectDsc": "SURINAME"
                                 },
                                 {
-                                "objectCd": "ST",
-                                "objectDsc": "SAO TOME AND PRINCIPE"
+                                    "objectCd": "SJ",
+                                    "objectDsc": "SVALBARD & JAN MAYEN ISLANDS"
                                 },
                                 {
-                                "objectCd": "SV",
-                                "objectDsc": "EL SALVADOR"
+                                    "objectCd": "SZ",
+                                    "objectDsc": "SWAZILAND"
                                 },
                                 {
-                                "objectCd": "SY",
-                                "objectDsc": "SYRIAN ARAB REPUBLIC"
+                                    "objectCd": "SE",
+                                    "objectDsc": "SWEDEN"
                                 },
                                 {
-                                "objectCd": "SZ",
-                                "objectDsc": "SWAZILAND"
+                                    "objectCd": "CH",
+                                    "objectDsc": "SWITZERLAND"
                                 },
                                 {
-                                "objectCd": "TC",
-                                "objectDsc": "TURKS AND CAICOS ISLANDS"
+                                    "objectCd": "SY",
+                                    "objectDsc": "SYRIAN ARAB REPUBLIC"
                                 },
                                 {
-                                "objectCd": "TD",
-                                "objectDsc": "CHAD"
+                                    "objectCd": "TW",
+                                    "objectDsc": "TAIWAN"
                                 },
                                 {
-                                "objectCd": "TF",
-                                "objectDsc": "FRENCH SOUTHERN TERRITORIES"
+                                    "objectCd": "TJ",
+                                    "objectDsc": "TAJIKISTAN"
                                 },
                                 {
-                                "objectCd": "TG",
-                                "objectDsc": "TOGO"
+                                    "objectCd": "TZ",
+                                    "objectDsc": "TANZANIA"
                                 },
                                 {
-                                "objectCd": "TH",
-                                "objectDsc": "THAILAND"
+                                    "objectCd": "TH",
+                                    "objectDsc": "THAILAND"
                                 },
                                 {
-                                "objectCd": "TJ",
-                                "objectDsc": "TAJIKISTAN"
+                                    "objectCd": "TG",
+                                    "objectDsc": "TOGO"
                                 },
                                 {
-                                "objectCd": "TK",
-                                "objectDsc": "TOKELAU"
+                                    "objectCd": "TK",
+                                    "objectDsc": "TOKELAU"
                                 },
                                 {
-                                "objectCd": "TM",
-                                "objectDsc": "TURKMENISTAN"
+                                    "objectCd": "TO",
+                                    "objectDsc": "TONGA"
                                 },
                                 {
-                                "objectCd": "TN",
-                                "objectDsc": "TUNISIA"
+                                    "objectCd": "TT",
+                                    "objectDsc": "TRINIDAD & TOBAGO"
                                 },
                                 {
-                                "objectCd": "TO",
-                                "objectDsc": "TONGA"
+                                    "objectCd": "TN",
+                                    "objectDsc": "TUNISIA"
                                 },
                                 {
-                                "objectCd": "TP",
-                                "objectDsc": "EAST TIMOR"
+                                    "objectCd": "TR",
+                                    "objectDsc": "TURKEY"
                                 },
                                 {
-                                "objectCd": "TR",
-                                "objectDsc": "TURKEY"
+                                    "objectCd": "TM",
+                                    "objectDsc": "TURKMENISTAN"
                                 },
                                 {
-                                "objectCd": "TT",
-                                "objectDsc": "TRINIDAD AND TOBAGO"
+                                    "objectCd": "TC",
+                                    "objectDsc": "TURKS & CAICOS ISLANDS"
                                 },
                                 {
-                                "objectCd": "TV",
-                                "objectDsc": "TUVALU"
+                                    "objectCd": "TV",
+                                    "objectDsc": "TUVALU"
                                 },
                                 {
-                                "objectCd": "TW",
-                                "objectDsc": "TAIWAN, PROVINCE OF CHINA"
+                                    "objectCd": "UG",
+                                    "objectDsc": "UGANDA"
                                 },
                                 {
-                                "objectCd": "TZ",
-                                "objectDsc": "TANZANIA, UNITED REPUBLIC OF"
+                                    "objectCd": "UA",
+                                    "objectDsc": "UKRAINE"
                                 },
                                 {
-                                "objectCd": "UA",
-                                "objectDsc": "UKRAINE"
+                                    "objectCd": "AE",
+                                    "objectDsc": "UNITED ARAB EMIRATES"
                                 },
                                 {
-                                "objectCd": "UG",
-                                "objectDsc": "UGANDA"
+                                    "objectCd": "GB",
+                                    "objectDsc": "UNITED KINGDOM"
                                 },
                                 {
-                                "objectCd": "UM",
-                                "objectDsc": "UNITED STATES MINOR OUTLYING ISLANDS"
+                                    "objectCd": "UY",
+                                    "objectDsc": "URUGUAY"
                                 },
                                 {
-                                "objectCd": "US",
-                                "objectDsc": "UNITED STATES"
+                                    "objectCd": "UZ",
+                                    "objectDsc": "UZBEKISTAN"
                                 },
                                 {
-                                "objectCd": "UY",
-                                "objectDsc": "URUGUAY"
+                                    "objectCd": "VU",
+                                    "objectDsc": "VANUATU"
                                 },
                                 {
-                                "objectCd": "UZ",
-                                "objectDsc": "UZBEKISTAN"
+                                    "objectCd": "VA",
+                                    "objectDsc": "VATICAN CITY"
                                 },
                                 {
-                                "objectCd": "VA",
-                                "objectDsc": "VATICAN CITY STATE (HOLY SEE)"
+                                    "objectCd": "VE",
+                                    "objectDsc": "VENEZUELA"
                                 },
                                 {
-                                "objectCd": "VC",
-                                "objectDsc": "SAINT VINCENT AND THE GRENADINES"
+                                    "objectCd": "VN",
+                                    "objectDsc": "VIETNAM"
                                 },
                                 {
-                                "objectCd": "VE",
-                                "objectDsc": "VENEZUELA"
+                                    "objectCd": "VG",
+                                    "objectDsc": "VIRGIN ISLANDS (BRITISH)"
                                 },
                                 {
-                                "objectCd": "VG",
-                                "objectDsc": "VIRGIN ISLANDS (BRITISH)"
+                                    "objectCd": "WF",
+                                    "objectDsc": "WALLIS & FUTUNA ISLANDS"
                                 },
                                 {
-                                "objectCd": "VI",
-                                "objectDsc": "VIRGIN ISLANDS (U.S.)"
+                                    "objectCd": "EH",
+                                    "objectDsc": "WESTERN SAHARA"
                                 },
                                 {
-                                "objectCd": "VN",
-                                "objectDsc": "VIET NAM"
+                                    "objectCd": "YE",
+                                    "objectDsc": "YEMEN"
                                 },
                                 {
-                                "objectCd": "VU",
-                                "objectDsc": "VANUATU"
+                                    "objectCd": "YU",
+                                    "objectDsc": "YUGOSLAVIA"
                                 },
                                 {
-                                "objectCd": "WF",
-                                "objectDsc": "WALLIS AND FUTUNA ISLANDS"
+                                    "objectCd": "ZR",
+                                    "objectDsc": "ZAIRE"
                                 },
                                 {
-                                "objectCd": "WS",
-                                "objectDsc": "SAMOA"
+                                    "objectCd": "ZM",
+                                    "objectDsc": "ZAMBIA"
                                 },
                                 {
-                                "objectCd": "YE",
-                                "objectDsc": "YEMEN"
+                                    "objectCd": "ZW",
+                                    "objectDsc": "ZIMBABWE"
                                 },
                                 {
-                                "objectCd": "YT",
-                                "objectDsc": "MAYOTTE"
-                                },
-                                {
-                                "objectCd": "YU",
-                                "objectDsc": "YUGOSLAVIA"
-                                },
-                                {
-                                "objectCd": "ZA",
-                                "objectDsc": "SOUTH AFRICA"
-                                },
-                                {
-                                "objectCd": "ZM",
-                                "objectDsc": "ZAMBIA"
-                                },
-                                {
-                                "objectCd": "ZR",
-                                "objectDsc": "ZAIRE"
-                                },
-                                {
-                                "objectCd": "ZW",
-                                "objectDsc": "ZIMBABWE"
+                                    "objectCd": "ZZ",
+                                    "objectDsc": "OTHER"
                                 }
-                            ]
-                        )
+                                ])
     
     agency = Table('agency', meta)
     op.bulk_insert(agency,
@@ -1074,12 +1053,16 @@ def upgrade():
                                 "agency_name": "Abbotsford Police Dept."
                             },
                             {
-                                "vjur": "1003",
-                                "agency_name": "BCHP Burnaby"
+                                "vjur": "3303",
+                                "agency_name": "BCHP 100 Mile House"
                             },
                             {
-                                "vjur": "4110",
-                                "agency_name": "BCHP CRD IRSU"
+                                "vjur": "2100",
+                                "agency_name": "BCHP Ashcroft"
+                            },
+                            {
+                                "vjur": "1003",
+                                "agency_name": "BCHP Burnaby"
                             },
                             {
                                 "vjur": "4323",
@@ -1090,28 +1073,96 @@ def upgrade():
                                 "agency_name": "BCHP Chemainus"
                             },
                             {
-                                "vjur": "1004",
-                                "agency_name": "BCHP Deas Island"
+                                "vjur": "1501",
+                                "agency_name": "BCHP Chilliwack"
+                            },
+                            {
+                                "vjur": "2100",
+                                "agency_name": "BCHP Clearwater"
+                            },
+                            {
+                                "vjur": "4110",
+                                "agency_name": "BCHP CRD IRSU"
+                            },
+                            {
+                                "vjur": "3403",
+                                "agency_name": "BCHP Dawson Creek"
+                            },
+                            {
+                                "vjur": "2100",
+                                "agency_name": "BCHP Falkland"
+                            },
+                            {
+                                "vjur": "3402",
+                                "agency_name": "BCHP Fort Nelson"
+                            },
+                            {
+                                "vjur": "3401",
+                                "agency_name": "BCHP Fort St. John"
                             },
                             {
                                 "vjur": "1305",
                                 "agency_name": "BCHP Fraser Coast IRSU"
                             },
                             {
-                                "vjur": "1207",
-                                "agency_name": "BCHP Greater Vancouver IRSU"
+                                "vjur": "2100",
+                                "agency_name": "BCHP Golden"
                             },
                             {
-                                "vjur": "4308",
-                                "agency_name": "BCHP North Island IRSU"
+                                "vjur": "2100",
+                                "agency_name": "BCHP Kamloops"
+                            },
+                            {
+                                "vjur": "2100",
+                                "agency_name": "BCHP Kelowna"
+                            },
+                            {
+                                "vjur": "2100",
+                                "agency_name": "BCHP Keremeos"
+                            },
+                            {
+                                "vjur": "2100",
+                                "agency_name": "BCHP Merritt"
+                            },
+                            {
+                                "vjur": "2301",
+                                "agency_name": "BCHP Nelson"
                             },
                             {
                                 "vjur": "4307",
                                 "agency_name": "BCHP Parksville"
                             },
                             {
-                                "vjur": "7001",
-                                "agency_name": "BCHP Vancouver Island"
+                                "vjur": "3100",
+                                "agency_name": "BCHP Prince George"
+                            },
+                            {
+                                "vjur": "3301",
+                                "agency_name": "BCHP Quesnel"
+                            },
+                            {
+                                "vjur": "2100",
+                                "agency_name": "BCHP Revelstoke"
+                            },
+                            {
+                                "vjur": "3305",
+                                "agency_name": "BCHP Smithers"
+                            },
+                            {
+                                "vjur": "1104",
+                                "agency_name": "BCHP Squamish"
+                            },
+                            {
+                                "vjur": "3501",
+                                "agency_name": "BCHP Terrace"
+                            },
+                            {
+                                "vjur": "3201",
+                                "agency_name": "BCHP Vanderhoof"
+                            },
+                            {
+                                "vjur": "3304",
+                                "agency_name": "BCHP Williams Lake"
                             },
                             {
                                 "vjur": "CS",
@@ -1146,6 +1197,14 @@ def upgrade():
                                 "agency_name": "RCMP 100 Mile House"
                             },
                             {
+                                "vjur": "1501",
+                                "agency_name": "RCMP Agassiz"
+                            },
+                            {
+                                "vjur": "4304",
+                                "agency_name": "RCMP Ahousaht"
+                            },
+                            {
                                 "vjur": "4322",
                                 "agency_name": "RCMP Alert Bay"
                             },
@@ -1156,6 +1215,10 @@ def upgrade():
                             {
                                 "vjur": "3306",
                                 "agency_name": "RCMP Anahim Lake"
+                            },
+                            {
+                                "vjur": "2111",
+                                "agency_name": "RCMP Armstrong"
                             },
                             {
                                 "vjur": "2208",
@@ -1178,8 +1241,8 @@ def upgrade():
                                 "agency_name": "RCMP Bella Coola"
                             },
                             {
-                                "vjur": "2305",
-                                "agency_name": "RCMP Boundary"
+                                "vjur": "1501",
+                                "agency_name": "RCMP Boston Bar"
                             },
                             {
                                 "vjur": "1103",
@@ -1202,16 +1265,16 @@ def upgrade():
                                 "agency_name": "RCMP Castlegar"
                             },
                             {
-                                "vjur": "2301",
-                                "agency_name": "RCMP Central Kootenay"
-                            },
-                            {
                                 "vjur": "2203",
                                 "agency_name": "RCMP Chase"
                             },
                             {
                                 "vjur": "3405",
                                 "agency_name": "RCMP Chetwynd"
+                            },
+                            {
+                                "vjur": "1501",
+                                "agency_name": "RCMP Chilliwack"
                             },
                             {
                                 "vjur": "2205",
@@ -1235,7 +1298,7 @@ def upgrade():
                             },
                             {
                                 "vjur": "2401",
-                                "agency_name": "RCMP Cranbrook/Kimberley"
+                                "agency_name": "RCMP Cranbrook"
                             },
                             {
                                 "vjur": "2404",
@@ -1243,7 +1306,7 @@ def upgrade():
                             },
                             {
                                 "vjur": "3607",
-                                "agency_name": "RCMP Daajing Giids (Queen Charlotte)"
+                                "agency_name": "RCMP Daajing Giids"
                             },
                             {
                                 "vjur": "3403",
@@ -1255,7 +1318,19 @@ def upgrade():
                             },
                             {
                                 "vjur": "2403",
-                                "agency_name": "RCMP Elk Valley"
+                                "agency_name": "RCMP Elkford"
+                            },
+                            {
+                                "vjur": "2111",
+                                "agency_name": "RCMP Enderby"
+                            },
+                            {
+                                "vjur": "2403",
+                                "agency_name": "RCMP Fernie"
+                            },
+                            {
+                                "vjur": "3402",
+                                "agency_name": "RCMP Fort Nelson"
                             },
                             {
                                 "vjur": "3202",
@@ -1271,11 +1346,27 @@ def upgrade():
                             },
                             {
                                 "vjur": "4202",
-                                "agency_name": "RCMP Gabriola Island"
+                                "agency_name": "RCMP Gabriola"
+                            },
+                            {
+                                "vjur": "1106",
+                                "agency_name": "RCMP Gibsons"
                             },
                             {
                                 "vjur": "2406",
-                                "agency_name": "RCMP Golden"
+                                "agency_name": "RCMP Golden/Field"
+                            },
+                            {
+                                "vjur": "2305",
+                                "agency_name": "RCMP Grand Forks"
+                            },
+                            {
+                                "vjur": "3503",
+                                "agency_name": "RCMP Granisle"
+                            },
+                            {
+                                "vjur": "1501",
+                                "agency_name": "RCMP Hope"
                             },
                             {
                                 "vjur": "3503",
@@ -1286,12 +1377,12 @@ def upgrade():
                                 "agency_name": "RCMP Hudson's Hope"
                             },
                             {
-                                "vjur": "4100",
-                                "agency_name": "RCMP Island Dist."
+                                "vjur": "2201",
+                                "agency_name": "RCMP Kamloops"
                             },
                             {
-                                "vjur": "2201",
-                                "agency_name": "RCMP Kamloops City"
+                                "vjur": "2301",
+                                "agency_name": "RCMP Kaslo"
                             },
                             {
                                 "vjur": "2101",
@@ -1302,12 +1393,20 @@ def upgrade():
                                 "agency_name": "RCMP Keremeos"
                             },
                             {
+                                "vjur": "2401",
+                                "agency_name": "RCMP Kimberley"
+                            },
+                            {
                                 "vjur": "3502",
                                 "agency_name": "RCMP Kitimat"
                             },
                             {
                                 "vjur": "4203",
                                 "agency_name": "RCMP Ladysmith"
+                            },
+                            {
+                                "vjur": "2101",
+                                "agency_name": "RCMP Lake Country"
                             },
                             {
                                 "vjur": "4208",
@@ -1330,8 +1429,8 @@ def upgrade():
                                 "agency_name": "RCMP Logan Lake"
                             },
                             {
-                                "vjur": "1002",
-                                "agency_name": "RCMP Lower Mainland Dist."
+                                "vjur": "2111",
+                                "agency_name": "RCMP Lumby"
                             },
                             {
                                 "vjur": "2210",
@@ -1354,12 +1453,24 @@ def upgrade():
                                 "agency_name": "RCMP Merritt"
                             },
                             {
+                                "vjur": "2305",
+                                "agency_name": "RCMP Midway"
+                            },
+                            {
                                 "vjur": "1503",
                                 "agency_name": "RCMP Mission"
                             },
                             {
+                                "vjur": "2301",
+                                "agency_name": "RCMP Nakusp"
+                            },
+                            {
                                 "vjur": "4201",
                                 "agency_name": "RCMP Nanaimo"
+                            },
+                            {
+                                "vjur": "2301",
+                                "agency_name": "RCMP Nelson"
                             },
                             {
                                 "vjur": "3506",
@@ -1374,32 +1485,32 @@ def upgrade():
                                 "agency_name": "RCMP North Cowichan/Duncan"
                             },
                             {
-                                "vjur": "3100",
-                                "agency_name": "RCMP North Dist."
-                            },
-                            {
-                                "vjur": "2111",
-                                "agency_name": "RCMP North Okanagan"
-                            },
-                            {
-                                "vjur": "4106",
-                                "agency_name": "RCMP Sidney/North Saanich"
-                            },
-                            {
                                 "vjur": "1101",
                                 "agency_name": "RCMP North Vancouver"
-                            },
-                            {
-                                "vjur": "3402",
-                                "agency_name": "RCMP Northern Rockies (Fort Nelson)"
                             },
                             {
                                 "vjur": "4302",
                                 "agency_name": "RCMP Oceanside"
                             },
                             {
+                                "vjur": "2104",
+                                "agency_name": "RCMP Oliver"
+                            },
+                            {
+                                "vjur": "2104",
+                                "agency_name": "RCMP Osoyoos"
+                            },
+                            {
                                 "vjur": "4109",
                                 "agency_name": "RCMP Outer Gulf Islands"
+                            },
+                            {
+                                "vjur": "2101",
+                                "agency_name": "RCMP Peachland"
+                            },
+                            {
+                                "vjur": "1105",
+                                "agency_name": "RCMP Pemberton"
                             },
                             {
                                 "vjur": "2102",
@@ -1458,12 +1569,16 @@ def upgrade():
                                 "agency_name": "RCMP Ridge Meadows"
                             },
                             {
+                                "vjur": "2301",
+                                "agency_name": "RCMP Salmo"
+                            },
+                            {
                                 "vjur": "2112",
                                 "agency_name": "RCMP Salmon Arm"
                             },
                             {
                                 "vjur": "4108",
-                                "agency_name": "RCMP Salt Spring Island"
+                                "agency_name": "RCMP Salt Spring"
                             },
                             {
                                 "vjur": "4318",
@@ -1478,6 +1593,14 @@ def upgrade():
                                 "agency_name": "RCMP Sicamous"
                             },
                             {
+                                "vjur": "4106",
+                                "agency_name": "RCMP Sidney/North Saanich"
+                            },
+                            {
+                                "vjur": "2301",
+                                "agency_name": "RCMP Slocan Lake"
+                            },
+                            {
                                 "vjur": "3505",
                                 "agency_name": "RCMP Smithers"
                             },
@@ -1486,12 +1609,8 @@ def upgrade():
                                 "agency_name": "RCMP Sooke"
                             },
                             {
-                                "vjur": "2104",
-                                "agency_name": "RCMP South Okanagan"
-                            },
-                            {
-                                "vjur": "2100",
-                                "agency_name": "RCMP Southeast Dist."
+                                "vjur": "2403",
+                                "agency_name": "RCMP Sparwood"
                             },
                             {
                                 "vjur": "1104",
@@ -1518,16 +1637,28 @@ def upgrade():
                                 "agency_name": "RCMP Takla Landing"
                             },
                             {
+                                "vjur": "3604",
+                                "agency_name": "RCMP Telegraph Creek"
+                            },
+                            {
                                 "vjur": "3501",
                                 "agency_name": "RCMP Terrace"
                             },
                             {
+                                "vjur": "4306",
+                                "agency_name": "RCMP Texada Island"
+                            },
+                            {
+                                "vjur": "2201",
+                                "agency_name": "RCMP TK'EMLUPS"
+                            },
+                            {
                                 "vjur": "4304",
-                                "agency_name": "RCMP Tofino (Ahousaht)"
+                                "agency_name": "RCMP Tofino"
                             },
                             {
                                 "vjur": "2304",
-                                "agency_name": "RCMP Trail & Greater Dist."
+                                "agency_name": "RCMP Trail"
                             },
                             {
                                 "vjur": "3105",
@@ -1543,11 +1674,7 @@ def upgrade():
                             },
                             {
                                 "vjur": "1402",
-                                "agency_name": "RCMP University"
-                            },
-                            {
-                                "vjur": "1501",
-                                "agency_name": "RCMP Upper Fraser Valley"
+                                "agency_name": "RCMP University BC"
                             },
                             {
                                 "vjur": "3103",
@@ -1558,8 +1685,12 @@ def upgrade():
                                 "agency_name": "RCMP Vanderhoof"
                             },
                             {
-                                "vjur": "4207",
-                                "agency_name": "RCMP West Coast Marine"
+                                "vjur": "2111",
+                                "agency_name": "RCMP Vernon"
+                            },
+                            {
+                                "vjur": "2101",
+                                "agency_name": "RCMP West Kelowna"
                             },
                             {
                                 "vjur": "4105",
@@ -1567,7 +1698,7 @@ def upgrade():
                             },
                             {
                                 "vjur": "1105",
-                                "agency_name": "RCMP Whistler/Pemberton"
+                                "agency_name": "RCMP Whistler"
                             },
                             {
                                 "vjur": "1304",
@@ -1586,8 +1717,16 @@ def upgrade():
                                 "agency_name": "Stl'atl'imx Tribal Police Svc."
                             },
                             {
+                                "vjur": "SP",
+                                "agency_name": "Surrey Police Svc."
+                            },
+                            {
                                 "vjur": "VA",
                                 "agency_name": "Vancouver Police Dept."
+                            },
+                            {
+                                "vjur": "VI",
+                                "agency_name": "Victoria Police Dept."
                             },
                             {
                                 "vjur": "WV",
@@ -1598,4473 +1737,4289 @@ def upgrade():
     
     city = Table('city', meta)
     op.bulk_insert(city,
-                        [
-                            {
-                                "objectCd": "OHMH",
-                                "objectDsc": "100 MILE HOUSE"
-                            },
-                            {
-                                "objectCd": "OHTM",
-                                "objectDsc": "103 MILE HOUSE"
-                            },
-                            {
-                                "objectCd": "OHFM",
-                                "objectDsc": "105 MILE HOUSE"
-                            },
-                            {
-                                "objectCd": "OHEM",
-                                "objectDsc": "108 MILE HOUSE"
-                            },
-                            {
-                                "objectCd": "OHER",
-                                "objectDsc": "108 MILE RANCH"
-                            },
-                            {
-                                "objectCd": "OFOM",
-                                "objectDsc": "141 MILE HOUSE"
-                            },
-                            {
-                                "objectCd": "OFMH",
-                                "objectDsc": "150 MILE HOUSE"
-                            },
-                            {
-                                "objectCd": "SMHS",
-                                "objectDsc": "70 MILE HOUSE"
-                            },
-                            {
-                                "objectCd": "NTMH",
-                                "objectDsc": "93 MILE HOUSE"
-                            },
-                            {
-                                "objectCd": "ABB",
-                                "objectDsc": "ABBOTSFORD"
-                            },
-                            {
-                                "objectCd": "ADLK",
-                                "objectDsc": "ADAMS LAKE"
-                            },
-                            {
-                                "objectCd": "AGSZ",
-                                "objectDsc": "AGASSIZ"
-                            },
-                            {
-                                "objectCd": "AGAT",
-                                "objectDsc": "AGATE"
-                            },
-                            {
-                                "objectCd": "AHST",
-                                "objectDsc": "AHOUSAHT"
-                            },
-                            {
-                                "objectCd": "ANWO",
-                                "objectDsc": "AINSWORTH HOT SPRINGS"
-                            },
-                            {
-                                "objectCd": "ALBR",
-                                "objectDsc": "ALBREDA"
-                            },
-                            {
-                                "objectCd": "ALBA",
-                                "objectDsc": "ALERT BAY"
-                            },
-                            {
-                                "objectCd": "ALEX",
-                                "objectDsc": "ALEXANDRIA"
-                            },
-                            {
-                                "objectCd": "ALCK",
-                                "objectDsc": "ALEXIS CREEK"
-                            },
-                            {
-                                "objectCd": "ALLK",
-                                "objectDsc": "ALEZA LAKE"
-                            },
-                            {
-                                "objectCd": "ALAR",
-                                "objectDsc": "ALICE ARM"
-                            },
-                            {
-                                "objectCd": "AKLK",
-                                "objectDsc": "ALKALI LAKE"
-                            },
-                            {
-                                "objectCd": "ASLK",
-                                "objectDsc": "ALLISON LAKE"
-                            },
-                            {
-                                "objectCd": "ALTN",
-                                "objectDsc": "ALTONA"
-                            },
-                            {
-                                "objectCd": "ANCD",
-                                "objectDsc": "ANACONDA"
-                            },
-                            {
-                                "objectCd": "ANLK",
-                                "objectDsc": "ANAHIM LAKE"
-                            },
-                            {
-                                "objectCd": "AFIR",
-                                "objectDsc": "ANAHIMS FLAT IR"
-                            },
-                            {
-                                "objectCd": "AMIR",
-                                "objectDsc": "ANAHIMS MEADOW IR"
-                            },
-                            {
-                                "objectCd": "ANMT",
-                                "objectDsc": "ANGLEMONT"
-                            },
-                            {
-                                "objectCd": "ANM",
-                                "objectDsc": "ANMORE"
-                            },
-                            {
-                                "objectCd": "AARM",
-                                "objectDsc": "ANSTEY ARM"
-                            },
-                            {
-                                "objectCd": "ANIS",
-                                "objectDsc": "ANVIL ISLAND"
-                            },
-                            {
-                                "objectCd": "ANYX",
-                                "objectDsc": "ANYOX"
-                            },
-                            {
-                                "objectCd": "APEX",
-                                "objectDsc": "APEX"
-                            },
-                            {
-                                "objectCd": "APDL",
-                                "objectDsc": "APPLEDALE"
-                            },
-                            {
-                                "objectCd": "ARGT",
-                                "objectDsc": "ARGENTA"
-                            },
-                            {
-                                "objectCd": "AZIS",
-                                "objectDsc": "ARISTAZABAL ISLAND"
-                            },
-                            {
-                                "objectCd": "ARMS",
-                                "objectDsc": "ARMSTRONG"
-                            },
-                            {
-                                "objectCd": "ARAS",
-                                "objectDsc": "ARRAS"
-                            },
-                            {
-                                "objectCd": "AWPK",
-                                "objectDsc": "ARROW PARK"
-                            },
-                            {
-                                "objectCd": "ASCF",
-                                "objectDsc": "ASHCROFT"
-                            },
-                            {
-                                "objectCd": "ACSR",
-                                "objectDsc": "ASHCROFT RURAL"
-                            },
-                            {
-                                "objectCd": "ASCK",
-                                "objectDsc": "ASHTON CREEK"
-                            },
-                            {
-                                "objectCd": "ASPG",
-                                "objectDsc": "ASPEN GROVE"
-                            },
-                            {
-                                "objectCd": "ATHA",
-                                "objectDsc": "ATHALMER"
-                            },
-                            {
-                                "objectCd": "AHIS",
-                                "objectDsc": "ATHLONE ISLAND"
-                            },
-                            {
-                                "objectCd": "AKIS",
-                                "objectDsc": "ATKINSON ISLAND"
-                            },
-                            {
-                                "objectCd": "ATLN",
-                                "objectDsc": "ATLIN"
-                            },
-                            {
-                                "objectCd": "ATCH",
-                                "objectDsc": "ATTACHIE"
-                            },
-                            {
-                                "objectCd": "AUST",
-                                "objectDsc": "AUSTRALIAN"
-                            },
-                            {
-                                "objectCd": "AVLA",
-                                "objectDsc": "AVOLA"
-                            },
-                            {
-                                "objectCd": "BKCK",
-                                "objectDsc": "BAKER CREEK"
-                            },
-                            {
-                                "objectCd": "BKIS",
-                                "objectDsc": "BAKER ISLAND"
-                            },
-                            {
-                                "objectCd": "BVIS",
-                                "objectDsc": "BALAKLAVA ISLAND"
-                            },
-                            {
-                                "objectCd": "BALD",
-                                "objectDsc": "BALDONNEL"
-                            },
-                            {
-                                "objectCd": "BALF",
-                                "objectDsc": "BALFOUR"
-                            },
-                            {
-                                "objectCd": "BAMF",
-                                "objectDsc": "BAMFIELD"
-                            },
-                            {
-                                "objectCd": "BNKR",
-                                "objectDsc": "BANKEIR"
-                            },
-                            {
-                                "objectCd": "BSIS",
-                                "objectDsc": "BANKS ISLAND"
-                            },
-                            {
-                                "objectCd": "BKVL",
-                                "objectDsc": "BARKERVILLE"
-                            },
-                            {
-                                "objectCd": "BARH",
-                                "objectDsc": "BARNHARTVALE"
-                            },
-                            {
-                                "objectCd": "BAIS",
-                                "objectDsc": "BARON ISLAND"
-                            },
-                            {
-                                "objectCd": "BARR",
-                                "objectDsc": "BARRIERE"
-                            },
-                            {
-                                "objectCd": "BARV",
-                                "objectDsc": "BARRIERE RIVER"
-                            },
-                            {
-                                "objectCd": "BKLK",
-                                "objectDsc": "BAYNES LAKE"
-                            },
-                            {
-                                "objectCd": "BAFT",
-                                "objectDsc": "BEAR FLAT"
-                            },
-                            {
-                                "objectCd": "BRLK",
-                                "objectDsc": "BEAR LAKE"
-                            },
-                            {
-                                "objectCd": "BSLY",
-                                "objectDsc": "BEASLEY"
-                            },
-                            {
-                                "objectCd": "BEAT",
-                                "objectDsc": "BEATON"
-                            },
-                            {
-                                "objectCd": "BERV",
-                                "objectDsc": "BEATTON RIVER"
-                            },
-                            {
-                                "objectCd": "BVCV",
-                                "objectDsc": "BEAVER COVE"
-                            },
-                            {
-                                "objectCd": "BVFL",
-                                "objectDsc": "BEAVER FALLS"
-                            },
-                            {
-                                "objectCd": "BVDL",
-                                "objectDsc": "BEAVERDELL"
-                            },
-                            {
-                                "objectCd": "BVLY",
-                                "objectDsc": "BEAVERLEY"
-                            },
-                            {
-                                "objectCd": "BDNM",
-                                "objectDsc": "BEDNESTI NORMAN"
-                            },
-                            {
-                                "objectCd": "BELC",
-                                "objectDsc": "BELCARRA"
-                            },
-                            {
-                                "objectCd": "BLBL",
-                                "objectDsc": "BELLA BELLA"
-                            },
-                            {
-                                "objectCd": "BLCL",
-                                "objectDsc": "BELLA COOLA"
-                            },
-                            {
-                                "objectCd": "BLIG",
-                                "objectDsc": "BELL-IRVING"
-                            },
-                            {
-                                "objectCd": "BENN",
-                                "objectDsc": "BENNETT"
-                            },
-                            {
-                                "objectCd": "BRIS",
-                                "objectDsc": "BERRY ISLAND"
-                            },
-                            {
-                                "objectCd": "BSBG",
-                                "objectDsc": "BESSBOROUGH"
-                            },
-                            {
-                                "objectCd": "BIBR",
-                                "objectDsc": "BIG BAR"
-                            },
-                            {
-                                "objectCd": "BIBL",
-                                "objectDsc": "BIG BAR LAKE"
-                            },
-                            {
-                                "objectCd": "BICK",
-                                "objectDsc": "BIG CREEK"
-                            },
-                            {
-                                "objectCd": "BILK",
-                                "objectDsc": "BIG LAKE"
-                            },
-                            {
-                                "objectCd": "BLKR",
-                                "objectDsc": "BIG LAKE RANCH"
-                            },
-                            {
-                                "objectCd": "BIWH",
-                                "objectDsc": "BIG WHITE"
-                            },
-                            {
-                                "objectCd": "BCIS",
-                                "objectDsc": "BIRCH ISLAND"
-                            },
-                            {
-                                "objectCd": "BRKN",
-                                "objectDsc": "BIRKEN"
-                            },
-                            {
-                                "objectCd": "BLCK",
-                                "objectDsc": "BLACK CREEK"
-                            },
-                            {
-                                "objectCd": "BLPN",
-                                "objectDsc": "BLACK PINES"
-                            },
-                            {
-                                "objectCd": "BLPL",
-                                "objectDsc": "BLACKPOOL"
-                            },
-                            {
-                                "objectCd": "BLWR",
-                                "objectDsc": "BLACKWATER"
-                            },
-                            {
-                                "objectCd": "BWNR",
-                                "objectDsc": "BLACKWATER NORTH"
-                            },
-                            {
-                                "objectCd": "BLAE",
-                                "objectDsc": "BLAEBERRY"
-                            },
-                            {
-                                "objectCd": "BLWT",
-                                "objectDsc": "BLEWETT"
-                            },
-                            {
-                                "objectCd": "BLIS",
-                                "objectDsc": "BLIGH ISLAND"
-                            },
-                            {
-                                "objectCd": "BLBY",
-                                "objectDsc": "BLIND BAY"
-                            },
-                            {
-                                "objectCd": "BLCH",
-                                "objectDsc": "BLIND CHANNEL"
-                            },
-                            {
-                                "objectCd": "BLUB",
-                                "objectDsc": "BLUBBER BAY"
-                            },
-                            {
-                                "objectCd": "BLHL",
-                                "objectDsc": "BLUCHER HALL"
-                            },
-                            {
-                                "objectCd": "BLRV",
-                                "objectDsc": "BLUE RIVER"
-                            },
-                            {
-                                "objectCd": "BYCK",
-                                "objectDsc": "BLUEBERRY CREEK"
-                            },
-                            {
-                                "objectCd": "BYRI",
-                                "objectDsc": "BLUEBERRY RIVER IR"
-                            },
-                            {
-                                "objectCd": "BOBQ",
-                                "objectDsc": "BOB QUINN"
-                            },
-                            {
-                                "objectCd": "BQLK",
-                                "objectDsc": "BOB QUINN LAKE"
-                            },
-                            {
-                                "objectCd": "BONA",
-                                "objectDsc": "BONAPARTE IR"
-                            },
-                            {
-                                "objectCd": "BOSG",
-                                "objectDsc": "BOND SIDING"
-                            },
-                            {
-                                "objectCd": "BOIS",
-                                "objectDsc": "BONWICK ISLAND"
-                            },
-                            {
-                                "objectCd": "BBAR",
-                                "objectDsc": "BOSTON BAR"
-                            },
-                            {
-                                "objectCd": "BSTF",
-                                "objectDsc": "BOSTON FLAT"
-                            },
-                            {
-                                "objectCd": "BSWL",
-                                "objectDsc": "BOSWELL"
-                            },
-                            {
-                                "objectCd": "BCLK",
-                                "objectDsc": "BOUCHIE LAKE"
-                            },
-                            {
-                                "objectCd": "BOLK",
-                                "objectDsc": "BOUDREAU LAKE"
-                            },
-                            {
-                                "objectCd": "BOCY",
-                                "objectDsc": "BOULDER CITY"
-                            },
-                            {
-                                "objectCd": "BOW",
-                                "objectDsc": "BOWEN ISLAND"
-                            },
-                            {
-                                "objectCd": "BOPP",
-                                "objectDsc": "BOWRON LAKES PROVINCIAL PARK"
-                            },
-                            {
-                                "objectCd": "BWSR",
-                                "objectDsc": "BOWSER"
-                            },
-                            {
-                                "objectCd": "BWLK",
-                                "objectDsc": "BOWSER LAKE"
-                            },
-                            {
-                                "objectCd": "BYLK",
-                                "objectDsc": "BOYA LAKE"
-                            },
-                            {
-                                "objectCd": "BRLN",
-                                "objectDsc": "BRALORNE"
-                            },
-                            {
-                                "objectCd": "BRNC",
-                                "objectDsc": "BRENNAN CREEK"
-                            },
-                            {
-                                "objectCd": "BRAR",
-                                "objectDsc": "BRIAR"
-                            },
-                            {
-                                "objectCd": "BIVL",
-                                "objectDsc": "BRIDESVILLE"
-                            },
-                            {
-                                "objectCd": "BDLK",
-                                "objectDsc": "BRIDGE LAKE"
-                            },
-                            {
-                                "objectCd": "BRNT",
-                                "objectDsc": "BRILLIANT"
-                            },
-                            {
-                                "objectCd": "BRSC",
-                                "objectDsc": "BRISCO"
-                            },
-                            {
-                                "objectCd": "BRTB",
-                                "objectDsc": "BRITANNIA BEACH"
-                            },
-                            {
-                                "objectCd": "BKMR",
-                                "objectDsc": "BROOKMERE"
-                            },
-                            {
-                                "objectCd": "BGIS",
-                                "objectDsc": "BROUGHTON ISLAND"
-                            },
-                            {
-                                "objectCd": "BUKH",
-                                "objectDsc": "BUCKHORN"
-                            },
-                            {
-                                "objectCd": "BKRV",
-                                "objectDsc": "BUCKINGHORSE RIVER"
-                            },
-                            {
-                                "objectCd": "BFCK",
-                                "objectDsc": "BUFFALO CREEK"
-                            },
-                            {
-                                "objectCd": "BUIC",
-                                "objectDsc": "BUICK"
-                            },
-                            {
-                                "objectCd": "BURV",
-                                "objectDsc": "BULL RIVER"
-                            },
-                            {
-                                "objectCd": "BBY",
-                                "objectDsc": "BURNABY"
-                            },
-                            {
-                                "objectCd": "BYIS",
-                                "objectDsc": "BURNABY ISLAND"
-                            },
-                            {
-                                "objectCd": "BSLK",
-                                "objectDsc": "BURNS LAKE"
-                            },
-                            {
-                                "objectCd": "BRTO",
-                                "objectDsc": "BURTON"
-                            },
-                            {
-                                "objectCd": "BUTE",
-                                "objectDsc": "BUTE INLET"
-                            },
-                            {
-                                "objectCd": "CACK",
-                                "objectDsc": "CACHE CREEK"
-                            },
-                            {
-                                "objectCd": "CACV",
-                                "objectDsc": "CACHE CREEK RURAL"
-                            },
-                            {
-                                "objectCd": "CHLY",
-                                "objectDsc": "CAHILTY"
-                            },
-                            {
-                                "objectCd": "CVIS",
-                                "objectDsc": "CALVERT ISLAND"
-                            },
-                            {
-                                "objectCd": "CPIS",
-                                "objectDsc": "CAMPANIA ISLAND"
-                            },
-                            {
-                                "objectCd": "CBIS",
-                                "objectDsc": "CAMPBELL ISLAND"
-                            },
-                            {
-                                "objectCd": "CBRV",
-                                "objectDsc": "CAMPBELL RIVER"
-                            },
-                            {
-                                "objectCd": "CNFL",
-                                "objectDsc": "CANAL FLATS"
-                            },
-                            {
-                                "objectCd": "CMLK",
-                                "objectDsc": "CANIM LAKE"
-                            },
-                            {
-                                "objectCd": "CANO",
-                                "objectDsc": "CANOE"
-                            },
-                            {
-                                "objectCd": "CECK",
-                                "objectDsc": "CANOE CREEK"
-                            },
-                            {
-                                "objectCd": "FCYN",
-                                "objectDsc": "CANYON ALPINE"
-                            },
-                            {
-                                "objectCd": "CANY",
-                                "objectDsc": "CANYON HOT SPRINGS"
-                            },
-                            {
-                                "objectCd": "CSPK",
-                                "objectDsc": "CAPE SCOTT PARK"
-                            },
-                            {
-                                "objectCd": "CARV",
-                                "objectDsc": "CARIBOO RIVER"
-                            },
-                            {
-                                "objectCd": "CARM",
-                                "objectDsc": "CARMI"
-                            },
-                            {
-                                "objectCd": "CRLK",
-                                "objectDsc": "CARP LAKE"
-                            },
-                            {
-                                "objectCd": "CPLK",
-                                "objectDsc": "CARPENTER LAKE"
-                            },
-                            {
-                                "objectCd": "CASC",
-                                "objectDsc": "CASCADE"
-                            },
-                            {
-                                "objectCd": "CATL",
-                                "objectDsc": "CASTLEDALE"
-                            },
-                            {
-                                "objectCd": "CLGR",
-                                "objectDsc": "CASTLEGAR"
-                            },
-                            {
-                                "objectCd": "CLIS",
-                                "objectDsc": "CATALA ISLAND"
-                            },
-                            {
-                                "objectCd": "CSTN",
-                                "objectDsc": "CAWSTON"
-                            },
-                            {
-                                "objectCd": "CACS",
-                                "objectDsc": "CAYCUSE"
-                            },
-                            {
-                                "objectCd": "CELK",
-                                "objectDsc": "CECIL LAKE"
-                            },
-                            {
-                                "objectCd": "CRIS",
-                                "objectDsc": "CEDAR ISLAND"
-                            },
-                            {
-                                "objectCd": "CRVL",
-                                "objectDsc": "CEDARVALE"
-                            },
-                            {
-                                "objectCd": "CLST",
-                                "objectDsc": "CELISTA"
-                            },
-                            {
-                                "objectCd": "CSNC",
-                                "objectDsc": "CENTRAL SAANICH"
-                            },
-                            {
-                                "objectCd": "CHIS",
-                                "objectDsc": "CHAATL ISLAND"
-                            },
-                            {
-                                "objectCd": "CNLK",
-                                "objectDsc": "CHAPPERON LAKE"
-                            },
-                            {
-                                "objectCd": "CLLK",
-                                "objectDsc": "CHARLIE LAKE"
-                            },
-                            {
-                                "objectCd": "CHAS",
-                                "objectDsc": "CHASE"
-                            },
-                            {
-                                "objectCd": "CHAC",
-                                "objectDsc": "CHASE CREEK"
-                            },
-                            {
-                                "objectCd": "CHAR",
-                                "objectDsc": "CHASE RURAL"
-                            },
-                            {
-                                "objectCd": "CHSM",
-                                "objectDsc": "CHASM"
-                            },
-                            {
-                                "objectCd": "CMIS",
-                                "objectDsc": "CHATHAM ISLAND"
-                            },
-                            {
-                                "objectCd": "CHIR",
-                                "objectDsc": "CHEAM IR"
-                            },
-                            {
-                                "objectCd": "CHHL",
-                                "objectDsc": "CHEHALIS"
-                            },
-                            {
-                                "objectCd": "CHNS",
-                                "objectDsc": "CHEMAINUS"
-                            },
-                            {
-                                "objectCd": "CHCK",
-                                "objectDsc": "CHERRY CREEK"
-                            },
-                            {
-                                "objectCd": "CHVL",
-                                "objectDsc": "CHERRYVILLE"
-                            },
-                            {
-                                "objectCd": "CHES",
-                                "objectDsc": "CHESLATTA"
-                            },
-                            {
-                                "objectCd": "CTWD",
-                                "objectDsc": "CHETWYND"
-                            },
-                            {
-                                "objectCd": "CHEZ",
-                                "objectDsc": "CHEZACUT"
-                            },
-                            {
-                                "objectCd": "CFLK",
-                                "objectDsc": "CHIEF LAKE"
-                            },
-                            {
-                                "objectCd": "CLKF",
-                                "objectDsc": "CHILANKO FORKS"
-                            },
-                            {
-                                "objectCd": "CHIL",
-                                "objectDsc": "CHILLIWACK"
-                            },
-                            {
-                                "objectCd": "CHRV",
-                                "objectDsc": "CHILLIWACK RIVER VALLEY"
-                            },
-                            {
-                                "objectCd": "CMNL",
-                                "objectDsc": "CHIMNEY LAKE"
-                            },
-                            {
-                                "objectCd": "CKCV",
-                                "objectDsc": "CHINOOK COVE"
-                            },
-                            {
-                                "objectCd": "CHVY",
-                                "objectDsc": "CHRISTIAN VALLEY"
-                            },
-                            {
-                                "objectCd": "CSLK",
-                                "objectDsc": "CHRISTINA LAKE"
-                            },
-                            {
-                                "objectCd": "CHCH",
-                                "objectDsc": "CHU CHUA"
-                            },
-                            {
-                                "objectCd": "CINE",
-                                "objectDsc": "CINEMA"
-                            },
-                            {
-                                "objectCd": "CPLT",
-                                "objectDsc": "CLAPPERTON"
-                            },
-                            {
-                                "objectCd": "CLHT",
-                                "objectDsc": "CLAYHURST"
-                            },
-                            {
-                                "objectCd": "CLWR",
-                                "objectDsc": "CLEARWATER"
-                            },
-                            {
-                                "objectCd": "CLWT",
-                                "objectDsc": "CLEARWATER RURAL"
-                            },
-                            {
-                                "objectCd": "CLEM",
-                                "objectDsc": "CLEMRETTA"
-                            },
-                            {
-                                "objectCd": "CLTN",
-                                "objectDsc": "CLINTON"
-                            },
-                            {
-                                "objectCd": "CLTR",
-                                "objectDsc": "CLINTON RURAL"
-                            },
-                            {
-                                "objectCd": "CLTS",
-                                "objectDsc": "CLINTON SOUTH"
-                            },
-                            {
-                                "objectCd": "CZLK",
-                                "objectDsc": "CLUCULZ LAKE"
-                            },
-                            {
-                                "objectCd": "CLHB",
-                                "objectDsc": "COAL HARBOUR"
-                            },
-                            {
-                                "objectCd": "CLID",
-                                "objectDsc": "COAL ISLAND"
-                            },
-                            {
-                                "objectCd": "CRIV",
-                                "objectDsc": "COAL RIVER"
-                            },
-                            {
-                                "objectCd": "CLMT",
-                                "objectDsc": "COALMONT"
-                            },
-                            {
-                                "objectCd": "CBHL",
-                                "objectDsc": "COBBLE HILL"
-                            },
-                            {
-                                "objectCd": "CISI",
-                                "objectDsc": "COFFIN ISLAND IR"
-                            },
-                            {
-                                "objectCd": "CODM",
-                                "objectDsc": "COLDSTREAM"
-                            },
-                            {
-                                "objectCd": "CDCK",
-                                "objectDsc": "COLDSTREAM CREEK"
-                            },
-                            {
-                                "objectCd": "CLDW",
-                                "objectDsc": "COLDWATER"
-                            },
-                            {
-                                "objectCd": "CLLT",
-                                "objectDsc": "COLLEYMOUNT"
-                            },
-                            {
-                                "objectCd": "CLGS",
-                                "objectDsc": "COLUMBIA GARDENS"
-                            },
-                            {
-                                "objectCd": "CBLV",
-                                "objectDsc": "COLUMBIA VALLEY"
-                            },
-                            {
-                                "objectCd": "COLW",
-                                "objectDsc": "COLWOOD"
-                            },
-                            {
-                                "objectCd": "COMX",
-                                "objectDsc": "COMOX"
-                            },
-                            {
-                                "objectCd": "CPII",
-                                "objectDsc": "COMPTON ISLAND IR"
-                            },
-                            {
-                                "objectCd": "CISL",
-                                "objectDsc": "CONE ISLAND"
-                            },
-                            {
-                                "objectCd": "COOM",
-                                "objectDsc": "COOMBS"
-                            },
-                            {
-                                "objectCd": "CPCK",
-                                "objectDsc": "COOPER CREEK"
-                            },
-                            {
-                                "objectCd": "CRCK",
-                                "objectDsc": "COPPER CREEK"
-                            },
-                            {
-                                "objectCd": "CQLA",
-                                "objectDsc": "COQUIHALLA"
-                            },
-                            {
-                                "objectCd": "COQ",
-                                "objectDsc": "COQUITLAM"
-                            },
-                            {
-                                "objectCd": "CORB",
-                                "objectDsc": "CORBIN"
-                            },
-                            {
-                                "objectCd": "CTIS",
-                                "objectDsc": "CORTES ISLAND"
-                            },
-                            {
-                                "objectCd": "CTTD",
-                                "objectDsc": "COTTONWOOD"
-                            },
-                            {
-                                "objectCd": "CRTY",
-                                "objectDsc": "COURTENAY"
-                            },
-                            {
-                                "objectCd": "CUTL",
-                                "objectDsc": "COUTLEE"
-                            },
-                            {
-                                "objectCd": "CWBY",
-                                "objectDsc": "COWICHAN BAY"
-                            },
-                            {
-                                "objectCd": "CXIS",
-                                "objectDsc": "COX ISLAND"
-                            },
-                            {
-                                "objectCd": "CGCH",
-                                "objectDsc": "CRAIGELLACHIE"
-                            },
-                            {
-                                "objectCd": "CRJC",
-                                "objectDsc": "CRANBERRY JUNCTION"
-                            },
-                            {
-                                "objectCd": "CRBK",
-                                "objectDsc": "CRANBROOK"
-                            },
-                            {
-                                "objectCd": "CFBA",
-                                "objectDsc": "CRAWFORD BAY"
-                            },
-                            {
-                                "objectCd": "CSIS",
-                                "objectDsc": "CREASE ISLAND"
-                            },
-                            {
-                                "objectCd": "CCSR",
-                                "objectDsc": "CRESCENT SPUR"
-                            },
-                            {
-                                "objectCd": "CRVY",
-                                "objectDsc": "CRESCENT VALLEY"
-                            },
-                            {
-                                "objectCd": "CETN",
-                                "objectDsc": "CRESTON"
-                            },
-                            {
-                                "objectCd": "CROF",
-                                "objectDsc": "CROFTON"
-                            },
-                            {
-                                "objectCd": "CORV",
-                                "objectDsc": "CROSS RIVER"
-                            },
-                            {
-                                "objectCd": "CULT",
-                                "objectDsc": "CULTUS LAKE"
-                            },
-                            {
-                                "objectCd": "CMLD",
-                                "objectDsc": "CUMBERLAND"
-                            },
-                            {
-                                "objectCd": "DJGD",
-                                "objectDsc": "DAAJING GIIDS"
-                            },
-                            {
-                                "objectCd": "DNSK",
-                                "objectDsc": "DANSKIN"
-                            },
-                            {
-                                "objectCd": "DRCY",
-                                "objectDsc": "D'ARCY"
-                            },
-                            {
-                                "objectCd": "DARF",
-                                "objectDsc": "DARFIELD"
-                            },
-                            {
-                                "objectCd": "DVIS",
-                                "objectDsc": "DAVIES ISLAND"
-                            },
-                            {
-                                "objectCd": "DWCK",
-                                "objectDsc": "DAWSON CREEK"
-                            },
-                            {
-                                "objectCd": "DSCK",
-                                "objectDsc": "DEADMANS CREEK"
-                            },
-                            {
-                                "objectCd": "DSLK",
-                                "objectDsc": "DEASE LAKE"
-                            },
-                            {
-                                "objectCd": "DKLK",
-                                "objectDsc": "DECKER LAKE"
-                            },
-                            {
-                                "objectCd": "DCIS",
-                                "objectDsc": "DECOURCY ISLAND"
-                            },
-                            {
-                                "objectCd": "DPCK",
-                                "objectDsc": "DEEP CREEK"
-                            },
-                            {
-                                "objectCd": "DCKI",
-                                "objectDsc": "DEEP CREEK IR"
-                            },
-                            {
-                                "objectCd": "DHIS",
-                                "objectDsc": "DEHORSEY ISLAND"
-                            },
-                            {
-                                "objectCd": "DALK",
-                                "objectDsc": "DEKA LAKE"
-                            },
-                            {
-                                "objectCd": "DEL",
-                                "objectDsc": "DELTA"
-                            },
-                            {
-                                "objectCd": "DNIS",
-                                "objectDsc": "DENMAN ISLAND"
-                            },
-                            {
-                                "objectCd": "DYIS",
-                                "objectDsc": "DENNY ISLAND"
-                            },
-                            {
-                                "objectCd": "DRCH",
-                                "objectDsc": "DEROCHE"
-                            },
-                            {
-                                "objectCd": "DVIN",
-                                "objectDsc": "DEVINE"
-                            },
-                            {
-                                "objectCd": "DWDN",
-                                "objectDsc": "DEWDNEY"
-                            },
-                            {
-                                "objectCd": "DWIS",
-                                "objectDsc": "DEWDNEY ISLAND"
-                            },
-                            {
-                                "objectCd": "DAIS",
-                                "objectDsc": "DIANA ISLAND"
-                            },
-                            {
-                                "objectCd": "DGIS",
-                                "objectDsc": "DIGBY ISLAND"
-                            },
-                            {
-                                "objectCd": "DSCI",
-                                "objectDsc": "DISCOVERY ISLAND"
-                            },
-                            {
-                                "objectCd": "DITI",
-                                "objectDsc": "DITIDAHT"
-                            },
-                            {
-                                "objectCd": "DORV",
-                                "objectDsc": "DOE RIVER"
-                            },
-                            {
-                                "objectCd": "DGCK",
-                                "objectDsc": "DOG CREEK"
-                            },
-                            {
-                                "objectCd": "DOCK",
-                                "objectDsc": "DOG CREEK TNRD"
-                            },
-                            {
-                                "objectCd": "DGWD",
-                                "objectDsc": "DOGWOOD VALLEY"
-                            },
-                            {
-                                "objectCd": "DOIG",
-                                "objectDsc": "DOIG"
-                            },
-                            {
-                                "objectCd": "DPIS",
-                                "objectDsc": "DOLPHIN ISLAND"
-                            },
-                            {
-                                "objectCd": "DMCK",
-                                "objectDsc": "DOME CREEK"
-                            },
-                            {
-                                "objectCd": "DNLD",
-                                "objectDsc": "DONALD"
-                            },
-                            {
-                                "objectCd": "DMLG",
-                                "objectDsc": "DONALD LANDING"
-                            },
-                            {
-                                "objectCd": "DGLK",
-                                "objectDsc": "DOUGLAS LAKE"
-                            },
-                            {
-                                "objectCd": "DISI",
-                                "objectDsc": "DOVE ISLAND IR"
-                            },
-                            {
-                                "objectCd": "DWRV",
-                                "objectDsc": "DRIFTWOOD RIVER"
-                            },
-                            {
-                                "objectCd": "DNCN",
-                                "objectDsc": "DUNCAN"
-                            },
-                            {
-                                "objectCd": "DNLK",
-                                "objectDsc": "DUNCAN LAKE"
-                            },
-                            {
-                                "objectCd": "DDIS",
-                                "objectDsc": "DUNDAS ISLAND"
-                            },
-                            {
-                                "objectCd": "DUNK",
-                                "objectDsc": "DUNKLEY"
-                            },
-                            {
-                                "objectCd": "DULK",
-                                "objectDsc": "DUNN LAKE"
-                            },
-                            {
-                                "objectCd": "DNSR",
-                                "objectDsc": "DUNSTER"
-                            },
-                            {
-                                "objectCd": "EABY",
-                                "objectDsc": "EAGLE BAY"
-                            },
-                            {
-                                "objectCd": "EACK",
-                                "objectDsc": "EAGLE CREEK"
-                            },
-                            {
-                                "objectCd": "EBRL",
-                                "objectDsc": "EAST BARRIERE LAKE"
-                            },
-                            {
-                                "objectCd": "EBLK",
-                                "objectDsc": "EAST BLACKPOOL"
-                            },
-                            {
-                                "objectCd": "EAPI",
-                                "objectDsc": "EAST PINE"
-                            },
-                            {
-                                "objectCd": "ESMA",
-                                "objectDsc": "EAST SALMON ARM"
-                            },
-                            {
-                                "objectCd": "ESOK",
-                                "objectDsc": "EAST SOOKE"
-                            },
-                            {
-                                "objectCd": "EDIS",
-                                "objectDsc": "EDEN ISLAND"
-                            },
-                            {
-                                "objectCd": "EDWR",
-                                "objectDsc": "EDGEWATER"
-                            },
-                            {
-                                "objectCd": "EDWD",
-                                "objectDsc": "EDGEWOOD"
-                            },
-                            {
-                                "objectCd": "EKIS",
-                                "objectDsc": "EDWARD KING ISLAND"
-                            },
-                            {
-                                "objectCd": "EGMT",
-                                "objectDsc": "EGMONT"
-                            },
-                            {
-                                "objectCd": "9EKV",
-                                "objectDsc": "ELK VALLEY"
-                            },
-                            {
-                                "objectCd": "EKFR",
-                                "objectDsc": "ELKFORD"
-                            },
-                            {
-                                "objectCd": "EKHT",
-                                "objectDsc": "ELKHART"
-                            },
-                            {
-                                "objectCd": "ELKO",
-                                "objectDsc": "ELKO"
-                            },
-                            {
-                                "objectCd": "ELCP",
-                                "objectDsc": "ELSWORTH CAMP"
-                            },
-                            {
-                                "objectCd": "ENDA",
-                                "objectDsc": "ENDAKO"
-                            },
-                            {
-                                "objectCd": "EDBY",
-                                "objectDsc": "ENDERBY"
-                            },
-                            {
-                                "objectCd": "EGEN",
-                                "objectDsc": "ENGEN"
-                            },
-                            {
-                                "objectCd": "ERIC",
-                                "objectDsc": "ERICKSON"
-                            },
-                            {
-                                "objectCd": "ERIE",
-                                "objectDsc": "ERIE"
-                            },
-                            {
-                                "objectCd": "ERRN",
-                                "objectDsc": "ERRINGTON"
-                            },
-                            {
-                                "objectCd": "EQMT",
-                                "objectDsc": "ESQUIMALT"
-                            },
-                            {
-                                "objectCd": "FRSP",
-                                "objectDsc": "FAIRMONT HOT SPRINGS"
-                            },
-                            {
-                                "objectCd": "FKLD",
-                                "objectDsc": "FALKLAND"
-                            },
-                            {
-                                "objectCd": "FYBA",
-                                "objectDsc": "FANNY BAY"
-                            },
-                            {
-                                "objectCd": "FAIS",
-                                "objectDsc": "FARADAY ISLAND"
-                            },
-                            {
-                                "objectCd": "FRTN",
-                                "objectDsc": "FARMINGTON"
-                            },
-                            {
-                                "objectCd": "FRIS",
-                                "objectDsc": "FARRANT ISLAND"
-                            },
-                            {
-                                "objectCd": "FLCK",
-                                "objectDsc": "FARRELL CREEK"
-                            },
-                            {
-                                "objectCd": "FAQR",
-                                "objectDsc": "FAUQUIER"
-                            },
-                            {
-                                "objectCd": "FLHT",
-                                "objectDsc": "FELLERS HEIGHTS"
-                            },
-                            {
-                                "objectCd": "FDTB",
-                                "objectDsc": "FERNDALE-TABOR"
-                            },
-                            {
-                                "objectCd": "FERN",
-                                "objectDsc": "FERNIE"
-                            },
-                            {
-                                "objectCd": "FILD",
-                                "objectDsc": "FIELD"
-                            },
-                            {
-                                "objectCd": "FNIS",
-                                "objectDsc": "FIN ISLAND"
-                            },
-                            {
-                                "objectCd": "FIRE",
-                                "objectDsc": "FIRESIDE"
-                            },
-                            {
-                                "objectCd": "FIRV",
-                                "objectDsc": "FIRVALE"
-                            },
-                            {
-                                "objectCd": "FLAT",
-                                "objectDsc": "FLATHEAD"
-                            },
-                            {
-                                "objectCd": "FTRK",
-                                "objectDsc": "FLATROCK"
-                            },
-                            {
-                                "objectCd": "FLIS",
-                                "objectDsc": "FLEMING ISLAND"
-                            },
-                            {
-                                "objectCd": "FSIS",
-                                "objectDsc": "FLORES ISLAND"
-                            },
-                            {
-                                "objectCd": "FLYI",
-                                "objectDsc": "FLY ISLAND IR"
-                            },
-                            {
-                                "objectCd": "FONT",
-                                "objectDsc": "FONTAS"
-                            },
-                            {
-                                "objectCd": "FMFL",
-                                "objectDsc": "FOREMAN FLATS"
-                            },
-                            {
-                                "objectCd": "FRGV",
-                                "objectDsc": "FOREST GROVE"
-                            },
-                            {
-                                "objectCd": "FGCK",
-                                "objectDsc": "FORGETMENOT CREEK"
-                            },
-                            {
-                                "objectCd": "FBAB",
-                                "objectDsc": "FORT BABINE"
-                            },
-                            {
-                                "objectCd": "FFRA",
-                                "objectDsc": "FORT FRASER"
-                            },
-                            {
-                                "objectCd": "FGRG",
-                                "objectDsc": "FORT GEORGE NO 2"
-                            },
-                            {
-                                "objectCd": "FLIA",
-                                "objectDsc": "FORT LIARD"
-                            },
-                            {
-                                "objectCd": "FNEL",
-                                "objectDsc": "FORT NELSON"
-                            },
-                            {
-                                "objectCd": "FNEI",
-                                "objectDsc": "FORT NELSON IR"
-                            },
-                            {
-                                "objectCd": "FSJA",
-                                "objectDsc": "FORT ST JAMES"
-                            },
-                            {
-                                "objectCd": "FSJO",
-                                "objectDsc": "FORT ST JOHN"
-                            },
-                            {
-                                "objectCd": "FTST",
-                                "objectDsc": "FORT STEELE"
-                            },
-                            {
-                                "objectCd": "FWAR",
-                                "objectDsc": "FORT WARE"
-                            },
-                            {
-                                "objectCd": "FCLK",
-                                "objectDsc": "FRANCOIS LAKE"
-                            },
-                            {
-                                "objectCd": "FRAS",
-                                "objectDsc": "FRASER"
-                            },
-                            {
-                                "objectCd": "FRLK",
-                                "objectDsc": "FRASER LAKE"
-                            },
-                            {
-                                "objectCd": "9FSV",
-                                "objectDsc": "FRASER VALLEY"
-                            },
-                            {
-                                "objectCd": "FRDK",
-                                "objectDsc": "FREDERICK"
-                            },
-                            {
-                                "objectCd": "FRVA",
-                                "objectDsc": "FRUITVALE"
-                            },
-                            {
-                                "objectCd": "FURY",
-                                "objectDsc": "FURRY CREEK"
-                            },
-                            {
-                                "objectCd": "GBIS",
-                                "objectDsc": "GABRIOLA ISLAND"
-                            },
-                            {
-                                "objectCd": "GABY",
-                                "objectDsc": "GALENA BAY"
-                            },
-                            {
-                                "objectCd": "GLIS",
-                                "objectDsc": "GALIANO ISLAND"
-                            },
-                            {
-                                "objectCd": "GLWY",
-                                "objectDsc": "GALLOWAY"
-                            },
-                            {
-                                "objectCd": "GMBR",
-                                "objectDsc": "GAMBIER ISLAND"
-                            },
-                            {
-                                "objectCd": "GARH",
-                                "objectDsc": "GANG RANCH"
-                            },
-                            {
-                                "objectCd": "GDBA",
-                                "objectDsc": "GARDEN BAY"
-                            },
-                            {
-                                "objectCd": "GRBD",
-                                "objectDsc": "GARIBALDI PARK"
-                            },
-                            {
-                                "objectCd": "GNLL",
-                                "objectDsc": "GENELLE"
-                            },
-                            {
-                                "objectCd": "GMLG",
-                                "objectDsc": "GERMANSEN LANDING"
-                            },
-                            {
-                                "objectCd": "GBLG",
-                                "objectDsc": "GIBSON ISLAND"
-                            },
-                            {
-                                "objectCd": "GIB",
-                                "objectDsc": "GIBSONS"
-                            },
-                            {
-                                "objectCd": "GIIS",
-                                "objectDsc": "GIL ISLAND"
-                            },
-                            {
-                                "objectCd": "GFIS",
-                                "objectDsc": "GILFORD ISLAND"
-                            },
-                            {
-                                "objectCd": "GLSB",
-                                "objectDsc": "GILLIES BAY"
-                            },
-                            {
-                                "objectCd": "GINX",
-                                "objectDsc": "GINGOLX"
-                            },
-                            {
-                                "objectCd": "GSCM",
-                                "objectDsc": "GISCOME"
-                            },
-                            {
-                                "objectCd": "GTMX",
-                                "objectDsc": "GITANMAAX"
-                            },
-                            {
-                                "objectCd": "GTYW",
-                                "objectDsc": "GITANYOW"
-                            },
-                            {
-                                "objectCd": "GITS",
-                                "objectDsc": "GITAUS"
-                            },
-                            {
-                                "objectCd": "GYGK",
-                                "objectDsc": "GITSEGUKLA"
-                            },
-                            {
-                                "objectCd": "GTWK",
-                                "objectDsc": "GITWANGAK"
-                            },
-                            {
-                                "objectCd": "GTWW",
-                                "objectDsc": "GITWINKSIHLKW"
-                            },
-                            {
-                                "objectCd": "GLAD",
-                                "objectDsc": "GLADE"
-                            },
-                            {
-                                "objectCd": "GLNV",
-                                "objectDsc": "GLEN VOWELL"
-                            },
-                            {
-                                "objectCd": "GLEN",
-                                "objectDsc": "GLENORA"
-                            },
-                            {
-                                "objectCd": "GLMP",
-                                "objectDsc": "GLIMPSE LAKE"
-                            },
-                            {
-                                "objectCd": "GLDB",
-                                "objectDsc": "GOLD BRIDGE"
-                            },
-                            {
-                                "objectCd": "GLRV",
-                                "objectDsc": "GOLD RIVER"
-                            },
-                            {
-                                "objectCd": "GLDN",
-                                "objectDsc": "GOLDEN"
-                            },
-                            {
-                                "objectCd": "GLDP",
-                                "objectDsc": "GOLDEN EARS PARK"
-                            },
-                            {
-                                "objectCd": "GHLK",
-                                "objectDsc": "GOOD HOPE LAKE"
-                            },
-                            {
-                                "objectCd": "GDLW",
-                                "objectDsc": "GOODLOW"
-                            },
-                            {
-                                "objectCd": "GSIS",
-                                "objectDsc": "GOOSE ISLAND"
-                            },
-                            {
-                                "objectCd": "GHIS",
-                                "objectDsc": "GOSCHEN ISLAND"
-                            },
-                            {
-                                "objectCd": "GOIS",
-                                "objectDsc": "GOSSIP ISLAND"
-                            },
-                            {
-                                "objectCd": "GDFR",
-                                "objectDsc": "GRAND FORKS"
-                            },
-                            {
-                                "objectCd": "GRBH",
-                                "objectDsc": "GRANDVIEW BENCH"
-                            },
-                            {
-                                "objectCd": "GRAN",
-                                "objectDsc": "GRANISLE"
-                            },
-                            {
-                                "objectCd": "GRMR",
-                                "objectDsc": "GRASMERE"
-                            },
-                            {
-                                "objectCd": "GLIR",
-                                "objectDsc": "GRASSLANDS IR"
-                            },
-                            {
-                                "objectCd": "GIIR",
-                                "objectDsc": "GRASSY ISLAND IR"
-                            },
-                            {
-                                "objectCd": "GRPL",
-                                "objectDsc": "GRASSY PLAINS"
-                            },
-                            {
-                                "objectCd": "GRCK",
-                                "objectDsc": "GRAY CREEK"
-                            },
-                            {
-                                "objectCd": "GBLK",
-                                "objectDsc": "GREAT BEAVER LAKE"
-                            },
-                            {
-                                "objectCd": "GREL",
-                                "objectDsc": "GREEN LAKE"
-                            },
-                            {
-                                "objectCd": "GRVL",
-                                "objectDsc": "GREENVILLE"
-                            },
-                            {
-                                "objectCd": "GRWD",
-                                "objectDsc": "GREENWOOD"
-                            },
-                            {
-                                "objectCd": "GGIS",
-                                "objectDsc": "GREGORY ISLAND"
-                            },
-                            {
-                                "objectCd": "GRBI",
-                                "objectDsc": "GRIBBELL ISLAND"
-                            },
-                            {
-                                "objectCd": "GRRD",
-                                "objectDsc": "GRINDROD"
-                            },
-                            {
-                                "objectCd": "GRBR",
-                                "objectDsc": "GROUNDBIRCH"
-                            },
-                            {
-                                "objectCd": "GUND",
-                                "objectDsc": "GUNDY"
-                            },
-                            {
-                                "objectCd": "GDIS",
-                                "objectDsc": "GURD ISLAND"
-                            },
-                            {
-                                "objectCd": "GUTA",
-                                "objectDsc": "GUTAH"
-                            },
-                            {
-                                "objectCd": "HAGG",
-                                "objectDsc": "HAGENSBORG"
-                            },
-                            {
-                                "objectCd": "HAGW",
-                                "objectDsc": "HAGWILGET"
-                            },
-                            {
-                                "objectCd": "HMB",
-                                "objectDsc": "HALFMOON BAY"
-                            },
-                            {
-                                "objectCd": "HWRV",
-                                "objectDsc": "HALFWAY RIVER"
-                            },
-                            {
-                                "objectCd": "HWRI",
-                                "objectDsc": "HALFWAY RIVER IR"
-                            },
-                            {
-                                "objectCd": "HRPP",
-                                "objectDsc": "HAMBER PROVINCIAL PARK"
-                            },
-                            {
-                                "objectCd": "HNVL",
-                                "objectDsc": "HANCEVILLE"
-                            },
-                            {
-                                "objectCd": "HNIS",
-                                "objectDsc": "HANSON ISLAND"
-                            },
-                            {
-                                "objectCd": "HDIS",
-                                "objectDsc": "HARBLEDOWN ISLAND"
-                            },
-                            {
-                                "objectCd": "HWIS",
-                                "objectDsc": "HARDWICKE ISLAND"
-                            },
-                            {
-                                "objectCd": "HYIS",
-                                "objectDsc": "HARDY ISLAND"
-                            },
-                            {
-                                "objectCd": "HARR",
-                                "objectDsc": "HARRISON HOT SPRINGS"
-                            },
-                            {
-                                "objectCd": "HRIS",
-                                "objectDsc": "HARRISON ISLAND"
-                            },
-                            {
-                                "objectCd": "HRLK",
-                                "objectDsc": "HARRISON LAKE"
-                            },
-                            {
-                                "objectCd": "HRML",
-                                "objectDsc": "HARRISON MILLS"
-                            },
-                            {
-                                "objectCd": "HARP",
-                                "objectDsc": "HARROP"
-                            },
-                            {
-                                "objectCd": "HYBY",
-                                "objectDsc": "HARTLEY BAY"
-                            },
-                            {
-                                "objectCd": "HWDI",
-                                "objectDsc": "HARWOOD ISLAND"
-                            },
-                            {
-                                "objectCd": "HRFT",
-                                "objectDsc": "HASLER FLATS"
-                            },
-                            {
-                                "objectCd": "HATC",
-                                "objectDsc": "HAT CREEK"
-                            },
-                            {
-                                "objectCd": "HCIR",
-                                "objectDsc": "HAT CREEK IR"
-                            },
-                            {
-                                "objectCd": "HTZC",
-                                "objectDsc": "HATZIC"
-                            },
-                            {
-                                "objectCd": "HBIS",
-                                "objectDsc": "HAWKESBURY ISLAND"
-                            },
-                            {
-                                "objectCd": "HAZL",
-                                "objectDsc": "HAZELTON"
-                            },
-                            {
-                                "objectCd": "HAZR",
-                                "objectDsc": "HAZELTON RURAL"
-                            },
-                            {
-                                "objectCd": "HCTI",
-                                "objectDsc": "HECATE ISLAND"
-                            },
-                            {
-                                "objectCd": "HDLY",
-                                "objectDsc": "HEDLEY"
-                            },
-                            {
-                                "objectCd": "HEFC",
-                                "objectDsc": "HEFFLEY CREEK"
-                            },
-                            {
-                                "objectCd": "HFCK",
-                                "objectDsc": "HEFFLEY CREEK"
-                            },
-                            {
-                                "objectCd": "HLBI",
-                                "objectDsc": "HELBY ISLAND"
-                            },
-                            {
-                                "objectCd": "HELM",
-                                "objectDsc": "HELMUT"
-                            },
-                            {
-                                "objectCd": "HMVL",
-                                "objectDsc": "HEMLOCK VALLEY"
-                            },
-                            {
-                                "objectCd": "HXLK",
-                                "objectDsc": "HENDRIX LAKE"
-                            },
-                            {
-                                "objectCd": "HRYI",
-                                "objectDsc": "HENRY ISLAND"
-                            },
-                            {
-                                "objectCd": "HNDI",
-                                "objectDsc": "HERNANDO ISLAND"
-                            },
-                            {
-                                "objectCd": "HBBI",
-                                "objectDsc": "HIBBEN ISLAND"
-                            },
-                            {
-                                "objectCd": "HILD",
-                                "objectDsc": "HIGHLANDS"
-                            },
-                            {
-                                "objectCd": "HILS",
-                                "objectDsc": "HILLS"
-                            },
-                            {
-                                "objectCd": "HIXN",
-                                "objectDsc": "HIXON"
-                            },
-                            {
-                                "objectCd": "HXNS",
-                                "objectDsc": "HIXON SOUTH"
-                            },
-                            {
-                                "objectCd": "HOLB",
-                                "objectDsc": "HOLBERG"
-                            },
-                            {
-                                "objectCd": "HNYB",
-                                "objectDsc": "HONEYMOON BAY"
-                            },
-                            {
-                                "objectCd": "HOLK",
-                                "objectDsc": "HOODOO LAKE"
-                            },
-                            {
-                                "objectCd": "HOPE",
-                                "objectDsc": "HOPE"
-                            },
-                            {
-                                "objectCd": "HOIS",
-                                "objectDsc": "HOPE ISLAND"
-                            },
-                            {
-                                "objectCd": "HPKN",
-                                "objectDsc": "HOPKINS LANDING"
-                            },
-                            {
-                                "objectCd": "HPIS",
-                                "objectDsc": "HORNBY ISLAND"
-                            },
-                            {
-                                "objectCd": "HSFY",
-                                "objectDsc": "HORSEFLY"
-                            },
-                            {
-                                "objectCd": "HSMR",
-                                "objectDsc": "HOSMER"
-                            },
-                            {
-                                "objectCd": "HSCV",
-                                "objectDsc": "HOT SPRINGS COVE"
-                            },
-                            {
-                                "objectCd": "HOUS",
-                                "objectDsc": "HOUSTON"
-                            },
-                            {
-                                "objectCd": "HWSR",
-                                "objectDsc": "HOWSER"
-                            },
-                            {
-                                "objectCd": "HDHP",
-                                "objectDsc": "HUDSON'S HOPE"
-                            },
-                            {
-                                "objectCd": "HLIS",
-                                "objectDsc": "HULL ISLAND"
-                            },
-                            {
-                                "objectCd": "HNTI",
-                                "objectDsc": "HUNTER ISLAND"
-                            },
-                            {
-                                "objectCd": "HUPE",
-                                "objectDsc": "HUPEL"
-                            },
-                            {
-                                "objectCd": "HSIS",
-                                "objectDsc": "HURST ISLAND"
-                            },
-                            {
-                                "objectCd": "HCHL",
-                                "objectDsc": "HUTCHISON LAKE"
-                            },
-                            {
-                                "objectCd": "HXIS",
-                                "objectDsc": "HUXLEY ISLAND"
-                            },
-                            {
-                                "objectCd": "HYSL",
-                                "objectDsc": "HYAS LAKE"
-                            },
-                            {
-                                "objectCd": "IARM",
-                                "objectDsc": "INDIAN ARM"
-                            },
-                            {
-                                "objectCd": "INIS",
-                                "objectDsc": "INSECT ISLAND"
-                            },
-                            {
-                                "objectCd": "IGTF",
-                                "objectDsc": "INTEGRATED GANG TASK FORCE"
-                            },
-                            {
-                                "objectCd": "IVMR",
-                                "objectDsc": "INVERMERE"
-                            },
-                            {
-                                "objectCd": "IRVN",
-                                "objectDsc": "IRVINES LANDING"
-                            },
-                            {
-                                "objectCd": "ISKU",
-                                "objectDsc": "ISKUT"
-                            },
-                            {
-                                "objectCd": "ISLP",
-                                "objectDsc": "ISLE PIERRE"
-                            },
-                            {
-                                "objectCd": "JFLK",
-                                "objectDsc": "JACKFISH LAKE"
-                            },
-                            {
-                                "objectCd": "JACY",
-                                "objectDsc": "JADE CITY"
-                            },
-                            {
-                                "objectCd": "JFRY",
-                                "objectDsc": "JAFFRAY"
-                            },
-                            {
-                                "objectCd": "JMIS",
-                                "objectDsc": "JAMES ISLAND"
-                            },
-                            {
-                                "objectCd": "JRVS",
-                                "objectDsc": "JERVIS INLET"
-                            },
-                            {
-                                "objectCd": "JESM",
-                                "objectDsc": "JESMOND"
-                            },
-                            {
-                                "objectCd": "JDRV",
-                                "objectDsc": "JORDAN RIVER"
-                            },
-                            {
-                                "objectCd": "JUSK",
-                                "objectDsc": "JUSKATLA"
-                            },
-                            {
-                                "objectCd": "KDIR",
-                                "objectDsc": "KADIS IR"
-                            },
-                            {
-                                "objectCd": "KLDN",
-                                "objectDsc": "KALEDEN"
-                            },
-                            {
-                                "objectCd": "KMLP",
-                                "objectDsc": "KAMLOOPS"
-                            },
-                            {
-                                "objectCd": "KNKB",
-                                "objectDsc": "KANAKA BAR"
-                            },
-                            {
-                                "objectCd": "KASL",
-                                "objectDsc": "KASLO"
-                            },
-                            {
-                                "objectCd": "KTSI",
-                                "objectDsc": "KEATS ISLAND"
-                            },
-                            {
-                                "objectCd": "KYLK",
-                                "objectDsc": "KELLY LAKE"
-                            },
-                            {
-                                "objectCd": "KELY",
-                                "objectDsc": "KELLY LAKE TNRD"
-                            },
-                            {
-                                "objectCd": "KLWN",
-                                "objectDsc": "KELOWNA"
-                            },
-                            {
-                                "objectCd": "KEMA",
-                                "objectDsc": "KEMANO"
-                            },
-                            {
-                                "objectCd": "KYIS",
-                                "objectDsc": "KENNEDY ISLAND"
-                            },
-                            {
-                                "objectCd": "KDLK",
-                                "objectDsc": "KENNEDY LAKE"
-                            },
-                            {
-                                "objectCd": "KRMO",
-                                "objectDsc": "KEREMEOS"
-                            },
-                            {
-                                "objectCd": "KRSY",
-                                "objectDsc": "KERSLEY"
-                            },
-                            {
-                                "objectCd": "KILD",
-                                "objectDsc": "KILDONAN"
-                            },
-                            {
-                                "objectCd": "KNKN",
-                                "objectDsc": "KILKERRAN"
-                            },
-                            {
-                                "objectCd": "KBLY",
-                                "objectDsc": "KIMBERLEY"
-                            },
-                            {
-                                "objectCd": "KINA",
-                                "objectDsc": "KINASKAN"
-                            },
-                            {
-                                "objectCd": "KINC",
-                                "objectDsc": "KINCOLITH"
-                            },
-                            {
-                                "objectCd": "KGIT",
-                                "objectDsc": "KINGCOME INLET"
-                            },
-                            {
-                                "objectCd": "KGGT",
-                                "objectDsc": "KINGSGATE"
-                            },
-                            {
-                                "objectCd": "KNGV",
-                                "objectDsc": "KINGSVALE"
-                            },
-                            {
-                                "objectCd": "KISP",
-                                "objectDsc": "KISPIOX"
-                            },
-                            {
-                                "objectCd": "KSPV",
-                                "objectDsc": "KISPIOX VALLEY"
-                            },
-                            {
-                                "objectCd": "KITV",
-                                "objectDsc": "KITAMAAT VILLAGE"
-                            },
-                            {
-                                "objectCd": "KTNR",
-                                "objectDsc": "KITCHENER"
-                            },
-                            {
-                                "objectCd": "KITI",
-                                "objectDsc": "KITIMAT"
-                            },
-                            {
-                                "objectCd": "KITK",
-                                "objectDsc": "KITKATLA"
-                            },
-                            {
-                                "objectCd": "KITS",
-                                "objectDsc": "KITSAULT"
-                            },
-                            {
-                                "objectCd": "KITW",
-                                "objectDsc": "KITWANGA"
-                            },
-                            {
-                                "objectCd": "KLIS",
-                                "objectDsc": "KLAOITISIS ISLAND"
-                            },
-                            {
-                                "objectCd": "KLPP",
-                                "objectDsc": "KLAPPAN"
-                            },
-                            {
-                                "objectCd": "KLKL",
-                                "objectDsc": "KLEENA KLEENE"
-                            },
-                            {
-                                "objectCd": "KLEM",
-                                "objectDsc": "KLEMTU"
-                            },
-                            {
-                                "objectCd": "KGIN",
-                                "objectDsc": "KNIGHT INLET"
-                            },
-                            {
-                                "objectCd": "KNUF",
-                                "objectDsc": "KNUTSFORD"
-                            },
-                            {
-                                "objectCd": "KOKS",
-                                "objectDsc": "KOKSILAH"
-                            },
-                            {
-                                "objectCd": "KYBY",
-                                "objectDsc": "KOOTENAY BAY"
-                            },
-                            {
-                                "objectCd": "KTPK",
-                                "objectDsc": "KOOTENAY PARK"
-                            },
-                            {
-                                "objectCd": "KTPS",
-                                "objectDsc": "KOOTENAY PASS"
-                            },
-                            {
-                                "objectCd": "KCLK",
-                                "objectDsc": "KOTCHO LAKE"
-                            },
-                            {
-                                "objectCd": "KRTV",
-                                "objectDsc": "KRESTOVA"
-                            },
-                            {
-                                "objectCd": "KLDI",
-                                "objectDsc": "KSUI LA DAS IR"
-                            },
-                            {
-                                "objectCd": "KITM",
-                                "objectDsc": "KTSUMKAYLUM IR"
-                            },
-                            {
-                                "objectCd": "KULI",
-                                "objectDsc": "KULDEKDUMA IR"
-                            },
-                            {
-                                "objectCd": "KULD",
-                                "objectDsc": "KULDO"
-                            },
-                            {
-                                "objectCd": "KUIS",
-                                "objectDsc": "KUNGA ISLAND"
-                            },
-                            {
-                                "objectCd": "KHIS",
-                                "objectDsc": "KUNGHIT ISLAND"
-                            },
-                            {
-                                "objectCd": "KPIS",
-                                "objectDsc": "KUPER ISLAND"
-                            },
-                            {
-                                "objectCd": "KWDA",
-                                "objectDsc": "KWADACHA"
-                            },
-                            {
-                                "objectCd": "KWRV",
-                                "objectDsc": "KWINAMSS RIVER"
-                            },
-                            {
-                                "objectCd": "KYLI",
-                                "objectDsc": "KYE YAA LA IR"
-                            },
-                            {
-                                "objectCd": "KYUQ",
-                                "objectDsc": "KYUQUOT"
-                            },
-                            {
-                                "objectCd": "LADB",
-                                "objectDsc": "LAC DU BOIS"
-                            },
-                            {
-                                "objectCd": "LLHC",
-                                "objectDsc": "LAC LA HACHE"
-                            },
-                            {
-                                "objectCd": "LLJN",
-                                "objectDsc": "LAC LE JEUNE"
-                            },
-                            {
-                                "objectCd": "LDYS",
-                                "objectDsc": "LADYSMITH"
-                            },
-                            {
-                                "objectCd": "LDLW",
-                                "objectDsc": "LAIDLAW"
-                            },
-                            {
-                                "objectCd": "LKCY",
-                                "objectDsc": "LAKE COUNTRY"
-                            },
-                            {
-                                "objectCd": "LCWC",
-                                "objectDsc": "LAKE COWICHAN"
-                            },
-                            {
-                                "objectCd": "LKER",
-                                "objectDsc": "LAKE ERROCK"
-                            },
-                            {
-                                "objectCd": "LKLK",
-                                "objectDsc": "LAKELSE LAKE"
-                            },
-                            {
-                                "objectCd": "LGIS",
-                                "objectDsc": "LANGARA ISLAND"
-                            },
-                            {
-                                "objectCd": "LNGD",
-                                "objectDsc": "LANGDALE"
-                            },
-                            {
-                                "objectCd": "LGFD",
-                                "objectDsc": "LANGFORD"
-                            },
-                            {
-                                "objectCd": "LANG",
-                                "objectDsc": "LANGLEY"
-                            },
-                            {
-                                "objectCd": "LNVL",
-                                "objectDsc": "LANTZVILLE"
-                            },
-                            {
-                                "objectCd": "LZIS",
-                                "objectDsc": "LANZ ISLAND"
-                            },
-                            {
-                                "objectCd": "LARD",
-                                "objectDsc": "LARDEAU"
-                            },
-                            {
-                                "objectCd": "LQIS",
-                                "objectDsc": "LASQUETI ISLAND"
-                            },
-                            {
-                                "objectCd": "LAVI",
-                                "objectDsc": "LAVINGTON"
-                            },
-                            {
-                                "objectCd": "LXKW",
-                                "objectDsc": "LAX KW' ALAAMS"
-                            },
-                            {
-                                "objectCd": "LAXA",
-                                "objectDsc": "LAXGALTS AP"
-                            },
-                            {
-                                "objectCd": "LNCL",
-                                "objectDsc": "LEANCHOIL"
-                            },
-                            {
-                                "objectCd": "LECK",
-                                "objectDsc": "LEE CREEK"
-                            },
-                            {
-                                "objectCd": "LWIS",
-                                "objectDsc": "LEWIS ISLAND"
-                            },
-                            {
-                                "objectCd": "LDRV",
-                                "objectDsc": "LIARD RIVER"
-                            },
-                            {
-                                "objectCd": "LKLY",
-                                "objectDsc": "LIKELY"
-                            },
-                            {
-                                "objectCd": "LILL",
-                                "objectDsc": "LILLOOET"
-                            },
-                            {
-                                "objectCd": "LILR",
-                                "objectDsc": "LILLOOET RURAL"
-                            },
-                            {
-                                "objectCd": "LYLK",
-                                "objectDsc": "LILY LAKE"
-                            },
-                            {
-                                "objectCd": "LAIS",
-                                "objectDsc": "LINA ISLAND"
-                            },
-                            {
-                                "objectCd": "LNBH",
-                                "objectDsc": "LINDELL BEACH"
-                            },
-                            {
-                                "objectCd": "LBAY",
-                                "objectDsc": "LIONS BAY"
-                            },
-                            {
-                                "objectCd": "LSTR",
-                                "objectDsc": "LISTER"
-                            },
-                            {
-                                "objectCd": "LTFT",
-                                "objectDsc": "LITTLE FORT"
-                            },
-                            {
-                                "objectCd": "LDGP",
-                                "objectDsc": "LODGEPOLE"
-                            },
-                            {
-                                "objectCd": "LGLK",
-                                "objectDsc": "LOGAN LAKE"
-                            },
-                            {
-                                "objectCd": "LNBT",
-                                "objectDsc": "LONE BUTTE"
-                            },
-                            {
-                                "objectCd": "LNPR",
-                                "objectDsc": "LONE PRAIRIE"
-                            },
-                            {
-                                "objectCd": "LGBH",
-                                "objectDsc": "LONG BEACH"
-                            },
-                            {
-                                "objectCd": "LGWT",
-                                "objectDsc": "LONGWORTH"
-                            },
-                            {
-                                "objectCd": "LNLK",
-                                "objectDsc": "LOON LAKE"
-                            },
-                            {
-                                "objectCd": "LTIS",
-                                "objectDsc": "LORETTA ISLAND"
-                            },
-                            {
-                                "objectCd": "LSCK",
-                                "objectDsc": "LOUIS CREEK"
-                            },
-                            {
-                                "objectCd": "LARW",
-                                "objectDsc": "LOWER ARROW"
-                            },
-                            {
-                                "objectCd": "LNIC",
-                                "objectDsc": "LOWER NICOLA"
-                            },
-                            {
-                                "objectCd": "LWPT",
-                                "objectDsc": "LOWER POST"
-                            },
-                            {
-                                "objectCd": "LMBY",
-                                "objectDsc": "LUMBY"
-                            },
-                            {
-                                "objectCd": "LUND",
-                                "objectDsc": "LUND"
-                            },
-                            {
-                                "objectCd": "LYIS",
-                                "objectDsc": "LYELL ISLAND"
-                            },
-                            {
-                                "objectCd": "LYTN",
-                                "objectDsc": "LYTTON"
-                            },
-                            {
-                                "objectCd": "LYTR",
-                                "objectDsc": "LYTTON RURAL"
-                            },
-                            {
-                                "objectCd": "MCKN",
-                                "objectDsc": "MACKENZIE"
-                            },
-                            {
-                                "objectCd": "MZRU",
-                                "objectDsc": "MACKENZIE RURAL"
-                            },
-                            {
-                                "objectCd": "MDPK",
-                                "objectDsc": "MADEIRA PARK"
-                            },
-                            {
-                                "objectCd": "MGBY",
-                                "objectDsc": "MAGNA BAY"
-                            },
-                            {
-                                "objectCd": "MHRV",
-                                "objectDsc": "MAHATTA RIVER"
-                            },
-                            {
-                                "objectCd": "MDFL",
-                                "objectDsc": "MAHOOD FALLS"
-                            },
-                            {
-                                "objectCd": "MDCK",
-                                "objectDsc": "MAIDEN CREEK"
-                            },
-                            {
-                                "objectCd": "MTIS",
-                                "objectDsc": "MAITLAND ISLAND"
-                            },
-                            {
-                                "objectCd": "MLHT",
-                                "objectDsc": "MALAHAT"
-                            },
-                            {
-                                "objectCd": "MAKW",
-                                "objectDsc": "MALAKWA"
-                            },
-                            {
-                                "objectCd": "MMLK",
-                                "objectDsc": "MAMIT LAKE"
-                            },
-                            {
-                                "objectCd": "MNPK",
-                                "objectDsc": "MANNING PARK"
-                            },
-                            {
-                                "objectCd": "MNCK",
-                                "objectDsc": "MANSON CREEK"
-                            },
-                            {
-                                "objectCd": "MSLD",
-                                "objectDsc": "MANSONS LANDING"
-                            },
-                            {
-                                "objectCd": "MRDG",
-                                "objectDsc": "MAPLE RIDGE"
-                            },
-                            {
-                                "objectCd": "MARA",
-                                "objectDsc": "MARA"
-                            },
-                            {
-                                "objectCd": "MRCN",
-                                "objectDsc": "MARBLE CANYON"
-                            },
-                            {
-                                "objectCd": "MARG",
-                                "objectDsc": "MARGUERITE"
-                            },
-                            {
-                                "objectCd": "MAIS",
-                                "objectDsc": "MARINA ISLAND"
-                            },
-                            {
-                                "objectCd": "MRIS",
-                                "objectDsc": "MARS ISLAND"
-                            },
-                            {
-                                "objectCd": "MASS",
-                                "objectDsc": "MASSET"
-                            },
-                            {
-                                "objectCd": "MDIS",
-                                "objectDsc": "MAUD ISLAND"
-                            },
-                            {
-                                "objectCd": "MEIS",
-                                "objectDsc": "MAUDE ISLAND"
-                            },
-                            {
-                                "objectCd": "MLIS",
-                                "objectDsc": "MAURELLE ISLAND"
-                            },
-                            {
-                                "objectCd": "MXMH",
-                                "objectDsc": "MAXHAMISH"
-                            },
-                            {
-                                "objectCd": "MYIS",
-                                "objectDsc": "MAYNE ISLAND"
-                            },
-                            {
-                                "objectCd": "MYOK",
-                                "objectDsc": "MAYOOK"
-                            },
-                            {
-                                "objectCd": "MBRD",
-                                "objectDsc": "MCBRIDE"
-                            },
-                            {
-                                "objectCd": "MBRU",
-                                "objectDsc": "MCBRIDE RURAL"
-                            },
-                            {
-                                "objectCd": "MCIS",
-                                "objectDsc": "MCCAULEY ISLAND"
-                            },
-                            {
-                                "objectCd": "MCGL",
-                                "objectDsc": "MCGILLIVRAY LAKE"
-                            },
-                            {
-                                "objectCd": "MCGR",
-                                "objectDsc": "MCGREGOR"
-                            },
-                            {
-                                "objectCd": "MCKY",
-                                "objectDsc": "MCKAY ISLAND"
-                            },
-                            {
-                                "objectCd": "MLLK",
-                                "objectDsc": "MCLEESE LAKE"
-                            },
-                            {
-                                "objectCd": "MLDL",
-                                "objectDsc": "MCLEOD LAKE"
-                            },
-                            {
-                                "objectCd": "MDLK",
-                                "objectDsc": "MCLEOD LAKE RESERVE"
-                            },
-                            {
-                                "objectCd": "MCLR",
-                                "objectDsc": "MCLURE"
-                            },
-                            {
-                                "objectCd": "MWCK",
-                                "objectDsc": "MEADOW CREEK"
-                            },
-                            {
-                                "objectCd": "MDWL",
-                                "objectDsc": "MEADOW LAKE"
-                            },
-                            {
-                                "objectCd": "MSIS",
-                                "objectDsc": "MEARES ISLAND"
-                            },
-                            {
-                                "objectCd": "MGLK",
-                                "objectDsc": "MEGIN LAKE"
-                            },
-                            {
-                                "objectCd": "MVIS",
-                                "objectDsc": "MELVILLE ISLAND"
-                            },
-                            {
-                                "objectCd": "MRTT",
-                                "objectDsc": "MERRITT"
-                            },
-                            {
-                                "objectCd": "MELV",
-                                "objectDsc": "MERVILLE"
-                            },
-                            {
-                                "objectCd": "MSLK",
-                                "objectDsc": "MESACHIE LAKE"
-                            },
-                            {
-                                "objectCd": "METC",
-                                "objectDsc": "METCHOSIN"
-                            },
-                            {
-                                "objectCd": "MTKA",
-                                "objectDsc": "METLAKATLA"
-                            },
-                            {
-                                "objectCd": "MZDN",
-                                "objectDsc": "MEZIADIN"
-                            },
-                            {
-                                "objectCd": "MNLK",
-                                "objectDsc": "MEZIADIN LAKE"
-                            },
-                            {
-                                "objectCd": "MCCK",
-                                "objectDsc": "MICA CREEK"
-                            },
-                            {
-                                "objectCd": "MMIS",
-                                "objectDsc": "MIDSUMMER ISLAND"
-                            },
-                            {
-                                "objectCd": "MDWY",
-                                "objectDsc": "MIDWAY"
-                            },
-                            {
-                                "objectCd": "MLBY",
-                                "objectDsc": "MILL BAY"
-                            },
-                            {
-                                "objectCd": "MNNL",
-                                "objectDsc": "MINNIE LAKE"
-                            },
-                            {
-                                "objectCd": "MNIS",
-                                "objectDsc": "MINSTREL ISLAND"
-                            },
-                            {
-                                "objectCd": "MIOC",
-                                "objectDsc": "MIOCENE"
-                            },
-                            {
-                                "objectCd": "MILK",
-                                "objectDsc": "MIRROR LAKE"
-                            },
-                            {
-                                "objectCd": "MZLK",
-                                "objectDsc": "MISSEZULA LAKE"
-                            },
-                            {
-                                "objectCd": "MSSL",
-                                "objectDsc": "MISSEZULA LAKE TNRD"
-                            },
-                            {
-                                "objectCd": "MISS",
-                                "objectDsc": "MISSION"
-                            },
-                            {
-                                "objectCd": "MWRT",
-                                "objectDsc": "MIWORTH"
-                            },
-                            {
-                                "objectCd": "MOLK",
-                                "objectDsc": "MOBERLY LAKE"
-                            },
-                            {
-                                "objectCd": "MKIS",
-                                "objectDsc": "MOKETAS ISLAND"
-                            },
-                            {
-                                "objectCd": "MCHL",
-                                "objectDsc": "MOMICH LAKE"
-                            },
-                            {
-                                "objectCd": "MKMN",
-                                "objectDsc": "MONKMAN"
-                            },
-                            {
-                                "objectCd": "MTCK",
-                                "objectDsc": "MONTE CREEK"
-                            },
-                            {
-                                "objectCd": "MTLK",
-                                "objectDsc": "MONTE LAKE"
-                            },
-                            {
-                                "objectCd": "MNTY",
-                                "objectDsc": "MONTNEY"
-                            },
-                            {
-                                "objectCd": "MTRS",
-                                "objectDsc": "MONTROSE"
-                            },
-                            {
-                                "objectCd": "MSHT",
-                                "objectDsc": "MOOSE HEIGHTS"
-                            },
-                            {
-                                "objectCd": "MBIS",
-                                "objectDsc": "MORESBY ISLAND"
-                            },
-                            {
-                                "objectCd": "MRTN",
-                                "objectDsc": "MORICETOWN-WITSET FN"
-                            },
-                            {
-                                "objectCd": "MSVL",
-                                "objectDsc": "MOSSVALE"
-                            },
-                            {
-                                "objectCd": "MTCR",
-                                "objectDsc": "MOUNT CURRIE"
-                            },
-                            {
-                                "objectCd": "MTRN",
-                                "objectDsc": "MOUNT ROBSON"
-                            },
-                            {
-                                "objectCd": "MOYE",
-                                "objectDsc": "MOYIE"
-                            },
-                            {
-                                "objectCd": "MLMY",
-                                "objectDsc": "MT LE MORAY"
-                            },
-                            {
-                                "objectCd": "MRPP",
-                                "objectDsc": "MT ROBSON PROVINCIAL PARK"
-                            },
-                            {
-                                "objectCd": "MTFP",
-                                "objectDsc": "MT TERRY FOX PROVINCIAL PARK"
-                            },
-                            {
-                                "objectCd": "MTWN",
-                                "objectDsc": "MT WASHINGTON"
-                            },
-                            {
-                                "objectCd": "MDRV",
-                                "objectDsc": "MUD RIVER"
-                            },
-                            {
-                                "objectCd": "MGIS",
-                                "objectDsc": "MUDGE ISLAND"
-                            },
-                            {
-                                "objectCd": "MHLK",
-                                "objectDsc": "MUNCHO LAKE"
-                            },
-                            {
-                                "objectCd": "MHIS",
-                                "objectDsc": "MURCHISON ISLAND"
-                            },
-                            {
-                                "objectCd": "MURD",
-                                "objectDsc": "MURDALE"
-                            },
-                            {
-                                "objectCd": "MUSK",
-                                "objectDsc": "MUSKWA"
-                            },
-                            {
-                                "objectCd": "NKSP",
-                                "objectDsc": "NAKUSP"
-                            },
-                            {
-                                "objectCd": "NAMU",
-                                "objectDsc": "NAMU"
-                            },
-                            {
-                                "objectCd": "NNIM",
-                                "objectDsc": "NANAIMO"
-                            },
-                            {
-                                "objectCd": "NSBA",
-                                "objectDsc": "NANOOSE BAY"
-                            },
-                            {
-                                "objectCd": "NRMT",
-                                "objectDsc": "NARAMATA"
-                            },
-                            {
-                                "objectCd": "NCCK",
-                                "objectDsc": "NARCOSLI CREEK"
-                            },
-                            {
-                                "objectCd": "NSCP",
-                                "objectDsc": "NASS CAMP"
-                            },
-                            {
-                                "objectCd": "NZVY",
-                                "objectDsc": "NAZKO"
-                            },
-                            {
-                                "objectCd": "NCKO",
-                                "objectDsc": "NECHAKO"
-                            },
-                            {
-                                "objectCd": "NEDS",
-                                "objectDsc": "NEEDLES"
-                            },
-                            {
-                                "objectCd": "NLSN",
-                                "objectDsc": "NELSON"
-                            },
-                            {
-                                "objectCd": "NLIS",
-                                "objectDsc": "NELSON ISLAND"
-                            },
-                            {
-                                "objectCd": "NLWY",
-                                "objectDsc": "NELWAY"
-                            },
-                            {
-                                "objectCd": "NMVY",
-                                "objectDsc": "NEMAIAH VALLEY"
-                            },
-                            {
-                                "objectCd": "NSLK",
-                                "objectDsc": "NESS LAKE"
-                            },
-                            {
-                                "objectCd": "NWAH",
-                                "objectDsc": "NEW AIYANSH"
-                            },
-                            {
-                                "objectCd": "NDVR",
-                                "objectDsc": "NEW DENVER"
-                            },
-                            {
-                                "objectCd": "NHZN",
-                                "objectDsc": "NEW HAZELTON"
-                            },
-                            {
-                                "objectCd": "NEWW",
-                                "objectDsc": "NEW WESTMINSTER"
-                            },
-                            {
-                                "objectCd": "NEWG",
-                                "objectDsc": "NEWGATE"
-                            },
-                            {
-                                "objectCd": "NCLK",
-                                "objectDsc": "NICOLA LAKE"
-                            },
-                            {
-                                "objectCd": "NIIS",
-                                "objectDsc": "NIGEI ISLAND"
-                            },
-                            {
-                                "objectCd": "NIMP",
-                                "objectDsc": "NIMPKISH"
-                            },
-                            {
-                                "objectCd": "NMLK",
-                                "objectDsc": "NIMPO LAKE"
-                            },
-                            {
-                                "objectCd": "NISK",
-                                "objectDsc": "NISKONLITH LAKE"
-                            },
-                            {
-                                "objectCd": "NOOA",
-                                "objectDsc": "NOOAITCH"
-                            },
-                            {
-                                "objectCd": "NKIS",
-                                "objectDsc": "NOOTKA ISLAND"
-                            },
-                            {
-                                "objectCd": "9NTS",
-                                "objectDsc": "NOOTKA SOUND"
-                            },
-                            {
-                                "objectCd": "NORA",
-                                "objectDsc": "NORALEE"
-                            },
-                            {
-                                "objectCd": "NBRL",
-                                "objectDsc": "NORTH BARRIERE LAKE"
-                            },
-                            {
-                                "objectCd": "NBND",
-                                "objectDsc": "NORTH BEND"
-                            },
-                            {
-                                "objectCd": "NBON",
-                                "objectDsc": "NORTH BONAPARTE"
-                            },
-                            {
-                                "objectCd": "NBIS",
-                                "objectDsc": "NORTH BROUGHTON ISLAND"
-                            },
-                            {
-                                "objectCd": "NFLK",
-                                "objectDsc": "NORTH FALKLAND"
-                            },
-                            {
-                                "objectCd": "NGAB",
-                                "objectDsc": "NORTH GABLES"
-                            },
-                            {
-                                "objectCd": "9NIL",
-                                "objectDsc": "NORTH ISLAND"
-                            },
-                            {
-                                "objectCd": "NKEL",
-                                "objectDsc": "NORTH KELLY"
-                            },
-                            {
-                                "objectCd": "NKLK",
-                                "objectDsc": "NORTH KINBASKET LAKE"
-                            },
-                            {
-                                "objectCd": "NMAR",
-                                "objectDsc": "NORTH MARA"
-                            },
-                            {
-                                "objectCd": "NPIS",
-                                "objectDsc": "NORTH PENDER ISLAND"
-                            },
-                            {
-                                "objectCd": "NRPN",
-                                "objectDsc": "NORTH PINE"
-                            },
-                            {
-                                "objectCd": "NSAA",
-                                "objectDsc": "NORTH SAANICH"
-                            },
-                            {
-                                "objectCd": "NSHO",
-                                "objectDsc": "NORTH SHORE"
-                            },
-                            {
-                                "objectCd": "NTIR",
-                                "objectDsc": "NORTH THOMPSON IR"
-                            },
-                            {
-                                "objectCd": "NVAN",
-                                "objectDsc": "NORTH VANCOUVER"
-                            },
-                            {
-                                "objectCd": "NWES",
-                                "objectDsc": "NORTH WESTSIDE"
-                            },
-                            {
-                                "objectCd": "NOHL",
-                                "objectDsc": "NOTCH HILL"
-                            },
-                            {
-                                "objectCd": "NKKL",
-                                "objectDsc": "NUKKO LAKE"
-                            },
-                            {
-                                "objectCd": "OKBY",
-                                "objectDsc": "OAK BAY"
-                            },
-                            {
-                                "objectCd": "OSIS",
-                                "objectDsc": "OASIS"
-                            },
-                            {
-                                "objectCd": "OBIS",
-                                "objectDsc": "OBSTRUCTION ISLAND"
-                            },
-                            {
-                                "objectCd": "OCFL",
-                                "objectDsc": "OCEAN FALLS"
-                            },
-                            {
-                                "objectCd": "OKNF",
-                                "objectDsc": "OKANAGAN FALLS"
-                            },
-                            {
-                                "objectCd": "ONIR",
-                                "objectDsc": "OKANAGAN IR NORTH"
-                            },
-                            {
-                                "objectCd": "OSIR",
-                                "objectDsc": "OKANAGAN IR SOUTH"
-                            },
-                            {
-                                "objectCd": "OLLA",
-                                "objectDsc": "OLALLA"
-                            },
-                            {
-                                "objectCd": "OLVR",
-                                "objectDsc": "OLIVER"
-                            },
-                            {
-                                "objectCd": "OILK",
-                                "objectDsc": "ONE ISLAND LAKE"
-                            },
-                            {
-                                "objectCd": "OORV",
-                                "objectDsc": "OONA RIVER"
-                            },
-                            {
-                                "objectCd": "OTCH",
-                                "objectDsc": "OOTISCHENIA"
-                            },
-                            {
-                                "objectCd": "OOLK",
-                                "objectDsc": "OOTSA LAKE"
-                            },
-                            {
-                                "objectCd": "OSBN",
-                                "objectDsc": "OSBORN"
-                            },
-                            {
-                                "objectCd": "OSYO",
-                                "objectDsc": "OSOYOOS"
-                            },
-                            {
-                                "objectCd": "OUT",
-                                "objectDsc": "OTTER POINT"
-                            },
-                            {
-                                "objectCd": "OWEK",
-                                "objectDsc": "OWEEKENO"
-                            },
-                            {
-                                "objectCd": "OWIS",
-                                "objectDsc": "OWL ISLAND"
-                            },
-                            {
-                                "objectCd": "PRPN",
-                                "objectDsc": "PACIFIC RIM PARK NORTH"
-                            },
-                            {
-                                "objectCd": "PRPS",
-                                "objectDsc": "PACIFIC RIM PARK SOUTH"
-                            },
-                            {
-                                "objectCd": "PALL",
-                                "objectDsc": "PALLING"
-                            },
-                            {
-                                "objectCd": "PANO",
-                                "objectDsc": "PANORAMA"
-                            },
-                            {
-                                "objectCd": "PKIS",
-                                "objectDsc": "PARKER ISLAND"
-                            },
-                            {
-                                "objectCd": "PAVL",
-                                "objectDsc": "PARKSVILLE"
-                            },
-                            {
-                                "objectCd": "PIRP",
-                                "objectDsc": "PARSNIP"
-                            },
-                            {
-                                "objectCd": "PRSN",
-                                "objectDsc": "PARSON"
-                            },
-                            {
-                                "objectCd": "PRIL",
-                                "objectDsc": "PARSON ISLAND"
-                            },
-                            {
-                                "objectCd": "PSKL",
-                                "objectDsc": "PASKA LAKE"
-                            },
-                            {
-                                "objectCd": "PSCK",
-                                "objectDsc": "PASS CREEK"
-                            },
-                            {
-                                "objectCd": "PSMR",
-                                "objectDsc": "PASSMORE"
-                            },
-                            {
-                                "objectCd": "PLLK",
-                                "objectDsc": "PAUL LAKE"
-                            },
-                            {
-                                "objectCd": "PVLN",
-                                "objectDsc": "PAVILION"
-                            },
-                            {
-                                "objectCd": "PCLD",
-                                "objectDsc": "PEACHLAND"
-                            },
-                            {
-                                "objectCd": "PSIS",
-                                "objectDsc": "PEARSE ISLAND"
-                            },
-                            {
-                                "objectCd": "PEEJ",
-                                "objectDsc": "PEEJAY"
-                            },
-                            {
-                                "objectCd": "PEMB",
-                                "objectDsc": "PEMBERTON"
-                            },
-                            {
-                                "objectCd": "PMBM",
-                                "objectDsc": "PEMBERTON MEADOWS"
-                            },
-                            {
-                                "objectCd": "PENK",
-                                "objectDsc": "PENASK SUMMIT"
-                            },
-                            {
-                                "objectCd": "PDDR",
-                                "objectDsc": "PEND DOREILLE"
-                            },
-                            {
-                                "objectCd": "PHBR",
-                                "objectDsc": "PENDER HARBOUR"
-                            },
-                            {
-                                "objectCd": "PDIS",
-                                "objectDsc": "PENDER ISLAND"
-                            },
-                            {
-                                "objectCd": "PNIS",
-                                "objectDsc": "PENELAKUT ISLAND"
-                            },
-                            {
-                                "objectCd": "PENN",
-                                "objectDsc": "PENNY"
-                            },
-                            {
-                                "objectCd": "PNTN",
-                                "objectDsc": "PENTICTON"
-                            },
-                            {
-                                "objectCd": "PRSG",
-                                "objectDsc": "PERRY SIDING"
-                            },
-                            {
-                                "objectCd": "PETH",
-                                "objectDsc": "PETER HOPE LAKE"
-                            },
-                            {
-                                "objectCd": "PRIS",
-                                "objectDsc": "PIERS ISLAND"
-                            },
-                            {
-                                "objectCd": "PNLK",
-                                "objectDsc": "PINANTAN LAKE"
-                            },
-                            {
-                                "objectCd": "PINC",
-                                "objectDsc": "PINCHI"
-                            },
-                            {
-                                "objectCd": "PILK",
-                                "objectDsc": "PINCHI LAKE"
-                            },
-                            {
-                                "objectCd": "PIPS",
-                                "objectDsc": "PINE PASS"
-                            },
-                            {
-                                "objectCd": "PNPE",
-                                "objectDsc": "PINE PASS EAST"
-                            },
-                            {
-                                "objectCd": "PNPW",
-                                "objectDsc": "PINE PASS WEST"
-                            },
-                            {
-                                "objectCd": "PNVY",
-                                "objectDsc": "PINE VALLEY"
-                            },
-                            {
-                                "objectCd": "PNVW",
-                                "objectDsc": "PINEVIEW"
-                            },
-                            {
-                                "objectCd": "PIVW",
-                                "objectDsc": "PINEVIEW FFG"
-                            },
-                            {
-                                "objectCd": "PNMT",
-                                "objectDsc": "PINK MOUNTAIN"
-                            },
-                            {
-                                "objectCd": "PTIS",
-                                "objectDsc": "PITT ISLAND"
-                            },
-                            {
-                                "objectCd": "PITT",
-                                "objectDsc": "PITT MEADOWS"
-                            },
-                            {
-                                "objectCd": "POOL",
-                                "objectDsc": "POOLEY ISLAND"
-                            },
-                            {
-                                "objectCd": "PKUM",
-                                "objectDsc": "POPKUM"
-                            },
-                            {
-                                "objectCd": "PCIS",
-                                "objectDsc": "PORCHER ISLAND"
-                            },
-                            {
-                                "objectCd": "PTAI",
-                                "objectDsc": "PORT ALBERNI"
-                            },
-                            {
-                                "objectCd": "PTAN",
-                                "objectDsc": "PORT ALBION"
-                            },
-                            {
-                                "objectCd": "PTAC",
-                                "objectDsc": "PORT ALICE"
-                            },
-                            {
-                                "objectCd": "PTCS",
-                                "objectDsc": "PORT CLEMENTS"
-                            },
-                            {
-                                "objectCd": "POCO",
-                                "objectDsc": "PORT COQUITLAM"
-                            },
-                            {
-                                "objectCd": "PTED",
-                                "objectDsc": "PORT EDWARD"
-                            },
-                            {
-                                "objectCd": "PTEN",
-                                "objectDsc": "PORT ESSINGTON"
-                            },
-                            {
-                                "objectCd": "PTHY",
-                                "objectDsc": "PORT HARDY"
-                            },
-                            {
-                                "objectCd": "9PTM",
-                                "objectDsc": "PORT MANN"
-                            },
-                            {
-                                "objectCd": "PTML",
-                                "objectDsc": "PORT MCNEILL"
-                            },
-                            {
-                                "objectCd": "PTME",
-                                "objectDsc": "PORT MELLON"
-                            },
-                            {
-                                "objectCd": "PMDY",
-                                "objectDsc": "PORT MOODY"
-                            },
-                            {
-                                "objectCd": "PTNV",
-                                "objectDsc": "PORT NEVILLE"
-                            },
-                            {
-                                "objectCd": "PTRF",
-                                "objectDsc": "PORT RENFREW"
-                            },
-                            {
-                                "objectCd": "PLIS",
-                                "objectDsc": "PORTLAND ISLAND"
-                            },
-                            {
-                                "objectCd": "PCCP",
-                                "objectDsc": "POUCE COUPE"
-                            },
-                            {
-                                "objectCd": "PWKG",
-                                "objectDsc": "POWDER KING"
-                            },
-                            {
-                                "objectCd": "PWRV",
-                                "objectDsc": "POWELL RIVER"
-                            },
-                            {
-                                "objectCd": "PEIS",
-                                "objectDsc": "PRESCOTT ISLAND"
-                            },
-                            {
-                                "objectCd": "PSP",
-                                "objectDsc": "PRESPATOU"
-                            },
-                            {
-                                "objectCd": "PSSL",
-                                "objectDsc": "PRESSY LAKE"
-                            },
-                            {
-                                "objectCd": "PRCI",
-                                "objectDsc": "PRICE ISLAND"
-                            },
-                            {
-                                "objectCd": "PSLY",
-                                "objectDsc": "PRIESTLY"
-                            },
-                            {
-                                "objectCd": "PGRG",
-                                "objectDsc": "PRINCE GEORGE"
-                            },
-                            {
-                                "objectCd": "PRRU",
-                                "objectDsc": "PRINCE RUPERT"
-                            },
-                            {
-                                "objectCd": "PROI",
-                                "objectDsc": "PRINCESS ROYAL ISLAND"
-                            },
-                            {
-                                "objectCd": "PRNT",
-                                "objectDsc": "PRINCETON"
-                            },
-                            {
-                                "objectCd": "PRTD",
-                                "objectDsc": "PRITCHARD"
-                            },
-                            {
-                                "objectCd": "PRCT",
-                                "objectDsc": "PROCTER"
-                            },
-                            {
-                                "objectCd": "PRGR",
-                                "objectDsc": "PROGRESS"
-                            },
-                            {
-                                "objectCd": "PRRV",
-                                "objectDsc": "PROPHET RIVER"
-                            },
-                            {
-                                "objectCd": "PURD",
-                                "objectDsc": "PURDEN"
-                            },
-                            {
-                                "objectCd": "QDIS",
-                                "objectDsc": "QUADRA ISLAND"
-                            },
-                            {
-                                "objectCd": "QLBH",
-                                "objectDsc": "QUALICUM BEACH"
-                            },
-                            {
-                                "objectCd": "QKCV",
-                                "objectDsc": "QUATHIASKI COVE"
-                            },
-                            {
-                                "objectCd": "QTSN",
-                                "objectDsc": "QUATSINO"
-                            },
-                            {
-                                "objectCd": "QNCH",
-                                "objectDsc": "QUEEN CHARLOTTE"
-                            },
-                            {
-                                "objectCd": "QCIS",
-                                "objectDsc": "QUEEN CHARLOTTE ISLANDS"
-                            },
-                            {
-                                "objectCd": "QNBA",
-                                "objectDsc": "QUEENS BAY"
-                            },
-                            {
-                                "objectCd": "QSNL",
-                                "objectDsc": "QUESNEL"
-                            },
-                            {
-                                "objectCd": "QSIS",
-                                "objectDsc": "QUESNEL LAKE"
-                            },
-                            {
-                                "objectCd": "QLCH",
-                                "objectDsc": "QUILCHENA"
-                            },
-                            {
-                                "objectCd": "RADM",
-                                "objectDsc": "RADIUM HOT SPRINGS"
-                            },
-                            {
-                                "objectCd": "RYIS",
-                                "objectDsc": "RAMSAY ISLAND"
-                            },
-                            {
-                                "objectCd": "RLIS",
-                                "objectDsc": "RANDALL ISLAND"
-                            },
-                            {
-                                "objectCd": "RBVG",
-                                "objectDsc": "RASPBERRY"
-                            },
-                            {
-                                "objectCd": "RDIS",
-                                "objectDsc": "READ ISLAND"
-                            },
-                            {
-                                "objectCd": "REDL",
-                                "objectDsc": "RED LAKE"
-                            },
-                            {
-                                "objectCd": "RROK",
-                                "objectDsc": "RED ROCK"
-                            },
-                            {
-                                "objectCd": "REDS",
-                                "objectDsc": "REDSTONE"
-                            },
-                            {
-                                "objectCd": "RFIS",
-                                "objectDsc": "REEF ISLAND"
-                            },
-                            {
-                                "objectCd": "REIS",
-                                "objectDsc": "REES ISLAND"
-                            },
-                            {
-                                "objectCd": "RFCV",
-                                "objectDsc": "REFUGE COVE"
-                            },
-                            {
-                                "objectCd": "RIIS",
-                                "objectDsc": "REID ISLAND"
-                            },
-                            {
-                                "objectCd": "RILK",
-                                "objectDsc": "REID LAKE"
-                            },
-                            {
-                                "objectCd": "RNSD",
-                                "objectDsc": "RENNELL SOUND"
-                            },
-                            {
-                                "objectCd": "RNIS",
-                                "objectDsc": "RENNISON ISLAND"
-                            },
-                            {
-                                "objectCd": "RVST",
-                                "objectDsc": "REVELSTOKE"
-                            },
-                            {
-                                "objectCd": "RCIS",
-                                "objectDsc": "RICHARDSON ISLAND"
-                            },
-                            {
-                                "objectCd": "RMD",
-                                "objectDsc": "RICHMOND"
-                            },
-                            {
-                                "objectCd": "9RGM",
-                                "objectDsc": "RIDGE MEADOWS"
-                            },
-                            {
-                                "objectCd": "RNDL",
-                                "objectDsc": "RIONDEL"
-                            },
-                            {
-                                "objectCd": "RSCK",
-                                "objectDsc": "RISKE CREEK"
-                            },
-                            {
-                                "objectCd": "RCR",
-                                "objectDsc": "ROBERTS CREEK"
-                            },
-                            {
-                                "objectCd": "RTCK",
-                                "objectDsc": "ROBERTSON CREEK"
-                            },
-                            {
-                                "objectCd": "RBSN",
-                                "objectDsc": "ROBSON"
-                            },
-                            {
-                                "objectCd": "RCCK",
-                                "objectDsc": "ROCK CREEK"
-                            },
-                            {
-                                "objectCd": "RKIS",
-                                "objectDsc": "RODERICK ISLAND"
-                            },
-                            {
-                                "objectCd": "RELK",
-                                "objectDsc": "ROE LAKE"
-                            },
-                            {
-                                "objectCd": "RGPS",
-                                "objectDsc": "ROGERS PASS"
-                            },
-                            {
-                                "objectCd": "ROLL",
-                                "objectDsc": "ROLLA"
-                            },
-                            {
-                                "objectCd": "RSVL",
-                                "objectDsc": "ROOSVILLE"
-                            },
-                            {
-                                "objectCd": "RSLK",
-                                "objectDsc": "ROSE LAKE"
-                            },
-                            {
-                                "objectCd": "RSPR",
-                                "objectDsc": "ROSE PRAIRIE"
-                            },
-                            {
-                                "objectCd": "RSBY",
-                                "objectDsc": "ROSEBERY"
-                            },
-                            {
-                                "objectCd": "RSLD",
-                                "objectDsc": "ROSSLAND"
-                            },
-                            {
-                                "objectCd": "RSWD",
-                                "objectDsc": "ROSSWOOD"
-                            },
-                            {
-                                "objectCd": "ROYS",
-                                "objectDsc": "ROYSTON"
-                            },
-                            {
-                                "objectCd": "RUBY",
-                                "objectDsc": "RUBY LAKE"
-                            },
-                            {
-                                "objectCd": "RXIS",
-                                "objectDsc": "RUXTON ISLAND"
-                            },
-                            {
-                                "objectCd": "SNCH",
-                                "objectDsc": "SAANICH"
-                            },
-                            {
-                                "objectCd": "SALM",
-                                "objectDsc": "SALMO"
-                            },
-                            {
-                                "objectCd": "SLAM",
-                                "objectDsc": "SALMON ARM"
-                            },
-                            {
-                                "objectCd": "SLRI",
-                                "objectDsc": "SALMON RIVER"
-                            },
-                            {
-                                "objectCd": "SRIR",
-                                "objectDsc": "SALMON RIVER IR"
-                            },
-                            {
-                                "objectCd": "SLVY",
-                                "objectDsc": "SALMON VALLEY"
-                            },
-                            {
-                                "objectCd": "SSIS",
-                                "objectDsc": "SALT SPRING ISLAND"
-                            },
-                            {
-                                "objectCd": "SLTB",
-                                "objectDsc": "SALTERY BAY"
-                            },
-                            {
-                                "objectCd": "SNJF",
-                                "objectDsc": "SAN JOSEF"
-                            },
-                            {
-                                "objectCd": "SANC",
-                                "objectDsc": "SANCA"
-                            },
-                            {
-                                "objectCd": "SLIS",
-                                "objectDsc": "SANDILANDS ISLAND"
-                            },
-                            {
-                                "objectCd": "SNDS",
-                                "objectDsc": "SANDSPIT"
-                            },
-                            {
-                                "objectCd": "SHIS",
-                                "objectDsc": "SARAH ISLAND"
-                            },
-                            {
-                                "objectCd": "SRTA",
-                                "objectDsc": "SARITA"
-                            },
-                            {
-                                "objectCd": "SNIS",
-                                "objectDsc": "SATURNA ISLAND"
-                            },
-                            {
-                                "objectCd": "SVIS",
-                                "objectDsc": "SAVARY ISLAND"
-                            },
-                            {
-                                "objectCd": "SAVN",
-                                "objectDsc": "SAVONA"
-                            },
-                            {
-                                "objectCd": "SYWD",
-                                "objectDsc": "SAYWARD"
-                            },
-                            {
-                                "objectCd": "SCCK",
-                                "objectDsc": "SCOTCH CREEK"
-                            },
-                            {
-                                "objectCd": "SEC",
-                                "objectDsc": "SECHELT"
-                            },
-                            {
-                                "objectCd": "STNP",
-                                "objectDsc": "SETON PORTAGE"
-                            },
-                            {
-                                "objectCd": "SEWA",
-                                "objectDsc": "SEWALL"
-                            },
-                            {
-                                "objectCd": "SWIN",
-                                "objectDsc": "SEWELL INLET"
-                            },
-                            {
-                                "objectCd": "SARM",
-                                "objectDsc": "SEYMOUR ARM"
-                            },
-                            {
-                                "objectCd": "SYIN",
-                                "objectDsc": "SEYMOUR INLET"
-                            },
-                            {
-                                "objectCd": "SHAL",
-                                "objectDsc": "SHALALTH"
-                            },
-                            {
-                                "objectCd": "SHLK",
-                                "objectDsc": "SHAWNIGAN LAKE"
-                            },
-                            {
-                                "objectCd": "SWTR",
-                                "objectDsc": "SHEARWATER"
-                            },
-                            {
-                                "objectCd": "SHEL",
-                                "objectDsc": "SHELLEY"
-                            },
-                            {
-                                "objectCd": "SHGN",
-                                "objectDsc": "SHELL-GLEN"
-                            },
-                            {
-                                "objectCd": "SRLY",
-                                "objectDsc": "SHIRLEY"
-                            },
-                            {
-                                "objectCd": "SHAC",
-                                "objectDsc": "SHOREACRES"
-                            },
-                            {
-                                "objectCd": "SHBH",
-                                "objectDsc": "SHUTTY BENCH"
-                            },
-                            {
-                                "objectCd": "SCMS",
-                                "objectDsc": "SICAMOUS"
-                            },
-                            {
-                                "objectCd": "SDNY",
-                                "objectDsc": "SIDNEY"
-                            },
-                            {
-                                "objectCd": "SDIS",
-                                "objectDsc": "SIDNEY ISLAND"
-                            },
-                            {
-                                "objectCd": "SRRA",
-                                "objectDsc": "SIERRA"
-                            },
-                            {
-                                "objectCd": "SKNI",
-                                "objectDsc": "SIKANNI"
-                            },
-                            {
-                                "objectCd": "SLVS",
-                                "objectDsc": "SILVER SANDS"
-                            },
-                            {
-                                "objectCd": "SLTN",
-                                "objectDsc": "SILVERTON"
-                            },
-                            {
-                                "objectCd": "SNML",
-                                "objectDsc": "SINCLAIR MILLS"
-                            },
-                            {
-                                "objectCd": "SRDR",
-                                "objectDsc": "SIRDAR"
-                            },
-                            {
-                                "objectCd": "SKNA",
-                                "objectDsc": "SKEENA"
-                            },
-                            {
-                                "objectCd": "SKIR",
-                                "objectDsc": "SKEETCHESTN IR"
-                            },
-                            {
-                                "objectCd": "SKDG",
-                                "objectDsc": "SKIDEGATE"
-                            },
-                            {
-                                "objectCd": "SKMK",
-                                "objectDsc": "SKOOKUMCHUCK"
-                            },
-                            {
-                                "objectCd": "SLCN",
-                                "objectDsc": "SLOCAN"
-                            },
-                            {
-                                "objectCd": "SNPK",
-                                "objectDsc": "SLOCAN PARK"
-                            },
-                            {
-                                "objectCd": "SMIS",
-                                "objectDsc": "SMITH ISLAND"
-                            },
-                            {
-                                "objectCd": "SMTS",
-                                "objectDsc": "SMITHERS"
-                            },
-                            {
-                                "objectCd": "SNYD",
-                                "objectDsc": "SNYDER"
-                            },
-                            {
-                                "objectCd": "SMSP",
-                                "objectDsc": "SOAMES POINT"
-                            },
-                            {
-                                "objectCd": "SDCK",
-                                "objectDsc": "SODA CREEK"
-                            },
-                            {
-                                "objectCd": "SNTL",
-                                "objectDsc": "SOINTULA"
-                            },
-                            {
-                                "objectCd": "SLQA",
-                                "objectDsc": "SOLSQUA"
-                            },
-                            {
-                                "objectCd": "SMVI",
-                                "objectDsc": "SOMERVILLE ISLAND"
-                            },
-                            {
-                                "objectCd": "SOIS",
-                                "objectDsc": "SONORA ISLAND"
-                            },
-                            {
-                                "objectCd": "SOKE",
-                                "objectDsc": "SOOKE"
-                            },
-                            {
-                                "objectCd": "SRNT",
-                                "objectDsc": "SORRENTO"
-                            },
-                            {
-                                "objectCd": "SDAW",
-                                "objectDsc": "SOUTH DAWSON"
-                            },
-                            {
-                                "objectCd": "SHAZ",
-                                "objectDsc": "SOUTH HAZELTON"
-                            },
-                            {
-                                "objectCd": "9SIL",
-                                "objectDsc": "SOUTH ISLAND"
-                            },
-                            {
-                                "objectCd": "SKLK",
-                                "objectDsc": "SOUTH KINBASKET LAKE"
-                            },
-                            {
-                                "objectCd": "SPIS",
-                                "objectDsc": "SOUTH PENDER ISLAND"
-                            },
-                            {
-                                "objectCd": "SSLC",
-                                "objectDsc": "SOUTH SLOCAN"
-                            },
-                            {
-                                "objectCd": "SSPK",
-                                "objectDsc": "SOUTH STRATHCONA PARK"
-                            },
-                            {
-                                "objectCd": "STAY",
-                                "objectDsc": "SOUTH TAYLOR"
-                            },
-                            {
-                                "objectCd": "SBNK",
-                                "objectDsc": "SOUTHBANK"
-                            },
-                            {
-                                "objectCd": "9SED",
-                                "objectDsc": "SOUTHEAST DISTRICT"
-                            },
-                            {
-                                "objectCd": "SPAL",
-                                "objectDsc": "SPALLUMCHEEN"
-                            },
-                            {
-                                "objectCd": "SPWD",
-                                "objectDsc": "SPARWOOD"
-                            },
-                            {
-                                "objectCd": "SPTZ",
-                                "objectDsc": "SPATSIZI"
-                            },
-                            {
-                                "objectCd": "SPAT",
-                                "objectDsc": "SPATSUM"
-                            },
-                            {
-                                "objectCd": "SPSB",
-                                "objectDsc": "SPENCES BRIDGE"
-                            },
-                            {
-                                "objectCd": "SPIC",
-                                "objectDsc": "SPICER ISLAND"
-                            },
-                            {
-                                "objectCd": "SLMN",
-                                "objectDsc": "SPILLIMACHEEN"
-                            },
-                            {
-                                "objectCd": "SPLK",
-                                "objectDsc": "SPOKIN LAKE"
-                            },
-                            {
-                                "objectCd": "SPHS",
-                                "objectDsc": "SPRINGHOUSE"
-                            },
-                            {
-                                "objectCd": "SPZM",
-                                "objectDsc": "SPUZZUM"
-                            },
-                            {
-                                "objectCd": "SQUA",
-                                "objectDsc": "SQUAMISH"
-                            },
-                            {
-                                "objectCd": "STIV",
-                                "objectDsc": "ST IVES"
-                            },
-                            {
-                                "objectCd": "SCIS",
-                                "objectDsc": "STACKHOUSE ISLAND"
-                            },
-                            {
-                                "objectCd": "STEM",
-                                "objectDsc": "STEIN MOUNTAIN"
-                            },
-                            {
-                                "objectCd": "STEL",
-                                "objectDsc": "STELLAKO"
-                            },
-                            {
-                                "objectCd": "STPI",
-                                "objectDsc": "STEPHENS ISLAND"
-                            },
-                            {
-                                "objectCd": "STEW",
-                                "objectDsc": "STEWART"
-                            },
-                            {
-                                "objectCd": "STIK",
-                                "objectDsc": "STIKINE"
-                            },
-                            {
-                                "objectCd": "STIR",
-                                "objectDsc": "STONE IR 1A"
-                            },
-                            {
-                                "objectCd": "SMTP",
-                                "objectDsc": "STONE MOUNTAIN PARK"
-                            },
-                            {
-                                "objectCd": "STON",
-                                "objectDsc": "STONER"
-                            },
-                            {
-                                "objectCd": "SAIK",
-                                "objectDsc": "STONY CREEK SAIK'UZ IR"
-                            },
-                            {
-                                "objectCd": "STRI",
-                                "objectDsc": "STRANGE ISLAND"
-                            },
-                            {
-                                "objectCd": "STPK",
-                                "objectDsc": "STRATHCONA PARK"
-                            },
-                            {
-                                "objectCd": "STRA",
-                                "objectDsc": "STRATHNAVER"
-                            },
-                            {
-                                "objectCd": "SUIS",
-                                "objectDsc": "STUART ISLAND"
-                            },
-                            {
-                                "objectCd": "STUI",
-                                "objectDsc": "STUIE"
-                            },
-                            {
-                                "objectCd": "STUL",
-                                "objectDsc": "STUMP LAKE"
-                            },
-                            {
-                                "objectCd": "SUVY",
-                                "objectDsc": "SUKUNKA VALLEY"
-                            },
-                            {
-                                "objectCd": "SLBY",
-                                "objectDsc": "SULLIVAN BAY"
-                            },
-                            {
-                                "objectCd": "SMLD",
-                                "objectDsc": "SUMMERLAND"
-                            },
-                            {
-                                "objectCd": "SULK",
-                                "objectDsc": "SUMMIT LAKE"
-                            },
-                            {
-                                "objectCd": "SUPK",
-                                "objectDsc": "SUN PEAKS"
-                            },
-                            {
-                                "objectCd": "SUNL",
-                                "objectDsc": "SUNDANCE LAKES"
-                            },
-                            {
-                                "objectCd": "SRVY",
-                                "objectDsc": "SUNRISE VALLEY"
-                            },
-                            {
-                                "objectCd": "SSPR",
-                                "objectDsc": "SUNSET PRAIRIE"
-                            },
-                            {
-                                "objectCd": "9SNC",
-                                "objectDsc": "SUNSHINE COAST"
-                            },
-                            {
-                                "objectCd": "SHVL",
-                                "objectDsc": "SUNSHINE VALLEY"
-                            },
-                            {
-                                "objectCd": "SNSV",
-                                "objectDsc": "SUNSHINE VALLEY TNRD"
-                            },
-                            {
-                                "objectCd": "SRY",
-                                "objectDsc": "SURREY"
-                            },
-                            {
-                                "objectCd": "SUSI",
-                                "objectDsc": "SUSAN ISLAND"
-                            },
-                            {
-                                "objectCd": "SUSK",
-                                "objectDsc": "SUSKWA"
-                            },
-                            {
-                                "objectCd": "SWIS",
-                                "objectDsc": "SWANSON ISLAND"
-                            },
-                            {
-                                "objectCd": "SWRV",
-                                "objectDsc": "SWIFT RIVER"
-                            },
-                            {
-                                "objectCd": "SEIS",
-                                "objectDsc": "SWINDLE ISLAND"
-                            },
-                            {
-                                "objectCd": "TTCK",
-                                "objectDsc": "TA TA CREEK"
-                            },
-                            {
-                                "objectCd": "TACH",
-                                "objectDsc": "TACHIE"
-                            },
-                            {
-                                "objectCd": "TGHM",
-                                "objectDsc": "TAGHUM"
-                            },
-                            {
-                                "objectCd": "THAT",
-                                "objectDsc": "TAHLTAN"
-                            },
-                            {
-                                "objectCd": "THSS",
-                                "objectDsc": "TAHSIS"
-                            },
-                            {
-                                "objectCd": "THRV",
-                                "objectDsc": "TAHSISH RIVER"
-                            },
-                            {
-                                "objectCd": "TKLK",
-                                "objectDsc": "TAKLA LANDING"
-                            },
-                            {
-                                "objectCd": "TAKU",
-                                "objectDsc": "TAKU"
-                            },
-                            {
-                                "objectCd": "TYLK",
-                                "objectDsc": "TAKYSIE LAKE"
-                            },
-                            {
-                                "objectCd": "TKIS",
-                                "objectDsc": "TALUNKWAN ISLAND"
-                            },
-                            {
-                                "objectCd": "TNIS",
-                                "objectDsc": "TANU ISLAND"
-                            },
-                            {
-                                "objectCd": "TAPP",
-                                "objectDsc": "TAPPEN"
-                            },
-                            {
-                                "objectCd": "TRRS",
-                                "objectDsc": "TARRYS"
-                            },
-                            {
-                                "objectCd": "TATA",
-                                "objectDsc": "TATALROSE"
-                            },
-                            {
-                                "objectCd": "TLLK",
-                                "objectDsc": "TATLA LAKE"
-                            },
-                            {
-                                "objectCd": "TTLK",
-                                "objectDsc": "TATLATUI LAKE"
-                            },
-                            {
-                                "objectCd": "TYKL",
-                                "objectDsc": "TATLAYOKO LAKE"
-                            },
-                            {
-                                "objectCd": "TATS",
-                                "objectDsc": "TATSHENSHINI"
-                            },
-                            {
-                                "objectCd": "TAYL",
-                                "objectDsc": "TAYLOR"
-                            },
-                            {
-                                "objectCd": "TCLK",
-                                "objectDsc": "TCHESINKUT LAKE"
-                            },
-                            {
-                                "objectCd": "TECV",
-                                "objectDsc": "TELEGRAPH COVE"
-                            },
-                            {
-                                "objectCd": "TECK",
-                                "objectDsc": "TELEGRAPH CREEK"
-                            },
-                            {
-                                "objectCd": "TLWA",
-                                "objectDsc": "TELKWA"
-                            },
-                            {
-                                "objectCd": "TERR",
-                                "objectDsc": "TERRACE"
-                            },
-                            {
-                                "objectCd": "TESL",
-                                "objectDsc": "TESLIN"
-                            },
-                            {
-                                "objectCd": "TJCH",
-                                "objectDsc": "TETE JAUNE CACHE"
-                            },
-                            {
-                                "objectCd": "TTRV",
-                                "objectDsc": "TETSA RIVER"
-                            },
-                            {
-                                "objectCd": "TXIS",
-                                "objectDsc": "TEXADA ISLAND"
-                            },
-                            {
-                                "objectCd": "TSIS",
-                                "objectDsc": "THETIS ISLAND"
-                            },
-                            {
-                                "objectCd": "THNH",
-                                "objectDsc": "THORNHILL"
-                            },
-                            {
-                                "objectCd": "THVY",
-                                "objectDsc": "THREE VALLEY"
-                            },
-                            {
-                                "objectCd": "THUM",
-                                "objectDsc": "THRUMS"
-                            },
-                            {
-                                "objectCd": "THIS",
-                                "objectDsc": "THURLOW ISLANDS"
-                            },
-                            {
-                                "objectCd": "TNTG",
-                                "objectDsc": "TINTAGEL"
-                            },
-                            {
-                                "objectCd": "TLEL",
-                                "objectDsc": "TLELL"
-                            },
-                            {
-                                "objectCd": "TDRV",
-                                "objectDsc": "TOAD RIVER"
-                            },
-                            {
-                                "objectCd": "TOBA",
-                                "objectDsc": "TOBA INLET"
-                            },
-                            {
-                                "objectCd": "TOBI",
-                                "objectDsc": "TOBIANO"
-                            },
-                            {
-                                "objectCd": "TFNO",
-                                "objectDsc": "TOFINO"
-                            },
-                            {
-                                "objectCd": "TOLK",
-                                "objectDsc": "TOMSLAKE"
-                            },
-                            {
-                                "objectCd": "TOPL",
-                                "objectDsc": "TOPLEY"
-                            },
-                            {
-                                "objectCd": "TOLG",
-                                "objectDsc": "TOPLEY LANDING"
-                            },
-                            {
-                                "objectCd": "TRIS",
-                                "objectDsc": "TRACEY ISLAND"
-                            },
-                            {
-                                "objectCd": "TRAL",
-                                "objectDsc": "TRAIL"
-                            },
-                            {
-                                "objectCd": "TRAP",
-                                "objectDsc": "TRAPP LAKE"
-                            },
-                            {
-                                "objectCd": "TRLK",
-                                "objectDsc": "TROUT LAKE"
-                            },
-                            {
-                                "objectCd": "TRUT",
-                                "objectDsc": "TRUTCH"
-                            },
-                            {
-                                "objectCd": "TCIS",
-                                "objectDsc": "TRUTCH ISLAND"
-                            },
-                            {
-                                "objectCd": "TSAY",
-                                "objectDsc": "TSAY KEH DENE"
-                            },
-                            {
-                                "objectCd": "TIIR",
-                                "objectDsc": "TUGWELL ISLAND IR"
-                            },
-                            {
-                                "objectCd": "TLMN",
-                                "objectDsc": "TULAMEEN"
-                            },
-                            {
-                                "objectCd": "TMRG",
-                                "objectDsc": "TUMBLER RIDGE"
-                            },
-                            {
-                                "objectCd": "TUNK",
-                                "objectDsc": "TUNKWA LAKE"
-                            },
-                            {
-                                "objectCd": "TUPR",
-                                "objectDsc": "TUPPER"
-                            },
-                            {
-                                "objectCd": "TRNI",
-                                "objectDsc": "TURNOUR ISLAND"
-                            },
-                            {
-                                "objectCd": "TRTV",
-                                "objectDsc": "TURTLE VALLEY"
-                            },
-                            {
-                                "objectCd": "TWPS",
-                                "objectDsc": "TWEEDSMUIR PARK SOUTH"
-                            },
-                            {
-                                "objectCd": "TWPP",
-                                "objectDsc": "TWEEDSMUIR PROVINCIAL PARK"
-                            },
-                            {
-                                "objectCd": "TWOM",
-                                "objectDsc": "TWO MILE"
-                            },
-                            {
-                                "objectCd": "TWRV",
-                                "objectDsc": "TWO RIVERS"
-                            },
-                            {
-                                "objectCd": "TYE",
-                                "objectDsc": "TYE"
-                            },
-                            {
-                                "objectCd": "TZIS",
-                                "objectDsc": "TZARTUS ISLAND"
-                            },
-                            {
-                                "objectCd": "UBC",
-                                "objectDsc": "VANCOUVER (UBC)"
-                            },
-                            {
-                                "objectCd": "UCLT",
-                                "objectDsc": "UCLUELET"
-                            },
-                            {
-                                "objectCd": "UNBA",
-                                "objectDsc": "UNION BAY"
-                            },
-                            {
-                                "objectCd": "UNIS",
-                                "objectDsc": "UNION ISLAND"
-                            },
-                            {
-                                "objectCd": "UPCK",
-                                "objectDsc": "UPPER CUTBANK"
-                            },
-                            {
-                                "objectCd": "UPFR",
-                                "objectDsc": "UPPER FRASER"
-                            },
-                            {
-                                "objectCd": "UPSK",
-                                "objectDsc": "UPPER SKEENA"
-                            },
-                            {
-                                "objectCd": "VLIS",
-                                "objectDsc": "VALDES ISLAND"
-                            },
-                            {
-                                "objectCd": "VLMT",
-                                "objectDsc": "VALEMOUNT"
-                            },
-                            {
-                                "objectCd": "VMRU",
-                                "objectDsc": "VALEMOUNT RURAL"
-                            },
-                            {
-                                "objectCd": "VLCN",
-                                "objectDsc": "VALLICAN"
-                            },
-                            {
-                                "objectCd": "VNDA",
-                                "objectDsc": "VAN ANDA"
-                            },
-                            {
-                                "objectCd": "VAN",
-                                "objectDsc": "VANCOUVER"
-                            },
-                            {
-                                "objectCd": "VNHF",
-                                "objectDsc": "VANDERHOOF"
-                            },
-                            {
-                                "objectCd": "VGIS",
-                                "objectDsc": "VARGAS ISLAND"
-                            },
-                            {
-                                "objectCd": "VNBY",
-                                "objectDsc": "VAVENBY"
-                            },
-                            {
-                                "objectCd": "VEVV",
-                                "objectDsc": "VENABLES VALLEY"
-                            },
-                            {
-                                "objectCd": "VERN",
-                                "objectDsc": "VERNON"
-                            },
-                            {
-                                "objectCd": "VCTA",
-                                "objectDsc": "VICTORIA"
-                            },
-                            {
-                                "objectCd": "VROY",
-                                "objectDsc": "VIEW ROYAL"
-                            },
-                            {
-                                "objectCd": "VLVI",
-                                "objectDsc": "VILLAVERDE ISLANDS"
-                            },
-                            {
-                                "objectCd": "VINS",
-                                "objectDsc": "VINSULLA"
-                            },
-                            {
-                                "objectCd": "VCIS",
-                                "objectDsc": "VISCOUNT ISLAND"
-                            },
-                            {
-                                "objectCd": "WLIS",
-                                "objectDsc": "WALES ISLAND"
-                            },
-                            {
-                                "objectCd": "WHCN",
-                                "objectDsc": "WALHACHIN"
-                            },
-                            {
-                                "objectCd": "WPRV",
-                                "objectDsc": "WAPITI RIVER"
-                            },
-                            {
-                                "objectCd": "WDNR",
-                                "objectDsc": "WARDNER"
-                            },
-                            {
-                                "objectCd": "WRFD",
-                                "objectDsc": "WARFIELD"
-                            },
-                            {
-                                "objectCd": "WASA",
-                                "objectDsc": "WASA"
-                            },
-                            {
-                                "objectCd": "WTLK",
-                                "objectDsc": "WATCH LAKE"
-                            },
-                            {
-                                "objectCd": "WHLK",
-                                "objectDsc": "WATHUS ISLAND"
-                            },
-                            {
-                                "objectCd": "WNLK",
-                                "objectDsc": "WATSON LAKE"
-                            },
-                            {
-                                "objectCd": "WELL",
-                                "objectDsc": "WELLS"
-                            },
-                            {
-                                "objectCd": "WLGP",
-                                "objectDsc": "WELLS GRAY PARK"
-                            },
-                            {
-                                "objectCd": "WCIS",
-                                "objectDsc": "WEST CRACROFT ISLAND"
-                            },
-                            {
-                                "objectCd": "WFRN",
-                                "objectDsc": "WEST FERNIE"
-                            },
-                            {
-                                "objectCd": "WKLN",
-                                "objectDsc": "WEST KELOWNA"
-                            },
-                            {
-                                "objectCd": "WLAK",
-                                "objectDsc": "WEST LAKE"
-                            },
-                            {
-                                "objectCd": "WVAN",
-                                "objectDsc": "WEST VANCOUVER"
-                            },
-                            {
-                                "objectCd": "WTBK",
-                                "objectDsc": "WESTBANK"
-                            },
-                            {
-                                "objectCd": "WTBR",
-                                "objectDsc": "WESTBRIDGE"
-                            },
-                            {
-                                "objectCd": "WSHM",
-                                "objectDsc": "WESTHOLME"
-                            },
-                            {
-                                "objectCd": "WTWD",
-                                "objectDsc": "WESTWOLD"
-                            },
-                            {
-                                "objectCd": "WLTN",
-                                "objectDsc": "WHALETOWN"
-                            },
-                            {
-                                "objectCd": "WHIS",
-                                "objectDsc": "WHISTLER"
-                            },
-                            {
-                                "objectCd": "WELK",
-                                "objectDsc": "WHITE LAKE"
-                            },
-                            {
-                                "objectCd": "WHRV",
-                                "objectDsc": "WHITE RIVER"
-                            },
-                            {
-                                "objectCd": "WHTR",
-                                "objectDsc": "WHITE ROCK"
-                            },
-                            {
-                                "objectCd": "WYIS",
-                                "objectDsc": "WHITELEY ISLAND"
-                            },
-                            {
-                                "objectCd": "WCKI",
-                                "objectDsc": "WICKANINNISH ISLAND"
-                            },
-                            {
-                                "objectCd": "WIIS",
-                                "objectDsc": "WILLIAM ISLAND"
-                            },
-                            {
-                                "objectCd": "WLLK",
-                                "objectDsc": "WILLIAMS LAKE"
-                            },
-                            {
-                                "objectCd": "WIPT",
-                                "objectDsc": "WILLIS POINT"
-                            },
-                            {
-                                "objectCd": "WILK",
-                                "objectDsc": "WILLISTON LAKE"
-                            },
-                            {
-                                "objectCd": "WWFL",
-                                "objectDsc": "WILLOW FLATS"
-                            },
-                            {
-                                "objectCd": "WLRV",
-                                "objectDsc": "WILLOW RIVER"
-                            },
-                            {
-                                "objectCd": "WRVL",
-                                "objectDsc": "WILLOW RIVER VALLEY"
-                            },
-                            {
-                                "objectCd": "WLVY",
-                                "objectDsc": "WILLOW VALLEY"
-                            },
-                            {
-                                "objectCd": "WLMR",
-                                "objectDsc": "WILMER"
-                            },
-                            {
-                                "objectCd": "WLCK",
-                                "objectDsc": "WILSON CREEK"
-                            },
-                            {
-                                "objectCd": "WNDR",
-                                "objectDsc": "WINDERMERE"
-                            },
-                            {
-                                "objectCd": "WNLW",
-                                "objectDsc": "WINLAW"
-                            },
-                            {
-                                "objectCd": "WNHR",
-                                "objectDsc": "WINTER HARBOUR"
-                            },
-                            {
-                                "objectCd": "WIST",
-                                "objectDsc": "WISTARIA"
-                            },
-                            {
-                                "objectCd": "WITT",
-                                "objectDsc": "WITSET"
-                            },
-                            {
-                                "objectCd": "WONO",
-                                "objectDsc": "WONOWON"
-                            },
-                            {
-                                "objectCd": "WOOD",
-                                "objectDsc": "WOODPECKER"
-                            },
-                            {
-                                "objectCd": "WSLK",
-                                "objectDsc": "WOSS"
-                            },
-                            {
-                                "objectCd": "WYCF",
-                                "objectDsc": "WYCLIFFE"
-                            },
-                            {
-                                "objectCd": "WMDL",
-                                "objectDsc": "WYNNDEL"
-                            },
-                            {
-                                "objectCd": "WNDL",
-                                "objectDsc": "WYNNDEL"
-                            },
-                            {
-                                "objectCd": "YAHK",
-                                "objectDsc": "YAHK"
-                            },
-                            {
-                                "objectCd": "YALE",
-                                "objectDsc": "YALE"
-                            },
-                            {
-                                "objectCd": "YMIR",
-                                "objectDsc": "YMIR"
-                            },
-                            {
-                                "objectCd": "YOBO",
-                                "objectDsc": "YOUBOU"
-                            },
-                            {
-                                "objectCd": "YOYO",
-                                "objectDsc": "YOYO"
-                            },
-                            {
-                                "objectCd": "ZYIS",
-                                "objectDsc": "ZAYAS ISLAND"
-                            },
-                            {
-                                "objectCd": "ZBLS",
-                                "objectDsc": "ZEBALLOS"
-                            }
-                    ]
-                )
+                       [
+                        {
+                            "objectCd": "OHMH",
+                            "objectDsc": "100 MILE HOUSE"
+                        },
+                        {
+                            "objectCd": "OHTM",
+                            "objectDsc": "103 MILE HOUSE"
+                        },
+                        {
+                            "objectCd": "OHFM",
+                            "objectDsc": "105 MILE HOUSE"
+                        },
+                        {
+                            "objectCd": "OHEM",
+                            "objectDsc": "108 MILE HOUSE"
+                        },
+                        {
+                            "objectCd": "OHER",
+                            "objectDsc": "108 MILE RANCH"
+                        },
+                        {
+                            "objectCd": "OFOM",
+                            "objectDsc": "141 MILE HOUSE"
+                        },
+                        {
+                            "objectCd": "OFMH",
+                            "objectDsc": "150 MILE HOUSE"
+                        },
+                        {
+                            "objectCd": "SMHS",
+                            "objectDsc": "70 MILE HOUSE"
+                        },
+                        {
+                            "objectCd": "NTMH",
+                            "objectDsc": "93 MILE HOUSE"
+                        },
+                        {
+                            "objectCd": "ABB",
+                            "objectDsc": "ABBOTSFORD"
+                        },
+                        {
+                            "objectCd": "ADLK",
+                            "objectDsc": "ADAMS LAKE"
+                        },
+                        {
+                            "objectCd": "AGSZ",
+                            "objectDsc": "AGASSIZ"
+                        },
+                        {
+                            "objectCd": "AGAT",
+                            "objectDsc": "AGATE"
+                        },
+                        {
+                            "objectCd": "AHST",
+                            "objectDsc": "AHOUSAHT"
+                        },
+                        {
+                            "objectCd": "ANWO",
+                            "objectDsc": "AINSWORTH HOT SPRINGS"
+                        },
+                        {
+                            "objectCd": "ALBR",
+                            "objectDsc": "ALBREDA"
+                        },
+                        {
+                            "objectCd": "ALBA",
+                            "objectDsc": "ALERT BAY"
+                        },
+                        {
+                            "objectCd": "ALEX",
+                            "objectDsc": "ALEXANDRIA"
+                        },
+                        {
+                            "objectCd": "ALCK",
+                            "objectDsc": "ALEXIS CREEK"
+                        },
+                        {
+                            "objectCd": "ALLK",
+                            "objectDsc": "ALEZA LAKE"
+                        },
+                        {
+                            "objectCd": "ALAR",
+                            "objectDsc": "ALICE ARM"
+                        },
+                        {
+                            "objectCd": "AKLK",
+                            "objectDsc": "ALKALI LAKE"
+                        },
+                        {
+                            "objectCd": "ASLK",
+                            "objectDsc": "ALLISON LAKE"
+                        },
+                        {
+                            "objectCd": "ALTN",
+                            "objectDsc": "ALTONA"
+                        },
+                        {
+                            "objectCd": "ANCD",
+                            "objectDsc": "ANACONDA"
+                        },
+                        {
+                            "objectCd": "ANLK",
+                            "objectDsc": "ANAHIM LAKE"
+                        },
+                        {
+                            "objectCd": "AFIR",
+                            "objectDsc": "ANAHIM'S FLAT IR"
+                        },
+                        {
+                            "objectCd": "AMIR",
+                            "objectDsc": "ANAHIM'S MEADOW IR"
+                        },
+                        {
+                            "objectCd": "ANMT",
+                            "objectDsc": "ANGLEMONT"
+                        },
+                        {
+                            "objectCd": "ANM",
+                            "objectDsc": "ANMORE"
+                        },
+                        {
+                            "objectCd": "AARM",
+                            "objectDsc": "ANSTEY ARM"
+                        },
+                        {
+                            "objectCd": "ANIS",
+                            "objectDsc": "ANVIL ISLAND"
+                        },
+                        {
+                            "objectCd": "ANYX",
+                            "objectDsc": "ANYOX"
+                        },
+                        {
+                            "objectCd": "APEX",
+                            "objectDsc": "APEX"
+                        },
+                        {
+                            "objectCd": "APDL",
+                            "objectDsc": "APPLEDALE"
+                        },
+                        {
+                            "objectCd": "ARGT",
+                            "objectDsc": "ARGENTA"
+                        },
+                        {
+                            "objectCd": "AZIS",
+                            "objectDsc": "ARISTAZABAL ISLAND"
+                        },
+                        {
+                            "objectCd": "ARMS",
+                            "objectDsc": "ARMSTRONG"
+                        },
+                        {
+                            "objectCd": "ARAS",
+                            "objectDsc": "ARRAS"
+                        },
+                        {
+                            "objectCd": "AWPK",
+                            "objectDsc": "ARROW PARK"
+                        },
+                        {
+                            "objectCd": "ASCF",
+                            "objectDsc": "ASHCROFT"
+                        },
+                        {
+                            "objectCd": "ACSR",
+                            "objectDsc": "ASHCROFT RURAL"
+                        },
+                        {
+                            "objectCd": "ASCK",
+                            "objectDsc": "ASHTON CREEK"
+                        },
+                        {
+                            "objectCd": "ASPG",
+                            "objectDsc": "ASPEN GROVE"
+                        },
+                        {
+                            "objectCd": "ATHA",
+                            "objectDsc": "ATHALMER"
+                        },
+                        {
+                            "objectCd": "AHIS",
+                            "objectDsc": "ATHLONE ISLAND"
+                        },
+                        {
+                            "objectCd": "AKIS",
+                            "objectDsc": "ATKINSON ISLAND"
+                        },
+                        {
+                            "objectCd": "ATLN",
+                            "objectDsc": "ATLIN"
+                        },
+                        {
+                            "objectCd": "ATCH",
+                            "objectDsc": "ATTACHIE"
+                        },
+                        {
+                            "objectCd": "AUST",
+                            "objectDsc": "AUSTRALIAN"
+                        },
+                        {
+                            "objectCd": "AVLA",
+                            "objectDsc": "AVOLA"
+                        },
+                        {
+                            "objectCd": "BKCK",
+                            "objectDsc": "BAKER CREEK"
+                        },
+                        {
+                            "objectCd": "BKIS",
+                            "objectDsc": "BAKER ISLAND"
+                        },
+                        {
+                            "objectCd": "BVIS",
+                            "objectDsc": "BALAKLAVA ISLAND"
+                        },
+                        {
+                            "objectCd": "BALD",
+                            "objectDsc": "BALDONNEL"
+                        },
+                        {
+                            "objectCd": "BALF",
+                            "objectDsc": "BALFOUR"
+                        },
+                        {
+                            "objectCd": "BAMF",
+                            "objectDsc": "BAMFIELD"
+                        },
+                        {
+                            "objectCd": "BNKR",
+                            "objectDsc": "BANKEIR"
+                        },
+                        {
+                            "objectCd": "BSIS",
+                            "objectDsc": "BANKS ISLAND"
+                        },
+                        {
+                            "objectCd": "BKVL",
+                            "objectDsc": "BARKERVILLE"
+                        },
+                        {
+                            "objectCd": "BARH",
+                            "objectDsc": "BARNHARTVALE"
+                        },
+                        {
+                            "objectCd": "BAIS",
+                            "objectDsc": "BARON ISLAND"
+                        },
+                        {
+                            "objectCd": "BARR",
+                            "objectDsc": "BARRIERE"
+                        },
+                        {
+                            "objectCd": "BARV",
+                            "objectDsc": "BARRIERE RIVER"
+                        },
+                        {
+                            "objectCd": "BKLK",
+                            "objectDsc": "BAYNES LAKE"
+                        },
+                        {
+                            "objectCd": "BAFT",
+                            "objectDsc": "BEAR FLAT"
+                        },
+                        {
+                            "objectCd": "BRLK",
+                            "objectDsc": "BEAR LAKE"
+                        },
+                        {
+                            "objectCd": "BSLY",
+                            "objectDsc": "BEASLEY"
+                        },
+                        {
+                            "objectCd": "BEAT",
+                            "objectDsc": "BEATON"
+                        },
+                        {
+                            "objectCd": "BERV",
+                            "objectDsc": "BEATTON RIVER"
+                        },
+                        {
+                            "objectCd": "BVCV",
+                            "objectDsc": "BEAVER COVE"
+                        },
+                        {
+                            "objectCd": "BVFL",
+                            "objectDsc": "BEAVER FALLS"
+                        },
+                        {
+                            "objectCd": "BVDL",
+                            "objectDsc": "BEAVERDELL"
+                        },
+                        {
+                            "objectCd": "BVLY",
+                            "objectDsc": "BEAVERLEY"
+                        },
+                        {
+                            "objectCd": "BDNM",
+                            "objectDsc": "BEDNESTI NORMAN"
+                        },
+                        {
+                            "objectCd": "BELC",
+                            "objectDsc": "BELCARRA"
+                        },
+                        {
+                            "objectCd": "BLBL",
+                            "objectDsc": "BELLA BELLA"
+                        },
+                        {
+                            "objectCd": "BLCL",
+                            "objectDsc": "BELLA COOLA"
+                        },
+                        {
+                            "objectCd": "BENN",
+                            "objectDsc": "BENNETT"
+                        },
+                        {
+                            "objectCd": "BRIS",
+                            "objectDsc": "BERRY ISLAND"
+                        },
+                        {
+                            "objectCd": "BSBG",
+                            "objectDsc": "BESSBOROUGH"
+                        },
+                        {
+                            "objectCd": "BIBR",
+                            "objectDsc": "BIG BAR"
+                        },
+                        {
+                            "objectCd": "BIBL",
+                            "objectDsc": "BIG BAR LAKE"
+                        },
+                        {
+                            "objectCd": "BICK",
+                            "objectDsc": "BIG CREEK"
+                        },
+                        {
+                            "objectCd": "BILK",
+                            "objectDsc": "BIG LAKE"
+                        },
+                        {
+                            "objectCd": "BLKR",
+                            "objectDsc": "BIG LAKE RANCH"
+                        },
+                        {
+                            "objectCd": "BIWH",
+                            "objectDsc": "BIG WHITE"
+                        },
+                        {
+                            "objectCd": "BCIS",
+                            "objectDsc": "BIRCH ISLAND"
+                        },
+                        {
+                            "objectCd": "BRKN",
+                            "objectDsc": "BIRKEN"
+                        },
+                        {
+                            "objectCd": "BLCK",
+                            "objectDsc": "BLACK CREEK"
+                        },
+                        {
+                            "objectCd": "BLPN",
+                            "objectDsc": "BLACK PINES"
+                        },
+                        {
+                            "objectCd": "BLPL",
+                            "objectDsc": "BLACKPOOL"
+                        },
+                        {
+                            "objectCd": "BLWR",
+                            "objectDsc": "BLACKWATER"
+                        },
+                        {
+                            "objectCd": "BWNR",
+                            "objectDsc": "BLACKWATER NORTH"
+                        },
+                        {
+                            "objectCd": "BLAE",
+                            "objectDsc": "BLAEBERRY"
+                        },
+                        {
+                            "objectCd": "BLWT",
+                            "objectDsc": "BLEWETT"
+                        },
+                        {
+                            "objectCd": "BLIS",
+                            "objectDsc": "BLIGH ISLAND"
+                        },
+                        {
+                            "objectCd": "BLBY",
+                            "objectDsc": "BLIND BAY"
+                        },
+                        {
+                            "objectCd": "BLCH",
+                            "objectDsc": "BLIND CHANNEL"
+                        },
+                        {
+                            "objectCd": "BLUB",
+                            "objectDsc": "BLUBBER BAY"
+                        },
+                        {
+                            "objectCd": "BLHL",
+                            "objectDsc": "BLUCHER HALL"
+                        },
+                        {
+                            "objectCd": "BLRV",
+                            "objectDsc": "BLUE RIVER"
+                        },
+                        {
+                            "objectCd": "BYCK",
+                            "objectDsc": "BLUEBERRY CREEK"
+                        },
+                        {
+                            "objectCd": "BYRI",
+                            "objectDsc": "BLUEBERRY RIVER IR"
+                        },
+                        {
+                            "objectCd": "BQLK",
+                            "objectDsc": "BOB QUINN LAKE"
+                        },
+                        {
+                            "objectCd": "BONA",
+                            "objectDsc": "BONAPARTE IR"
+                        },
+                        {
+                            "objectCd": "BOIS",
+                            "objectDsc": "BONWICK ISLAND"
+                        },
+                        {
+                            "objectCd": "BBAR",
+                            "objectDsc": "BOSTON BAR"
+                        },
+                        {
+                            "objectCd": "BSTF",
+                            "objectDsc": "BOSTON FLAT"
+                        },
+                        {
+                            "objectCd": "BSWL",
+                            "objectDsc": "BOSWELL"
+                        },
+                        {
+                            "objectCd": "BCLK",
+                            "objectDsc": "BOUCHIE LAKE"
+                        },
+                        {
+                            "objectCd": "BOLK",
+                            "objectDsc": "BOUDREAU LAKE"
+                        },
+                        {
+                            "objectCd": "BOCY",
+                            "objectDsc": "BOULDER CITY"
+                        },
+                        {
+                            "objectCd": "BOW",
+                            "objectDsc": "BOWEN ISLAND"
+                        },
+                        {
+                            "objectCd": "BOPP",
+                            "objectDsc": "BOWRON LAKES PROVINCIAL PARK"
+                        },
+                        {
+                            "objectCd": "BWSR",
+                            "objectDsc": "BOWSER"
+                        },
+                        {
+                            "objectCd": "BWLK",
+                            "objectDsc": "BOWSER LAKE"
+                        },
+                        {
+                            "objectCd": "BYLK",
+                            "objectDsc": "BOYA LAKE"
+                        },
+                        {
+                            "objectCd": "BRLN",
+                            "objectDsc": "BRALORNE"
+                        },
+                        {
+                            "objectCd": "BRNC",
+                            "objectDsc": "BRENNAN CREEK"
+                        },
+                        {
+                            "objectCd": "BRAR",
+                            "objectDsc": "BRIAR"
+                        },
+                        {
+                            "objectCd": "BIVL",
+                            "objectDsc": "BRIDESVILLE"
+                        },
+                        {
+                            "objectCd": "BDLK",
+                            "objectDsc": "BRIDGE LAKE"
+                        },
+                        {
+                            "objectCd": "BRNT",
+                            "objectDsc": "BRILLIANT"
+                        },
+                        {
+                            "objectCd": "BRSC",
+                            "objectDsc": "BRISCO"
+                        },
+                        {
+                            "objectCd": "BRTB",
+                            "objectDsc": "BRITANNIA BEACH"
+                        },
+                        {
+                            "objectCd": "BKMR",
+                            "objectDsc": "BROOKMERE"
+                        },
+                        {
+                            "objectCd": "BGIS",
+                            "objectDsc": "BROUGHTON ISLAND"
+                        },
+                        {
+                            "objectCd": "BUKH",
+                            "objectDsc": "BUCKHORN"
+                        },
+                        {
+                            "objectCd": "BKRV",
+                            "objectDsc": "BUCKINGHORSE RIVER"
+                        },
+                        {
+                            "objectCd": "BFCK",
+                            "objectDsc": "BUFFALO CREEK"
+                        },
+                        {
+                            "objectCd": "BUIC",
+                            "objectDsc": "BUICK"
+                        },
+                        {
+                            "objectCd": "BURV",
+                            "objectDsc": "BULL RIVER"
+                        },
+                        {
+                            "objectCd": "BBY",
+                            "objectDsc": "BURNABY"
+                        },
+                        {
+                            "objectCd": "BYIS",
+                            "objectDsc": "BURNABY ISLAND"
+                        },
+                        {
+                            "objectCd": "BSLK",
+                            "objectDsc": "BURNS LAKE"
+                        },
+                        {
+                            "objectCd": "BRTO",
+                            "objectDsc": "BURTON"
+                        },
+                        {
+                            "objectCd": "BUTE",
+                            "objectDsc": "BUTE INLET"
+                        },
+                        {
+                            "objectCd": "CACK",
+                            "objectDsc": "CACHE CREEK"
+                        },
+                        {
+                            "objectCd": "CACV",
+                            "objectDsc": "CACHE CREEK RURAL"
+                        },
+                        {
+                            "objectCd": "CHLY",
+                            "objectDsc": "CAHILTY"
+                        },
+                        {
+                            "objectCd": "CVIS",
+                            "objectDsc": "CALVERT ISLAND"
+                        },
+                        {
+                            "objectCd": "CPIS",
+                            "objectDsc": "CAMPANIA ISLAND"
+                        },
+                        {
+                            "objectCd": "CBIS",
+                            "objectDsc": "CAMPBELL ISLAND"
+                        },
+                        {
+                            "objectCd": "CBRV",
+                            "objectDsc": "CAMPBELL RIVER"
+                        },
+                        {
+                            "objectCd": "CNFL",
+                            "objectDsc": "CANAL FLATS"
+                        },
+                        {
+                            "objectCd": "CMLK",
+                            "objectDsc": "CANIM LAKE"
+                        },
+                        {
+                            "objectCd": "CANO",
+                            "objectDsc": "CANOE"
+                        },
+                        {
+                            "objectCd": "CECK",
+                            "objectDsc": "CANOE CREEK"
+                        },
+                        {
+                            "objectCd": "FCYN",
+                            "objectDsc": "CANYON ALPINE"
+                        },
+                        {
+                            "objectCd": "CANY",
+                            "objectDsc": "CANYON HOT SPRINGS"
+                        },
+                        {
+                            "objectCd": "CSPK",
+                            "objectDsc": "CAPE SCOTT PARK"
+                        },
+                        {
+                            "objectCd": "CARV",
+                            "objectDsc": "CARIBOO RIVER"
+                        },
+                        {
+                            "objectCd": "CARM",
+                            "objectDsc": "CARMI"
+                        },
+                        {
+                            "objectCd": "CRLK",
+                            "objectDsc": "CARP LAKE"
+                        },
+                        {
+                            "objectCd": "CPLK",
+                            "objectDsc": "CARPENTER LAKE"
+                        },
+                        {
+                            "objectCd": "CASC",
+                            "objectDsc": "CASCADE"
+                        },
+                        {
+                            "objectCd": "CATL",
+                            "objectDsc": "CASTLEDALE"
+                        },
+                        {
+                            "objectCd": "CLGR",
+                            "objectDsc": "CASTLEGAR"
+                        },
+                        {
+                            "objectCd": "CLIS",
+                            "objectDsc": "CATALA ISLAND"
+                        },
+                        {
+                            "objectCd": "CSTN",
+                            "objectDsc": "CAWSTON"
+                        },
+                        {
+                            "objectCd": "CACS",
+                            "objectDsc": "CAYCUSE"
+                        },
+                        {
+                            "objectCd": "CELK",
+                            "objectDsc": "CECIL LAKE"
+                        },
+                        {
+                            "objectCd": "CRIS",
+                            "objectDsc": "CEDAR ISLAND"
+                        },
+                        {
+                            "objectCd": "CRVL",
+                            "objectDsc": "CEDARVALE"
+                        },
+                        {
+                            "objectCd": "CLST",
+                            "objectDsc": "CELISTA"
+                        },
+                        {
+                            "objectCd": "CSNC",
+                            "objectDsc": "CENTRAL SAANICH"
+                        },
+                        {
+                            "objectCd": "CHIS",
+                            "objectDsc": "CHAATL ISLAND"
+                        },
+                        {
+                            "objectCd": "CNLK",
+                            "objectDsc": "CHAPPERON LAKE"
+                        },
+                        {
+                            "objectCd": "CLLK",
+                            "objectDsc": "CHARLIE LAKE"
+                        },
+                        {
+                            "objectCd": "CHAS",
+                            "objectDsc": "CHASE"
+                        },
+                        {
+                            "objectCd": "CHAR",
+                            "objectDsc": "CHASE RURAL"
+                        },
+                        {
+                            "objectCd": "CHAC",
+                            "objectDsc": "CHASE CREEK"
+                        },
+                        {
+                            "objectCd": "CHSM",
+                            "objectDsc": "CHASM"
+                        },
+                        {
+                            "objectCd": "CMIS",
+                            "objectDsc": "CHATHAM ISLAND"
+                        },
+                        {
+                            "objectCd": "CHIR",
+                            "objectDsc": "CHEAM IR"
+                        },
+                        {
+                            "objectCd": "CHHL",
+                            "objectDsc": "CHEHALIS"
+                        },
+                        {
+                            "objectCd": "CHNS",
+                            "objectDsc": "CHEMAINUS"
+                        },
+                        {
+                            "objectCd": "CHCK",
+                            "objectDsc": "CHERRY CREEK"
+                        },
+                        {
+                            "objectCd": "CHVL",
+                            "objectDsc": "CHERRYVILLE"
+                        },
+                        {
+                            "objectCd": "CHES",
+                            "objectDsc": "CHESLATTA"
+                        },
+                        {
+                            "objectCd": "CTWD",
+                            "objectDsc": "CHETWYND"
+                        },
+                        {
+                            "objectCd": "CHEZ",
+                            "objectDsc": "CHEZACUT"
+                        },
+                        {
+                            "objectCd": "CFLK",
+                            "objectDsc": "CHIEF LAKE"
+                        },
+                        {
+                            "objectCd": "CLKF",
+                            "objectDsc": "CHILANKO FORKS"
+                        },
+                        {
+                            "objectCd": "CHIL",
+                            "objectDsc": "CHILLIWACK"
+                        },
+                        {
+                            "objectCd": "CHRV",
+                            "objectDsc": "CHILLIWACK RIVER VALLEY"
+                        },
+                        {
+                            "objectCd": "CMNL",
+                            "objectDsc": "CHIMNEY LAKE"
+                        },
+                        {
+                            "objectCd": "CKCV",
+                            "objectDsc": "CHINOOK COVE"
+                        },
+                        {
+                            "objectCd": "CHVY",
+                            "objectDsc": "CHRISTIAN VALLEY"
+                        },
+                        {
+                            "objectCd": "CSLK",
+                            "objectDsc": "CHRISTINA LAKE"
+                        },
+                        {
+                            "objectCd": "CHCH",
+                            "objectDsc": "CHU CHUA"
+                        },
+                        {
+                            "objectCd": "CINE",
+                            "objectDsc": "CINEMA"
+                        },
+                        {
+                            "objectCd": "CPLT",
+                            "objectDsc": "CLAPPERTON"
+                        },
+                        {
+                            "objectCd": "CLHT",
+                            "objectDsc": "CLAYHURST"
+                        },
+                        {
+                            "objectCd": "CLWR",
+                            "objectDsc": "CLEARWATER"
+                        },
+                        {
+                            "objectCd": "CLWT",
+                            "objectDsc": "CLEARWATER RURAL"
+                        },
+                        {
+                            "objectCd": "CLEM",
+                            "objectDsc": "CLEMRETTA"
+                        },
+                        {
+                            "objectCd": "CLTN",
+                            "objectDsc": "CLINTON"
+                        },
+                        {
+                            "objectCd": "CLTR",
+                            "objectDsc": "CLINTON RURAL"
+                        },
+                        {
+                            "objectCd": "CLTS",
+                            "objectDsc": "CLINTON SOUTH"
+                        },
+                        {
+                            "objectCd": "CZLK",
+                            "objectDsc": "CLUCULZ LAKE"
+                        },
+                        {
+                            "objectCd": "CLHB",
+                            "objectDsc": "COAL HARBOUR"
+                        },
+                        {
+                            "objectCd": "CLID",
+                            "objectDsc": "COAL ISLAND"
+                        },
+                        {
+                            "objectCd": "CRIV",
+                            "objectDsc": "COAL RIVER"
+                        },
+                        {
+                            "objectCd": "CLMT",
+                            "objectDsc": "COALMONT"
+                        },
+                        {
+                            "objectCd": "CBHL",
+                            "objectDsc": "COBBLE HILL"
+                        },
+                        {
+                            "objectCd": "CISI",
+                            "objectDsc": "COFFIN ISLAND IR"
+                        },
+                        {
+                            "objectCd": "CODM",
+                            "objectDsc": "COLDSTREAM"
+                        },
+                        {
+                            "objectCd": "CDCK",
+                            "objectDsc": "COLDSTREAM CREEK"
+                        },
+                        {
+                            "objectCd": "CLDW",
+                            "objectDsc": "COLDWATER"
+                        },
+                        {
+                            "objectCd": "CLLT",
+                            "objectDsc": "COLLEYMOUNT"
+                        },
+                        {
+                            "objectCd": "CLGS",
+                            "objectDsc": "COLUMBIA GARDENS"
+                        },
+                        {
+                            "objectCd": "CBLV",
+                            "objectDsc": "COLUMBIA VALLEY"
+                        },
+                        {
+                            "objectCd": "COLW",
+                            "objectDsc": "COLWOOD"
+                        },
+                        {
+                            "objectCd": "COMX",
+                            "objectDsc": "COMOX"
+                        },
+                        {
+                            "objectCd": "CPII",
+                            "objectDsc": "COMPTON ISLAND IR"
+                        },
+                        {
+                            "objectCd": "CISL",
+                            "objectDsc": "CONE ISLAND"
+                        },
+                        {
+                            "objectCd": "COOM",
+                            "objectDsc": "COOMBS"
+                        },
+                        {
+                            "objectCd": "CPCK",
+                            "objectDsc": "COOPER CREEK"
+                        },
+                        {
+                            "objectCd": "CRCK",
+                            "objectDsc": "COPPER CREEK"
+                        },
+                        {
+                            "objectCd": "CQLA",
+                            "objectDsc": "COQUIHALLA"
+                        },
+                        {
+                            "objectCd": "COQ",
+                            "objectDsc": "COQUITLAM"
+                        },
+                        {
+                            "objectCd": "CORB",
+                            "objectDsc": "CORBIN"
+                        },
+                        {
+                            "objectCd": "CTIS",
+                            "objectDsc": "CORTES ISLAND"
+                        },
+                        {
+                            "objectCd": "CTTD",
+                            "objectDsc": "COTTONWOOD"
+                        },
+                        {
+                            "objectCd": "CRTY",
+                            "objectDsc": "COURTENAY"
+                        },
+                        {
+                            "objectCd": "CUTL",
+                            "objectDsc": "COUTLEE"
+                        },
+                        {
+                            "objectCd": "CWBY",
+                            "objectDsc": "COWICHAN BAY"
+                        },
+                        {
+                            "objectCd": "CXIS",
+                            "objectDsc": "COX ISLAND"
+                        },
+                        {
+                            "objectCd": "CGCH",
+                            "objectDsc": "CRAIGELLACHIE"
+                        },
+                        {
+                            "objectCd": "CRJC",
+                            "objectDsc": "CRANBERRY JUNCTION"
+                        },
+                        {
+                            "objectCd": "CRBK",
+                            "objectDsc": "CRANBROOK"
+                        },
+                        {
+                            "objectCd": "CFBA",
+                            "objectDsc": "CRAWFORD BAY"
+                        },
+                        {
+                            "objectCd": "CSIS",
+                            "objectDsc": "CREASE ISLAND"
+                        },
+                        {
+                            "objectCd": "CCSR",
+                            "objectDsc": "CRESCENT SPUR"
+                        },
+                        {
+                            "objectCd": "CRVY",
+                            "objectDsc": "CRESCENT VALLEY"
+                        },
+                        {
+                            "objectCd": "CETN",
+                            "objectDsc": "CRESTON"
+                        },
+                        {
+                            "objectCd": "CROF",
+                            "objectDsc": "CROFTON"
+                        },
+                        {
+                            "objectCd": "CORV",
+                            "objectDsc": "CROSS RIVER"
+                        },
+                        {
+                            "objectCd": "CULT",
+                            "objectDsc": "CULTUS LAKE"
+                        },
+                        {
+                            "objectCd": "CMLD",
+                            "objectDsc": "CUMBERLAND"
+                        },
+                        {
+                            "objectCd": "QNCH",
+                            "objectDsc": "DAAJING GIIDS"
+                        },
+                        {
+                            "objectCd": "DNSK",
+                            "objectDsc": "DANSKIN"
+                        },
+                        {
+                            "objectCd": "DRCY",
+                            "objectDsc": "D'ARCY"
+                        },
+                        {
+                            "objectCd": "DARF",
+                            "objectDsc": "DARFIELD"
+                        },
+                        {
+                            "objectCd": "DVIS",
+                            "objectDsc": "DAVIES ISLAND"
+                        },
+                        {
+                            "objectCd": "DWCK",
+                            "objectDsc": "DAWSON CREEK"
+                        },
+                        {
+                            "objectCd": "DCIS",
+                            "objectDsc": "DECOURCY ISLAND"
+                        },
+                        {
+                            "objectCd": "DHIS",
+                            "objectDsc": "DEHORSEY ISLAND"
+                        },
+                        {
+                            "objectCd": "DSCK",
+                            "objectDsc": "DEADMANS CREEK"
+                        },
+                        {
+                            "objectCd": "DSLK",
+                            "objectDsc": "DEASE LAKE"
+                        },
+                        {
+                            "objectCd": "DKLK",
+                            "objectDsc": "DECKER LAKE"
+                        },
+                        {
+                            "objectCd": "DPCK",
+                            "objectDsc": "DEEP CREEK"
+                        },
+                        {
+                            "objectCd": "DCKI",
+                            "objectDsc": "DEEP CREEK IR"
+                        },
+                        {
+                            "objectCd": "DALK",
+                            "objectDsc": "DEKA LAKE"
+                        },
+                        {
+                            "objectCd": "DEL",
+                            "objectDsc": "DELTA"
+                        },
+                        {
+                            "objectCd": "DNIS",
+                            "objectDsc": "DENMAN ISLAND"
+                        },
+                        {
+                            "objectCd": "DYIS",
+                            "objectDsc": "DENNY ISLAND"
+                        },
+                        {
+                            "objectCd": "DRCH",
+                            "objectDsc": "DEROCHE"
+                        },
+                        {
+                            "objectCd": "DVIN",
+                            "objectDsc": "DEVINE"
+                        },
+                        {
+                            "objectCd": "DWDN",
+                            "objectDsc": "DEWDNEY"
+                        },
+                        {
+                            "objectCd": "DWIS",
+                            "objectDsc": "DEWDNEY ISLAND"
+                        },
+                        {
+                            "objectCd": "DAIS",
+                            "objectDsc": "DIANA ISLAND"
+                        },
+                        {
+                            "objectCd": "DGIS",
+                            "objectDsc": "DIGBY ISLAND"
+                        },
+                        {
+                            "objectCd": "DSCI",
+                            "objectDsc": "DISCOVERY ISLAND"
+                        },
+                        {
+                            "objectCd": "DORV",
+                            "objectDsc": "DOE RIVER"
+                        },
+                        {
+                            "objectCd": "DGCK",
+                            "objectDsc": "DOG CREEK"
+                        },
+                        {
+                            "objectCd": "DGWD",
+                            "objectDsc": "DOGWOOD VALLEY"
+                        },
+                        {
+                            "objectCd": "DOIG",
+                            "objectDsc": "DOIG"
+                        },
+                        {
+                            "objectCd": "DPIS",
+                            "objectDsc": "DOLPHIN ISLAND"
+                        },
+                        {
+                            "objectCd": "DMCK",
+                            "objectDsc": "DOME CREEK"
+                        },
+                        {
+                            "objectCd": "DNLD",
+                            "objectDsc": "DONALD"
+                        },
+                        {
+                            "objectCd": "DMLG",
+                            "objectDsc": "DONALD LANDING"
+                        },
+                        {
+                            "objectCd": "DGLK",
+                            "objectDsc": "DOUGLAS LAKE"
+                        },
+                        {
+                            "objectCd": "DISI",
+                            "objectDsc": "DOVE ISLAND IR"
+                        },
+                        {
+                            "objectCd": "DWRV",
+                            "objectDsc": "DRIFTWOOD RIVER"
+                        },
+                        {
+                            "objectCd": "DNCN",
+                            "objectDsc": "DUNCAN"
+                        },
+                        {
+                            "objectCd": "DNLK",
+                            "objectDsc": "DUNCAN LAKE"
+                        },
+                        {
+                            "objectCd": "DDIS",
+                            "objectDsc": "DUNDAS ISLAND"
+                        },
+                        {
+                            "objectCd": "DUNK",
+                            "objectDsc": "DUNKLEY"
+                        },
+                        {
+                            "objectCd": "DULK",
+                            "objectDsc": "DUNN LAKE"
+                        },
+                        {
+                            "objectCd": "DNSR",
+                            "objectDsc": "DUNSTER"
+                        },
+                        {
+                            "objectCd": "EABY",
+                            "objectDsc": "EAGLE BAY"
+                        },
+                        {
+                            "objectCd": "EACK",
+                            "objectDsc": "EAGLE CREEK"
+                        },
+                        {
+                            "objectCd": "EBRL",
+                            "objectDsc": "EAST BARRIERE LAKE"
+                        },
+                        {
+                            "objectCd": "EBLK",
+                            "objectDsc": "EAST BLACKPOOL"
+                        },
+                        {
+                            "objectCd": "EAPI",
+                            "objectDsc": "EAST PINE"
+                        },
+                        {
+                            "objectCd": "ESMA",
+                            "objectDsc": "EAST SALMON ARM"
+                        },
+                        {
+                            "objectCd": "ESOK",
+                            "objectDsc": "EAST SOOKE"
+                        },
+                        {
+                            "objectCd": "EDIS",
+                            "objectDsc": "EDEN ISLAND"
+                        },
+                        {
+                            "objectCd": "EDWR",
+                            "objectDsc": "EDGEWATER"
+                        },
+                        {
+                            "objectCd": "EDWD",
+                            "objectDsc": "EDGEWOOD"
+                        },
+                        {
+                            "objectCd": "EKIS",
+                            "objectDsc": "EDWARD KING ISLAND"
+                        },
+                        {
+                            "objectCd": "EGMT",
+                            "objectDsc": "EGMONT"
+                        },
+                        {
+                            "objectCd": "EKFR",
+                            "objectDsc": "ELKFORD"
+                        },
+                        {
+                            "objectCd": "ELKO",
+                            "objectDsc": "ELKO"
+                        },
+                        {
+                            "objectCd": "ELCP",
+                            "objectDsc": "ELSWORTH CAMP"
+                        },
+                        {
+                            "objectCd": "ENDA",
+                            "objectDsc": "ENDAKO"
+                        },
+                        {
+                            "objectCd": "EDBY",
+                            "objectDsc": "ENDERBY"
+                        },
+                        {
+                            "objectCd": "EGEN",
+                            "objectDsc": "ENGEN"
+                        },
+                        {
+                            "objectCd": "ERIC",
+                            "objectDsc": "ERICKSON"
+                        },
+                        {
+                            "objectCd": "ERIE",
+                            "objectDsc": "ERIE"
+                        },
+                        {
+                            "objectCd": "ERRN",
+                            "objectDsc": "ERRINGTON"
+                        },
+                        {
+                            "objectCd": "EQMT",
+                            "objectDsc": "ESQUIMALT"
+                        },
+                        {
+                            "objectCd": "FRSP",
+                            "objectDsc": "FAIRMONT HOT SPRINGS"
+                        },
+                        {
+                            "objectCd": "FKLD",
+                            "objectDsc": "FALKLAND"
+                        },
+                        {
+                            "objectCd": "FYBA",
+                            "objectDsc": "FANNY BAY"
+                        },
+                        {
+                            "objectCd": "FAIS",
+                            "objectDsc": "FARADAY ISLAND"
+                        },
+                        {
+                            "objectCd": "FRTN",
+                            "objectDsc": "FARMINGTON"
+                        },
+                        {
+                            "objectCd": "FRIS",
+                            "objectDsc": "FARRANT ISLAND"
+                        },
+                        {
+                            "objectCd": "FLCK",
+                            "objectDsc": "FARRELL CREEK"
+                        },
+                        {
+                            "objectCd": "FAQR",
+                            "objectDsc": "FAUQUIER"
+                        },
+                        {
+                            "objectCd": "FLHT",
+                            "objectDsc": "FELLERS HEIGHTS"
+                        },
+                        {
+                            "objectCd": "FDTB",
+                            "objectDsc": "FERNDALE-TABOR"
+                        },
+                        {
+                            "objectCd": "FERN",
+                            "objectDsc": "FERNIE"
+                        },
+                        {
+                            "objectCd": "FILD",
+                            "objectDsc": "FIELD"
+                        },
+                        {
+                            "objectCd": "FNIS",
+                            "objectDsc": "FIN ISLAND"
+                        },
+                        {
+                            "objectCd": "FIRE",
+                            "objectDsc": "FIRESIDE"
+                        },
+                        {
+                            "objectCd": "FIRV",
+                            "objectDsc": "FIRVALE"
+                        },
+                        {
+                            "objectCd": "FLAT",
+                            "objectDsc": "FLATHEAD"
+                        },
+                        {
+                            "objectCd": "FTRK",
+                            "objectDsc": "FLATROCK"
+                        },
+                        {
+                            "objectCd": "FLIS",
+                            "objectDsc": "FLEMING ISLAND"
+                        },
+                        {
+                            "objectCd": "FSIS",
+                            "objectDsc": "FLORES ISLAND"
+                        },
+                        {
+                            "objectCd": "FLYI",
+                            "objectDsc": "FLY ISLAND IR"
+                        },
+                        {
+                            "objectCd": "FONT",
+                            "objectDsc": "FONTAS"
+                        },
+                        {
+                            "objectCd": "FMFL",
+                            "objectDsc": "FOREMAN FLATS"
+                        },
+                        {
+                            "objectCd": "FRGV",
+                            "objectDsc": "FOREST GROVE"
+                        },
+                        {
+                            "objectCd": "FGCK",
+                            "objectDsc": "FORGETMENOT CREEK"
+                        },
+                        {
+                            "objectCd": "FBAB",
+                            "objectDsc": "FORT BABINE"
+                        },
+                        {
+                            "objectCd": "FFRA",
+                            "objectDsc": "FORT FRASER"
+                        },
+                        {
+                            "objectCd": "FGRG",
+                            "objectDsc": "FORT GEORGE NO 2"
+                        },
+                        {
+                            "objectCd": "FNEL",
+                            "objectDsc": "FORT NELSON"
+                        },
+                        {
+                            "objectCd": "FNEI",
+                            "objectDsc": "FORT NELSON IR"
+                        },
+                        {
+                            "objectCd": "FSJA",
+                            "objectDsc": "FORT ST JAMES"
+                        },
+                        {
+                            "objectCd": "FSJO",
+                            "objectDsc": "FORT ST JOHN"
+                        },
+                        {
+                            "objectCd": "FTST",
+                            "objectDsc": "FORT STEELE"
+                        },
+                        {
+                            "objectCd": "FWAR",
+                            "objectDsc": "FORT WARE"
+                        },
+                        {
+                            "objectCd": "FCLK",
+                            "objectDsc": "FRANCOIS LAKE"
+                        },
+                        {
+                            "objectCd": "FRAS",
+                            "objectDsc": "FRASER"
+                        },
+                        {
+                            "objectCd": "FRLK",
+                            "objectDsc": "FRASER LAKE"
+                        },
+                        {
+                            "objectCd": "FRDK",
+                            "objectDsc": "FREDERICK"
+                        },
+                        {
+                            "objectCd": "FRVA",
+                            "objectDsc": "FRUITVALE"
+                        },
+                        {
+                            "objectCd": "FURY",
+                            "objectDsc": "FURRY CREEK"
+                        },
+                        {
+                            "objectCd": "GBIS",
+                            "objectDsc": "GABRIOLA ISLAND"
+                        },
+                        {
+                            "objectCd": "GABY",
+                            "objectDsc": "GALENA BAY"
+                        },
+                        {
+                            "objectCd": "GLIS",
+                            "objectDsc": "GALIANO ISLAND"
+                        },
+                        {
+                            "objectCd": "GLWY",
+                            "objectDsc": "GALLOWAY"
+                        },
+                        {
+                            "objectCd": "GMBR",
+                            "objectDsc": "GAMBIER ISLAND"
+                        },
+                        {
+                            "objectCd": "GARH",
+                            "objectDsc": "GANG RANCH"
+                        },
+                        {
+                            "objectCd": "GDBA",
+                            "objectDsc": "GARDEN BAY"
+                        },
+                        {
+                            "objectCd": "GRBD",
+                            "objectDsc": "GARIBALDI PARK"
+                        },
+                        {
+                            "objectCd": "GNLL",
+                            "objectDsc": "GENELLE"
+                        },
+                        {
+                            "objectCd": "GMLG",
+                            "objectDsc": "GERMANSEN LANDING"
+                        },
+                        {
+                            "objectCd": "GBLG",
+                            "objectDsc": "GIBSON ISLAND"
+                        },
+                        {
+                            "objectCd": "GIB",
+                            "objectDsc": "GIBSONS"
+                        },
+                        {
+                            "objectCd": "GIIS",
+                            "objectDsc": "GIL ISLAND"
+                        },
+                        {
+                            "objectCd": "GFIS",
+                            "objectDsc": "GILFORD ISLAND"
+                        },
+                        {
+                            "objectCd": "GLSB",
+                            "objectDsc": "GILLIES BAY"
+                        },
+                        {
+                            "objectCd": "GINX",
+                            "objectDsc": "GINGOLX"
+                        },
+                        {
+                            "objectCd": "GSCM",
+                            "objectDsc": "GISCOME"
+                        },
+                        {
+                            "objectCd": "GTMX",
+                            "objectDsc": "GITANMAAX"
+                        },
+                        {
+                            "objectCd": "GTYW",
+                            "objectDsc": "GITANYOW"
+                        },
+                        {
+                            "objectCd": "GYGK",
+                            "objectDsc": "GITSEGUKLA"
+                        },
+                        {
+                            "objectCd": "GTWK",
+                            "objectDsc": "GITWANGAK"
+                        },
+                        {
+                            "objectCd": "GTWW",
+                            "objectDsc": "GITWINKSIHLKW"
+                        },
+                        {
+                            "objectCd": "GLAD",
+                            "objectDsc": "GLADE"
+                        },
+                        {
+                            "objectCd": "GLEN",
+                            "objectDsc": "GLENORA"
+                        },
+                        {
+                            "objectCd": "GLMP",
+                            "objectDsc": "GLIMPSE LAKE"
+                        },
+                        {
+                            "objectCd": "GLDB",
+                            "objectDsc": "GOLD BRIDGE"
+                        },
+                        {
+                            "objectCd": "GLRV",
+                            "objectDsc": "GOLD RIVER"
+                        },
+                        {
+                            "objectCd": "GLDN",
+                            "objectDsc": "GOLDEN"
+                        },
+                        {
+                            "objectCd": "GLDP",
+                            "objectDsc": "GOLDEN EARS PARK"
+                        },
+                        {
+                            "objectCd": "GHLK",
+                            "objectDsc": "GOOD HOPE LAKE"
+                        },
+                        {
+                            "objectCd": "GDLW",
+                            "objectDsc": "GOODLOW"
+                        },
+                        {
+                            "objectCd": "GSIS",
+                            "objectDsc": "GOOSE ISLAND"
+                        },
+                        {
+                            "objectCd": "GHIS",
+                            "objectDsc": "GOSCHEN ISLAND"
+                        },
+                        {
+                            "objectCd": "GOIS",
+                            "objectDsc": "GOSSIP ISLAND"
+                        },
+                        {
+                            "objectCd": "GDFR",
+                            "objectDsc": "GRAND FORKS"
+                        },
+                        {
+                            "objectCd": "GRBH",
+                            "objectDsc": "GRANDVIEW BENCH"
+                        },
+                        {
+                            "objectCd": "GRAN",
+                            "objectDsc": "GRANISLE"
+                        },
+                        {
+                            "objectCd": "GRMR",
+                            "objectDsc": "GRASMERE"
+                        },
+                        {
+                            "objectCd": "GLIR",
+                            "objectDsc": "GRASSLANDS IR"
+                        },
+                        {
+                            "objectCd": "GIIR",
+                            "objectDsc": "GRASSY ISLAND IR"
+                        },
+                        {
+                            "objectCd": "GRPL",
+                            "objectDsc": "GRASSY PLAINS"
+                        },
+                        {
+                            "objectCd": "GRCK",
+                            "objectDsc": "GRAY CREEK"
+                        },
+                        {
+                            "objectCd": "GBLK",
+                            "objectDsc": "GREAT BEAVER LAKE"
+                        },
+                        {
+                            "objectCd": "GREL",
+                            "objectDsc": "GREEN LAKE"
+                        },
+                        {
+                            "objectCd": "GRVL",
+                            "objectDsc": "GREENVILLE"
+                        },
+                        {
+                            "objectCd": "GRWD",
+                            "objectDsc": "GREENWOOD"
+                        },
+                        {
+                            "objectCd": "GGIS",
+                            "objectDsc": "GREGORY ISLAND"
+                        },
+                        {
+                            "objectCd": "GRBI",
+                            "objectDsc": "GRIBBELL ISLAND"
+                        },
+                        {
+                            "objectCd": "GRRD",
+                            "objectDsc": "GRINDROD"
+                        },
+                        {
+                            "objectCd": "GRBR",
+                            "objectDsc": "GROUNDBIRCH"
+                        },
+                        {
+                            "objectCd": "GUND",
+                            "objectDsc": "GUNDY"
+                        },
+                        {
+                            "objectCd": "GDIS",
+                            "objectDsc": "GURD ISLAND"
+                        },
+                        {
+                            "objectCd": "HAGG",
+                            "objectDsc": "HAGENSBORG"
+                        },
+                        {
+                            "objectCd": "HAGW",
+                            "objectDsc": "HAGWILGET"
+                        },
+                        {
+                            "objectCd": "QCIS",
+                            "objectDsc": "QUEEN CHARLOTTE ISLANDS"
+                        },
+                        {
+                            "objectCd": "HMB",
+                            "objectDsc": "HALFMOON BAY"
+                        },
+                        {
+                            "objectCd": "HWRV",
+                            "objectDsc": "HALFWAY RIVER"
+                        },
+                        {
+                            "objectCd": "HWRI",
+                            "objectDsc": "HALFWAY RIVER IR"
+                        },
+                        {
+                            "objectCd": "HRPP",
+                            "objectDsc": "HAMBER PROVINCIAL PARK"
+                        },
+                        {
+                            "objectCd": "HNVL",
+                            "objectDsc": "HANCEVILLE"
+                        },
+                        {
+                            "objectCd": "HNIS",
+                            "objectDsc": "HANSON ISLAND"
+                        },
+                        {
+                            "objectCd": "HDIS",
+                            "objectDsc": "HARBLEDOWN ISLAND"
+                        },
+                        {
+                            "objectCd": "HWIS",
+                            "objectDsc": "HARDWICKE ISLAND"
+                        },
+                        {
+                            "objectCd": "HYIS",
+                            "objectDsc": "HARDY ISLAND"
+                        },
+                        {
+                            "objectCd": "HARR",
+                            "objectDsc": "HARRISON HOT SPRINGS"
+                        },
+                        {
+                            "objectCd": "HRIS",
+                            "objectDsc": "HARRISON ISLAND"
+                        },
+                        {
+                            "objectCd": "HRLK",
+                            "objectDsc": "HARRISON LAKE"
+                        },
+                        {
+                            "objectCd": "HRML",
+                            "objectDsc": "HARRISON MILLS"
+                        },
+                        {
+                            "objectCd": "HARP",
+                            "objectDsc": "HARROP"
+                        },
+                        {
+                            "objectCd": "HYBY",
+                            "objectDsc": "HARTLEY BAY"
+                        },
+                        {
+                            "objectCd": "HWDI",
+                            "objectDsc": "HARWOOD ISLAND"
+                        },
+                        {
+                            "objectCd": "HRFT",
+                            "objectDsc": "HASLER FLATS"
+                        },
+                        {
+                            "objectCd": "HATC",
+                            "objectDsc": "HAT CREEK"
+                        },
+                        {
+                            "objectCd": "HCIR",
+                            "objectDsc": "HAT CREEK IR"
+                        },
+                        {
+                            "objectCd": "HTZC",
+                            "objectDsc": "HATZIC"
+                        },
+                        {
+                            "objectCd": "HBIS",
+                            "objectDsc": "HAWKESBURY ISLAND"
+                        },
+                        {
+                            "objectCd": "HAZL",
+                            "objectDsc": "HAZELTON"
+                        },
+                        {
+                            "objectCd": "HAZR",
+                            "objectDsc": "HAZELTON RURAL"
+                        },
+                        {
+                            "objectCd": "HCTI",
+                            "objectDsc": "HECATE ISLAND"
+                        },
+                        {
+                            "objectCd": "HDLY",
+                            "objectDsc": "HEDLEY"
+                        },
+                        {
+                            "objectCd": "HEFC",
+                            "objectDsc": "HEFFLEY CREEK"
+                        },
+                        {
+                            "objectCd": "HFCK",
+                            "objectDsc": "HEFFLEY LAKE"
+                        },
+                        {
+                            "objectCd": "HLBI",
+                            "objectDsc": "HELBY ISLAND"
+                        },
+                        {
+                            "objectCd": "HELM",
+                            "objectDsc": "HELMUT"
+                        },
+                        {
+                            "objectCd": "HMVL",
+                            "objectDsc": "HEMLOCK VALLEY"
+                        },
+                        {
+                            "objectCd": "HXLK",
+                            "objectDsc": "HENDRIX LAKE"
+                        },
+                        {
+                            "objectCd": "HRYI",
+                            "objectDsc": "HENRY ISLAND"
+                        },
+                        {
+                            "objectCd": "HNDI",
+                            "objectDsc": "HERNANDO ISLAND"
+                        },
+                        {
+                            "objectCd": "HBBI",
+                            "objectDsc": "HIBBEN ISLAND"
+                        },
+                        {
+                            "objectCd": "HILD",
+                            "objectDsc": "HIGHLANDS"
+                        },
+                        {
+                            "objectCd": "HILS",
+                            "objectDsc": "HILLS"
+                        },
+                        {
+                            "objectCd": "HIXN",
+                            "objectDsc": "HIXON"
+                        },
+                        {
+                            "objectCd": "HXNS",
+                            "objectDsc": "HIXON SOUTH"
+                        },
+                        {
+                            "objectCd": "HOLB",
+                            "objectDsc": "HOLBERG"
+                        },
+                        {
+                            "objectCd": "HNYB",
+                            "objectDsc": "HONEYMOON BAY"
+                        },
+                        {
+                            "objectCd": "HOLK",
+                            "objectDsc": "HOODOO LAKE"
+                        },
+                        {
+                            "objectCd": "HOPE",
+                            "objectDsc": "HOPE"
+                        },
+                        {
+                            "objectCd": "HOIS",
+                            "objectDsc": "HOPE ISLAND"
+                        },
+                        {
+                            "objectCd": "HPKN",
+                            "objectDsc": "HOPKINS LANDING"
+                        },
+                        {
+                            "objectCd": "HPIS",
+                            "objectDsc": "HORNBY ISLAND"
+                        },
+                        {
+                            "objectCd": "HSFY",
+                            "objectDsc": "HORSEFLY"
+                        },
+                        {
+                            "objectCd": "HSMR",
+                            "objectDsc": "HOSMER"
+                        },
+                        {
+                            "objectCd": "HSCV",
+                            "objectDsc": "HOT SPRINGS COVE"
+                        },
+                        {
+                            "objectCd": "HOUS",
+                            "objectDsc": "HOUSTON"
+                        },
+                        {
+                            "objectCd": "HWSR",
+                            "objectDsc": "HOWSER"
+                        },
+                        {
+                            "objectCd": "HDHP",
+                            "objectDsc": "HUDSON'S HOPE"
+                        },
+                        {
+                            "objectCd": "HLIS",
+                            "objectDsc": "HULL ISLAND"
+                        },
+                        {
+                            "objectCd": "HNTI",
+                            "objectDsc": "HUNTER ISLAND"
+                        },
+                        {
+                            "objectCd": "HUPE",
+                            "objectDsc": "HUPEL"
+                        },
+                        {
+                            "objectCd": "HSIS",
+                            "objectDsc": "HURST ISLAND"
+                        },
+                        {
+                            "objectCd": "HCHL",
+                            "objectDsc": "HUTCHISON LAKE"
+                        },
+                        {
+                            "objectCd": "HXIS",
+                            "objectDsc": "HUXLEY ISLAND"
+                        },
+                        {
+                            "objectCd": "HYSL",
+                            "objectDsc": "HYAS LAKE"
+                        },
+                        {
+                            "objectCd": "IARM",
+                            "objectDsc": "INDIAN ARM"
+                        },
+                        {
+                            "objectCd": "INIS",
+                            "objectDsc": "INSECT ISLAND"
+                        },
+                        {
+                            "objectCd": "IVMR",
+                            "objectDsc": "INVERMERE"
+                        },
+                        {
+                            "objectCd": "IRVN",
+                            "objectDsc": "IRVINES LANDING"
+                        },
+                        {
+                            "objectCd": "ISKU",
+                            "objectDsc": "ISKUT"
+                        },
+                        {
+                            "objectCd": "ISLP",
+                            "objectDsc": "ISLE PIERRE"
+                        },
+                        {
+                            "objectCd": "JFLK",
+                            "objectDsc": "JACKFISH LAKE"
+                        },
+                        {
+                            "objectCd": "JACY",
+                            "objectDsc": "JADE CITY"
+                        },
+                        {
+                            "objectCd": "JFRY",
+                            "objectDsc": "JAFFRAY"
+                        },
+                        {
+                            "objectCd": "JMIS",
+                            "objectDsc": "JAMES ISLAND"
+                        },
+                        {
+                            "objectCd": "JRVS",
+                            "objectDsc": "JERVIS INLET"
+                        },
+                        {
+                            "objectCd": "JESM",
+                            "objectDsc": "JESMOND"
+                        },
+                        {
+                            "objectCd": "JDRV",
+                            "objectDsc": "JORDAN RIVER"
+                        },
+                        {
+                            "objectCd": "JUSK",
+                            "objectDsc": "JUSKATLA"
+                        },
+                        {
+                            "objectCd": "KDIR",
+                            "objectDsc": "KADIS IR"
+                        },
+                        {
+                            "objectCd": "KLDN",
+                            "objectDsc": "KALEDEN"
+                        },
+                        {
+                            "objectCd": "KMLP",
+                            "objectDsc": "KAMLOOPS"
+                        },
+                        {
+                            "objectCd": "KNKB",
+                            "objectDsc": "KANAKA BAR"
+                        },
+                        {
+                            "objectCd": "KASL",
+                            "objectDsc": "KASLO"
+                        },
+                        {
+                            "objectCd": "KTSI",
+                            "objectDsc": "KEATS ISLAND"
+                        },
+                        {
+                            "objectCd": "KYLK",
+                            "objectDsc": "KELLY LAKE"
+                        },
+                        {
+                            "objectCd": "KLWN",
+                            "objectDsc": "KELOWNA"
+                        },
+                        {
+                            "objectCd": "KEMA",
+                            "objectDsc": "KEMANO"
+                        },
+                        {
+                            "objectCd": "KYIS",
+                            "objectDsc": "KENNEDY ISLAND"
+                        },
+                        {
+                            "objectCd": "KDLK",
+                            "objectDsc": "KENNEDY LAKE"
+                        },
+                        {
+                            "objectCd": "KRMO",
+                            "objectDsc": "KEREMEOS"
+                        },
+                        {
+                            "objectCd": "KRSY",
+                            "objectDsc": "KERSLEY"
+                        },
+                        {
+                            "objectCd": "KILD",
+                            "objectDsc": "KILDONAN"
+                        },
+                        {
+                            "objectCd": "KNKN",
+                            "objectDsc": "KILKERRAN"
+                        },
+                        {
+                            "objectCd": "KBLY",
+                            "objectDsc": "KIMBERLEY"
+                        },
+                        {
+                            "objectCd": "KINA",
+                            "objectDsc": "KINASKAN"
+                        },
+                        {
+                            "objectCd": "KGIT",
+                            "objectDsc": "KINGCOME INLET"
+                        },
+                        {
+                            "objectCd": "KGGT",
+                            "objectDsc": "KINGSGATE"
+                        },
+                        {
+                            "objectCd": "KNGV",
+                            "objectDsc": "KINGSVALE"
+                        },
+                        {
+                            "objectCd": "KISP",
+                            "objectDsc": "KISPIOX"
+                        },
+                        {
+                            "objectCd": "KSPV",
+                            "objectDsc": "KISPIOX VALLEY"
+                        },
+                        {
+                            "objectCd": "KITV",
+                            "objectDsc": "KITAMAAT VILLAGE"
+                        },
+                        {
+                            "objectCd": "KTNR",
+                            "objectDsc": "KITCHENER"
+                        },
+                        {
+                            "objectCd": "KITI",
+                            "objectDsc": "KITIMAT"
+                        },
+                        {
+                            "objectCd": "KITK",
+                            "objectDsc": "KITKATLA"
+                        },
+                        {
+                            "objectCd": "KITS",
+                            "objectDsc": "KITSAULT"
+                        },
+                        {
+                            "objectCd": "KITM",
+                            "objectDsc": "KITSUMKALUM"
+                        },
+                        {
+                            "objectCd": "KITW",
+                            "objectDsc": "KITWANGA"
+                        },
+                        {
+                            "objectCd": "KLKL",
+                            "objectDsc": "KLEENA KLEENE"
+                        },
+                        {
+                            "objectCd": "KLEM",
+                            "objectDsc": "KLEMTU"
+                        },
+                        {
+                            "objectCd": "KGIN",
+                            "objectDsc": "KNIGHT INLET"
+                        },
+                        {
+                            "objectCd": "KNUF",
+                            "objectDsc": "KNUTSFORD"
+                        },
+                        {
+                            "objectCd": "KOKS",
+                            "objectDsc": "KOKSILAH"
+                        },
+                        {
+                            "objectCd": "KYBY",
+                            "objectDsc": "KOOTENAY BAY"
+                        },
+                        {
+                            "objectCd": "KTPK",
+                            "objectDsc": "KOOTENAY PARK"
+                        },
+                        {
+                            "objectCd": "KTPS",
+                            "objectDsc": "KOOTENAY PASS"
+                        },
+                        {
+                            "objectCd": "KCLK",
+                            "objectDsc": "KOTCHO LAKE"
+                        },
+                        {
+                            "objectCd": "KRTV",
+                            "objectDsc": "KRESTOVA"
+                        },
+                        {
+                            "objectCd": "KLDI",
+                            "objectDsc": "KSUI LA DAS IR"
+                        },
+                        {
+                            "objectCd": "KULI",
+                            "objectDsc": "KULDEKDUMA IR"
+                        },
+                        {
+                            "objectCd": "KULD",
+                            "objectDsc": "KULDO"
+                        },
+                        {
+                            "objectCd": "KUIS",
+                            "objectDsc": "KUNGA ISLAND"
+                        },
+                        {
+                            "objectCd": "KHIS",
+                            "objectDsc": "KUNGHIT ISLAND"
+                        },
+                        {
+                            "objectCd": "KYLI",
+                            "objectDsc": "KYE YAA LA IR"
+                        },
+                        {
+                            "objectCd": "KYUQ",
+                            "objectDsc": "KYUQUOT"
+                        },
+                        {
+                            "objectCd": "LADB",
+                            "objectDsc": "LAC DU BOIS"
+                        },
+                        {
+                            "objectCd": "LLHC",
+                            "objectDsc": "LAC LA HACHE"
+                        },
+                        {
+                            "objectCd": "LLJN",
+                            "objectDsc": "LAC LE JEUNE"
+                        },
+                        {
+                            "objectCd": "LDYS",
+                            "objectDsc": "LADYSMITH"
+                        },
+                        {
+                            "objectCd": "LDLW",
+                            "objectDsc": "LAIDLAW"
+                        },
+                        {
+                            "objectCd": "LKCY",
+                            "objectDsc": "LAKE COUNTRY"
+                        },
+                        {
+                            "objectCd": "LCWC",
+                            "objectDsc": "LAKE COWICHAN"
+                        },
+                        {
+                            "objectCd": "LKER",
+                            "objectDsc": "LAKE ERROCK"
+                        },
+                        {
+                            "objectCd": "LKLK",
+                            "objectDsc": "LAKELSE LAKE"
+                        },
+                        {
+                            "objectCd": "LGIS",
+                            "objectDsc": "LANGARA ISLAND"
+                        },
+                        {
+                            "objectCd": "LNGD",
+                            "objectDsc": "LANGDALE"
+                        },
+                        {
+                            "objectCd": "LGFD",
+                            "objectDsc": "LANGFORD"
+                        },
+                        {
+                            "objectCd": "LANG",
+                            "objectDsc": "LANGLEY"
+                        },
+                        {
+                            "objectCd": "LNVL",
+                            "objectDsc": "LANTZVILLE"
+                        },
+                        {
+                            "objectCd": "LZIS",
+                            "objectDsc": "LANZ ISLAND"
+                        },
+                        {
+                            "objectCd": "LARD",
+                            "objectDsc": "LARDEAU"
+                        },
+                        {
+                            "objectCd": "LQIS",
+                            "objectDsc": "LASQUETI ISLAND"
+                        },
+                        {
+                            "objectCd": "LAVI",
+                            "objectDsc": "LAVINGTON"
+                        },
+                        {
+                            "objectCd": "LXKW",
+                            "objectDsc": "LAX KW' ALAAMS"
+                        },
+                        {
+                            "objectCd": "LAXA",
+                            "objectDsc": "LAXGALTS AP"
+                        },
+                        {
+                            "objectCd": "LNCL",
+                            "objectDsc": "LEANCHOIL"
+                        },
+                        {
+                            "objectCd": "LECK",
+                            "objectDsc": "LEE CREEK"
+                        },
+                        {
+                            "objectCd": "LWIS",
+                            "objectDsc": "LEWIS ISLAND"
+                        },
+                        {
+                            "objectCd": "LDRV",
+                            "objectDsc": "LIARD RIVER"
+                        },
+                        {
+                            "objectCd": "LKLY",
+                            "objectDsc": "LIKELY"
+                        },
+                        {
+                            "objectCd": "LILL",
+                            "objectDsc": "LILLOOET"
+                        },
+                        {
+                            "objectCd": "LILR",
+                            "objectDsc": "LILLOOET RURAL"
+                        },
+                        {
+                            "objectCd": "LYLK",
+                            "objectDsc": "LILY LAKE"
+                        },
+                        {
+                            "objectCd": "LNBH",
+                            "objectDsc": "LINDELL BEACH"
+                        },
+                        {
+                            "objectCd": "LBAY",
+                            "objectDsc": "LIONS BAY"
+                        },
+                        {
+                            "objectCd": "LSTR",
+                            "objectDsc": "LISTER"
+                        },
+                        {
+                            "objectCd": "LTFT",
+                            "objectDsc": "LITTLE FORT"
+                        },
+                        {
+                            "objectCd": "LDGP",
+                            "objectDsc": "LODGEPOLE"
+                        },
+                        {
+                            "objectCd": "LGLK",
+                            "objectDsc": "LOGAN LAKE"
+                        },
+                        {
+                            "objectCd": "LNBT",
+                            "objectDsc": "LONE BUTTE"
+                        },
+                        {
+                            "objectCd": "LNPR",
+                            "objectDsc": "LONE PRAIRIE"
+                        },
+                        {
+                            "objectCd": "LGBH",
+                            "objectDsc": "LONG BEACH"
+                        },
+                        {
+                            "objectCd": "LGWT",
+                            "objectDsc": "LONGWORTH"
+                        },
+                        {
+                            "objectCd": "LNLK",
+                            "objectDsc": "LOON LAKE"
+                        },
+                        {
+                            "objectCd": "LTIS",
+                            "objectDsc": "LORETTA ISLAND"
+                        },
+                        {
+                            "objectCd": "LSCK",
+                            "objectDsc": "LOUIS CREEK"
+                        },
+                        {
+                            "objectCd": "LNIC",
+                            "objectDsc": "LOWER NICOLA"
+                        },
+                        {
+                            "objectCd": "LWPT",
+                            "objectDsc": "LOWER POST"
+                        },
+                        {
+                            "objectCd": "LMBY",
+                            "objectDsc": "LUMBY"
+                        },
+                        {
+                            "objectCd": "LUND",
+                            "objectDsc": "LUND"
+                        },
+                        {
+                            "objectCd": "LYIS",
+                            "objectDsc": "LYELL ISLAND"
+                        },
+                        {
+                            "objectCd": "LYTN",
+                            "objectDsc": "LYTTON"
+                        },
+                        {
+                            "objectCd": "LYTR",
+                            "objectDsc": "LYTTON RURAL"
+                        },
+                        {
+                            "objectCd": "MCKN",
+                            "objectDsc": "MACKENZIE"
+                        },
+                        {
+                            "objectCd": "MZRU",
+                            "objectDsc": "MACKENZIE RURAL"
+                        },
+                        {
+                            "objectCd": "MDPK",
+                            "objectDsc": "MADEIRA PARK"
+                        },
+                        {
+                            "objectCd": "MGBY",
+                            "objectDsc": "MAGNA BAY"
+                        },
+                        {
+                            "objectCd": "MHRV",
+                            "objectDsc": "MAHATTA RIVER"
+                        },
+                        {
+                            "objectCd": "MDFL",
+                            "objectDsc": "MAHOOD FALLS"
+                        },
+                        {
+                            "objectCd": "MDCK",
+                            "objectDsc": "MAIDEN CREEK"
+                        },
+                        {
+                            "objectCd": "MTIS",
+                            "objectDsc": "MAITLAND ISLAND"
+                        },
+                        {
+                            "objectCd": "MLHT",
+                            "objectDsc": "MALAHAT"
+                        },
+                        {
+                            "objectCd": "MAKW",
+                            "objectDsc": "MALAKWA"
+                        },
+                        {
+                            "objectCd": "MMLK",
+                            "objectDsc": "MAMIT LAKE"
+                        },
+                        {
+                            "objectCd": "MNPK",
+                            "objectDsc": "MANNING PARK"
+                        },
+                        {
+                            "objectCd": "MNCK",
+                            "objectDsc": "MANSON CREEK"
+                        },
+                        {
+                            "objectCd": "MSLD",
+                            "objectDsc": "MANSONS LANDING"
+                        },
+                        {
+                            "objectCd": "MRDG",
+                            "objectDsc": "MAPLE RIDGE"
+                        },
+                        {
+                            "objectCd": "MARA",
+                            "objectDsc": "MARA"
+                        },
+                        {
+                            "objectCd": "MRCN",
+                            "objectDsc": "MARBLE CANYON"
+                        },
+                        {
+                            "objectCd": "MARG",
+                            "objectDsc": "MARGUERITE"
+                        },
+                        {
+                            "objectCd": "MAIS",
+                            "objectDsc": "MARINA ISLAND"
+                        },
+                        {
+                            "objectCd": "MRIS",
+                            "objectDsc": "MARS ISLAND"
+                        },
+                        {
+                            "objectCd": "MASS",
+                            "objectDsc": "MASSET"
+                        },
+                        {
+                            "objectCd": "MDIS",
+                            "objectDsc": "MAUD ISLAND"
+                        },
+                        {
+                            "objectCd": "MEIS",
+                            "objectDsc": "MAUDE ISLAND"
+                        },
+                        {
+                            "objectCd": "MLIS",
+                            "objectDsc": "MAURELLE ISLAND"
+                        },
+                        {
+                            "objectCd": "MXMH",
+                            "objectDsc": "MAXHAMISH"
+                        },
+                        {
+                            "objectCd": "MYIS",
+                            "objectDsc": "MAYNE ISLAND"
+                        },
+                        {
+                            "objectCd": "MYOK",
+                            "objectDsc": "MAYOOK"
+                        },
+                        {
+                            "objectCd": "MBRD",
+                            "objectDsc": "MCBRIDE"
+                        },
+                        {
+                            "objectCd": "MBRU",
+                            "objectDsc": "MCBRIDE RURAL"
+                        },
+                        {
+                            "objectCd": "MCIS",
+                            "objectDsc": "MCCAULEY ISLAND"
+                        },
+                        {
+                            "objectCd": "MCGL",
+                            "objectDsc": "MCGILLIVRAY LAKE"
+                        },
+                        {
+                            "objectCd": "MCGR",
+                            "objectDsc": "MCGREGOR"
+                        },
+                        {
+                            "objectCd": "MCKY",
+                            "objectDsc": "MCKAY ISLAND"
+                        },
+                        {
+                            "objectCd": "MLLK",
+                            "objectDsc": "MCLEESE LAKE"
+                        },
+                        {
+                            "objectCd": "MLDL",
+                            "objectDsc": "MCLEOD LAKE"
+                        },
+                        {
+                            "objectCd": "MDLK",
+                            "objectDsc": "MCLEOD LAKE RESERVE"
+                        },
+                        {
+                            "objectCd": "MCLR",
+                            "objectDsc": "MCLURE"
+                        },
+                        {
+                            "objectCd": "MWCK",
+                            "objectDsc": "MEADOW CREEK"
+                        },
+                        {
+                            "objectCd": "MDWL",
+                            "objectDsc": "MEADOW LAKE"
+                        },
+                        {
+                            "objectCd": "MSIS",
+                            "objectDsc": "MEARES ISLAND"
+                        },
+                        {
+                            "objectCd": "MGLK",
+                            "objectDsc": "MEGIN LAKE"
+                        },
+                        {
+                            "objectCd": "MVIS",
+                            "objectDsc": "MELVILLE ISLAND"
+                        },
+                        {
+                            "objectCd": "MRTT",
+                            "objectDsc": "MERRITT"
+                        },
+                        {
+                            "objectCd": "MELV",
+                            "objectDsc": "MERVILLE"
+                        },
+                        {
+                            "objectCd": "MSLK",
+                            "objectDsc": "MESACHIE LAKE"
+                        },
+                        {
+                            "objectCd": "METC",
+                            "objectDsc": "METCHOSIN"
+                        },
+                        {
+                            "objectCd": "MTKA",
+                            "objectDsc": "METLAKATLA"
+                        },
+                        {
+                            "objectCd": "MZDN",
+                            "objectDsc": "MEZIADIN"
+                        },
+                        {
+                            "objectCd": "MNLK",
+                            "objectDsc": "MEZIADIN LAKE"
+                        },
+                        {
+                            "objectCd": "MCCK",
+                            "objectDsc": "MICA CREEK"
+                        },
+                        {
+                            "objectCd": "MMIS",
+                            "objectDsc": "MIDSUMMER ISLAND"
+                        },
+                        {
+                            "objectCd": "MDWY",
+                            "objectDsc": "MIDWAY"
+                        },
+                        {
+                            "objectCd": "MLBY",
+                            "objectDsc": "MILL BAY"
+                        },
+                        {
+                            "objectCd": "MNNL",
+                            "objectDsc": "MINNIE LAKE"
+                        },
+                        {
+                            "objectCd": "MNIS",
+                            "objectDsc": "MINSTREL ISLAND"
+                        },
+                        {
+                            "objectCd": "MIOC",
+                            "objectDsc": "MIOCENE"
+                        },
+                        {
+                            "objectCd": "MILK",
+                            "objectDsc": "MIRROR LAKE"
+                        },
+                        {
+                            "objectCd": "MZLK",
+                            "objectDsc": "MISSEZULA LAKE"
+                        },
+                        {
+                            "objectCd": "MISS",
+                            "objectDsc": "MISSION"
+                        },
+                        {
+                            "objectCd": "MWRT",
+                            "objectDsc": "MIWORTH"
+                        },
+                        {
+                            "objectCd": "MOLK",
+                            "objectDsc": "MOBERLY LAKE"
+                        },
+                        {
+                            "objectCd": "MKIS",
+                            "objectDsc": "MOKETAS ISLAND"
+                        },
+                        {
+                            "objectCd": "MCHL",
+                            "objectDsc": "MOMICH LAKE"
+                        },
+                        {
+                            "objectCd": "MKMN",
+                            "objectDsc": "MONKMAN"
+                        },
+                        {
+                            "objectCd": "MTCK",
+                            "objectDsc": "MONTE CREEK"
+                        },
+                        {
+                            "objectCd": "MTLK",
+                            "objectDsc": "MONTE LAKE"
+                        },
+                        {
+                            "objectCd": "MNTY",
+                            "objectDsc": "MONTNEY"
+                        },
+                        {
+                            "objectCd": "MTRS",
+                            "objectDsc": "MONTROSE"
+                        },
+                        {
+                            "objectCd": "MSHT",
+                            "objectDsc": "MOOSE HEIGHTS"
+                        },
+                        {
+                            "objectCd": "MBIS",
+                            "objectDsc": "MORESBY ISLAND"
+                        },
+                        {
+                            "objectCd": "MSVL",
+                            "objectDsc": "MOSSVALE"
+                        },
+                        {
+                            "objectCd": "MTCR",
+                            "objectDsc": "MOUNT CURRIE"
+                        },
+                        {
+                            "objectCd": "MTRN",
+                            "objectDsc": "MOUNT ROBSON"
+                        },
+                        {
+                            "objectCd": "MOYE",
+                            "objectDsc": "MOYIE"
+                        },
+                        {
+                            "objectCd": "MTWN",
+                            "objectDsc": "MT WASHINGTON"
+                        },
+                        {
+                            "objectCd": "MLMY",
+                            "objectDsc": "MT LE MORAY"
+                        },
+                        {
+                            "objectCd": "MRPP",
+                            "objectDsc": "MT ROBSON PROVINCIAL PARK"
+                        },
+                        {
+                            "objectCd": "MTFP",
+                            "objectDsc": "MT TERRY FOX PROVINCIAL PARK"
+                        },
+                        {
+                            "objectCd": "MDRV",
+                            "objectDsc": "MUD RIVER"
+                        },
+                        {
+                            "objectCd": "MGIS",
+                            "objectDsc": "MUDGE ISLAND"
+                        },
+                        {
+                            "objectCd": "MHLK",
+                            "objectDsc": "MUNCHO LAKE"
+                        },
+                        {
+                            "objectCd": "MHIS",
+                            "objectDsc": "MURCHISON ISLAND"
+                        },
+                        {
+                            "objectCd": "MURD",
+                            "objectDsc": "MURDALE"
+                        },
+                        {
+                            "objectCd": "MUSK",
+                            "objectDsc": "MUSKWA"
+                        },
+                        {
+                            "objectCd": "NKSP",
+                            "objectDsc": "NAKUSP"
+                        },
+                        {
+                            "objectCd": "NAMU",
+                            "objectDsc": "NAMU"
+                        },
+                        {
+                            "objectCd": "NNIM",
+                            "objectDsc": "NANAIMO"
+                        },
+                        {
+                            "objectCd": "NSBA",
+                            "objectDsc": "NANOOSE BAY"
+                        },
+                        {
+                            "objectCd": "NRMT",
+                            "objectDsc": "NARAMATA"
+                        },
+                        {
+                            "objectCd": "NCCK",
+                            "objectDsc": "NARCOSLI CREEK"
+                        },
+                        {
+                            "objectCd": "NSCP",
+                            "objectDsc": "NASS CAMP"
+                        },
+                        {
+                            "objectCd": "NZVY",
+                            "objectDsc": "NAZKO"
+                        },
+                        {
+                            "objectCd": "NCKO",
+                            "objectDsc": "NECHAKO"
+                        },
+                        {
+                            "objectCd": "NEDS",
+                            "objectDsc": "NEEDLES"
+                        },
+                        {
+                            "objectCd": "NLSN",
+                            "objectDsc": "NELSON"
+                        },
+                        {
+                            "objectCd": "NLIS",
+                            "objectDsc": "NELSON ISLAND"
+                        },
+                        {
+                            "objectCd": "NLWY",
+                            "objectDsc": "NELWAY"
+                        },
+                        {
+                            "objectCd": "NMVY",
+                            "objectDsc": "NEMAIAH VALLEY"
+                        },
+                        {
+                            "objectCd": "NSLK",
+                            "objectDsc": "NESS LAKE"
+                        },
+                        {
+                            "objectCd": "NWAH",
+                            "objectDsc": "NEW AIYANSH"
+                        },
+                        {
+                            "objectCd": "NDVR",
+                            "objectDsc": "NEW DENVER"
+                        },
+                        {
+                            "objectCd": "NHZN",
+                            "objectDsc": "NEW HAZELTON"
+                        },
+                        {
+                            "objectCd": "NEWW",
+                            "objectDsc": "NEW WESTMINSTER"
+                        },
+                        {
+                            "objectCd": "NEWG",
+                            "objectDsc": "NEWGATE"
+                        },
+                        {
+                            "objectCd": "NCLK",
+                            "objectDsc": "NICOLA LAKE"
+                        },
+                        {
+                            "objectCd": "NIIS",
+                            "objectDsc": "NIGEI ISLAND"
+                        },
+                        {
+                            "objectCd": "NIMP",
+                            "objectDsc": "NIMPKISH"
+                        },
+                        {
+                            "objectCd": "NMLK",
+                            "objectDsc": "NIMPO LAKE"
+                        },
+                        {
+                            "objectCd": "NISK",
+                            "objectDsc": "NISKONLITH LAKE"
+                        },
+                        {
+                            "objectCd": "NOOA",
+                            "objectDsc": "NOOAITCH"
+                        },
+                        {
+                            "objectCd": "NKIS",
+                            "objectDsc": "NOOTKA ISLAND"
+                        },
+                        {
+                            "objectCd": "NORA",
+                            "objectDsc": "NORALEE"
+                        },
+                        {
+                            "objectCd": "NBRL",
+                            "objectDsc": "NORTH BARRIERE LAKE"
+                        },
+                        {
+                            "objectCd": "NBND",
+                            "objectDsc": "NORTH BEND"
+                        },
+                        {
+                            "objectCd": "NBON",
+                            "objectDsc": "NORTH BONAPARTE"
+                        },
+                        {
+                            "objectCd": "NBIS",
+                            "objectDsc": "NORTH BROUGHTON ISLAND"
+                        },
+                        {
+                            "objectCd": "NFLK",
+                            "objectDsc": "NORTH FALKLAND"
+                        },
+                        {
+                            "objectCd": "NKLK",
+                            "objectDsc": "NORTH KINBASKET LAKE"
+                        },
+                        {
+                            "objectCd": "NMAR",
+                            "objectDsc": "NORTH MARA"
+                        },
+                        {
+                            "objectCd": "NPIS",
+                            "objectDsc": "NORTH PENDER ISLAND"
+                        },
+                        {
+                            "objectCd": "NRPN",
+                            "objectDsc": "NORTH PINE"
+                        },
+                        {
+                            "objectCd": "NSAA",
+                            "objectDsc": "NORTH SAANICH"
+                        },
+                        {
+                            "objectCd": "NSHO",
+                            "objectDsc": "NORTH SHORE"
+                        },
+                        {
+                            "objectCd": "NTIR",
+                            "objectDsc": "NORTH THOMPSON IR"
+                        },
+                        {
+                            "objectCd": "NVAN",
+                            "objectDsc": "NORTH VANCOUVER"
+                        },
+                        {
+                            "objectCd": "NOHL",
+                            "objectDsc": "NOTCH HILL"
+                        },
+                        {
+                            "objectCd": "NKKL",
+                            "objectDsc": "NUKKO LAKE"
+                        },
+                        {
+                            "objectCd": "OKBY",
+                            "objectDsc": "OAK BAY"
+                        },
+                        {
+                            "objectCd": "OSIS",
+                            "objectDsc": "OASIS"
+                        },
+                        {
+                            "objectCd": "OBIS",
+                            "objectDsc": "OBSTRUCTION ISLAND"
+                        },
+                        {
+                            "objectCd": "OCFL",
+                            "objectDsc": "OCEAN FALLS"
+                        },
+                        {
+                            "objectCd": "OKNF",
+                            "objectDsc": "OKANAGAN FALLS"
+                        },
+                        {
+                            "objectCd": "ONIR",
+                            "objectDsc": "OKANAGAN IR NORTH"
+                        },
+                        {
+                            "objectCd": "OSIR",
+                            "objectDsc": "OKANAGAN IR SOUTH"
+                        },
+                        {
+                            "objectCd": "OLLA",
+                            "objectDsc": "OLALLA"
+                        },
+                        {
+                            "objectCd": "OLVR",
+                            "objectDsc": "OLIVER"
+                        },
+                        {
+                            "objectCd": "OILK",
+                            "objectDsc": "ONE ISLAND LAKE"
+                        },
+                        {
+                            "objectCd": "OORV",
+                            "objectDsc": "OONA RIVER"
+                        },
+                        {
+                            "objectCd": "OTCH",
+                            "objectDsc": "OOTISCHENIA"
+                        },
+                        {
+                            "objectCd": "OOLK",
+                            "objectDsc": "OOTSA LAKE"
+                        },
+                        {
+                            "objectCd": "OSBN",
+                            "objectDsc": "OSBORN"
+                        },
+                        {
+                            "objectCd": "OSYO",
+                            "objectDsc": "OSOYOOS"
+                        },
+                        {
+                            "objectCd": "OUT",
+                            "objectDsc": "OTTER POINT"
+                        },
+                        {
+                            "objectCd": "OWEK",
+                            "objectDsc": "OWEEKENO"
+                        },
+                        {
+                            "objectCd": "OWIS",
+                            "objectDsc": "OWL ISLAND"
+                        },
+                        {
+                            "objectCd": "PRPN",
+                            "objectDsc": "PACIFIC RIM PARK NORTH"
+                        },
+                        {
+                            "objectCd": "PRPS",
+                            "objectDsc": "PACIFIC RIM PARK SOUTH"
+                        },
+                        {
+                            "objectCd": "PALL",
+                            "objectDsc": "PALLING"
+                        },
+                        {
+                            "objectCd": "PANO",
+                            "objectDsc": "PANORAMA"
+                        },
+                        {
+                            "objectCd": "PKIS",
+                            "objectDsc": "PARKER ISLAND"
+                        },
+                        {
+                            "objectCd": "PAVL",
+                            "objectDsc": "PARKSVILLE"
+                        },
+                        {
+                            "objectCd": "PIRP",
+                            "objectDsc": "PARSNIP"
+                        },
+                        {
+                            "objectCd": "PRSN",
+                            "objectDsc": "PARSON"
+                        },
+                        {
+                            "objectCd": "PRIL",
+                            "objectDsc": "PARSON ISLAND"
+                        },
+                        {
+                            "objectCd": "PSKL",
+                            "objectDsc": "PASKA LAKE"
+                        },
+                        {
+                            "objectCd": "PSCK",
+                            "objectDsc": "PASS CREEK"
+                        },
+                        {
+                            "objectCd": "PSMR",
+                            "objectDsc": "PASSMORE"
+                        },
+                        {
+                            "objectCd": "PLLK",
+                            "objectDsc": "PAUL LAKE"
+                        },
+                        {
+                            "objectCd": "PVLN",
+                            "objectDsc": "PAVILION"
+                        },
+                        {
+                            "objectCd": "PCLD",
+                            "objectDsc": "PEACHLAND"
+                        },
+                        {
+                            "objectCd": "PSIS",
+                            "objectDsc": "PEARSE ISLAND"
+                        },
+                        {
+                            "objectCd": "PEEJ",
+                            "objectDsc": "PEEJAY"
+                        },
+                        {
+                            "objectCd": "PEMB",
+                            "objectDsc": "PEMBERTON"
+                        },
+                        {
+                            "objectCd": "PMBM",
+                            "objectDsc": "PEMBERTON MEADOWS"
+                        },
+                        {
+                            "objectCd": "PDDR",
+                            "objectDsc": "PEND DOREILLE"
+                        },
+                        {
+                            "objectCd": "PHBR",
+                            "objectDsc": "PENDER HARBOUR"
+                        },
+                        {
+                            "objectCd": "PDIS",
+                            "objectDsc": "PENDER ISLAND"
+                        },
+                        {
+                            "objectCd": "PNIS",
+                            "objectDsc": "PENELAKUT ISLAND"
+                        },
+                        {
+                            "objectCd": "PENK",
+                            "objectDsc": "PENNASK SUMMIT"
+                        },
+                        {
+                            "objectCd": "PENN",
+                            "objectDsc": "PENNY"
+                        },
+                        {
+                            "objectCd": "PNTN",
+                            "objectDsc": "PENTICTON"
+                        },
+                        {
+                            "objectCd": "PRSG",
+                            "objectDsc": "PERRY SIDING"
+                        },
+                        {
+                            "objectCd": "PETH",
+                            "objectDsc": "PETER HOPE LAKE"
+                        },
+                        {
+                            "objectCd": "PRIS",
+                            "objectDsc": "PIERS ISLAND"
+                        },
+                        {
+                            "objectCd": "PNLK",
+                            "objectDsc": "PINANTAN LAKE"
+                        },
+                        {
+                            "objectCd": "PINC",
+                            "objectDsc": "PINCHI"
+                        },
+                        {
+                            "objectCd": "PILK",
+                            "objectDsc": "PINCHI LAKE"
+                        },
+                        {
+                            "objectCd": "PIPS",
+                            "objectDsc": "PINE PASS"
+                        },
+                        {
+                            "objectCd": "PNVY",
+                            "objectDsc": "PINE VALLEY"
+                        },
+                        {
+                            "objectCd": "PNVW",
+                            "objectDsc": "PINEVIEW"
+                        },
+                        {
+                            "objectCd": "PNMT",
+                            "objectDsc": "PINK MOUNTAIN"
+                        },
+                        {
+                            "objectCd": "PTIS",
+                            "objectDsc": "PITT ISLAND"
+                        },
+                        {
+                            "objectCd": "PITT",
+                            "objectDsc": "PITT MEADOWS"
+                        },
+                        {
+                            "objectCd": "POOL",
+                            "objectDsc": "POOLEY ISLAND"
+                        },
+                        {
+                            "objectCd": "PKUM",
+                            "objectDsc": "POPKUM"
+                        },
+                        {
+                            "objectCd": "PCIS",
+                            "objectDsc": "PORCHER ISLAND"
+                        },
+                        {
+                            "objectCd": "PTAI",
+                            "objectDsc": "PORT ALBERNI"
+                        },
+                        {
+                            "objectCd": "PTAN",
+                            "objectDsc": "PORT ALBION"
+                        },
+                        {
+                            "objectCd": "PTAC",
+                            "objectDsc": "PORT ALICE"
+                        },
+                        {
+                            "objectCd": "PTCS",
+                            "objectDsc": "PORT CLEMENTS"
+                        },
+                        {
+                            "objectCd": "POCO",
+                            "objectDsc": "PORT COQUITLAM"
+                        },
+                        {
+                            "objectCd": "PTED",
+                            "objectDsc": "PORT EDWARD"
+                        },
+                        {
+                            "objectCd": "PTEN",
+                            "objectDsc": "PORT ESSINGTON"
+                        },
+                        {
+                            "objectCd": "PTHY",
+                            "objectDsc": "PORT HARDY"
+                        },
+                        {
+                            "objectCd": "PTML",
+                            "objectDsc": "PORT MCNEILL"
+                        },
+                        {
+                            "objectCd": "PTME",
+                            "objectDsc": "PORT MELLON"
+                        },
+                        {
+                            "objectCd": "PMDY",
+                            "objectDsc": "PORT MOODY"
+                        },
+                        {
+                            "objectCd": "PTNV",
+                            "objectDsc": "PORT NEVILLE"
+                        },
+                        {
+                            "objectCd": "PTRF",
+                            "objectDsc": "PORT RENFREW"
+                        },
+                        {
+                            "objectCd": "PLIS",
+                            "objectDsc": "PORTLAND ISLAND"
+                        },
+                        {
+                            "objectCd": "PCCP",
+                            "objectDsc": "POUCE COUPE"
+                        },
+                        {
+                            "objectCd": "PWKG",
+                            "objectDsc": "POWDER KING"
+                        },
+                        {
+                            "objectCd": "PWRV",
+                            "objectDsc": "POWELL RIVER"
+                        },
+                        {
+                            "objectCd": "PEIS",
+                            "objectDsc": "PRESCOTT ISLAND"
+                        },
+                        {
+                            "objectCd": "PSP",
+                            "objectDsc": "PRESPATOU"
+                        },
+                        {
+                            "objectCd": "PSSL",
+                            "objectDsc": "PRESSY LAKE"
+                        },
+                        {
+                            "objectCd": "PRCI",
+                            "objectDsc": "PRICE ISLAND"
+                        },
+                        {
+                            "objectCd": "PSLY",
+                            "objectDsc": "PRIESTLY"
+                        },
+                        {
+                            "objectCd": "PGRG",
+                            "objectDsc": "PRINCE GEORGE"
+                        },
+                        {
+                            "objectCd": "PRRU",
+                            "objectDsc": "PRINCE RUPERT"
+                        },
+                        {
+                            "objectCd": "PROI",
+                            "objectDsc": "PRINCESS ROYAL ISLAND"
+                        },
+                        {
+                            "objectCd": "PRNT",
+                            "objectDsc": "PRINCETON"
+                        },
+                        {
+                            "objectCd": "PRTD",
+                            "objectDsc": "PRITCHARD"
+                        },
+                        {
+                            "objectCd": "PRCT",
+                            "objectDsc": "PROCTER"
+                        },
+                        {
+                            "objectCd": "PRGR",
+                            "objectDsc": "PROGRESS"
+                        },
+                        {
+                            "objectCd": "PRRV",
+                            "objectDsc": "PROPHET RIVER"
+                        },
+                        {
+                            "objectCd": "PURD",
+                            "objectDsc": "PURDEN"
+                        },
+                        {
+                            "objectCd": "QDIS",
+                            "objectDsc": "QUADRA ISLAND"
+                        },
+                        {
+                            "objectCd": "QLBH",
+                            "objectDsc": "QUALICUM BEACH"
+                        },
+                        {
+                            "objectCd": "QKCV",
+                            "objectDsc": "QUATHIASKI COVE"
+                        },
+                        {
+                            "objectCd": "QTSN",
+                            "objectDsc": "QUATSINO"
+                        },
+                        {
+                            "objectCd": "QNBA",
+                            "objectDsc": "QUEENS BAY"
+                        },
+                        {
+                            "objectCd": "QSNL",
+                            "objectDsc": "QUESNEL"
+                        },
+                        {
+                            "objectCd": "QSIS",
+                            "objectDsc": "QUESNEL LAKE"
+                        },
+                        {
+                            "objectCd": "QLCH",
+                            "objectDsc": "QUILCHENA"
+                        },
+                        {
+                            "objectCd": "RADM",
+                            "objectDsc": "RADIUM HOT SPRINGS"
+                        },
+                        {
+                            "objectCd": "RYIS",
+                            "objectDsc": "RAMSAY ISLAND"
+                        },
+                        {
+                            "objectCd": "RLIS",
+                            "objectDsc": "RANDALL ISLAND"
+                        },
+                        {
+                            "objectCd": "RBVG",
+                            "objectDsc": "RASPBERRY"
+                        },
+                        {
+                            "objectCd": "RDIS",
+                            "objectDsc": "READ ISLAND"
+                        },
+                        {
+                            "objectCd": "REDL",
+                            "objectDsc": "RED LAKE"
+                        },
+                        {
+                            "objectCd": "RROK",
+                            "objectDsc": "RED ROCK"
+                        },
+                        {
+                            "objectCd": "REDS",
+                            "objectDsc": "REDSTONE"
+                        },
+                        {
+                            "objectCd": "RFIS",
+                            "objectDsc": "REEF ISLAND"
+                        },
+                        {
+                            "objectCd": "REIS",
+                            "objectDsc": "REES ISLAND"
+                        },
+                        {
+                            "objectCd": "RFCV",
+                            "objectDsc": "REFUGE COVE"
+                        },
+                        {
+                            "objectCd": "RIIS",
+                            "objectDsc": "REID ISLAND"
+                        },
+                        {
+                            "objectCd": "RILK",
+                            "objectDsc": "REID LAKE"
+                        },
+                        {
+                            "objectCd": "RNSD",
+                            "objectDsc": "RENNELL SOUND"
+                        },
+                        {
+                            "objectCd": "RNIS",
+                            "objectDsc": "RENNISON ISLAND"
+                        },
+                        {
+                            "objectCd": "RVST",
+                            "objectDsc": "REVELSTOKE"
+                        },
+                        {
+                            "objectCd": "RCIS",
+                            "objectDsc": "RICHARDSON ISLAND"
+                        },
+                        {
+                            "objectCd": "RMD",
+                            "objectDsc": "RICHMOND"
+                        },
+                        {
+                            "objectCd": "RNDL",
+                            "objectDsc": "RIONDEL"
+                        },
+                        {
+                            "objectCd": "RSCK",
+                            "objectDsc": "RISKE CREEK"
+                        },
+                        {
+                            "objectCd": "RCR",
+                            "objectDsc": "ROBERTS CREEK"
+                        },
+                        {
+                            "objectCd": "RBSN",
+                            "objectDsc": "ROBSON"
+                        },
+                        {
+                            "objectCd": "RCCK",
+                            "objectDsc": "ROCK CREEK"
+                        },
+                        {
+                            "objectCd": "RKIS",
+                            "objectDsc": "RODERICK ISLAND"
+                        },
+                        {
+                            "objectCd": "RELK",
+                            "objectDsc": "ROE LAKE"
+                        },
+                        {
+                            "objectCd": "RGPS",
+                            "objectDsc": "ROGERS PASS"
+                        },
+                        {
+                            "objectCd": "ROLL",
+                            "objectDsc": "ROLLA"
+                        },
+                        {
+                            "objectCd": "RSVL",
+                            "objectDsc": "ROOSVILLE"
+                        },
+                        {
+                            "objectCd": "RSLK",
+                            "objectDsc": "ROSE LAKE"
+                        },
+                        {
+                            "objectCd": "RSPR",
+                            "objectDsc": "ROSE PRAIRIE"
+                        },
+                        {
+                            "objectCd": "RSBY",
+                            "objectDsc": "ROSEBERY"
+                        },
+                        {
+                            "objectCd": "RSLD",
+                            "objectDsc": "ROSSLAND"
+                        },
+                        {
+                            "objectCd": "RSWD",
+                            "objectDsc": "ROSSWOOD"
+                        },
+                        {
+                            "objectCd": "ROYS",
+                            "objectDsc": "ROYSTON"
+                        },
+                        {
+                            "objectCd": "RUBY",
+                            "objectDsc": "RUBY LAKE"
+                        },
+                        {
+                            "objectCd": "RXIS",
+                            "objectDsc": "RUXTON ISLAND"
+                        },
+                        {
+                            "objectCd": "SNCH",
+                            "objectDsc": "SAANICH"
+                        },
+                        {
+                            "objectCd": "SAIK",
+                            "objectDsc": "STONY CREEK SAIK'UZ IR"
+                        },
+                        {
+                            "objectCd": "SALM",
+                            "objectDsc": "SALMO"
+                        },
+                        {
+                            "objectCd": "SLAM",
+                            "objectDsc": "SALMON ARM"
+                        },
+                        {
+                            "objectCd": "SLRI",
+                            "objectDsc": "SALMON RIVER"
+                        },
+                        {
+                            "objectCd": "SRIR",
+                            "objectDsc": "SALMON RIVER IR"
+                        },
+                        {
+                            "objectCd": "SLVY",
+                            "objectDsc": "SALMON VALLEY"
+                        },
+                        {
+                            "objectCd": "SSIS",
+                            "objectDsc": "SALT SPRING ISLAND"
+                        },
+                        {
+                            "objectCd": "SLTB",
+                            "objectDsc": "SALTERY BAY"
+                        },
+                        {
+                            "objectCd": "SNJF",
+                            "objectDsc": "SAN JOSEF"
+                        },
+                        {
+                            "objectCd": "SANC",
+                            "objectDsc": "SANCA"
+                        },
+                        {
+                            "objectCd": "SLIS",
+                            "objectDsc": "SANDILANDS ISLAND"
+                        },
+                        {
+                            "objectCd": "SNDS",
+                            "objectDsc": "SANDSPIT"
+                        },
+                        {
+                            "objectCd": "SHIS",
+                            "objectDsc": "SARAH ISLAND"
+                        },
+                        {
+                            "objectCd": "SRTA",
+                            "objectDsc": "SARITA"
+                        },
+                        {
+                            "objectCd": "SNIS",
+                            "objectDsc": "SATURNA ISLAND"
+                        },
+                        {
+                            "objectCd": "SVIS",
+                            "objectDsc": "SAVARY ISLAND"
+                        },
+                        {
+                            "objectCd": "SAVN",
+                            "objectDsc": "SAVONA"
+                        },
+                        {
+                            "objectCd": "SYWD",
+                            "objectDsc": "SAYWARD"
+                        },
+                        {
+                            "objectCd": "SCCK",
+                            "objectDsc": "SCOTCH CREEK"
+                        },
+                        {
+                            "objectCd": "SEC",
+                            "objectDsc": "SECHELT"
+                        },
+                        {
+                            "objectCd": "STNP",
+                            "objectDsc": "SETON PORTAGE"
+                        },
+                        {
+                            "objectCd": "SEWA",
+                            "objectDsc": "SEWALL"
+                        },
+                        {
+                            "objectCd": "SWIN",
+                            "objectDsc": "SEWELL INLET"
+                        },
+                        {
+                            "objectCd": "SARM",
+                            "objectDsc": "SEYMOUR ARM"
+                        },
+                        {
+                            "objectCd": "SYIN",
+                            "objectDsc": "SEYMOUR INLET"
+                        },
+                        {
+                            "objectCd": "SHAL",
+                            "objectDsc": "SHALALTH"
+                        },
+                        {
+                            "objectCd": "SHLK",
+                            "objectDsc": "SHAWNIGAN LAKE"
+                        },
+                        {
+                            "objectCd": "SWTR",
+                            "objectDsc": "SHEARWATER"
+                        },
+                        {
+                            "objectCd": "SHEL",
+                            "objectDsc": "SHELLEY"
+                        },
+                        {
+                            "objectCd": "SHGN",
+                            "objectDsc": "SHELL-GLEN"
+                        },
+                        {
+                            "objectCd": "SRLY",
+                            "objectDsc": "SHIRLEY"
+                        },
+                        {
+                            "objectCd": "SHAC",
+                            "objectDsc": "SHOREACRES"
+                        },
+                        {
+                            "objectCd": "SWIR",
+                            "objectDsc": "SHUSWAP IR"
+                        },
+                        {
+                            "objectCd": "SHBH",
+                            "objectDsc": "SHUTTY BENCH"
+                        },
+                        {
+                            "objectCd": "SCMS",
+                            "objectDsc": "SICAMOUS"
+                        },
+                        {
+                            "objectCd": "SDNY",
+                            "objectDsc": "SIDNEY"
+                        },
+                        {
+                            "objectCd": "SDIS",
+                            "objectDsc": "SIDNEY ISLAND"
+                        },
+                        {
+                            "objectCd": "SKNI",
+                            "objectDsc": "SIKANNI"
+                        },
+                        {
+                            "objectCd": "GLNV",
+                            "objectDsc": "GLEN VOWELL"
+                        },
+                        {
+                            "objectCd": "SLTN",
+                            "objectDsc": "SILVERTON"
+                        },
+                        {
+                            "objectCd": "SNML",
+                            "objectDsc": "SINCLAIR MILLS"
+                        },
+                        {
+                            "objectCd": "SRDR",
+                            "objectDsc": "SIRDAR"
+                        },
+                        {
+                            "objectCd": "SKNA",
+                            "objectDsc": "SKEENA"
+                        },
+                        {
+                            "objectCd": "SKIR",
+                            "objectDsc": "SKEETCHESTN IR"
+                        },
+                        {
+                            "objectCd": "SKDG",
+                            "objectDsc": "SKIDEGATE"
+                        },
+                        {
+                            "objectCd": "SKMK",
+                            "objectDsc": "SKOOKUMCHUCK"
+                        },
+                        {
+                            "objectCd": "SLCN",
+                            "objectDsc": "SLOCAN"
+                        },
+                        {
+                            "objectCd": "SNPK",
+                            "objectDsc": "SLOCAN PARK"
+                        },
+                        {
+                            "objectCd": "SMIS",
+                            "objectDsc": "SMITH ISLAND"
+                        },
+                        {
+                            "objectCd": "SMTS",
+                            "objectDsc": "SMITHERS"
+                        },
+                        {
+                            "objectCd": "SNYD",
+                            "objectDsc": "SNYDER"
+                        },
+                        {
+                            "objectCd": "SMSP",
+                            "objectDsc": "SOAMES POINT"
+                        },
+                        {
+                            "objectCd": "SDCK",
+                            "objectDsc": "SODA CREEK"
+                        },
+                        {
+                            "objectCd": "SNTL",
+                            "objectDsc": "SOINTULA"
+                        },
+                        {
+                            "objectCd": "SLQA",
+                            "objectDsc": "SOLSQUA"
+                        },
+                        {
+                            "objectCd": "SMVI",
+                            "objectDsc": "SOMERVILLE ISLAND"
+                        },
+                        {
+                            "objectCd": "SOIS",
+                            "objectDsc": "SONORA ISLAND"
+                        },
+                        {
+                            "objectCd": "SOKE",
+                            "objectDsc": "SOOKE"
+                        },
+                        {
+                            "objectCd": "SRNT",
+                            "objectDsc": "SORRENTO"
+                        },
+                        {
+                            "objectCd": "SDAW",
+                            "objectDsc": "SOUTH DAWSON"
+                        },
+                        {
+                            "objectCd": "SHAZ",
+                            "objectDsc": "SOUTH HAZELTON"
+                        },
+                        {
+                            "objectCd": "SKLK",
+                            "objectDsc": "SOUTH KINBASKET LAKE"
+                        },
+                        {
+                            "objectCd": "SPIS",
+                            "objectDsc": "SOUTH PENDER ISLAND"
+                        },
+                        {
+                            "objectCd": "SSLC",
+                            "objectDsc": "SOUTH SLOCAN"
+                        },
+                        {
+                            "objectCd": "SSPK",
+                            "objectDsc": "SOUTH STRATHCONA PARK"
+                        },
+                        {
+                            "objectCd": "STAY",
+                            "objectDsc": "SOUTH TAYLOR"
+                        },
+                        {
+                            "objectCd": "SBNK",
+                            "objectDsc": "SOUTHBANK"
+                        },
+                        {
+                            "objectCd": "SPAL",
+                            "objectDsc": "SPALLUMCHEEN"
+                        },
+                        {
+                            "objectCd": "SPWD",
+                            "objectDsc": "SPARWOOD"
+                        },
+                        {
+                            "objectCd": "SPTZ",
+                            "objectDsc": "SPATSIZI"
+                        },
+                        {
+                            "objectCd": "SPAT",
+                            "objectDsc": "SPATSUM"
+                        },
+                        {
+                            "objectCd": "SPSB",
+                            "objectDsc": "SPENCES BRIDGE"
+                        },
+                        {
+                            "objectCd": "SPIC",
+                            "objectDsc": "SPICER ISLAND"
+                        },
+                        {
+                            "objectCd": "SLMN",
+                            "objectDsc": "SPILLIMACHEEN"
+                        },
+                        {
+                            "objectCd": "SPLK",
+                            "objectDsc": "SPOKIN LAKE"
+                        },
+                        {
+                            "objectCd": "SPHS",
+                            "objectDsc": "SPRINGHOUSE"
+                        },
+                        {
+                            "objectCd": "SPZM",
+                            "objectDsc": "SPUZZUM"
+                        },
+                        {
+                            "objectCd": "SQUA",
+                            "objectDsc": "SQUAMISH"
+                        },
+                        {
+                            "objectCd": "STIV",
+                            "objectDsc": "ST. IVES"
+                        },
+                        {
+                            "objectCd": "SCIS",
+                            "objectDsc": "STACKHOUSE ISLAND"
+                        },
+                        {
+                            "objectCd": "STEM",
+                            "objectDsc": "STEIN MOUNTAIN"
+                        },
+                        {
+                            "objectCd": "STEL",
+                            "objectDsc": "STELLAKO"
+                        },
+                        {
+                            "objectCd": "STPI",
+                            "objectDsc": "STEPHENS ISLAND"
+                        },
+                        {
+                            "objectCd": "STEW",
+                            "objectDsc": "STEWART"
+                        },
+                        {
+                            "objectCd": "STIK",
+                            "objectDsc": "STIKINE"
+                        },
+                        {
+                            "objectCd": "STIR",
+                            "objectDsc": "STONE IR 1A"
+                        },
+                        {
+                            "objectCd": "SMTP",
+                            "objectDsc": "STONE MOUNTAIN PARK"
+                        },
+                        {
+                            "objectCd": "STON",
+                            "objectDsc": "STONER"
+                        },
+                        {
+                            "objectCd": "STRI",
+                            "objectDsc": "STRANGE ISLAND"
+                        },
+                        {
+                            "objectCd": "STPK",
+                            "objectDsc": "STRATHCONA PARK"
+                        },
+                        {
+                            "objectCd": "STRA",
+                            "objectDsc": "STRATHNAVER"
+                        },
+                        {
+                            "objectCd": "SUIS",
+                            "objectDsc": "STUART ISLAND"
+                        },
+                        {
+                            "objectCd": "STUI",
+                            "objectDsc": "STUIE"
+                        },
+                        {
+                            "objectCd": "STUL",
+                            "objectDsc": "STUMP LAKE"
+                        },
+                        {
+                            "objectCd": "SUVY",
+                            "objectDsc": "SUKUNKA VALLEY"
+                        },
+                        {
+                            "objectCd": "SLBY",
+                            "objectDsc": "SULLIVAN BAY"
+                        },
+                        {
+                            "objectCd": "SMLD",
+                            "objectDsc": "SUMMERLAND"
+                        },
+                        {
+                            "objectCd": "SULK",
+                            "objectDsc": "SUMMIT LAKE"
+                        },
+                        {
+                            "objectCd": "SUPK",
+                            "objectDsc": "SUN PEAKS"
+                        },
+                        {
+                            "objectCd": "SUNL",
+                            "objectDsc": "SUNDANCE LAKES"
+                        },
+                        {
+                            "objectCd": "SRVY",
+                            "objectDsc": "SUNRISE VALLEY"
+                        },
+                        {
+                            "objectCd": "SSPR",
+                            "objectDsc": "SUNSET PRAIRIE"
+                        },
+                        {
+                            "objectCd": "SHVL",
+                            "objectDsc": "SUNSHINE VALLEY"
+                        },
+                        {
+                            "objectCd": "SRY",
+                            "objectDsc": "SURREY"
+                        },
+                        {
+                            "objectCd": "SUSI",
+                            "objectDsc": "SUSAN ISLAND"
+                        },
+                        {
+                            "objectCd": "SUSK",
+                            "objectDsc": "SUSKWA"
+                        },
+                        {
+                            "objectCd": "SWIS",
+                            "objectDsc": "SWANSON ISLAND"
+                        },
+                        {
+                            "objectCd": "SWRV",
+                            "objectDsc": "SWIFT RIVER"
+                        },
+                        {
+                            "objectCd": "SEIS",
+                            "objectDsc": "SWINDLE ISLAND"
+                        },
+                        {
+                            "objectCd": "TTCK",
+                            "objectDsc": "TA TA CREEK"
+                        },
+                        {
+                            "objectCd": "TACH",
+                            "objectDsc": "TACHIE"
+                        },
+                        {
+                            "objectCd": "TGHM",
+                            "objectDsc": "TAGHUM"
+                        },
+                        {
+                            "objectCd": "THAT",
+                            "objectDsc": "TAHLTAN"
+                        },
+                        {
+                            "objectCd": "THSS",
+                            "objectDsc": "TAHSIS"
+                        },
+                        {
+                            "objectCd": "THRV",
+                            "objectDsc": "TAHSISH RIVER"
+                        },
+                        {
+                            "objectCd": "TKLK",
+                            "objectDsc": "TAKLA LANDING"
+                        },
+                        {
+                            "objectCd": "TAKU",
+                            "objectDsc": "TAKU"
+                        },
+                        {
+                            "objectCd": "TYLK",
+                            "objectDsc": "TAKYSIE LAKE"
+                        },
+                        {
+                            "objectCd": "TKIS",
+                            "objectDsc": "TALUNKWAN ISLAND"
+                        },
+                        {
+                            "objectCd": "TNIS",
+                            "objectDsc": "TANU ISLAND"
+                        },
+                        {
+                            "objectCd": "TAPP",
+                            "objectDsc": "TAPPEN"
+                        },
+                        {
+                            "objectCd": "TRRS",
+                            "objectDsc": "TARRYS"
+                        },
+                        {
+                            "objectCd": "TATA",
+                            "objectDsc": "TATALROSE"
+                        },
+                        {
+                            "objectCd": "TLLK",
+                            "objectDsc": "TATLA LAKE"
+                        },
+                        {
+                            "objectCd": "TTLK",
+                            "objectDsc": "TATLATUI LAKE"
+                        },
+                        {
+                            "objectCd": "TYKL",
+                            "objectDsc": "TATLAYOKO LAKE"
+                        },
+                        {
+                            "objectCd": "TATS",
+                            "objectDsc": "TATSHENSHINI"
+                        },
+                        {
+                            "objectCd": "TAYL",
+                            "objectDsc": "TAYLOR"
+                        },
+                        {
+                            "objectCd": "TCLK",
+                            "objectDsc": "TCHESINKUT LAKE"
+                        },
+                        {
+                            "objectCd": "TECV",
+                            "objectDsc": "TELEGRAPH COVE"
+                        },
+                        {
+                            "objectCd": "TECK",
+                            "objectDsc": "TELEGRAPH CREEK"
+                        },
+                        {
+                            "objectCd": "TLWA",
+                            "objectDsc": "TELKWA"
+                        },
+                        {
+                            "objectCd": "TERR",
+                            "objectDsc": "TERRACE"
+                        },
+                        {
+                            "objectCd": "TJCH",
+                            "objectDsc": "TETE JAUNE"
+                        },
+                        {
+                            "objectCd": "TTRV",
+                            "objectDsc": "TETSA RIVER"
+                        },
+                        {
+                            "objectCd": "TXIS",
+                            "objectDsc": "TEXADA ISLAND"
+                        },
+                        {
+                            "objectCd": "TSIS",
+                            "objectDsc": "THETIS ISLAND"
+                        },
+                        {
+                            "objectCd": "THNH",
+                            "objectDsc": "THORNHILL"
+                        },
+                        {
+                            "objectCd": "THVY",
+                            "objectDsc": "THREE VALLEY"
+                        },
+                        {
+                            "objectCd": "THUM",
+                            "objectDsc": "THRUMS"
+                        },
+                        {
+                            "objectCd": "THIS",
+                            "objectDsc": "THURLOW ISLANDS"
+                        },
+                        {
+                            "objectCd": "TNTG",
+                            "objectDsc": "TINTAGEL"
+                        },
+                        {
+                            "objectCd": "TLEL",
+                            "objectDsc": "TLELL"
+                        },
+                        {
+                            "objectCd": "TDRV",
+                            "objectDsc": "TOAD RIVER"
+                        },
+                        {
+                            "objectCd": "TOBA",
+                            "objectDsc": "TOBA INLET"
+                        },
+                        {
+                            "objectCd": "TOBI",
+                            "objectDsc": "TOBIANO"
+                        },
+                        {
+                            "objectCd": "TFNO",
+                            "objectDsc": "TOFINO"
+                        },
+                        {
+                            "objectCd": "TOLK",
+                            "objectDsc": "TOMSLAKE"
+                        },
+                        {
+                            "objectCd": "TOPL",
+                            "objectDsc": "TOPLEY"
+                        },
+                        {
+                            "objectCd": "TOLG",
+                            "objectDsc": "TOPLEY LANDING"
+                        },
+                        {
+                            "objectCd": "TRIS",
+                            "objectDsc": "TRACEY ISLAND"
+                        },
+                        {
+                            "objectCd": "TRAL",
+                            "objectDsc": "TRAIL"
+                        },
+                        {
+                            "objectCd": "TRAP",
+                            "objectDsc": "TRAPP LAKE"
+                        },
+                        {
+                            "objectCd": "TRLK",
+                            "objectDsc": "TROUT LAKE"
+                        },
+                        {
+                            "objectCd": "TRUT",
+                            "objectDsc": "TRUTCH"
+                        },
+                        {
+                            "objectCd": "TCIS",
+                            "objectDsc": "TRUTCH ISLAND"
+                        },
+                        {
+                            "objectCd": "TSAY",
+                            "objectDsc": "TSAY KEH DENE"
+                        },
+                        {
+                            "objectCd": "TIIR",
+                            "objectDsc": "TUGWELL ISLAND IR"
+                        },
+                        {
+                            "objectCd": "TLMN",
+                            "objectDsc": "TULAMEEN"
+                        },
+                        {
+                            "objectCd": "TMRG",
+                            "objectDsc": "TUMBLER RIDGE"
+                        },
+                        {
+                            "objectCd": "TUNK",
+                            "objectDsc": "TUNKWA LAKE"
+                        },
+                        {
+                            "objectCd": "TUPR",
+                            "objectDsc": "TUPPER"
+                        },
+                        {
+                            "objectCd": "TRNI",
+                            "objectDsc": "TURNOUR ISLAND"
+                        },
+                        {
+                            "objectCd": "TRTV",
+                            "objectDsc": "TURTLE VALLEY"
+                        },
+                        {
+                            "objectCd": "TWPP",
+                            "objectDsc": "TWEEDSMUIR PROVINCIAL PARK"
+                        },
+                        {
+                            "objectCd": "TWPS",
+                            "objectDsc": "TWEEDSMUIR PARK SOUTH"
+                        },
+                        {
+                            "objectCd": "TWOM",
+                            "objectDsc": "TWO MILE"
+                        },
+                        {
+                            "objectCd": "TWRV",
+                            "objectDsc": "TWO RIVERS"
+                        },
+                        {
+                            "objectCd": "TYE",
+                            "objectDsc": "TYE"
+                        },
+                        {
+                            "objectCd": "TZIS",
+                            "objectDsc": "TZARTUS ISLAND"
+                        },
+                        {
+                            "objectCd": "UBC",
+                            "objectDsc": "UBC"
+                        },
+                        {
+                            "objectCd": "UCLT",
+                            "objectDsc": "UCLUELET"
+                        },
+                        {
+                            "objectCd": "UNBA",
+                            "objectDsc": "UNION BAY"
+                        },
+                        {
+                            "objectCd": "UNIS",
+                            "objectDsc": "UNION ISLAND"
+                        },
+                        {
+                            "objectCd": "UPCK",
+                            "objectDsc": "UPPER CUTBANK"
+                        },
+                        {
+                            "objectCd": "UPFR",
+                            "objectDsc": "UPPER FRASER"
+                        },
+                        {
+                            "objectCd": "VLIS",
+                            "objectDsc": "VALDES ISLAND"
+                        },
+                        {
+                            "objectCd": "VLMT",
+                            "objectDsc": "VALEMOUNT"
+                        },
+                        {
+                            "objectCd": "VMRU",
+                            "objectDsc": "VALEMOUNT RURAL"
+                        },
+                        {
+                            "objectCd": "VLCN",
+                            "objectDsc": "VALLICAN"
+                        },
+                        {
+                            "objectCd": "VNDA",
+                            "objectDsc": "VAN ANDA"
+                        },
+                        {
+                            "objectCd": "VAN",
+                            "objectDsc": "VANCOUVER"
+                        },
+                        {
+                            "objectCd": "VNHF",
+                            "objectDsc": "VANDERHOOF"
+                        },
+                        {
+                            "objectCd": "VGIS",
+                            "objectDsc": "VARGAS ISLAND"
+                        },
+                        {
+                            "objectCd": "VNBY",
+                            "objectDsc": "VAVENBY"
+                        },
+                        {
+                            "objectCd": "VEVV",
+                            "objectDsc": "VENABLES VALLEY"
+                        },
+                        {
+                            "objectCd": "VERN",
+                            "objectDsc": "VERNON"
+                        },
+                        {
+                            "objectCd": "VCTA",
+                            "objectDsc": "VICTORIA"
+                        },
+                        {
+                            "objectCd": "VROY",
+                            "objectDsc": "VIEW ROYAL"
+                        },
+                        {
+                            "objectCd": "VLVI",
+                            "objectDsc": "VILLAVERDE ISLANDS"
+                        },
+                        {
+                            "objectCd": "VINS",
+                            "objectDsc": "VINSULLA"
+                        },
+                        {
+                            "objectCd": "VCIS",
+                            "objectDsc": "VISCOUNT ISLAND"
+                        },
+                        {
+                            "objectCd": "WLIS",
+                            "objectDsc": "WALES ISLAND"
+                        },
+                        {
+                            "objectCd": "WHCN",
+                            "objectDsc": "WALHACHIN"
+                        },
+                        {
+                            "objectCd": "WPRV",
+                            "objectDsc": "WAPITI RIVER"
+                        },
+                        {
+                            "objectCd": "WDNR",
+                            "objectDsc": "WARDNER"
+                        },
+                        {
+                            "objectCd": "WRFD",
+                            "objectDsc": "WARFIELD"
+                        },
+                        {
+                            "objectCd": "WASA",
+                            "objectDsc": "WASA"
+                        },
+                        {
+                            "objectCd": "WTLK",
+                            "objectDsc": "WATCH LAKE"
+                        },
+                        {
+                            "objectCd": "WHLK",
+                            "objectDsc": "WATHUS ISLAND"
+                        },
+                        {
+                            "objectCd": "WNLK",
+                            "objectDsc": "WATSON LAKE"
+                        },
+                        {
+                            "objectCd": "WELL",
+                            "objectDsc": "WELLS"
+                        },
+                        {
+                            "objectCd": "WLGP",
+                            "objectDsc": "WELLS GRAY PARK"
+                        },
+                        {
+                            "objectCd": "WCIS",
+                            "objectDsc": "WEST CRACROFT ISLAND"
+                        },
+                        {
+                            "objectCd": "WFRN",
+                            "objectDsc": "WEST FERNIE"
+                        },
+                        {
+                            "objectCd": "WKLN",
+                            "objectDsc": "WEST KELOWNA"
+                        },
+                        {
+                            "objectCd": "WLAK",
+                            "objectDsc": "WEST LAKE"
+                        },
+                        {
+                            "objectCd": "WVAN",
+                            "objectDsc": "WEST VANCOUVER"
+                        },
+                        {
+                            "objectCd": "WTBR",
+                            "objectDsc": "WESTBRIDGE"
+                        },
+                        {
+                            "objectCd": "WSHM",
+                            "objectDsc": "WESTHOLME"
+                        },
+                        {
+                            "objectCd": "WTWD",
+                            "objectDsc": "WESTWOLD"
+                        },
+                        {
+                            "objectCd": "WLTN",
+                            "objectDsc": "WHALETOWN"
+                        },
+                        {
+                            "objectCd": "WHIS",
+                            "objectDsc": "WHISTLER"
+                        },
+                        {
+                            "objectCd": "WELK",
+                            "objectDsc": "WHITE LAKE"
+                        },
+                        {
+                            "objectCd": "WHRV",
+                            "objectDsc": "WHITE RIVER"
+                        },
+                        {
+                            "objectCd": "WHTR",
+                            "objectDsc": "WHITE ROCK"
+                        },
+                        {
+                            "objectCd": "WYIS",
+                            "objectDsc": "WHITELEY ISLAND"
+                        },
+                        {
+                            "objectCd": "WCKI",
+                            "objectDsc": "WICKANINNISH ISLAND"
+                        },
+                        {
+                            "objectCd": "WIIS",
+                            "objectDsc": "WILLIAM ISLAND"
+                        },
+                        {
+                            "objectCd": "WLLK",
+                            "objectDsc": "WILLIAMS LAKE"
+                        },
+                        {
+                            "objectCd": "WIPT",
+                            "objectDsc": "WILLIS POINT"
+                        },
+                        {
+                            "objectCd": "WILK",
+                            "objectDsc": "WILLISTON LAKE"
+                        },
+                        {
+                            "objectCd": "WLRV",
+                            "objectDsc": "WILLOW RIVER"
+                        },
+                        {
+                            "objectCd": "WLVY",
+                            "objectDsc": "WILLOW VALLEY"
+                        },
+                        {
+                            "objectCd": "WLMR",
+                            "objectDsc": "WILMER"
+                        },
+                        {
+                            "objectCd": "WLCK",
+                            "objectDsc": "WILSON CREEK"
+                        },
+                        {
+                            "objectCd": "WNDR",
+                            "objectDsc": "WINDERMERE"
+                        },
+                        {
+                            "objectCd": "WNLW",
+                            "objectDsc": "WINLAW"
+                        },
+                        {
+                            "objectCd": "WNHR",
+                            "objectDsc": "WINTER HARBOUR"
+                        },
+                        {
+                            "objectCd": "WIST",
+                            "objectDsc": "WISTARIA"
+                        },
+                        {
+                            "objectCd": "WITT",
+                            "objectDsc": "WITSET"
+                        },
+                        {
+                            "objectCd": "WONO",
+                            "objectDsc": "WONOWON"
+                        },
+                        {
+                            "objectCd": "WOOD",
+                            "objectDsc": "WOODPECKER"
+                        },
+                        {
+                            "objectCd": "WSLK",
+                            "objectDsc": "WOSS"
+                        },
+                        {
+                            "objectCd": "WYCF",
+                            "objectDsc": "WYCLIFFE"
+                        },
+                        {
+                            "objectCd": "WNDL",
+                            "objectDsc": "WYNNDEL"
+                        },
+                        {
+                            "objectCd": "YAHK",
+                            "objectDsc": "YAHK"
+                        },
+                        {
+                            "objectCd": "YALE",
+                            "objectDsc": "YALE"
+                        },
+                        {
+                            "objectCd": "YMIR",
+                            "objectDsc": "YMIR"
+                        },
+                        {
+                            "objectCd": "YOBO",
+                            "objectDsc": "YOUBOU"
+                        },
+                        {
+                            "objectCd": "YOYO",
+                            "objectDsc": "YOYO"
+                        },
+                        {
+                            "objectCd": "ZYIS",
+                            "objectDsc": "ZAYAS ISLAND"
+                        },
+                        {
+                            "objectCd": "ZBLS",
+                            "objectDsc": "ZEBALLOS"
+                        }
+                        ]
+                       )
     
     impound_lot_operator = Table('impound_lot_operator', meta)
     op.bulk_insert(impound_lot_operator,
@@ -7353,342 +7308,290 @@ def upgrade():
     op.bulk_insert(jurisdiction,
                     [
                         {
-                        "objectCd": "AL",
-                        "objectDsc": "ALABAMA"
+                            "objectCd": "CA_BC",
+                            "objectDsc": "BRITISH COLUMBIA"
                         },
                         {
-                        "objectCd": "AK",
-                        "objectDsc": "ALASKA"
+                            "objectCd": "CA_AB",
+                            "objectDsc": "ALBERTA"
                         },
                         {
-                        "objectCd": "AB",
-                        "objectDsc": "ALBERTA"
+                            "objectCd": "US_WA",
+                            "objectDsc": "WASHINGTON"
                         },
                         {
-                        "objectCd": "AZ",
-                        "objectDsc": "ARIZONA"
+                            "objectCd": "CA_MB",
+                            "objectDsc": "MANITOBA"
                         },
                         {
-                        "objectCd": "AR",
-                        "objectDsc": "ARKANSAS"
+                            "objectCd": "CA_NB",
+                            "objectDsc": "NEW BRUNSWICK"
                         },
                         {
-                        "objectCd": "AT",
-                        "objectDsc": "AUSTRIA"
+                            "objectCd": "CA_NF",
+                            "objectDsc": "NEWFOUNDLAND & LABRADOR"
                         },
                         {
-                        "objectCd": "BC",
-                        "objectDsc": "BRITISH COLUMBIA"
+                            "objectCd": "CA_NS",
+                            "objectDsc": "NOVA SCOTIA"
                         },
                         {
-                        "objectCd": "CA",
-                        "objectDsc": "CALIFORNIA"
+                            "objectCd": "CA_NT",
+                            "objectDsc": "NORTHWEST TERRITORIES"
                         },
                         {
-                        "objectCd": "CF",
-                        "objectDsc": "CANADIAN FORCES"
+                            "objectCd": "CA_NU",
+                            "objectDsc": "NUNAVUT"
                         },
                         {
-                        "objectCd": "CO",
-                        "objectDsc": "COLORADO"
+                            "objectCd": "CA_ON",
+                            "objectDsc": "ONTARIO"
                         },
                         {
-                        "objectCd": "CT",
-                        "objectDsc": "CONNECTICUT"
+                            "objectCd": "CA_PE",
+                            "objectDsc": "PRINCE EDWARD ISLAND"
                         },
                         {
-                        "objectCd": "DE",
-                        "objectDsc": "DELAWARE"
+                            "objectCd": "CA_QC",
+                            "objectDsc": "QUEBEC"
                         },
                         {
-                        "objectCd": "DC",
-                        "objectDsc": "DISTRICT OF COLUMBIA"
+                            "objectCd": "CA_SK",
+                            "objectDsc": "SASKATCHEWAN"
                         },
                         {
-                        "objectCd": "ZZ",
-                        "objectDsc": "EUROPE"
+                            "objectCd": "CA_YT",
+                            "objectDsc": "YUKON"
                         },
                         {
-                        "objectCd": "FL",
-                        "objectDsc": "FLORIDA"
+                            "objectCd": "US_AK",
+                            "objectDsc": "ALASKA"
                         },
                         {
-                        "objectCd": "FR",
-                        "objectDsc": "FRANCE"
+                            "objectCd": "US_AL",
+                            "objectDsc": "ALABAMA"
                         },
                         {
-                        "objectCd": "GA",
-                        "objectDsc": "GEORGIA"
+                            "objectCd": "US_AR",
+                            "objectDsc": "ARKANSAS"
                         },
                         {
-                        "objectCd": "DL",
-                        "objectDsc": "GERMANY"
+                            "objectCd": "US_AS",
+                            "objectDsc": "AMERICAN SAMOA"
                         },
                         {
-                        "objectCd": "HI",
-                        "objectDsc": "HAWAII"
+                            "objectCd": "US_AZ",
+                            "objectDsc": "ARIZONA"
                         },
                         {
-                        "objectCd": "ID",
-                        "objectDsc": "IDAHO"
+                            "objectCd": "US_CA",
+                            "objectDsc": "CALIFORNIA"
                         },
                         {
-                        "objectCd": "IL",
-                        "objectDsc": "ILLINOIS"
+                            "objectCd": "US_CO",
+                            "objectDsc": "COLORADO"
                         },
                         {
-                        "objectCd": "IN",
-                        "objectDsc": "INDIANA"
+                            "objectCd": "US_CT",
+                            "objectDsc": "CONNECTICUT"
                         },
                         {
-                        "objectCd": "IC",
-                        "objectDsc": "INSURANCE CRIME PREVENTION BUREAU"
+                            "objectCd": "US_DC",
+                            "objectDsc": "DISTRICT OF COLUMBIA"
                         },
                         {
-                        "objectCd": "ZZ",
-                        "objectDsc": "INTERNATIONAL"
+                            "objectCd": "US_DE",
+                            "objectDsc": "DELAWARE"
                         },
                         {
-                        "objectCd": "IR",
-                        "objectDsc": "INTERNATIONAL LICENCE"
+                            "objectCd": "US_FL",
+                            "objectDsc": "FLORIDA"
                         },
                         {
-                        "objectCd": "IA",
-                        "objectDsc": "IOWA"
+                            "objectCd": "US_GA",
+                            "objectDsc": "GEORGIA"
                         },
                         {
-                        "objectCd": "JA",
-                        "objectDsc": "JAPAN"
+                            "objectCd": "US_GU",
+                            "objectDsc": "GUAM"
                         },
                         {
-                        "objectCd": "KS",
-                        "objectDsc": "KANSAS"
+                            "objectCd": "US_HI",
+                            "objectDsc": "HAWAII"
                         },
                         {
-                        "objectCd": "KY",
-                        "objectDsc": "KENTUCKY"
+                            "objectCd": "US_IA",
+                            "objectDsc": "IOWA"
                         },
                         {
-                        "objectCd": "LA",
-                        "objectDsc": "LOUISIANA"
+                            "objectCd": "US_ID",
+                            "objectDsc": "IDAHO"
                         },
                         {
-                        "objectCd": "ME",
-                        "objectDsc": "MAINE"
+                            "objectCd": "US_IL",
+                            "objectDsc": "ILLINOIS"
                         },
                         {
-                        "objectCd": "MB",
-                        "objectDsc": "MANITOBA"
+                            "objectCd": "US_IN",
+                            "objectDsc": "INDIANA"
                         },
                         {
-                        "objectCd": "MD",
-                        "objectDsc": "MARYLAND"
+                            "objectCd": "US_KS",
+                            "objectDsc": "KANSAS"
                         },
                         {
-                        "objectCd": "MA",
-                        "objectDsc": "MASSACHUSETTS"
+                            "objectCd": "US_KY",
+                            "objectDsc": "KENTUCKY"
                         },
                         {
-                        "objectCd": "MX",
-                        "objectDsc": "MEXICO"
+                            "objectCd": "US_LA",
+                            "objectDsc": "LOUISIANA"
                         },
                         {
-                        "objectCd": "MX",
-                        "objectDsc": "MEXICO"
+                            "objectCd": "US_MA",
+                            "objectDsc": "MASSACHUSETTS"
                         },
                         {
-                        "objectCd": "MI",
-                        "objectDsc": "MICHIGAN"
+                            "objectCd": "US_MD",
+                            "objectDsc": "MARYLAND"
                         },
                         {
-                        "objectCd": "MN",
-                        "objectDsc": "MINNESOTA"
+                            "objectCd": "US_ME",
+                            "objectDsc": "MAINE"
                         },
                         {
-                        "objectCd": "MS",
-                        "objectDsc": "MISSISSIPPI"
+                            "objectCd": "US_MI",
+                            "objectDsc": "MICHIGAN"
                         },
                         {
-                        "objectCd": "MO",
-                        "objectDsc": "MISSOURI"
+                            "objectCd": "US_MN",
+                            "objectDsc": "MINNESOTA"
                         },
                         {
-                        "objectCd": "MT",
-                        "objectDsc": "MONTANA"
+                            "objectCd": "US_MO",
+                            "objectDsc": "MISSOURI"
                         },
                         {
-                        "objectCd": "NE",
-                        "objectDsc": "NEBRASKA"
+                            "objectCd": "US_MP",
+                            "objectDsc": "NORTHERN MARIANA ISLANDS"
                         },
                         {
-                        "objectCd": "NV",
-                        "objectDsc": "NEVADA"
+                            "objectCd": "US_MS",
+                            "objectDsc": "MISSISSIPPI"
                         },
                         {
-                        "objectCd": "NB",
-                        "objectDsc": "NEW BRUNSWICK"
+                            "objectCd": "US_MT",
+                            "objectDsc": "MONTANA"
                         },
                         {
-                        "objectCd": "NH",
-                        "objectDsc": "NEW HAMPSHIRE"
+                            "objectCd": "US_NC",
+                            "objectDsc": "NORTH CAROLINA"
                         },
                         {
-                        "objectCd": "NJ",
-                        "objectDsc": "NEW JERSEY"
+                            "objectCd": "US_ND",
+                            "objectDsc": "NORTH DAKOTA"
                         },
                         {
-                        "objectCd": "NM",
-                        "objectDsc": "NEW MEXICO"
+                            "objectCd": "US_NE",
+                            "objectDsc": "NEBRASKA"
                         },
                         {
-                        "objectCd": "NY",
-                        "objectDsc": "NEW YORK"
+                            "objectCd": "US_NH",
+                            "objectDsc": "NEW HAMPSHIRE"
                         },
                         {
-                        "objectCd": "NF",
-                        "objectDsc": "NEWFOUNDLAND"
+                            "objectCd": "US_NJ",
+                            "objectDsc": "NEW JERSEY"
                         },
                         {
-                        "objectCd": "NR",
-                        "objectDsc": "NON-RECIPROCITY"
+                            "objectCd": "US_NM",
+                            "objectDsc": "NEW MEXICO"
                         },
                         {
-                        "objectCd": "NC",
-                        "objectDsc": "NORTH CAROLINA"
+                            "objectCd": "US_NV",
+                            "objectDsc": "NEVADA"
                         },
                         {
-                        "objectCd": "ND",
-                        "objectDsc": "NORTH DAKOTA"
+                            "objectCd": "US_NY",
+                            "objectDsc": "NEW YORK"
                         },
                         {
-                        "objectCd": "NT",
-                        "objectDsc": "NORTHWEST TERRITORY"
+                            "objectCd": "US_OH",
+                            "objectDsc": "OHIO"
                         },
                         {
-                        "objectCd": "NS",
-                        "objectDsc": "NOVA SCOTIA"
+                            "objectCd": "US_OK",
+                            "objectDsc": "OKLAHOMA"
                         },
                         {
-                        "objectCd": "NU",
-                        "objectDsc": "NUNAVUT"
+                            "objectCd": "US_OR",
+                            "objectDsc": "OREGON"
                         },
                         {
-                        "objectCd": "OH",
-                        "objectDsc": "OHIO"
+                            "objectCd": "US_PA",
+                            "objectDsc": "PENNSYLVANIA"
                         },
                         {
-                        "objectCd": "OK",
-                        "objectDsc": "OKLAHOMA"
+                            "objectCd": "US_PR",
+                            "objectDsc": "PUERTO RICO"
                         },
                         {
-                        "objectCd": "ON",
-                        "objectDsc": "ONTARIO"
+                            "objectCd": "US_RI",
+                            "objectDsc": "RHODE ISLAND"
                         },
                         {
-                        "objectCd": "OR",
-                        "objectDsc": "OREGON"
+                            "objectCd": "US_SC",
+                            "objectDsc": "SOUTH CAROLINA"
                         },
                         {
-                        "objectCd": "ZZ",
-                        "objectDsc": "OTHER"
+                            "objectCd": "US_SD",
+                            "objectDsc": "SOUTH DAKOTA"
                         },
                         {
-                        "objectCd": "FD",
-                        "objectDsc": "OTHER FOREIGN LICENCE"
+                            "objectCd": "US_TN",
+                            "objectDsc": "TENNESSEE"
                         },
                         {
-                        "objectCd": "PA",
-                        "objectDsc": "PENNSYLVANIA"
+                            "objectCd": "US_TX",
+                            "objectDsc": "TEXAS"
                         },
                         {
-                        "objectCd": "PE",
-                        "objectDsc": "PRINCE EDWARD ISLAND"
+                            "objectCd": "US_UM",
+                            "objectDsc": "U.S. MINOR OUTLYING ISLANDS"
                         },
                         {
-                        "objectCd": "PR",
-                        "objectDsc": "PUERTO RICO"
+                            "objectCd": "US_UT",
+                            "objectDsc": "UTAH"
                         },
                         {
-                        "objectCd": "QC",
-                        "objectDsc": "QUEBEC"
+                            "objectCd": "US_VA",
+                            "objectDsc": "VIRGINIA"
                         },
                         {
-                        "objectCd": "KR",
-                        "objectDsc": "REPUBLIC OF KOREA"
+                            "objectCd": "US_VI",
+                            "objectDsc": "U.S. VIRGIN ISLANDS"
                         },
                         {
-                        "objectCd": "RI",
-                        "objectDsc": "RHODE ISLAND"
+                            "objectCd": "US_VT",
+                            "objectDsc": "VERMONT"
                         },
                         {
-                        "objectCd": "SK",
-                        "objectDsc": "SASKATCHEWAN"
+                            "objectCd": "US_WI",
+                            "objectDsc": "WISCONSIN"
                         },
                         {
-                        "objectCd": "SC",
-                        "objectDsc": "SOUTH CAROLINA"
+                            "objectCd": "US_WV",
+                            "objectDsc": "WEST VIRGINIA"
                         },
                         {
-                        "objectCd": "SD",
-                        "objectDsc": "SOUTH DAKOTA"
+                            "objectCd": "US_WY",
+                            "objectDsc": "WYOMING"
                         },
                         {
-                        "objectCd": "CH",
-                        "objectDsc": "SWITZERLAND"
-                        },
-                        {
-                        "objectCd": "TN",
-                        "objectDsc": "TENNESSEE"
-                        },
-                        {
-                        "objectCd": "TX",
-                        "objectDsc": "TEXAS"
-                        },
-                        {
-                        "objectCd": "ZZ",
-                        "objectDsc": "UNITED KINGDOM"
-                        },
-                        {
-                        "objectCd": "XX",
-                        "objectDsc": "UNKNOWN"
-                        },
-                        {
-                        "objectCd": "UT",
-                        "objectDsc": "UTAH"
-                        },
-                        {
-                        "objectCd": "VT",
-                        "objectDsc": "VERMONT"
-                        },
-                        {
-                        "objectCd": "ZZ",
-                        "objectDsc": "VIRGIN ISLANDS"
-                        },
-                        {
-                        "objectCd": "VA",
-                        "objectDsc": "VIRGINIA"
-                        },
-                        {
-                        "objectCd": "WA",
-                        "objectDsc": "WASHINGTON"
-                        },
-                        {
-                        "objectCd": "WV",
-                        "objectDsc": "WEST VIRGINIA"
-                        },
-                        {
-                        "objectCd": "WI",
-                        "objectDsc": "WISCONSIN"
-                        },
-                        {
-                        "objectCd": "WY",
-                        "objectDsc": "WYOMING"
-                        },
-                        {
-                        "objectCd": "YT",
-                        "objectDsc": "YUKON TERRITORY"
+                            "objectCd": "XX",
+                            "objectDsc": "--- more ---"
                         }
-                    ]
+                        ]
                    )
     
     permission = Table('permission', meta)
@@ -7753,291 +7656,290 @@ def upgrade():
     op.bulk_insert(province,
                     [
                         {
-                        "objectCd": "AK",
-                        "objectDsc": "ALASKA"
+                            "objectCd": "CA_BC",
+                            "objectDsc": "BRITISH COLUMBIA"
                         },
                         {
-                        "objectCd": "ALTA",
-                        "objectDsc": "ALBERTA"
+                            "objectCd": "CA_AB",
+                            "objectDsc": "ALBERTA"
                         },
                         {
-                        "objectCd": "AL",
-                        "objectDsc": "ALABAMA"
+                            "objectCd": "US_WA",
+                            "objectDsc": "WASHINGTON"
                         },
                         {
-                        "objectCd": "AR",
-                        "objectDsc": "ARKANSAS"
+                            "objectCd": "CA_MB",
+                            "objectDsc": "MANITOBA"
                         },
                         {
-                        "objectCd": "AZ",
-                        "objectDsc": "ARIZONA"
+                            "objectCd": "CA_NB",
+                            "objectDsc": "NEW BRUNSWICK"
                         },
                         {
-                        "objectCd": "BC",
-                        "objectDsc": "BRITISH COLUMBIA"
+                            "objectCd": "CA_NF",
+                            "objectDsc": "NEWFOUNDLAND & LABRADOR"
                         },
                         {
-                        "objectCd": "CA",
-                        "objectDsc": "CALIFORNIA"
+                            "objectCd": "CA_NS",
+                            "objectDsc": "NOVA SCOTIA"
                         },
                         {
-                        "objectCd": "CO",
-                        "objectDsc": "COLORADO"
+                            "objectCd": "CA_NT",
+                            "objectDsc": "NORTHWEST TERRITORIES"
                         },
                         {
-                        "objectCd": "CT",
-                        "objectDsc": "CONNECTICUT"
+                            "objectCd": "CA_NU",
+                            "objectDsc": "NUNAVUT"
                         },
                         {
-                        "objectCd": "DC",
-                        "objectDsc": "DISTRICT OF COLUMBIA"
+                            "objectCd": "CA_ON",
+                            "objectDsc": "ONTARIO"
                         },
                         {
-                        "objectCd": "DE",
-                        "objectDsc": "DELAWARE"
+                            "objectCd": "CA_PE",
+                            "objectDsc": "PRINCE EDWARD ISLAND"
                         },
                         {
-                        "objectCd": "EUR",
-                        "objectDsc": "EUROPE"
+                            "objectCd": "CA_QC",
+                            "objectDsc": "QUEBEC"
                         },
                         {
-                        "objectCd": "FL",
-                        "objectDsc": "FLORIDA"
+                            "objectCd": "CA_SK",
+                            "objectDsc": "SASKATCHEWAN"
                         },
                         {
-                        "objectCd": "GA",
-                        "objectDsc": "GEORGIA"
+                            "objectCd": "CA_YT",
+                            "objectDsc": "YUKON"
                         },
                         {
-                        "objectCd": "HI",
-                        "objectDsc": "HAWAII"
+                            "objectCd": "US_AK",
+                            "objectDsc": "ALASKA"
                         },
                         {
-                        "objectCd": "IA",
-                        "objectDsc": "IOWA"
+                            "objectCd": "US_AL",
+                            "objectDsc": "ALABAMA"
                         },
                         {
-                        "objectCd": "ID",
-                        "objectDsc": "IDAHO"
+                            "objectCd": "US_AR",
+                            "objectDsc": "ARKANSAS"
                         },
                         {
-                        "objectCd": "IL",
-                        "objectDsc": "ILLINOIS"
+                            "objectCd": "US_AS",
+                            "objectDsc": "AMERICAN SAMOA"
                         },
                         {
-                        "objectCd": "INTL",
-                        "objectDsc": "INTERNATIONAL"
+                            "objectCd": "US_AZ",
+                            "objectDsc": "ARIZONA"
                         },
                         {
-                        "objectCd": "IN",
-                        "objectDsc": "INDIANA"
+                            "objectCd": "US_CA",
+                            "objectDsc": "CALIFORNIA"
                         },
                         {
-                        "objectCd": "KS",
-                        "objectDsc": "KANSAS"
+                            "objectCd": "US_CO",
+                            "objectDsc": "COLORADO"
                         },
                         {
-                        "objectCd": "KY",
-                        "objectDsc": "KENTUCKY"
+                            "objectCd": "US_CT",
+                            "objectDsc": "CONNECTICUT"
                         },
                         {
-                        "objectCd": "LA",
-                        "objectDsc": "LOUISIANA"
+                            "objectCd": "US_DC",
+                            "objectDsc": "DISTRICT OF COLUMBIA"
                         },
                         {
-                        "objectCd": "MAN",
-                        "objectDsc": "MANITOBA"
+                            "objectCd": "US_DE",
+                            "objectDsc": "DELAWARE"
                         },
                         {
-                        "objectCd": "MA",
-                        "objectDsc": "MASSACHUSETTS"
+                            "objectCd": "US_FL",
+                            "objectDsc": "FLORIDA"
                         },
                         {
-                        "objectCd": "MD",
-                        "objectDsc": "MARYLAND"
+                            "objectCd": "US_GA",
+                            "objectDsc": "GEORGIA"
                         },
                         {
-                        "objectCd": "ME",
-                        "objectDsc": "MAINE"
+                            "objectCd": "US_GU",
+                            "objectDsc": "GUAM"
                         },
                         {
-                        "objectCd": "MI",
-                        "objectDsc": "MICHIGAN"
+                            "objectCd": "US_HI",
+                            "objectDsc": "HAWAII"
                         },
                         {
-                        "objectCd": "MN",
-                        "objectDsc": "MINNESOTA"
+                            "objectCd": "US_IA",
+                            "objectDsc": "IOWA"
                         },
                         {
-                        "objectCd": "MO",
-                        "objectDsc": "MISSOURI"
+                            "objectCd": "US_ID",
+                            "objectDsc": "IDAHO"
                         },
                         {
-                        "objectCd": "MS",
-                        "objectDsc": "MISSISSIPPI"
+                            "objectCd": "US_IL",
+                            "objectDsc": "ILLINOIS"
                         },
                         {
-                        "objectCd": "MT",
-                        "objectDsc": "MONTANA"
+                            "objectCd": "US_IN",
+                            "objectDsc": "INDIANA"
                         },
                         {
-                        "objectCd": "MX",
-                        "objectDsc": "MEXICO"
+                            "objectCd": "US_KS",
+                            "objectDsc": "KANSAS"
                         },
                         {
-                        "objectCd": "NA",
-                        "objectDsc": "NEBRASKA"
+                            "objectCd": "US_KY",
+                            "objectDsc": "KENTUCKY"
                         },
                         {
-                        "objectCd": "NB",
-                        "objectDsc": "NEW BRUNSWICK"
+                            "objectCd": "US_LA",
+                            "objectDsc": "LOUISIANA"
                         },
                         {
-                        "objectCd": "NC",
-                        "objectDsc": "NORTH CAROLINA"
+                            "objectCd": "US_MA",
+                            "objectDsc": "MASSACHUSETTS"
                         },
                         {
-                        "objectCd": "ND",
-                        "objectDsc": "NORTH DAKOTA"
+                            "objectCd": "US_MD",
+                            "objectDsc": "MARYLAND"
                         },
                         {
-                        "objectCd": "NFLD",
-                        "objectDsc": "NEWFOUNDLAND"
+                            "objectCd": "US_ME",
+                            "objectDsc": "MAINE"
                         },
                         {
-                        "objectCd": "NH",
-                        "objectDsc": "NEW HAMPSHIRE"
+                            "objectCd": "US_MI",
+                            "objectDsc": "MICHIGAN"
                         },
                         {
-                        "objectCd": "NJ",
-                        "objectDsc": "NEW JERSEY"
+                            "objectCd": "US_MN",
+                            "objectDsc": "MINNESOTA"
                         },
                         {
-                        "objectCd": "NM",
-                        "objectDsc": "NEW MEXICO"
+                            "objectCd": "US_MO",
+                            "objectDsc": "MISSOURI"
                         },
                         {
-                        "objectCd": "NS",
-                        "objectDsc": "NOVA SCOTIA"
+                            "objectCd": "US_MP",
+                            "objectDsc": "NORTHERN MARIANA ISLANDS"
                         },
                         {
-                        "objectCd": "NVT",
-                        "objectDsc": "NUNAVUT"
+                            "objectCd": "US_MS",
+                            "objectDsc": "MISSISSIPPI"
                         },
                         {
-                        "objectCd": "NV",
-                        "objectDsc": "NEVADA"
+                            "objectCd": "US_MT",
+                            "objectDsc": "MONTANA"
                         },
                         {
-                        "objectCd": "NWT",
-                        "objectDsc": "NORTHWEST TERRITORY"
+                            "objectCd": "US_NC",
+                            "objectDsc": "NORTH CAROLINA"
                         },
                         {
-                        "objectCd": "NY",
-                        "objectDsc": "NEW YORK"
+                            "objectCd": "US_ND",
+                            "objectDsc": "NORTH DAKOTA"
                         },
                         {
-                        "objectCd": "OH",
-                        "objectDsc": "OHIO"
+                            "objectCd": "US_NE",
+                            "objectDsc": "NEBRASKA"
                         },
                         {
-                        "objectCd": "OK",
-                        "objectDsc": "OKLAHOMA"
+                            "objectCd": "US_NH",
+                            "objectDsc": "NEW HAMPSHIRE"
                         },
                         {
-                        "objectCd": "ONT",
-                        "objectDsc": "ONTARIO"
+                            "objectCd": "US_NJ",
+                            "objectDsc": "NEW JERSEY"
                         },
                         {
-                        "objectCd": "OR",
-                        "objectDsc": "OREGON"
+                            "objectCd": "US_NM",
+                            "objectDsc": "NEW MEXICO"
                         },
                         {
-                        "objectCd": "OTH",
-                        "objectDsc": "OTHER"
+                            "objectCd": "US_NV",
+                            "objectDsc": "NEVADA"
                         },
                         {
-                        "objectCd": "PA",
-                        "objectDsc": "PENNSYLVANIA"
+                            "objectCd": "US_NY",
+                            "objectDsc": "NEW YORK"
                         },
                         {
-                        "objectCd": "PEI",
-                        "objectDsc": "PRINCE EDWARD ISLAND"
+                            "objectCd": "US_OH",
+                            "objectDsc": "OHIO"
                         },
                         {
-                        "objectCd": "PR",
-                        "objectDsc": "PUERTO RICO"
+                            "objectCd": "US_OK",
+                            "objectDsc": "OKLAHOMA"
                         },
                         {
-                        "objectCd": "QUE",
-                        "objectDsc": "QUEBEC"
+                            "objectCd": "US_OR",
+                            "objectDsc": "OREGON"
                         },
                         {
-                        "objectCd": "RI",
-                        "objectDsc": "RHODE ISLAND"
+                            "objectCd": "US_PA",
+                            "objectDsc": "PENNSYLVANIA"
                         },
                         {
-                        "objectCd": "SASK",
-                        "objectDsc": "SASKATCHEWAN"
+                            "objectCd": "US_PR",
+                            "objectDsc": "PUERTO RICO"
                         },
                         {
-                        "objectCd": "SC",
-                        "objectDsc": "SOUTH CAROLINA"
+                            "objectCd": "US_RI",
+                            "objectDsc": "RHODE ISLAND"
                         },
                         {
-                        "objectCd": "SD",
-                        "objectDsc": "SOUTH DAKOTA"
+                            "objectCd": "US_SC",
+                            "objectDsc": "SOUTH CAROLINA"
                         },
                         {
-                        "objectCd": "TS",
-                        "objectDsc": "TENNESSEE"
+                            "objectCd": "US_SD",
+                            "objectDsc": "SOUTH DAKOTA"
                         },
                         {
-                        "objectCd": "TX",
-                        "objectDsc": "TEXAS"
+                            "objectCd": "US_TN",
+                            "objectDsc": "TENNESSEE"
                         },
                         {
-                        "objectCd": "UK",
-                        "objectDsc": "UNITED KINGDOM"
+                            "objectCd": "US_TX",
+                            "objectDsc": "TEXAS"
                         },
                         {
-                        "objectCd": "UT",
-                        "objectDsc": "UTAH"
+                            "objectCd": "US_UM",
+                            "objectDsc": "U.S. MINOR OUTLYING ISLANDS"
                         },
                         {
-                        "objectCd": "VA",
-                        "objectDsc": "VIRGINIA"
+                            "objectCd": "US_UT",
+                            "objectDsc": "UTAH"
                         },
                         {
-                        "objectCd": "VI",
-                        "objectDsc": "VIRGIN ISLANDS"
+                            "objectCd": "US_VA",
+                            "objectDsc": "VIRGINIA"
                         },
                         {
-                        "objectCd": "VT",
-                        "objectDsc": "VERMONT"
+                            "objectCd": "US_VI",
+                            "objectDsc": "U.S. VIRGIN ISLANDS"
                         },
                         {
-                        "objectCd": "WA",
-                        "objectDsc": "WASHINGTON"
+                            "objectCd": "US_VT",
+                            "objectDsc": "VERMONT"
                         },
                         {
-                        "objectCd": "WI",
-                        "objectDsc": "WISCONSIN"
+                            "objectCd": "US_WI",
+                            "objectDsc": "WISCONSIN"
                         },
                         {
-                        "objectCd": "WV",
-                        "objectDsc": "WEST VIRGINIA"
+                            "objectCd": "US_WV",
+                            "objectDsc": "WEST VIRGINIA"
                         },
                         {
-                        "objectCd": "WY",
-                        "objectDsc": "WYOMING"
+                            "objectCd": "US_WY",
+                            "objectDsc": "WYOMING"
                         },
                         {
-                        "objectCd": "YT",
-                        "objectDsc": "YUKON TERRITORY"
+                            "objectCd": "ZZ",
+                            "objectDsc": "OTHER"
                         }
-                    ]
-                )
+                        ])
     
     vehicle = Table('vehicle', meta)
     op.bulk_insert(vehicle,
