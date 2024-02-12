@@ -123,7 +123,11 @@ export const Dashboard = () => {
             "jurisdiction_country"
           );
 
-          setVehicleResource(vehicleData.data);
+          // Sort vehicle data alphabetically
+          const dataObj = vehicleData.data;
+          dataObj.sort((a, b) => a.search.localeCompare(b.search));
+
+          setVehicleResource(dataObj);
           setVehicleStyleResource(vehicleStyleData.data);
           setVehicleColourResource(vehicleColourData.data);
           setProvinceResource(provinceData.data);
