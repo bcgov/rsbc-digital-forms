@@ -218,7 +218,7 @@
       },
       "DRIVER_DL_PROVINCE": {
         "field_type": "text",
-        "field_name": "driver_prov_state",
+        "field_name": "drivers_licence_jurisdiction",
         "classNames": "fontSmall",
         "start": {
           "x": 57,
@@ -1185,7 +1185,7 @@
       },
       "DRIVER_DL_PROVINCE": {
         "field_type": "text",
-        "field_name": "driver_prov_state",
+        "field_name": "drivers_licence_jurisdiction",
         "classNames": "fontSmall",
         "start": {
           "x": 115,

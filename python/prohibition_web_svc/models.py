@@ -553,6 +553,7 @@ class TwelveHourForm(db.Model):
     updated_dt: datetime
     driver_phone: str
     twelve_hour_number: str
+    vehicle_location: str
 
     form_id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey('event.event_id'))
@@ -560,6 +561,7 @@ class TwelveHourForm(db.Model):
     updated_dt = db.Column(db.DateTime)
     driver_phone = db.Column(db.String)
     twelve_hour_number = db.Column(db.String)
+    vehicle_location = db.Column(db.String)
 
 
 @dataclass
