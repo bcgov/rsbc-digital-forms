@@ -440,6 +440,7 @@ export const validationSchema = Yup.object().shape(
               ),
         }
       ), // Only for 24h / VI, required if vehicle_impounded = "No" and reason_for_not_impounding = "released"
+    // Need to make sure this is after time of driving - care or ctrl
     time_released: Yup.string()
       .nullable()
       .when(
@@ -483,6 +484,36 @@ export const validationSchema = Yup.object().shape(
                     );
                   }
                   return true;
+                }
+              )
+              .test(
+                "time_released",
+                "Release time must be at least 1 minute after time of driving - care or control",
+                function (value) {
+                  if (
+                    this.parent.date_of_driving &&
+                    this.parent.time_of_driving &&
+                    this.parent.date_released &&
+                    value
+                  ) {
+                    const dateOfDriving = moment(this.parent.date_of_driving);
+                    const timeOfDriving = moment(
+                      this.parent.time_of_driving,
+                      "HHmm"
+                    );
+                    const dateOfTest = moment(this.parent.date_released);
+                    const timeOfTest = moment(value, "HHmm");
+
+                    const timeOfDrivingCareOrControl = moment(dateOfDriving)
+                      .add(timeOfDriving.hours(), "hours")
+                      .add(timeOfDriving.minutes(), "minutes");
+
+                    const testTime = moment(dateOfTest)
+                      .add(timeOfTest.hours(), "hours")
+                      .add(timeOfTest.minutes(), "minutes");
+
+                    return timeOfDrivingCareOrControl.isBefore(testTime);
+                  }
                 }
               ),
         }
