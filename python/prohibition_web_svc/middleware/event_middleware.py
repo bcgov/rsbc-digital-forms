@@ -230,6 +230,7 @@ def save_event_data(**kwargs) -> tuple:
                 twelve_hour_number=data.get("twelve_hour_number"),
                 form_id=data.get('form_id'),
                 event_id=data.get('event_id'),
+                vehicle_location=data.get('vehicle_location', None),
                 created_dt=date_created,
                 updated_dt=date_created,
             )
