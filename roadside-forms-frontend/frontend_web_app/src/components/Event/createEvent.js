@@ -40,7 +40,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FormIDApi } from "../../api/formIDApi";
 import { Alert } from "react-bootstrap";
 import Warning from "@mui/icons-material/Warning";
-import { ArrowBack, Error } from "@mui/icons-material";
+import { ArrowBack, Error, Refresh } from "@mui/icons-material";
 import { useKeycloak } from "@react-keycloak/web";
 const { v4: uuidv4 } = require("uuid");
 
@@ -296,7 +296,7 @@ export const CreateEvent = () => {
   };
 
   const onSubmit = async (values) => {
-    setIsSubmitting(true);
+    await setIsSubmitting(true);
     if (values["VI"]) {
       const element = document.getElementById("VI");
       const base64_png = await toPng(element);
@@ -410,10 +410,11 @@ export const CreateEvent = () => {
           <Button
             variant="primary"
             onClick={() => {
-              window.print();
+              onSubmit(values);
             }}
           >
-            Print Police Version for Manual Submission
+            <Refresh />
+            &nbsp; Retry Submission
           </Button>
         );
       }
@@ -918,7 +919,7 @@ export const CreateEvent = () => {
       <ToastContainer />
       <Modal
         id="spinner-modal"
-        show={isSubmitting && !eventCreationFailed}
+        show={isSubmitting}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
@@ -1144,6 +1145,7 @@ export const CreateEvent = () => {
               <Modal
                 show={eventCreationFailedModalOpen}
                 backdrop="static"
+                size="lg"
                 centered
               >
                 <Modal.Header
@@ -1159,36 +1161,55 @@ export const CreateEvent = () => {
                       marginBottom: "5px",
                     }}
                   />
-                  <h3 style={{ color: "white" }}>Unable to Save Form</h3>
+                  <h3 style={{ color: "white" }}>Unable to Submit Form</h3>
                 </Modal.Header>
                 <Modal.Body>
                   <p>
-                    Form could not be saved and submitted due to a fatal network
-                    error. As such, this form will not appear in your list of
-                    Completed forms. Please click "Print Police Version for
-                    Manual Submission" below to print hard copies of the form(s)
-                    and handle as per existing paper process.
+                    <div>
+                      The form could not be submitted or electronically
+                      delivered to ICBC due to a fatal network error.
+                    </div>
+                    <div>
+                      Options:
+                      <ul>
+                        <li>
+                          Try moving this computer to an area with better
+                          network reception; <i>or</i>
+                        </li>
+                        <li>
+                          Abandon the Digital Forms process and re-serve the
+                          document (including DRIVER and ILO copies) using a
+                          handwritten paper form.
+                        </li>
+                      </ul>
+                    </div>
+                    <strong>
+                      Important! ICBC is no longer accepting printed copies of
+                      12-hour and 24-hour forms. The forms MUST be handwritten
+                      to be submitted via the existing paper process.
+                    </strong>
                   </p>
-                  <Checkbox
-                    name="acknowledgement_checkbox"
-                    onClick={(event) => {
-                      setMessageAcknowledged(event.target.checked);
-                    }}
-                  >
-                    I will manually submit the printed form(s) and understand
-                    that no form data could be saved to the server.
-                  </Checkbox>
                 </Modal.Body>
                 <Modal.Footer>
                   <Button
-                    variant="primary"
-                    disabled={!messageAcknowledged}
+                    variant="danger"
                     onClick={async () => {
-                      await setEventCreationFailedModalOpen(false);
-                      window.print();
+                      await setisBlockerActive(false);
+                      navigate("/");
                     }}
                   >
-                    Print Police Version for Manual Submission
+                    <Warning />
+                    &nbsp; Abandon Document and Return to Dashboard
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={async () => {
+                      await setEventCreationFailedModalOpen(false);
+                      await onSubmit(values);
+                    }}
+                  >
+                    <Refresh />
+                    &nbsp; Retry Submission
                   </Button>
                 </Modal.Footer>
               </Modal>
