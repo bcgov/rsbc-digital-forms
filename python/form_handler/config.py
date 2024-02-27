@@ -28,8 +28,8 @@ class Config():
 
     STORAGE_HOST = os.environ.get('STORAGE_HOST', 'localhost')
     STORAGE_PORT = os.environ.get('STORAGE_PORT', 9000)
-    STORAGE_ACCESS_KEY = os.environ.get('STORAGE_ACCESS_KEY', '4NahK2Km8xCBMaNPD9HN')
-    STORAGE_SECRET_KEY= os.environ.get('STORAGE_SECRET_KEY', 'CrMchOp3C3XXCfwnr49CjENrQXKXKukN8RE30itl')
+    STORAGE_ACCESS_KEY = os.environ.get('STORAGE_ACCESS_KEY', 'vEful9aJZRjNCP3dQwQ9')
+    STORAGE_SECRET_KEY= os.environ.get('STORAGE_SECRET_KEY', 'KWCldKNT4zbirer12GA290MJBjTNAXIZMEmNXkY8')
 
     RABBITMQ_URL                        = os.getenv('RABBITMQ_URL', 'localhost')
     RABBITMQ_USER                       = os.getenv('RABBITMQ_USER')
@@ -63,10 +63,13 @@ class Config():
 
     RSIOPS_EMAIL_ADDRESS = os.getenv('RSIOPS_EMAIL_ADDRESS')
     REPLY_EMAIL_ADDRESS = os.getenv('REPLY_EMAIL_ADDRESS', 'do-not-reply-rsi@gov.bc.ca')
+    VIPS_BCC_EMAIL_ADDRESSES = os.getenv('VIPS_BCC_EMAIL_ADDRESSES', '')
     TMP_STORAGE_LOCAL=os.getenv('TMP_STORAGE_LOCAL')
 
     MINIO_SECURE                        = os.environ.get("MINIO_SECURE", False)
     MINIO_CERT_FILE                     = os.environ.get("MINIO_CERT_FILE", "/opt/app-root/src/ca.crt")
+
+    VIPS_DPS_EMAIL = os.getenv('VIPS_DPS_EMAIL', 'do-not-reply-rsi@gov.bc.ca')
 
 
 
