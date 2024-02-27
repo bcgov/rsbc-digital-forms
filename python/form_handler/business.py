@@ -65,27 +65,33 @@ def process_incoming_form() -> dict:
                 {"try": actions.add_to_retry_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
-            {"try": actions.prep_vips_document_payload, "fail": [
-                {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
-                {"try": actions.add_to_persistent_failed_queue, "fail": []},
-                {"try": actions.update_event_status_error, "fail": []},
+            {"try": rsi_email.event_to_vips_dps, "fail": [
+                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
             ]},
+            # {"try": actions.prep_vips_document_payload, "fail": [
+            #     {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
+            #     {"try": actions.add_to_persistent_failed_queue, "fail": []},
+            #     {"try": actions.update_event_status_error, "fail": []},
+            # ]},
             # Sending to VIPS temporarily disabled
             # {"try": actions.create_vips_document, "fail": [
             #     {"try": actions.add_to_retry_queue, "fail": []},
             #     {"try": actions.update_event_status_hold, "fail": []},
             # ]},
-            {"try": actions.prep_vips_payload, "fail": [
-                {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
-                {"try": actions.add_to_persistent_failed_queue, "fail": []},
-                {"try": actions.update_event_status_error, "fail": []},
-            ]},
+
+            # {"try": actions.prep_vips_payload, "fail": [
+            #     {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
+            #     {"try": actions.add_to_persistent_failed_queue, "fail": []},
+            #     {"try": actions.update_event_status_error, "fail": []},
+            # ]},
+
             # Sending to VIPS temporarily disabled
             # {"try": actions.create_vips_impoundment, "fail": [
             #     {"try": actions.add_to_retry_queue, "fail": []},
             #     {"try": actions.update_event_status_hold, "fail": []},
             # ]},
-            # {"try": actions.update_event_status, "fail": []},
+            {"try": actions.update_event_status, "fail": []},
 
         ],
         "24h": [

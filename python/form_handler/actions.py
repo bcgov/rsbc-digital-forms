@@ -524,7 +524,18 @@ def send_to_icbc(**args)->tuple:
 #   "pageCount": 1
 # }
 
-
+# def send_to_vips_email(**args)->tuple:
+#     logging.debug("inside send_to_vips_email()")
+#     logging.debug(args)
+#     try:
+#         pdf_data = args.get('file_data')
+#
+#         if vips_response_txt is False:
+#             return False,args
+#     except Exception as e:
+#         logging.error(e)
+#         return False,args
+#     return True,args
 
 def prep_vips_document_payload(**args)->tuple:
     logging.debug("inside prep_vips_document_payload()")
