@@ -89,17 +89,8 @@ export const CreateEvent = () => {
   const [formErrors, setFormErrors] = useState([]);
   const [exitWindowModalOpen, setExitWindowModalOpen] = useState(false);
   const [exitFormLoading, setExitFormLoading] = useState(false);
-  const [confirmSubmitModalOpen, setConfirmSubmitModalOpen] = useState(false);
-  const [submitModalOpen, setSubmitModalOpen] = useState(false);
-  const [VIPrinted, setVIPrinted] = useState(false);
-  const [eventCreationFailed, setEventCreationFailed] = useState(false);
   const [eventCreationFailedModalOpen, setEventCreationFailedModalOpen] =
     useState(false);
-  const [
-    eventCreationFailedConfirmModalOpen,
-    setEventCreationFailedConfirmModalOpen,
-  ] = useState(false);
-  const [messageAcknowledged, setMessageAcknowledged] = useState(false);
   const [criticalErrorModalOpen, setCriticalErrorModelOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -330,14 +321,12 @@ export const CreateEvent = () => {
           navigate("/");
         } else {
           // The form did not submit correctly. Cancel submit and display error message.
-          setEventCreationFailed(true);
           setIsSubmitting(false);
           setEventCreationFailedModalOpen(true);
         }
       })
       .catch((err) => {
         console.error("An error occurred submitting the event: ", err);
-        setEventCreationFailed(true);
         setIsSubmitting(false);
       });
   };
@@ -385,13 +374,16 @@ export const CreateEvent = () => {
 
   const renderNextButton = (values, errors) => {
     if (currentStep < 4) {
+      // We are not on the submit step
       if (currentStep === 1) {
+        // We are on the driver copy print preview page
         return (
           <Button type="button" onClick={() => printForms(values)}>
             Print
           </Button>
         );
       } else if (currentStep === 2 && values["document_served"] === "NO") {
+        // Prompt user to exit form if the document was not served
         return (
           <Button type="button" onClick={() => navigate("/")}>
             Exit Form
@@ -405,40 +397,6 @@ export const CreateEvent = () => {
         );
       }
     } else {
-      if (eventCreationFailed) {
-        return (
-          <Button
-            variant="primary"
-            onClick={() => {
-              onSubmit(values);
-            }}
-          >
-            <Refresh />
-            &nbsp; Retry Submission
-          </Button>
-        );
-      }
-      if (values["VI"] && !values["TwentyFourHour"] && !values["TwelveHour"]) {
-        return (
-          <Button variant="primary" onClick={() => window.print()}>
-            Print VI for Manual Submission
-          </Button>
-        );
-      } else if (
-        values["VI"] &&
-        (values["TwentyFourHour"] || values["TwelveHour"])
-      ) {
-        // print first, then submit to API
-        return (
-          <Button
-            variant="primary"
-            onClick={() => setConfirmSubmitModalOpen(true)}
-          >
-            Submit {values["TwelveHour"] ? "12-hour" : "24-hour"} Notice & Print
-            VI for Manual Submission
-          </Button>
-        );
-      }
       return (
         <Button
           variant="primary"
@@ -711,21 +669,6 @@ export const CreateEvent = () => {
             () => handleModalClose()
           );
         }
-      } else if (currentStep === 4 && values["VI"] && !eventCreationFailed) {
-        // Special case for hybrid VI workflow
-        setSubmitModalOpen(true);
-      } else if (eventCreationFailed) {
-        handleShow(
-          "Print Form",
-          "Did the form print correctly?",
-          "No",
-          "Yes",
-          async () => {
-            // Show new dialog that says "Please fax the documents as per existing paper process"
-            await handleClose();
-            await setEventCreationFailedConfirmModalOpen(true);
-          }
-        );
       }
     };
 
@@ -1053,92 +996,6 @@ export const CreateEvent = () => {
                   </Button>
                   <Button variant="primary" onClick={handleClose}>
                     {modalButtonTwoText}
-                  </Button>
-                </Modal.Footer>
-              </Modal>
-              {/* Form Submit Modal */}
-              <Modal
-                show={submitModalOpen && !isSubmitting && !eventCreationFailed}
-                centered
-              >
-                <Modal.Header>
-                  <h3>{VIPrinted ? "Next Steps" : "Print Form"}</h3>
-                </Modal.Header>
-                <Modal.Body>
-                  {VIPrinted
-                    ? "Please fax the VI document as per existing paper process."
-                    : "Did the form print correctly?"}
-                </Modal.Body>
-                <Modal.Footer>
-                  {VIPrinted ? (
-                    <Button
-                      onClick={async () => {
-                        await onSubmit(values);
-                      }}
-                    >
-                      OK
-                    </Button>
-                  ) : (
-                    <>
-                      <Button
-                        variant="secondary"
-                        onClick={() => {
-                          setVIPrinted(false);
-                          setSubmitModalOpen(false);
-                        }}
-                      >
-                        No
-                      </Button>
-                      <Button onClick={() => setVIPrinted(true)}>Yes</Button>
-                    </>
-                  )}
-                </Modal.Footer>
-              </Modal>
-              <Modal show={confirmSubmitModalOpen} centered>
-                <Modal.Header>
-                  <h3>Are you ready to submit?</h3>
-                </Modal.Header>
-                <Modal.Body>
-                  You will be asked to print the VI form. Once it has printed
-                  successfully, the{" "}
-                  {values["TwelveHour"] ? "12-hour" : "24-hour"} Notice will be
-                  submitted.
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      setConfirmSubmitModalOpen(false);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={async () => {
-                      await setConfirmSubmitModalOpen(false);
-                      window.print();
-                    }}
-                  >
-                    OK
-                  </Button>
-                </Modal.Footer>
-              </Modal>
-              <Modal show={eventCreationFailedConfirmModalOpen} centered>
-                <Modal.Header>
-                  <h3>Next Steps</h3>
-                </Modal.Header>
-                <Modal.Body>
-                  Please fax the {getFormNames(values)} as per the existing
-                  paper process.
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button
-                    onClick={async () => {
-                      await setisBlockerActive(false);
-                      navigate("/");
-                    }}
-                  >
-                    OK
                   </Button>
                 </Modal.Footer>
               </Modal>
