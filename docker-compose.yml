@@ -1,24 +1,24 @@
 version: "3.1"
 
 services:
-  rabbitmq:
-    build: ./rabbitmq
-    environment:
-      # The RABBITMQ_DEFAULT_USER is used
-      # to connect to the web admin
-      RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
-      RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
-      RABBITMQ_LOGS: "DEBUG"
-    networks:
-      - docker-network
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
-      interval: 5s
-      timeout: 15s
-      retries: 5
-    ports:
-      - "15672:15672" # Web admin port
-      - "5672:5672" # Do not expose this port in production
+  # rabbitmq:
+  #   build: ./rabbitmq
+  #   environment:
+  #     # The RABBITMQ_DEFAULT_USER is used
+  #     # to connect to the web admin
+  #     RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
+  #     RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
+  #     RABBITMQ_LOGS: "DEBUG"
+  #   networks:
+  #     - docker-network
+  #   healthcheck:
+  #     test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+  #     interval: 5s
+  #     timeout: 15s
+  #     retries: 5
+  #   ports:
+  #     - "15672:15672" # Web admin port
+  #     - "5672:5672" # Do not expose this port in production
 
   # form_handler:
   #   build:
@@ -107,7 +107,7 @@ services:
       - .env
     environment:
       FLASK_SECRET_KEY: "${FLASK_SECRET_KEY}"
-      ICBC_API_ROOT: "http://icbc_mock_svc:5000/vips/icbc"
+      ICBC_API_ROOT: "${ICBC_API_ROOT}"
       ICBC_LOGIN_USER_ID: "${ICBC_LOGIN_USER_ID}"
       ICBC_API_USERNAME: "${ICBC_API_USERNAME}"
       ICBC_API_PASSWORD: "${ICBC_API_PASSWORD}"
