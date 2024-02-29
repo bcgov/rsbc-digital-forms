@@ -7,7 +7,6 @@ export const NumberField = ({ required, label, name, ...props }) => {
   const handleChange = (e) => {
     const { value } = e.target;
 
-    // Limit the input value to 999
     const sanitizedValue = value.replace(/[^0-9]/g, "");
 
     // Update the field value
