@@ -12,10 +12,10 @@ on:
           - prod
       checkout_branch:
         required: true
-        type: choice
-        options:
-          - main
-          - release/1.0
+        # type: choice
+        # options:
+        #   - main
+        #   - release/1.0
   push:
     branches:
       - patch/dbmigrate
