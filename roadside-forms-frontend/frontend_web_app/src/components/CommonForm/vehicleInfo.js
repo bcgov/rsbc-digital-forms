@@ -11,6 +11,7 @@ import Button from "react-bootstrap/Button";
 import { MultiSelectField } from "../common/Select/MultiSelectField";
 import { ICBCVehicleDataApi } from "../../api/icbcVehicleDataApi";
 import { toast } from "react-toastify";
+import { NumberField } from "../common/Input/NumberField";
 
 export const VehicleInfo = (props) => {
   const {
@@ -216,7 +217,7 @@ export const VehicleInfo = (props) => {
             />
           </Col>
           <Col sm={4}>
-            <Input
+            <NumberField
               label="NSC Number"
               name="nsc_no"
               className="field-height field-width"
