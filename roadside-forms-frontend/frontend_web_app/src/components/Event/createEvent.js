@@ -4,7 +4,19 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import { toPng } from "html-to-image";
+import { useRecoilValue } from "recoil";
+import {
+  useBeforeUnload,
+  useBlocker,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { Alert } from "react-bootstrap";
+import Warning from "@mui/icons-material/Warning";
+import { ArrowBack, Error, Refresh } from "@mui/icons-material";
+import { useKeycloak } from "@react-keycloak/web";
+
 import { Checkbox } from "../common/Checkbox/checkbox";
 import { validationSchema } from "./validationSchema";
 import { DriverInfo } from "../CommonForm/driverInfo";
@@ -23,8 +35,6 @@ import { Unlicensed } from "../Forms/VehicleImpoundment/unlicensed";
 import { LinkageFactors } from "../Forms/VehicleImpoundment/linkageFactors";
 import { IncidentDetails } from "../Forms/VehicleImpoundment/incidentDetails";
 import { RegisteredOwnerInfo } from "../CommonForm/registeredOwnerInfo";
-import { useRecoilValue } from "recoil";
-import { useBeforeUnload, useBlocker, useNavigate } from "react-router-dom";
 import { ConfirmationStep } from "./ConfirmationStep/confirmationStep";
 import { PoliceDetails } from "../Forms/TwentyFourHourForm/policeDetails";
 import {
@@ -38,10 +48,7 @@ import { db } from "../../db";
 import "./createEvent.scss";
 import "react-toastify/dist/ReactToastify.css";
 import { FormIDApi } from "../../api/formIDApi";
-import { Alert } from "react-bootstrap";
-import Warning from "@mui/icons-material/Warning";
-import { ArrowBack, Error, Refresh } from "@mui/icons-material";
-import { useKeycloak } from "@react-keycloak/web";
+import { userAtom } from "../../atoms/users";
 const { v4: uuidv4 } = require("uuid");
 
 export const CreateEvent = () => {
@@ -57,6 +64,7 @@ export const CreateEvent = () => {
   const jurisdictionCountryAtom = useRecoilValue(
     staticResources["jurisdictionCountry"]
   );
+  const userData = useRecoilValue(userAtom);
   const [formValues, setFormValues] = useState([]);
   const [formIDs, setFormIDs] = useState({
     VI: "",
@@ -92,6 +100,7 @@ export const CreateEvent = () => {
   const [eventCreationFailedModalOpen, setEventCreationFailedModalOpen] =
     useState(false);
   const [criticalErrorModalOpen, setCriticalErrorModelOpen] = useState(false);
+  const [incompleteEvent, setIncompleteEvent] = useState(null);
 
   const navigate = useNavigate();
   const { keycloak } = useKeycloak();
@@ -105,6 +114,9 @@ export const CreateEvent = () => {
     );
   });
 
+  const location = useLocation();
+  const state = location.state;
+
   useBeforeUnload((event) => {
     event.preventDefault();
   });
@@ -114,6 +126,28 @@ export const CreateEvent = () => {
       setExitWindowModalOpen(true);
     }
   }, [blocker.state]);
+
+  useEffect(() => {
+    if (state) {
+      try {
+        console.log(state);
+        // state?.incEventId &&
+        db.incompleteEvent
+          .where("inc_event_id")
+          .equals(state?.incEventId)
+          .first()
+          .then((value) => {
+            setIncompleteEvent(value);
+            setCurrentStep(value["step"]);
+            return;
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      console.log("No incomplete event.");
+    }
+  }, [setIncompleteEvent, setCurrentStep, state]);
 
   useEffect(() => {
     const fetchOneOfEachID = async () => {
@@ -486,6 +520,15 @@ export const CreateEvent = () => {
   const handlePrintForms = async (values) => {
     await handleModalClose();
     window.print();
+    console.log(userData);
+    console.log("------------------------------");
+    console.log(values);
+    db.incompleteEvent.put({
+      ...values,
+      created_by: userData.user_guid,
+      step: values["TwentyFourHour"] || values["TwelveHour"] ? 2 : 4,
+    });
+    //TODO: save form here
   };
 
   const handleSuccessfulPrint = async (values) => {
@@ -927,7 +970,7 @@ export const CreateEvent = () => {
               ? setFormValues(formikActions.values)
               : setFormValues({})
           }
-          initialValues={InitialValues()}
+          initialValues={incompleteEvent ? incompleteEvent : InitialValues()}
           validationSchema={validationSchema}
         >
           {({ values, errors, setFieldValue }) => (
