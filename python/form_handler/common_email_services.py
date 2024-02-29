@@ -12,15 +12,26 @@ def send_email(to: list, subject: str, config, template, eventid, attachments=No
     """
     Send email to the rsiops
     """
-    payload = {
-        "bodyType": "html",
-        "body": template,
-        "from": config.REPLY_EMAIL_ADDRESS,
-        # "bcc": config.BCC_EMAIL_ADDRESSES.split(','),
-        "encoding": "utf-8",
-        "subject": subject,
-        "to": to
-    }
+    bcc_value=config.BCC_EMAIL_ADDRESSES.split(',')
+    if len(bcc_value) > 0 and bcc_value[0] != '':
+        payload = {
+            "bodyType": "html",
+            "body": template,
+            "from": config.REPLY_EMAIL_ADDRESS,
+            "bcc": config.BCC_EMAIL_ADDRESSES.split(','),
+            "encoding": "utf-8",
+            "subject": subject,
+            "to": to
+        }
+    else:
+        payload = {
+            "bodyType": "html",
+            "body": template,
+            "from": config.REPLY_EMAIL_ADDRESS,
+            "encoding": "utf-8",
+            "subject": subject,
+            "to": to
+        }
     if attachments is not None:
         payload['attachments'] = attachments
     logging.info('Sending email to: {} - {}'.format(to, subject))

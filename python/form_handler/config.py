@@ -11,6 +11,7 @@ class Config():
     STORAGE_FAIL_QUEUE = os.getenv('STORAGE_FAIL_QUEUE', 'df-storage-events-fail')
     STORAGE_FAIL_QUEUE_PERS=os.getenv('STORAGE_FAIL_QUEUE_PERS', 'df-storage-events-fail-persistent')
     EVENT_TYPES                         = os.getenv('EVENT_TYPES', 'vi,24h,12h,irp').split(',')
+    PENDING_EVENT_STATUSES = os.getenv('PENDING_EVENT_STATUSES', 'pending,retrying').split(',')
 
     DB_HOST = os.environ.get('DB_HOST', 'db')
     DB_USER = os.environ.get('DB_USER', 'testuser')
@@ -20,15 +21,15 @@ class Config():
     DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     FLASK_SECRET_KEY = os.getenv('FLASK_SECRET_KEY', '12345')
     LOGGERS_IN_USE = os.getenv('LOGGERS_IN_USE', 'console').split()
-    LOG_FORMAT = "%(asctime)s::%(levelname)s::%(name)s::%(message)s"
+    LOG_FORMAT = "[DF_FORM_HANDLER] %(asctime)s::%(levelname)s::%(name)s::%(message)s"
     LOG_LEVEL = os.environ.get('LOG_LEVEL', 'DEBUG').upper()
     SYSTEM_RECORD_MAX_RETRIES = int(os.environ.get('SYSTEM_RECORD_MAX_RETRIES', 2))
     SYSTEM_RECORD_MAX_TRANSIENT_RETRIES = int(os.environ.get('SYSTEM_RECORD_MAX_TRANSIENT_RETRIES', 2))
 
     STORAGE_HOST = os.environ.get('STORAGE_HOST', 'localhost')
     STORAGE_PORT = os.environ.get('STORAGE_PORT', 9000)
-    STORAGE_ACCESS_KEY = os.environ.get('STORAGE_ACCESS_KEY', '4NahK2Km8xCBMaNPD9HN')
-    STORAGE_SECRET_KEY= os.environ.get('STORAGE_SECRET_KEY', 'CrMchOp3C3XXCfwnr49CjENrQXKXKukN8RE30itl')
+    STORAGE_ACCESS_KEY = os.environ.get('STORAGE_ACCESS_KEY', 'vEful9aJZRjNCP3dQwQ9')
+    STORAGE_SECRET_KEY= os.environ.get('STORAGE_SECRET_KEY', 'KWCldKNT4zbirer12GA290MJBjTNAXIZMEmNXkY8')
 
     RABBITMQ_URL                        = os.getenv('RABBITMQ_URL', 'localhost')
     RABBITMQ_USER                       = os.getenv('RABBITMQ_USER')
@@ -45,6 +46,9 @@ class Config():
     ICBC_API_ROOT = os.getenv('ICBC_API_ROOT', 'http://localhost:5003')
     ICBC_API_USERNAME = os.getenv('ICBC_API_USERNAME', 'user')
     ICBC_API_PASSWORD = os.getenv('ICBC_API_PASSWORD', 'password')
+    ICBC_API_SUBMIT_ROOT = os.getenv('ICBC_API_SUBMIT_ROOT', 'http://localhost:5003')
+    ICBC_API_SUBMIT_USERNAME = os.getenv('ICBC_API_SUBMIT_USERNAME', 'user')
+    ICBC_API_SUBMIT_PASSWORD = os.getenv('ICBC_API_SUBMIT_PASSWORD', 'password')
 
 
     VIPS_ROOT = os.getenv('VIPS_ROOT', 'http://localhost:5003')
@@ -59,10 +63,13 @@ class Config():
 
     RSIOPS_EMAIL_ADDRESS = os.getenv('RSIOPS_EMAIL_ADDRESS')
     REPLY_EMAIL_ADDRESS = os.getenv('REPLY_EMAIL_ADDRESS', 'do-not-reply-rsi@gov.bc.ca')
+    VIPS_BCC_EMAIL_ADDRESSES = os.getenv('VIPS_BCC_EMAIL_ADDRESSES', '')
     TMP_STORAGE_LOCAL=os.getenv('TMP_STORAGE_LOCAL')
 
     MINIO_SECURE                        = os.environ.get("MINIO_SECURE", False)
     MINIO_CERT_FILE                     = os.environ.get("MINIO_CERT_FILE", "/opt/app-root/src/ca.crt")
+
+    VIPS_DPS_EMAIL = os.getenv('VIPS_DPS_EMAIL', 'do-not-reply-rsi@gov.bc.ca')
 
 
 
@@ -73,7 +80,7 @@ class Config():
         'formatters': {
             'json': {
                 '()': 'pythonjsonlogger.jsonlogger.JsonFormatter',
-                'format': '%(asctime)s %(filename)s %(funcName)s %(levelname)s %(lineno)d %(module)s %(message)s %(pathname)s'
+                'format': '[DF_FORM_HANDLER] %(asctime)s %(filename)s %(funcName)s %(levelname)s %(lineno)d %(module)s %(message)s %(pathname)s'
             },
             'brief': {
                 'format': LOG_FORMAT
@@ -90,7 +97,11 @@ class Config():
             '': {
                 'handlers': LOGGERS_IN_USE,
                 'level': LOG_LEVEL
-            }
+            },
+        'pika': {
+            'handlers': LOGGERS_IN_USE,
+            'level': 'WARNING'
+        }
         }
     }
 
