@@ -15,7 +15,7 @@ export const getAllFormIDs = async () => {
       .toArray()
       .then((value) => {
         idDict[key] =
-          value.length >= 0 && value.length <= 5 ? 5 - value.length : 0;
+          value.length >= 0 && value.length <= 1 ? 1 - value.length : 0;
       });
   }
   return idDict;
