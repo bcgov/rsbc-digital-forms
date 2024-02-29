@@ -29,6 +29,7 @@ export const Dashboard = () => {
   const { isConnected } = useSharedIsOnline();
   const navigate = useNavigate();
   const [formsData, setFormsData] = useState([]);
+  const [incompleteFormsData, setIncompleteFormsData] = useState([]);
   const [completedTableRows, setCompletedTableRows] = useState([]);
   const [staticDataLoaded, setStaticDataLoaded] = useState(false);
   const [userResource, setUserResource] = useRecoilState(userAtom);
@@ -234,6 +235,8 @@ export const Dashboard = () => {
         const data = await db.event.toArray();
         setFormsData(data);
       }
+      const incompleteForms = await db.incompleteEvent.toArray();
+      setIncompleteFormsData(incompleteForms);
     };
     if (staticDataLoaded) {
       fetchEventData();
@@ -304,6 +307,8 @@ export const Dashboard = () => {
     navigate("/createEvent");
   };
 
+  //TODO: add in pull for incomplete events.
+
   return (
     <>
       <div className="border-design text-font">
@@ -325,7 +330,7 @@ export const Dashboard = () => {
         <Table>
           <thead>
             <tr>
-              <th>Date & Time</th>
+              {/* <th>Date & Time</th> */}
               <th>Surname</th>
               <th>Form Type</th>
               <th>Form #</th>
@@ -334,35 +339,47 @@ export const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {formsData &&
-              sortTableRows(formsData).map((data, index) => {
-                return !data["submitted"] ? (
-                  <tr key={data["vehicle_vin_no"]}>
-                    <td>
-                      {data["created_dt"]
-                        ? convertToPSTFormat(data["created_dt"])
-                        : "N/A"}
-                    </td>
-                    <td>
+            {incompleteFormsData.map((data, index) => {
+              return (
+                <tr key={data["vehicle_vin_no"]}>
+                  {/* <td>
+                    {data["created_dt"]
+                      ? convertToPSTFormat(data["created_dt"])
+                      : "N/A"}
+                  </td> */}
+                  <td>
+                    <Link
+                      to="/createEvent"
+                      state={{ incEventId: data["inc_event_id"] }}
+                    >
                       {data["driver_last_name"]
                         ? data["driver_last_name"]
                         : "N/A"}
-                    </td>
-                    <td>{formTypes(data)}</td>
-                    <td>{formNumbers(data)}\ </td>
-                    <td>
-                      {data["vehicle_plate_no"]
-                        ? data["vehicle_plate_no"]
-                        : "N/A"}
-                    </td>
-                    <td>
-                      {data["intersection_or_address_of_offence"]
-                        ? data["intersection_or_address_of_offence"]
-                        : "N/A"}
-                    </td>
-                  </tr>
-                ) : null;
-              })}
+                    </Link>
+                  </td>
+                  <td>{formTypes(data)}</td>
+
+                  <td>
+                    <Link
+                      to="/createEvent"
+                      state={{ incEventId: data["inc_event_id"] }}
+                    >
+                      {formNumbers(data)}
+                    </Link>
+                  </td>
+                  <td>
+                    {data["vehicle_plate_no"]
+                      ? data["vehicle_plate_no"]
+                      : "N/A"}
+                  </td>
+                  <td>
+                    {data["intersection_or_address_of_offence"]
+                      ? data["intersection_or_address_of_offence"]
+                      : "N/A"}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </Table>
       </div>
