@@ -356,6 +356,16 @@ export const validationSchema = Yup.object().shape(
                 new Date(),
                 "Date of impound is required"
               )
+            )
+            .test(
+              "date_of_impound",
+              "Date of Impound cannot be before date of driving",
+              function (value) {
+                if (value && this.parent.date_of_driving) {
+                  return moment(value) >= moment(this.parent.date_of_driving);
+                }
+                return true;
+              }
             ),
       }), // Only for VI, required if VI is selected
 
