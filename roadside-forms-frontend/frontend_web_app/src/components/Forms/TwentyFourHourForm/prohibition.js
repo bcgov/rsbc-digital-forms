@@ -27,7 +27,7 @@ export const Prohibition = (props) => {
         <Row>
           <Col>
             <Radio
-              label="Type of Prohibition (select one)"
+              label="Type of Prohibition"
               name="type_of_prohibition"
               options={[
                 { label: "Alcohol 215(2)", value: "alcohol" },
@@ -42,7 +42,7 @@ export const Prohibition = (props) => {
         <Row>
           <Col>
             <Radio
-              label="Type of Prohibition (select one)"
+              label="Type of Prohibition"
               name="type_of_prohibition"
               options={[
                 { label: "Alcohol 90.3(2)", value: "alcohol" },
