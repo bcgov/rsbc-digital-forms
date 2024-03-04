@@ -41,7 +41,7 @@ def get_icbc_driver(**kwargs) -> tuple:
 def get_icbc_vehicle(**kwargs) -> tuple:
     url = "{}/vehicles".format(Config.ICBC_API_ROOT)
     url_parameters = {
-        "plateNumber": kwargs.get('plate_number'),
+        "registrationNumber": kwargs.get('registraion_number'),
         # TODO - removed effectiveDate for debugging purposes
         # "effectiveDate": datetime.now().astimezone().replace(microsecond=0).isoformat()
     }
