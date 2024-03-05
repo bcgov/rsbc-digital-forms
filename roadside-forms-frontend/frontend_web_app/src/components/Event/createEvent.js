@@ -900,6 +900,9 @@ export const CreateEvent = () => {
     return formNames;
   };
 
+  if (!incompleteEvent && state) {
+    return <div>Loading...</div>;
+  }
   return (
     <div id="event-container" className="text-font">
       <ToastContainer />
