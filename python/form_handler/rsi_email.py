@@ -64,6 +64,30 @@ def rsiops_event_to_retry_queue(**args) -> tuple:
         return False, args
     return False, args
 
+def event_to_vips_dps(**args) -> tuple:
+    # message = args.get('message')
+    # config = args.get('config')
+    logging.debug("inside event_to_vips_dps()")
+    config = args.get('config')
+    # event_type = args.get('event_type')
+    storage_key = args.get('storage_key')
+    eventid = args.get('message').get('event_id')
+    # put_to_queue_name=args.get('put_to_queue_name',None)
+    title = 'VIPS email'
+    body_text = f"Sent to vips "
+    file_data=args.get('file_data',None)
+    try:
+        email_sent,respargs=send_email_to_vips(config=config, title=title, body=body_text, eventid=eventid,file_data=file_data)
+        if email_sent:
+            logging.debug("email sent to vips")
+        else:
+            logging.debug("email not sent to vips")
+            raise Exception("email not sent to vips")
+    except Exception as e:
+        logging.error(e)
+        return False, args
+    return True, args
+
 
 
 
@@ -84,6 +108,31 @@ def send_email_to_rsiops(**args):
                 "contentType": "string",
                 # "encoding": "base64",
                 "filename": "event.json"
+            }]), args
+
+
+def send_email_to_vips(**args):
+    subject = args.get('title')
+    config = args.get('config')
+    # message = args.get('message')
+    eventid = args.get('eventid')
+    body = args.get('body')
+    template = get_jinja2_env().get_template('vips_dps_email.html')
+    vips_email=config.VIPS_DPS_EMAIL.split(',')
+    # vips_email = config.VIPS_DPS_EMAIL
+    file_data=args.get('file_data',None)
+    # logging.debug("file_data: {}".format(file_data))
+    # config['BCC_EMAIL_ADDRESSES']=config['VIPS_BCC_EMAIL_ADDRESSES'].split(',')
+    config.BCC_EMAIL_ADDRESSES=config.VIPS_BCC_EMAIL_ADDRESSES
+    return common_email_services.send_email(
+        vips_email,
+        subject,
+        config,
+        template.render(subject=subject, body=body, message=json.dumps("")), eventid,[{
+                "content": file_data,
+                "contentType": "string",
+                "encoding": "base64",
+                "filename": f"{eventid}.pdf"
             }]), args
 
 def get_jinja2_env(path="./python/form_handler/templates"):

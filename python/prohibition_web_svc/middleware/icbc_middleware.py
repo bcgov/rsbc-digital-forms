@@ -23,8 +23,16 @@ def get_icbc_api_authorization_header(**kwargs) -> tuple:
 def get_icbc_driver(**kwargs) -> tuple:
     url = "{}/drivers/{}".format(Config.ICBC_API_ROOT, kwargs.get('dl_number'))
     try:
+        # logging.debug("icbc url:" + url)
+        # logging.debug("icbc header:" + str(kwargs.get('icbc_header')))
         icbc_response = requests.get(url, headers=kwargs.get('icbc_header'))
-        kwargs['response'] = make_response(icbc_response.json(), icbc_response.status_code)
+        logging.debug(icbc_response.status_code)
+        # logging.debug(icbc_response.json())
+        # logging.debug(icbc_response.reason)
+        if icbc_response.status_code == 400:
+            kwargs['response'] = make_response({}, 200)
+        else:
+            kwargs['response'] = make_response(icbc_response.json(), icbc_response.status_code)
     except Exception as e:
         return False, kwargs
     return True, kwargs
@@ -33,13 +41,16 @@ def get_icbc_driver(**kwargs) -> tuple:
 def get_icbc_vehicle(**kwargs) -> tuple:
     url = "{}/vehicles".format(Config.ICBC_API_ROOT)
     url_parameters = {
-        "plateNumber": kwargs.get('plate_number'),
+        "registrationNumber": kwargs.get('registraion_number'),
         # TODO - removed effectiveDate for debugging purposes
         # "effectiveDate": datetime.now().astimezone().replace(microsecond=0).isoformat()
     }
     try:
         icbc_response = requests.get(url, headers=kwargs.get('icbc_header'), params=url_parameters)
         logging.warning("icbc url:" + icbc_response.url)
+        logging.debug("---------------------------Made it here---------------------------")
+        logging.debug(icbc_response.json())
+        logging.debug("------------------------------------------------------------------")
         kwargs['response'] = make_response(icbc_response.json(), icbc_response.status_code)
     except Exception as e:
         return False, kwargs
