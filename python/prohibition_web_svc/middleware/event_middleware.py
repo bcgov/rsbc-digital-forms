@@ -16,6 +16,7 @@ from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_method1
 import img2pdf
 import uuid
+from split_image import split_image
 
 
 def validate_update(**kwargs) -> tuple:
@@ -267,9 +268,17 @@ def save_event_pdf(**kwargs) -> tuple:
             pdf_filename = f"/tmp/{filename}.pdf"
             encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
             b64encoded = data.get("VI_form_png").split(",")[1]
+            extra_page_flag=data.get('incident_details_extra_page',False)
+            page_num=3 if extra_page_flag else 2
             with open(f"/tmp/{filename}.png", "wb") as fh:
                 fh.write(b64decode(b64encoded))
-            pdf_bytes = img2pdf.convert(f"/tmp/{filename}.png")
+            split_image(f"/tmp/{filename}.png", page_num, 1, False, True,output_dir="/tmp")
+            # pdf_bytes = img2pdf.convert(f"/tmp/{filename}.png")
+            pdf_bytes=None
+            if extra_page_flag:
+                pdf_bytes = img2pdf.convert(f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png", f"/tmp/{filename}_2.png")
+            else:
+                pdf_bytes = img2pdf.convert(f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png")
             with open(pdf_filename, "wb") as file:
                 file.write(pdf_bytes)
             encryptPdf_method1(
