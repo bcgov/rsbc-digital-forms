@@ -115,26 +115,6 @@ export const VehicleInfo = (props) => {
       <h3>Vehicle Information</h3>
       <div>
         <Row style={{ minHeight: "85px" }}>
-          <Col sm={5}>
-            <Input
-              className="field-height field-width"
-              label="Plate Number"
-              name="vehicle_plate_no"
-              type="text"
-            />
-          </Col>
-          <Col sm={5}>
-            <SearchableSelect
-              className="field-height field-width"
-              label="Province / State / International"
-              name="vehicle_jurisdiction"
-              onChange={handleJurisdictionChange}
-              options={vehicleJurisdictionOptions}
-            />
-          </Col>
-        </Row>
-
-        <Row style={{ minHeight: "85px" }}>
           {(values["TwentyFourHour"] || values["VI"]) && (
             <>
               <Col sm={5}>
@@ -157,6 +137,25 @@ export const VehicleInfo = (props) => {
               </Col>
             </>
           )}
+          <Col sm={5}>
+            <SearchableSelect
+              className="field-height field-width"
+              label="Province / State / International"
+              name="vehicle_jurisdiction"
+              onChange={handleJurisdictionChange}
+              options={vehicleJurisdictionOptions}
+            />
+          </Col>
+        </Row>
+        <Row style={{ minHeight: "85px" }}>
+          <Col sm={5}>
+            <Input
+              className="field-height field-width"
+              label="Plate Number"
+              name="vehicle_plate_no"
+              type="text"
+            />
+          </Col>
           <Col sm={5}>
             <SearchableSelect
               className="field-height field-width"
