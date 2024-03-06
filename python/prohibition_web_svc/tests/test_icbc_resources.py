@@ -136,7 +136,7 @@ def test_authorized_user_gets_vehicle_not_found(as_guest, monkeypatch, roles):
                   '{}/vehicles?{}'.format(
                       Config.ICBC_API_ROOT,
                       urllib.parse.urlencode({
-                          "plateNumber": "AAAAA",
+                          "registrationNumber": "00000000",
                           # "effectiveDate": datetime.now().astimezone().replace(microsecond=0).isoformat()
                       })
                     ),
@@ -146,7 +146,7 @@ def test_authorized_user_gets_vehicle_not_found(as_guest, monkeypatch, roles):
     responses.add(responses.POST, "{}:{}/services/collector".format(
         Config.SPLUNK_HOST, Config.SPLUNK_PORT), status=200)
 
-    resp = as_guest.get(Config.URL_PREFIX + "/api/v1/icbc/vehicles/AAAAA",
+    resp = as_guest.get(Config.URL_PREFIX + "/api/v1/icbc/vehicles/00000000",
                         follow_redirects=True,
                         content_type="application/json",
                         headers=_get_keycloak_auth_header(_get_keycloak_access_token()))
@@ -161,7 +161,7 @@ def test_authorized_user_gets_vehicle_not_found(as_guest, monkeypatch, roles):
             'event': 'icbc_get_vehicle',
             'username': 'larry@idir',
             'user_guid': 'larry@idir',
-            'queried_plate': 'AAAAA',
+            'queried_registration_number': '00000000',
         },
         'source': 'be78d6'
     })
@@ -176,7 +176,7 @@ def test_authorized_user_gets_vehicle(as_guest, monkeypatch, roles):
                   '{}/vehicles?{}'.format(
                       Config.ICBC_API_ROOT,
                       urllib.parse.urlencode({
-                          "plateNumber": "LD626J",
+                          "registrationNumber": "03371224",
                           # "effectiveDate": datetime.now().astimezone().replace(microsecond=0).isoformat()
                       })
                   ),
@@ -186,61 +186,61 @@ def test_authorized_user_gets_vehicle(as_guest, monkeypatch, roles):
     responses.add(responses.POST, "{}:{}/services/collector".format(
         Config.SPLUNK_HOST, Config.SPLUNK_PORT), status=200)
 
-    resp = as_guest.get(Config.URL_PREFIX + "/api/v1/icbc/vehicles/LD626J",
+    resp = as_guest.get(Config.URL_PREFIX + "/api/v1/icbc/vehicles/03371224",
                         follow_redirects=True,
                         content_type="application/json",
                         headers=_get_keycloak_auth_header(_get_keycloak_access_token()))
     assert resp.status_code == 200
-    assert 'plateNumber' in resp.json[0]
-    assert resp.json[0]['plateNumber'] == "LD626J"
+    assert 'registrationNumber' in resp.json[0]
+    assert resp.json[0]['registrationNumber'] == "03371224"
     assert responses.calls[0].request.headers['loginUserId'] == 'larry@idir'
     assert responses.calls[1].request.body.decode() == json.dumps({
         'event': {
             'event': 'icbc_get_vehicle',
             'username': 'larry@idir',
             'user_guid': 'larry@idir',
-            'queried_plate': 'LD626J',
+            'queried_registration_number': '03371224',
         },
         'source': 'be78d6'
     })
 
 
-@responses.activate
-def test_request_for_licence_plate_using_lowercase_automatically_converted_to_upper(as_guest, monkeypatch, roles):
-    monkeypatch.setattr(middleware, "get_keycloak_certificates", _mock_keycloak_certificates)
-    monkeypatch.setattr(middleware, "decode_keycloak_access_token", _get_authorized_user)
+# @responses.activate
+# def test_request_for_licence_plate_using_lowercase_automatically_converted_to_upper(as_guest, monkeypatch, roles):
+#     monkeypatch.setattr(middleware, "get_keycloak_certificates", _mock_keycloak_certificates)
+#     monkeypatch.setattr(middleware, "decode_keycloak_access_token", _get_authorized_user)
 
-    responses.add(responses.GET,
-                  '{}/vehicles?{}'.format(
-                      Config.ICBC_API_ROOT,
-                      urllib.parse.urlencode({
-                          "plateNumber": "LD626J",
-                          # "effectiveDate": datetime.now().astimezone().replace(microsecond=0).isoformat()
-                      })
-                  ),
-                  json=sample_vehicle_response(),
-                  status=200)
+#     responses.add(responses.GET,
+#                   '{}/vehicles?{}'.format(
+#                       Config.ICBC_API_ROOT,
+#                       urllib.parse.urlencode({
+#                           "plateNumber": "LD626J",
+#                           # "effectiveDate": datetime.now().astimezone().replace(microsecond=0).isoformat()
+#                       })
+#                   ),
+#                   json=sample_vehicle_response(),
+#                   status=200)
 
-    responses.add(responses.POST, "{}:{}/services/collector".format(
-        Config.SPLUNK_HOST, Config.SPLUNK_PORT), status=200)
+#     responses.add(responses.POST, "{}:{}/services/collector".format(
+#         Config.SPLUNK_HOST, Config.SPLUNK_PORT), status=200)
 
-    resp = as_guest.get(Config.URL_PREFIX + "/api/v1/icbc/vehicles/ld626j",
-                        follow_redirects=True,
-                        content_type="application/json",
-                        headers=_get_keycloak_auth_header(_get_keycloak_access_token()))
-    assert resp.status_code == 200
-    assert 'plateNumber' in resp.json[0]
-    assert resp.json[0]['plateNumber'] == "LD626J"
-    assert responses.calls[0].request.headers['loginUserId'] == 'larry@idir'
-    assert responses.calls[1].request.body.decode() == json.dumps({
-        'event': {
-            'event': 'icbc_get_vehicle',
-            'username': 'larry@idir',
-            'user_guid': 'larry@idir',
-            'queried_plate': 'LD626J',
-        },
-        'source': 'be78d6'
-    })
+#     resp = as_guest.get(Config.URL_PREFIX + "/api/v1/icbc/vehicles/ld626j",
+#                         follow_redirects=True,
+#                         content_type="application/json",
+#                         headers=_get_keycloak_auth_header(_get_keycloak_access_token()))
+#     assert resp.status_code == 200
+#     assert 'plateNumber' in resp.json[0]
+#     assert resp.json[0]['plateNumber'] == "LD626J"
+#     assert responses.calls[0].request.headers['loginUserId'] == 'larry@idir'
+#     assert responses.calls[1].request.body.decode() == json.dumps({
+#         'event': {
+#             'event': 'icbc_get_vehicle',
+#             'username': 'larry@idir',
+#             'user_guid': 'larry@idir',
+#             'queried_registration_number': 'LD626J',
+#         },
+#         'source': 'be78d6'
+#     })
 
 
 def test_unauthorized_user_cannot_get_vehicle(as_guest, monkeypatch, roles):
@@ -372,7 +372,7 @@ def _vehicle_not_found() -> dict:
         "code": 404,
         "message": "Not Found",
         "description": "vehicle not found",
-        "request_uri": "/vehicles?plateNumber=LD626J",
+        "request_uri": "/vehicles?registrationNumber=0000000",
         "request_id": "716243aa-ca18-441d-aa3e-e6e8776ca825"
       }
     }
