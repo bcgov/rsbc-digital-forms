@@ -72,6 +72,6 @@ def splunk_get_vehicle(**kwargs) -> tuple:
         "event": "icbc_get_vehicle",
         "username": kwargs.get('username'),
         "user_guid": kwargs.get('user_guid'),
-        "queried_plate": kwargs.get('plate_number')
+        "queried_registration_number": kwargs.get('registration_number')
     }
     return True, kwargs
