@@ -2,13 +2,13 @@ import { api } from "./config/axiosConfig";
 import { createRequestHeader } from "../utils/requestHeaders";
 
 export const ICBCVehicleDataApi = {
-  get: async function (registrationNumber) {
+  get: async function (licencePlate) {
     const headers = {
       ...createRequestHeader(),
     };
     return await api
       .request({
-        url: `/api/v1/icbc/vehicles/${registrationNumber}`,
+        url: `/api/v1/icbc/vehicles/${licencePlate}`,
         method: "GET",
         headers: { ...headers },
       })
