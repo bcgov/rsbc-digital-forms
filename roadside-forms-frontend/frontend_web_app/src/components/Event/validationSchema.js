@@ -362,7 +362,10 @@ export const validationSchema = Yup.object().shape(
               "Date of Impound cannot be before date of driving",
               function (value) {
                 if (value && this.parent.date_of_driving) {
-                  return moment(value) >= moment(this.parent.date_of_driving);
+                  return (
+                    moment(value).startOf("day") >=
+                    moment(this.parent.date_of_driving).startOf("day")
+                  );
                 }
                 return true;
               }
