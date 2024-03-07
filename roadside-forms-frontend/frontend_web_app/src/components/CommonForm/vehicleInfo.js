@@ -45,58 +45,52 @@ export const VehicleInfo = (props) => {
   }, [driversLicenceJurisdiction]);
 
   const fetchICBCVehicleInfo = async () => {
-    if (values["vehicle_registration_no"]) {
-      await ICBCVehicleDataApi.get(values["vehicle_registration_no"]).then(
-        (resp) => {
-          //ICBC sends back different responses based on sucess and fail and only real way to check is if it is an array
-          if (resp.status === "success") {
-            console.log("resp: ", resp);
-            const vehicle = resp.data[0];
-            const party = vehicle.vehicleParties[0].party;
-            const address = party.addresses[0];
-            setFieldValue("nsc_no", vehicle.nscNumber);
-            setFieldValue("vehicle_plate_no", vehicle.plateNumber);
-            const colour = vehicleColours.filter(
-              (item) => item.label === vehicle.vehicleColour.toUpperCase()
-            )[0].value;
-            setFieldValue("vehicle_colour", [colour]);
-            setFieldValue("vehicle_mk_md", vehicle.vehicleMake + " - ");
-            setFieldValue("vehicle_vin_no", vehicle.vehicleIdNumber);
-            setFieldValue(
-              "vehicle_year",
-              years.filter((item) => item.label === vehicle.vehicleModelYear)[0]
-            );
-            setFieldValue(
-              "vehicle_type",
-              vehicleTypes.filter(
-                (item) => item.label === vehicle.vehicleType.toUpperCase()
-              )[0]
-            );
-            setFieldValue("vehicle_jurisdiction", {
-              value: "CA_BC",
-              label: "BRITISH COLUMBIA",
-            });
-            setFieldValue("regist_owner_last_name", party.lastName);
-            setFieldValue("regist_owner_first_name", party.firstName);
-            setFieldValue("regist_owner_dob", new Date(party.birthDate));
-            setFieldValue("regist_owner_address", address.addressLine1);
-            setFieldValue("regist_owner_city", address.city);
-            setFieldValue("regist_owner_postal", address.postalCode);
-            setFieldValue("regist_owner_prov_state", {
-              value: "CA_BC",
-              label: "BRITISH COLUMBIA",
-            });
-            return;
-          } else {
-            toast.error(
-              "No vehicle was found using this registration number.",
-              {
-                position: toast.POSITION.TOP_RIGHT,
-              }
-            );
-          }
+    if (values["vehicle_plate_no"]) {
+      await ICBCVehicleDataApi.get(values["vehicle_plate_no"]).then((resp) => {
+        //ICBC sends back different responses based on sucess and fail and only real way to check is if it is an array
+        if (resp.status === "success") {
+          const vehicle = resp.data[0];
+          const party = vehicle.vehicleParties[0].party;
+          const address = party.addresses[0];
+          setFieldValue("nsc_no", vehicle.nscNumber);
+          setFieldValue("vehicle_registration_no", vehicle.registrationNumber);
+          const colour = vehicleColours.filter(
+            (item) => item.label === vehicle.vehicleColour.toUpperCase()
+          )[0].value;
+          setFieldValue("vehicle_colour", [colour]);
+          setFieldValue("vehicle_mk_md", vehicle.vehicleMake + " - ");
+          setFieldValue("vehicle_vin_no", vehicle.vehicleIdNumber);
+          setFieldValue(
+            "vehicle_year",
+            years.filter((item) => item.label === vehicle.vehicleModelYear)[0]
+          );
+          setFieldValue(
+            "vehicle_type",
+            vehicleTypes.filter(
+              (item) => item.label === vehicle.vehicleType.toUpperCase()
+            )[0]
+          );
+          setFieldValue("vehicle_jurisdiction", {
+            value: "CA_BC",
+            label: "BRITISH COLUMBIA",
+          });
+          setFieldValue("regist_owner_last_name", party.lastName);
+          setFieldValue("regist_owner_first_name", party.firstName);
+          setFieldValue("regist_owner_dob", new Date(party.birthDate));
+          setFieldValue("regist_owner_address", address.addressLine1);
+          setFieldValue("regist_owner_city", address.city);
+          setFieldValue("regist_owner_postal", address.postalCode);
+          setFieldValue("regist_owner_prov_state", {
+            value: "CA_BC",
+            label: "BRITISH COLUMBIA",
+          });
+          return;
+        } else {
+          toast.error("No vehicle was found using this plate number.", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         }
-      );
+      });
     }
   };
 
@@ -115,28 +109,24 @@ export const VehicleInfo = (props) => {
       <h3>Vehicle Information</h3>
       <div>
         <Row style={{ minHeight: "85px" }}>
-          {(values["TwentyFourHour"] || values["VI"]) && (
-            <>
-              <Col sm={5}>
-                <Input
-                  label="Registration Number"
-                  name="vehicle_registration_no"
-                  className="field-height field-width"
-                  type="text"
-                />
-              </Col>
-              <Col sm={1} className="mt-4">
-                <Button
-                  className="slim-button"
-                  variant="primary"
-                  disabled={disableBtn}
-                  onClick={() => fetchICBCVehicleInfo()}
-                >
-                  ICBC Prefill
-                </Button>
-              </Col>
-            </>
-          )}
+          <Col sm={5}>
+            <Input
+              className="field-height field-width"
+              label="Plate Number"
+              name="vehicle_plate_no"
+              type="text"
+            />
+          </Col>
+          <Col sm={1} className="mt-4">
+            <Button
+              className="slim-button"
+              variant="primary"
+              disabled={disableBtn}
+              onClick={() => fetchICBCVehicleInfo()}
+            >
+              ICBC Prefill
+            </Button>
+          </Col>
           <Col sm={5}>
             <SearchableSelect
               className="field-height field-width"
@@ -147,15 +137,18 @@ export const VehicleInfo = (props) => {
             />
           </Col>
         </Row>
+
         <Row style={{ minHeight: "85px" }}>
-          <Col sm={5}>
-            <Input
-              className="field-height field-width"
-              label="Plate Number"
-              name="vehicle_plate_no"
-              type="text"
-            />
-          </Col>
+          {(values["TwentyFourHour"] || values["VI"]) && (
+            <Col sm={5}>
+              <Input
+                label="Registration Number"
+                name="vehicle_registration_no"
+                className="field-height field-width"
+                type="text"
+              />
+            </Col>
+          )}
           <Col sm={5}>
             <SearchableSelect
               className="field-height field-width"
