@@ -36,8 +36,8 @@ def get_driver(dl_number):
         return kwargs.get('response')
 
 
-@bp.route('/icbc/vehicles/<string:plate_number>', methods=['GET'])
-def get_vehicle(plate_number):
+@bp.route('/icbc/vehicles/<string:registration_number>', methods=['GET'])
+def get_vehicle(registration_number):
     if request.method == 'GET':
         kwargs = middle_logic(
             get_authorized_keycloak_user() + [
@@ -51,7 +51,7 @@ def get_vehicle(plate_number):
                 {"try": splunk.log_to_splunk, "fail": []}
             ],
             required_permission='vehicle-get',
-            plate_number=plate_number.upper(),
+            registration_number=registration_number,
             request=request,
             config=Config)
         return kwargs.get('response')

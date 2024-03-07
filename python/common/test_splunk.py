@@ -67,11 +67,11 @@ def test_splunk_logs_icbc_get_driver_event():
 @responses.activate
 def test_splunk_logs_icbc_get_vehicle_event():
     username = 'someuser@bceid'
-    plate_number = 'RXC234'
+    registration_number = '10006241'
     expected_payload = {
         'event': 'icbc_get_vehicle',
         'source': 'be78d6',
-        'queried_plate': plate_number
+        'queried_registration_number': registration_number
     }
 
     responses.add(responses.GET,
@@ -82,7 +82,7 @@ def test_splunk_logs_icbc_get_vehicle_event():
 
     is_okay, args = splunk_get_vehicle(splunk_data=expected_payload,
                                        config=Config,
-                                       plate_number=plate_number,
+                                       registration_number=registration_number,
                                        username=username,
                                        user_guid='')
     log_to_splunk(**args)
@@ -93,5 +93,5 @@ def test_splunk_logs_icbc_get_vehicle_event():
         "event": 'icbc_get_vehicle',
         "user_guid": '',
         "username": "someuser@bceid",
-        'queried_plate': plate_number
+        'queried_registration_number': registration_number
     }, "source": "be78d6"}
