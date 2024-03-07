@@ -51,7 +51,7 @@ def get_vehicle(registration_number):
                 {"try": splunk.log_to_splunk, "fail": []}
             ],
             required_permission='vehicle-get',
-            registration_number=registration_number.upper(),
+            registration_number=registration_number,
             request=request,
             config=Config)
         return kwargs.get('response')
