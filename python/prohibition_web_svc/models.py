@@ -294,8 +294,6 @@ class VehicleType(db.Model):
 
     type_cd = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String)
-
-
 @dataclass
 class Vehicle(db.Model):
     __tablename__ = 'vehicle'
@@ -309,7 +307,32 @@ class Vehicle(db.Model):
     mk = db.Column(db.String)
     search = db.Column(db.String)
     md = db.Column(db.String)
+    
+@dataclass
+class VehicleMake(db.Model):
+    __tablename__ = 'vehicle_make'
+    
+    make_cd: str
+    make_dsc: str
+    
+    make_cd = db.Column(db.String, primary_key=True, unique=True)
+    make_dsc = db.Column(db.String)
+    
+@dataclass
+class VehicleModel(db.Model):
+    __tablename__ = 'vehicle_model'
+    
+    model_cd: str
+    model_dsc: str
+    make_cd: str
+    
+    model_cd = db.Column(db.String, nullable=False)
+    model_dsc = db.Column(db.String)
+    make_cd = db.Column(db.String, db.ForeignKey('vehicle_make.make_cd'), nullable=False)
 
+    __table_args__ = (
+        db.PrimaryKeyConstraint('make_cd', 'model_cd'),
+    )
 
 @dataclass
 class VehicleColour(db.Model):
