@@ -13,6 +13,8 @@ import appealsForm from "../assets/MV2721_201502_appeal.png";
 import viReportForm from "../assets/MV2722_201502.png";
 import twelveHourDriverForm from "../assets/MV2906E_082023_driver.png";
 import twelveHourICBCForm from "../assets/MV2906E_082023_icbc.png";
+import { db } from "../db";
+import { FormIDApi } from "../api/formIDApi";
 
 const eventValueKeys = [
   "event_id",
@@ -683,4 +685,37 @@ export const formNumberChecksum = (formNumber) => {
   const digit = (calc3 + calc4 + calc5 + calc6 + calc7 + calc8) % 10;
 
   return +("" + formNumber + digit);
+};
+
+export const deleteIncompleteEvent = async (incEventID) => {
+  try {
+    db.incompleteEvent.where("inc_event_id").equals(incEventID).delete();
+  } catch (error) {
+    console.log(error);
+  }
+  return;
+};
+
+export const spoilForm = async (incEventID) => {
+  await db.incompleteEvent
+    .where("inc_event_id")
+    .equals(incEventID)
+    .first()
+    .then((value) => {
+      const idsToDelete = {};
+      const forms = {
+        TwentyFourHour: "twenty_four_hour_number",
+        TwelveHour: "twelve_hour_number",
+        VI: "VI_number",
+      };
+      for (const form in forms) {
+        if (value[forms[form]]) {
+          idsToDelete[forms[form]] = value[forms[form]];
+        }
+      }
+      FormIDApi.patch({
+        forms: { ...idsToDelete },
+        spoiled_timestamp: new Date(),
+      }).then(() => deleteIncompleteEvent(incEventID));
+    });
 };
