@@ -41,7 +41,7 @@ def get_icbc_driver(**kwargs) -> tuple:
 def get_icbc_vehicle(**kwargs) -> tuple:
     url = "{}/vehicles".format(Config.ICBC_API_ROOT)
     url_parameters = {
-        "registrationNumber": kwargs.get('registraion_number'),
+        "plateNumber": kwargs.get('plate_number'),
         # TODO - removed effectiveDate for debugging purposes
         # "effectiveDate": datetime.now().astimezone().replace(microsecond=0).isoformat()
     }
@@ -72,6 +72,6 @@ def splunk_get_vehicle(**kwargs) -> tuple:
         "event": "icbc_get_vehicle",
         "username": kwargs.get('username'),
         "user_guid": kwargs.get('user_guid'),
-        "queried_registration_number": kwargs.get('registration_number')
+        "queried_plate": kwargs.get('plate_number')
     }
     return True, kwargs
