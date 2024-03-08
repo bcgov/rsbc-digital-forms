@@ -350,7 +350,9 @@ export const Dashboard = () => {
                   <td>
                     <Link
                       to="/createEvent"
-                      state={{ incEventId: data["inc_event_id"] }}
+                      state={{
+                        incEventId: data["inc_event_id"],
+                      }}
                     >
                       {data["driver_last_name"]
                         ? data["driver_last_name"]
@@ -362,7 +364,9 @@ export const Dashboard = () => {
                   <td>
                     <Link
                       to="/createEvent"
-                      state={{ incEventId: data["inc_event_id"] }}
+                      state={{
+                        incEventId: data["inc_event_id"],
+                      }}
                     >
                       {formNumbers(data)}
                     </Link>

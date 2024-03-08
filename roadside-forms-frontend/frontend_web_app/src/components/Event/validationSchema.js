@@ -626,24 +626,27 @@ export const validationSchema = Yup.object().shape(
     }),
     date_of_driving: Yup.date()
       .nullable()
-      .when(["TwentyFourHour", "TwelveHour", "VI"], {
-        is: (TwentyFourHour, TwelveHour, VI) =>
-          TwentyFourHour || TwelveHour || VI,
-        then: () =>
-          Yup.date()
-            .max(new Date(), "Date of driving cannot be a future date")
-            .nullable()
-            .test(
-              "prohibition",
-              "Date of driving is required",
-              validateRequiredDateWithMax(
-                Yup.ref("TwentyFourHour"),
-                "date_of_driving",
-                new Date(),
-                "Date of driving is required"
-              )
-            ),
-      }), // Required, must be today or yesterday
+      .when(
+        ["TwentyFourHour", "TwelveHour", "VI", "form_printed_successfully"],
+        {
+          is: (TwentyFourHour, TwelveHour, VI, form_printed_successfully) =>
+            (TwentyFourHour || TwelveHour || VI) && !form_printed_successfully,
+          then: () =>
+            Yup.date()
+              .max(new Date(), "Date of driving cannot be a future date")
+              .nullable()
+              .test(
+                "prohibition",
+                "Date of driving is required",
+                validateRequiredDateWithMax(
+                  Yup.ref("TwentyFourHour"),
+                  "date_of_driving",
+                  new Date(),
+                  "Date of driving is required"
+                )
+              ),
+        }
+      ), // Required, must be today or yesterday
     time_of_driving: Yup.string().when(["TwentyFourHour", "TwelveHour", "VI"], {
       is: (TwentyFourHour, TwelveHour, VI) =>
         TwentyFourHour || TwelveHour || VI,
@@ -1224,15 +1227,19 @@ export const validationSchema = Yup.object().shape(
     }), // Only for 12h
 
     /** eCOS (12h and 24h only) */
-    document_served: Yup.string().when("form_printed_successfully", {
-      is: true,
-      then: () => Yup.string().required("Document served is required"),
-    }),
-    confirmation_of_service: Yup.boolean().when(
-      ["form_printed_successfully", "document_served"],
+    document_served: Yup.string().when(
+      ["form_printed_successfully", "TwentyFourHour", "TwelveHour"],
       {
-        is: (form_printed_successfully, document_served) =>
-          form_printed_successfully && document_served === "YES",
+        is: (TwelveHour, TwentyFourHour, form_printed_successfully) =>
+          (TwelveHour || TwentyFourHour) && form_printed_successfully,
+        then: () => Yup.string().required("Document served is required"),
+      }
+    ),
+    confirmation_of_service: Yup.boolean().when(
+      ["form_printed_successfully", "document_served", "VI"],
+      {
+        is: (form_printed_successfully, document_served, VI) =>
+          form_printed_successfully && !VI && document_served === "YES",
         then: () =>
           Yup.boolean().oneOf([true], "Confirmation of service is required"),
       }
