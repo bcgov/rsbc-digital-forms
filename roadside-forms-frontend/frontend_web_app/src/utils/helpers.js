@@ -410,12 +410,16 @@ export const printFormatHelper = (values, data, key, impoundLotOperators) => {
   if (key === "REPORT_INCIDENT_DETAILS") {
     if (values["incident_details"] && values["incident_details"].length > 500) {
       val = values["incident_details"].substring(0, 500);
+      values["extra_page_flag"] = true;
+      console.log("extra page flag", values["extra_page_flag"]);
     }
   }
 
   if (key === "DETAILS_INCIDENT_DETAILS") {
     if (values["incident_details"] && values["incident_details"].length > 500) {
       val = values["incident_details"].substring(500);
+      values["extra_page_flag"] = true;
+      console.log("extra page flag", values["extra_page_flag"]);
     }
   }
 
