@@ -57,6 +57,11 @@ $font_path: ("../../../assets");
 
   #roadsafety-header {
     display: none;
+    all: unset !important;
+
+    .header {
+      display: none;
+    }
   }
 
   #roadesafety-footer {
@@ -87,7 +92,7 @@ $font_path: ("../../../assets");
     page-break-before: always;
 
     &--landscape {
-      transform: rotate(-90deg) scale(1.12) translate(-125px);
+      transform: rotate(-90deg) scale(1.08) translate(-125px, 14px);
       display: block !important;
     }
     &--portrait {

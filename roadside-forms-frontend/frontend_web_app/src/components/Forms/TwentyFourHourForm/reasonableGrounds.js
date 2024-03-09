@@ -4,19 +4,36 @@ import { Input } from "../../common/Input/Input";
 import { useFormikContext } from "formik";
 import { DatePickerField } from "../../common/DateField/DatePicker";
 import { TimeInputField } from "../../common/Input/TimeInputField";
+import { useEffect } from "react";
 
 export const ReasonableGrounds = () => {
   const { values } = useFormikContext();
+
+  useEffect(() => {
+    if (!values["reasonable_ground_other"]) {
+      values["reasonable_ground_other_reason"] = "";
+    }
+  }, [values["reasonable_ground_other"]]);
+
+  useEffect(() => {
+    if (values["prescribed_test_used"] === "NO") {
+      values["reasonable_date_of_test"] = null;
+      values["reasonable_time_of_test"] = "";
+    }
+    if (values["prescribed_test_used"] === "YES") {
+      values["reason_for_not_using_prescribed_test"] = "";
+    }
+  }, [values["prescribed_test_used"]]);
+
   return (
     <div className="border-design-form left text-font">
       <h3>Reasonable Grounds</h3>
       <div className="row">
         <div className="col-sm-12">
           <span>
-            {" "}
             The driver was operating a motor vehicle or had care and control of
-            a motor vehicle for the purposes of MVA section 215(1) based on
-            (select at least one):{" "}
+            a motor vehicle for the purposes of MVA section 215(1) based on:
+            <span className="required-asterisk">*</span>
           </span>
         </div>
         <div className="col-sm-12 left checkboxs">
@@ -32,6 +49,7 @@ export const ReasonableGrounds = () => {
               name="reasonable_ground_other_reason"
               className="field-height field-width"
               type="text"
+              required
             />
           </div>
         )}
@@ -45,6 +63,7 @@ export const ReasonableGrounds = () => {
               { label: "Yes", value: "YES" },
               { label: "No", value: "NO" },
             ]}
+            required
           />
         </div>
       </div>
