@@ -4,7 +4,19 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import { toPng } from "html-to-image";
+import { useRecoilValue } from "recoil";
+import {
+  useBeforeUnload,
+  useBlocker,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { Alert } from "react-bootstrap";
+import Warning from "@mui/icons-material/Warning";
+import { ArrowBack, Error, Refresh } from "@mui/icons-material";
+import { useKeycloak } from "@react-keycloak/web";
+
 import { Checkbox } from "../common/Checkbox/checkbox";
 import { validationSchema } from "./validationSchema";
 import { DriverInfo } from "../CommonForm/driverInfo";
@@ -23,14 +35,14 @@ import { Unlicensed } from "../Forms/VehicleImpoundment/unlicensed";
 import { LinkageFactors } from "../Forms/VehicleImpoundment/linkageFactors";
 import { IncidentDetails } from "../Forms/VehicleImpoundment/incidentDetails";
 import { RegisteredOwnerInfo } from "../CommonForm/registeredOwnerInfo";
-import { useRecoilValue } from "recoil";
-import { useBeforeUnload, useBlocker, useNavigate } from "react-router-dom";
 import { ConfirmationStep } from "./ConfirmationStep/confirmationStep";
 import { PoliceDetails } from "../Forms/TwentyFourHourForm/policeDetails";
 import {
   staticResources,
   formsPNG,
   formNumberChecksum,
+  deleteIncompleteEvent,
+  spoilForm,
 } from "../../utils/helpers";
 import { FormSubmissionApi } from "../../api/formSubmissionApi";
 import { SVGprint } from "../Forms/Print/svgPrint";
@@ -38,10 +50,8 @@ import { db } from "../../db";
 import "./createEvent.scss";
 import "react-toastify/dist/ReactToastify.css";
 import { FormIDApi } from "../../api/formIDApi";
-import { Alert } from "react-bootstrap";
-import Warning from "@mui/icons-material/Warning";
-import { ArrowBack, Error, Refresh } from "@mui/icons-material";
-import { useKeycloak } from "@react-keycloak/web";
+import { userAtom } from "../../atoms/users";
+import moment from "moment";
 const { v4: uuidv4 } = require("uuid");
 
 export const CreateEvent = () => {
@@ -57,6 +67,7 @@ export const CreateEvent = () => {
   const jurisdictionCountryAtom = useRecoilValue(
     staticResources["jurisdictionCountry"]
   );
+  const userData = useRecoilValue(userAtom);
   const [formValues, setFormValues] = useState([]);
   const [formIDs, setFormIDs] = useState({
     VI: "",
@@ -88,10 +99,11 @@ export const CreateEvent = () => {
   const [formHasErrors, setFormHasErrors] = useState(false);
   const [formErrors, setFormErrors] = useState([]);
   const [exitWindowModalOpen, setExitWindowModalOpen] = useState(false);
-  const [exitFormLoading, setExitFormLoading] = useState(false);
   const [eventCreationFailedModalOpen, setEventCreationFailedModalOpen] =
     useState(false);
   const [criticalErrorModalOpen, setCriticalErrorModelOpen] = useState(false);
+  const [incompleteEvent, setIncompleteEvent] = useState(null);
+  const [incompleteEventID, setIncompleteEvenID] = useState(null);
 
   const navigate = useNavigate();
   const { keycloak } = useKeycloak();
@@ -105,6 +117,8 @@ export const CreateEvent = () => {
     );
   });
 
+  const { state } = useLocation();
+
   useBeforeUnload((event) => {
     event.preventDefault();
   });
@@ -114,6 +128,31 @@ export const CreateEvent = () => {
       setExitWindowModalOpen(true);
     }
   }, [blocker.state]);
+
+  useEffect(() => {
+    const getIncompleteEvent = async () => {
+      try {
+        await db.incompleteEvent
+          .where("inc_event_id")
+          .equals(state?.incEventId)
+          .first()
+          .then((value) => {
+            setIncompleteEvent(value);
+            setCurrentStep(value["step"]);
+            setIsPrinted(true);
+            return;
+          });
+        setIncompleteEvenID(state?.incEventId);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (state) {
+      getIncompleteEvent();
+    } else {
+      console.log("No incomplete event.");
+    }
+  }, [setIncompleteEvent, setCurrentStep, state]);
 
   useEffect(() => {
     const fetchOneOfEachID = async () => {
@@ -224,7 +263,7 @@ export const CreateEvent = () => {
     setCities(
       cityAtom.map((each) => ({ label: each.objectDsc, value: each.objectCd }))
     );
-    if (!formIDsFetched) {
+    if (!formIDsFetched && !state) {
       fetchOneOfEachID();
     }
   }, [
@@ -239,6 +278,7 @@ export const CreateEvent = () => {
     jurisdictionCountryAtom,
     nscPujAtom,
     formIDsFetched,
+    state,
   ]);
 
   const handleClose = async () => {
@@ -319,6 +359,9 @@ export const CreateEvent = () => {
           setIsSubmitting(false);
           setisBlockerActive(false);
           navigate("/");
+          if (incompleteEventID) {
+            deleteIncompleteEvent(incompleteEventID);
+          }
         } else {
           // The form did not submit correctly. Cancel submit and display error message.
           setIsSubmitting(false);
@@ -330,7 +373,21 @@ export const CreateEvent = () => {
         setIsSubmitting(false);
       });
   };
+  const handleSpoilForm = async () => {
+    await spoilForm(incompleteEventID);
+    await setisBlockerActive(false);
+    navigate("/");
+  };
 
+  const cancelForm = () => {
+    handleShow(
+      "Confirm Spoil Form",
+      "Are you sure you want to spoil this form?",
+      "Cancel",
+      "Spoil",
+      () => handleSpoilForm()
+    );
+  };
   const fetchIDsToDelete = async (values) => {
     const forms = {
       TwentyFourHour: "twenty_four_hour_number",
@@ -416,57 +473,13 @@ export const CreateEvent = () => {
   // If not, can just call handleExitForm() and then programatically navigate to main menu after user confirms
   // If so, need to block navigation away from the page and prompt user to confirm they want to exit the form
   const handleExitForm = async (values) => {
-    setExitFormLoading(true);
-    // If the form is printed, we need to mark the form as spoiled and void it in the system. Otherwise nothing to do here.
-
-    if (isPrinted) {
-      // Make call to API to modify the form as spoiled
-      const idsToDelete = await fetchIDsToDelete(values);
-      await FormIDApi.patch({
-        forms: { ...idsToDelete },
-        spoiled_timestamp: new Date(),
-      });
-    }
     // We need to unlease the IDs used for this form
     await unleaseIDs(values);
 
     // Finally, unblock the user from changing routes.
     if (blocker.state === "blocked") {
-      setExitFormLoading(false);
       blocker.proceed();
     }
-
-    // // console.log('this is value before saveing impound even before')
-    // // console.log(values)
-    // // copy values to another variable
-    // // let valuesCopy = JSON.parse(JSON.stringify(values));
-    // let valuesCopy = { ...values };
-    // // console.log('this is value of valuesCopy before saveing impound even before')
-    // // console.log(valuesCopy)
-    // if (
-    //   valuesCopy["date_of_impound"] &&
-    //   valuesCopy["vehicle_impounded"] === "NO"
-    // ) {
-    //   valuesCopy["date_released"] = valuesCopy["date_of_impound"];
-    // }
-    // const eventData = getEventDataToSave(valuesCopy);
-    // // console.log('this is value of event data before saving impound')
-    // // console.log(eventData)
-    // if (eventData["event_id"] === undefined) {
-    //   // need a beter solution to this--DONE
-    //   // eventData["event_id"] = 1;
-    //   eventData["event_id"] = uuidv4();
-    // }
-    // // console.log('this is value before saveing impound')
-    // // console.log(eventData)
-    // db.event
-    //   .put(eventData, eventData["event_id"])
-    //   .then(() => {
-    //     navigate("/");
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //   });
   };
 
   const printForms = async (values) => {
@@ -489,6 +502,16 @@ export const CreateEvent = () => {
   };
 
   const handleSuccessfulPrint = async (values) => {
+    values["form_printed_successfully"] = true;
+    await db.incompleteEvent
+      .put({
+        ...values,
+        created_by: userData.user_guid,
+        step: values["TwentyFourHour"] || values["TwelveHour"] ? 2 : 4,
+      })
+      .then((val) => {
+        setIncompleteEvenID(val);
+      });
     nextPage(values);
   };
 
@@ -857,6 +880,9 @@ export const CreateEvent = () => {
     return formNames;
   };
 
+  if (!incompleteEvent && state) {
+    return <div>Loading...</div>;
+  }
   return (
     <div id="event-container" className="text-font">
       <ToastContainer />
@@ -876,21 +902,12 @@ export const CreateEvent = () => {
       {blocker && (
         <Modal show={exitWindowModalOpen} centred>
           <Modal.Header>
-            {exitFormLoading ? (
-              <h3>Aborting...</h3>
-            ) : (
-              <h3>Are you sure you want to leave this page?</h3>
-            )}
+            <h3>Are you sure you want to leave this page?</h3>
           </Modal.Header>
           <Modal.Body>
-            {isPrinted && !exitFormLoading
-              ? "Leaving the page now will mark the form(s) as spoiled and void them in the system. The printed form will no longer be valid."
+            {isPrinted
+              ? "Your form is not completed. You can continue it from the events in progress table on the dashboard."
               : "All progress will be lost."}
-            {exitFormLoading && (
-              <div className="center">
-                <Spinner style={{ marginTop: "10px" }} animation="border" />
-              </div>
-            )}
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -914,12 +931,25 @@ export const CreateEvent = () => {
       <div id="button-container" className="m-4">
         <Button variant="primary" onClick={() => navigate("/")}>
           <ArrowBack />
-          &nbsp;
-          {isPrinted
-            ? "Mark Form as Spoiled & Return to Main Menu"
-            : "Cancel Form & Return to Main Menu"}
+          &nbsp; Return to Main Menu
         </Button>
       </div>
+
+      {isPrinted && (
+        <div id="button-container" className="m-4">
+          <Button
+            variant="primary"
+            onClick={async () => {
+              cancelForm();
+            }}
+          >
+            <ArrowBack />
+            &nbsp;
+            {"Spoil Form"}
+          </Button>
+        </div>
+      )}
+
       <div className="outline">
         <Formik
           innerRef={(formikActions) =>
@@ -927,7 +957,7 @@ export const CreateEvent = () => {
               ? setFormValues(formikActions.values)
               : setFormValues({})
           }
-          initialValues={InitialValues()}
+          initialValues={incompleteEvent ? incompleteEvent : InitialValues()}
           validationSchema={validationSchema}
         >
           {({ values, errors, setFieldValue }) => (
