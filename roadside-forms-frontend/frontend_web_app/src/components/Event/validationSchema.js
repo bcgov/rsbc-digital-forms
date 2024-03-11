@@ -180,10 +180,13 @@ export const validationSchema = Yup.object().shape(
         Yup.string().max(20, "Registration No. must be 20 characters or less"),
     }), // Max 20 characters, only for 24h / VI
     vehicle_year: Yup.object().nullable().required("Vehicle Year is required"), // Select one
-    vehicle_mk_md: Yup.object().nullable().required("Make / Model is required"), // Select one
-    vehicle_style: Yup.object().nullable().required("Style is required"), // Select one
+    vehicle_make: Yup.object().nullable().required("Vehicle Make is required"), // Select one
+    vehicle_model: Yup.object().nullable(), // Select one
+    vehicle_style: Yup.object()
+      .nullable()
+      .required("Vehicle Style is required"), // Select one
     vehicle_colour: Yup.array()
-      .required("Color is required")
+      .required("Vehicle Color is required")
       .min(1, "Select at least one vehicle colour")
       .max(2, "Select at most two colours"), // Select up 1-2
     vehicle_vin_no: Yup.string().when(["VI", "TwentyFourHour"], {
