@@ -264,11 +264,13 @@ def save_event_pdf(**kwargs) -> tuple:
             secure=Config.MINIO_SECURE,
         )
         if(data.get('VI')):
+            len_of_incident_details=len(data.get('incident_details', ''))
             filename = str(uuid.uuid4().hex)
             pdf_filename = f"/tmp/{filename}.pdf"
             encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
             b64encoded = data.get("VI_form_png").split(",")[1]
-            extra_page_flag=data.get('incident_details_extra_page',False)
+            # extra_page_flag=data.get('incident_details_extra_page',False)
+            extra_page_flag=len_of_incident_details>500
             page_num=3 if extra_page_flag else 2
             with open(f"/tmp/{filename}.png", "wb") as fh:
                 fh.write(b64decode(b64encoded))
