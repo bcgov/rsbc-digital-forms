@@ -16,9 +16,9 @@ export const IncidentDetails = (props) => {
       <h3>Incident Details</h3>
       <Row>
         <Col className="left checkboxs">
-          <Checkbox name="incident_details_extra_page">
+          {/* <Checkbox name="incident_details_extra_page">
             Will a separate document be attached?
-          </Checkbox>
+          </Checkbox> */}
           <span>{input.length + "/3000"}</span>
           <TextAreaInput
             name="incident_details"
