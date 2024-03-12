@@ -1131,6 +1131,7 @@
     "fields": {
       "BAR_CODE": {
         "field_type": "text",
+        "barcode": true,
         "field_name": "VI_number",
         "classNames": "fontLarge fontBarcode",
         "start": {
