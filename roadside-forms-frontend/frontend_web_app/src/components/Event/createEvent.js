@@ -103,7 +103,7 @@ export const CreateEvent = () => {
     useState(false);
   const [criticalErrorModalOpen, setCriticalErrorModelOpen] = useState(false);
   const [incompleteEvent, setIncompleteEvent] = useState(null);
-  const [incompleteEventID, setIncompleteEvenID] = useState(null);
+  const [incompleteEventID, setIncompleteEventID] = useState(null);
 
   const navigate = useNavigate();
   const { keycloak } = useKeycloak();
@@ -142,7 +142,7 @@ export const CreateEvent = () => {
             setIsPrinted(true);
             return;
           });
-        setIncompleteEvenID(state?.incEventId);
+        setIncompleteEventID(state?.incEventId);
       } catch (error) {
         console.log(error);
       }
@@ -498,20 +498,25 @@ export const CreateEvent = () => {
 
   const handlePrintForms = async (values) => {
     await handleModalClose();
+    if (!incompleteEventID) {
+      try {
+        await db.incompleteEvent
+          .put({
+            ...values,
+            created_by: userData.user_guid,
+            step: values["TwentyFourHour"] || values["TwelveHour"] ? 2 : 4,
+          })
+          .then((val) => {
+            setIncompleteEventID(val);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    }
     window.print();
   };
 
   const handleSuccessfulPrint = async (values) => {
-    values["form_printed_successfully"] = true;
-    await db.incompleteEvent
-      .put({
-        ...values,
-        created_by: userData.user_guid,
-        step: values["TwentyFourHour"] || values["TwelveHour"] ? 2 : 4,
-      })
-      .then((val) => {
-        setIncompleteEvenID(val);
-      });
     nextPage(values);
   };
 
@@ -630,6 +635,14 @@ export const CreateEvent = () => {
     for (const item in forms) {
       if (forms[item]) {
         for (const form in formsPNG[renderStage][item]) {
+          if (
+            form === "ILO" &&
+            values["VI"] &&
+            values["TwentyFourHour"] &&
+            item === "TwentyFourHour"
+          ) {
+            break;
+          }
           if (form === "ILO" && values["vehicle_impounded"] === "NO") {
             break;
           }
