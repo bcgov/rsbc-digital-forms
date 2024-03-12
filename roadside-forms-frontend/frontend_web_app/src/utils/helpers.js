@@ -254,6 +254,12 @@ export const printFormatHelper = (values, data, key, impoundLotOperators) => {
     return val;
   }
 
+  // If the value is a barcode
+  if (data["barcode"]) {
+    // Strip the prefix characters
+    val = "*" + val.toString().slice(2) + "*";
+  }
+
   //if the value is a date
   if (
     Object.prototype.toString.call(values[data["field_name"]]) ===
