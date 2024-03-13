@@ -5,8 +5,8 @@ export const formatBCDL = (dlNumber, values) => {
       values["drivers_licence_jurisdiction"].label === "BRITISH COLUMBIA")
   ) {
     if (dlNumber.length === 7) {
-      return "0" + dlNumber.toUpperCase();
+      return "0" + dlNumber.toUpperCase().replace(/\s+/g, "");
     }
   }
-  return dlNumber.toUpperCase();
+  return dlNumber.toUpperCase().replace(/\s+/g, "");
 };
