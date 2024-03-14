@@ -1231,7 +1231,7 @@ export const validationSchema = Yup.object().shape(
 
     /** eCOS (12h and 24h only) */
     document_served: Yup.string().when(
-      ["form_printed_successfully", "TwentyFourHour", "TwelveHour"],
+      ["TwelveHour", "TwentyFourHour", "form_printed_successfully"],
       {
         is: (TwelveHour, TwentyFourHour, form_printed_successfully) =>
           (TwelveHour || TwentyFourHour) && form_printed_successfully,
