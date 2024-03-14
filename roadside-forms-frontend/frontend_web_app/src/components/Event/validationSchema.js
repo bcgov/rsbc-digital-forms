@@ -341,8 +341,8 @@ export const validationSchema = Yup.object().shape(
     date_of_impound: Yup.date()
       .nullable()
       .max(new Date(), "Date of impound cannot be a future date")
-      .when("VI", {
-        is: true,
+      .when(["VI", "form_printed_successfully"], {
+        is: (VI, form_printed_successfully) => VI && !form_printed_successfully,
         then: () =>
           Yup.date()
             .max(new Date(), "Date of impound cannot be a future date")
@@ -422,6 +422,7 @@ export const validationSchema = Yup.object().shape(
           "vehicle_impounded",
           "reason_for_not_impounding",
           "vehicle_location",
+          "form_printed_successfully",
         ],
         {
           is: (
@@ -429,14 +430,16 @@ export const validationSchema = Yup.object().shape(
             TwelveHour,
             vehicle_impounded,
             reason_for_not_impounding,
-            vehicle_location
+            vehicle_location,
+            form_printed_successfully
           ) =>
-            (TwentyFourHour &&
+            ((TwentyFourHour &&
               vehicle_impounded === "NO" &&
               reason_for_not_impounding === "released") ||
-            (TwelveHour &&
-              (vehicle_location === "released" ||
-                vehicle_location === "private")),
+              (TwelveHour &&
+                (vehicle_location === "released" ||
+                  vehicle_location === "private"))) &&
+            !form_printed_successfully,
           then: () =>
             Yup.date()
               .nullable()
@@ -1301,6 +1304,40 @@ export const validationSchema = Yup.object().shape(
               /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
               "Time of requested test must match 24h format HH:MM"
             ),
+        // .test(
+        //   "time_of_requested_test valdation",
+        //   "Time of Requested test must be after time of driving.",
+        //   function (time_of_requested_test) {
+        //     if (time_of_requested_test && this.parent.time_of_driving) {
+        //       const test_date = moment(this.parent.date_of_driving)
+        //         .set("hour", time_of_requested_test.slice(0, 2))
+        //         .set("minute", time_of_requested_test.slice(3));
+        //       const driving_date = moment(this.parent.date_of_driving)
+        //         .set("hour", this.parent.time_of_driving.slice(0, 2))
+        //         .set("minute", this.parent.time_of_driving.slice(3));
+
+        //       return test_date > driving_date;
+        //     }
+        //     return true;
+        //   }
+        // )
+        // .test(
+        //   "time_of_requested_test valdation",
+        //   "Time of Requested test cannot be in the future.",
+        //   function (time_of_requested_test) {
+        //     if (time_of_requested_test && this.parent.time_of_driving) {
+        //       const test_date = moment(this.parent.date_of_driving)
+        //         .set("hour", time_of_requested_test.slice(0, 2))
+        //         .set("minute", time_of_requested_test.slice(3));
+        //       const driving_date = moment(this.parent.date_of_driving)
+        //         .set("hour", this.parent.time_of_driving.slice(0, 2))
+        //         .set("minute", this.parent.time_of_driving.slice(3));
+
+        //       return test_date > driving_date;
+        //     }
+        //     return true;
+        //   }
+        // ),
       }
     ),
     requested_ASD_expiry_date: Yup.date()

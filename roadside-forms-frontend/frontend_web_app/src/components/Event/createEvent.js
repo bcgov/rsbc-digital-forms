@@ -499,6 +499,7 @@ export const CreateEvent = () => {
   const handlePrintForms = async (values) => {
     await handleModalClose();
     if (!incompleteEventID) {
+      values["form_printed_successfully"] = true;
       try {
         await db.incompleteEvent
           .put({
