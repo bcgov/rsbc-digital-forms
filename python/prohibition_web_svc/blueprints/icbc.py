@@ -55,5 +55,3 @@ def get_vehicle(plate_number):
             request=request,
             config=Config)
         return kwargs.get('response')
-
-
