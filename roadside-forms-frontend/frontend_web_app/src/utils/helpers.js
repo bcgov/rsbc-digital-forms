@@ -526,6 +526,7 @@ export const eventDataFormatter = (
     "created_dt",
     "updated_dt",
     "date_released",
+    "requested_ASD_expiry_date",
   ];
   for (const item in data) {
     const event = data[item];
