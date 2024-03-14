@@ -3,14 +3,18 @@ import moment from "moment-timezone";
 import * as staticData from "../atoms/staticData";
 
 import { pstDate } from "./dateTime";
-import twentyFourHourDriverform from "../assets/MV2634E_101223_driver.png";
-import twentyFourHourILOform from "../assets/MV2634E_101223_ilo.png";
-import twentyFourHourPoliceform from "../assets/MV2634E_101223_police.png";
+import { genderDropdown } from "./constants";
+import twentyFourHourDriverform from "../assets/MV2634E_082023_driver.png";
+import twentyFourHourILOform from "../assets/MV2634E_082023_ilo.png";
+import twentyFourHourPoliceform from "../assets/MV2634E_082023_icbc.png";
 import viDriverForm from "../assets/MV2721_201502.png";
+import viIncidentDetails from "../assets/MV2722_201502_Incident_Details.png";
 import appealsForm from "../assets/MV2721_201502_appeal.png";
 import viReportForm from "../assets/MV2722_201502.png";
-import twelveHourDriverForm from "../assets/TwelveHourDriverCopy.png";
-import twelveHourICBCForm from "../assets/TwelveHourICBCCopy.png";
+import twelveHourDriverForm from "../assets/MV2906E_082023_driver.png";
+import twelveHourICBCForm from "../assets/MV2906E_082023_icbc.png";
+import { db } from "../db";
+import { FormIDApi } from "../api/formIDApi";
 
 const eventValueKeys = [
   "event_id",
@@ -91,19 +95,35 @@ export const staticResources = {
   permissions: staticData.permissions,
   provinces: staticData.provinces,
   vehicle_styles: staticData.vehicleStyles,
+  vehicle_types: staticData.vehicleTypes,
   vehicle_colours: staticData.vehicleColours,
   vehicles: staticData.vehicles,
+  nscPuj: staticData.nscPuj,
+  jurisdictionCountry: staticData.jurisdictionCountry,
 };
 
 export const getEventDataToSave = (formValues) => {
   const eventValues = {};
-  eventValueKeys.forEach(
-    (item) =>
-      (eventValues[item] =
+  eventValueKeys.forEach((item) => {
+    if (formValues[item] === null || formValues[item] === "") {
+      eventValues[item] = "";
+    } else {
+      eventValues[item] =
         typeof formValues[item] === "object"
-          ? formValues[item]["value"]
-          : formValues[item])
-  );
+          ? formValues[item]["value"].includes("_")
+            ? formValues[item]["value"].split("_")[1]
+            : formValues[item]["value"]
+          : formValues[item];
+    }
+  });
+
+  // eventValueKeys.forEach(
+  //   (item) =>
+  //     (eventValues[item] =
+  //       typeof formValues[item] === "object"
+  //         ? formValues[item]["value"]
+  //         : formValues[item])
+  // );
   return eventValues;
 };
 
@@ -115,12 +135,31 @@ export const getTwentyFourHourDataToSave = (formValues, event_id) => {
 };
 
 export const formTypes = (form) => {
-  const forms =
-    (form["IRP"] ? "IRP," : " ") +
-    (form["VI"] ? "VI," : " ") +
-    (form["TwentyFourHour"] ? "TwentyFourHour," : " ") +
-    (form["TwelveHour"] ? "TwelveHour" : " ");
-  return forms;
+  const formTypeList = [
+    ...(form["IRP"] ? ["IRP"] : []),
+    ...(form["VI"] ? ["VI"] : []),
+    ...(form["TwentyFourHour"] ? ["24H"] : []),
+    ...(form["TwelveHour"] ? ["12H"] : []),
+  ];
+
+  return formTypeList.join(", ");
+};
+
+export const formNumbers = (data) => {
+  let formNums = [];
+  if (data["VI_number"]) {
+    formNums.push(data["VI_number"]);
+  }
+  if (data["IRP_number"]) {
+    formNums.push(data["IRP_number"]);
+  }
+  if (data["twelve_hour_number"]) {
+    formNums.push(data["twelve_hour_number"]);
+  }
+  if (data["twenty_four_hour_number"]) {
+    formNums.push(data["twenty_four_hour_number"]);
+  }
+  return formNums.join(", ");
 };
 
 export const formsPNG = {
@@ -148,6 +187,7 @@ export const formsPNG = {
     VI: {
       POLICE: { png: viDriverForm, aspectClass: "--portrait" },
       REPORT: { png: viReportForm, aspectClass: "--portrait" },
+      DETAILS: { png: viIncidentDetails, aspectClass: "--portrait" },
     },
   },
 };
@@ -155,8 +195,9 @@ export const formsPNG = {
 const fieldsToSplit = { VEHICLE_MAKE: 0, VEHICLE_MODEL: 1 };
 const dateFieldSplit = ["date_of_driving", "driver_licence_expiry"];
 
-export const printFormatHelper = (values, data, key) => {
+export const printFormatHelper = (values, data, key, impoundLotOperators) => {
   let val = values[data["field_name"]];
+
   // if the value needs to be split into to fields
 
   if (key in fieldsToSplit) {
@@ -171,6 +212,7 @@ export const printFormatHelper = (values, data, key) => {
         : splitData.splice(1).join(data["delimeter"]);
     return val;
   }
+
   //if the field on the form is expecting more than one value join them together
   if (Array.isArray(data["field_name"])) {
     val = "";
@@ -179,6 +221,12 @@ export const printFormatHelper = (values, data, key) => {
         if (typeof values[data["field_name"][index]] === "object") {
           if (value === "offence_city") {
             val += values[data["field_name"][index]]["label"];
+          } else if (value === "driver_prov_state") {
+            if (values[data["field_name"][index]]["value"].includes("_")) {
+              val += values[data["field_name"][index]]["value"].split("_")[1];
+            } else {
+              val += values[data["field_name"][index]]["value"];
+            }
           } else {
             val += values[data["field_name"][index]]["value"];
           }
@@ -190,11 +238,28 @@ export const printFormatHelper = (values, data, key) => {
         }
       }
     });
+
+    // Add province to location of DL surrender
     if (key === "DL_SURRENDER_LOCATION") {
       val = val + ", BC";
     }
+
+    // For registered owner, if owned by corp, display corp name instead of owner name
+    if (key === "OWNER_NAME") {
+      if (values["owned_by_corp"]) {
+        val = values["corporation_name"];
+      }
+    }
+
     return val;
   }
+
+  // If the value is a barcode
+  if (data["barcode"]) {
+    // Strip the prefix characters
+    val = "*" + val.toString().slice(2) + "*";
+  }
+
   //if the value is a date
   if (
     Object.prototype.toString.call(values[data["field_name"]]) ===
@@ -212,12 +277,34 @@ export const printFormatHelper = (values, data, key) => {
     val = values[data["field_name"]].join("");
     return val;
   }
+
+  if (key === "DRIVER_DL_EXPIRY") {
+    if (values["driver_licence_expiry"]) {
+      val = moment(values["driver_licence_expiry"]).format("YYYY");
+      return val;
+    }
+  }
+
+  if (key === "REPORT_DRIVER_DL_EXPIRY") {
+    if (values["out_of_province_dl_expiry"]) {
+      val = moment(values["out_of_province_dl_expiry"]).format("YYYY");
+      return val;
+    }
+  }
+
   //temp: if the value is an object then take its value
   if (
     values[data["field_name"]] &&
     typeof values[data["field_name"]] === "object"
   ) {
-    val = values[data["field_name"]]["value"];
+    if (key === "LOCATION_CITY") {
+      val = val["label"];
+    } else {
+      val = values[data["field_name"]]["value"];
+      String(val).includes("_")
+        ? (val = values[data["field_name"]]["value"].split("_")[1])
+        : (val = values[data["field_name"]]["value"]);
+    }
     return val;
   }
   let released_val = "";
@@ -226,9 +313,31 @@ export const printFormatHelper = (values, data, key) => {
   } else if (values["TwentyFourHour"]) {
     released_val = "reason_for_not_impounding";
   }
+  if (key === "NOT_IMPOUNDED_REASON") {
+    switch (values[released_val]) {
+      case "released":
+        val = "RELEASED TO OTHER DRIVER";
+        break;
+      case "private":
+        val = "PRIVATE TOW";
+        break;
+      case "roadside":
+        val = "LEFT AT ROADSIDE";
+        break;
+      case "investigation":
+        val = "SEIZED FOR INVESTIGATION";
+        break;
+      default:
+        val = "";
+    }
+  }
+
   if (key === "RELEASE_LOCATION_VEHICLE") {
-    if (values["VI"]) {
-      val = values["ILO-name"];
+    if (
+      values["VI"] ||
+      (values["TwentyFourHour"] && values["vehicle_impounded"] === "YES")
+    ) {
+      val = "IMPOUNDED";
     } else {
       switch (values[released_val]) {
         case "released":
@@ -273,8 +382,11 @@ export const printFormatHelper = (values, data, key) => {
   }
 
   if (key === "RELEASE_PERSON") {
-    if (values["VI"]) {
-      val = values["ILO-name"];
+    if (
+      values["VI"] ||
+      (values["TwentyFourHour"] && values["vehicle_impounded"] === "YES")
+    ) {
+      val = "";
     } else {
       switch (values[released_val]) {
         case "released":
@@ -294,7 +406,46 @@ export const printFormatHelper = (values, data, key) => {
 
   if (key === "RELEASE_DATE") {
     if (values["VI"]) {
-      val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
+      // val = moment(values["date_of_impound"]).format("YYYY-MM-DD");
+    }
+  }
+
+  if (values["incident_details"] && values["incident_details"].length > 0) {
+    values["incident_details_explained_below"] = true;
+  }
+
+  // Split into two fields
+  if (key === "REPORT_INCIDENT_DETAILS") {
+    if (values["incident_details"] && values["incident_details"].length > 500) {
+      val = values["incident_details"].substring(0, 500);
+      // values["extra_page_flag"] = true;
+      // console.log("extra page flag", values["extra_page_flag"]);
+    }
+  }
+
+  if (key === "DETAILS_INCIDENT_DETAILS") {
+    if (values["incident_details"] && values["incident_details"].length > 500) {
+      val = values["incident_details"].substring(500);
+      // values["extra_page_flag"] = true;
+      // console.log("extra page flag", values["extra_page_flag"]);
+    }
+  }
+
+  if (
+    key === "IMPOUND_LOT_NAME" ||
+    key === "IMPOUNDED_LOT" ||
+    (key === "RELEASE_PERSON" &&
+      values["TwelveHour"] &&
+      !values["VI"] &&
+      values["vehicle_location"] === "private")
+  ) {
+    const tmp = impoundLotOperators.filter(
+      (x) => x["name"] === values["ILO-name"]
+    )[0];
+    if (tmp && tmp.name_print) {
+      val = tmp.name_print;
+    } else {
+      val = values["ILO-name"];
     }
   }
 
@@ -308,6 +459,12 @@ export const printCheckHelper = (values, data, key) => {
       return !values[data["field_name"]];
     }
     return values[data["field_name"]];
+  }
+
+  if (Array.isArray(data["field_val"])) {
+    if (data["field_val"].includes(values[data["field_name"]])) {
+      return true;
+    }
   }
   //if value is a string check to see that it matches what is expected
   if (values[data["field_name"]] === data["field_val"]) {
@@ -354,7 +511,9 @@ export const eventDataFormatter = (
   vehicleStyles,
   jurisdictions,
   cities,
-  impoundLots
+  impoundLots,
+  jurisdictionCountry,
+  nscPuj
 ) => {
   const eventData = [];
   const date_fields = [
@@ -367,34 +526,60 @@ export const eventDataFormatter = (
     "created_dt",
     "updated_dt",
     "date_released",
+    "requested_ASD_expiry_date",
   ];
   for (const item in data) {
     const event = data[item];
-    const driverJurisdiction = jurisdictions.filter(
+    let driverJurisdiction = jurisdictions.filter(
       (x) => x["objectCd"] === event["driver_jurisdiction"]
     )[0];
+    if (driverJurisdiction === undefined) {
+      driverJurisdiction = jurisdictionCountry.filter(
+        (x) => x["objectCd"] === event["driver_jurisdiction"]
+      )[0];
+    }
     event["drivers_licence_jurisdiction"] = {
       value: driverJurisdiction.objectCd,
       label: driverJurisdiction.objectDsc,
     };
     delete event["drivers_jurisdiction"];
-    const driverProvState = provinces.filter(
+    let driverProvState = jurisdictions.filter(
       (x) => x["objectCd"] === event["driver_prov"]
     )[0];
+    if (driverProvState === undefined) {
+      driverProvState = jurisdictionCountry.filter(
+        (x) => x["objectCd"] === event["driver_prov"]
+      )[0];
+    }
     event["driver_prov_state"] = {
       value: driverProvState.objectCd,
       label: driverProvState.objectDsc,
     };
     delete event["driver_prov"];
-    const vehicleJurisdiction = jurisdictions.filter(
+    let vehicleJurisdiction = jurisdictions.filter(
       (x) => x["objectCd"] === event["vehicle_jurisdiction"]
     )[0];
+    if (vehicleJurisdiction === undefined) {
+      vehicleJurisdiction = jurisdictionCountry.filter(
+        (x) => x["objectCd"] === event["vehicle_jurisdiction"]
+      )[0];
+    }
     event["vehicle_jurisdiction"] = {
       value: vehicleJurisdiction.objectCd,
       label: vehicleJurisdiction.objectDsc,
     };
+    if (event["out_of_province_dl_jurisdiction"]) {
+      const outOfProvinceDlJurisdiction = jurisdictions.filter(
+        (x) => x["objectCd"] === event["out_of_province_dl_jurisdiction"]
+      )[0];
+
+      event["out_of_province_dl_jurisdiction"] = {
+        value: outOfProvinceDlJurisdiction.objectCd,
+        label: outOfProvinceDlJurisdiction.objectDsc,
+      };
+    }
     if (event["nsc_prov_state"]) {
-      const nscProvState = provinces.filter(
+      const nscProvState = nscPuj.filter(
         (x) => x["objectCd"] === event["nsc_prov_state"]
       )[0];
       event["nsc_prov_state"] = {
@@ -404,9 +589,14 @@ export const eventDataFormatter = (
     }
 
     if (!event["TwelveHour"] || (event["TwelveHour"] && event["VI"])) {
-      const registOwnerProvState = provinces.filter(
+      let registOwnerProvState = jurisdictions.filter(
         (x) => x["objectCd"] === event["regist_owner_prov"]
       )[0];
+      if (registOwnerProvState === undefined) {
+        registOwnerProvState = jurisdictionCountry.filter(
+          (x) => x["objectCd"] === event["regist_owner_prov"]
+        )[0];
+      }
       event["regist_owner_prov_state"] = {
         value: registOwnerProvState.objectCd,
         label: registOwnerProvState.objectDsc,
@@ -437,6 +627,14 @@ export const eventDataFormatter = (
       event["nsc_no"] === ""
         ? (event["is_nsc"] = false)
         : (event["is_nsc"] = true);
+
+      const gender = genderDropdown.filter(
+        (x) => x["value"] === event["gender"]
+      )[0];
+      event["gender"] = {
+        value: gender?.value,
+        label: gender?.label,
+      };
     }
 
     const vehicleStyl = vehicleStyles.filter(
@@ -467,7 +665,11 @@ export const eventDataFormatter = (
       event["ILO-phone"] = impound.phone;
     }
     for (const field of date_fields) {
-      event[field] = pstDate(event[field]);
+      if (event[field]) {
+        event[field] = pstDate(event[field]);
+      } else {
+        event[field] = "";
+      }
     }
     eventData.push(event);
   }
@@ -494,4 +696,37 @@ export const formNumberChecksum = (formNumber) => {
   const digit = (calc3 + calc4 + calc5 + calc6 + calc7 + calc8) % 10;
 
   return +("" + formNumber + digit);
+};
+
+export const deleteIncompleteEvent = async (incEventID) => {
+  try {
+    db.incompleteEvent.where("inc_event_id").equals(incEventID).delete();
+  } catch (error) {
+    console.log(error);
+  }
+  return;
+};
+
+export const spoilForm = async (incEventID) => {
+  await db.incompleteEvent
+    .where("inc_event_id")
+    .equals(incEventID)
+    .first()
+    .then((value) => {
+      const idsToDelete = {};
+      const forms = {
+        TwentyFourHour: "twenty_four_hour_number",
+        TwelveHour: "twelve_hour_number",
+        VI: "VI_number",
+      };
+      for (const form in forms) {
+        if (value[forms[form]]) {
+          idsToDelete[forms[form]] = value[forms[form]];
+        }
+      }
+      FormIDApi.patch({
+        forms: { ...idsToDelete },
+        spoiled_timestamp: new Date(),
+      }).then(() => deleteIncompleteEvent(incEventID));
+    });
 };
