@@ -499,11 +499,11 @@ export const CreateEvent = () => {
   const handlePrintForms = async (values) => {
     await handleModalClose();
     if (!incompleteEventID) {
-      values["form_printed_successfully"] = true;
       try {
         await db.incompleteEvent
           .put({
             ...values,
+            form_printed_successfully: true,
             created_by: userData.user_guid,
             step: values["TwentyFourHour"] || values["TwelveHour"] ? 2 : 4,
           })
