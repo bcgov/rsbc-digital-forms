@@ -7,11 +7,10 @@ import { Radio } from "../../common/Radio/radio";
 import { Input } from "../../common/Input/Input";
 import { DatePickerField } from "../../common/DateField/DatePicker";
 import { TimeInputField } from "../../common/Input/TimeInputField";
-import { PhoneField } from "../../common/Input/phoneField";
 import { SearchableSelect } from "../../common/Select/SearchableSelect";
 
 export const Disposition = (props) => {
-  const { impoundLotOperators } = props;
+  const { impoundLotOperators, allILOs } = props;
   const { values, setFieldValue } = useFormikContext();
 
   const handleILOChange = (selectedOption) => {
@@ -47,7 +46,7 @@ export const Disposition = (props) => {
   ];
   return (
     <div className="border-design-form left text-font">
-      <h3>Disposition of Vehcile</h3>
+      <h3>Disposition of Vehicle</h3>
       <Row style={{ minHeight: "85px" }}>
         <Col>
           <Radio
@@ -135,6 +134,24 @@ export const Disposition = (props) => {
                 </Col>
               </Row>
             </div>
+            <Row>
+              <Col sm={4}>
+                <DatePickerField
+                  name="date_released"
+                  label="Date Released"
+                  className="field-height field-width"
+                  required
+                />
+              </Col>
+              <Col sm={4}>
+                <TimeInputField
+                  label="Time Released"
+                  className="field-height field-width"
+                  name="time_released"
+                  required
+                />
+              </Col>
+            </Row>
           </div>
         </>
       )}

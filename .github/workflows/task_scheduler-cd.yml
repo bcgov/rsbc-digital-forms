@@ -1,0 +1,26 @@
+name: task_scheduler-cd
+
+on:
+  # push:
+  #   branches:
+  #     - master
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches:
+      - master
+      - main
+    paths:
+      - python/*.py
+      - python/common/**
+      - python/task_scheduler/**
+      - .github/workflows/task_scheduler-cd.yml
+      - trigger.txt
+
+jobs:
+  CD:
+    uses: ./.github/workflows/cd-workflow.yml
+    with:
+      DOCKER_CONTEXT: python
+      DOCKER_FILE: python/task_scheduler/Dockerfile
+      DOCKER_IMAGE_NAME: rsbc-roadside-forms-task-scheduler
+    secrets: inherit
