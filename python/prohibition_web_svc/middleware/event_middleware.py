@@ -16,6 +16,7 @@ from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_method1
 import img2pdf
 import uuid
+from split_image import split_image
 
 
 def validate_update(**kwargs) -> tuple:
@@ -37,8 +38,10 @@ def save_event_data(**kwargs) -> tuple:
         logging.debug('Creating Event')
         date_created = datetime.now()
         # logging.debug(f'heres your data {data}')
-
         event = Event(
+            icbc_sent_status='pending',
+            vi_sent_status='pending',
+            task_processing_status='pending',
             driver_licence_no=data.get('driver_licence_no'),
             driver_jurisdiction=data.get(
                 'drivers_licence_jurisdiction', {
@@ -64,6 +67,8 @@ def save_event_data(**kwargs) -> tuple:
                 'value': None, 'label': None}).get('value'),
             vehicle_style=data.get('vehicle_style', {
                 'value': None, 'label': None}).get('value'),
+            vehicle_type=data.get('vehicle_type', {
+                'value': None, 'label': None}).get('value'),
             vehicle_colour=data.get('vehicle_colour'),
             vehicle_vin_no=data.get('vehicle_vin_no'),
             intersection_or_address_of_offence=data.get(
@@ -74,28 +79,32 @@ def save_event_data(**kwargs) -> tuple:
                 'value': None, 'label': None}).get('value'),
             date_of_driving=data.get('date_of_driving'),
             time_of_driving=data.get('time_of_driving'),
-            nsc_no=data.get('nsc_no'),
-            nsc_prov_state=data.get('nsc_prov_state', {
-                'value': None, 'label': None}).get('value'),
+            nsc_no=data.get('nsc_no', None),
+            # nsc_prov_state=data.get('nsc_prov_state', {
+            #     'value': None, 'label': None}).get('value'),
+            nsc_prov_state=(lambda x: x.get('value') if x else None)(data.get('nsc_prov_state', None)),
             owned_by_corp=data.get('owned_by_corp'),
             corporation_name=data.get('corporation_name'),
             regist_owner_last_name=data.get('regist_owner_last_name'),
             regist_owner_first_name=data.get('regist_owner_first_name'),
             regist_owner_address=data.get('regist_owner_address'),
             regist_owner_dob=datetime.strptime(
-                data.get('driver_dob'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_dob') else None,
+                data.get('regist_owner_dob'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('regist_owner_dob') else None,
             regist_owner_city=data.get('regist_owner_city'),
             regist_owner_prov=data.get('regist_owner_prov_state', {
                 'value': None, 'label': None}).get('value'),
             regist_owner_postal=data.get('regist_owner_postal'),
             regist_owner_phone=data.get('regist_owner_phone'),
-            vehicle_released_to = data.get("vehicle_released_to"),
-            date_released = datetime.strptime(
+            regist_owner_email=data.get('regist_owner_email'),
+            vehicle_released_to=data.get("vehicle_released_to"),
+            date_released=datetime.strptime(
                 data.get('date_released'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('date_released') else None,
-            time_released = data.get("time_released"),
+            time_released=data.get("time_released"),
+            location_of_keys=data.get('location_of_keys'),
             submitted=True,
             confirmation_of_service=data.get('confirmation_of_service'),
-            confirmation_of_service_date=data.get('confirmation_of_service_date'),
+            confirmation_of_service_date=data.get(
+                'confirmation_of_service_date'),
             agency_file_no=data.get('agency_file_no'),
             created_dt=date_created,
             updated_dt=date_created,
@@ -104,7 +113,9 @@ def save_event_data(**kwargs) -> tuple:
         )
         if data.get('VI'):
             vi_form = VIForm(
-                gender=data.get('gender'),
+                gender=(lambda x: x.get('value') if x else None)(data.get('gender', None)),                
+                # gender=data.get('gender',''),
+                driver_is_regist_owner=data.get('driver_is_regist_owner'),
                 driver_licence_expiry=datetime.strptime(
                     data.get('driver_licence_expiry'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_licence_expiry') else None,
                 driver_licence_class=data.get('driver_licence_class'),
@@ -115,6 +126,11 @@ def save_event_data(**kwargs) -> tuple:
                 out_of_province_dl=data.get('out_of_province_dl'),
                 out_of_province_dl_number=data.get(
                     'out_of_province_dl_number'),
+                out_of_province_dl_expiry=data.get(
+                    'out_of_province_dl_expiry'),
+                out_of_province_dl_jurisdiction=(lambda x: x.get('value') if x else None)(data.get('out_of_province_dl_jurisdiction', None)),
+                # out_of_province_dl_jurisdiction=data.get('out_of_province_dl_jurisdiction', {
+                # 'value': None, 'label': None}).get('value'),                
                 date_of_impound=datetime.strptime(
                     data.get('date_of_impound'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('date_of_impound') else None,
                 irp_impound=data.get('irp_impound'),
@@ -157,48 +173,65 @@ def save_event_data(**kwargs) -> tuple:
             event.vi_form = vi_form
         if data.get('TwentyFourHour'):
             twenty_four_hour_form = TwentyFourHourForm(
-                    vehicle_impounded = data.get('vehicle_impounded'),
-                    reason_for_not_impounding = data.get('reason_for_not_impounding'),
-                    reasonable_ground_other_reason = data.get('reasonable_ground_other_reason'),
-                    prescribed_test_used = data.get('prescribed_test_used'),
-                    reasonable_date_of_test=datetime.strptime(
+                vehicle_impounded=data.get('vehicle_impounded'),
+                reason_for_not_impounding=data.get(
+                    'reason_for_not_impounding'),
+                reasonable_ground_other_reason=data.get(
+                    'reasonable_ground_other_reason'),
+                prescribed_test_used=data.get('prescribed_test_used'),
+                reasonable_date_of_test=datetime.strptime(
                     data.get('reasonable_date_of_test'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('reasonable_date_of_test') else None,
-                    reasonable_time_of_test= data.get('reasonable_time_of_test'),
-                    reason_for_not_using_prescribed_test= data.get('reason_for_not_using_prescribed_test'),
-                    resonable_test_used_alcohol= data.get('resonable_test_used_alcohol'),
-                    reasonable_asd_expiry_date= datetime.strptime(
+                reasonable_time_of_test=data.get('reasonable_time_of_test'),
+                reason_for_not_using_prescribed_test=data.get(
+                    'reason_for_not_using_prescribed_test'),
+                resonable_test_used_alcohol=data.get(
+                    'resonable_test_used_alcohol'),
+                reasonable_asd_expiry_date=datetime.strptime(
                     data.get('reasonable_asd_expiry_date'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('reasonable_asd_expiry_date') else None,
-                    reasonable_result_alcohol= data.get('reasonable_result_alcohol'),
-                    reasonable_bac_result_mg= data.get('reasonable_bac_result_mg'),
-                    resonable_approved_instrument_used= data.get('resonable_approved_instrument_used'),
-                    reasonable_test_used_drugs= data.get('reasonable_test_used_drugs'),
-                    reasonable_can_drive_drug= data.get('reasonable_can_drive_drug'),
-                    reasonable_can_drive_alcohol= data.get('reasonable_can_drive_alcohol'),
-                    requested_can_drive_alcohol= data.get('requested_can_drive_alcohol'),
-                    requested_can_drive_drug= data.get('requested_can_drive_drug'),
-                    requested_approved_instrument_used= data.get('requested_approved_instrument_used'),
-                    requested_BAC_result= data.get('requested_BAC_result'),
-                    requested_alcohol_test_result= data.get('requested_alcohol_test_result'),
-                    requested_ASD_expiry_date= datetime.strptime(
+                reasonable_result_alcohol=data.get(
+                    'reasonable_result_alcohol'),
+                reasonable_bac_result_mg=data.get('reasonable_bac_result_mg'),
+                resonable_approved_instrument_used=data.get(
+                    'resonable_approved_instrument_used'),
+                reasonable_test_used_drugs=data.get(
+                    'reasonable_test_used_drugs'),
+                reasonable_can_drive_drug=data.get(
+                    'reasonable_can_drive_drug'),
+                reasonable_can_drive_alcohol=data.get(
+                    'reasonable_can_drive_alcohol'),
+                requested_can_drive_alcohol=data.get(
+                    'requested_can_drive_alcohol'),
+                requested_can_drive_drug=data.get('requested_can_drive_drug'),
+                requested_approved_instrument_used=data.get(
+                    'requested_approved_instrument_used'),
+                requested_BAC_result=data.get('requested_BAC_result'),
+                requested_alcohol_test_result=data.get(
+                    'requested_alcohol_test_result'),
+                requested_ASD_expiry_date=datetime.strptime(
                     data.get('requested_ASD_expiry_date'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('requested_ASD_expiry_date') else None,
-                    time_of_requested_test= data.get('time_of_requested_test'),
-                    requested_test_used_alcohol= data.get('requested_test_used_alcohol'),
-                    requested_test_used_drug= data.get('requested_test_used_drug'),
-                    requested_prescribed_test= data.get('requested_prescribed_test'),
-                    witnessed_by_officer=data.get("witnessed_by_officer"),
-                    admission_by_driver=data.get("admission_by_driver"),
-                    independent_witness=data.get("independent_witness"),
-                    reasonable_ground_other=data.get("reasonable_ground_other"),
-                    created_dt=date_created,
-                    updated_dt=date_created,
-                
+                time_of_requested_test=data.get('time_of_requested_test'),
+                requested_test_used_alcohol=data.get(
+                    'requested_test_used_alcohol'),
+                requested_test_used_drug=data.get('requested_test_used_drug'),
+                requested_prescribed_test=data.get(
+                    'requested_prescribed_test'),
+                witnessed_by_officer=data.get("witnessed_by_officer"),
+                admission_by_driver=data.get("admission_by_driver"),
+                independent_witness=data.get("independent_witness"),
+                reasonable_ground_other=data.get("reasonable_ground_other"),
+                twenty_four_hour_number=data.get("twenty_four_hour_number"),
+                created_dt=date_created,
+                updated_dt=date_created,
+
             )
             event.twenty_four_hour_form = twenty_four_hour_form
         if data.get('TwelveHour'):
             twelve_hour_form = TwelveHourForm(
                 driver_phone=data.get('driver_phone'),
+                twelve_hour_number=data.get("twelve_hour_number"),
                 form_id=data.get('form_id'),
                 event_id=data.get('event_id'),
+                vehicle_location=data.get('vehicle_location', None),
                 created_dt=date_created,
                 updated_dt=date_created,
             )
@@ -222,7 +255,7 @@ def save_event_pdf(**kwargs) -> tuple:
     try:
         data = kwargs.get('payload')
         event = kwargs.get('event')
-        cert_path=Config.MINIO_CERT_FILE
+        cert_path = Config.MINIO_CERT_FILE
         os.environ['SSL_CERT_FILE'] = cert_path
         client = Minio(
             Config.MINIO_BUCKET_URL,
@@ -231,13 +264,23 @@ def save_event_pdf(**kwargs) -> tuple:
             secure=Config.MINIO_SECURE,
         )
         if(data.get('VI')):
+            len_of_incident_details=len(data.get('incident_details', ''))
             filename = str(uuid.uuid4().hex)
             pdf_filename = f"/tmp/{filename}.pdf"
             encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
             b64encoded = data.get("VI_form_png").split(",")[1]
+            # extra_page_flag=data.get('incident_details_extra_page',False)
+            extra_page_flag=len_of_incident_details>500
+            page_num=3 if extra_page_flag else 2
             with open(f"/tmp/{filename}.png", "wb") as fh:
                 fh.write(b64decode(b64encoded))
-            pdf_bytes = img2pdf.convert(f"/tmp/{filename}.png")
+            split_image(f"/tmp/{filename}.png", page_num, 1, False, True,output_dir="/tmp")
+            # pdf_bytes = img2pdf.convert(f"/tmp/{filename}.png")
+            pdf_bytes=None
+            if extra_page_flag:
+                pdf_bytes = img2pdf.convert(f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png", f"/tmp/{filename}_2.png")
+            else:
+                pdf_bytes = img2pdf.convert(f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png")
             with open(pdf_filename, "wb") as file:
                 file.write(pdf_bytes)
             encryptPdf_method1(
