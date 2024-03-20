@@ -61,7 +61,6 @@ export const CreateEvent = () => {
   const jurisdictionsAtom = useRecoilValue(staticResources["jurisdictions"]);
   const provincesAtom = useRecoilValue(staticResources["provinces"]);
   const cityAtom = useRecoilValue(staticResources["cities"]);
-  const vehiclesAtom = useRecoilValue(staticResources["vehicles"]);
   const impoundAtom = useRecoilValue(staticResources["impound_lot_operators"]);
   const nscPujAtom = useRecoilValue(staticResources["nscPuj"]);
   const jurisdictionCountryAtom = useRecoilValue(
@@ -82,7 +81,6 @@ export const CreateEvent = () => {
   const [provinces, setProvinces] = useState([]);
   const [vehicleStyles, setVehicleStyles] = useState([]);
   const [vehicleTypes, setVehicleTypes] = useState([]);
-  const [vehicles, setVehicles] = useState([]);
   const [vehicleColours, setVehicleColours] = useState([]);
   const [cities, setCities] = useState([]);
   const [impoundLotOperators, setImpoundLotOperators] = useState([]);
@@ -254,12 +252,6 @@ export const CreateEvent = () => {
         value: each.code,
       }))
     );
-    setVehicles(
-      vehiclesAtom.map((each) => ({
-        label: each.search,
-        value: each.mk + "-" + each.md,
-      }))
-    );
     setCities(
       cityAtom.map((each) => ({ label: each.objectDsc, value: each.objectCd }))
     );
@@ -270,7 +262,6 @@ export const CreateEvent = () => {
     vehicleStylesAtom,
     jurisdictionsAtom,
     provincesAtom,
-    vehiclesAtom,
     vehicleColoursAtom,
     cityAtom,
     impoundAtom,
@@ -798,7 +789,6 @@ export const CreateEvent = () => {
                     nscPuj={nscPuj}
                     jurisdictions={jurisdictions}
                     jurisdictionCountry={jurisdictionCountry}
-                    vehicles={vehicles}
                     vehicleStyles={vehicleStyles}
                     vehicleTypes={vehicleTypes}
                   />

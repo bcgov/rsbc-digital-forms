@@ -444,8 +444,7 @@
       },
       "VEHICLE_MAKE": {
         "field_type": "text",
-        "field_name": "vehicle_mk_md",
-        "delimeter": "-",
+        "field_name": "vehicle_make",
         "classNames": "fontSmall",
         "start": {
           "x": 50,
@@ -454,8 +453,7 @@
       },
       "VEHICLE_MODEL": {
         "field_type": "text",
-        "field_name": "vehicle_mk_md",
-        "delimeter": "-",
+        "field_name": "vehicle_model",
         "classNames": "fontSmall",
         "start": {
           "x": 80,
@@ -1306,8 +1304,7 @@
       },
       "VEHICLE_MAKE": {
         "field_type": "text",
-        "field_name": "vehicle_mk_md",
-        "delimeter": "-",
+        "field_name": "vehicle_make",
         "classNames": "fontSmall",
         "start": {
           "x": 92,
@@ -1316,8 +1313,7 @@
       },
       "VEHICLE_MODEL": {
         "field_type": "text",
-        "field_name": "vehicle_mk_md",
-        "delimeter": "-",
+        "field_name": "vehicle_model",
         "classNames": "fontSmall",
         "start": {
           "x": 118,
@@ -2590,8 +2586,7 @@
       },
       "VEHICLE_MAKE": {
         "field_type": "text",
-        "field_name": "vehicle_mk_md",
-        "delimeter": "-",
+        "field_name": "vehicle_make",
         "classNames": "fontSmall",
         "start": {
           "x": 18.2,
@@ -2600,8 +2595,7 @@
       },
       "VEHICLE_MODEL": {
         "field_type": "text",
-        "field_name": "vehicle_mk_md",
-        "delimeter": "-",
+        "field_name": "vehicle_model",
         "classNames": "fontSmall",
         "start": {
           "x": 36,

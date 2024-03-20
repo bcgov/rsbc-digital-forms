@@ -372,7 +372,8 @@ class Event(db.Model):
     vehicle_plate_no: str
     vehicle_registration_no: str
     vehicle_year: str
-    vehicle_mk_md: str
+    vehicle_make: str
+    vehicle_model: str
     vehicle_style: str
     vehicle_type: int
     vehicle_colour: str
@@ -431,7 +432,8 @@ class Event(db.Model):
     vehicle_plate_no = db.Column(db.String)
     vehicle_registration_no = db.Column(db.String)
     vehicle_year = db.Column(db.String)
-    vehicle_mk_md = db.Column(db.String)
+    vehicle_make = db.Column(db.String)
+    vehicle_model = db.Column(db.String)
     vehicle_style = db.Column(db.String)
     vehicle_type = db.Column(db.Integer, db.ForeignKey('vehicle_type.type_cd'))
     vehicle_colour = db.Column(db.String)

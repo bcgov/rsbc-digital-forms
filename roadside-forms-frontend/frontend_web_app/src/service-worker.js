@@ -143,7 +143,8 @@ registerRoute(
     url.pathname.includes("/api/v1/static/countries") ||
     url.pathname.includes("/api/v1/static/jurisdictions") ||
     url.pathname.includes("/api/v1/static/provinces") ||
-    url.pathname.includes("/api/v1/static/vehicles") ||
+    url.pathname.includes("/api/v1/static/vehicle_makes") ||
+    url.pathname.includes("/api/v1/static/vehicle_models") ||
     url.pathname.includes("/api/v1/static/vehicle_styles"),
   new CacheFirst({
     cacheName: "static-api",
