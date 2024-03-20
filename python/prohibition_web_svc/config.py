@@ -38,7 +38,7 @@ class Config(BaseConfig):
 
     URL_PREFIX = os.getenv('URL_PREFIX', '')  # no trailing slash!
 
-    MAX_RECORDS_RETURNED = 1000
+    MAX_RECORDS_RETURNED = 5000
     VANCOUVER_TIMEZONE = 'America/Vancouver'
 
     MINIO_AK = os.environ.get("MINIO_AK", "test")
