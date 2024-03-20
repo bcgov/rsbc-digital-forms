@@ -1,7 +1,12 @@
 import { atom } from "recoil";
 
-export const vehicles = atom({
-  key: "allVehicles",
+export const vehicleMakes = atom({
+  key: "allVehicleMakes",
+  default: [],
+});
+
+export const vehicleModels = atom({
+  key: "allVehicleModels",
   default: [],
 });
 

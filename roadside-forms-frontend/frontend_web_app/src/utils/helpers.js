@@ -33,7 +33,8 @@ const eventValueKeys = [
   "vehicle_plate_no",
   "vehicle_registration_no",
   "vehicle_year",
-  "vehicle_mk_md",
+  "vehicle_make",
+  "vehicle_model",
   "vehicle_style",
   "vehicle_colour",
   "vehicle_vin_no",
@@ -97,7 +98,8 @@ export const staticResources = {
   vehicle_styles: staticData.vehicleStyles,
   vehicle_types: staticData.vehicleTypes,
   vehicle_colours: staticData.vehicleColours,
-  vehicles: staticData.vehicles,
+  vehicle_makes: staticData.vehicleMakes,
+  vehicle_models: staticData.vehicleModels,
   nscPuj: staticData.nscPuj,
   jurisdictionCountry: staticData.jurisdictionCountry,
 };
@@ -192,26 +194,8 @@ export const formsPNG = {
   },
 };
 
-const fieldsToSplit = { VEHICLE_MAKE: 0, VEHICLE_MODEL: 1 };
-const dateFieldSplit = ["date_of_driving", "driver_licence_expiry"];
-
 export const printFormatHelper = (values, data, key, impoundLotOperators) => {
   let val = values[data["field_name"]];
-
-  // if the value needs to be split into to fields
-
-  if (key in fieldsToSplit) {
-    const splitData =
-      typeof values[data["field_name"]] === "object"
-        ? values[data["field_name"]]["value"].split(data["delimeter"])
-        : values[data["field_name"]].split(data["delimeter"]);
-    // if the value only needs the first part split off then rejoin the rest
-    val =
-      typeof fieldsToSplit[key] === "number"
-        ? splitData[fieldsToSplit[key]]
-        : splitData.splice(1).join(data["delimeter"]);
-    return val;
-  }
 
   //if the field on the form is expecting more than one value join them together
   if (Array.isArray(data["field_name"])) {
@@ -250,7 +234,6 @@ export const printFormatHelper = (values, data, key, impoundLotOperators) => {
         val = values["corporation_name"];
       }
     }
-
     return val;
   }
 
@@ -506,8 +489,8 @@ export const eventObjectFlatener = (data) => {
 export const eventDataFormatter = (
   data,
   user,
-  provinces,
-  vehicles,
+  vehicleMakes,
+  vehicleModels,
   vehicleStyles,
   jurisdictions,
   cities,
@@ -609,14 +592,12 @@ export const eventDataFormatter = (
       value: offenceCity.objectCd,
       label: offenceCity.objectDsc,
     };
-    const mk_md_split = event["vehicle_mk_md"].split("-");
-    const vehicle = vehicles.filter(
-      (x) => x["mk"] === mk_md_split[0] && x["md"] === mk_md_split[1]
+    event["vehicle_make"] = vehicleMakes.filter(
+      (x) => x["make_cd"] === event["vehicle_make"]
     )[0];
-    event["vehicle_mk_md"] = {
-      value: vehicle?.mk + "-" + vehicle?.md,
-      label: vehicle?.search,
-    };
+    event["vehicle_model"] = vehicleModels.filter(
+      (x) => x["model_cd"] === event["vehicle_model"]
+    )[0];
 
     event["officer-lastname"] = user.last_name;
     event["officer-prime-id"] = user.badge_number;

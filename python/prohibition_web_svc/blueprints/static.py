@@ -6,7 +6,7 @@ import python.prohibition_web_svc.middleware.splunk_middleware as splunk_middlew
 from flask import request, make_response, Blueprint
 from python.common.splunk import log_to_splunk
 from flask_cors import CORS
-from python.prohibition_web_svc.models import db, Agency, City, Country, ImpoundLotOperator, Jurisdiction, Permission, Province, Vehicle, VehicleStyle, VehicleType, VehicleColour, NSCPuj, JurisdictionCountry
+from python.prohibition_web_svc.models import db, Agency, City, Country, ImpoundLotOperator, Jurisdiction, Permission, Province, VehicleMake, VehicleModel, VehicleStyle, VehicleType, VehicleColour, NSCPuj, JurisdictionCountry
 
 import logging.config
 from flask import jsonify
@@ -22,7 +22,8 @@ resource_map = {
     "vehicle_styles": VehicleStyle,
     "vehicle_types": VehicleType,
     "vehicle_colours": VehicleColour,
-    "vehicles": Vehicle,
+    "vehicle_makes": VehicleMake,
+    "vehicle_models": VehicleModel,
     "nsc_puj": NSCPuj,
     "jurisdiction_country": JurisdictionCountry
 }
@@ -127,7 +128,8 @@ def _is_known_resource(**kwargs) -> tuple:
         'vehicle_styles',
         'vehicle_types',
         'vehicle_colours',
-        'vehicles',
+        "vehicle_makes",
+        "vehicle_models",
         "nsc_puj",
         "jurisdiction_country",
     ]

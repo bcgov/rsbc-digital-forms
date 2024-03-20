@@ -63,7 +63,9 @@ def save_event_data(**kwargs) -> tuple:
             vehicle_registration_no=data.get('vehicle_registration_no'),
             vehicle_year=data.get('vehicle_year', {
                 'value': None, 'label': None}).get('value'),
-            vehicle_mk_md=data.get('vehicle_mk_md', {
+            vehicle_make=data.get('vehicle_make', {
+                'value': None, 'label': None}).get('value'),
+            vehicle_model=data.get('vehicle_model', {
                 'value': None, 'label': None}).get('value'),
             vehicle_style=data.get('vehicle_style', {
                 'value': None, 'label': None}).get('value'),

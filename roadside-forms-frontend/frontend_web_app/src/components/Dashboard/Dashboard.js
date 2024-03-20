@@ -60,8 +60,11 @@ export const Dashboard = () => {
   const [vehicleColourResource, setVehicleColourResource] = useRecoilState(
     staticResources["vehicle_colours"]
   );
-  const [vehicleResource, setVehicleResource] = useRecoilState(
-    staticResources["vehicles"]
+  const [vehicleMakesResource, setVehicleMakesResource] = useRecoilState(
+    staticResources["vehicle_makes"]
+  );
+  const [vehicleModelsResource, setVehicleModelsResource] = useRecoilState(
+    staticResources["vehicle_models"]
   );
   const [nscPujResource, setNscPujResource] = useRecoilState(
     staticResources["nscPuj"]
@@ -118,17 +121,13 @@ export const Dashboard = () => {
           const vehicleStyleData = await StaticDataApi.get("vehicle_styles");
           const vehicleTypeData = await StaticDataApi.get("vehicle_types");
           const vehicleColourData = await StaticDataApi.get("vehicle_colours");
-          const vehicleData = await StaticDataApi.get("vehicles");
+          const vehicleMakesData = await StaticDataApi.get("vehicle_makes");
+          const vehicleModelsData = await StaticDataApi.get("vehicle_models");
           const nscPujData = await StaticDataApi.get("nsc_puj");
           const jurisdictionCountryData = await StaticDataApi.get(
             "jurisdiction_country"
           );
 
-          // Sort vehicle data alphabetically
-          const dataObj = vehicleData.data;
-          dataObj.sort((a, b) => a.search.localeCompare(b.search));
-
-          setVehicleResource(dataObj);
           setVehicleStyleResource(vehicleStyleData.data);
           setVehicleColourResource(vehicleColourData.data);
           setProvinceResource(provinceData.data);
@@ -138,11 +137,14 @@ export const Dashboard = () => {
           setCityResource(cityData.data);
           setAgencyResource(agencyData.data);
           setVehicleTypeResource(vehicleTypeData.data);
+          setVehicleMakesResource(vehicleMakesData.data);
+          setVehicleModelsResource(vehicleModelsData.data);
           setNscPujResource(nscPujData.data);
           setJurisdictionCountryResource(jurisdictionCountryData.data);
 
           try {
-            await db.vehicles.clear();
+            await db.vehicleMakes.clear();
+            await db.vehicleModels.clear();
             await db.vehicleStyles.clear();
             await db.vehicleColours.clear();
             await db.provinces.clear();
@@ -155,7 +157,8 @@ export const Dashboard = () => {
             await db.nscPuj.clear();
             await db.jurisdictionCountry.clear();
 
-            await db.vehicles.bulkPut(vehicleData.data);
+            await db.vehicleMakes.bulkPut(vehicleMakesData.data);
+            await db.vehicleModels.bulkPut(vehicleModelsData.data);
             await db.vehicleStyles.bulkPut(vehicleStyleData.data);
             await db.vehicleColours.bulkPut(vehicleColourData.data);
             await db.provinces.bulkPut(provinceData.data);
@@ -175,7 +178,8 @@ export const Dashboard = () => {
         }
         setStaticDataLoaded(true);
       } else {
-        setVehicleResource(await db.vehicles.toArray());
+        setVehicleMakesResource(await db.vehicleMakes.toArray());
+        setVehicleModelsResource(await db.vehicleModels.toArray());
         setVehicleStyleResource(await db.vehicleStyles.toArray());
         setVehicleColourResource(await db.vehicleColours.toArray());
         setProvinceResource(await db.provinces.toArray());
@@ -194,7 +198,8 @@ export const Dashboard = () => {
     fetchData();
     setLastUpdatedDate(new Date().toLocaleString());
   }, [
-    setVehicleResource,
+    setVehicleMakesResource,
+    setVehicleModelsResource,
     setVehicleColourResource,
     setVehicleStyleResource,
     setProvinceResource,
@@ -219,7 +224,8 @@ export const Dashboard = () => {
           eventObjectFlatener(eventData),
           userResource,
           provinceResource,
-          vehicleResource,
+          vehicleMakesResource,
+          vehicleModelsResource,
           vehicleStyleResource,
           jusrisdictionResource,
           cityResource,
@@ -244,7 +250,8 @@ export const Dashboard = () => {
   }, [
     userResource,
     provinceResource,
-    vehicleResource,
+    vehicleMakesResource,
+    vehicleModelsResource,
     vehicleStyleResource,
     jusrisdictionResource,
     cityResource,

@@ -12,10 +12,11 @@ import { MultiSelectField } from "../common/Select/MultiSelectField";
 import { ICBCVehicleDataApi } from "../../api/icbcVehicleDataApi";
 import { toast } from "react-toastify";
 import { NumberField } from "../common/Input/NumberField";
+import { useRecoilValue } from "recoil";
+import { staticResources } from "../../utils/helpers";
 
 export const VehicleInfo = (props) => {
   const {
-    vehicles,
     years,
     vehicleStyles,
     vehicleColours,
@@ -29,6 +30,14 @@ export const VehicleInfo = (props) => {
   const [vehicleJurisdictionOptions, setVehicleJurisdictionOptions] =
     useState(jurisdictions);
   const driversLicenceJurisdiction = values["vehicle_jurisdiction"];
+
+  const vehicleMakesAtom = useRecoilValue(staticResources["vehicle_makes"]);
+  const vehicleModelsAtom = useRecoilValue(staticResources["vehicle_models"]);
+
+  const [vehicleMakes, setVehicleMakes] = useState([]);
+  const [vehicleModels, setVehicleModels] = useState([]);
+  const [filteredModels, setFilteredModels] = useState([]);
+
   if (nscPuj[0].value !== "") {
     nscPuj.unshift({ value: "", label: "---" });
   }
@@ -44,6 +53,43 @@ export const VehicleInfo = (props) => {
     }
   }, [driversLicenceJurisdiction]);
 
+  useEffect(() => {
+    setVehicleMakes(
+      vehicleMakesAtom.map((each) => ({
+        label: each.make_dsc,
+        value: each.make_cd,
+      }))
+    );
+    setVehicleModels(
+      vehicleModelsAtom.map((each) => ({
+        label: each.model_dsc,
+        value: each.model_cd,
+        make: each.make_cd,
+      }))
+    );
+    setFilteredModels(
+      vehicleModelsAtom.map((each) => ({
+        label: each.model_dsc,
+        value: each.model_cd,
+        make: each.make_cd,
+      }))
+    );
+  }, [vehicleMakesAtom, vehicleModelsAtom]);
+
+  useEffect(() => {
+    async function filterModels() {
+      values["vehicle_model"] = null;
+      const selectedMake = values["vehicle_make"];
+      const models = await vehicleModels.filter(
+        (each) => each.make === selectedMake.value
+      );
+      await setFilteredModels(models);
+    }
+    if (values["vehicle_make"]) {
+      filterModels();
+    }
+  }, [values["vehicle_make"], vehicleMakes]);
+
   const fetchICBCVehicleInfo = async () => {
     if (values["vehicle_plate_no"]) {
       await ICBCVehicleDataApi.get(values["vehicle_plate_no"]).then((resp) => {
@@ -58,7 +104,8 @@ export const VehicleInfo = (props) => {
             (item) => item.label === vehicle.vehicleColour.toUpperCase()
           )[0].value;
           setFieldValue("vehicle_colour", [colour]);
-          setFieldValue("vehicle_mk_md", vehicle.vehicleMake + " - ");
+          // TODO: UPDATE THIS
+          setFieldValue("vehicle_make", vehicle.vehicleMake);
           setFieldValue("vehicle_vin_no", vehicle.vehicleIdNumber);
           setFieldValue(
             "vehicle_year",
@@ -149,7 +196,7 @@ export const VehicleInfo = (props) => {
               />
             </Col>
           )}
-          <Col sm={5}>
+          <Col sm={4}>
             <SearchableSelect
               className="field-height field-width"
               label="Vehicle Type"
@@ -157,8 +204,6 @@ export const VehicleInfo = (props) => {
               options={vehicleTypes}
             />
           </Col>
-        </Row>
-        <Row style={{ minHeight: "85px" }}>
           <Col sm={3}>
             <SearchableSelect
               className="field-height field-width"
@@ -168,13 +213,23 @@ export const VehicleInfo = (props) => {
               required
             />
           </Col>
+        </Row>
+        <Row style={{ minHeight: "85px" }}>
           <Col sm={3}>
             <SearchableSelect
               className="field-height field-width"
-              label="Vehicle Make and Model"
-              name="vehicle_mk_md"
-              options={vehicles}
+              label="Vehicle Make"
+              name="vehicle_make"
+              options={vehicleMakes}
               required
+            />
+          </Col>
+          <Col sm={3}>
+            <SearchableSelect
+              className="field-height field-width"
+              label="Vehicle Model"
+              name="vehicle_model"
+              options={filteredModels}
             />
           </Col>
           <Col sm={3}>
@@ -231,8 +286,9 @@ export const VehicleInfo = (props) => {
 };
 
 VehicleInfo.propTypes = {
-  vehicles: PropTypes.array.isRequired,
   vehicleStyles: PropTypes.array.isRequired,
+  vehicelMakes: PropTypes.array.isRequired,
+  vehicleModels: PropTypes.array.isRequired,
   vehicleColours: PropTypes.array.isRequired,
   jurisdictions: PropTypes.array.isRequired,
   jurisdictionCountry: PropTypes.array.isRequired,

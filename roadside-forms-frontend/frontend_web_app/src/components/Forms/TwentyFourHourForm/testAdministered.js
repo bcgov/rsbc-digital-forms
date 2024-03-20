@@ -49,7 +49,6 @@ export const TestAdministered = (props) => {
   }, [values["prescribed_test_used"]]);
 
   useEffect(() => {
-    console.log("Values: ", values);
     if (values["type_of_prohibition"] === "alcohol") {
       // alco-sensor / instrument / PPCT
       if (values["resonable_test_used_alcohol"] !== "alco-sensor") {
