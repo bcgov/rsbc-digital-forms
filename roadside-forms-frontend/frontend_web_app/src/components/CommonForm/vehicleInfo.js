@@ -12,6 +12,7 @@ import { MultiSelectField } from "../common/Select/MultiSelectField";
 import { ICBCVehicleDataApi } from "../../api/icbcVehicleDataApi";
 import { toast } from "react-toastify";
 import { NumberField } from "../common/Input/NumberField";
+import moment from "moment-timezone";
 
 export const VehicleInfo = (props) => {
   const {
@@ -76,7 +77,10 @@ export const VehicleInfo = (props) => {
           });
           setFieldValue("regist_owner_last_name", party.lastName);
           setFieldValue("regist_owner_first_name", party.firstName);
-          setFieldValue("regist_owner_dob", new Date(party.birthDate));
+          setFieldValue(
+            "regist_owner_dob",
+            moment(party.birthDate).tz("America/Vancouver").toDate()
+          );
           setFieldValue("regist_owner_address", address.addressLine1);
           setFieldValue("regist_owner_city", address.city);
           setFieldValue("regist_owner_postal", address.postalCode);
