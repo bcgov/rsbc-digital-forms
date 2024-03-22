@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           install: true
 
@@ -81,7 +81,7 @@ jobs:
           REACT_APP_API_BASE_URL: ${{ secrets.REACT_APP_API_BASE_URL }}
           PUBLIC_URL: ${{ secrets.PUBLIC_URL }}
           REACT_APP_GIT_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ${{ inputs.DOCKER_CONTEXT }}
           file: ${{ inputs.DOCKER_FILE }}
