@@ -5,13 +5,9 @@ Scorecard](https://api.securityscorecards.dev/projects/github.com/bcgov/rsbc-dig
 
 This repository contians all components related to Digital forms application managed by RSBC team. It is a web based application used by the RCMP and other police agencies across the province of BC to issue various forms.
 
-## Tests
-
-- TODO
-
 ### OpenShift Deployment
 
-- TODO
+- See the deployment documents provided.
 
 ## Requirements
 
@@ -93,3 +89,5 @@ To address this, you may:
 - Open an Incognito window (Chrome/Chromium)
 
 ## Architecture Diagrams
+
+- see the architechture diagrams provided.
