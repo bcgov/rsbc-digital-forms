@@ -11,14 +11,39 @@ export const SVGprint = ({
   formType,
   values,
   impoundLotOperators,
+  renderStage,
 }) => {
   const formFields = formFieldLayout[formLayout][formType];
   const allFormFields = formFieldLayout[formLayout]["fields"];
   const viewBox = formFieldLayout[formLayout]["viewbox"];
+  var svgStyle = {}
 
   if (Object.keys(values).length) {
+    if (renderStage === "stageTwo") {
+      if (formLayout === "TwelveHour") {
+        svgStyle = {
+          marginTop: "28px",
+        }
+      }
+      else if (formLayout === "TwentyFourHour") {
+        svgStyle = {
+          marginLeft: "0px",
+          marginRight: "0px",
+          marginTop: "28px",
+          marginBottom: "0px"
+        }
+      }
+      else if (formLayout === "VI") {
+        svgStyle = {
+          marginLeft: "-430px",
+          marginRight: "-280px",
+          marginTop: "50px",
+          marginBottom: "40px"
+        }
+      }
+    }
     return (
-      <div>
+      <div style={ svgStyle }>
         <svg
           viewBox={viewBox}
           xmlns="http://www.w3.org/2000/svg"

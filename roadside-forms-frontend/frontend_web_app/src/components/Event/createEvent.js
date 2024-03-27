@@ -666,6 +666,7 @@ export const CreateEvent = () => {
               formType={form}
               values={valuesCopy}
               impoundLotOperators={impoundAtom}
+              renderStage={renderStage}
             />
           );
         }
@@ -866,7 +867,7 @@ export const CreateEvent = () => {
       case 3:
         return <PoliceDetails />;
       case 4:
-        return renderSVGForm(values, "stageTwo");
+        return <div style={{ minWidth: "1640px" }}>{renderSVGForm(values, "stageTwo")}</div>;
       // Add more cases for each page
       default:
         return null;
