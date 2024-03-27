@@ -71,6 +71,17 @@ Should anything go awry with the above commands, you may wish to isolate the fai
    - `kill -9 DOCKER_PROCESS_ID` to end the process
    - `sudo dockerd` to restart the process
 
+Depending on your postgres setup you may have to use `host.docker.internal`.
+
+Once you've spun up the app you may want to manually update the approved_dt:
+
+```
+psql -U <your_user> <your_db>
+UPDATE user_role
+SET approved_dt = submitted_dt
+WHERE 1=1;
+```
+
 ### Browser Caching
 
 If you are rebuilding often, you may encounter browser caching.
