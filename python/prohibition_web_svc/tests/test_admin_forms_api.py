@@ -4,45 +4,73 @@ import pytest
 import base64
 import logging
 from datetime import datetime, timedelta
-from python.prohibition_web_svc.models import Form
+from python.prohibition_web_svc.models import Form, User, UserRole
 from python.prohibition_web_svc.app import db, create_app
-from python.prohibition_web_svc.config import Config
+from python.prohibition_web_svc.config import Config, TestConfig
+
+
+@pytest.fixture(scope='module')
+def application():
+    Config.RUNNING_TESTS = True
+    app = create_app()
+    app.config.from_object(TestConfig)
+    with app.app_context():
+        yield app
 
 
 @pytest.fixture
-def app():
-    return create_app()
-
-
-@pytest.fixture
-def as_guest(app):
-    app.config['TESTING'] = True
-    with app.test_client() as client:
+def as_guest(application):
+    with application.test_client() as client:
         yield client
 
 
 @pytest.fixture
-def database(app):
-    with app.app_context():
-        db.init_app(app)
-        db.create_all()
+def database(application):
+    with application.app_context():
+        db.session.begin_nested()
         yield db
-        db.drop_all()
         db.session.commit()
+        db.session.rollback()
+        db.session.close()
 
 
 @pytest.fixture
-def forms(database):
+def clean_db(database):
+    UserRole.query.delete()
+    Form.query.delete()
+    User.query.delete()
+    db.session.commit()
+
+
+@pytest.fixture
+def forms(database,clean_db):
     today = datetime.strptime("2021-07-21", "%Y-%m-%d")
     yesterday = today - timedelta(days=1)
+
+    user = User(
+            user_guid='larry@idir',
+            username='larry@idir',
+            agency='RCMP Terrace',
+            badge_number="8808",
+            first_name="Larry",
+            last_name="Smith",
+            login='larry@idir'
+            )
+    db.session.add(user)
+    db.session.commit() 
+
     forms = [
-        Form(form_id='AA-123332', form_type='24Hour', user_guid='larry@idir', lease_expiry=today, printed=None),
-        Form(form_id='AA-123333', form_type='24Hour', user_guid='larry@idir', lease_expiry=yesterday, printed=None),
-        Form(form_id='AA-123334', form_type='12Hour', user_guid='larry@idir', lease_expiry=yesterday, printed=None),
+        Form(form_id='AA-123332', form_type='24Hour', user_guid=user.user_guid, lease_expiry=today, printed=None),
+        Form(form_id='AA-123333', form_type='24Hour', user_guid=user.user_guid, lease_expiry=yesterday, printed=None),
+        Form(form_id='AA-123334', form_type='12Hour', user_guid=user.user_guid, lease_expiry=yesterday, printed=None),
         Form(form_id='AA-11111', form_type='24Hour', user_guid=None, lease_expiry=None, printed=None)
     ]
     db.session.bulk_save_objects(forms)
     db.session.commit()
+    db.session.begin_nested()
+    yield db
+    db.session.rollback()
+    db.session.close()
 
 
 @responses.activate
