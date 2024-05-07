@@ -781,7 +781,6 @@ export const validationSchema = Yup.object().shape(
         "at_least_one_impoundment_reason",
         "Please select at least one option from the list of Impoundment for Driving Behaviour",
         function (value) {
-          console.log(this.parent)
           if (this.parent.VI && 
             (this.parent.TwelveHour || this.parent.TwentyFourHour || this.parent.irp_impound === "NO")) {
             // At least one is required
