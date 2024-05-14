@@ -1,0 +1,12 @@
+name: roadside_forms_frontend-run-tests
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  run_automated_tests:
+    uses: ./.github/workflows/automated-testing-workflow.yml
+    with:
+      BUILD_CONTEXT: roadside-forms-frontend/frontend_web_app
+      NODE_VERSION: 16.14.2
+    secrets: inherit

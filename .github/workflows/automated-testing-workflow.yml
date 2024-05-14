@@ -31,7 +31,7 @@ jobs:
           node-version: ${{ inputs.NODE_VERSION }}
 
       - name: Cypress install
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           runTests: false
           working-directory: ${{ inputs.BUILD_CONTEXT }}
@@ -86,7 +86,7 @@ jobs:
         run: node -v
 
       - name: "UI Tests - Chrome"
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           start: npm run start:ci
           working-directory: ${{ inputs.BUILD_CONTEXT }}
