@@ -1,5 +1,5 @@
 
-import { render, fireEvent, act } from '@testing-library/react';
+import { render, fireEvent, act, screen } from '@testing-library/react';
 import { RecoilRoot } from 'recoil';
 import { RequestAccess } from '../../../components/RequestAccess/requestAccess';
 
@@ -31,7 +31,7 @@ describe('RequestAccess component', () => {
     const setAgencyMock = jest.fn();
     const setOptionsMock = jest.fn();
 
-    const { container, findByText} = render(
+    const { container } = render(
               <RecoilRoot
                 initializeState={(snap) => {
                     snap.set(userRolesAtom, []);
@@ -42,7 +42,7 @@ describe('RequestAccess component', () => {
               </RecoilRoot>
     );
 
-    const button = await findByText("Apply for Access");
+    const button = screen.getByText("Apply for Access");
     await act(async () => {
         fireEvent.click(button);
         await Promise.resolve(); 
