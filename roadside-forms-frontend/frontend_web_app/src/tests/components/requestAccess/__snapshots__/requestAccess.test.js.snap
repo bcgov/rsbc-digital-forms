@@ -45,6 +45,7 @@ exports[`RequestAccess component should match snapshot 1`] = `
                   SURNAME
                 </label>
                 <input
+                  autocomplete="off"
                   class="form-control"
                   id="last_name"
                   name="last_name"
@@ -63,6 +64,7 @@ exports[`RequestAccess component should match snapshot 1`] = `
                   Given
                 </label>
                 <input
+                  autocomplete="off"
                   class="form-control"
                   id="first_name"
                   name="first_name"
@@ -92,6 +94,7 @@ exports[`RequestAccess component should match snapshot 1`] = `
                     aria-live="polite"
                     aria-relevant="additions text"
                     class="css-1f43avz-a11yText-A11yText"
+                    role="log"
                   />
                   <div
                     class=" css-13cymwt-control"
@@ -110,6 +113,7 @@ exports[`RequestAccess component should match snapshot 1`] = `
                         data-value=""
                       >
                         <input
+                          aria-activedescendant=""
                           aria-autocomplete="list"
                           aria-describedby="react-select-2-placeholder"
                           aria-expanded="false"
@@ -177,6 +181,7 @@ exports[`RequestAccess component should match snapshot 1`] = `
                   PRIME ID
                 </label>
                 <input
+                  autocomplete="off"
                   class="form-control"
                   id="badge_number"
                   maxlength="6"
@@ -209,7 +214,7 @@ exports[`RequestAccess component should match snapshot 1`] = `
                     viewBox="0 0 24 24"
                   >
                     <path
-                      d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"
+                      d="M1 21h22L12 2zm12-3h-2v-2h2zm0-4h-2v-4h2z"
                     />
                   </svg>
                    
