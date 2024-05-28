@@ -19,7 +19,7 @@ gunicorn==20.1.0
 holidays==0.10.4
 idna==2.10
 iniconfig==1.1.1
-iso8601==0.1.12
+iso8601==2.1.0
 itsdangerous==2.0.1
 Jinja2==3.0.3
 korean-lunar-calendar==0.3.1
