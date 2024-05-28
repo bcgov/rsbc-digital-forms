@@ -40,7 +40,7 @@ python-json-logger==2.0.1
 python-keycloak==3.0.0
 psycopg2-binary==2.9.6
 pytz==2019.3
-PyYAML==6.0
+PyYAML==6.0.1
 requests==2.26.0
 responses==0.13.3
 rsa==4.8
