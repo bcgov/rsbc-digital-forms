@@ -33,7 +33,7 @@ Please read the following for project setup instructions.
 The following steps should only need to be completed **once**. Run the following commands from the project root directory. Wait for each command to complete before running the next.
 
 1. Create .env files for the services that have .env-sample and copy the .env-sample file contents into the respective .env file
-2. run `npm install` from within the roadside-forms-frontend/frontend_web_app `package-lock.lock` to install dependencies. Any new dependencies you want to add use npm workspaces command.
+2. run `npm install` from within the roadside-forms-frontend/frontend_web_app `package-lock.json` to install dependencies. Any new dependencies you want to add use npm workspaces command.
 3. run `npm run serve` from within the roadside-forms-frontend/frontend_web_app to host the front end locally this will allow for hot reloading. You can also choose to run the front end using the docker-compose however this will not allow for hot reloading.
 4. have a terminal at the root level and run `docker-compose up --build` to build and deploy the prohibition_web_svc as well as if needed the form_handler services. However, these do not utilize hot reloading and must be re-built every time changes are made.
 5. If you have model changes and need a database migration these are currently handled using alembic. First go into your config.py in the prohibition_web_svc and change the DB_HOST from `db` to `localhost`. To create the migration use a venv to install the requirements.txt locally and then from the prohibition_web_svc run `flask db migrate` and once you have checked over or modified the migration in the versions folder run `flask db upgrade` to apply the migration.
