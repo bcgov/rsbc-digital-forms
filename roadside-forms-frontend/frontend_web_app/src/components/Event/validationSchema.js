@@ -260,7 +260,7 @@ export const validationSchema = Yup.object().shape(
         // Check if the input date is valid and within the desired age range
         if (isNaN(ageInYears) || ageInYears < 10 || ageInYears > 120) {
           return this.createError({
-            message: "Driver must be between 10 to 120 years old",
+            message: "Registered Owner must be between 10 to 120 years old",
           });
         }
 
@@ -281,7 +281,7 @@ export const validationSchema = Yup.object().shape(
           // or if the input month is equal to the current month but the input day is greater,
           // return an error message
           return this.createError({
-            message: "Driver must be at least 10 years old",
+            message: "Registered Owner must be at least 10 years old",
           });
         }
 
