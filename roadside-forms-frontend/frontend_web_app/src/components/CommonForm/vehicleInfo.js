@@ -77,7 +77,7 @@ export const VehicleInfo = (props) => {
           });
           setFieldValue("regist_owner_last_name", party.lastName);
           setFieldValue("regist_owner_first_name", party.firstName);
-          if (!!party.birthDate) {
+          if (party.birthDate) {
             setFieldValue(
               "regist_owner_dob",
               moment(party.birthDate).tz("America/Vancouver").toDate()
