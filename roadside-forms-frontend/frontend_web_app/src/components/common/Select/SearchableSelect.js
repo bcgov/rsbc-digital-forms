@@ -40,6 +40,12 @@ export const SearchableSelect = ({
         options={options}
         isDisabled={disabled}
         isSearchable
+        styles={{
+          option: (baseStyles) => ({
+            ...baseStyles,
+            minHeight: 40,
+          }),
+        }}
       />
       <input
         name={field.name}
