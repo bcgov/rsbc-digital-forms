@@ -216,7 +216,7 @@ export const validationSchema = Yup.object().shape(
     nsc_no: Yup.string()
       .max(14, "NSC no. must be 14 characters or less")
       .when(["nsc_prov_state"], {
-        is: (nsc_prov_state) => !!nsc_prov_state && nsc_prov_state.value !== "",
+        is: (nsc_prov_state) => !!nsc_prov_state && !!nsc_prov_state.value,
         then: () =>
           Yup.string()
             .required("NSC no. is required when NSC Province/State is provided")

@@ -30,7 +30,7 @@ export const VehicleInfo = (props) => {
   const [vehicleJurisdictionOptions, setVehicleJurisdictionOptions] =
     useState(jurisdictions);
   const driversLicenceJurisdiction = values["vehicle_jurisdiction"];
-  if (nscPuj[0].value !== "") {
+  if (nscPuj[0].value) {
     nscPuj.unshift({ value: "", label: "---" });
   }
 
@@ -161,6 +161,7 @@ export const VehicleInfo = (props) => {
               label="Vehicle Type"
               name="vehicle_type"
               options={vehicleTypes}
+              isClearable="true"
             />
           </Col>
         </Row>
@@ -220,6 +221,7 @@ export const VehicleInfo = (props) => {
               label="NSC Prov / State"
               name="nsc_prov_state"
               options={nscPuj}
+              isClearable="true"
             />
           </Col>
           <Col sm={4}>
