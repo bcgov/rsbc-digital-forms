@@ -22,12 +22,14 @@ export const RegisteredOwnerInfo = (props) => {
     if (
       ownedByCorp &&
       (values["regist_owner_last_name"] !== "" ||
-        values["regist_owner_first_name"] !== "")
+       values["regist_owner_first_name"] !== "" ||
+       values["regist_owner_dob"] !== "")
     ) {
       const updatedValues = {
         ...values,
         regist_owner_last_name: "",
         regist_owner_first_name: "",
+        regist_owner_dob: ""
       };
 
       setValues(updatedValues);

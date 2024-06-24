@@ -30,7 +30,7 @@ export const VehicleInfo = (props) => {
   const [vehicleJurisdictionOptions, setVehicleJurisdictionOptions] =
     useState(jurisdictions);
   const driversLicenceJurisdiction = values["vehicle_jurisdiction"];
-  if (nscPuj[0].value !== "") {
+  if (nscPuj[0].value) {
     nscPuj.unshift({ value: "", label: "---" });
   }
 
@@ -57,7 +57,7 @@ export const VehicleInfo = (props) => {
           setFieldValue("vehicle_registration_no", vehicle.registrationNumber);
           const colour = vehicleColours.filter(
             (item) => item.label === vehicle.vehicleColour.toUpperCase()
-          )[0].value;
+          )[0]?.value;
           setFieldValue("vehicle_colour", [colour]);
           setFieldValue("vehicle_mk_md", vehicle.vehicleMake + " - ");
           setFieldValue("vehicle_vin_no", vehicle.vehicleIdNumber);
@@ -77,10 +77,12 @@ export const VehicleInfo = (props) => {
           });
           setFieldValue("regist_owner_last_name", party.lastName);
           setFieldValue("regist_owner_first_name", party.firstName);
-          setFieldValue(
-            "regist_owner_dob",
-            moment(party.birthDate).tz("America/Vancouver").toDate()
-          );
+          if (party.birthDate) {
+            setFieldValue(
+              "regist_owner_dob",
+              moment(party.birthDate).tz("America/Vancouver").toDate()
+            );
+          }
           setFieldValue("regist_owner_address", address.addressLine1);
           setFieldValue("regist_owner_city", address.city);
           setFieldValue("regist_owner_postal", address.postalCode);
@@ -159,6 +161,7 @@ export const VehicleInfo = (props) => {
               label="Vehicle Type"
               name="vehicle_type"
               options={vehicleTypes}
+              isClearable="true"
             />
           </Col>
         </Row>
@@ -218,6 +221,7 @@ export const VehicleInfo = (props) => {
               label="NSC Prov / State"
               name="nsc_prov_state"
               options={nscPuj}
+              isClearable="true"
             />
           </Col>
           <Col sm={4}>
