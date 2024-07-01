@@ -23,7 +23,7 @@
     "postcss": "^8.2.4",
     "postcss-import": "^14.0.0",
     "react": "^18.2.0",
-    "react-bootstrap": "^2.7.2",
+    "react-bootstrap": "^2.10.4",
     "react-dom": "^18.2.0",
     "react-redux": "^9.0.4",
     "react-router-dom": "6.19.0",
