@@ -4,7 +4,7 @@ import { createRequestHeader } from "../utils/requestHeaders";
 export const StaticDataApi = {
   get: async function (resource) {
     const headers = {
-      ...createRequestHeader(),
+      ...await createRequestHeader(),
     };
     return await api
       .request({

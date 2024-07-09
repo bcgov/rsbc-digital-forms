@@ -9,7 +9,7 @@ jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
     useNavigate: jest.fn(),
   }));
-describe('Dashboard component', () => {
+describe('Dashboard', () => {
     beforeAll(() => {
         jest.useFakeTimers();
         jest.setSystemTime(new Date("2024-01-01T00:00"));

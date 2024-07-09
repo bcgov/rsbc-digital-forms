@@ -7,7 +7,7 @@ import {createRequestHeader} from '../../utils/requestHeaders'
 jest.mock('../../utils/requestHeaders', () => ({
     createRequestHeader: jest.fn()
   }));
-describe('UserApi Testing', () => {
+describe('userApi', () => {
   beforeEach(() => {
     // Reset the mock for createRequestHeader before each test
     createRequestHeader.mockClear();

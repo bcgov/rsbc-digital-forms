@@ -4,7 +4,7 @@ import { createRequestHeader } from "../utils/requestHeaders";
 export const ICBCVehicleDataApi = {
   get: async function (licencePlate) {
     const headers = {
-      ...createRequestHeader(),
+      ...await createRequestHeader(),
     };
     return await api
       .request({
