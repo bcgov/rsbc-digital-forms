@@ -3,6 +3,12 @@ import {createRequestHeader} from '../../utils/requestHeaders'
 import { cleanup } from '@testing-library/react';
 import { StaticDataApi } from "../../api/staticDataApi"
 
+jest.mock('@react-keycloak/web', () => ({
+  ...jest.requireActual('@react-keycloak/web'),
+  useKeycloak: jest.fn(),
+  updateToken: (_) => 'token',
+}));
+
 describe("StaticDataApi", () => {
     beforeEach(cleanup);
     test("should return data on successful request", async () => {
@@ -29,7 +35,7 @@ describe("StaticDataApi", () => {
       expect(api.request).toHaveBeenCalledWith({
         url: `/api/v1/static/${resource}`,
         method: "GET",
-        headers: createRequestHeader(),
+        headers: await createRequestHeader(),
       });
       expect(result).toEqual({ status: expectedStatus, data: expectedData });
     });
@@ -49,7 +55,7 @@ describe("StaticDataApi", () => {
       expect(api.request).toHaveBeenCalledWith({
         url: `/api/v1/static/${resource}`,
         method: "GET",
-        headers: createRequestHeader(),
+        headers: await createRequestHeader(),
       });
       expect(result).toEqual({
         status: expectedErrorStatus,
