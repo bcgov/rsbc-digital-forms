@@ -4,7 +4,7 @@ import { createRequestHeader } from "../utils/requestHeaders";
 export const UserRolesApi = {
   get: async function () {
     const headers = {
-      ...createRequestHeader(),
+      ...await createRequestHeader(),
     };
     return await api
       .request({
@@ -28,7 +28,7 @@ export const UserRolesApi = {
 
   post: async function (data) {
     const headers = {
-      ...createRequestHeader(),
+      ...await createRequestHeader(),
     };
     const response = await api.request({
       url: "/api/v1/user_roles",
