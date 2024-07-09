@@ -3,14 +3,15 @@ import {createRequestHeader} from '../../utils/requestHeaders'
 import { cleanup } from '@testing-library/react';
 import { FormIDApi } from '../../api/formIDApi';
 
-jest.mock('@react-keycloak/web', () => ({
-  ...jest.requireActual('@react-keycloak/web'),
-  useKeycloak: jest.fn(),
-  updateToken: (_) => 'token',
+jest.mock('../../utils/requestHeaders', () => ({
+  createRequestHeader: jest.fn()
 }));
 
 describe('formIDApi', () => {
-    beforeEach(cleanup);
+    beforeEach(() => {
+      cleanup();
+      createRequestHeader.mockReturnValue({ 'Authorization': 'Bearer token' });
+    });
 
     test('should post data on successful request', async () => {
       // Arrange

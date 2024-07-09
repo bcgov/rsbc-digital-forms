@@ -5,12 +5,18 @@ import { StaticDataApi } from "../../api/staticDataApi"
 
 jest.mock('@react-keycloak/web', () => ({
   ...jest.requireActual('@react-keycloak/web'),
-  useKeycloak: jest.fn(),
-  updateToken: (_) => 'token',
+  useKeycloak: jest.fn()
+}));
+
+jest.mock('../../utils/requestHeaders', () => ({
+  createRequestHeader: jest.fn()
 }));
 
 describe("staticDataApi", () => {
-    beforeEach(cleanup);
+    beforeEach(() => {
+      cleanup();
+      createRequestHeader.mockReturnValue({ 'Authorization': 'Bearer token' });
+    });
     test("should return data on successful request", async () => {
       // Arrange
       const resource = "agencies";
