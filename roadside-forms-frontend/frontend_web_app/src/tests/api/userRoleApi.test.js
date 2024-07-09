@@ -1,15 +1,22 @@
 import { UserRolesApi } from '../../api/userRolesApi';
 import { api} from "../../api/config/axiosConfig"
 import { cleanup } from '@testing-library/react';
+import {createRequestHeader} from '../../utils/requestHeaders';
 
 jest.mock('@react-keycloak/web', () => ({
   ...jest.requireActual('@react-keycloak/web'),
-  useKeycloak: jest.fn(),
-  updateToken: (_) => 'token',
+  useKeycloak: jest.fn()
+}));
+
+jest.mock('../../utils/requestHeaders', () => ({
+  createRequestHeader: jest.fn()
 }));
 
 describe('userRolesApi', () => {
-    beforeEach(cleanup);
+    beforeEach(() => {
+      cleanup();
+      createRequestHeader.mockReturnValue({ 'Authorization': 'Bearer token' });
+    });
     test('should fetch user role info', async () => {
     const userRolesApiData = [
       {
