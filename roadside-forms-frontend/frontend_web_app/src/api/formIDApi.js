@@ -4,7 +4,7 @@ import { createRequestHeader } from "../utils/requestHeaders";
 export const FormIDApi = {
   post: async function (data) {
     const headers = {
-      ...createRequestHeader(),
+      ...await createRequestHeader(),
     };
 
     const response = await api
@@ -23,7 +23,7 @@ export const FormIDApi = {
 
   get: async function () {
     const headers = {
-      ...createRequestHeader(),
+      ...await createRequestHeader(),
     };
     return await api
       .request({
@@ -43,7 +43,7 @@ export const FormIDApi = {
   },
   patch: async function (data) {
     const headers = {
-      ...createRequestHeader(),
+      ...await createRequestHeader(),
     };
     return await api
       .request({

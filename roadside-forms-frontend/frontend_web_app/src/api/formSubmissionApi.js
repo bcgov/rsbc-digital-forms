@@ -4,7 +4,7 @@ import { createRequestHeader } from "../utils/requestHeaders";
 export const FormSubmissionApi = {
   post: async function (data) {
     const headers = {
-      ...createRequestHeader(),
+      ...await createRequestHeader(),
     };
     return await api
       .request({
@@ -26,7 +26,7 @@ export const FormSubmissionApi = {
 
   get: async function () {
     const headers = {
-      ...createRequestHeader(),
+      ...await createRequestHeader(),
     };
     return await api
       .request({
