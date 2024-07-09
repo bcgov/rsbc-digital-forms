@@ -7,18 +7,19 @@ export const FormIDApi = {
       ...await createRequestHeader(),
     };
 
-    const response = await api
-      .request({
-        url: "/api/v1/forms",
-        method: "POST",
-        headers: { ...headers },
-        data: JSON.stringify(data),
-      })
-      .catch(function (error) {
-        console.log(error.toJSON());
-      });
-
-    return response.data;
+    try {
+      const response = await api
+        .request({
+          url: "/api/v1/forms",
+          method: "POST",
+          headers: { ...headers },
+          data: JSON.stringify(data),
+        });
+      return response.data;      
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
   },
 
   get: async function () {
