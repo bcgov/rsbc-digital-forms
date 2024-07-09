@@ -256,3 +256,260 @@ exports[`RequestAccess component should match snapshot 1`] = `
   </div>
 </div>
 `;
+
+exports[`RequestAccess should match snapshot 1`] = `
+<div>
+  <div
+    class="border-design text-font"
+  >
+    <div>
+      <p>
+        <span
+          class="fw-bold"
+        >
+          Welcome to the Digital Forms system
+        </span>
+      </p>
+      <p>
+        <em>
+          WARNING: This system is for use by authorized law enforcement officers only.
+        </em>
+      </p>
+      <p>
+        You currently do not have access to the Digital Forms system.
+      </p>
+      <p>
+        Please apply for access after completing the training course and with the approval of your unit commander.
+      </p>
+    </div>
+    <div>
+      <div
+        class=" d-flex justify-content-center mt-2"
+      >
+        <form
+          action="#"
+        >
+          <div
+            class="row"
+          >
+            <div
+              class="col-sm-3"
+            >
+              <div>
+                <label
+                  for="last_name"
+                >
+                  SURNAME
+                </label>
+                <input
+                  autocomplete="off"
+                  class="form-control"
+                  id="last_name"
+                  name="last_name"
+                  type="text"
+                  value=""
+                />
+              </div>
+            </div>
+            <div
+              class="col-sm-3"
+            >
+              <div>
+                <label
+                  for="first_name"
+                >
+                  Given
+                </label>
+                <input
+                  autocomplete="off"
+                  class="form-control"
+                  id="first_name"
+                  name="first_name"
+                  type="text"
+                  value=""
+                />
+              </div>
+            </div>
+            <div
+              class="col-sm-4"
+            >
+              <div>
+                <label
+                  for="agency"
+                >
+                  Agency or RCMP Detachment
+                </label>
+                <div
+                  class="field-width field-height css-b62m3t-container"
+                >
+                  <span
+                    class="css-1f43avz-a11yText-A11yText"
+                    id="react-select-2-live-region"
+                  />
+                  <span
+                    aria-atomic="false"
+                    aria-live="polite"
+                    aria-relevant="additions text"
+                    class="css-1f43avz-a11yText-A11yText"
+                    role="log"
+                  />
+                  <div
+                    class=" css-13cymwt-control"
+                  >
+                    <div
+                      class=" css-1fdsijx-ValueContainer"
+                    >
+                      <div
+                        class=" css-1jqq78o-placeholder"
+                        id="react-select-2-placeholder"
+                      >
+                        Select...
+                      </div>
+                      <div
+                        class=" css-qbdosj-Input"
+                        data-value=""
+                      >
+                        <input
+                          aria-activedescendant=""
+                          aria-autocomplete="list"
+                          aria-describedby="react-select-2-placeholder"
+                          aria-expanded="false"
+                          aria-haspopup="true"
+                          autocapitalize="none"
+                          autocomplete="off"
+                          autocorrect="off"
+                          class=""
+                          id="agency-select"
+                          role="combobox"
+                          spellcheck="false"
+                          style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
+                          tabindex="0"
+                          type="text"
+                          value=""
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class=" css-1hb7zxy-IndicatorsContainer"
+                    >
+                      <span
+                        class=" css-1u9des2-indicatorSeparator"
+                      />
+                      <div
+                        aria-hidden="true"
+                        class=" css-1xc3v61-indicatorContainer"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="css-tj5bde-Svg"
+                          focusable="false"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          width="20"
+                        >
+                          <path
+                            d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <input
+                    name="agency"
+                    type="hidden"
+                    value=""
+                  />
+                </div>
+                <input
+                  id="agency"
+                  name="agency"
+                  type="hidden"
+                  value=""
+                />
+              </div>
+            </div>
+            <div
+              class="col-sm-2"
+            >
+              <div>
+                <label
+                  for="badge_number"
+                >
+                  PRIME ID
+                </label>
+                <input
+                  autocomplete="off"
+                  class="form-control"
+                  id="badge_number"
+                  maxlength="6"
+                  name="badge_number"
+                  type="text"
+                  value=""
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="info-container"
+          >
+            <div
+              class="row"
+            >
+              <div
+                class="col"
+              />
+              <div
+                class="col-9 left-align"
+                style="text-align: center;"
+              >
+                <p>
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium text-warning css-i4bv87-MuiSvgIcon-root"
+                    data-testid="WarningIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M1 21h22L12 2zm12-3h-2v-2h2zm0-4h-2v-4h2z"
+                    />
+                  </svg>
+                   
+                  <span
+                    class="fw-bold"
+                  >
+                    PRIME ID
+                  </span>
+                   is the username you use to log into the MDT (CAD) and the MRE.
+                  <br />
+                </p>
+                <ul
+                  class="ml-10"
+                  style="list-style-position: inside; text-align: center;"
+                >
+                  <li>
+                    For independents, this is your agency's two-letter abbreviation followed by 2 to 4 numbers.
+                  </li>
+                  <br />
+                  <li>
+                    For RCMP members, this will be your 6 digit HRMIS.
+                  </li>
+                </ul>
+              </div>
+              <div
+                class="col"
+              />
+            </div>
+          </div>
+          <button
+            class="btn btn-primary"
+            type="submit"
+          >
+            Apply for Access
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+`;

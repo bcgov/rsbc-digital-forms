@@ -1,28 +1,38 @@
 import { UserRolesApi } from '../../api/userRolesApi';
 import { api} from "../../api/config/axiosConfig"
+import { cleanup } from '@testing-library/react';
 
-test('should fetch user role info ', async () => {
-  const userRolesApiData = [
-    {
-        approved_dt : "Thu, 22 Jun 2023 16:51:39 GMT",
-        role_name: "administrator",
-        submitted_dt: "Thu, 22 Jun 2023 16:51:39 GMT",
-        user_guid: "91D388D1889HHGFGFHG6TF777FF7F7F7"
-    },
-    {
-        approved_dt : "Thu, 22 Jun 2023 16:51:39 GMT",
-        role_name: "officer",
-        submitted_dt: "Thu, 22 Jun 2023 16:51:39 GMT",
-        user_guid: "91D388D1889HHGFGFHG6TF777FF7F7F7"
-    },
-  ];
+jest.mock('@react-keycloak/web', () => ({
+  ...jest.requireActual('@react-keycloak/web'),
+  useKeycloak: jest.fn(),
+  updateToken: (_) => 'token',
+}));
 
-  const resp = { data: userRolesApiData };
-  api.request = jest.fn().mockResolvedValueOnce(resp); 
+describe('userRolesApi', () => {
+    beforeEach(cleanup);
+    test('should fetch user role info', async () => {
+    const userRolesApiData = [
+      {
+          approved_dt : "Thu, 22 Jun 2023 16:51:39 GMT",
+          role_name: "administrator",
+          submitted_dt: "Thu, 22 Jun 2023 16:51:39 GMT",
+          user_guid: "91D388D1889HHGFGFHG6TF777FF7F7F7"
+      },
+      {
+          approved_dt : "Thu, 22 Jun 2023 16:51:39 GMT",
+          role_name: "officer",
+          submitted_dt: "Thu, 22 Jun 2023 16:51:39 GMT",
+          user_guid: "91D388D1889HHGFGFHG6TF777FF7F7F7"
+      },
+    ];
 
-  const result = await UserRolesApi.get();
+    const resp = { data: userRolesApiData };
+    api.request = jest.fn().mockResolvedValueOnce(resp); 
 
-  expect(result).toEqual({
-    data: userRolesApiData
+    const result = await UserRolesApi.get();
+
+    expect(result).toEqual({
+      data: userRolesApiData
+    });
   });
 });

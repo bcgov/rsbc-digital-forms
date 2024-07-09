@@ -19,7 +19,7 @@ export const createRequestHeader = async (customHeaders = {}) => {
       Authorization: `Bearer ${keycloak.token}`,
     }
   } catch (error) {
-    console.error(error)
+    console.log(error)
     return baseHeader;
   }
 }
