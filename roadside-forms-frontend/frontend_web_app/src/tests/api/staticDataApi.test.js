@@ -3,8 +3,20 @@ import {createRequestHeader} from '../../utils/requestHeaders'
 import { cleanup } from '@testing-library/react';
 import { StaticDataApi } from "../../api/staticDataApi"
 
-describe("StaticDataApi", () => {
-    beforeEach(cleanup);
+jest.mock('@react-keycloak/web', () => ({
+  ...jest.requireActual('@react-keycloak/web'),
+  useKeycloak: jest.fn()
+}));
+
+jest.mock('../../utils/requestHeaders', () => ({
+  createRequestHeader: jest.fn()
+}));
+
+describe("staticDataApi", () => {
+    beforeEach(() => {
+      cleanup();
+      createRequestHeader.mockReturnValue({ 'Authorization': 'Bearer token' });
+    });
     test("should return data on successful request", async () => {
       // Arrange
       const resource = "agencies";
@@ -29,7 +41,7 @@ describe("StaticDataApi", () => {
       expect(api.request).toHaveBeenCalledWith({
         url: `/api/v1/static/${resource}`,
         method: "GET",
-        headers: createRequestHeader(),
+        headers: await createRequestHeader(),
       });
       expect(result).toEqual({ status: expectedStatus, data: expectedData });
     });
@@ -49,7 +61,7 @@ describe("StaticDataApi", () => {
       expect(api.request).toHaveBeenCalledWith({
         url: `/api/v1/static/${resource}`,
         method: "GET",
-        headers: createRequestHeader(),
+        headers: await createRequestHeader(),
       });
       expect(result).toEqual({
         status: expectedErrorStatus,
