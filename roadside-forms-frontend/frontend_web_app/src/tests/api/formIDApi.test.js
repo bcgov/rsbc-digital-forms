@@ -9,7 +9,7 @@ jest.mock('@react-keycloak/web', () => ({
   updateToken: (_) => 'token',
 }));
 
-describe('FormIDApi', () => {
+describe('formIDApi', () => {
     beforeEach(cleanup);
 
     test('should post data on successful request', async () => {

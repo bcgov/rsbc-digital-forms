@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, screen } from '@testing-library/react';
 import { Header } from '../components/common/Header/Header';
 import { useKeycloak } from '@react-keycloak/web';
 import { BrowserRouter } from 'react-router-dom';
@@ -15,7 +15,7 @@ describe('Keycloak test', () => {
       initialized: true,
     });
 
-    const { getByTestId } = render(<BrowserRouter><Header /></BrowserRouter>);
-    expect(getByTestId('roadsafety-header')).toBeInTheDocument();
+    render(<BrowserRouter><Header /></BrowserRouter>);
+    expect(screen.getByTestId('roadsafety-header')).toBeInTheDocument();
   });
 });

@@ -9,7 +9,7 @@ jest.mock('@react-keycloak/web', () => ({
   updateToken: (_) => 'token',
 }));
 
-describe("StaticDataApi", () => {
+describe("staticDataApi", () => {
     beforeEach(cleanup);
     test("should return data on successful request", async () => {
       // Arrange
