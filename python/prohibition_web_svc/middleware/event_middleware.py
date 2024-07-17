@@ -67,8 +67,7 @@ def save_event_data(**kwargs) -> tuple:
                 'value': None, 'label': None}).get('value'),
             vehicle_style=data.get('vehicle_style', {
                 'value': None, 'label': None}).get('value'),
-            vehicle_type=data.get('vehicle_type', {
-                'value': None, 'label': None}).get('value'),
+            vehicle_type=(lambda x: x.get('value') if x else None)(data.get('vehicle_type', None)),
             vehicle_colour=data.get('vehicle_colour'),
             vehicle_vin_no=data.get('vehicle_vin_no'),
             intersection_or_address_of_offence=data.get(
@@ -242,7 +241,7 @@ def save_event_data(**kwargs) -> tuple:
         db.session.add(event)
         db.session.commit()
     except Exception as e:
-        logging.warning(str(e))
+        logging.error(e, stack_info=True)
         return False, kwargs
     kwargs['response_dict'] = jsonify(event)
     kwargs['event'] = event
