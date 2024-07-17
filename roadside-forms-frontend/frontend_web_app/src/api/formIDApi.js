@@ -4,26 +4,27 @@ import { createRequestHeader } from "../utils/requestHeaders";
 export const FormIDApi = {
   post: async function (data) {
     const headers = {
-      ...createRequestHeader(),
+      ...await createRequestHeader(),
     };
 
-    const response = await api
-      .request({
-        url: "/api/v1/forms",
-        method: "POST",
-        headers: { ...headers },
-        data: JSON.stringify(data),
-      })
-      .catch(function (error) {
-        console.log(error.toJSON());
-      });
-
-    return response.data;
+    try {
+      const response = await api
+        .request({
+          url: "/api/v1/forms",
+          method: "POST",
+          headers: { ...headers },
+          data: JSON.stringify(data),
+        });
+      return response.data;      
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
   },
 
   get: async function () {
     const headers = {
-      ...createRequestHeader(),
+      ...await createRequestHeader(),
     };
     return await api
       .request({
@@ -43,7 +44,7 @@ export const FormIDApi = {
   },
   patch: async function (data) {
     const headers = {
-      ...createRequestHeader(),
+      ...await createRequestHeader(),
     };
     return await api
       .request({

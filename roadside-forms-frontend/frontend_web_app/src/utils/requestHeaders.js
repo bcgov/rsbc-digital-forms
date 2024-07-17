@@ -5,10 +5,21 @@ import keycloak from "../keycloak";
 
 // This file is anticipated to have multiple exports
 // eslint-disable-next-line import/prefer-default-export
-export const createRequestHeader = (customHeaders = {}) => ({
-  "Content-Type": "application/json",
-  "Access-Control-Allow-Origin": "*",
-  Authorization: `Bearer ${keycloak.token}`,
-  credentials: "same-origin",
-  ...customHeaders,
-});
+export const createRequestHeader = async (customHeaders = {}) => {
+  const baseHeader = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    credentials: "same-origin",
+    ...customHeaders,
+  };
+  try {
+    await keycloak.updateToken(30);
+    return {
+      ...baseHeader,
+      Authorization: `Bearer ${keycloak.token}`,
+    }
+  } catch (error) {
+    console.log(error)
+    return baseHeader;
+  }
+}

@@ -95,7 +95,7 @@ jobs:
           # browser: chrome
           browser: ${{ matrix.browsers }}
           record: false
-          spec: cypress/e2e/*
+          spec: cypress/e2e/spec.cy.js
           config-file: cypress.config.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

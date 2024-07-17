@@ -4,7 +4,7 @@ import { createRequestHeader } from "../utils/requestHeaders";
 export const UserApi = {
   getAll: async function () {
     const headers = {
-      ...createRequestHeader(),
+      ...await createRequestHeader(),
     };
     return await api
       .request({
@@ -26,7 +26,7 @@ export const UserApi = {
       });
   },
   delete: async function (data) {
-    const headers = createRequestHeader();
+    const headers = await createRequestHeader();
     return await api
       .request({
         url: `/api/v1/admin/users/${data.user_guid}/roles/${data.role_name}`,
@@ -48,7 +48,7 @@ export const UserApi = {
   },
   get: async function (userId) {
     const headers = {
-      ...createRequestHeader(),
+      ...await createRequestHeader(),
     };
     return await api
       .request({

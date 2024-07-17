@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Dashboard component renders dashboard component correctly 1`] = `
+exports[`Dashboard renders dashboard component correctly 1`] = `
 <div>
   <div
     class="border-design text-font"

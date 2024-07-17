@@ -92,6 +92,7 @@ export const CreateEvent = () => {
   const [modalBody, setModalBody] = useState("");
   const [modalButtonOneText, setModalButtonOneText] = useState("");
   const [modalButtonTwoText, setModalButtonTwoText] = useState("");
+  const [modalButtonTwoClass, setModalButtonTwoClass] = useState("primary");
   const [isPrinted, setIsPrinted] = useState(false);
   const [modalCloseFunc, setmodalCloseFunc] = useState(() => () => null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -300,12 +301,13 @@ export const CreateEvent = () => {
     setModalButtonTwoText("");
   };
 
-  const handleShow = (title, body, buttonOneText, buttonTwoText, func) => {
+  const handleShow = (title, body, buttonOneText, buttonTwoText, func, buttonTwoClass) => {
     setModalTitle(title);
     setModalBody(body);
     setModalButtonOneText(buttonOneText);
     setModalButtonTwoText(buttonTwoText);
     setmodalCloseFunc(() => func);
+    setModalButtonTwoClass(buttonTwoClass||"primary");
     setShow(true);
   };
 
@@ -327,52 +329,55 @@ export const CreateEvent = () => {
   };
 
   const onSubmit = async (values) => {
-    await setIsSubmitting(true);
-    if (values["VI"]) {
-      const element = document.getElementById("VI");
-      const base64_png = await toPng(element);
-      values["VI_form_png"] = base64_png;
-    }
-    if (values["TwentyFourHour"]) {
-      const element = document.getElementById("TwentyFourHour");
-      const base64_png = await toPng(element);
-      values["TwentyFourHour_form_png"] = base64_png;
-    }
-    if (values["IRP"]) {
-      const element = document.getElementById("IRP");
-      const base64_png = await toPng(element);
-      values["IRP_form_png"] = base64_png;
-    }
-    if (values["TwelveHour"]) {
-      const element = document.getElementById("TwelveHour");
-      const base64_png = await toPng(element);
-      values["TwelveHour_form_png"] = base64_png;
-    }
-    if (values["date_of_impound"] && values["vehicle_impounded"] === "NO") {
-      values["date_released"] = values["date_of_impound"];
-    }
-
-    await FormSubmissionApi.post(values)
-      .then((resp) => {
-        console.log("response: ", resp);
-        if (resp.status === 201) {
-          setIsSubmitting(false);
-          setisBlockerActive(false);
-          navigate("/");
-          if (incompleteEventID) {
-            deleteIncompleteEvent(incompleteEventID);
+    try {
+      setIsSubmitting(true);
+      if (values["VI"]) {
+        const element = document.getElementById("VI");
+        const base64_png = await toPng(element);
+        values["VI_form_png"] = base64_png;
+      }
+      if (values["TwentyFourHour"]) {
+        const element = document.getElementById("TwentyFourHour");
+        const base64_png = await toPng(element);
+        values["TwentyFourHour_form_png"] = base64_png;
+      }
+      if (values["IRP"]) {
+        const element = document.getElementById("IRP");
+        const base64_png = await toPng(element);
+        values["IRP_form_png"] = base64_png;
+      }
+      if (values["TwelveHour"]) {
+        const element = document.getElementById("TwelveHour");
+        const base64_png = await toPng(element);
+        values["TwelveHour_form_png"] = base64_png;
+      }
+      if (values["date_of_impound"] && values["vehicle_impounded"] === "NO") {
+        values["date_released"] = values["date_of_impound"];
+      }
+  
+      await FormSubmissionApi.post(values)
+        .then((resp) => {
+          console.log("response: ", resp);
+          if (resp.status === 201) {
+            setIsSubmitting(false);
+            setisBlockerActive(false);
+            navigate("/");
+            if (incompleteEventID) {
+              deleteIncompleteEvent(incompleteEventID);
+            }
+          } else {
+            // The form did not submit correctly. Cancel submit and display error message.
+            setIsSubmitting(false);
+            setEventCreationFailedModalOpen(true);
           }
-        } else {
-          // The form did not submit correctly. Cancel submit and display error message.
-          setIsSubmitting(false);
-          setEventCreationFailedModalOpen(true);
-        }
-      })
-      .catch((err) => {
-        console.error("An error occurred submitting the event: ", err);
-        setIsSubmitting(false);
-      });
-  };
+        })
+      
+    } catch (error) {
+      console.error("An error occurred submitting the event: ", error);
+      setIsSubmitting(false);
+      setEventCreationFailedModalOpen(true);
+    }
+  }
   const handleSpoilForm = async () => {
     await spoilForm(incompleteEventID);
     await setisBlockerActive(false);
@@ -385,7 +390,8 @@ export const CreateEvent = () => {
       "Are you sure you want to spoil this form?",
       "Cancel",
       "Spoil",
-      () => handleSpoilForm()
+      () => handleSpoilForm(),
+      "danger"
     );
   };
   const fetchIDsToDelete = async (values) => {
@@ -943,27 +949,29 @@ export const CreateEvent = () => {
           </Modal.Footer>
         </Modal>
       )}
-      <div id="button-container" className="m-4">
-        <Button variant="primary" onClick={() => navigate("/")}>
-          <ArrowBack />
-          &nbsp; Return to Main Menu
-        </Button>
-      </div>
-
-      {isPrinted && (
+      <div className="flex">
         <div id="button-container" className="m-4">
-          <Button
-            variant="primary"
-            onClick={async () => {
-              cancelForm();
-            }}
-          >
+          <Button variant="primary" onClick={() => navigate("/")}>
             <ArrowBack />
-            &nbsp;
-            {"Spoil Form"}
+            &nbsp; Return to Main Menu
           </Button>
         </div>
-      )}
+
+        {isPrinted && (
+          <div id="button-container" className="m-4">
+            <Button
+              variant="danger"
+              onClick={async () => {
+                cancelForm();
+              }}
+            >
+              <Warning />
+              &nbsp;
+              {"Spoil Form"}
+            </Button>
+          </div>
+        )}
+      </div>
 
       <div className="outline">
         <Formik
@@ -1039,7 +1047,7 @@ export const CreateEvent = () => {
                   <Button variant="secondary" onClick={handleModalClose}>
                     {modalButtonOneText}
                   </Button>
-                  <Button variant="primary" onClick={handleClose}>
+                  <Button variant={modalButtonTwoClass} onClick={handleClose}>
                     {modalButtonTwoText}
                   </Button>
                 </Modal.Footer>
