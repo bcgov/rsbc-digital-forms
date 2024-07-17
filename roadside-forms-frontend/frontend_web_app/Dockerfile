@@ -19,7 +19,7 @@ ENV REACT_APP_GIT_COMMIT_HASH=$REACT_APP_GIT_COMMIT_HASH
 USER root
 WORKDIR /app
 COPY package*.json ./   
-RUN npm install
+RUN npm install --force
 COPY . .
 RUN ls -a
 
