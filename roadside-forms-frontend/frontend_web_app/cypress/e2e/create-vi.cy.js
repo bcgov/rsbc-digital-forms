@@ -1,5 +1,3 @@
-// import { cy } from 'cypress';
-
 describe('Create VI event', () => {
   beforeEach(() => {
     cy.visit('/');
