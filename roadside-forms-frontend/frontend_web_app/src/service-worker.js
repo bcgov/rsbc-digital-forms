@@ -44,19 +44,19 @@ const manifest = (self.__WB_MANIFEST || []).concat([
     revision: null,
   },
   {
-    url: "/roadside-forms/assets/MV2721_201502_appeal.png",
+    url: "/roadside-forms/assets/MV2721_202404_appeal.png",
     revision: null,
   },
   {
-    url: "/roadside-forms/assets/MV2721_201502.png",
+    url: "/roadside-forms/assets/MV2721_202404.png",
     revision: null,
   },
   {
-    url: "/roadside-forms/assets/MV2722_201502_Incident_Details.png",
+    url: "/roadside-forms/assets/MV2722_202404_Incident_Details.png",
     revision: null,
   },
   {
-    url: "/roadside-forms/assets/MV2722_201502.png",
+    url: "/roadside-forms/assets/MV2722_202404.png",
     revision: null,
   },
   {
