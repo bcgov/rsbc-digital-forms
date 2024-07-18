@@ -92,23 +92,6 @@ export const VehicleImpoundmentReason = (props) => {
               Vehicle Act.
             </span>
           </Checkbox>
-          <OverlayTrigger
-            placement="top"
-            delay={{ show: 250, hide: 400 }}
-            overlay={renderTooltip}
-            trigger={["hover", "focus"]}
-          >
-            <div>
-              <Checkbox name="motorcycle_restrictions" disabled>
-                Motorcycle (restrictions)
-                <span className="light-text">
-                  - Committing an offence under section 25(15) of the Motor
-                  Vehicle Act relating to a restriction or condition of a
-                  motorcycle learner or novice driver's licence.
-                </span>
-              </Checkbox>
-            </div>
-          </OverlayTrigger>
           <Checkbox name="unlicensed">
             Unlicensed (UL)
             <span className="light-text">
