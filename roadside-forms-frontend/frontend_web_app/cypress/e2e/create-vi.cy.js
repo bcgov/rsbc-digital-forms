@@ -87,7 +87,7 @@ describe('Create VI event', () => {
     cy.get('#stunt_driving').check();
     cy.get('#motorcycle_seating').check();
     cy.get('#excessive_speed').check();
-    cy.get('#motorcycle_restrictions').should('be.disabled');
+    cy.get('#motorcycle_restrictions').should('not.exist');
     cy.get('#unlicensed').check();
 
     cy.get('#speed_limit').type('50');

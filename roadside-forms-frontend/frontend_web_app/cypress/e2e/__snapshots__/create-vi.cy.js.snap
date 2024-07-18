@@ -1857,27 +1857,6 @@ exports[`Create VI event > successfully fills the form #0`] = `
                 >
               </div>
               <div>
-                <div>
-                  <label
-                    ><input
-                      class="mr-1"
-                      type="checkbox"
-                      id="motorcycle_restrictions"
-                      name="motorcycle_restrictions"
-                      disabled=""
-                      value="false"
-                    /><span style="margin-left: 5px;"
-                      >Motorcycle (restrictions)<span class="light-text"
-                        >- Committing an offence under section 25(15) of the
-                        Motor Vehicle Act relating to a restriction or condition
-                        of a motorcycle learner or novice driver's
-                        licence.</span
-                      ></span
-                    ></label
-                  >
-                </div>
-              </div>
-              <div>
                 <label
                   ><input
                     class="mr-1"
@@ -4043,27 +4022,6 @@ exports[`Create VI event > successfully fills the form #1`] = `
                     ></span
                   ></label
                 >
-              </div>
-              <div>
-                <div>
-                  <label
-                    ><input
-                      class="mr-1"
-                      type="checkbox"
-                      id="motorcycle_restrictions"
-                      name="motorcycle_restrictions"
-                      disabled=""
-                      value="false"
-                    /><span style="margin-left: 5px;"
-                      >Motorcycle (restrictions)<span class="light-text"
-                        >- Committing an offence under section 25(15) of the
-                        Motor Vehicle Act relating to a restriction or condition
-                        of a motorcycle learner or novice driver's
-                        licence.</span
-                      ></span
-                    ></label
-                  >
-                </div>
               </div>
               <div>
                 <label
