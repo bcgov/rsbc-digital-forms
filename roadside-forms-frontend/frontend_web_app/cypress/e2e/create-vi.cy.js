@@ -42,9 +42,7 @@ describe('Create VI event', () => {
 
   it('successfully fills the form', () => {
     const now = new Date(2024, 6, 17);
-    cy.clock(now).then(clock => {
-      clock.setSystemTime(now);
-    });
+    cy.clock(now);
     cy.intercept('**/api/v1/icbc/drivers/01234567').as('getDL');
     cy.intercept('**/api/v1/icbc/vehicles/RH5234').as('getVehicle');
     
