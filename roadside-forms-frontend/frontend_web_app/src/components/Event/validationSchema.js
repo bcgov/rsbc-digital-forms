@@ -981,7 +981,7 @@ export const validationSchema = Yup.object().shape(
           Yup.date()
             .required("Date of Test is required")
             .max(
-              moment().startOf("day"),
+              moment().endOf("day"),
               "Date of Test cannot be a future date"
             ),
       }), // Only for 24h required if prescribed_test_used is "Yes"
