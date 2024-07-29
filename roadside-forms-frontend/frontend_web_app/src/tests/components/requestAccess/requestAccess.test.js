@@ -13,7 +13,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn(),
 }));
 
-describe('RequestAccess component', () => {
+describe('RequestAccess', () => {
   test('should match snapshot',async () => {
     const handleClickMock = jest.fn(); 
     StaticDataApi.get = jest.fn().mockResolvedValue({
