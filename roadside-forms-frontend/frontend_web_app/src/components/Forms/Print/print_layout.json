@@ -1515,16 +1515,6 @@
           "y": 138.25
         }
       },
-      "REASON_MOTORCYCLE_RESTRICTIONS": {
-        "field_type": "checkbox",
-        "field_name": "motorcycle_restrictions",
-        "field_val": "",
-        "classNames": "fontText",
-        "start": {
-          "x": 52,
-          "y": 140.25
-        }
-      },
       "REASON_UNLICENSED": {
         "field_type": "checkbox",
         "field_name": "unlicensed",
@@ -1532,7 +1522,7 @@
         "classNames": "fontText",
         "start": {
           "x": 52,
-          "y": 144
+          "y": 140.75
         }
       },
       "UL_NUMBER": {
@@ -1947,16 +1937,6 @@
           "y": 126
         }
       },
-      "REPORT_REASON_MC_RESTRICTIONS": {
-        "field_type": "checkbox",
-        "field_name": "motorcycle_restrictions",
-        "field_val": "",
-        "classNames": "fontSmall",
-        "start": {
-          "x": 52.75,
-          "y": 129.25
-        }
-      },
       "REPORT_REASON_UNLICENSED": {
         "field_type": "checkbox",
         "field_name": "unlicensed",
@@ -1964,7 +1944,7 @@
         "classNames": "fontSmall",
         "start": {
           "x": 52.75,
-          "y": 132.5
+          "y": 129.5
         }
       },
       "INCIDENT_DETAILS_EXPLAINED_BELOW": {
@@ -2138,7 +2118,6 @@
       "REASON_PROHIBITED",
       "REASON_STUNT_DRIVING",
       "REASON_MOTORCYCLE_SEATING",
-      "REASON_MOTORCYCLE_RESTRICTIONS",
       "REASON_UNLICENSED",
       "UL_NUMBER",
       "IMPOUND_DATE",
@@ -2195,7 +2174,6 @@
       "REASON_PROHIBITED",
       "REASON_STUNT_DRIVING",
       "REASON_MOTORCYCLE_SEATING",
-      "REASON_MOTORCYCLE_RESTRICTIONS",
       "REASON_UNLICENSED",
       "UL_NUMBER",
       "IMPOUND_DATE",
@@ -2252,7 +2230,6 @@
       "REASON_PROHIBITED",
       "REASON_STUNT_DRIVING",
       "REASON_MOTORCYCLE_SEATING",
-      "REASON_MOTORCYCLE_RESTRICTIONS",
       "REASON_UNLICENSED",
       "UL_NUMBER",
       "IMPOUND_DATE",
@@ -2297,7 +2274,6 @@
       "REPORT_REASON_RACING",
       "REPORT_REASON_STUNT",
       "REPORT_REASON_MC_SEATING",
-      "REPORT_REASON_MC_RESTRICTIONS",
       "REPORT_REASON_UNLICENSED",
       "REPORT_OFFICER_BADGE_NUMBER",
       "REPORT_OFFICER_LAST_NAME",

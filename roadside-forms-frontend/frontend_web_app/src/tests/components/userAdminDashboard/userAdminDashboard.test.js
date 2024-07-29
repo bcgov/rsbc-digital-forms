@@ -12,7 +12,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn(),
 }));
 
-describe('UserAdminDashboard component', () => {
+describe('UserAdminDashboard', () => {
   test('should match snapshot', async () => {
     const mockNavigate = jest.fn();
 
