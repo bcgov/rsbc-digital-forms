@@ -70,7 +70,7 @@ export const UserApi = {
       });
   },
   post: async function (data) {
-    const headers = createRequestHeader();
+    const headers = await createRequestHeader();
     return await api
       .request({
         url: "/api/v1/users",
@@ -92,7 +92,7 @@ export const UserApi = {
       });
   },
   patch: async function (data) {
-    const headers = createRequestHeader();
+    const headers = await createRequestHeader();
     return await api
       .request({
         url: `/api/v1/admin/users/${data.user_guid}/roles/officer`,
@@ -113,7 +113,7 @@ export const UserApi = {
       });
   },
   postAdmin: async function (data) {
-    const headers = createRequestHeader();
+    const headers = await createRequestHeader();
     return await api
       .request({
         url: `/api/v1/admin/users/${data.user_guid}/roles`,
