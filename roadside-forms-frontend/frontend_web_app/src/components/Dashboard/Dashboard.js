@@ -105,6 +105,12 @@ export const Dashboard = () => {
     }
   };
 
+  const fetchLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      console.log(`geolocation - Lat: ${position.coords.latitude} Long: ${position.coords.longitude}`)
+    }, () => console.error('unable to fetch location'));
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       if (isConnected) {
@@ -192,6 +198,7 @@ export const Dashboard = () => {
     };
 
     fetchData();
+    fetchLocation();
     setLastUpdatedDate(new Date().toLocaleString());
   }, [
     setVehicleResource,
