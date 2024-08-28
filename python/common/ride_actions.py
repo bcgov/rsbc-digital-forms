@@ -2,15 +2,107 @@ import logging
 import logging.config
 import requests
 import datetime
+from python.common.helper import date_time_to_string
 from python.common.vips_api import vips_str_to_datetime
-import python.common.vips_api as vips
-import iso8601
 from python.common.config import Config
 import pytz
+
+from python.form_handler.models import Agency, JurisdictionCrossRef, Province
 
 ride_url=Config.RIDE_API_URL
 ride_key=Config.RIDE_API_KEY
 local_tz = pytz.timezone('Canada/Pacific')
+
+twelve_hours_submitted = "12hr_submitted"
+
+def twelve_hours_event(**args):
+    try:
+        logging.info("sending 12_hr_event to RIDE")
+        logging.debug(args)
+        if len(args.keys())==0:
+            return True, args
+
+        eventPayload = {}
+        payloadRecord = {}
+        eventPayload['typeofevent'] = twelve_hours_submitted
+        eventPayload['twelveHoursPayload'] = []
+
+        payloadRecord["eventVersion"] = 1.0
+        payloadRecord["eventDtm"] = get_eventDtm(args)
+        payloadRecord["eventType"] = twelve_hours_submitted
+        payloadRecord["twelveHourNumber"] = args['form_data']['twelve_hour_number']
+        payloadRecord["driverLicenceNumber"] = args['event_data']['driver_licence_no']
+        payloadRecord["driverCityTown"] = args['event_data']['driver_city']
+        payloadRecord["driverProvince"] = get_Province(args)
+        payloadRecord["driverPostalCode"] = args['event_data']['driver_postal']
+        payloadRecord["driverJurisdiction"] = get_vehicle_jurisdiction(args)
+        payloadRecord["addressOfOffence"] = args['event_data']['intersection_or_address_of_offence']
+        payloadRecord["offenceCity"] = args['event_data']['offence_city']
+        payloadRecord["typeOfProhibition"] = args['event_data']['type_of_prohibition']
+        payloadRecord["officerBadgeNumber"] = args['user_data']['badge_number']
+        payloadRecord["enforcementAgencyName"] = args['user_data']['agency']
+        payloadRecord["vjurCde"] = get_VJur_Code(args, payloadRecord)
+        eventPayload['twelveHoursPayload'].append(payloadRecord)
+
+        endpoint = f"{ride_url}/dfV2events/12hrsubmitted"
+        headers = {'ride-api-key': ride_key}
+        logging.info(f'calling RIDE Producer endpoint: {endpoint}')
+        logging.debug(f'payload: {eventPayload}')
+        logging.debug(f'headers: {headers}')
+        response = requests.post(endpoint, json=eventPayload, verify=False,headers=headers)
+        logging.debug(response.json())
+    except Exception as e:
+        logging.error('error in sending 12_hr_submitted event to RIDE')
+        logging.error(e)  
+
+    return True, args
+
+def get_eventDtm(args) -> str:
+    date_of_driving = args['event_data']['date_of_driving'].strftime('%Y-%m-%d')
+    time_of_driving = args['event_data']['time_of_driving']
+    date_time_of_driving = datetime.datetime.strptime(date_of_driving + ' ' + time_of_driving, '%Y-%m-%d %H:%M')
+    return date_time_to_string(date_time_of_driving)
+
+def get_VJur_Code(args, payloadRecord) -> str:
+    application = args.get('app')
+    db = args.get('db')
+    with application.app_context():
+        agency_data = db.session.query(Agency) \
+                        .filter(Agency.agency_name == payloadRecord["enforcementAgencyName"]) \
+                        .all()
+        if len(agency_data) == 0:
+            logging.error("jurisdiction not found")
+            return 'not found'
+        else:
+            return agency_data[0].vjur
+        
+def get_Province(args) -> str:
+    if args['event_data']['driver_prov']:
+        application = args.get('app')
+        db = args.get('db')
+        with application.app_context():
+            province_data = db.session.query(Province) \
+                            .filter(Province.objectCd == args['event_data']['driver_prov']) \
+                            .all()
+            if len(province_data) == 0:
+                logging.error("Province not found")
+            else:
+                return province_data[0].objectDsc
+    return None
+        
+def get_vehicle_jurisdiction(args) -> str:
+    if args['event_data']["vehicle_jurisdiction"]:
+        application = args.get('app')
+        db = args.get('db')
+        with application.app_context():
+            juris_data = db.session.query(JurisdictionCrossRef) \
+                    .filter(JurisdictionCrossRef.jurisdiction_code == args['event_data']['driver_jurisdiction']) \
+                    .all()
+            if len(juris_data) == 0:
+                logging.error("vehicle jurisdiction not found")
+            else:
+                return juris_data[0].jurisdiction_name
+    return None
 
 def app_accepted_event(**args):    
     try:

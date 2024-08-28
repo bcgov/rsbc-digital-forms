@@ -139,3 +139,11 @@ def check_credentials(username, password, username_submitted, password_submitted
     if username_submitted == username and password_submitted == password:
         return True
     return False
+
+def date_time_to_string(date: datetime) -> str:
+    # local_tz = pytz.timezone('Canada/Pacific')
+    # # tformat = "%Y-%m-%dT%H:%M:%S.%f"
+    # # tformatted = date.strftime(tformat)
+    # tmp_formatted=date.replace(tzinfo=datetime.timezone.utc).astimezone(tz=local_tz)
+    format_string = "%Y-%m-%d %H:%M:%S"
+    return date.strftime(format_string)
