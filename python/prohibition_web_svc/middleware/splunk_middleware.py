@@ -1,5 +1,4 @@
 
-
 def log_static_get(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "get static resource",
@@ -181,3 +180,14 @@ def basic_authentication_failed(**kwargs) -> tuple:
     }
     return True, kwargs
 
+
+def update_user_last_active_splunk(**kwargs):
+    user_guid = kwargs.get('user_guid', '')
+    username = kwargs.get('username', '')
+
+    kwargs['splunk_data'] = {
+        "event": "update user last active",
+        "user_guid": user_guid,
+        "username": username,
+    }
+    return True, kwargs
