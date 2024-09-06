@@ -1,5 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`UserAdminDashboard calls UserApi.getAll on component mount 1`] = `<div />`;
+
+exports[`UserAdminDashboard navigates to home page if user is not an administrator 1`] = `<div />`;
+
 exports[`UserAdminDashboard should match snapshot 1`] = `
 <div>
   <div
