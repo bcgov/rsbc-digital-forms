@@ -143,7 +143,7 @@ exports[`Dashboard renders dashboard component correctly 1`] = `
       </h3>
       <span>
         Last updated at 
-        2024-01-01, 12:00:00 a.m.
+        1/1/2024, 12:00:00 AM
       </span>
     </div>
     <hr
