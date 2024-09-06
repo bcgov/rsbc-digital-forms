@@ -2,18 +2,19 @@ import logging
 import logging.config
 import requests
 import datetime
-from python.common.helper import date_time_to_string
+from python.common.helper import date_time_to_local_tz_string, format_date_only, yes_no_string_to_bool
 from python.common.vips_api import vips_str_to_datetime
 from python.common.config import Config
 import pytz
 
-from python.form_handler.models import Agency, JurisdictionCrossRef, Province
+from python.form_handler.models import Agency, City, JurisdictionCrossRef, Province, Vehicle, VehicleColour, VehicleStyle, VehicleType
 
 ride_url=Config.RIDE_API_URL
 ride_key=Config.RIDE_API_KEY
 local_tz = pytz.timezone('Canada/Pacific')
 
 twelve_hours_submitted = "12hr_submitted"
+twenty_four_hours_submitted = "24hr_submitted"
 
 def twelve_hours_event(**args):
     try:
@@ -27,21 +28,10 @@ def twelve_hours_event(**args):
         eventPayload['typeofevent'] = twelve_hours_submitted
         eventPayload['twelveHoursPayload'] = []
 
-        payloadRecord["eventVersion"] = 1.0
-        payloadRecord["eventDtm"] = get_eventDtm(args)
         payloadRecord["eventType"] = twelve_hours_submitted
         payloadRecord["twelveHourNumber"] = args['form_data']['twelve_hour_number']
-        payloadRecord["driverLicenceNumber"] = args['event_data']['driver_licence_no']
-        payloadRecord["driverCityTown"] = args['event_data']['driver_city']
-        payloadRecord["driverProvince"] = get_Province(args)
-        payloadRecord["driverPostalCode"] = args['event_data']['driver_postal']
-        payloadRecord["driverJurisdiction"] = get_vehicle_jurisdiction(args)
-        payloadRecord["addressOfOffence"] = args['event_data']['intersection_or_address_of_offence']
-        payloadRecord["offenceCity"] = args['event_data']['offence_city']
         payloadRecord["typeOfProhibition"] = args['event_data']['type_of_prohibition']
-        payloadRecord["officerBadgeNumber"] = args['user_data']['badge_number']
-        payloadRecord["enforcementAgencyName"] = args['user_data']['agency']
-        payloadRecord["vjurCde"] = get_VJur_Code(args, payloadRecord)
+        fill_common_payload_record(args, payloadRecord)
         eventPayload['twelveHoursPayload'].append(payloadRecord)
 
         endpoint = f"{ride_url}/dfV2events/12hrsubmitted"
@@ -57,11 +47,85 @@ def twelve_hours_event(**args):
 
     return True, args
 
-def get_eventDtm(args) -> str:
-    date_of_driving = args['event_data']['date_of_driving'].strftime('%Y-%m-%d')
-    time_of_driving = args['event_data']['time_of_driving']
-    date_time_of_driving = datetime.datetime.strptime(date_of_driving + ' ' + time_of_driving, '%Y-%m-%d %H:%M')
-    return date_time_to_string(date_time_of_driving)
+def twenty_four_hours_event(**args):
+    try:
+        logging.info("sending 24_hr_event to RIDE")
+        logging.debug(args)
+        if len(args.keys())==0:
+            return True, args
+
+        eventPayload = {}
+        payloadRecord = {}
+        eventPayload['typeofevent'] = twenty_four_hours_submitted
+        eventPayload['twentyFourHoursPayload'] = []
+
+        payloadRecord["eventType"] = twenty_four_hours_submitted
+        payloadRecord["twentyFourHrNo"] = args['form_data']['twenty_four_hour_number']
+        payloadRecord["typeOfProhibition"] = args['event_data']['type_of_prohibition']
+        fill_common_payload_record(args, payloadRecord)
+        payloadRecord["vehicleImpounded"] = yes_no_string_to_bool(args['form_data']['vehicle_impounded'])
+        payloadRecord["reasonableTestAlcohol"] = args['form_data']['resonable_test_used_alcohol']
+        payloadRecord["reasonForNotImpounding"] = args['form_data']['reason_for_not_impounding']
+        payloadRecord["reasonableGroundOther"] = args['form_data']['reasonable_ground_other']
+        payloadRecord["reasonableGroundOtherReason"] = args['form_data']['reasonable_ground_other_reason']
+        payloadRecord["prescribedTestUsed"] = yes_no_string_to_bool(args['form_data']['prescribed_test_used'])
+        payloadRecord["requestedPrescribedTest"] = yes_no_string_to_bool(args['form_data']['requested_prescribed_test'])
+        payloadRecord["requestedAlcoholTestResult"] = args['form_data']['requested_alcohol_test_result']
+        payloadRecord["requestedApprovedInstrumentUsed"] = args['form_data']['requested_approved_instrument_used']
+        payloadRecord["requestedTestUsedAlcohol"] = args['form_data']['requested_test_used_alcohol']
+        payloadRecord["requestedTestUsedDrug"] = args['form_data']['requested_test_used_drug']
+
+        eventPayload['twentyFourHoursPayload'].append(payloadRecord)
+
+        endpoint = f"{ride_url}/dfV2events/24hrsubmitted"
+        headers = {'ride-api-key': ride_key}
+        logging.info(f'calling RIDE Producer endpoint: {endpoint}')
+        logging.debug(f'payload: {eventPayload}')
+        logging.debug(f'headers: {headers}')
+        response = requests.post(endpoint, json=eventPayload, verify=False,headers=headers)
+        if response.status_code != 200:
+            logging.error('error in sending 24_hr_submitted event to RIDE')
+            logging.error(f'error code: {response.status_code} error message: {response.json()}')
+        else:
+            logging.debug(response.json())
+    except Exception as e:
+        logging.error('error in sending 24_hr_submitted event to RIDE')
+        logging.error(e)  
+
+    return True, args
+
+
+def fill_common_payload_record(args, payloadRecord):
+    payloadRecord["eventVersion"] = 1.0
+    payloadRecord["eventDtm"] = date_time_to_local_tz_string(args['event_data']['created_dt'])
+    payloadRecord["driverLicenceNumber"] = args['event_data']['driver_licence_no']
+    payloadRecord["driverCityTown"] = args['event_data']['driver_city']
+    payloadRecord["driverProvince"] = get_Province(args)
+    payloadRecord["driverPostalCode"] = args['event_data']['driver_postal']
+    payloadRecord["driverJurisdiction"] = get_jurisdiction(args['event_data']['driver_jurisdiction'], args)
+    payloadRecord["driverDateOfBirth"] = format_date_only(args['event_data']['driver_dob'])
+    payloadRecord["vehicleJurisdiction"] = get_jurisdiction(args['event_data']['vehicle_jurisdiction'], args)
+    payloadRecord["vehiclePlateNumber"] = args['event_data']['vehicle_plate_no']
+    payloadRecord["vehicleRegistrationNumber"] = args['event_data']['vehicle_registration_no']
+    payloadRecord["vehicleYear"] = args['event_data']['vehicle_year']
+    payloadRecord["vehicleMakeModel"] = get_vehicle_make_model(args)
+    payloadRecord["vehicleStyle"] = get_vehicle_style(args)
+    payloadRecord["ownedByCorp"] = args['event_data']['owned_by_corp']
+    payloadRecord["corporationName"] = args['event_data']['corporation_name']
+    payloadRecord["dateOfDriving"] = format_date_only(args['event_data']['date_of_driving'])
+    payloadRecord["timeOfDriving"] = args['event_data']['time_of_driving']
+    payloadRecord["agencyFileNumber"] = args['event_data']['agency_file_no']
+    payloadRecord["dateReleased"] = format_date_only(args['event_data']['date_released'])
+    payloadRecord["timeReleased"] = args['event_data']['time_released']
+    payloadRecord["vehicleTypeDesc"] = get_vehicle_type(args)
+    payloadRecord["addressOfOffence"] = args['event_data']['intersection_or_address_of_offence']
+    payloadRecord["offenceCity"] = get_city_name(args['event_data']['offence_city'], args)
+
+    payloadRecord["officerDisplayName"] = args['user_data']['display_name']
+    payloadRecord["officerBadgeNumber"] = args['user_data']['badge_number']
+    payloadRecord["enforcementAgencyName"] = args['user_data']['agency']
+    payloadRecord["vjurCde"] = get_VJur_Code(args, payloadRecord)
+
 
 def get_VJur_Code(args, payloadRecord) -> str:
     application = args.get('app')
@@ -75,7 +139,8 @@ def get_VJur_Code(args, payloadRecord) -> str:
             return 'not found'
         else:
             return agency_data[0].vjur
-        
+
+
 def get_Province(args) -> str:
     if args['event_data']['driver_prov']:
         application = args.get('app')
@@ -89,20 +154,79 @@ def get_Province(args) -> str:
             else:
                 return province_data[0].objectDsc
     return None
-        
-def get_vehicle_jurisdiction(args) -> str:
-    if args['event_data']["vehicle_jurisdiction"]:
+
+
+def get_jurisdiction(jurisdiction, args) -> str:
+    if jurisdiction:
         application = args.get('app')
         db = args.get('db')
         with application.app_context():
             juris_data = db.session.query(JurisdictionCrossRef) \
-                    .filter(JurisdictionCrossRef.jurisdiction_code == args['event_data']['driver_jurisdiction']) \
+                    .filter(JurisdictionCrossRef.jurisdiction_code == jurisdiction) \
                     .all()
             if len(juris_data) == 0:
-                logging.error("vehicle jurisdiction not found")
+                logging.error("jurisdiction not found")
             else:
                 return juris_data[0].jurisdiction_name
     return None
+
+
+def get_vehicle_make_model(args) -> str:
+    if args['event_data']['vehicle_mk_md']:
+        application = args.get('app')
+        db = args.get('db')
+        with application.app_context():
+            vehicle_make_model_data = db.session.query(Vehicle) \
+                            .filter((Vehicle.mk + '-' + Vehicle.md) == args['event_data']['vehicle_mk_md']) \
+                            .all()
+            if len(vehicle_make_model_data) == 0:
+                logging.error("vehicle make model not found")
+            else:
+                return vehicle_make_model_data[0].search
+    return None
+
+def get_vehicle_style(args) -> str:
+    if args['event_data']['vehicle_style']:
+        application = args.get('app')
+        db = args.get('db')
+        with application.app_context():
+            vehicle_style_data = db.session.query(VehicleStyle) \
+                            .filter(VehicleStyle.code == args['event_data']['vehicle_style']) \
+                            .all()
+            if len(vehicle_style_data) == 0:
+                logging.error("vehicle style not found")
+            else:
+                return vehicle_style_data[0].name
+    return None
+
+
+def get_vehicle_type(args) -> str:
+    if args['event_data']['vehicle_type']:
+        application = args.get('app')
+        db = args.get('db')
+        with application.app_context():
+            vehicle_type_data = db.session.query(VehicleType) \
+                            .filter(VehicleType.type_cd == args['event_data']['vehicle_type']) \
+                            .all()
+            if len(vehicle_type_data) == 0:
+                logging.error("vehicle type not found")
+            else:
+                return vehicle_type_data[0].description
+    return None
+
+
+def get_city_name(city_code, args) -> str:
+    application = args.get('app')
+    db = args.get('db')
+    with application.app_context():
+        city_data = db.session.query(City) \
+                        .filter(City.objectCd == city_code) \
+                        .all()
+        if len(city_data) == 0:
+            logging.error("city not found")
+        else:
+            return city_data[0].objectDsc
+    
 
 def app_accepted_event(**args):    
     try:
