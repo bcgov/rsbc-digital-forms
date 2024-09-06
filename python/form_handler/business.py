@@ -90,8 +90,8 @@ def process_incoming_form() -> dict:
             #     {"try": actions.add_to_retry_queue, "fail": []},
             #     {"try": actions.update_event_status_hold, "fail": []},
             # ]},
+            {"try": ride_actions.vi_event, "fail": []},
             {"try": actions.update_event_status, "fail": []},
-
         ],
         "24h": [
             {"try": actions.validate_event_retry_count, "fail": [

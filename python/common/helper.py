@@ -140,8 +140,8 @@ def check_credentials(username, password, username_submitted, password_submitted
         return True
     return False
 
+local_tz = pytz.timezone('Canada/Pacific')
 def date_time_to_local_tz_string(date: datetime) -> str:
-    local_tz = pytz.timezone('Canada/Pacific')
     tmp_formatted=date.replace(tzinfo=datetime.timezone.utc).astimezone(tz=local_tz)
     return format_date_time(tmp_formatted)
 
@@ -155,7 +155,7 @@ def format_date_only(date) -> str:
     if date is None or date == '':
         return None
     format_string = "%Y-%m-%d"
-    return date.strftime(format_string)
+    return date.replace(tzinfo=datetime.timezone.utc).astimezone(tz=local_tz).strftime(format_string)
 
 def yes_no_string_to_bool(value):
     if value is None or value == '':

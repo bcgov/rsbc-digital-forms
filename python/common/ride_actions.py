@@ -7,7 +7,7 @@ from python.common.vips_api import vips_str_to_datetime
 from python.common.config import Config
 import pytz
 
-from python.form_handler.models import Agency, City, JurisdictionCrossRef, Province, Vehicle, VehicleColour, VehicleStyle, VehicleType
+from python.form_handler.models import Agency, City, ImpoundLotOperator, JurisdictionCrossRef, Province, Vehicle, VehicleColour, VehicleStyle, VehicleType
 
 ride_url=Config.RIDE_API_URL
 ride_key=Config.RIDE_API_KEY
@@ -15,10 +15,11 @@ local_tz = pytz.timezone('Canada/Pacific')
 
 twelve_hours_submitted = "12hr_submitted"
 twenty_four_hours_submitted = "24hr_submitted"
+vi_submitted = "vi_submitted"
 
 def twelve_hours_event(**args):
     try:
-        logging.info("sending 12_hr_event to RIDE")
+        logging.info("sending 12hr_submitted event to RIDE")
         logging.debug(args)
         if len(args.keys())==0:
             return True, args
@@ -40,16 +41,20 @@ def twelve_hours_event(**args):
         logging.debug(f'payload: {eventPayload}')
         logging.debug(f'headers: {headers}')
         response = requests.post(endpoint, json=eventPayload, verify=False,headers=headers)
-        logging.debug(response.json())
+        if response.status_code != 200:
+            logging.error('error in sending 12hr_submitted event to RIDE')
+            logging.error(f'error code: {response.status_code} error message: {response.json()}')
+        else:
+            logging.debug(response.json())
     except Exception as e:
-        logging.error('error in sending 12_hr_submitted event to RIDE')
+        logging.error('error in sending 12hr_submitted event to RIDE')
         logging.error(e)  
 
     return True, args
 
 def twenty_four_hours_event(**args):
     try:
-        logging.info("sending 24_hr_event to RIDE")
+        logging.info("sending 24hr_submitted event to RIDE")
         logging.debug(args)
         if len(args.keys())==0:
             return True, args
@@ -84,12 +89,69 @@ def twenty_four_hours_event(**args):
         logging.debug(f'headers: {headers}')
         response = requests.post(endpoint, json=eventPayload, verify=False,headers=headers)
         if response.status_code != 200:
-            logging.error('error in sending 24_hr_submitted event to RIDE')
+            logging.error('error in sending 24hr_submitted event to RIDE')
             logging.error(f'error code: {response.status_code} error message: {response.json()}')
         else:
             logging.debug(response.json())
     except Exception as e:
-        logging.error('error in sending 24_hr_submitted event to RIDE')
+        logging.error('error in sending 24hr_submitted event to RIDE')
+        logging.error(e)  
+
+    return True, args
+
+
+def vi_event(**args):
+    try:
+        logging.info("sending vi_submitted to RIDE")
+        logging.debug(args)
+        if len(args.keys())==0:
+            return True, args
+
+        eventPayload = {}
+        payloadRecord = {}
+        eventPayload['typeofevent'] = vi_submitted
+        eventPayload['viPayload'] = []
+
+        payloadRecord["eventType"] = vi_submitted
+        payloadRecord["viNumber"] = args['form_data']['VI_number']
+        fill_common_payload_record(args, payloadRecord)
+        payloadRecord["driverGender"] = args['form_data']['gender']
+        payloadRecord["driverLicenceClass"] = args['form_data']['driver_licence_class']
+        payloadRecord["outOfProvinceDriverLicense"] = yes_no_string_to_bool(args['form_data']['out_of_province_dl'])
+        payloadRecord["impoundLotOperator"] = get_impound_lot_operator(args)
+        payloadRecord["dateOfImpound"] = format_date_only(args['form_data']['date_of_impound'])
+        payloadRecord["unlicencedProhibitionNumber"] = args['form_data']['unlicenced_prohibition_number']
+        payloadRecord["isIrp"] = yes_no_string_to_bool(args['form_data']['irp_impound'])
+        payloadRecord["irpNumber"] = args['form_data']['IRP_number']
+        payloadRecord["irpDuration"] = args['form_data']['irp_impound_duration']
+        payloadRecord["excessiveSpeed"] = args['form_data']['excessive_speed']
+        payloadRecord["prohibited"] = args['form_data']['prohibited']
+        payloadRecord["suspended"] = args['form_data']['suspended']
+        payloadRecord["streetRacing"] = args['form_data']['street_racing']
+        payloadRecord["stuntRacing"] = args['form_data']['stunt_driving']
+        payloadRecord["motorCycleSeating"] = args['form_data']['motorcycle_seating']
+        payloadRecord["motorCycleRestrictions"] = args['form_data']['motorcycle_restrictions']
+        payloadRecord["unlicensed"] = args['form_data']['unlicensed']
+        payloadRecord["driverIsRegistOwner"] = args['form_data']['driver_is_regist_owner'] == 'true'
+        payloadRecord["speedLimit"] = args['form_data']['speed_limit']
+        payloadRecord["vehicleSpeed"] = args['form_data']['vehicle_speed']
+        payloadRecord["speedEstimationTechnique"] = args['form_data']['speed_estimation_technique']
+        payloadRecord["speedConfirmationTechnique"] = args['form_data']['speed_confirmation_technique']
+        eventPayload['viPayload'].append(payloadRecord)
+
+        endpoint = f"{ride_url}/dfV2events/visubmitted"
+        headers = {'ride-api-key': ride_key}
+        logging.info(f'calling RIDE Producer endpoint: {endpoint}')
+        logging.debug(f'payload: {eventPayload}')
+        logging.debug(f'headers: {headers}')
+        response = requests.post(endpoint, json=eventPayload, verify=False,headers=headers)
+        if response.status_code != 200:
+            logging.error('error in sending vi_submitted event to RIDE')
+            logging.error(f'error code: {response.status_code} error message: {response.json()}')
+        else:
+            logging.debug(response.json())
+    except Exception as e:
+        logging.error('error in sending vi_submitted event to RIDE')
         logging.error(e)  
 
     return True, args
@@ -227,6 +289,19 @@ def get_city_name(city_code, args) -> str:
         else:
             return city_data[0].objectDsc
     
+def get_impound_lot_operator(args) -> str:
+    if args['event_data']['impound_lot_operator']:
+        application = args.get('app')
+        db = args.get('db')
+        with application.app_context():
+            impound_operator = db.session.query(ImpoundLotOperator) \
+                                .filter(ImpoundLotOperator.id == args['event_data']['impound_lot_operator']) \
+                                .all()
+            if len(impound_operator) == 0:
+                logging.error("impound lot operator not found")
+            else:
+                return impound_operator[0].name
+    return None
 
 def app_accepted_event(**args):    
     try:
