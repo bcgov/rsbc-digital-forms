@@ -1,19 +1,149 @@
-.delete{
+.delete {
     background-color: #ff0000;
 }
 
-.approve{
+.approve {
     background-color: #008000;
 }
 
-.flex{
+.flex {
     display: flex;
 }
 
-.right{
+.right {
     text-align: right;
 }
 
-.top-margin{
- margin-top: 32px;
+.top-margin {
+    margin-top: 32px;
 }
+
+// Bootstrap table styles
+.react-bootstrap-table {
+    th {
+      .filter-label {
+        .sr-only {
+          display: none; // Hiding the "Filter By text"
+        }
+      }
+    }
+  }
+
+//   .react-bootstrap-table thead th {
+//     text-align: center;
+//     vertical-align: middle;
+//   }
+  
+//   .react-bootstrap-table thead th .filter-label {
+//     text-align: center;
+//   }
+
+
+.react-bootstrap-table thead th {
+    position: relative;
+    padding-bottom: 65px !important; /* Adjust this value as needed */
+    vertical-align: top !important;
+  }
+  
+  .react-bootstrap-table thead th .header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+  }
+  
+  .react-bootstrap-table thead th .header-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px; /* Adjust this value as needed */
+  }
+  
+  .react-bootstrap-table thead th .filter-label {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+  }
+  
+  .react-bootstrap-table thead th .filter-label input {
+    width: 90%;
+    margin: 0 auto;
+  }
+  
+.react-bootstrap-table-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .react-bootstrap-table-pagination > .col-md-6:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  .react-bootstrap-table-pagination > .col-md-6:last-child {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .react-bs-table-sizePerPage-dropdown {
+    margin-right: 10px;
+  }
+  
+  .react-bootstrap-table-pagination-total {
+    white-space: nowrap;
+  }
+
+  /* Hide the default caret */
+#pageDropDown .caret {
+    display: none;
+  }
+  
+  /* Create a custom down arrow */
+  #pageDropDown::after {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 0.255em;
+    vertical-align: 0.255em;
+    border-top: 0.3em solid; /* This creates the down arrow */
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+  }
+  
+  /* Adjust the position of the custom arrow */
+  #pageDropDown {
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  #pageDropDown::after {
+    position: relative;
+    top: 2px; /* Adjust this value to fine-tune vertical position */
+    margin-left: 8px;
+  }
+  
+  /* Optional: Adjust button padding if needed */
+  #pageDropDown {
+    padding-right: 24px; /* Increase right padding to accommodate the arrow */
+  }
+  
+  @media (max-width: 767px) {
+    .react-bootstrap-table-pagination > .col-md-6:first-child,
+    .react-bootstrap-table-pagination > .col-md-6:last-child {
+      flex-basis: 100%;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+  
+    .react-bootstrap-table-pagination > .col-md-6:last-child {
+      margin-bottom: 0;
+    }
+  }

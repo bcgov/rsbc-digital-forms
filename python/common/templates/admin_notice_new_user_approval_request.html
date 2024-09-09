@@ -1,0 +1,51 @@
+{% extends "email_alert_base.html" %}
+
+{% block primary_text_1 %}
+    <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333333; line-height: 1.5;">
+        {{ body }}
+    </p>
+{% endblock %}
+
+{% block primary_text_2 %}
+    <h3 style="font-family: Arial, sans-serif; font-size: 18px; color: #2c3e50; margin-top: 20px; margin-bottom: 10px;">User Application Details:</h3>
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <tr style="background-color: #f2f2f2;">
+            <th style="font-family: Arial, sans-serif; font-size: 14px; color: #2c3e50; text-align: left; padding: 10px; border: 1px solid #ddd;">Field</th>
+            <th style="font-family: Arial, sans-serif; font-size: 14px; color: #2c3e50; text-align: left; padding: 10px; border: 1px solid #ddd;">Value</th>
+        </tr>
+        <tr>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; color: #333333; padding: 10px; border: 1px solid #ddd;">First Name</td>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; color: #333333; padding: 10px; border: 1px solid #ddd;">{{ message.first_name }}</td>
+        </tr>
+        <tr>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; color: #333333; padding: 10px; border: 1px solid #ddd;">Last Name</td>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; color: #333333; padding: 10px; border: 1px solid #ddd;">{{ message.last_name }}</td>
+        </tr>
+        <tr>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; color: #333333; padding: 10px; border: 1px solid #ddd;">Badge Number</td>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; color: #333333; padding: 10px; border: 1px solid #ddd;">{{ message.badge_number }}</td>
+        </tr>
+        <tr>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; color: #333333; padding: 10px; border: 1px solid #ddd;">Agency</td>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; color: #333333; padding: 10px; border: 1px solid #ddd;">{{ message.agency }}</td>
+        </tr>
+    </table>
+{% endblock %}
+
+{% block primary_text_3 %}
+    <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333333; line-height: 1.5; margin-bottom: 20px;">
+        Please review this user application at your earliest convenience. To access the administrative interface for processing this request, please click the button below:
+    </p>
+    <a href="{{ message.admin_link }}" style="display: inline-block; padding: 10px 20px; background-color: #3498db; color: #ffffff; text-decoration: none; font-family: Arial, sans-serif; font-size: 16px; border-radius: 5px; margin-bottom: 20px;">Review Application</a>
+    <p style="font-family: Arial, sans-serif; font-size: 14px; color: #7f8c8d; line-height: 1.5;">
+        If you're unable to click the button, you can copy and paste the following URL into your web browser:
+        <br>
+        <span style="color: #3498db;">{{ message.admin_link }}</span>
+    </p>
+{% endblock %}
+
+{% block salutation_block %}{% endblock %}
+{% block callout_block %}{% endblock %}
+{% block timeline_image %}{% endblock %}
+{% block sign_off %}{% endblock %}
+{% block email_not_monitored %}{% endblock %}
