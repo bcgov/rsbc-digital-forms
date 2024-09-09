@@ -173,6 +173,59 @@ describe('userApi', () => {
         data: null
       });
     });
+
+    test('should return successful response for updateLastActive', async () => {
+      createRequestHeader.mockReturnValueOnce({ 'Authorization': 'Bearer token' });
+  
+      const mockResponse = {
+        status: 200,
+        data: { message: 'Last active time updated successfully' }
+      };
+      const mockRequest = jest.fn().mockResolvedValueOnce(mockResponse);
+      api.request = mockRequest;
+  
+      const userId = 'user-123';
+      const result = await UserApi.updateLastActive(userId);
+  
+      expect(createRequestHeader).toHaveBeenCalledTimes(1);
+      expect(api.request).toHaveBeenCalledTimes(1);
+      expect(api.request).toHaveBeenCalledWith({
+        url: `/api/v1/users/${userId}/update-last-active`,
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer token' },
+      });
+      expect(result).toEqual({
+        status: 200,
+        data: { message: 'Last active time updated successfully' }
+      });
+    });
+  
+    test('should return error response for updateLastActive', async () => {
+      createRequestHeader.mockReturnValueOnce({ 'Authorization': 'Bearer token' });
+  
+      const mockErrorResponse = {
+        status: 404,
+        response: { message: 'User not found' }
+      };
+      const mockRequest = jest.fn().mockRejectedValueOnce(mockErrorResponse);
+      api.request = mockRequest;
+  
+      const userId = 'non-existent-user';
+      const result = await UserApi.updateLastActive(userId);
+  
+      expect(createRequestHeader).toHaveBeenCalledTimes(1);
+      expect(api.request).toHaveBeenCalledTimes(1);
+      expect(api.request).toHaveBeenCalledWith({
+        url: `/api/v1/users/${userId}/update-last-active`,
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer token' },
+      });
+      expect(result).toEqual({
+        status: 404,
+        data: { message: 'User not found' }
+      });
+    });
+    
 });
 
 
