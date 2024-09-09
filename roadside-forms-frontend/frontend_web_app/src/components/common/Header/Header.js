@@ -96,8 +96,34 @@ export const Header = () => {
       setIsLoading(false);
     }, 1000);
 
+
+    // Function to update last active time
+    const updateLastActive = async () => {
+      if (userId) {
+        try {
+          await UserApi.updateLastActive(userId);
+        } catch (error) {
+          console.error("Failed to update last active time:", error);
+        }
+      }
+    };
+    // Call updateLastActive immediately when userId is available
+    if (userId) {
+      updateLastActive();
+    }
+
+    // Set up interval to update last active time every 5 minutes
+    const lastActiveInterval = setInterval(() => {
+      if (userId) {
+        updateLastActive();
+      }
+    }, 5 * 60 * 1000); // 5 minutes in milliseconds
+
+
+
     return () => {
       clearInterval(interval);
+      clearInterval(lastActiveInterval);
       // window.removeEventListener("online", handleOnline);
       // window.removeEventListener("offline", handleOffline);
     };

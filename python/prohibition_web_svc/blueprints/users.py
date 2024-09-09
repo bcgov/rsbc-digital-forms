@@ -8,6 +8,7 @@ from flask import request, Blueprint, make_response, jsonify
 from flask_cors import CORS
 import logging.config
 import python.prohibition_web_svc.middleware.user_middleware as user_middleware
+import python.prohibition_web_svc.middleware.notification_middleware as notification_middleware
 
 
 logging.config.dictConfig(Config.LOGGING)
@@ -55,7 +56,9 @@ def create():
                         {"try": user_middleware.create_user_role, "fail": [
                             {"try": http_responses.server_error_response, "fail": []},
                         ]},
-                        # TODO - email admin with notice that user has applied
+                        {"try": notification_middleware.send_new_user_admin_notification, "fail": [
+                            {"try": logging.warning, "args": ["Failed to send admin notification email"], "fail": []}
+                        ]},
                     ]},
                     {"try": http_responses.role_already_exists, "fail": []},
                 ]},
@@ -68,7 +71,9 @@ def create():
                     {"try": user_middleware.create_user_role, "fail": [
                         {"try": http_responses.server_error_response, "fail": []},
                     ]},
-                    # TODO - email admin with notice that user has applied
+                    {"try": notification_middleware.send_new_user_admin_notification, "fail": [
+                            {"try": logging.warning, "args": ["Failed to send admin notification email"], "fail": []}
+                        ]},
                 ]},
                 {"try": http_responses.role_already_exists, "fail": []},
             ],
@@ -105,3 +110,22 @@ def delete(user_guid):
     if request.method == 'DELETE':
         return make_response({"error": "method not implemented"}, 405)
 
+
+@bp.route('/users/<string:user_guid>/update-last-active', methods=['POST'])
+def update_last_active(user_guid):
+    if request.method == 'POST':
+        kwargs = middle_logic(
+            keycloak_logic.get_keycloak_user() + [
+                {"try": user_middleware.validate_update_last_active_request, "fail": [
+                    {"try": http_responses.failed_validation, "fail": []}
+                ]},
+                {"try": splunk_middleware.update_user_last_active_splunk, "fail": []},
+                {"try": splunk.log_to_splunk, "fail": []},
+                {"try": user_middleware.update_user_last_active, "fail": [
+                    {"try": http_responses.server_error_response, "fail": []}
+                ]},
+            ],
+            request=request,
+            config=Config,
+            user_guid=user_guid)
+        return kwargs.get('response')
