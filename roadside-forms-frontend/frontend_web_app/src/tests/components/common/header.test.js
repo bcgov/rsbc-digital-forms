@@ -2,7 +2,7 @@ import React from 'react';
 import { render, act } from '@testing-library/react';
 import { RecoilRoot } from 'recoil';
 import { MemoryRouter } from 'react-router-dom';
-import { Header } from "../../../components/common/Header/header";
+import { Header } from "../../../components/common/Header/Header";
 import { UserApi } from "../../../api/userApi";
 import { UserRolesApi } from "../../../api/userRolesApi";
 import { useKeycloak } from "@react-keycloak/web";
