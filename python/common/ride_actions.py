@@ -1,9 +1,7 @@
 import logging
 import logging.config
 import requests
-import datetime
 from python.common.helper import date_time_to_local_tz_string, format_date_only, yes_no_string_to_bool
-from python.common.vips_api import vips_str_to_datetime
 from python.common.config import Config
 import pytz
 
@@ -21,7 +19,7 @@ def twelve_hours_event(**args):
     try:
         logging.info("sending 12hr_submitted event to RIDE")
         logging.debug(args)
-        if len(args.keys())==0:
+        if len(args.keys()) == 0:
             return True, args
 
         eventPayload = {}
@@ -40,15 +38,17 @@ def twelve_hours_event(**args):
         logging.info(f'calling RIDE Producer endpoint: {endpoint}')
         logging.debug(f'payload: {eventPayload}')
         logging.debug(f'headers: {headers}')
-        response = requests.post(endpoint, json=eventPayload, verify=False,headers=headers)
+        response = requests.post(endpoint, json=eventPayload, verify=False, headers=headers)
         if response.status_code != 200:
             logging.error('error in sending 12hr_submitted event to RIDE')
             logging.error(f'error code: {response.status_code} error message: {response.json()}')
+            return False, args
         else:
             logging.debug(response.json())
     except Exception as e:
         logging.error('error in sending 12hr_submitted event to RIDE')
-        logging.error(e)  
+        logging.error(e)
+        return False, args
 
     return True, args
 
@@ -91,11 +91,13 @@ def twenty_four_hours_event(**args):
         if response.status_code != 200:
             logging.error('error in sending 24hr_submitted event to RIDE')
             logging.error(f'error code: {response.status_code} error message: {response.json()}')
+            return False, args
         else:
             logging.debug(response.json())
     except Exception as e:
         logging.error('error in sending 24hr_submitted event to RIDE')
-        logging.error(e)  
+        logging.error(e)
+        return False, args
 
     return True, args
 
@@ -148,11 +150,13 @@ def vi_event(**args):
         if response.status_code != 200:
             logging.error('error in sending vi_submitted event to RIDE')
             logging.error(f'error code: {response.status_code} error message: {response.json()}')
+            return False, args
         else:
             logging.debug(response.json())
     except Exception as e:
         logging.error('error in sending vi_submitted event to RIDE')
-        logging.error(e)  
+        logging.error(e)
+        return False, args
 
     return True, args
 
@@ -197,7 +201,7 @@ def get_VJur_Code(args, payloadRecord) -> str:
                         .filter(Agency.agency_name == payloadRecord["enforcementAgencyName"]) \
                         .all()
         if len(agency_data) == 0:
-            logging.error("jurisdiction not found")
+            logging.error("VJUR code not found")
             return 'not found'
         else:
             return agency_data[0].vjur
