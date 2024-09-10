@@ -9,7 +9,6 @@ from python.form_handler.models import Agency, City, ImpoundLotOperator, Jurisdi
 
 ride_url=Config.RIDE_API_URL
 ride_key=Config.RIDE_API_KEY
-local_tz = pytz.timezone('Canada/Pacific')
 
 twelve_hours_submitted = "12hr_submitted"
 twenty_four_hours_submitted = "24hr_submitted"

@@ -8,6 +8,7 @@ from python.common.config import Config
 
 logging.config.dictConfig(Config.LOGGING)
 
+local_tz = pytz.timezone('America/Vancouver')
 
 def load_permissions_into_dict(data):
     officer_roles = {'permissions':[]}
@@ -128,8 +129,7 @@ def get_listeners(listeners: dict, key: str) -> list:
 
 
 def localize_timezone(date_time: datetime) -> datetime:
-    tz = pytz.timezone('America/Vancouver')
-    localized = tz.localize(date_time)
+    localized = local_tz.localize(date_time)
     logging.debug("localized datetime: {}".format(localized))
     return localized
 
@@ -140,7 +140,6 @@ def check_credentials(username, password, username_submitted, password_submitted
         return True
     return False
 
-local_tz = pytz.timezone('Canada/Pacific')
 def date_time_to_local_tz_string(date: datetime) -> str:
     tmp_formatted=date.replace(tzinfo=datetime.timezone.utc).astimezone(tz=local_tz)
     return format_date_time(tmp_formatted)
