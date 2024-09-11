@@ -11,7 +11,7 @@ from datetime import datetime
 from cerberus import Validator
 from base64 import b64decode
 from flask import jsonify, make_response
-from python.prohibition_web_svc.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, IRPForm, FormStorageRefs
+from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, IRPForm, FormStorageRefs
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_method1
 import img2pdf

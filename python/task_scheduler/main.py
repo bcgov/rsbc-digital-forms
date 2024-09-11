@@ -11,7 +11,7 @@ from python.task_scheduler.rabbitmq import RabbitMQ
 # app = Flask(__name__)
 
 from flask_api import FlaskAPI
-from python.task_scheduler.models import db
+from python.common.models import db
 logging.config.dictConfig(Config.LOGGING)
 
 app = FlaskAPI(__name__)

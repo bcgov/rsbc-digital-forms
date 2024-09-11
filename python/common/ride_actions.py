@@ -5,7 +5,7 @@ from python.common.helper import date_time_to_local_tz_string, format_date_only,
 from python.common.config import Config
 import pytz
 
-from python.form_handler.models import Agency, City, ImpoundLotOperator, JurisdictionCrossRef, Province, Vehicle, VehicleColour, VehicleStyle, VehicleType
+from python.common.models import Agency, City, ImpoundLotOperator, JurisdictionCrossRef, Province, Vehicle, VehicleColour, VehicleStyle, VehicleType
 
 ride_url=Config.RIDE_API_URL
 ride_key=Config.RIDE_API_KEY

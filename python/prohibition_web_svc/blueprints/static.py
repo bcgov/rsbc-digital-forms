@@ -6,7 +6,7 @@ import python.prohibition_web_svc.middleware.splunk_middleware as splunk_middlew
 from flask import request, make_response, Blueprint
 from python.common.splunk import log_to_splunk
 from flask_cors import CORS
-from python.prohibition_web_svc.models import db, Agency, City, Country, ImpoundLotOperator, Jurisdiction, Permission, Province, Vehicle, VehicleStyle, VehicleType, VehicleColour, NSCPuj, JurisdictionCountry
+from python.common.models import db, Agency, City, Country, ImpoundLotOperator, Jurisdiction, Permission, Province, Vehicle, VehicleStyle, VehicleType, VehicleColour, NSCPuj, JurisdictionCountry
 
 import logging.config
 from flask import jsonify
