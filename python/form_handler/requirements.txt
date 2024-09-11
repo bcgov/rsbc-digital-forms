@@ -10,7 +10,7 @@ minio==7.2.8
 python-keycloak==4.3.0
 pika==1.3.2
 python-json-logger==2.0.7
-Flask==3.0.3
+Flask==2.3.3
 Flask-API==3.1
 Flask-SQLAlchemy==3.1.1
 Flask-Migrate==4.0.7
@@ -18,4 +18,4 @@ psycopg2-binary==2.9.9
 PyMuPDF==1.24.10
 pyaes==1.6.1
 pbkdf2==1.3
-werkzeug==2.3.7
+Werkzeug==2.3.7
