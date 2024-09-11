@@ -6,7 +6,7 @@ from datetime import datetime
 from cerberus import Validator
 from dataclasses import asdict
 from flask import jsonify, make_response
-from python.prohibition_web_svc.models import db, Form
+from python.common.models import db, Form
 from python.prohibition_web_svc.config import Config
 
 
