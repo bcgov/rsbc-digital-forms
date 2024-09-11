@@ -12,7 +12,7 @@ import json
 from datetime import datetime
 from minio import Minio
 from minio.error import S3Error
-from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef,ImpoundReasonCodes,IloIdCrossRef,ImpoundLotOperator
+from python.common.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef,ImpoundReasonCodes,IloIdCrossRef,ImpoundLotOperator
 from python.form_handler.icbc_service import submit_to_icbc
 from python.form_handler.vips_service import create_vips_doc,create_vips_imp
 from python.form_handler.payloads import vips_payload,vips_document_payload
