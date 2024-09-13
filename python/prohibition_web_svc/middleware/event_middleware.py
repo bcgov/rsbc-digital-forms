@@ -17,6 +17,8 @@ from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_me
 import img2pdf
 import uuid
 from split_image import split_image
+from python.common.enums import ErrorCode, EventType
+from python.common.error_middleware import record_error
 
 
 def validate_update(**kwargs) -> tuple:
@@ -238,10 +240,20 @@ def save_event_data(**kwargs) -> tuple:
         if data.get('IRP'):
             return
         logging.debug('Saving Event')
+
         db.session.add(event)
         db.session.commit()
     except Exception as e:
         logging.error(e, stack_info=True)
+        # Set error in kwargs to get consumed by the record_event_error function
+        kwargs['error'] = {
+            'error_code': ErrorCode.E01,
+            'error_details': str(e),
+            'event_id': None,
+            'event_type': get_event_type(data),
+            'ticket_no': get_ticket_no(data),
+            'func': save_event_data,
+        }
         return False, kwargs
     kwargs['response_dict'] = jsonify(event)
     kwargs['event'] = event
@@ -352,6 +364,7 @@ def save_event_pdf(**kwargs) -> tuple:
                 client.fput_object(Config.STORAGE_BUCKET_NAME,
                                    encoded_file_name, encoded_pdf_filepath)
             logging.debug('File uploaded')
+            
 
             form_storage = FormStorageRefs(
                 form_id_12h=event.twelve_hour_form.form_id,
@@ -366,6 +379,15 @@ def save_event_pdf(**kwargs) -> tuple:
 
     except Exception as e:
         logging.warning(str(e))
+        # Set error in kwargs to get consumed by the record_event_error function
+        kwargs['error'] = {
+                'error_code': ErrorCode.E02,
+                'error_details': str(e),
+                'event_id': event.event_id,
+                'event_type': get_event_type(data),
+                'ticket_no': get_ticket_no(data),
+                'func': save_event_pdf,
+            }
         return False, kwargs
     return True, kwargs
 
@@ -422,3 +444,54 @@ def validate_form_payload(**kwargs) -> tuple:
         return True, kwargs
     logging.warning("validation error: " + json.dumps(''))
     return False, kwargs
+
+def record_event_error(**kwargs):
+    """
+    Record an error that occurred during event processing.
+    
+    Args:
+        **kwargs: Additional keyword arguments, including event_id and event_type.
+    """
+    
+
+    try:
+        error = kwargs.get('error')
+
+        if error is None:
+            logging.warning("Error object is None")
+            return
+        record_error(**error)
+
+
+    except Exception as e:
+        # If recording the error itself fails, log it
+        logging.error(f"Failed to record error: {str(e)}")
+        return True, kwargs
+    
+    return True, kwargs
+
+def get_event_type(data):
+    event_type = None
+    if data.get('TwelveHour'):
+        event_type = EventType.TWELVE_HOUR
+    elif data.get('TwentyFourHour'):
+        event_type = EventType.TWENTY_FOUR_HOUR
+    elif data.get('IRP'):
+        event_type = EventType.IRP
+    elif data.get('VI'):
+        event_type = EventType.VI
+    else:
+        event_type = None
+    return event_type
+
+def get_ticket_no(data):
+    if data.get('TwelveHour'):
+        return data.get("twelve_hour_number")
+    elif data.get('TwentyFourHour'):
+        return data.get("twenty_four_hour_number")
+    elif data.get('IRP'):
+        return data.get('IRP_number')
+    elif data.get('VI'):
+        return data.get('VI_number')
+    else:
+        return None
