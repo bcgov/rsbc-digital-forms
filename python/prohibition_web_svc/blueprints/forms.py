@@ -52,6 +52,7 @@ def create():
                     {"try": http_responses.bad_request_response, "fail": []}
                 ]},
                 {"try": form_middleware.lease_a_form_id, "fail": [
+                    {"try": form_middleware.record_form_error, "fail": []},
                     {"try": splunk_middleware.insufficient_form_ids, "fail": []},
                     {"try": splunk.log_to_splunk, "fail": []},
                     {"try": http_responses.server_error_response, "fail": []},
@@ -80,6 +81,7 @@ def update():
                 {"try": form_middleware.request_contains_a_payload, "fail": [
                     # Request contains no payload - renew form lease
                     {"try": form_middleware.renew_form_id_lease, "fail": [
+                        {"try": form_middleware.record_form_error, "fail": []},
                         # {"try": splunk_middleware.unable_to_renew_lease, "fail": []},
                         # {"try": splunk.log_to_splunk, "fail": []},
                         {"try": http_responses.bad_request_response, "fail": []},

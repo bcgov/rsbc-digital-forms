@@ -23,6 +23,7 @@ class EventType(BaseEnum):
     TWENTY_FOUR_HOUR = EnumDetails("TwentyFourHour", "24 Hour Prohibition")
     IRP = EnumDetails("IRP", "Immediate Roadside Prohibition")
     VI = EnumDetails("VI", "Vehicle Impoundment")
+    OTHER = EnumDetails("OTHER", "Other")
 
 class ErrorCategory(BaseEnum):
     VALIDATION = EnumDetails("VALIDATION", "Validation Error")
@@ -66,6 +67,20 @@ class ErrorCode(BaseEnum):
                            "Contact DF application support for further investigation", False)
     E02 = ErrorCodeDetails("E02", "Event PDF saving error", ErrorCategory.DATA, ErrorSeverity.HIGH, 
                            "Contact DF application support for further investigation", False)
+    
+    E03 = ErrorCodeDetails("E03", "Error putting event to queue", ErrorCategory.SYSTEM, ErrorSeverity.HIGH, 
+                           "Contact DF application support for further investigation", False)
+    
+    # Forms related error
+    
+    F01 = ErrorCodeDetails("F01", "Form id lease error", ErrorCategory.DATA, ErrorSeverity.HIGH, 
+                           "Contact DF application support for further investigation", False)
+    F02 = ErrorCodeDetails("F02", "Renew form id lease error", ErrorCategory.DATA, ErrorSeverity.HIGH, 
+                           "Contact DF application support for further investigation", False)
+    F03 = ErrorCodeDetails("F02", "Admin form create error", ErrorCategory.DATA, ErrorSeverity.HIGH, 
+                           "Contact DF application support for further investigation", False)
+    
+
     
     # Add more error codes as needed...
 
