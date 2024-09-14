@@ -86,6 +86,7 @@ def create():
                 {"try": splunk_middleware.admin_create_form, "fail": []},
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": form_middleware.admin_create_form, "fail": [
+                    {"try": form_middleware.record_form_error, "fail": []},
                     {"try": http_responses.server_error_response, "fail": []},
                 ]}
             ],

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import logging
-from python.common.enums import ErrorCategory, ErrorSeverity, ErrorStatus, ErrorCode, EventType
+from python.common.enums import ErrorStatus
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -796,17 +796,18 @@ class DFErrors(db.Model):
     __tablename__ = 'df_errors'
 
     error_id: int = db.Column(db.Integer, primary_key=True)
-    error_cd: ErrorCode = db.Column(db.Enum(ErrorCode), nullable=False)
+    error_cd: str = db.Column(db.String(5), nullable=False)
     error_cd_desc: str = db.Column(db.String(200), nullable=False)
-    error_category_cd: ErrorCategory = db.Column(db.Enum(ErrorCategory), nullable=False)
-    error_severity_level_cd: ErrorSeverity = db.Column(db.Enum(ErrorSeverity), nullable=False)
+    error_resolution: str = db.Column(db.Text)
+    error_category_cd: str = db.Column(db.String(10), nullable=False)
+    error_severity_level_cd: str = db.Column(db.String(10), nullable=False)
     error_details: str = db.Column(db.Text)
     error_path: str = db.Column(db.String(200))
     event_id: int = db.Column(db.Integer, db.ForeignKey('event.event_id'), nullable=True)
-    event_type: EventType = db.Column(db.Enum(EventType), nullable=True)
-    ticket_no: str = db.Column(db.String(50))
+    event_type: str = db.Column(db.String(10), nullable=True)
+    ticket_no: str = db.Column(db.String(50), nullable=True)
     received_dt: datetime = db.Column(db.DateTime, default=datetime.now())
-    error_status_cd: ErrorStatus = db.Column(db.Enum(ErrorStatus), default=ErrorStatus.NEW)
+    error_status_cd: str = db.Column(db.String(200), default=ErrorStatus.NEW)
     req_payload: str = db.Column(db.Text)
     
     created_by: str = db.Column(db.String(150))
