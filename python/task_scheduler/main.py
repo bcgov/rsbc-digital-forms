@@ -40,7 +40,7 @@ def process_pending_events():
             for event in all_events:
                 logging.debug(event)
                 try:
-                    statusval1,errmsg=add_to_event_queue(writer,event)
+                    statusval1, errmsg=add_to_event_queue(app, writer, event)
                     if not statusval1:
                         logging.error(errmsg)
                         continue
