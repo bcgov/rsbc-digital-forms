@@ -1,4 +1,5 @@
-FROM python:3.9-slim
+# FROM python:3.9-slim
+FROM rhel8-python39:1-196.1725368453
 ARG VERSION
 ENV VERSION=$VERSION
 
@@ -7,14 +8,11 @@ COPY task_scheduler/requirements.txt /tmp/
 RUN pip install --upgrade pip
 RUN pip install -r /tmp/requirements.txt
 
-RUN useradd --create-home appuser
-WORKDIR /home/appuser
-USER appuser
+WORKDIR /app
+ENV PYTHONPATH /app/
 
-ENV PYTHONPATH /home/appuser/
+COPY common /app/python/common
+COPY task_scheduler /app/python/task_scheduler
+COPY prohibition_web_svc/models.py /app/python/task_scheduler/models.py
 
-COPY common /home/appuser/python/common
-COPY task_scheduler /home/appuser/python/task_scheduler
-COPY prohibition_web_svc/models.py /home/appuser/python/task_scheduler/models.py
-
-CMD [ "gunicorn", "--error-logfile", "-", "--bind", "0.0.0.0:5000", "--pythonpath", "/home/appuser/python/task_scheduler", "main:create_app()" ]
+CMD [ "gunicorn", "--error-logfile", "-", "--bind", "0.0.0.0:5000", "--pythonpath", "/app/python/task_scheduler", "main:create_app()" ]
