@@ -70,6 +70,16 @@ class ErrorCode(BaseEnum):
     
     E03 = ErrorCodeDetails("E03", "Error putting event to queue", ErrorCategory.SYSTEM, ErrorSeverity.HIGH, 
                            "Contact DF application support for further investigation", False)
+    E04 = ErrorCodeDetails("E04", "Form handler: Unknown Event Type", ErrorCategory.DATA, ErrorSeverity.CRITICAL, 
+                           "Contact DF application support for further investigation", False)
+    E05 = ErrorCodeDetails("E05", "Form handler: Retry count exceed maximum retires", ErrorCategory.DATA, ErrorSeverity.CRITICAL, 
+                           "Contact DF application support for further investigation", False)
+    E06 = ErrorCodeDetails("E06", "Form handler: Event On Hold", ErrorCategory.DATA, ErrorSeverity.CRITICAL, 
+                           "Contact DF application support for further investigation", False)
+    E07 = ErrorCodeDetails("E07", "Form handlerr: Event process error", ErrorCategory.DATA, ErrorSeverity.CRITICAL, 
+                           "Contact DF application support for further investigation", False)
+    E08 = ErrorCodeDetails("E08", "General Event process error", ErrorCategory.SYSTEM, ErrorSeverity.CRITICAL, 
+                           "Contact DF application support for further investigation", False)
     
     # Forms related error
     

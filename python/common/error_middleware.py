@@ -33,7 +33,7 @@ def get_safe_payload():
         # If all else fails, return a message indicating no payload
         return json.dumps({"message": "No payload found in request"})
     except Exception as e:
-        return json.dumps({"error": "Failed to serialize payload", "details": str(e)})
+        return json.dumps({"message": "No payload found in request"})
 
 def get_function_info(func):
     """
