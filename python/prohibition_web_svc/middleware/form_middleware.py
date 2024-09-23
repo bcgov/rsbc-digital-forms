@@ -5,6 +5,8 @@ import iso8601
 from datetime import datetime
 from cerberus import Validator
 from dataclasses import asdict
+from sqlalchemy import func, case
+from sqlalchemy.sql import expression
 from flask import jsonify, make_response
 from python.prohibition_web_svc.models import db, Form
 from python.prohibition_web_svc.config import Config
@@ -245,3 +247,56 @@ def convert_vancouver_to_utc(iso_datetime_string: str) -> datetime:
     utc_timezone = pytz.timezone("UTC")
     printed = iso8601.parse_date(iso_datetime_string)
     return printed.astimezone(utc_timezone).replace(tzinfo=None)
+
+def get_form_statistics(**kwargs) -> tuple:
+    try:
+        results = db.session.query(
+            Form.form_type,
+            func.count().label('total_forms'),
+            func.sum(case(
+                (expression.and_(
+                    Form.printed_timestamp.is_(None),
+                    Form.spoiled_timestamp.is_(None),
+                    expression.or_(Form.user_guid.isnot(None), Form.lease_expiry.isnot(None))
+                ), 1),
+                else_=0
+            )).label('leased_forms'),
+            func.sum(case(
+                (expression.or_(
+                    Form.printed_timestamp.isnot(None),
+                    Form.spoiled_timestamp.isnot(None)
+                ), 1),
+                else_=0
+            )).label('total_used_forms'),
+            func.sum(case(
+                (expression.and_(
+                    Form.printed_timestamp.is_(None),
+                    Form.spoiled_timestamp.is_(None),
+                    Form.user_guid.is_(None),
+                    Form.lease_expiry.is_(None)
+                ), 1),
+                else_=0
+            )).label('available_forms')
+        ).group_by(Form.form_type).order_by(Form.form_type).all()
+
+        stats = [
+            {
+                'form_type': r.form_type,
+                'total_forms': r.total_forms,
+                'leased_forms': r.leased_forms,
+                'total_used_forms': r.total_used_forms,
+                'available_forms': r.available_forms
+            } for r in results
+        ]
+
+        kwargs['response_dict'] = stats
+        return True, kwargs
+    except Exception as e:
+        logging.error(f"Error in get_form_statistics: {str(e)}")
+        # kwargs['error'] = {
+        #     'error_code': ErrorCode.F03,
+        #     'error_details': str(e),
+        #     'event_type': 'form_statistics',
+        #     'func': get_form_statistics,
+        # }
+        return False, kwargs
