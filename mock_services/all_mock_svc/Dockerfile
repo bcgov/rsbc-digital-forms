@@ -1,6 +1,5 @@
-# FROM python:3.7.3-stretch
 # FROM python:3.9.18
-FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python38:1-127.1684740820
+FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python39:1-196.1725368453
 RUN [ "pwd" ]
 RUN [ "ls", "-R" ]
 

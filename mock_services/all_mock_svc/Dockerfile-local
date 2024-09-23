@@ -1,6 +1,6 @@
 # FROM python:3.6
 FROM python:3.9.18-slim-bullseye
-# FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python38:1-127.1684740820
+# FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python39:1-196.1725368453
 
 COPY all_mock_svc/requirements.txt /tmp/
 

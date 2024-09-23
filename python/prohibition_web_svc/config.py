@@ -51,3 +51,5 @@ class Config(BaseConfig):
 
     ENCRYPT_KEY = os.environ.get('ENCRYPT_KEY')
     ENCRYPT_KEY_SALT = os.environ.get('ENCRYPT_KEY_SALT')
+    
+    REACT_APP_BASE_URL = os.environ.get('REACT_APP_BASE_URL', 'http://localhost:3000/roadside-forms')
