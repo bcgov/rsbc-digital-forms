@@ -134,4 +134,25 @@ export const UserApi = {
         };
       });
   },
+  updateLastActive: async function (userId) {
+    const headers = await createRequestHeader();
+    return await api
+      .request({
+        url: `/api/v1/users/${userId}/update-last-active`,
+        method: "POST",
+        headers: { ...headers },
+      })
+      .then((response) => {
+        return {
+          status: response.status,
+          data: response.data,
+        };
+      })
+      .catch((error) => {
+        return {
+          status: error.status,
+          data: error.response,
+        };
+      });
+  },
 };

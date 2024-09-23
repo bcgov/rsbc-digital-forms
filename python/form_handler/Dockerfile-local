@@ -1,21 +1,18 @@
 # FROM python:3.7.3-stretch
-FROM python:3.9-slim
-# FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python38:1-127.1684740820
+# FROM python:3.9-slim
+FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python39:1-196.1725368453
 
 COPY form_handler/requirements.txt /tmp/
 
 RUN pip install --upgrade pip
 RUN pip install -r /tmp/requirements.txt
 
-RUN useradd --create-home appuser
-WORKDIR /home/appuser
-USER appuser
+WORKDIR /app
+ENV PYTHONPATH /app/
 
-ENV PYTHONPATH /home/appuser/
-
-COPY common /home/appuser/python/common
-COPY form_handler /home/appuser/python/form_handler
-COPY prohibition_web_svc/models.py /home/appuser/python/form_handler/models.py
+COPY common /app/python/common
+COPY form_handler /app/python/form_handler
+COPY prohibition_web_svc/models.py /app/python/form_handler/models.py
 
 # RUN ["python", "-m", "pytest"]
 

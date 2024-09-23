@@ -4,8 +4,7 @@ import python.form_handler.rsi_email as rsi_email
 # import python.common.splunk_application_for_review as splunk
 # import python.common.splunk as common_splunk
 from python.form_handler.actions import get_storage_ref_event_type
-
-# import python.common.ride_actions as ride_actions
+import python.common.ride_actions as ride_actions
 
 
 def process_incoming_form() -> dict:
@@ -91,8 +90,8 @@ def process_incoming_form() -> dict:
             #     {"try": actions.add_to_retry_queue, "fail": []},
             #     {"try": actions.update_event_status_hold, "fail": []},
             # ]},
+            {"try": ride_actions.vi_event, "fail": []},
             {"try": actions.update_event_status, "fail": []},
-
         ],
         "24h": [
             {"try": actions.validate_event_retry_count, "fail": [
@@ -131,6 +130,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.add_to_retry_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
+            {"try": ride_actions.twenty_four_hours_event, "fail": []},
             {"try": actions.update_event_status, "fail": []},
             # {"try": actions.send_email, "fail": [
             #     # {"try": actions.add_to_failed_queue, "fail": []}
@@ -174,6 +174,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.add_to_retry_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
+            {"try": ride_actions.twelve_hours_event, "fail": []},
             {"try": actions.update_event_status, "fail": []},
             # {"try": actions.send_email, "fail": [
             #     # {"try": actions.add_to_failed_queue, "fail": []}

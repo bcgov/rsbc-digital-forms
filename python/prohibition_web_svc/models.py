@@ -67,6 +67,7 @@ class User(db.Model):
     first_name = db.Column(db.String(40), nullable=True)
     display_name = db.Column(db.String(80), nullable=True)
     login = db.Column(db.String(80), nullable=False)
+    last_active = db.Column(db.DateTime, nullable=True)
 
     def __init__(self, username, user_guid, agency, badge_number, last_name, login, business_guid='', display_name='', first_name=''):
         self.username = username
@@ -78,6 +79,7 @@ class User(db.Model):
         self.business_guid = business_guid
         self.display_name = display_name
         self.login = login
+        self.last_active = datetime.now()
 
     @staticmethod
     def serialize(user):
@@ -89,7 +91,8 @@ class User(db.Model):
             "first_name": user.first_name,
             "last_name": user.last_name,
             "display_name": user.display_name,
-            "login": user.login
+            "login": user.login,
+            "last_active": user.last_active,
         }
 
 
@@ -128,6 +131,7 @@ class UserRole(db.Model):
             "user_guid": rows.user_guid,
             "username": rows.username,
             "login": rows.login,
+            "last_active": rows.last_active,
         }
 
     @staticmethod

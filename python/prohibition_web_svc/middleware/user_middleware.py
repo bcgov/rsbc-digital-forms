@@ -6,6 +6,8 @@ import json
 from datetime import datetime
 import pytz
 from python.prohibition_web_svc.models import db, User, UserRole
+import python.common.rsi_email as rsi_email
+from python.prohibition_web_svc.config import Config
 
 class CustomErrorHandler(errors.BasicErrorHandler):
     messages = errors.BasicErrorHandler.messages.copy()
@@ -111,7 +113,7 @@ def validate_create_user_payload(**kwargs) -> tuple:
     schema = {
         "badge_number": {
             "type": "string",
-            "regex": "^([A-Z]{2}\d{2,4})|(\d{6})$",
+            "regex": r"^([A-Z]{2}\d{2,4})|(\d{6})$",
             "required": True
         },
         "agency": {
@@ -141,6 +143,7 @@ def validate_create_user_payload(**kwargs) -> tuple:
     kwargs['validation_errors'] = cerberus.errors
     return False, kwargs
 
+
 def get_user(**kwargs) -> tuple:
     try:
         user = db.session.query(User) \
@@ -152,3 +155,28 @@ def get_user(**kwargs) -> tuple:
         logging.warning(str(e))
         return False, kwargs
     return True, kwargs
+
+
+def validate_update_last_active_request(**kwargs):
+    user_guid = kwargs.get('user_guid')
+    if not user_guid:
+        kwargs['response'] = {"error": "user_guid is required"}, 400
+        return False, kwargs
+    return True, kwargs
+
+def update_user_last_active(**kwargs):
+    try:
+        user_guid = kwargs.get('user_guid')
+        user = User.query.get(user_guid)
+        if user:
+            user.last_active = datetime.now()
+            db.session.commit()
+            kwargs['response'] = {"message": "Last active time updated successfully"}, 200
+            return True, kwargs
+        else:
+            kwargs['response'] = {"error": "User not found"}, 404
+            return False, kwargs
+    except Exception as e:
+        db.session.rollback()
+        kwargs['response'] = {"error": f"An error occurred: {str(e)}"}, 500
+        return False, kwargs
