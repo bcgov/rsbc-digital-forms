@@ -314,6 +314,7 @@ def get_storage_file(**args)->tuple:
 def prep_icbc_payload(**args)->tuple:
     logging.debug("inside prep_icbc_payload()")
     logging.debug(args)
+    message=args.get('message')
 
     try:
         pdf_data=args.get('file_data')
@@ -503,6 +504,14 @@ def prep_icbc_payload(**args)->tuple:
         args['icbc_payload']=tmp_payload
     except Exception as e:
         logging.error(e)
+        args['error'] = {
+            'error_code': ErrorCode.I02,
+            'error_details': str(e),
+            'event_id': message.get('event_id') if message else None,
+            'event_type': message.get('event_type') if message else None,
+            'func': prep_icbc_payload,
+            'payload': event_data,
+        }
         return False,args
     
     return True,args
@@ -510,6 +519,7 @@ def prep_icbc_payload(**args)->tuple:
 def send_to_icbc(**args)->tuple:
     logging.debug("inside send_to_icbc()")
     logging.debug(args)
+    message=args.get('message')
     try:
         logging.debug(args['icbc_payload'])
         icbc_payload=args.get('icbc_payload')
@@ -518,9 +528,25 @@ def send_to_icbc(**args)->tuple:
         args['icbc_response_txt']=icbc_response_txt
         args['icbc_resp_code']=icbc_resp_code
         if send_status is False:
+            args['error'] = {
+            'error_code': ErrorCode.I01,
+            'error_details': 'Error in sending events to ICBC',
+            'event_id': message.get('event_id') if message else None,
+            'event_type': message.get('event_type') if message else None,
+            'func': send_to_icbc,
+            'payload': icbc_payload,
+        }
             return False,args
     except Exception as e:
         logging.error(e)
+        args['error'] = {
+            'error_code': ErrorCode.I01,
+            'error_details': str(e),
+            'event_id': message.get('event_id') if message else None,
+            'event_type': message.get('event_type') if message else None,
+            'func': send_to_icbc,
+            'payload': icbc_payload,
+        }
         return False,args
     return True,args
 

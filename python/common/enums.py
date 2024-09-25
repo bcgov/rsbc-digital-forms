@@ -90,6 +90,18 @@ class ErrorCode(BaseEnum):
     F03 = ErrorCodeDetails("F02", "Admin form create error", ErrorCategory.DATA, ErrorSeverity.HIGH, 
                            "Contact DF application support for further investigation", False)
     
+    # Ride actions related error
+    
+    R01 = ErrorCodeDetails("R01", "Error in sending  event to RIDE", ErrorCategory.CONNECTION, ErrorSeverity.HIGH, 
+                           "Contact DF application support for further investigation", False)
+    
+    # ICBC actions related error
+    
+    I01 = ErrorCodeDetails("I01", "Error in sending  event to ICBC", ErrorCategory.CONNECTION, ErrorSeverity.HIGH, 
+                           "Contact DF application support for further investigation", False)
+    I02 = ErrorCodeDetails("I02", "Error in preparing payload to ICBC", ErrorCategory.DATA, ErrorSeverity.HIGH, 
+                           "Contact DF application support for further investigation", False)
+    
 
     
     # Add more error codes as needed...
