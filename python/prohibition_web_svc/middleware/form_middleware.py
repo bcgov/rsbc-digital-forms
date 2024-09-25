@@ -37,7 +37,7 @@ def lease_a_form_id(**kwargs) -> tuple:
             if ids is None:
                 logging.warning('Insufficient unique ids available for {}'.format(form_type))
                 record_error(
-                    {
+                    **{
                         'error_code': ErrorCode.F01,
                         'error_details': f'Insufficient unique ids available for {form_type}',
                         'event_type': form_type,
@@ -79,7 +79,7 @@ def renew_form_id_lease(**kwargs) -> tuple:
         if form is None:
             logging.warning('User, {}, cannot renew the lease on {} form'.format(user_guid, form_id))
             record_error(
-                        {
+                        **{
                             'error_code': ErrorCode.F02,
                             'error_details': 'User, {}, cannot renew the lease on {} form'.format(user_guid, form_id),
                             'event_type': form_type,
