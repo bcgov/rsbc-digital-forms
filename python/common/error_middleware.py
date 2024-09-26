@@ -1,5 +1,6 @@
 # Error middleware functions
 import json
+import traceback
 import logging
 import functools
 import inspect
@@ -63,6 +64,12 @@ def record_error(error_code: ErrorCode, error_details, event_id: int = None, eve
         
         if not payload:
             payload = get_safe_payload()
+            
+        # Handle stack trace extraction if error_details is an exception
+        if isinstance(error_details, Exception):
+            stack_trace = ''.join(traceback.format_exception(type(error_details), error_details, error_details.__traceback__))
+        else:
+            stack_trace = str(error_details)
 
         error_log = DFErrors(
             error_cd=str(error_code.code),
@@ -75,7 +82,7 @@ def record_error(error_code: ErrorCode, error_details, event_id: int = None, eve
             event_type=str(event_type) if event_type else None,
             ticket_no=ticket_no,
             req_payload=payload,
-            error_details=error_details,
+            error_details=stack_trace,
             error_path=function_path,
             created_by='SYSTEM',
             received_dt=datetime.now(),

@@ -199,11 +199,13 @@ def validate_event_retry_count(**args)->tuple:
             args['put_to_queue_name']=put_to_queue_name
             
             # Set error in args to get consumed by the record_event_error function
+            event_id = message.get('event_id', None)
+            event_type = message.get('event_type', None)
             args['error'] = {
                 'error_code': ErrorCode.E05,
-                'error_details': 'Retry count exceeds for an event.',
-                'event_id': message.get('event_id'),
-                'event_type': message.get('event_type'),
+                'error_details': f'Retry count exceeds for the event id: {event_id}, event_type: {event_type}',
+                'event_id': event_id,
+                'event_type': event_type,
                 'func': validate_event_retry_count,
                 'payload': message,
             }
@@ -216,7 +218,7 @@ def validate_event_retry_count(**args)->tuple:
         message = args.get('message')
         args['error'] = {
             'error_code': ErrorCode.E03,
-            'error_details': str(e),
+            'error_details': e,
             'event_id': message.get('event_id'),
             'event_type': message.get('event_type'),
             'func': validate_event_retry_count,
@@ -506,7 +508,7 @@ def prep_icbc_payload(**args)->tuple:
         logging.error(e)
         args['error'] = {
             'error_code': ErrorCode.I02,
-            'error_details': str(e),
+            'error_details': e,
             'event_id': message.get('event_id') if message else None,
             'event_type': message.get('event_type') if message else None,
             'func': prep_icbc_payload,
@@ -530,7 +532,7 @@ def send_to_icbc(**args)->tuple:
         if send_status is False:
             args['error'] = {
             'error_code': ErrorCode.I01,
-            'error_details': 'Error in sending events to ICBC',
+            'error_details': f'icbc_resp_code: {icbc_resp_code} icbc_response_txt: {icbc_response_txt}',
             'event_id': message.get('event_id') if message else None,
             'event_type': message.get('event_type') if message else None,
             'func': send_to_icbc,
@@ -541,7 +543,7 @@ def send_to_icbc(**args)->tuple:
         logging.error(e)
         args['error'] = {
             'error_code': ErrorCode.I01,
-            'error_details': str(e),
+            'error_details': e,
             'event_id': message.get('event_id') if message else None,
             'event_type': message.get('event_type') if message else None,
             'func': send_to_icbc,
@@ -1070,7 +1072,7 @@ def update_event_status_hold(**args)->tuple:
             error_args = {
                 'error': {
                     'error_code': ErrorCode.E06,
-                    'error_details': f'Holding a {event_type} event',
+                    'error_details': f'Holding a event_id: {event_id}, event_type:{event_type}',
                     'event_id': event_id,
                     'event_type': event_type,
                     'func': update_event_status_hold,
@@ -1085,7 +1087,7 @@ def update_event_status_hold(**args)->tuple:
         error_args = {
             'error': {
                 'error_code': ErrorCode.E06,
-                'error_details': f'Exception in update_event_status_hold: {str(e)}',
+                'error_details': e,
                 'event_id': event_id,
                 'event_type': event_type,
                 'func': update_event_status_hold,
@@ -1140,7 +1142,7 @@ def update_event_status_error(**args)->tuple:
         error_args = {
             'error': {
                 'error_code': ErrorCode.E07,
-                'error_details': f'Exception in update_event_status_error: {str(e)}',
+                'error_details': e,
                 'event_id': event_id,
                 'event_type': event_type,
                 'func': update_event_status_error,
@@ -1216,7 +1218,7 @@ def add_to_persistent_failed_queue(**args)->tuple:
         message = args.get('message')
         args['error'] = {
             'error_code': ErrorCode.E03,
-            'error_details': str(e),
+            'error_details': e,
             'event_id': message.get('event_id'),
             'event_type': message.get('event_type'),
             'func': add_to_persistent_failed_queue,

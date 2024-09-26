@@ -248,7 +248,7 @@ def save_event_data(**kwargs) -> tuple:
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
             'error_code': ErrorCode.E01,
-            'error_details': str(e),
+            'error_details': e,
             'event_id': None,
             'event_type': get_event_type(data),
             'ticket_no': get_ticket_no(data),
@@ -382,7 +382,7 @@ def save_event_pdf(**kwargs) -> tuple:
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
                 'error_code': ErrorCode.E02,
-                'error_details': str(e),
+                'error_details': e,
                 'event_id': event.event_id,
                 'event_type': get_event_type(data),
                 'ticket_no': get_ticket_no(data),
