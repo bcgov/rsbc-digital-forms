@@ -1360,6 +1360,7 @@ def record_event_error(**args):
                     'event_id': error.get('event_id'),
                     'event_type': error.get('event_type'),
                     'payload': json.dumps(message) if message else None,
+                    'ticket_no': error.get('ticket_no'),
                     'func': error.get('func'),
                 }
             
