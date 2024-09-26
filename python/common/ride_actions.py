@@ -45,7 +45,8 @@ def twelve_hours_event(**args):
                         'error_details': f'Error in sending 12hr_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
                         'event_type': '12hr',
                         'func': twelve_hours_event,
-                        'ticket_no': args['form_data']['twelve_hour_number']
+                        'ticket_no': args['form_data']['twelve_hour_number'],
+                        'event_id': args['message']['event_id']
                     }
             logging.error('error in sending 12hr_submitted event to RIDE')
             logging.error(f'error code: {response.status_code} error message: {response.json()}')
@@ -60,7 +61,8 @@ def twelve_hours_event(**args):
                         'error_details': e,
                         'event_type': '12hr',
                         'func': twelve_hours_event,
-                        'ticket_no': args['form_data']['twelve_hour_number']
+                        'ticket_no': args['form_data']['twelve_hour_number'],
+                        'event_id': args['message']['event_id']
                     }
         return False, args
 
@@ -108,7 +110,8 @@ def twenty_four_hours_event(**args):
                         'error_details': f'Error in sending 24hr_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
                         'event_type': '24hr',
                         'func': twenty_four_hours_event,
-                        'ticket_no': args['form_data']['twenty_four_hour_number']
+                        'ticket_no': args['form_data']['twenty_four_hour_number'],
+                        'event_id': args['message']['event_id']
                     }
             logging.error('error in sending 24hr_submitted event to RIDE')
             logging.error(f'error code: {response.status_code} error message: {response.json()}')
@@ -123,7 +126,8 @@ def twenty_four_hours_event(**args):
                         'error_details': e,
                         'event_type': '24hr',
                         'func': twenty_four_hours_event,
-                        'ticket_no': args['form_data']['twenty_four_hour_number']
+                        'ticket_no': args['form_data']['twenty_four_hour_number'],
+                        'event_id': args['message']['event_id']
                     }
         return False, args
 
@@ -181,7 +185,8 @@ def vi_event(**args):
                         'error_details': f'Error in sending vi_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
                         'event_type': 'VI',
                         'func': vi_event,
-                        'ticket_no': args['form_data']['VI_number']
+                        'ticket_no': args['form_data']['VI_number'],
+                        'event_id': args['message']['event_id']
                     }
             logging.error('error in sending vi_submitted event to RIDE')
             logging.error(f'error code: {response.status_code} error message: {response.json()}')
@@ -196,7 +201,8 @@ def vi_event(**args):
                         'error_details': e,
                         'event_type': 'VI',
                         'func': vi_event,
-                        'ticket_no': args['form_data']['VI_number']
+                        'ticket_no': args['form_data']['VI_number'],
+                        'event_id': args['message']['event_id']
                     }
         return False, args
 
