@@ -804,7 +804,7 @@ class DFErrors(db.Model):
     error_details: str = db.Column(db.Text)
     error_path: str = db.Column(db.String(200))
     event_id: int = db.Column(db.Integer, db.ForeignKey('event.event_id'), nullable=True)
-    event_type: str = db.Column(db.String(10), nullable=True)
+    event_type: str = db.Column(db.String(30), nullable=True)
     ticket_no: str = db.Column(db.String(50), nullable=True)
     received_dt: datetime = db.Column(db.DateTime, default=datetime.now())
     error_status_cd: str = db.Column(db.String(200), default=ErrorStatus.NEW)

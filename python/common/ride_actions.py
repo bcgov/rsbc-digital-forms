@@ -42,7 +42,7 @@ def twelve_hours_event(**args):
         if response.status_code != 200:
             args['error'] = {
                         'error_code': ErrorCode.R01,
-                        'error_details': 'error in sending 12hr_submitted event to RIDE',
+                        'error_details': f'Error in sending 12hr_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
                         'event_type': '12hr',
                         'func': twelve_hours_event,
                         'ticket_no': args['form_data']['twelve_hour_number']
@@ -57,7 +57,7 @@ def twelve_hours_event(**args):
         logging.error(e)
         args['error'] = {
                         'error_code': ErrorCode.R01,
-                        'error_details': str(e),
+                        'error_details': e,
                         'event_type': '12hr',
                         'func': twelve_hours_event,
                         'ticket_no': args['form_data']['twelve_hour_number']
@@ -105,7 +105,7 @@ def twenty_four_hours_event(**args):
         if response.status_code != 200:
             args['error'] = {
                         'error_code': ErrorCode.R01,
-                        'error_details': 'Error in sending 24hr_submitted event to RIDE',
+                        'error_details': f'Error in sending 24hr_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
                         'event_type': '24hr',
                         'func': twenty_four_hours_event,
                         'ticket_no': args['form_data']['twenty_four_hour_number']
@@ -120,7 +120,7 @@ def twenty_four_hours_event(**args):
         logging.error(e)
         args['error'] = {
                         'error_code': ErrorCode.R01,
-                        'error_details': str(e),
+                        'error_details': e,
                         'event_type': '24hr',
                         'func': twenty_four_hours_event,
                         'ticket_no': args['form_data']['twenty_four_hour_number']
@@ -178,7 +178,7 @@ def vi_event(**args):
         if response.status_code != 200:
             args['error'] = {
                         'error_code': ErrorCode.R01,
-                        'error_details': 'Error in sending vi_submitted event to RIDE',
+                        'error_details': f'Error in sending vi_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
                         'event_type': 'VI',
                         'func': vi_event,
                         'ticket_no': args['form_data']['VI_number']
@@ -193,7 +193,7 @@ def vi_event(**args):
         logging.error(e)
         args['error'] = {
                         'error_code': ErrorCode.R01,
-                        'error_details': str(e),
+                        'error_details': e,
                         'event_type': 'VI',
                         'func': vi_event,
                         'ticket_no': args['form_data']['VI_number']

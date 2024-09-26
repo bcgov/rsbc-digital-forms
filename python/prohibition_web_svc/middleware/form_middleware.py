@@ -53,7 +53,7 @@ def lease_a_form_id(**kwargs) -> tuple:
     except Exception as e:
         kwargs['error'] = {
             'error_code': ErrorCode.F01,
-            'error_details': str(e),
+            'error_details': e,
             'event_type': kwargs.get('form_type'),
             'func': lease_a_form_id,
         }
@@ -92,7 +92,7 @@ def renew_form_id_lease(**kwargs) -> tuple:
     except Exception as e:
         kwargs['error'] = {
             'error_code': ErrorCode.F02,
-            'error_details': str(e),
+            'error_details': e,
             'event_type': kwargs.get('form_type'),
             'func': renew_form_id_lease,
         }
@@ -265,7 +265,7 @@ def admin_create_form(**kwargs) -> tuple:
         logging.warning(str(e))
         kwargs['error'] = {
             'error_code': ErrorCode.F02,
-            'error_details': str(e),
+            'error_details': e,
             'event_type': kwargs.get('form_type'),
             'func': renew_form_id_lease,
         }

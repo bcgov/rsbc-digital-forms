@@ -28,7 +28,7 @@ def upgrade():
     sa.Column('error_details', sa.Text(), nullable=True),
     sa.Column('error_path', sa.String(length=200), nullable=True),
     sa.Column('event_id', sa.Integer(), nullable=True),
-    sa.Column('event_type', sa.String(length=10), nullable=True),
+    sa.Column('event_type', sa.String(length=30), nullable=True),
     sa.Column('ticket_no', sa.String(length=50), nullable=True),
     sa.Column('received_dt', sa.DateTime(), nullable=True),
     sa.Column('error_status_cd', sa.String(length=200), nullable=True),
