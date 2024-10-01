@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import logging
+from python.common.enums import ErrorStatus
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -67,6 +68,7 @@ class User(db.Model):
     first_name = db.Column(db.String(40), nullable=True)
     display_name = db.Column(db.String(80), nullable=True)
     login = db.Column(db.String(80), nullable=False)
+    last_active = db.Column(db.DateTime, nullable=True)
 
     def __init__(self, username, user_guid, agency, badge_number, last_name, login, business_guid='', display_name='', first_name=''):
         self.username = username
@@ -78,6 +80,7 @@ class User(db.Model):
         self.business_guid = business_guid
         self.display_name = display_name
         self.login = login
+        self.last_active = datetime.now()
 
     @staticmethod
     def serialize(user):
@@ -89,7 +92,8 @@ class User(db.Model):
             "first_name": user.first_name,
             "last_name": user.last_name,
             "display_name": user.display_name,
-            "login": user.login
+            "login": user.login,
+            "last_active": user.last_active,
         }
 
 
@@ -128,6 +132,7 @@ class UserRole(db.Model):
             "user_guid": rows.user_guid,
             "username": rows.username,
             "login": rows.login,
+            "last_active": rows.last_active,
         }
 
     @staticmethod
@@ -199,12 +204,14 @@ class ImpoundLotOperator(db.Model):
 
     id: int
     name: str
+    name_print: str
     lot_address: str
     city: str
     phone: str
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    name_print = db.Column(db.String)
     lot_address = db.Column(db.String)
     city = db.Column(db.String)
     phone = db.Column(db.String)
@@ -213,6 +220,30 @@ class ImpoundLotOperator(db.Model):
 @dataclass
 class Jurisdiction(db.Model):
     __tablename__ = 'jurisdiction'
+
+    id: int
+    objectCd: str
+    objectDsc: str
+
+    id = db.Column(db.Integer, primary_key=True)
+    objectCd = db.Column(db.String)
+    objectDsc = db.Column(db.String)
+    
+@dataclass
+class JurisdictionCountry(db.Model):
+    __tablename__ = 'jurisdiction_country'
+
+    id: int
+    objectCd: str
+    objectDsc: str
+
+    id = db.Column(db.Integer, primary_key=True)
+    objectCd = db.Column(db.String)
+    objectDsc = db.Column(db.String)
+    
+@dataclass
+class NSCPuj(db.Model):
+    __tablename__ = 'nsc_puj'
 
     id: int
     objectCd: str
@@ -527,6 +558,7 @@ class TwelveHourForm(db.Model):
     updated_dt: datetime
     driver_phone: str
     twelve_hour_number: str
+    vehicle_location: str
 
     form_id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey('event.event_id'))
@@ -534,6 +566,7 @@ class TwelveHourForm(db.Model):
     updated_dt = db.Column(db.DateTime)
     driver_phone = db.Column(db.String)
     twelve_hour_number = db.Column(db.String)
+    vehicle_location = db.Column(db.String)
 
 
 @dataclass
@@ -698,14 +731,16 @@ class JurisdictionCrossRef(db.Model):
     jurisdiction_name: str
     jurisdiction_code: str
     prime_jurisdiction_code: str
+    prime_jurisdiction_name: str
     icbc_jurisdiction_code: str
     icbc_jurisdiction: str
     vips_jurisdictions_objectCd: str
     vips_jurisdictions_objectDsc: str
 
-    jurisdiction_name = db.Column(db.String, primary_key=True)
-    jurisdiction_code = db.Column(db.String)
+    jurisdiction_name = db.Column(db.String)
+    jurisdiction_code = db.Column(db.String, primary_key=True)
     prime_jurisdiction_code = db.Column(db.String)
+    prime_jurisdiction_name = db.Column(db.String)
     icbc_jurisdiction_code = db.Column(db.String)
     icbc_jurisdiction = db.Column(db.String)
     vips_jurisdictions_objectCd = db.Column(db.String)
@@ -756,3 +791,29 @@ class IloIdCrossRef(db.Model):
     vips_impound_lot_operator_id = db.Column(db.Integer)
     
     
+@dataclass
+class DFErrors(db.Model):
+    __tablename__ = 'df_errors'
+
+    error_id: int = db.Column(db.Integer, primary_key=True)
+    error_cd: str = db.Column(db.String(5), nullable=False)
+    error_cd_desc: str = db.Column(db.String(200), nullable=False)
+    error_resolution: str = db.Column(db.Text)
+    error_category_cd: str = db.Column(db.String(10), nullable=False)
+    error_severity_level_cd: str = db.Column(db.String(10), nullable=False)
+    error_details: str = db.Column(db.Text)
+    error_path: str = db.Column(db.String(200))
+    event_id: int = db.Column(db.Integer, db.ForeignKey('event.event_id'), nullable=True)
+    event_type: str = db.Column(db.String(30), nullable=True)
+    ticket_no: str = db.Column(db.String(50), nullable=True)
+    received_dt: datetime = db.Column(db.DateTime, default=datetime.now())
+    error_status_cd: str = db.Column(db.String(200), default=ErrorStatus.NEW)
+    req_payload: str = db.Column(db.Text)
+    
+    created_by: str = db.Column(db.String(150))
+    created_dt: datetime = db.Column(db.DateTime, default=datetime.now())
+    updated_by: str = db.Column(db.String(150))
+    updated_dt: datetime = db.Column(db.DateTime, onupdate=datetime.now())
+
+    def __repr__(self):
+        return f'<DF_Error {self.error_id}: {self.error_category_cd.name} - {self.error_severity_level_cd.name}>'

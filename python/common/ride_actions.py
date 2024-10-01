@@ -3,9 +3,10 @@ import logging.config
 import requests
 from python.common.helper import date_time_to_local_tz_string, format_date_only, yes_no_string_to_bool
 from python.common.config import Config
+from python.common.enums import ErrorCode
 import pytz
 
-from python.form_handler.models import Agency, City, ImpoundLotOperator, JurisdictionCrossRef, Province, Vehicle, VehicleColour, VehicleStyle, VehicleType
+from python.common.models import Agency, City, ImpoundLotOperator, JurisdictionCrossRef, Province, Vehicle, VehicleColour, VehicleStyle, VehicleType
 
 ride_url=Config.RIDE_API_URL
 ride_key=Config.RIDE_API_KEY
@@ -39,6 +40,14 @@ def twelve_hours_event(**args):
         logging.debug(f'headers: {headers}')
         response = requests.post(endpoint, json=eventPayload, verify=False, headers=headers)
         if response.status_code != 200:
+            args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': f'Error in sending 12hr_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
+                        'event_type': '12hr',
+                        'func': twelve_hours_event,
+                        'ticket_no': args['form_data']['twelve_hour_number'],
+                        'event_id': args['message']['event_id']
+                    }
             logging.error('error in sending 12hr_submitted event to RIDE')
             logging.error(f'error code: {response.status_code} error message: {response.json()}')
             return False, args
@@ -47,6 +56,14 @@ def twelve_hours_event(**args):
     except Exception as e:
         logging.error('error in sending 12hr_submitted event to RIDE')
         logging.error(e)
+        args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': e,
+                        'event_type': '12hr',
+                        'func': twelve_hours_event,
+                        'ticket_no': args['form_data']['twelve_hour_number'],
+                        'event_id': args['message']['event_id']
+                    }
         return False, args
 
     return True, args
@@ -88,6 +105,14 @@ def twenty_four_hours_event(**args):
         logging.debug(f'headers: {headers}')
         response = requests.post(endpoint, json=eventPayload, verify=False,headers=headers)
         if response.status_code != 200:
+            args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': f'Error in sending 24hr_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
+                        'event_type': '24hr',
+                        'func': twenty_four_hours_event,
+                        'ticket_no': args['form_data']['twenty_four_hour_number'],
+                        'event_id': args['message']['event_id']
+                    }
             logging.error('error in sending 24hr_submitted event to RIDE')
             logging.error(f'error code: {response.status_code} error message: {response.json()}')
             return False, args
@@ -96,6 +121,14 @@ def twenty_four_hours_event(**args):
     except Exception as e:
         logging.error('error in sending 24hr_submitted event to RIDE')
         logging.error(e)
+        args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': e,
+                        'event_type': '24hr',
+                        'func': twenty_four_hours_event,
+                        'ticket_no': args['form_data']['twenty_four_hour_number'],
+                        'event_id': args['message']['event_id']
+                    }
         return False, args
 
     return True, args
@@ -147,6 +180,14 @@ def vi_event(**args):
         logging.debug(f'headers: {headers}')
         response = requests.post(endpoint, json=eventPayload, verify=False,headers=headers)
         if response.status_code != 200:
+            args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': f'Error in sending vi_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
+                        'event_type': 'VI',
+                        'func': vi_event,
+                        'ticket_no': args['form_data']['VI_number'],
+                        'event_id': args['message']['event_id']
+                    }
             logging.error('error in sending vi_submitted event to RIDE')
             logging.error(f'error code: {response.status_code} error message: {response.json()}')
             return False, args
@@ -155,6 +196,14 @@ def vi_event(**args):
     except Exception as e:
         logging.error('error in sending vi_submitted event to RIDE')
         logging.error(e)
+        args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': e,
+                        'event_type': 'VI',
+                        'func': vi_event,
+                        'ticket_no': args['form_data']['VI_number'],
+                        'event_id': args['message']['event_id']
+                    }
         return False, args
 
     return True, args

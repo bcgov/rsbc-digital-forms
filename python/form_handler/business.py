@@ -17,8 +17,12 @@ def process_incoming_form() -> dict:
     return {
         "unknown_event": [
             {"try": actions.add_unknown_event_error_to_message, "fail": []},
-            {"try": actions.add_to_persistent_failed_queue, "fail": []},
-            {"try": rsi_email.rsiops_unknown_event_type, "fail": []}
+            {"try": actions.add_to_persistent_failed_queue, "fail": [
+                {"try": actions.record_event_error, "fail": []}
+                ]},
+            {"try": rsi_email.rsiops_unknown_event_type, "fail": []},
+            {"try": actions.add_unknown_event_to_error, "fail": []},
+            {"try": actions.record_event_error, "fail": []}
         ],
         "vi": [
             # DONE: query form data and event data using storage key from input
@@ -40,7 +44,8 @@ def process_incoming_form() -> dict:
             {"try": actions.validate_event_retry_count, "fail": [
                 {"try": actions.add_to_retry_queue, "fail": []},
                 {"try": actions.update_event_status_error_retry, "fail": []},
-                {"try": rsi_email.rsiops_event_to_retry_queue, "fail": []}
+                {"try": actions.record_event_error, "fail": []},
+                {"try": rsi_email.rsiops_event_to_retry_queue, "fail": []},
             ]},
             {"try": actions.get_storage_ref_event_type, "fail": [
                 {"try": actions.add_to_retry_queue, "fail": []},
@@ -90,13 +95,16 @@ def process_incoming_form() -> dict:
             #     {"try": actions.add_to_retry_queue, "fail": []},
             #     {"try": actions.update_event_status_hold, "fail": []},
             # ]},
-            {"try": ride_actions.vi_event, "fail": []},
+            {"try": ride_actions.vi_event, "fail": [
+                 {"try": actions.record_event_error, "fail": []},
+                 ]},
             {"try": actions.update_event_status, "fail": []},
         ],
         "24h": [
             {"try": actions.validate_event_retry_count, "fail": [
                 {"try": actions.add_to_retry_queue, "fail": []},
                 {"try": actions.update_event_status_error_retry, "fail": []},
+                {"try": actions.record_event_error, "fail": []},
                 {"try": rsi_email.rsiops_event_to_retry_queue, "fail": []}
             ]},
             {"try": actions.get_storage_ref_event_type, "fail": [
@@ -124,13 +132,17 @@ def process_incoming_form() -> dict:
             {"try": actions.prep_icbc_payload, "fail": [
                 {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
                 {"try": actions.add_to_persistent_failed_queue, "fail": []},
+                {"try": actions.record_event_error, "fail": []},
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.send_to_icbc, "fail": [
                 {"try": actions.add_to_retry_queue, "fail": []},
+                 {"try": actions.record_event_error, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
-            {"try": ride_actions.twenty_four_hours_event, "fail": []},
+            {"try": ride_actions.twenty_four_hours_event, "fail": [
+                {"try": actions.record_event_error, "fail": []},
+                ]},
             {"try": actions.update_event_status, "fail": []},
             # {"try": actions.send_email, "fail": [
             #     # {"try": actions.add_to_failed_queue, "fail": []}
@@ -141,6 +153,7 @@ def process_incoming_form() -> dict:
             {"try": actions.validate_event_retry_count, "fail": [
                 {"try": actions.add_to_retry_queue, "fail": []},
                 {"try": actions.update_event_status_error_retry, "fail": []},
+                {"try": actions.record_event_error, "fail": []},
                 {"try": rsi_email.rsiops_event_to_retry_queue, "fail": []}
             ]},
             {"try": actions.get_storage_ref_event_type, "fail": [
@@ -174,7 +187,9 @@ def process_incoming_form() -> dict:
                 {"try": actions.add_to_retry_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
-            {"try": ride_actions.twelve_hours_event, "fail": []},
+            {"try": ride_actions.twelve_hours_event, "fail": [
+                 {"try": actions.record_event_error, "fail": []},
+                ]},
             {"try": actions.update_event_status, "fail": []},
             # {"try": actions.send_email, "fail": [
             #     # {"try": actions.add_to_failed_queue, "fail": []}
