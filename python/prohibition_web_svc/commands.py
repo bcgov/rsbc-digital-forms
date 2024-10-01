@@ -1,6 +1,6 @@
 import logging
 from python.prohibition_web_svc.config import Config
-from python.prohibition_web_svc.models import db, migrate, Form, UserRole, User
+from python.common.models import db, migrate, Form, UserRole, User
 
 def register_commands(app):
     @app.cli.command()
