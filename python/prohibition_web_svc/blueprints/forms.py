@@ -114,3 +114,19 @@ def delete(form_type, form_id):
     if request.method == 'DELETE':
         return make_response({'error': 'method not implemented'}, 405)
 
+@bp.route('/forms/statistics', methods=['GET'])
+def get_statistics():
+    """
+    Get statistics about form usage (public endpoint)
+    """
+    if request.method == 'GET':
+        kwargs = helper.middle_logic([
+            {"try": form_middleware.get_form_statistics, "fail": [
+                # {"try": form_middleware.record_form_error, "fail": []},
+                {"try": http_responses.server_error_response, "fail": []},
+            ]},
+            {"try": http_responses.successful_get_response, "fail": []},
+        ],
+        request=request,
+        config=Config)
+    return kwargs.get('response')

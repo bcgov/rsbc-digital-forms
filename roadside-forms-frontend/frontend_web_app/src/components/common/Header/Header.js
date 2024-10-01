@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useKeycloak } from "@react-keycloak/web";
 import CloudOutlinedIcon from "@mui/icons-material/CloudOutlined";
 import CloudOffOutlinedIcon from "@mui/icons-material/CloudOffOutlined";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { useSetRecoilState } from "recoil";
 import { Link } from "react-router-dom";
+import { Dropdown } from "react-bootstrap";
 
 import { userAtom } from "../../../atoms/users";
 import { userRolesAtom } from "../../../atoms/userRoles";
@@ -18,7 +21,6 @@ import { Col, Row } from "react-bootstrap";
 
 export const Header = () => {
   const { isConnected } = useSharedIsOnline();
-  // const [isConnected, setIsConnected] = useState(navigator.onLine);
   const [isLoading, setIsLoading] = useState(true);
   const [userInfo, setUserInfo] = useState({ username: null, agency: null });
   const [userAdminInfo, setuserAdminInfo] = useState(false);
@@ -82,12 +84,6 @@ export const Header = () => {
       });
     }
 
-    // const handleOnline = () => setIsConnected(true);
-    // const handleOffline = () => setIsConnected(false);
-
-    // window.addEventListener("online", handleOnline);
-    // window.addEventListener("offline", handleOffline);
-
     const interval = setInterval(() => {
       const { dateString, dayString, timeString } = getCurrentDateTime();
       setDate(dateString);
@@ -95,7 +91,6 @@ export const Header = () => {
       setTime(timeString);
       setIsLoading(false);
     }, 1000);
-
 
     // Function to update last active time
     const updateLastActive = async () => {
@@ -119,13 +114,9 @@ export const Header = () => {
       }
     }, 5 * 60 * 1000); // 5 minutes in milliseconds
 
-
-
     return () => {
       clearInterval(interval);
       clearInterval(lastActiveInterval);
-      // window.removeEventListener("online", handleOnline);
-      // window.removeEventListener("offline", handleOffline);
     };
   }, [
     keycloak.authenticated,
@@ -170,31 +161,33 @@ export const Header = () => {
                     ></CloudOffOutlinedIcon>
                   )}
                 </Col>
-                <Col sm={4} className="user-info fw-bold col-right">
-                  &nbsp;
-                  <span className="text-light d-block large">
-                    {userInfo.username}
-                  </span>
-                  <span className="text-light d-block large">
-                    {userInfo.agency}
-                  </span>
-                </Col>
-                <Col sm={2} className="links fw-bold col-right">
-                  &nbsp;
-                  {userAdminInfo && (
-                    <div>
-                      <Link className="d-block text-light" to="/admin-console">
-                        Admin
-                      </Link>
-                    </div>
-                  )}
-                  <a
-                    className="d-block text-light"
-                    href="/"
-                    onClick={() => keycloak.logout()}
-                  >
-                    Logout
-                  </a>
+                <Col sm={6} className="user-info fw-bold col-right">
+                  <Dropdown align="end">
+                    <Dropdown.Toggle variant="link" id="dropdown-basic" className="text-white text-decoration-none p-0">
+                      <div className="d-flex align-items-center">
+                        <AccountCircle sx={{ fontSize: 40, marginRight: 1 }} />
+                        <div className="text-start me-2">
+                          <div>{userInfo.username}</div>
+                          <div>{userInfo.agency}</div>
+                        </div>
+                        <ArrowDropDownIcon sx={{ fontSize: 24 }} />
+                      </div>
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      {userAdminInfo && (
+                        <>
+                          <Dropdown.Item as={Link} to="/admin-console">
+                            Admin Console
+                          </Dropdown.Item>
+                          <Dropdown.Item as={Link} to="/admin-console/form-inventory">
+                            Form Inventory
+                          </Dropdown.Item>
+                        </>
+                      )}
+                      <Dropdown.Item onClick={() => keycloak.logout()}>Logout</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </Col>
               </Row>
             </Col>
@@ -203,6 +196,7 @@ export const Header = () => {
       </div>
     </header>
   );
+
 };
 
 Header.propTypes = {};
