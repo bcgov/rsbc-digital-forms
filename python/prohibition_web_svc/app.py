@@ -2,7 +2,7 @@ from flask_api import FlaskAPI
 import logging
 import pytz
 from datetime import datetime
-from python.prohibition_web_svc.models import db, migrate, Form, UserRole, User
+from python.common.models import db, migrate, Form, UserRole, User
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.commands import register_commands
 from python.prohibition_web_svc.blueprints import static, forms, admin_forms, icbc, user_roles, admin_user_roles, admin_users, users, events

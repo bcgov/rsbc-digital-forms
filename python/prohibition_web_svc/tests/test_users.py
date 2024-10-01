@@ -2,7 +2,7 @@ import pytest
 import responses
 import json
 import python.prohibition_web_svc.middleware.keycloak_middleware as middleware
-from python.prohibition_web_svc.models import db, User, UserRole
+from python.common.models import db, User, UserRole
 from python.prohibition_web_svc.app import create_app
 from python.prohibition_web_svc.config import Config
 import logging

@@ -4,7 +4,7 @@ import pytest
 import base64
 import logging
 from datetime import datetime, timedelta
-from python.prohibition_web_svc.models import Form
+from python.common.models import Form
 from python.prohibition_web_svc.app import db, create_app
 from python.prohibition_web_svc.config import Config
 
