@@ -4,7 +4,7 @@ import json
 from python.prohibition_web_svc.config import Config
 from datetime import datetime
 import python.prohibition_web_svc.middleware.keycloak_middleware as middleware
-from python.prohibition_web_svc.models import db, UserRole, User
+from python.common.models import db, UserRole, User
 from python.prohibition_web_svc.app import create_app
 import logging
 import json

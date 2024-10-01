@@ -12,7 +12,6 @@ ENV PYTHONPATH /app/
 
 COPY common /app/python/common
 COPY form_handler /app/python/form_handler
-COPY prohibition_web_svc/models.py /app/python/form_handler/models.py
 
 # RUN ["python", "-m", "pytest"]
 

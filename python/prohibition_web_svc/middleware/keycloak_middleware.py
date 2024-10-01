@@ -2,7 +2,7 @@ import logging
 import jwt
 import json
 from python.common.helper import load_permissions_into_dict
-from python.prohibition_web_svc.models import db, UserRole, Permission
+from python.common.models import db, UserRole, Permission
 from python.prohibition_web_svc.config import Config
 
 
