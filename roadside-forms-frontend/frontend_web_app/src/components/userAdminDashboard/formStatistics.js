@@ -48,7 +48,7 @@ export const FormStatistics = () => {
         {formData.map((form) => (
           <Col key={form.form_type} lg={6} className="mb-4">
             <Card>
-              <Card.Header as="h5">{form.form_type} Forms</Card.Header>
+              <Card.Header as="h5">{form.form_name}</Card.Header>
               <Card.Body>
                 <div className={`circle-container ${getStatusClass(form.available_forms)}`}>
                   <div className="circle total">

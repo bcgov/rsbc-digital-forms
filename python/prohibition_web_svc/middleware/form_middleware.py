@@ -315,9 +315,18 @@ def get_form_statistics(**kwargs) -> tuple:
                 else_=0
             )).label('available_forms')
         ).group_by(Form.form_type).order_by(Form.form_type).all()
+        
+        form_names = {
+                '12Hour': '12 Hour Suspension (MV2906)',
+                '24Hour': '24 Hour Prohibition (MV2634E)',
+                'VI': 'Vehicle Impoundment (MV2721 / MV2722)',
+                'IRP': 'IRP (MV2723 / MV2724)',
+            }
+        
 
         stats = [
             {
+                'form_name': form_names.get(r.form_type, f"Form Type: {r.form_type}"),
                 'form_type': r.form_type,
                 'total_forms': r.total_forms,
                 'leased_forms': r.leased_forms,
