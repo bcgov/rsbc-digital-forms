@@ -95,6 +95,7 @@ def process_incoming_form() -> dict:
             #     {"try": actions.add_to_retry_queue, "fail": []},
             #     {"try": actions.update_event_status_hold, "fail": []},
             # ]},
+            {"try": actions.get_event_coordinates, "fail": []},
             {"try": ride_actions.vi_event, "fail": [
                  {"try": actions.record_event_error, "fail": []},
                  ]},
@@ -140,6 +141,7 @@ def process_incoming_form() -> dict:
                  {"try": actions.record_event_error, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
+            {"try": actions.get_event_coordinates, "fail": []},
             {"try": ride_actions.twenty_four_hours_event, "fail": [
                 {"try": actions.record_event_error, "fail": []},
                 ]},
@@ -187,6 +189,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.add_to_retry_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
+            {"try": actions.get_event_coordinates, "fail": []},
             {"try": ride_actions.twelve_hours_event, "fail": [
                  {"try": actions.record_event_error, "fail": []},
                 ]},

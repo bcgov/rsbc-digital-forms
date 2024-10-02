@@ -72,8 +72,9 @@ class Config():
 
     VIPS_DPS_EMAIL = os.getenv('VIPS_DPS_EMAIL', 'do-not-reply-rsi@gov.bc.ca')
 
-
-
+    # Geocoding service details
+    GEOCODING_API_URL = os.getenv('GEOCODING_API_URL', 'http://localhost:8000')
+    GEOCODING_API_KEY = os.getenv('GEOCODING_API_KEY', 'TEST')
 
     LOGGING = {
         'version': 1,

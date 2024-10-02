@@ -1,6 +1,7 @@
 import logging
 import logging.config
 import requests
+from python.common import form_middleware
 from python.common.helper import date_time_to_local_tz_string, format_date_only, yes_no_string_to_bool
 from python.common.config import Config
 from python.common.enums import ErrorCode
@@ -233,7 +234,10 @@ def fill_common_payload_record(args, payloadRecord):
     payloadRecord["timeReleased"] = args['event_data']['time_released']
     payloadRecord["vehicleTypeDesc"] = get_vehicle_type(args)
     payloadRecord["addressOfOffence"] = args['event_data']['intersection_or_address_of_offence']
-    payloadRecord["offenceCity"] = get_city_name(args['event_data']['offence_city'], args)
+    payloadRecord["offenceCity"] = form_middleware.get_city_name(args['event_data']['offence_city'], args)
+    if 'latitude' in args['event_data'] and 'longitude' in args['event_data']:
+        payloadRecord["latitude"] = args['event_data']['latitude']
+        payloadRecord["longitude"] = args['event_data']['longitude']
 
     payloadRecord["officerDisplayName"] = args['user_data']['display_name']
     payloadRecord["officerBadgeNumber"] = args['user_data']['badge_number']
@@ -328,18 +332,6 @@ def get_vehicle_type(args) -> str:
                 return vehicle_type_data[0].description
     return None
 
-
-def get_city_name(city_code, args) -> str:
-    application = args.get('app')
-    db = args.get('db')
-    with application.app_context():
-        city_data = db.session.query(City) \
-                        .filter(City.objectCd == city_code) \
-                        .all()
-        if len(city_data) == 0:
-            logging.error("city not found")
-        else:
-            return city_data[0].objectDsc
     
 def get_impound_lot_operator(args) -> str:
     if args['event_data']['impound_lot_operator']:
