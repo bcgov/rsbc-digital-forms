@@ -1,23 +1,18 @@
 import json
-import csv
-import pytz
 import logging
 import logging.config
+from python.common import form_middleware
 from python.form_handler.config import Config
-from cerberus import Validator
-import base64
-from cerberus import errors
 import logging
 import json
-from datetime import datetime
 from minio import Minio
-from minio.error import S3Error
 from python.common.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef,ImpoundReasonCodes,IloIdCrossRef,ImpoundLotOperator
+from python.form_handler.geocoding_service import get_coordinates
 from python.form_handler.icbc_service import submit_to_icbc
 from python.form_handler.vips_service import create_vips_doc,create_vips_imp
 from python.form_handler.payloads import vips_payload,vips_document_payload
 from python.form_handler.message import encode_message
-from python.form_handler.helper import method2_decrypt,decryptPdf_method1,convertDateTime,convertDateTimeWithSecs
+from python.form_handler.helper import decryptPdf_method1,convertDateTime,convertDateTimeWithSecs
 from python.common.error_middleware import record_error
 from python.common.enums import ErrorCode
 
@@ -1369,4 +1364,29 @@ def record_event_error(**args):
     except Exception as e:
         # If recording the error itself fails, log it
         logging.error(f"Failed to record error: {str(e)}")
+    return True, args
+
+
+def get_event_coordinates(**args)->tuple:
+    logging.debug("inside get_event_coordinates()")
+    try:
+        address = args['event_data']['intersection_or_address_of_offence']
+        city = form_middleware.get_city_name(args['event_data']['offence_city'], args)
+
+        geocoding_status, latitude, longitude = get_coordinates(address, city)
+        args['event_data']['latitude'] = latitude
+        args['event_data']['longitude'] = longitude
+
+    except Exception as e:
+        logging.error(f'Error getting coordinates: {e}')
+        args['error'] = {
+                'error_code': ErrorCode.L01,
+                'error_details': e,
+                'event_type': args['message']['event_type'],
+                'func': get_event_coordinates,
+                'event_id': args['message']['event_id']
+            }
+        record_event_error(**args)
+
+    # Always return True to continue processing even if not able to get coordinates
     return True, args

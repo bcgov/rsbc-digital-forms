@@ -103,6 +103,11 @@ class ErrorCode(BaseEnum):
                            "Contact DF application support for further investigation", False)
     
 
+    # Geocoding location related error
+
+    L01 = ErrorCodeDetails("L01", "Error in getting coordinates", ErrorCategory.CONNECTION, ErrorSeverity.MEDIUM,
+                            "Contact DF application support for further investigation", False)
+
     
     # Add more error codes as needed...
 
