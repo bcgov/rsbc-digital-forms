@@ -45,3 +45,29 @@ $primary-color: #003366;
     display: none;
   }
 }
+
+// Styles for the user dropdown
+.dropdown-toggle::after {
+  display: none;
+}
+
+.dropdown-menu {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+}
+
+.dropdown-item {
+  color: #212529;
+  
+  &:hover, &:focus {
+    background-color: #e9ecef;
+  }
+}
+
+.user-info {
+  .dropdown-toggle {
+    &:hover, &:focus {
+      opacity: 0.8;
+    }
+  }
+}

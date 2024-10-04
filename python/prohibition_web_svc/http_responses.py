@@ -1,5 +1,6 @@
 from flask import make_response
 import logging
+from flask import jsonify
 
 
 def successful_create_response(**kwargs) -> tuple:
@@ -86,3 +87,7 @@ def failed_validation(**kwargs) -> tuple:
 def no_payload(**kwargs) -> tuple:
     kwargs['response'] = make_response({'error': 'no payload'}, 400)
     return True, kwargs
+
+def successful_get_response(**kwargs) -> tuple:
+    response = make_response(jsonify(kwargs.get('response_dict')), 200)
+    return True, {'response': response}

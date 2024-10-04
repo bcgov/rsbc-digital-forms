@@ -5,7 +5,7 @@ import responses
 from flask_api import FlaskAPI
 
 import python.common.ride_actions as ride_actions
-from python.form_handler.models import db
+from python.common.models import db
 from python.form_handler.config import Config
 from python.common.config import Config as CommonConfig
 

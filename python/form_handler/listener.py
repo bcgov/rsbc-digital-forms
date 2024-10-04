@@ -12,7 +12,7 @@ import pika
 from python.form_handler.helper import get_storage_ref_event_type,get_event_status
 
 from flask_api import FlaskAPI
-from python.form_handler.models import db
+from python.common.models import db
 
 logging.config.dictConfig(Config.LOGGING)
 

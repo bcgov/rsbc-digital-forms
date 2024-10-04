@@ -5,7 +5,7 @@ import logging
 import json
 from datetime import datetime
 import pytz
-from python.prohibition_web_svc.models import db, User, UserRole
+from python.common.models import db, User, UserRole
 import python.common.rsi_email as rsi_email
 from python.prohibition_web_svc.config import Config
 

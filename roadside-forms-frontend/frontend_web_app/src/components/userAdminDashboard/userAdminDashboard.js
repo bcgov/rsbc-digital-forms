@@ -45,16 +45,39 @@ export const UserAdminDashboard = () => {
     }
   }, [userRoleData, navigate]);
 
+  const addUniqueIds = (users) => {
+    return users.map((user, index) => ({
+      ...user,
+      uniqueId: `${user.user_guid}-${index}`
+    }));
+  };
+
   const getAllUsers = () => {
     UserApi.getAll().then((resp) => {
-      const uniqueUsers = removeDuplicates(resp.data);
+      const uniqueUsers = addUniqueIds(resp.data);
+      
+      // Group users by user_guid
+      const userGroups = uniqueUsers.reduce((groups, user) => {
+        if (!groups[user.user_guid]) {
+          groups[user.user_guid] = [];
+        }
+        groups[user.user_guid].push(user);
+        return groups;
+      }, {});
+      
+      // Filter out users who have at least one administrator role
+      const filteredUsers = Object.values(userGroups)
+        .filter(group => !group.some(user => user.role_name === "administrator"))
+        .flatMap(group => group);
+      
       setSelectUsers(
-        uniqueUsers
+        filteredUsers
           .filter((user) => user.role_name === "officer")
           .map((user) => {
             return { label: user.login, value: user };
           })
       );
+      
       setData(uniqueUsers);
       setLoading(false);
     });
@@ -112,17 +135,6 @@ export const UserAdminDashboard = () => {
     setTimeout(() => setShowSuccessMessage(false), 10000); // Hide after 10 seconds
   };
 
-
-  const removeDuplicates = (users) => {
-    const uniqueUsers = {};
-    return users.filter(user => {
-      if (!uniqueUsers[user.user_guid]) {
-        uniqueUsers[user.user_guid] = true;
-        return true;
-      }
-      return false;
-    });
-  };
 
   const filteredData = useMemo(() => {
     if (showNewUsersOnly) {
@@ -254,7 +266,7 @@ export const UserAdminDashboard = () => {
 
     return (
       <BootstrapTable
-        keyField="user_guid"
+        keyField="uniqueId"
         data={filteredData}
         columns={columns}
         filter={filterFactory()}
