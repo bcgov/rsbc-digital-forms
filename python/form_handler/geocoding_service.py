@@ -17,7 +17,7 @@ def get_coordinates(address: str, city: str)-> tuple:
         if get_coordinates_response['province'] != 'BC':
             logging.warning(f'Coordinates found for address: {address} and city: {city} but not in BC')
             return False, None, None
-        return True, get_coordinates_response['latitude'], get_coordinates_response['longitude']
+        return True, get_coordinates_response['latitude'], get_coordinates_response['longitude'], get_coordinates_response['address']
     elif response.status_code == 404:
         logging.warning(f'No coordinates found for address: {address} and city: {city}')
         return False, None, None
