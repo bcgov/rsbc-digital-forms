@@ -284,8 +284,10 @@ export const Dashboard = () => {
     const fetchNeededIDs = async () => {
       const neededFormID = await getAllFormIDs();
       const newIDs = await FormIDApi.post(neededFormID);
-      const seededIDs = await seedLeasedValues(newIDs.forms);
-      await db.formID.bulkPut(seededIDs);
+      if (newIDs) { 
+        const seededIDs = await seedLeasedValues(newIDs.forms);
+        await db.formID.bulkPut(seededIDs);
+      }
       setFormIDsLoaded(true);
     };
 
