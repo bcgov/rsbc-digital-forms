@@ -1373,9 +1373,11 @@ def get_event_coordinates(**args)->tuple:
         address = args['event_data']['intersection_or_address_of_offence']
         city = form_middleware.get_city_name(args['event_data']['offence_city'], args)
 
-        geocoding_status, latitude, longitude = get_coordinates(address, city)
+        geocoding_status, latitude, longitude, full_address = get_coordinates(address, city)
         args['event_data']['latitude'] = latitude
         args['event_data']['longitude'] = longitude
+        args['event_data']['full_address'] = full_address
+        args['event_data']['requested_address'] = f'{address}, {city}'
 
     except Exception as e:
         logging.error(f'Error getting coordinates: {e}')
