@@ -26,13 +26,13 @@ def twelve_hours_event(**args):
         eventPayload = {}
         payloadRecord = {}
         eventPayload['typeofevent'] = twelve_hours_submitted
-        eventPayload['twelveHoursPayload'] = []
 
         payloadRecord["eventType"] = twelve_hours_submitted
         payloadRecord["twelveHourNumber"] = args['form_data']['twelve_hour_number']
         payloadRecord["typeOfProhibition"] = args['event_data']['type_of_prohibition']
         fill_common_payload_record(args, payloadRecord)
-        eventPayload['twelveHoursPayload'].append(payloadRecord)
+        eventPayload['twelveHoursPayload'] = payloadRecord
+        fill_location(args, eventPayload)
 
         endpoint = f"{ride_url}/dfV2events/12hrsubmitted"
         headers = {'ride-api-key': ride_key}
@@ -79,7 +79,6 @@ def twenty_four_hours_event(**args):
         eventPayload = {}
         payloadRecord = {}
         eventPayload['typeofevent'] = twenty_four_hours_submitted
-        eventPayload['twentyFourHoursPayload'] = []
 
         payloadRecord["eventType"] = twenty_four_hours_submitted
         payloadRecord["twentyFourHrNo"] = args['form_data']['twenty_four_hour_number']
@@ -96,8 +95,8 @@ def twenty_four_hours_event(**args):
         payloadRecord["requestedApprovedInstrumentUsed"] = args['form_data']['requested_approved_instrument_used']
         payloadRecord["requestedTestUsedAlcohol"] = args['form_data']['requested_test_used_alcohol']
         payloadRecord["requestedTestUsedDrug"] = args['form_data']['requested_test_used_drug']
-
-        eventPayload['twentyFourHoursPayload'].append(payloadRecord)
+        eventPayload['twentyFourHoursPayload'] = payloadRecord
+        fill_location(args, eventPayload)
 
         endpoint = f"{ride_url}/dfV2events/24hrsubmitted"
         headers = {'ride-api-key': ride_key}
@@ -145,8 +144,7 @@ def vi_event(**args):
         eventPayload = {}
         payloadRecord = {}
         eventPayload['typeofevent'] = vi_submitted
-        eventPayload['viPayload'] = []
-
+        
         payloadRecord["eventType"] = vi_submitted
         payloadRecord["viNumber"] = args['form_data']['VI_number']
         fill_common_payload_record(args, payloadRecord)
@@ -172,7 +170,8 @@ def vi_event(**args):
         payloadRecord["vehicleSpeed"] = args['form_data']['vehicle_speed']
         payloadRecord["speedEstimationTechnique"] = args['form_data']['speed_estimation_technique']
         payloadRecord["speedConfirmationTechnique"] = args['form_data']['speed_confirmation_technique']
-        eventPayload['viPayload'].append(payloadRecord)
+        eventPayload['viPayload'] = payloadRecord
+        fill_location(args, eventPayload)
 
         endpoint = f"{ride_url}/dfV2events/visubmitted"
         headers = {'ride-api-key': ride_key}
@@ -209,8 +208,17 @@ def vi_event(**args):
 
     return True, args
 
+def fill_location(args, eventPayload):
+    if 'latitude' in args['event_data'] and 'longitude' in args['event_data']:
+        eventPayload["locationRequestPayload"] = {}
+        eventPayload["locationRequestPayload"]["latitude"] = args['event_data']['latitude']
+        eventPayload["locationRequestPayload"]["longitude"] = args['event_data']['longitude']
+        eventPayload["locationRequestPayload"]["requestedAddress"] = args['event_data']['requested_address']
+        eventPayload["locationRequestPayload"]["fullAddress"] = args['event_data']['full_address']
+
 
 def fill_common_payload_record(args, payloadRecord):
+    payloadRecord["eventID"] = args['message']['event_id']
     payloadRecord["eventVersion"] = 1.0
     payloadRecord["eventDtm"] = date_time_to_local_tz_string(args['event_data']['created_dt'])
     payloadRecord["driverLicenceNumber"] = args['event_data']['driver_licence_no']
@@ -235,10 +243,6 @@ def fill_common_payload_record(args, payloadRecord):
     payloadRecord["vehicleTypeDesc"] = get_vehicle_type(args)
     payloadRecord["addressOfOffence"] = args['event_data']['intersection_or_address_of_offence']
     payloadRecord["offenceCity"] = form_middleware.get_city_name(args['event_data']['offence_city'], args)
-    if 'latitude' in args['event_data'] and 'longitude' in args['event_data']:
-        payloadRecord["latitude"] = args['event_data']['latitude']
-        payloadRecord["longitude"] = args['event_data']['longitude']
-
     payloadRecord["officerDisplayName"] = args['user_data']['display_name']
     payloadRecord["officerBadgeNumber"] = args['user_data']['badge_number']
     payloadRecord["enforcementAgencyName"] = args['user_data']['agency']
