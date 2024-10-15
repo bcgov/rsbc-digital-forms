@@ -20,7 +20,6 @@ import { UserApi } from "../../api/userApi";
 import { SearchableSelect } from "../common/Select/SearchableSelect";
 import "./userAdminDashboard.scss";
 
-const { ExportCSVButton } = CSVExport;
 
 export const UserAdminDashboard = () => {
   const initialValues = {
@@ -144,6 +143,10 @@ export const UserAdminDashboard = () => {
     }
     return data;
   }, [data, showNewUsersOnly]);
+
+  const disableFilter = () => {
+    setShowNewUsersOnly(false);
+  };
 
   const paginationOptions = {
     sizePerPageList: [
@@ -287,7 +290,18 @@ export const UserAdminDashboard = () => {
       return (
         <div className="text-center p-3 bg-light border rounded">
           {showNewUsersOnly ? (
-            <p>No pending user requests found. Please disable the filter to view all users.</p>
+            <>
+              <p>No pending user requests found. Please click 'Show All Users' to view all users.</p>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                onClick={disableFilter}
+              >
+                Show All Users
+              </Button>
+            </>
+
           ) : (
             <p>No users found matching your search criteria. Please try adjusting your search parameters.</p>
           )}
