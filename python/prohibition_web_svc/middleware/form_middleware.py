@@ -25,18 +25,21 @@ def log_payload_to_splunk(**kwargs) -> tuple:
 
 
 def lease_a_form_id(**kwargs) -> tuple:
+    logging.debug('inside lease_a_form_id()')
+    data = kwargs.get('payload')
+    user_guid = kwargs.get('user_guid')
+    id_list = []
+    id_not_available = False
     try:
-        logging.debug('inside lease_a_form_id()')
-        data = kwargs.get('payload')
-        user_guid = kwargs.get('user_guid')
-        id_list = []
         for form_type in data:
             ids = db.session.query(Form) \
                 .filter(Form.form_type == form_type) \
                 .filter(Form.user_guid == None) \
-                .limit(data.get(form_type))
+                .limit(data.get(form_type)) \
+                .all()
         
-            if ids is None:
+            if not ids:
+                id_not_available = True
                 logging.warning('Insufficient unique ids available for {}'.format(form_type))
                 record_error(
                     **{
@@ -46,22 +49,26 @@ def lease_a_form_id(**kwargs) -> tuple:
                         'func': lease_a_form_id,
                     }
                 )
-                return False, kwargs
+
             for id in ids:
                 logging.debug(f'id: {id}')
                 id.lease(user_guid)
                 id_list.append(asdict(id))
+
         db.session.commit()
     except Exception as e:
+        id_not_available = True
         kwargs['error'] = {
             'error_code': ErrorCode.F01,
             'error_details': e,
             'event_type': kwargs.get('form_type'),
             'func': lease_a_form_id,
         }
-        return False, kwargs
-    kwargs['response_dict'] = jsonify({'forms':id_list})
-    return True, kwargs
+    
+    kwargs['response_dict'] = jsonify({'forms': id_list})
+    is_successful = bool(id_list) and not id_not_available
+    return is_successful, kwargs
+    
 
 
 def renew_form_id_lease(**kwargs) -> tuple:
@@ -359,7 +366,7 @@ def record_form_error(**kwargs):
 
         if error is None:
             logging.warning("Error object is None")
-            return
+            return True, kwargs
 
         record_error(**error)
 
