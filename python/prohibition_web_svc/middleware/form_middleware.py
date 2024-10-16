@@ -37,7 +37,7 @@ def lease_a_form_id(**kwargs) -> tuple:
                 ids = db.session.query(Form) \
                     .filter(Form.form_type == form_type) \
                     .filter(Form.user_guid == None) \
-                    .limit(data.get(form_type)) \
+                    .limit(form_type_count) \
                     .all()
             
                 if not ids:
