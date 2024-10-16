@@ -1,11 +1,13 @@
 import logging
 import logging.config
 import requests
+from python.common import form_middleware
 from python.common.helper import date_time_to_local_tz_string, format_date_only, yes_no_string_to_bool
 from python.common.config import Config
+from python.common.enums import ErrorCode
 import pytz
 
-from python.form_handler.models import Agency, City, ImpoundLotOperator, JurisdictionCrossRef, Province, Vehicle, VehicleColour, VehicleStyle, VehicleType
+from python.common.models import Agency, City, ImpoundLotOperator, JurisdictionCrossRef, Province, Vehicle, VehicleColour, VehicleStyle, VehicleType
 
 ride_url=Config.RIDE_API_URL
 ride_key=Config.RIDE_API_KEY
@@ -24,13 +26,13 @@ def twelve_hours_event(**args):
         eventPayload = {}
         payloadRecord = {}
         eventPayload['typeofevent'] = twelve_hours_submitted
-        eventPayload['twelveHoursPayload'] = []
 
         payloadRecord["eventType"] = twelve_hours_submitted
         payloadRecord["twelveHourNumber"] = args['form_data']['twelve_hour_number']
         payloadRecord["typeOfProhibition"] = args['event_data']['type_of_prohibition']
         fill_common_payload_record(args, payloadRecord)
-        eventPayload['twelveHoursPayload'].append(payloadRecord)
+        eventPayload['twelveHoursPayload'] = payloadRecord
+        fill_location(args, eventPayload)
 
         endpoint = f"{ride_url}/dfV2events/12hrsubmitted"
         headers = {'ride-api-key': ride_key}
@@ -39,6 +41,14 @@ def twelve_hours_event(**args):
         logging.debug(f'headers: {headers}')
         response = requests.post(endpoint, json=eventPayload, verify=False, headers=headers)
         if response.status_code != 200:
+            args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': f'Error in sending 12hr_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
+                        'event_type': '12hr',
+                        'func': twelve_hours_event,
+                        'ticket_no': args['form_data']['twelve_hour_number'],
+                        'event_id': args['message']['event_id']
+                    }
             logging.error('error in sending 12hr_submitted event to RIDE')
             logging.error(f'error code: {response.status_code} error message: {response.json()}')
             return False, args
@@ -47,6 +57,14 @@ def twelve_hours_event(**args):
     except Exception as e:
         logging.error('error in sending 12hr_submitted event to RIDE')
         logging.error(e)
+        args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': e,
+                        'event_type': '12hr',
+                        'func': twelve_hours_event,
+                        'ticket_no': args['form_data']['twelve_hour_number'],
+                        'event_id': args['message']['event_id']
+                    }
         return False, args
 
     return True, args
@@ -61,7 +79,6 @@ def twenty_four_hours_event(**args):
         eventPayload = {}
         payloadRecord = {}
         eventPayload['typeofevent'] = twenty_four_hours_submitted
-        eventPayload['twentyFourHoursPayload'] = []
 
         payloadRecord["eventType"] = twenty_four_hours_submitted
         payloadRecord["twentyFourHrNo"] = args['form_data']['twenty_four_hour_number']
@@ -78,8 +95,8 @@ def twenty_four_hours_event(**args):
         payloadRecord["requestedApprovedInstrumentUsed"] = args['form_data']['requested_approved_instrument_used']
         payloadRecord["requestedTestUsedAlcohol"] = args['form_data']['requested_test_used_alcohol']
         payloadRecord["requestedTestUsedDrug"] = args['form_data']['requested_test_used_drug']
-
-        eventPayload['twentyFourHoursPayload'].append(payloadRecord)
+        eventPayload['twentyFourHoursPayload'] = payloadRecord
+        fill_location(args, eventPayload)
 
         endpoint = f"{ride_url}/dfV2events/24hrsubmitted"
         headers = {'ride-api-key': ride_key}
@@ -88,6 +105,14 @@ def twenty_four_hours_event(**args):
         logging.debug(f'headers: {headers}')
         response = requests.post(endpoint, json=eventPayload, verify=False,headers=headers)
         if response.status_code != 200:
+            args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': f'Error in sending 24hr_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
+                        'event_type': '24hr',
+                        'func': twenty_four_hours_event,
+                        'ticket_no': args['form_data']['twenty_four_hour_number'],
+                        'event_id': args['message']['event_id']
+                    }
             logging.error('error in sending 24hr_submitted event to RIDE')
             logging.error(f'error code: {response.status_code} error message: {response.json()}')
             return False, args
@@ -96,6 +121,14 @@ def twenty_four_hours_event(**args):
     except Exception as e:
         logging.error('error in sending 24hr_submitted event to RIDE')
         logging.error(e)
+        args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': e,
+                        'event_type': '24hr',
+                        'func': twenty_four_hours_event,
+                        'ticket_no': args['form_data']['twenty_four_hour_number'],
+                        'event_id': args['message']['event_id']
+                    }
         return False, args
 
     return True, args
@@ -111,8 +144,7 @@ def vi_event(**args):
         eventPayload = {}
         payloadRecord = {}
         eventPayload['typeofevent'] = vi_submitted
-        eventPayload['viPayload'] = []
-
+        
         payloadRecord["eventType"] = vi_submitted
         payloadRecord["viNumber"] = args['form_data']['VI_number']
         fill_common_payload_record(args, payloadRecord)
@@ -138,7 +170,8 @@ def vi_event(**args):
         payloadRecord["vehicleSpeed"] = args['form_data']['vehicle_speed']
         payloadRecord["speedEstimationTechnique"] = args['form_data']['speed_estimation_technique']
         payloadRecord["speedConfirmationTechnique"] = args['form_data']['speed_confirmation_technique']
-        eventPayload['viPayload'].append(payloadRecord)
+        eventPayload['viPayload'] = payloadRecord
+        fill_location(args, eventPayload)
 
         endpoint = f"{ride_url}/dfV2events/visubmitted"
         headers = {'ride-api-key': ride_key}
@@ -147,6 +180,14 @@ def vi_event(**args):
         logging.debug(f'headers: {headers}')
         response = requests.post(endpoint, json=eventPayload, verify=False,headers=headers)
         if response.status_code != 200:
+            args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': f'Error in sending vi_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
+                        'event_type': 'VI',
+                        'func': vi_event,
+                        'ticket_no': args['form_data']['VI_number'],
+                        'event_id': args['message']['event_id']
+                    }
             logging.error('error in sending vi_submitted event to RIDE')
             logging.error(f'error code: {response.status_code} error message: {response.json()}')
             return False, args
@@ -155,12 +196,29 @@ def vi_event(**args):
     except Exception as e:
         logging.error('error in sending vi_submitted event to RIDE')
         logging.error(e)
+        args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': e,
+                        'event_type': 'VI',
+                        'func': vi_event,
+                        'ticket_no': args['form_data']['VI_number'],
+                        'event_id': args['message']['event_id']
+                    }
         return False, args
 
     return True, args
 
+def fill_location(args, eventPayload):
+    if 'latitude' in args['event_data'] and 'longitude' in args['event_data']:
+        eventPayload["locationRequestPayload"] = {}
+        eventPayload["locationRequestPayload"]["latitude"] = args['event_data']['latitude']
+        eventPayload["locationRequestPayload"]["longitude"] = args['event_data']['longitude']
+        eventPayload["locationRequestPayload"]["requestedAddress"] = args['event_data']['requested_address']
+        eventPayload["locationRequestPayload"]["fullAddress"] = args['event_data']['full_address']
+
 
 def fill_common_payload_record(args, payloadRecord):
+    payloadRecord["eventID"] = args['message']['event_id']
     payloadRecord["eventVersion"] = 1.0
     payloadRecord["eventDtm"] = date_time_to_local_tz_string(args['event_data']['created_dt'])
     payloadRecord["driverLicenceNumber"] = args['event_data']['driver_licence_no']
@@ -184,8 +242,7 @@ def fill_common_payload_record(args, payloadRecord):
     payloadRecord["timeReleased"] = args['event_data']['time_released']
     payloadRecord["vehicleTypeDesc"] = get_vehicle_type(args)
     payloadRecord["addressOfOffence"] = args['event_data']['intersection_or_address_of_offence']
-    payloadRecord["offenceCity"] = get_city_name(args['event_data']['offence_city'], args)
-
+    payloadRecord["offenceCity"] = form_middleware.get_city_name(args['event_data']['offence_city'], args)
     payloadRecord["officerDisplayName"] = args['user_data']['display_name']
     payloadRecord["officerBadgeNumber"] = args['user_data']['badge_number']
     payloadRecord["enforcementAgencyName"] = args['user_data']['agency']
@@ -279,18 +336,6 @@ def get_vehicle_type(args) -> str:
                 return vehicle_type_data[0].description
     return None
 
-
-def get_city_name(city_code, args) -> str:
-    application = args.get('app')
-    db = args.get('db')
-    with application.app_context():
-        city_data = db.session.query(City) \
-                        .filter(City.objectCd == city_code) \
-                        .all()
-        if len(city_data) == 0:
-            logging.error("city not found")
-        else:
-            return city_data[0].objectDsc
     
 def get_impound_lot_operator(args) -> str:
     if args['event_data']['impound_lot_operator']:

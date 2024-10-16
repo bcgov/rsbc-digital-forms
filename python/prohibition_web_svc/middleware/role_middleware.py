@@ -3,7 +3,7 @@ import pytz
 from datetime import datetime
 import logging
 from python.prohibition_web_svc.config import Config
-from python.prohibition_web_svc.models import db, UserRole, User
+from python.common.models import db, UserRole, User
 
 
 def query_current_users_roles(**kwargs) -> tuple:

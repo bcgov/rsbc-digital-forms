@@ -5,7 +5,7 @@ import json
 import responses
 import python.prohibition_web_svc.middleware.keycloak_middleware as middleware
 from datetime import datetime, timedelta
-from python.prohibition_web_svc.models import Form, UserRole
+from python.common.models import Form, UserRole
 from python.prohibition_web_svc.app import db, create_app
 from python.prohibition_web_svc.config import Config
 

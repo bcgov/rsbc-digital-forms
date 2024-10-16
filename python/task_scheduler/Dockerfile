@@ -16,6 +16,5 @@ RUN source /opt/app-root/etc/scl_enable && \
 COPY __init__.py ${APP_ROOT}/src/python/
 COPY common ${APP_ROOT}/src/python/common
 COPY task_scheduler ${APP_ROOT}/src/python/task_scheduler
-COPY prohibition_web_svc/models.py ${APP_ROOT}/src/python/task_scheduler/models.py
 
 CMD [ "gunicorn", "--error-logfile", "-", "--bind", "0.0.0.0:5000", "--pythonpath", "python/task_scheduler", "main:create_app()" ]

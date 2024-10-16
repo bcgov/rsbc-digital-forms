@@ -5,10 +5,13 @@ import iso8601
 from datetime import datetime
 from cerberus import Validator
 from dataclasses import asdict
+from sqlalchemy import func, case
+from sqlalchemy.sql import expression
 from flask import jsonify, make_response
-from python.prohibition_web_svc.models import db, Form
+from python.common.models import db, Form
 from python.prohibition_web_svc.config import Config
-
+from python.common.error_middleware import record_error
+from python.common.enums import ErrorCode
 
 def validate_update(**kwargs) -> tuple:
     return True, kwargs
@@ -26,45 +29,84 @@ def lease_a_form_id(**kwargs) -> tuple:
     data = kwargs.get('payload')
     user_guid = kwargs.get('user_guid')
     id_list = []
-    for form_type in data:
-        ids = db.session.query(Form) \
-            .filter(Form.form_type == form_type) \
-            .filter(Form.user_guid == None) \
-            .limit(data.get(form_type))
-        if ids is None:
-            logging.warning('Insufficient unique ids available for {}'.format(form_type))
-            return False, kwargs
-        for id in ids:
-            logging.debug(f'id: {id}')
-            id.lease(user_guid)
-            id_list.append(asdict(id))
+    id_not_available = False
     try:
+        for form_type in data:
+            form_type_count = data.get(form_type)
+            if form_type_count > 0:
+                ids = db.session.query(Form) \
+                    .filter(Form.form_type == form_type) \
+                    .filter(Form.user_guid == None) \
+                    .limit(form_type_count) \
+                    .all()
+            
+                if not ids:
+                    id_not_available = True
+                    logging.warning('Insufficient unique ids available for {}'.format(form_type))
+                    record_error(
+                        **{
+                            'error_code': ErrorCode.F01,
+                            'error_details': f'Insufficient unique ids available for {form_type}',
+                            'event_type': form_type,
+                            'func': lease_a_form_id,
+                        }
+                    )
+
+                for id in ids:
+                    logging.debug(f'id: {id}')
+                    id.lease(user_guid)
+                    id_list.append(asdict(id))
+
         db.session.commit()
     except Exception as e:
-        return False, kwargs
-    kwargs['response_dict'] = jsonify({'forms':id_list})
-    return True, kwargs
+        id_not_available = True
+        kwargs['error'] = {
+            'error_code': ErrorCode.F01,
+            'error_details': e,
+            'event_type': kwargs.get('form_type'),
+            'func': lease_a_form_id,
+        }
+    
+    kwargs['response_dict'] = jsonify({'forms': id_list})
+    is_successful = not id_not_available
+    return is_successful, kwargs
+    
 
 
 def renew_form_id_lease(**kwargs) -> tuple:
     logging.debug('inside renew_form_id_lease()')
-    form_type = kwargs.get('form_type')
-    user_guid = kwargs.get('user_guid')
-    form_id = kwargs.get('form_id')
-    form = db.session.query(Form) \
-        .filter(Form.form_type == form_type) \
-        .filter(Form.user_guid == user_guid) \
-        .filter(Form.printed_timestamp == None) \
-        .filter(Form.spoiled_timestamp == None) \
-        .filter(Form.id == form_id) \
-        .first()
-    if form is None:
-        logging.warning('User, {}, cannot renew the lease on {} form'.format(user_guid, form_id))
-        return False, kwargs
-    form.lease(user_guid)
+    
     try:
+        form_type = kwargs.get('form_type')
+        user_guid = kwargs.get('user_guid')
+        form_id = kwargs.get('form_id')
+        form = db.session.query(Form) \
+            .filter(Form.form_type == form_type) \
+            .filter(Form.user_guid == user_guid) \
+            .filter(Form.printed_timestamp == None) \
+            .filter(Form.spoiled_timestamp == None) \
+            .filter(Form.id == form_id) \
+            .first()
+        if form is None:
+            logging.warning('User, {}, cannot renew the lease on {} form'.format(user_guid, form_id))
+            record_error(
+                        **{
+                            'error_code': ErrorCode.F02,
+                            'error_details': 'User, {}, cannot renew the lease on {} form'.format(user_guid, form_id),
+                            'event_type': form_type,
+                            'func': renew_form_id_lease,
+                        }
+                    )
+            return False, kwargs
+        form.lease(user_guid)
         db.session.commit()
     except Exception as e:
+        kwargs['error'] = {
+            'error_code': ErrorCode.F02,
+            'error_details': e,
+            'event_type': kwargs.get('form_type'),
+            'func': renew_form_id_lease,
+        }
         return False, kwargs
     kwargs['response_dict'] = Form.serialize(form)
     return True, kwargs
@@ -115,7 +157,7 @@ def mark_form_as_printed_or_spoiled(**kwargs) -> tuple:
 #             .filter(Form.id == number) \
 #             .first()
 #         if form is None:
-#             logging.warning(f'{user_guid}, cannot update {payload.get(form)} as spoiled - record not found') 
+#             logging.warning(f'{user_guid}, cannot update {payload.get(form)} as spoiled - record not found')
 #             return False, kwargs
 #         form.spoiled_timestamp = payload.get('spoiled_timestamp')
 #     try:
@@ -232,6 +274,12 @@ def admin_create_form(**kwargs) -> tuple:
         kwargs['response'] = make_response({"success": True}, 201)
     except Exception as e:
         logging.warning(str(e))
+        kwargs['error'] = {
+            'error_code': ErrorCode.F02,
+            'error_details': e,
+            'event_type': kwargs.get('form_type'),
+            'func': renew_form_id_lease,
+        }
         return False, kwargs
     return True, kwargs
 
@@ -245,3 +293,87 @@ def convert_vancouver_to_utc(iso_datetime_string: str) -> datetime:
     utc_timezone = pytz.timezone("UTC")
     printed = iso8601.parse_date(iso_datetime_string)
     return printed.astimezone(utc_timezone).replace(tzinfo=None)
+
+def get_form_statistics(**kwargs) -> tuple:
+    try:
+        results = db.session.query(
+            Form.form_type,
+            func.count().label('total_forms'),
+            func.sum(case(
+                (expression.and_(
+                    Form.printed_timestamp.is_(None),
+                    Form.spoiled_timestamp.is_(None),
+                    expression.or_(Form.user_guid.isnot(None), Form.lease_expiry.isnot(None))
+                ), 1),
+                else_=0
+            )).label('leased_forms'),
+            func.sum(case(
+                (expression.or_(
+                    Form.printed_timestamp.isnot(None),
+                    Form.spoiled_timestamp.isnot(None)
+                ), 1),
+                else_=0
+            )).label('total_used_forms'),
+            func.sum(case(
+                (expression.and_(
+                    Form.printed_timestamp.is_(None),
+                    Form.spoiled_timestamp.is_(None),
+                    Form.user_guid.is_(None),
+                    Form.lease_expiry.is_(None)
+                ), 1),
+                else_=0
+            )).label('available_forms')
+        ).group_by(Form.form_type).order_by(Form.form_type).all()
+        
+        form_names = {
+                '12Hour': '12 Hour Suspension (MV2906)',
+                '24Hour': '24 Hour Prohibition (MV2634E)',
+                'VI': 'Vehicle Impoundment (MV2721 / MV2722)',
+                'IRP': 'IRP (MV2723 / MV2724)',
+            }
+        
+
+        stats = [
+            {
+                'form_name': form_names.get(r.form_type, f"Form Type: {r.form_type}"),
+                'form_type': r.form_type,
+                'total_forms': r.total_forms,
+                'leased_forms': r.leased_forms,
+                'total_used_forms': r.total_used_forms,
+                'available_forms': r.available_forms
+            } for r in results
+        ]
+
+        kwargs['response_dict'] = stats
+        return True, kwargs
+    except Exception as e:
+        logging.error(f"Error in get_form_statistics: {str(e)}")
+        # kwargs['error'] = {
+        #     'error_code': ErrorCode.F03,
+        #     'error_details': str(e),
+        #     'event_type': 'form_statistics',
+        #     'func': get_form_statistics,
+        # }
+        return False, kwargs
+
+def record_form_error(**kwargs):
+    """
+    Record an error that occurred during form processing.
+    
+    Args:
+        **kwargs: Additional keyword arguments, including form_id and form_type.
+    """
+    try:
+        error = kwargs.get('error')
+
+        if error is None:
+            logging.warning("Error object is None")
+            return True, kwargs
+
+        record_error(**error)
+
+    except Exception as e:
+        # If recording the error itself fails, log it
+        logging.error(f"Failed to record form error: {str(e)}")
+    
+    return True, kwargs

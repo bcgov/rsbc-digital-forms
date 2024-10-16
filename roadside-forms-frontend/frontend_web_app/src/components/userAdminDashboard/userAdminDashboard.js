@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit';
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -18,6 +19,7 @@ import { userRolesAtom } from "../../atoms/userRoles";
 import { UserApi } from "../../api/userApi";
 import { SearchableSelect } from "../common/Select/SearchableSelect";
 import "./userAdminDashboard.scss";
+
 
 export const UserAdminDashboard = () => {
   const initialValues = {
@@ -45,16 +47,39 @@ export const UserAdminDashboard = () => {
     }
   }, [userRoleData, navigate]);
 
+  const addUniqueIds = (users) => {
+    return users.map((user, index) => ({
+      ...user,
+      uniqueId: `${user.user_guid}-${index}`
+    }));
+  };
+
   const getAllUsers = () => {
     UserApi.getAll().then((resp) => {
-      const uniqueUsers = removeDuplicates(resp.data);
+      const uniqueUsers = addUniqueIds(resp.data);
+      
+      // Group users by user_guid
+      const userGroups = uniqueUsers.reduce((groups, user) => {
+        if (!groups[user.user_guid]) {
+          groups[user.user_guid] = [];
+        }
+        groups[user.user_guid].push(user);
+        return groups;
+      }, {});
+      
+      // Filter out users who have at least one administrator role
+      const filteredUsers = Object.values(userGroups)
+        .filter(group => !group.some(user => user.role_name === "administrator"))
+        .flatMap(group => group);
+      
       setSelectUsers(
-        uniqueUsers
+        filteredUsers
           .filter((user) => user.role_name === "officer")
           .map((user) => {
             return { label: user.login, value: user };
           })
       );
+      
       setData(uniqueUsers);
       setLoading(false);
     });
@@ -112,24 +137,16 @@ export const UserAdminDashboard = () => {
     setTimeout(() => setShowSuccessMessage(false), 10000); // Hide after 10 seconds
   };
 
-
-  const removeDuplicates = (users) => {
-    const uniqueUsers = {};
-    return users.filter(user => {
-      if (!uniqueUsers[user.user_guid]) {
-        uniqueUsers[user.user_guid] = true;
-        return true;
-      }
-      return false;
-    });
-  };
-
   const filteredData = useMemo(() => {
     if (showNewUsersOnly) {
       return data.filter(user => !user.approved_dt);
     }
     return data;
   }, [data, showNewUsersOnly]);
+
+  const disableFilter = () => {
+    setShowNewUsersOnly(false);
+  };
 
   const paginationOptions = {
     sizePerPageList: [
@@ -204,6 +221,12 @@ export const UserAdminDashboard = () => {
       text: 'Date Applied',
       sort: true,
       formatter: (cell) => moment(cell).tz("America/Vancouver").format("YYYY-MM-DD HH:mm"),
+      csvFormatter: (cell) => {
+        if (cell === null || cell === undefined) {
+          return '';
+        }
+        return moment(cell).tz("America/Vancouver").format("YYYY-MM-DD HH:mm");
+      },
     },
     {
       dataField: 'last_active',
@@ -215,10 +238,17 @@ export const UserAdminDashboard = () => {
         }
         return moment(cell).tz("America/Vancouver").format("YYYY-MM-DD HH:mm");
       },
+      csvFormatter: (cell) => {
+        if (cell === null || cell === undefined) {
+          return '';
+        }
+        return moment(cell).tz("America/Vancouver").format("YYYY-MM-DD HH:mm");
+      },
     },
     {
       dataField: 'action',
       text: 'Action',
+      csvExport: false,  // This line excludes the column from CSV export
       formatter: (cellContent, row) => (
         row.approved_dt ? (
           <Button
@@ -239,30 +269,84 @@ export const UserAdminDashboard = () => {
     }
   ];
 
+  const ExportCSVButton = (props) => {
+    const handleClick = () => {
+      props.onExport();
+    };
+    return (
+      <Button
+        type="submit"
+        variant="primary"
+        size="sm"
+        onClick={handleClick}
+      >
+        Export to CSV
+      </Button>
+    );
+  };
+
   const renderTable = () => {
     if (filteredData.length === 0) {
       return (
         <div className="text-center p-3 bg-light border rounded">
           {showNewUsersOnly ? (
-            <p>No pending user requests found. Please disable the filter to view all users.</p>
+            <>
+              <p>No pending user requests found. Please click 'Show All Users' to view all users.</p>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                onClick={disableFilter}
+              >
+                Show All Users
+              </Button>
+            </>
+
           ) : (
             <p>No users found matching your search criteria. Please try adjusting your search parameters.</p>
           )}
         </div>
       );
     }
+    const currentDateTime = moment().format('YYYY-MM-DD_HH-mm-ss');
 
     return (
-      <BootstrapTable
-        keyField="user_guid"
+      <ToolkitProvider
+        keyField="uniqueId"
         data={filteredData}
         columns={columns}
-        filter={filterFactory()}
-        sort={{ dataField: 'last_name', order: 'asc' }}
-        striped
-        wrapperClasses="table-responsive react-bootstrap-table"
-        pagination={paginationFactory(paginationOptions)}
-      />
+        exportCSV={{
+          fileName: `DF_User_List_${currentDateTime}.csv`,
+          noAutoBOM: false,
+          exportAll: false,
+          onlyExportFiltered: true,
+        }}
+      >
+        {
+          props => (
+            <div>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <Form.Check
+                  type="checkbox"
+                  id="show-new-users-only"
+                  label="Show New User Requests only"
+                  checked={showNewUsersOnly}
+                  onChange={(e) => setShowNewUsersOnly(e.target.checked)}
+                />
+                <ExportCSVButton { ...props.csvProps } />
+              </div>
+              <BootstrapTable
+                { ...props.baseProps }
+                filter={filterFactory()}
+                sort={{ dataField: 'last_name', order: 'asc' }}
+                striped
+                wrapperClasses="table-responsive react-bootstrap-table"
+                pagination={paginationFactory(paginationOptions)}
+              />
+            </div>
+          )
+        }
+      </ToolkitProvider>
     );
   };
 
@@ -271,53 +355,44 @@ export const UserAdminDashboard = () => {
   } else {
     return (
       <>
-      {showSuccessMessage && (
+        {showSuccessMessage && (
           <Alert variant="success" onClose={() => setShowSuccessMessage(false)} dismissible>
             {successMessage}
           </Alert>
         )}
         <div className="border-design text-font">
-          <div className="d-flex justify-content-end mb-3">
-            <Form.Check
-              type="checkbox"
-              id="show-new-users-only"
-              label="Show New User Requests only"
-              checked={showNewUsersOnly}
-              onChange={(e) => setShowNewUsersOnly(e.target.checked)}
-            />
-          </div>
           {renderTable()}
           <Formik initialValues={initialValues} onSubmit={(values, formikBag) => {
-          setSelectedUser(values.user.value);
-          setShowAddAdminModal(true);
-        }}>
-          {({ isSubmitting, values }) => (
-            <FormikForm>
-              <Container fluid>
-                <Row>
-                  <Col sm={10}>
-                    <SearchableSelect
-                      label="Grant administrator role to selected user"
-                      className="field-width field-height"
-                      name="user"
-                      options={selectUsers}
-                    />
-                  </Col>
-                  <Col sm={2} className="top-margin">
-                    <Button
-                      type="submit"
-                      variant="primary"
-                      size="sm"
-                      disabled={isSubmitting || !values.user.value}
-                    >
-                      Add as administrator
-                    </Button>
-                  </Col>
-                </Row>
-              </Container>
-            </FormikForm>
-          )}
-        </Formik>
+            setSelectedUser(values.user.value);
+            setShowAddAdminModal(true);
+          }}>
+            {({ isSubmitting, values }) => (
+              <FormikForm>
+                <Container fluid>
+                  <Row>
+                    <Col sm={10}>
+                      <SearchableSelect
+                        label="Grant administrator role to selected user"
+                        className="field-width field-height"
+                        name="user"
+                        options={selectUsers}
+                      />
+                    </Col>
+                    <Col sm={2} className="top-margin">
+                      <Button
+                        type="submit"
+                        variant="primary"
+                        size="sm"
+                        disabled={isSubmitting || !values.user.value}
+                      >
+                        Add as administrator
+                      </Button>
+                    </Col>
+                  </Row>
+                </Container>
+              </FormikForm>
+            )}
+          </Formik>
         </div>
 
         <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)}>
@@ -340,25 +415,24 @@ export const UserAdminDashboard = () => {
           </Modal.Footer>
         </Modal>
          
-        {/* Confirmation modal for adding administrator */}
         <Modal show={showAddAdminModal} onHide={() => setShowAddAdminModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm Action</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to grant administrator role to {selectedUser?.first_name} {selectedUser?.last_name}?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowAddAdminModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={() => {
-            handleAddAdminConfirm({ user: { value: selectedUser } }, { setSubmitting: () => {} });
-          }}>
-            Confirm
-          </Button>
-        </Modal.Footer>
-      </Modal>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirm Action</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Are you sure you want to grant administrator role to {selectedUser?.first_name} {selectedUser?.last_name}?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowAddAdminModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={() => {
+              handleAddAdminConfirm({ user: { value: selectedUser } }, { setSubmitting: () => {} });
+            }}>
+              Confirm
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </>
     );
   }
