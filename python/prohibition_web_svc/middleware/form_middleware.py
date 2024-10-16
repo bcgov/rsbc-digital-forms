@@ -32,28 +32,30 @@ def lease_a_form_id(**kwargs) -> tuple:
     id_not_available = False
     try:
         for form_type in data:
-            ids = db.session.query(Form) \
-                .filter(Form.form_type == form_type) \
-                .filter(Form.user_guid == None) \
-                .limit(data.get(form_type)) \
-                .all()
-        
-            if not ids:
-                id_not_available = True
-                logging.warning('Insufficient unique ids available for {}'.format(form_type))
-                record_error(
-                    **{
-                        'error_code': ErrorCode.F01,
-                        'error_details': f'Insufficient unique ids available for {form_type}',
-                        'event_type': form_type,
-                        'func': lease_a_form_id,
-                    }
-                )
+            form_type_count = data.get(form_type)
+            if form_type_count > 0:
+                ids = db.session.query(Form) \
+                    .filter(Form.form_type == form_type) \
+                    .filter(Form.user_guid == None) \
+                    .limit(data.get(form_type)) \
+                    .all()
+            
+                if not ids:
+                    id_not_available = True
+                    logging.warning('Insufficient unique ids available for {}'.format(form_type))
+                    record_error(
+                        **{
+                            'error_code': ErrorCode.F01,
+                            'error_details': f'Insufficient unique ids available for {form_type}',
+                            'event_type': form_type,
+                            'func': lease_a_form_id,
+                        }
+                    )
 
-            for id in ids:
-                logging.debug(f'id: {id}')
-                id.lease(user_guid)
-                id_list.append(asdict(id))
+                for id in ids:
+                    logging.debug(f'id: {id}')
+                    id.lease(user_guid)
+                    id_list.append(asdict(id))
 
         db.session.commit()
     except Exception as e:
@@ -66,7 +68,7 @@ def lease_a_form_id(**kwargs) -> tuple:
         }
     
     kwargs['response_dict'] = jsonify({'forms': id_list})
-    is_successful = bool(id_list) and not id_not_available
+    is_successful = not id_not_available
     return is_successful, kwargs
     
 
