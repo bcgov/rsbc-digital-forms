@@ -52,6 +52,7 @@ def create():
                     {"try": http_responses.bad_request_response, "fail": []}
                 ]},
                 {"try": form_middleware.lease_a_form_id, "fail": [
+                    {"try": form_middleware.record_form_error, "fail": []},
                     {"try": splunk_middleware.insufficient_form_ids, "fail": []},
                     {"try": splunk.log_to_splunk, "fail": []},
                     {"try": http_responses.server_error_response, "fail": []},
@@ -80,6 +81,7 @@ def update():
                 {"try": form_middleware.request_contains_a_payload, "fail": [
                     # Request contains no payload - renew form lease
                     {"try": form_middleware.renew_form_id_lease, "fail": [
+                        {"try": form_middleware.record_form_error, "fail": []},
                         # {"try": splunk_middleware.unable_to_renew_lease, "fail": []},
                         # {"try": splunk.log_to_splunk, "fail": []},
                         {"try": http_responses.bad_request_response, "fail": []},
@@ -112,3 +114,19 @@ def delete(form_type, form_id):
     if request.method == 'DELETE':
         return make_response({'error': 'method not implemented'}, 405)
 
+@bp.route('/forms/statistics', methods=['GET'])
+def get_statistics():
+    """
+    Get statistics about form usage (public endpoint)
+    """
+    if request.method == 'GET':
+        kwargs = helper.middle_logic([
+            {"try": form_middleware.get_form_statistics, "fail": [
+                # {"try": form_middleware.record_form_error, "fail": []},
+                {"try": http_responses.server_error_response, "fail": []},
+            ]},
+            {"try": http_responses.successful_get_response, "fail": []},
+        ],
+        request=request,
+        config=Config)
+    return kwargs.get('response')

@@ -14,6 +14,7 @@ import { UserAdminDashboard } from "../components/userAdminDashboard/userAdminDa
 import { CreateEvent } from "../components/Event/createEvent";
 import { ViewPastEvent } from "../components/ViewPastEvent/viewPastEvent";
 import { Layout } from "../components/common/Layout/Layout";
+import { FormStatistics } from "../components/userAdminDashboard/formStatistics";
 
 export const appRouter = createBrowserRouter(
   createRoutesFromElements(
@@ -25,6 +26,7 @@ export const appRouter = createBrowserRouter(
         <Route path="/createEvent" element={<CreateEvent />} />
         <Route index element={<Dashboard />} exact />
         <Route path="/admin-console" element={<UserAdminDashboard />} exact />
+        <Route path="/admin-console/form-inventory" element={<FormStatistics />} exact />
         <Route path="/view-previous" element={<ViewPastEvent />} exact />
       </Route>
       <Route path="*" element={<Navigate to="/login" />} />
