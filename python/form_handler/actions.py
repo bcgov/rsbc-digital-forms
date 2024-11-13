@@ -1,23 +1,20 @@
 import json
-import csv
-import pytz
 import logging
 import logging.config
+from python.common import form_middleware
 from python.form_handler.config import Config
-from cerberus import Validator
-import base64
-from cerberus import errors
 import logging
 import json
-from datetime import datetime
 from minio import Minio
-from minio.error import S3Error
-from python.form_handler.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef,ImpoundReasonCodes,IloIdCrossRef,ImpoundLotOperator
+from python.common.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef,ImpoundReasonCodes,IloIdCrossRef,ImpoundLotOperator
+from python.form_handler.geocoding_service import get_coordinates
 from python.form_handler.icbc_service import submit_to_icbc
 from python.form_handler.vips_service import create_vips_doc,create_vips_imp
 from python.form_handler.payloads import vips_payload,vips_document_payload
 from python.form_handler.message import encode_message
-from python.form_handler.helper import method2_decrypt,decryptPdf_method1,convertDateTime,convertDateTimeWithSecs
+from python.form_handler.helper import decryptPdf_method1,convertDateTime,convertDateTimeWithSecs
+from python.common.error_middleware import record_error
+from python.common.enums import ErrorCode
 
 import fitz
 import base64
@@ -30,7 +27,9 @@ def get_storage_ref_event_type(**args) -> tuple:
     Get the event type from the message
     """
     logging.debug("inside actions_get_storage_ref_event_type()")
+    
     try:
+        
         application=args.get('app')
         db=args.get('db')
         message = args.get('message')
@@ -176,7 +175,7 @@ def validate_event_retry_count(**args)->tuple:
         event_type=args.get('event_type')
         message = args.get('message')
         queue_name = message.get('queue_name', None)
-        retry_count=message.get('retry_count',0)
+        retry_count=message.get('retry_count', 0)
         retry_count=retry_count+1
         args['retry_count']=retry_count
         args['message']['retry_count']=retry_count
@@ -193,10 +192,33 @@ def validate_event_retry_count(**args)->tuple:
                 put_to_queue_name=Config.STORAGE_FAIL_QUEUE_PERS
                 args['stop_retry'] = True
             args['put_to_queue_name']=put_to_queue_name
+            
+            # Set error in args to get consumed by the record_event_error function
+            event_id = message.get('event_id', None)
+            event_type = message.get('event_type', None)
+            args['error'] = {
+                'error_code': ErrorCode.E05,
+                'error_details': f'Retry count exceeds for the event id: {event_id}, event_type: {event_type}',
+                'event_id': event_id,
+                'event_type': event_type,
+                'func': validate_event_retry_count,
+                'payload': message,
+            }
+            
             return False,args
     
     except Exception as e:
         logging.error(e)
+        # Set error in args to get consumed by the record_event_error function
+        message = args.get('message')
+        args['error'] = {
+            'error_code': ErrorCode.E03,
+            'error_details': e,
+            'event_id': message.get('event_id'),
+            'event_type': message.get('event_type'),
+            'func': validate_event_retry_count,
+            'payload': message,
+        }
         return False,args
     return True,args
 
@@ -205,7 +227,6 @@ def validate_event_data(**args)->tuple:
     logging.debug("inside validate_event_data()")
     logging.debug(args)
     # TODO: validate vips payload
-
     return True,args
 
 
@@ -290,6 +311,7 @@ def get_storage_file(**args)->tuple:
 def prep_icbc_payload(**args)->tuple:
     logging.debug("inside prep_icbc_payload()")
     logging.debug(args)
+    message=args.get('message')
 
     try:
         pdf_data=args.get('file_data')
@@ -479,6 +501,14 @@ def prep_icbc_payload(**args)->tuple:
         args['icbc_payload']=tmp_payload
     except Exception as e:
         logging.error(e)
+        args['error'] = {
+            'error_code': ErrorCode.I02,
+            'error_details': e,
+            'event_id': message.get('event_id') if message else None,
+            'event_type': message.get('event_type') if message else None,
+            'func': prep_icbc_payload,
+            'payload': event_data,
+        }
         return False,args
     
     return True,args
@@ -486,6 +516,7 @@ def prep_icbc_payload(**args)->tuple:
 def send_to_icbc(**args)->tuple:
     logging.debug("inside send_to_icbc()")
     logging.debug(args)
+    message=args.get('message')
     try:
         logging.debug(args['icbc_payload'])
         icbc_payload=args.get('icbc_payload')
@@ -494,9 +525,25 @@ def send_to_icbc(**args)->tuple:
         args['icbc_response_txt']=icbc_response_txt
         args['icbc_resp_code']=icbc_resp_code
         if send_status is False:
+            args['error'] = {
+            'error_code': ErrorCode.I01,
+            'error_details': f'icbc_resp_code: {icbc_resp_code} icbc_response_txt: {icbc_response_txt}',
+            'event_id': message.get('event_id') if message else None,
+            'event_type': message.get('event_type') if message else None,
+            'func': send_to_icbc,
+            'payload': icbc_payload,
+        }
             return False,args
     except Exception as e:
         logging.error(e)
+        args['error'] = {
+            'error_code': ErrorCode.I01,
+            'error_details': e,
+            'event_id': message.get('event_id') if message else None,
+            'event_type': message.get('event_type') if message else None,
+            'func': send_to_icbc,
+            'payload': icbc_payload,
+        }
         return False,args
     return True,args
 
@@ -998,8 +1045,9 @@ def update_event_status_hold(**args)->tuple:
     try:
         application=args.get('app')
         db=args.get('db')
-        event_id=args.get('event_data').get('event_id')
-        event_type=args.get('event_type')
+        message=args.get('message')
+        event_id=message.get('event_id') if message else args.get('event_id')
+        event_type=message.get('event_type') if message else args.get('event_type')
         with application.app_context():
             if event_type=='vi':
                 event = db.session.query(Event) \
@@ -1015,8 +1063,34 @@ def update_event_status_hold(**args)->tuple:
                     .one()
                 event.icbc_sent_status = 'retrying'
                 db.session.commit()
+            # Directly call record_event_error
+            error_args = {
+                'error': {
+                    'error_code': ErrorCode.E06,
+                    'error_details': f'Holding a event_id: {event_id}, event_type:{event_type}',
+                    'event_id': event_id,
+                    'event_type': event_type,
+                    'func': update_event_status_hold,
+                },
+                'message': args.get('message', {}),
+                'app': application
+            }
+            record_event_error(**error_args)
     except Exception as e:
         logging.error(e)
+        # Directly call record_event_error
+        error_args = {
+            'error': {
+                'error_code': ErrorCode.E06,
+                'error_details': e,
+                'event_id': event_id,
+                'event_type': event_type,
+                'func': update_event_status_hold,
+            },
+            'message': args.get('message', {}),
+            'app': application
+        }
+        record_event_error(**error_args)
         return False,args
     return True,args
 
@@ -1043,8 +1117,35 @@ def update_event_status_error(**args)->tuple:
                     .one()
                 event.icbc_sent_status = 'error'
                 db.session.commit()
+                
+            # Directly call record_event_error
+            error_args = {
+                'error': {
+                    'error_code': ErrorCode.E07,
+                    'error_details': f'Failed to process {event_type} event',
+                    'event_id': event_id,
+                    'event_type': event_type,
+                    'func': update_event_status_error,
+                },
+                'message': args.get('message', {}),
+                'app': application
+            }
+            record_event_error(**error_args)
     except Exception as e:
         logging.error(e)
+        # If an exception occurs, record it as an error
+        error_args = {
+            'error': {
+                'error_code': ErrorCode.E07,
+                'error_details': e,
+                'event_id': event_id,
+                'event_type': event_type,
+                'func': update_event_status_error,
+            },
+            'message': args.get('message', {}),
+            'app': application
+        }
+        record_event_error(**error_args)
         return False,args
     return True,args
 
@@ -1055,8 +1156,9 @@ def update_event_status_error_retry(**args)->tuple:
     try:
         application=args.get('app')
         db=args.get('db')
-        event_id=args.get('event_data').get('event_id')
-        event_type=args.get('event_type')
+        message = args.get('message')
+        event_id=message.get('event_id')
+        event_type=message.get('event_type')
         stop_retry_flg=args.get('stop_retry_flg',False)
         with application.app_context():
             if event_type=='vi':
@@ -1094,10 +1196,29 @@ def add_to_persistent_failed_queue(**args)->tuple:
         writer = args.get('writer')
         logging.debug('add_to_hold_queue(): {}'.format(json.dumps(message)))
         if not writer.publish(config.STORAGE_FAIL_QUEUE_PERS, encode_message(message, config.ENCRYPT_KEY)):
+            # Set error in args to get consumed by the record_event_error function
+            args['error'] = {
+                'error_code': ErrorCode.E03,
+                'error_details': 'unable to write to RabbitMQ {} queue'.format(config.STORAGE_FAIL_QUEUE_PERS),
+                'event_id': message.get('event_id'),
+                'event_type': message.get('event_type'),
+                'func': add_to_persistent_failed_queue,
+                'payload': message,
+            }
             logging.critical('unable to write to RabbitMQ {} queue'.format(config.STORAGE_FAIL_QUEUE_PERS))
             return False, args
     except Exception as e:
         logging.error(e)
+        # Set error in args to get consumed by the record_event_error function
+        message = args.get('message')
+        args['error'] = {
+            'error_code': ErrorCode.E03,
+            'error_details': e,
+            'event_id': message.get('event_id'),
+            'event_type': message.get('event_type'),
+            'func': add_to_persistent_failed_queue,
+            'payload': message,
+        }
         return False, args
     return True, args
 
@@ -1139,7 +1260,7 @@ def add_to_hold_queue(**args)->tuple:
 def add_to_retry_queue(**args)->tuple:
     logging.debug("inside add_to_retry_queue()")
     logging.debug(args)
-    try:
+    try:    
         config = args.get('config')
         message = args.get('message')
         put_to_queue_name=args.get('put_to_queue_name',None)
@@ -1152,6 +1273,19 @@ def add_to_retry_queue(**args)->tuple:
             args['message']['queue_name']=put_to_queue_name         
         if not writer.publish(put_to_queue_name, encode_message(message, config.ENCRYPT_KEY)):
             logging.critical('unable to write to RabbitMQ {} queue'.format(put_to_queue_name))
+            # If an exception occurs, record it as an error
+            error_args = {
+                'error': {
+                    'error_code': ErrorCode.E03,
+                    'error_details': 'unable to write to RabbitMQ {} queue'.format(put_to_queue_name),
+                    'event_id': message.get('event_id'),
+                    'event_type': message.get('event_type'),
+                    'func': add_to_retry_queue,
+                },
+                'message': args.get('message', {}),
+                'app': args.get('app')
+            }
+            record_event_error(**error_args)
             return False, args
     except Exception as e:
         logging.error(e)
@@ -1171,3 +1305,90 @@ def add_unknown_event_error_to_message(**args)->tuple:
         logging.error(e)
         return False, args
     return True,args
+
+def add_unknown_event_to_error(**args)->tuple:
+    logging.debug("inside add_unknown_event_error()")
+    logging.debug(args)
+    try:
+        message = args.get('message')
+        args['error'] = {
+            'error_code': ErrorCode.E04,
+            'error_details': 'Critical Error: Unknown Event Type',
+            'event_id': message.get('event_id'),
+            'event_type': message.get('event_type'),
+            'func': add_unknown_event_to_error,
+            'payload': message,
+        }
+    except Exception as e:
+        logging.error(e)
+        return False, args
+    return True,args
+
+def record_event_error(**args):
+    """
+    Record an error that occurred during event processing.
+    
+    Args:
+        **args: Additional keyword arguments, including event_id and event_type.
+    """
+    
+
+    try:
+        error = args.get('error')
+        message = args.get('message')
+        
+        application = args.get('app')
+        with application.app_context():
+            if error is None:
+                error_obj = {
+                    'error_code': ErrorCode.E08,
+                    'error_details': message.get('error_message',  'Unknown error'),
+                    'event_id': message.get('event_id'),
+                    'event_type': message.get('event_type'),
+                    'payload': json.dumps(message) if message else None,
+                    'func': record_event_error,
+                }
+            else:
+                error_obj = {
+                    'error_code': error.get('error_code'),
+                    'error_details': error.get('error_details'),
+                    'event_id': error.get('event_id'),
+                    'event_type': error.get('event_type'),
+                    'payload': json.dumps(message) if message else None,
+                    'ticket_no': error.get('ticket_no'),
+                    'func': error.get('func'),
+                }
+            
+            record_error(**error_obj)
+        return True, args
+    except Exception as e:
+        # If recording the error itself fails, log it
+        logging.error(f"Failed to record error: {str(e)}")
+    return True, args
+
+
+def get_event_coordinates(**args)->tuple:
+    logging.debug("inside get_event_coordinates()")
+    try:
+        address = args['event_data']['intersection_or_address_of_offence']
+        city = form_middleware.get_city_name(args['event_data']['offence_city'], args)
+
+        geocoding_status, latitude, longitude, full_address = get_coordinates(address, city)
+        args['event_data']['latitude'] = latitude
+        args['event_data']['longitude'] = longitude
+        args['event_data']['full_address'] = full_address
+        args['event_data']['requested_address'] = f'{address}, {city}'
+
+    except Exception as e:
+        logging.error(f'Error getting coordinates: {e}')
+        args['error'] = {
+                'error_code': ErrorCode.L01,
+                'error_details': e,
+                'event_type': args['message']['event_type'],
+                'func': get_event_coordinates,
+                'event_id': args['message']['event_id']
+            }
+        record_event_error(**args)
+
+    # Always return True to continue processing even if not able to get coordinates
+    return True, args

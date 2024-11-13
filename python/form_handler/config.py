@@ -63,6 +63,7 @@ class Config():
 
     RSIOPS_EMAIL_ADDRESS = os.getenv('RSIOPS_EMAIL_ADDRESS')
     REPLY_EMAIL_ADDRESS = os.getenv('REPLY_EMAIL_ADDRESS', 'do-not-reply-rsi@gov.bc.ca')
+    BCC_EMAIL_ADDRESSES = os.getenv('BCC_EMAIL_ADDRESSES')
     VIPS_BCC_EMAIL_ADDRESSES = os.getenv('VIPS_BCC_EMAIL_ADDRESSES', '')
     TMP_STORAGE_LOCAL=os.getenv('TMP_STORAGE_LOCAL')
 
@@ -71,8 +72,9 @@ class Config():
 
     VIPS_DPS_EMAIL = os.getenv('VIPS_DPS_EMAIL', 'do-not-reply-rsi@gov.bc.ca')
 
-
-
+    # Geocoding service details
+    GEOCODING_API_URL = os.getenv('GEOCODING_API_URL', 'http://localhost:8000')
+    GEOCODING_API_KEY = os.getenv('GEOCODING_API_KEY', 'TEST')
 
     LOGGING = {
         'version': 1,

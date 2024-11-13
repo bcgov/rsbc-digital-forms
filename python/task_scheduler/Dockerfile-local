@@ -13,6 +13,5 @@ ENV PYTHONPATH /app/
 
 COPY common /app/python/common
 COPY task_scheduler /app/python/task_scheduler
-COPY prohibition_web_svc/models.py /app/python/task_scheduler/models.py
 
 CMD [ "gunicorn", "--error-logfile", "-", "--bind", "0.0.0.0:5000", "--pythonpath", "/app/python/task_scheduler", "main:create_app()" ]
