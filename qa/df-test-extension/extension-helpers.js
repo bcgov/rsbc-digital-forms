@@ -17,7 +17,7 @@ const icbcTst6Values = [{
     "vehice_plate_no": "CF069C"
 },
 {
-    "driver_licence_no": "1660301 ",
+    "driver_licence_no": "01660301",
     "driver_last_name": "DFFT-FIVE",
     "driver_given_name": "MIKE",
     "driver_dob": "19580918",
@@ -38,7 +38,7 @@ const icbcTst6Values = [{
     "vehice_plate_no": "AA649A"
 },
 {
-    "driver_licence_no": "1660304",
+    "driver_licence_no": "01660304",
     "driver_last_name": "JACKSON",
     "driver_given_name": "AKASHA",
     "driver_dob": "19501026",
@@ -116,7 +116,7 @@ function FillVehicleSection(icbcTestRecord){
     SetField('vehicle_registration_no', GenerateRegistrationNumber());
 
     // Occasionally, pick a random vehicle type
-    if (Math.floor(Math.random() * 100) + 1 < 50) {
+    if (Math.floor(Math.random() * 100) + 1 < 80) {
         SelectRandomVehicleType('vehicle_type-select');
     }
     
@@ -179,7 +179,7 @@ function FillDispositionOfVehicleSection() {
     // Released to other driver
     SetField('vehicle_released_to', chance.name());
     SetField('date_released', GetCurrentDate());
-    SetField('time_released', GetTimeFiveMinutesAgo());
+    SetField('time_released', GetTimeOneMinuteAgo());
 
 }
 
@@ -283,8 +283,22 @@ function FillLinkageFactorsSection() {
 
 function FillIncidentDetailsSection() {
     SelectRadioButton('incident_details_extra_page');
-    var numberOfSentences = Math.floor(Math.random() * 10) + 10;
-    SetField('incident_details', chance.paragraph({ sentences: numberOfSentences }));
+
+    // Randomly select a number of sentences to generate between 2 and 20
+    var numberOfSentences = Math.floor(Math.random() * 40) + 5;
+
+    // Generate a string of randomly selected sentences made up from elements in trafficIncidentSentences array.
+    var incidentDetails = "";
+    for (let i = 0; i < numberOfSentences; i++) {
+        incidentDetails += trafficIncidentSentences[Math.floor(Math.random() * trafficIncidentSentences.length)] + " ";
+
+        // 10% of the time, insert two newlines to make a paragraph break
+        if (Math.floor(Math.random() * 100) + 1 > 90) {
+            incidentDetails += "\n\n";
+        }
+    }
+
+    SetField('incident_details', incidentDetails);
 }
 
 function FillReasonableGroundsSection() {
@@ -293,16 +307,18 @@ function FillReasonableGroundsSection() {
     RandomlySelectRadioButton('independent_witness');
     RandomlySelectRadioButton('reasonable_ground_other');
 
-    // Ensure that at least one option is selected
-    if (document.getElementById('witnessed_by_officer').checked === false &&
-        document.getElementById('admission_by_driver').checked === false &&
-        document.getElementById('independent_witness').checked === false &&
-        document.getElementById('reasonable_ground_other').checked === false) 
-        {
-            console.log ("No reasonable grounds selected. Selecting one at random.")
-            RandomlyChooseRadio('witnessed_by_officer', 'admission_by_driver', 'independent_witness', 'reasonable_ground_other');
+    // Ensure that at least one option is selected when the form includes the Reasonable Grounds section
+    if (document.getElementById('witnessed_by_officer'))
+    {
+        if (document.getElementById('witnessed_by_officer').checked === false &&
+            document.getElementById('admission_by_driver').checked === false &&
+            document.getElementById('independent_witness').checked === false &&
+            document.getElementById('reasonable_ground_other').checked === false) 
+            {
+                console.log ("No reasonable grounds selected. Selecting one at random.")
+                RandomlyChooseRadio('witnessed_by_officer', 'admission_by_driver', 'independent_witness', 'reasonable_ground_other');
+        }
     }
-
     SetField('reasonable_ground_other_reason', chance.sentence({ words: 6 }));
     RandomlyChooseRadio('prescribed_test_used-YES', 'prescribed_test_used-NO');
     SetField('reasonable_date_of_test', GetCurrentDate());
@@ -318,7 +334,6 @@ function FillTestAdministeredSection() {
     RandomlyChooseRadio('reasonable_result_alcohol-51-59', 'reasonable_result_alcohol-WARN', 'reasonable_result_alcohol-FAIL');
     // When Approved Instrument option is selected:
     SetField('reasonable_bac_result_mg', Math.floor(Math.random() * 1000));
-    SetField('resonable_approved_instrument_used', 'Instrument 1');
     // When Prescribed Pyhsical Coordination Test option is selected:
     if (document.getElementById('resonable_test_used_alcohol-PPCT') !== null && document.getElementById('resonable_test_used_alcohol-PPCT').checked === true) {
         SelectCheckbox('reasonable_can_drive_alcohol');
@@ -333,6 +348,8 @@ function FillTestAdministeredSection() {
     if (document.getElementById('reasonable_test_used_drugs-PPCT') !== null && document.getElementById('reasonable_test_used_drugs-PPCT').checked === true) {
         SelectCheckbox('reasonable_can_drive_drug');
     }
+
+    SetField('resonable_approved_instrument_used', 'Instrument 1');
 }
 
 function FillOfficerSection() {
