@@ -1,36 +1,35 @@
 {
-    "name": "RSBC Roadside Forms auto-fill extension",
-    "version": "2.14",
-    "manifest_version": 3,
-    "description": "A minimal extension to make filling out RSI DF Roadside Forms easier.",
-    "permissions": [
-        "webNavigation"
+  "name": "RSBC Roadside Forms auto-fill extension",
+  "version": "2.14",
+  "manifest_version": 3,
+  "description": "A minimal extension to make filling out RSI DF Roadside Forms easier.",
+  "permissions": [
+    "webNavigation"
+  ],
+  "icons": {
+    "16": "icons/df-16x16.png",
+    "32": "icons/df-32x32.png",
+    "48": "icons/df-48x48.png",
+    "128": "icons/df-128x128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://dev.jag.gov.bc.ca/roadside-forms/*",
+        "*://test.jag.gov.bc.ca/roadside-forms/*",
+        "*://rsbc-roadside-forms-app-frontend-dev.apps.silver.devops.gov.bc.ca/roadside-forms/*",
+        "*://rsbc-roadside-forms-app-frontend-test.apps.silver.devops.gov.bc.ca/roadside-forms/*",
+        "*://rsbc-roadside-forms-app-frontend-stage.apps.silver.devops.gov.bc.ca/roadside-forms/*",
+        "*://localhost:*/*",
+        "*://127.0.0.1:*/*"
       ],
-    
-    "icons": {
-        "16": "icons/df-16x16.png",
-        "32": "icons/df-32x32.png",
-        "48": "icons/df-48x48.png",
-        "128": "icons/df-128x128.png"
-    },
-    "content_scripts": [
-        {
-            "matches": [
-                "*://dev.jag.gov.bc.ca/roadside-forms/*",
-                "*://test.jag.gov.bc.ca/roadside-forms/*",
-                "*://rsbc-roadside-forms-app-frontend-dev.apps.silver.devops.gov.bc.ca/roadside-forms/*",
-                "*://rsbc-roadside-forms-app-frontend-test.apps.silver.devops.gov.bc.ca/roadside-forms/*",
-                "*://rsbc-roadside-forms-app-frontend-stage.apps.silver.devops.gov.bc.ca/roadside-forms/*",
-                "*://localhost:*/*",
-                "*://127.0.0.1:*/*"
-            ],
-            "js": [
-                "chance.min.js",
-                "tables.js",
-                "extension-helpers.js",
-                "content.js"
-            ],
-            "run_at": "document_end"
-        }
-    ]
+      "js": [
+        "chance.min.js",
+        "tables.js",
+        "extension-helpers.js",
+        "content.js"
+      ],
+      "run_at": "document_end"
+    }
+  ]
 }
