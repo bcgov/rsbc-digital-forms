@@ -1,3 +1,3 @@
 # Ignore zip files and files in the temporary directory `df-test-extension`
 *.zip
-df-test-extension/*
+temp-/*
