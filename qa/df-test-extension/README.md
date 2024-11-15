@@ -1,7 +1,7 @@
 # Roadside forms automation browser extension
 *A minimal browser extension to make filling out roadside digital forms easier.*
 
-This README and the source code is on GitHub: https://github.com/bcgov/rsbc-digital-forms/tree/qa/chromium-test-extension/qa/df-test-extension
+This README and the source code is committed to the [BCGov DF GitHub repo](https://github.com/bcgov/rsbc-digital-forms/tree/qa/chromium-test-extension/qa/df-test-extension). You can install it locally in developer mode, or from the [Chrome Web Store listing](https://chromewebstore.google.com/detail/rsbc-roadside-forms-auto/fjmiihmammcnhbkijhdnbjlklejdcgee?authuser=0&hl=en&pli=1).
 
 ## Description
 
@@ -17,13 +17,13 @@ The extension works in Microsoft Edge and Google Chrome. There is currently no v
 
 This extension is available from the Chrome Web Store, but it's unlisted and should not show up in searches. Open the following link to see the extension in the web store and install the extension in your browser:
 
-[Chrome Web Store Link](https://chrome.google.com/webstore/devconsole/741cffb5-4b89-410d-b746-281caac5968e/fjmiihmammcnhbkijhdnbjlklejdcgee/edit/listing)
+[RSBC Roadside Forms autofill extension](https://chromewebstore.google.com/detail/rsbc-roadside-forms-auto/fjmiihmammcnhbkijhdnbjlklejdcgee?authuser=0&hl=en&pli=1)
 
 For details on the Chrome Web Store listing, and how to publish a new version of the extension, see [STORE.md](STORE.md).
 
 ### Side-load in developer mode
 
-Go to **Settings** > **Extensions** and enable developer mode. After enabling developer mode, you should see the option **Load Unpacked** appear. Click it and select the folder where this file is located. The extension should appear in your extensions.
+If you prefer, you can use Chrome's developer mode to install the extension directly. This is ideal if you checked out the extension code and made a change. Go to **Settings** > **Extensions** and enable developer mode. After enabling developer mode, you should see the option **Load Unpacked** appear. Click it and select the folder where this file is located. The extension should appear in your extensions.
 
 The extension activates automatically when you go to the DEV, TEST, or local development environments. When the extension is active, its icon changes from grey to gold, and a yellow Fill button overlay will appear.
 
@@ -32,7 +32,7 @@ Installation steps:
  2. Enable developer mode.
  3. Select "Load Unpacked" on the extensions page.
  4. Enable the extension, if it was not enabled automatically.
- 5. Go to the DEV, TEST, or local environments and you should see a yellow "Fill" button in the top-left corner of the page. If you do not see the button, refresh the page.
+ 5. Go to the DEV, TEST, or local environments, and you should see a yellow "Fill" button in the top-left corner of the page. If you do not see the button, refresh the page.
 
 <img src="images/installation.png" width="1000"/>
 
