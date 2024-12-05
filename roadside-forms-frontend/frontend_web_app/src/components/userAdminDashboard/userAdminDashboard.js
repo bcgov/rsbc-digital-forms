@@ -15,7 +15,7 @@ import moment from "moment-timezone";
 import Alert from "react-bootstrap/Alert";
 import { useRecoilValue } from "recoil";
 import { userRolesAtom } from "../../atoms/userRoles";
-
+import { dateSortReactTable } from "../../utils/dateTime";
 import { UserApi } from "../../api/userApi";
 import { SearchableSelect } from "../common/Select/SearchableSelect";
 import "./userAdminDashboard.scss";
@@ -220,6 +220,7 @@ export const UserAdminDashboard = () => {
       dataField: 'submitted_dt',
       text: 'Date Applied',
       sort: true,
+      sortFunc: dateSortReactTable,
       formatter: (cell) => moment(cell).tz("America/Vancouver").format("YYYY-MM-DD HH:mm"),
       csvFormatter: (cell) => {
         if (cell === null || cell === undefined) {
@@ -232,6 +233,7 @@ export const UserAdminDashboard = () => {
       dataField: 'last_active',
       text: 'Last Active',
       sort: true,
+      sortFunc: dateSortReactTable,
       formatter: (cell) => {
         if (cell === null || cell === undefined) {
           return '';
