@@ -30,7 +30,7 @@ pluggy==0.13.1
 py==1.11.0
 pyasn1==0.4.8
 pycparser==2.21
-PyJWT==2.4.0
+PyJWT==2.10.1
 PyMeeus==0.5.12
 pyparsing==3.0.6
 pytest==6.2.2
