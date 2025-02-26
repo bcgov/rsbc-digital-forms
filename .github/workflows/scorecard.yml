@@ -33,7 +33,7 @@ jobs:
 
       
       - name: "Upload artifact"
-        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # v3.1.0
+        uses: actions/upload-artifact@v4 # v4
         with:
           name: SARIF file
           path: results.sarif
