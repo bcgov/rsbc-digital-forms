@@ -1,12 +1,15 @@
 import logging
 import jwt
 import json
+import ssl
 from python.common.helper import load_permissions_into_dict
 from python.common.models import db, UserRole, Permission
 from python.prohibition_web_svc.config import Config
 
-
-jwks_client = jwt.PyJWKClient(Config.KEYCLOAK_CERTS_URL)
+ssl_context=ssl.create_default_context()
+ssl_context.check_hostname=False
+ssl_context.verify_mode=ssl.CERT_NONE
+jwks_client = jwt.PyJWKClient(Config.KEYCLOAK_CERTS_URL, ssl_context=ssl_context)
 def get_authorization_header_from_request(**kwargs) -> tuple:
     request = kwargs.get('request')
     try:
@@ -69,6 +72,10 @@ def get_username_from_decoded_access_token(**kwargs) -> tuple:
             logging.debug('IDIR user')
             kwargs['idir_username'] = decoded_access_token['idir_username']
             kwargs['login'] = str(kwargs.get('idir_username', '')) + '@' + str(kwargs.get('identity_provider', ''))
+        if decoded_access_token.get('identity_provider') == 'service_account':
+            logging.debug('service account user')
+            kwargs['identity_provider'] = 'service_account'
+            kwargs['login'] = str(kwargs.get('preferred_username', '')) + '@' + str(kwargs.get('identity_provider', ''))    
         logging.debug("login id from access token: " +  kwargs.get('login'))
     except Exception as e:
         kwargs['error'] = "preferred_username or login not present in decoded access token: " + str(e)
@@ -86,6 +93,10 @@ def get_user_guid_from_decoded_access_token(**kwargs) -> tuple:
     if decoded_access_token.get('idir_user_guid'):
         logging.debug('IDIR user')
         kwargs['user_guid'] = decoded_access_token.get('idir_user_guid')
+        return True, kwargs
+    if decoded_access_token.get('identity_provider') == 'service_account':
+        logging.debug('Service account user')
+        kwargs['user_guid'] = decoded_access_token.get('preferred_username')
         return True, kwargs
     logging.debug('Github user? - no user GUID')
     kwargs['user_guid'] = kwargs.get('username')
