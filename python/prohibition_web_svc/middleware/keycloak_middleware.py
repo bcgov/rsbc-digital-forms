@@ -1,12 +1,15 @@
 import logging
 import jwt
 import json
+import ssl
 from python.common.helper import load_permissions_into_dict
 from python.common.models import db, UserRole, Permission
 from python.prohibition_web_svc.config import Config
 
-
-jwks_client = jwt.PyJWKClient(Config.KEYCLOAK_CERTS_URL)
+ssl_context=ssl.create_default_context()
+ssl_context.check_hostname=False
+ssl_context.verify_mode=ssl.CERT_NONE
+jwks_client = jwt.PyJWKClient(Config.KEYCLOAK_CERTS_URL, ssl_context=ssl_context)
 def get_authorization_header_from_request(**kwargs) -> tuple:
     request = kwargs.get('request')
     try:
