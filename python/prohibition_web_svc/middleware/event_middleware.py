@@ -35,7 +35,11 @@ def log_payload_to_splunk(**kwargs) -> tuple:
 def save_event_data(**kwargs) -> tuple:
     logging.debug('inside save_event_data()')
     data = kwargs.get('payload')
-    user_guid = kwargs.get('user_guid')
+    if kwargs.get('identity_provider') == 'service_account':
+       user_guid = data.get('submitted_user_guid', 'df_service_account')
+    else:
+       user_guid = kwargs.get('user_guid')
+
     try:
         logging.debug('Creating Event')
         date_created = datetime.now()

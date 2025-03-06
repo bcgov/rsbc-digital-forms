@@ -69,6 +69,10 @@ def get_username_from_decoded_access_token(**kwargs) -> tuple:
             logging.debug('IDIR user')
             kwargs['idir_username'] = decoded_access_token['idir_username']
             kwargs['login'] = str(kwargs.get('idir_username', '')) + '@' + str(kwargs.get('identity_provider', ''))
+        if decoded_access_token.get('identity_provider') == 'service_account':
+            logging.debug('service account user')
+            kwargs['identity_provider'] = 'service_account'
+            kwargs['login'] = str(kwargs.get('preferred_username', '')) + '@' + str(kwargs.get('identity_provider', ''))    
         logging.debug("login id from access token: " +  kwargs.get('login'))
     except Exception as e:
         kwargs['error'] = "preferred_username or login not present in decoded access token: " + str(e)
@@ -86,6 +90,10 @@ def get_user_guid_from_decoded_access_token(**kwargs) -> tuple:
     if decoded_access_token.get('idir_user_guid'):
         logging.debug('IDIR user')
         kwargs['user_guid'] = decoded_access_token.get('idir_user_guid')
+        return True, kwargs
+    if decoded_access_token.get('identity_provider') == 'service_account':
+        logging.debug('Service account user')
+        kwargs['user_guid'] = decoded_access_token.get('preferred_username')
         return True, kwargs
     logging.debug('Github user? - no user GUID')
     kwargs['user_guid'] = kwargs.get('username')
