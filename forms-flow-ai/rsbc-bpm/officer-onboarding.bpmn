@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1oubpmc" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.31.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
+  <bpmn:collaboration id="Collaboration_1kb27n1">
+    <bpmn:participant id="Participant_039k84p" name="Access Approval Workflow" processRef="digital_forms_events" />
+  </bpmn:collaboration>
+  <bpmn:process id="digital_forms_events" name="Digital Forms Events" isExecutable="true" camunda:historyTimeToLive="P30D">
+    <bpmn:laneSet id="LaneSet_1n5r7zu">
+      <bpmn:lane id="Lane_0093n19" name="Administrator">
+        <bpmn:flowNodeRef>Activity_1wydefk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>digitalform-admin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0plx6ii</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0m2jfkn</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1q27rq8</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1741wr7" name="Officer">
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0y7apav</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0sdf94t</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0js0czn" name="System">
+        <bpmn:flowNodeRef>Event_1a4d8l5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_153941x</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_17l2win</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_00ih7xl</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1yq9lfa</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1xybaj1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1pvahuo</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_14x3jw2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0n36f0s</bpmn:flowNodeRef>
+        <bpmn:childLaneSet id="LaneSet_0y0mkq2" />
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_1" name="start">
+      <bpmn:outgoing>Flow_1i0bdmy</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:scriptTask id="Activity_0y7apav" name="Retrieve Submitted User ID" scriptFormat="JavaScript">
+      <bpmn:incoming>Flow_1i0bdmy</bpmn:incoming>
+      <bpmn:outgoing>Flow_1of0gkm</bpmn:outgoing>
+      <bpmn:script>
+
+// Retrieve the submitted user details from execution
+var submittedUserID = execution.getVariable("currentUserID");
+
+execution.setVariable("submittedUserID",submittedUserID);
+
+console.log("Access Requested Submitted User ID: " + submittedUserID);
+
+</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:task id="Activity_0sdf94t" name="Create DF User">
+      <bpmn:incoming>Flow_1of0gkm</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ghz0nf</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:scriptTask id="Activity_1wydefk" name="Log Decision" scriptFormat="JavaScript">
+      <bpmn:incoming>Flow_00xaluy</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ns9ejh</bpmn:outgoing>
+      <bpmn:script>
+
+// Retrieve the submitted user details from execution
+var submittedUserID = execution.getVariable("currentUserID");
+
+execution.setVariable("submittedUserID",submittedUserID);
+
+console.log("Access Requested Submitted User ID: " + submittedUserID);
+
+</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_1i0bdmy" name="start listeners" sourceRef="StartEvent_1" targetRef="Activity_0y7apav">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', 'New');</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId","applicationStatus"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1of0gkm" sourceRef="Activity_0y7apav" targetRef="Activity_0sdf94t" />
+    <bpmn:sequenceFlow id="Flow_1ghz0nf" sourceRef="Activity_0sdf94t" targetRef="digitalform-admin" />
+    <bpmn:sequenceFlow id="Flow_06q21ap" sourceRef="Activity_1q27rq8" targetRef="Activity_153941x" />
+    <bpmn:sequenceFlow id="Flow_1ntpsjh" sourceRef="Activity_153941x" targetRef="Activity_17l2win" />
+    <bpmn:sequenceFlow id="Flow_1lybich" sourceRef="Activity_17l2win" targetRef="Activity_00ih7xl" />
+    <bpmn:sequenceFlow id="Flow_1golohz" sourceRef="Activity_00ih7xl" targetRef="Activity_1yq9lfa" />
+    <bpmn:sequenceFlow id="Flow_13ewq3z" sourceRef="Activity_1yq9lfa" targetRef="Activity_1xybaj1" />
+    <bpmn:sequenceFlow id="Flow_1faxh7b" sourceRef="Activity_1xybaj1" targetRef="Activity_1pvahuo" />
+    <bpmn:sequenceFlow id="Flow_0o6yzpi" sourceRef="Activity_1pvahuo" targetRef="Activity_14x3jw2" />
+    <bpmn:sequenceFlow id="Flow_0y7tqpi" sourceRef="Activity_14x3jw2" targetRef="Activity_0n36f0s" />
+    <bpmn:sequenceFlow id="Flow_1n8g7l3" sourceRef="Activity_0n36f0s" targetRef="Event_1a4d8l5" />
+    <bpmn:sequenceFlow id="Flow_0ns9ejh" sourceRef="Activity_1wydefk" targetRef="Event_0m2jfkn" />
+    <bpmn:sequenceFlow id="Flow_00xaluy" name="Rejected" sourceRef="Gateway_0plx6ii" targetRef="Activity_1wydefk">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="start">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId","applicationStatus"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormSubmissionListener" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Rejected'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0h0p1mf" sourceRef="digitalform-admin" targetRef="Gateway_0plx6ii" />
+    <bpmn:sequenceFlow id="Flow_0678w13" name="Approved" sourceRef="Gateway_0plx6ii" targetRef="Activity_1q27rq8">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="start">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId","applicationStatus"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormSubmissionListener" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Approved'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1a4d8l5" name="end">
+      <bpmn:incoming>Flow_1n8g7l3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="digitalform-admin" name="Review Access Request" camunda:candidateGroups="digitalforms/digitalform-admin">
+      <bpmn:extensionElements>
+        <camunda:taskListener event="complete">
+          <camunda:script scriptFormat="javascript">task.execution.setVariable('applicationStatus', task.execution.getVariable('action'));
+task.execution.setVariable('deleteReason', "completed");
+console.log("task decision ..", task.execution.getVariable('action'));</camunda:script>
+        </camunda:taskListener>
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="create" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMFilteredDataPipelineListener" event="end" />
+        <camunda:formData>
+          <camunda:formField id="action" label="Action" type="string" />
+        </camunda:formData>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">console.log("action selected ",action);</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ghz0nf</bpmn:incoming>
+      <bpmn:outgoing>Flow_0h0p1mf</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_153941x" name="Get OAuth Token">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://dev.loginproxy.gov.bc.ca/auth/realms/rsbc-digital-forms/protocol/openid-connect/token</camunda:inputParameter>
+            <camunda:inputParameter name="payload">grant_type=client_credentials</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">${basicAuth64}</camunda:entry>
+                <camunda:entry key="Content-Type">application/x-www-form-urlencoded</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="statusCode">#{statusCode}</camunda:outputParameter>
+            <camunda:outputParameter name="response">#{response}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="JavaScript">if (statusCode != 200){
+  throw new Error("Error from OAuth token call, response Code: "+statusCode)
+}else{
+}</camunda:script>
+        </camunda:executionListener>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="basicAuth64">
+            <camunda:script scriptFormat="groovy">import java.util.Base64
+
+def clientId = System.getenv("KEYCLOAK_CLIENTID")
+def clientSecret = System.getenv("KEYCLOAK_CLIENTSECRET")
+
+def credentials = clientId + ":" + clientSecret
+def encoded = Base64.encoder.encodeToString(credentials.bytes)
+
+return "Basic " + encoded</camunda:script>
+          </camunda:inputParameter>
+          <camunda:outputParameter name="token">${S(response).prop("access_token").stringValue()}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_06q21ap</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ntpsjh</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_17l2win" name="Search DF Officer  Group">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://dev.loginproxy.gov.bc.ca/auth/admin/realms/rsbc-digital-forms/groups?search=digitalform-officer</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">Bearer ${token}</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="statusCode">#{statusCode}</camunda:outputParameter>
+            <camunda:outputParameter name="response">#{response}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="JavaScript">if (statusCode != 200){
+  throw new Error("Error retrieving users, response Code: "+statusCode)
+}else{
+
+}</camunda:script>
+        </camunda:executionListener>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="dfOfficerGroup">${S(response)}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ntpsjh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lybich</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:scriptTask id="Activity_00ih7xl" name="Extract Officer Group ID" scriptFormat="groovy">
+      <bpmn:incoming>Flow_1lybich</bpmn:incoming>
+      <bpmn:outgoing>Flow_1golohz</bpmn:outgoing>
+      <bpmn:script>import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+def jsonResponse = S(dfOfficerGroup).elements()
+def officerGroupID = jsonResponse
+    .findAll { it.prop("subGroupCount").numberValue() &gt; 0 } 
+    .collectMany { it.prop("subGroups").elements() } 
+    .find { it.prop("name").stringValue() == "digitalform-officer" }?.prop("id").stringValue()
+
+println "Sub Group ID: ${officerGroupID}"
+
+execution.setVariable("officerGroupID", officerGroupID)</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:serviceTask id="Activity_1yq9lfa" name="Assign User to  Digital Forms Officer Group">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">PUT</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://dev.loginproxy.gov.bc.ca/auth/admin/realms/rsbc-digital-forms/users/${submittedUserID}/groups/${officerGroupID}</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">Bearer ${token}</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="statusCode">#{statusCode}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="JavaScript">if (statusCode != 204){
+  throw new Error("Error deleting guest group for user. Response Code : "+statusCode)
+}else{
+  console.log("Assigned user with officer role")
+}</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1golohz</bpmn:incoming>
+      <bpmn:outgoing>Flow_13ewq3z</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1xybaj1" name="Search DF Guest User Group">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://dev.loginproxy.gov.bc.ca/auth/admin/realms/rsbc-digital-forms/groups?search=digitalform-guest</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">Bearer ${token}</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="statusCode">#{statusCode}</camunda:outputParameter>
+            <camunda:outputParameter name="response">#{response}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="JavaScript">if (statusCode != 200){
+  throw new Error("Error retrieving users, response Code: "+statusCode)
+}else{
+
+}</camunda:script>
+        </camunda:executionListener>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="dfGuestGroup">${S(response)}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_13ewq3z</bpmn:incoming>
+      <bpmn:outgoing>Flow_1faxh7b</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:scriptTask id="Activity_1pvahuo" name="Extract Guest Group ID" scriptFormat="groovy">
+      <bpmn:incoming>Flow_1faxh7b</bpmn:incoming>
+      <bpmn:outgoing>Flow_0o6yzpi</bpmn:outgoing>
+      <bpmn:script>import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+def jsonResponse = S(dfGuestGroup).elements()
+def guestGroupID = jsonResponse
+    .findAll { it.prop("subGroupCount").numberValue() &gt; 0 } 
+    .collectMany { it.prop("subGroups").elements() } 
+    .find { it.prop("name").stringValue() == "digitalform-guest" }?.prop("id").stringValue()
+
+println "Sub Group ID: ${guestGroupID}"
+
+execution.setVariable("guestGroupID", guestGroupID)</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:serviceTask id="Activity_14x3jw2" name="Unassign User From  Guest User Group">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">DELETE</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://dev.loginproxy.gov.bc.ca/auth/admin/realms/rsbc-digital-forms/users/${submittedUserID}/groups/${guestGroupID}</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">Bearer ${token}</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="statusCode">#{statusCode}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="JavaScript">if (statusCode != 204){
+  throw new Error("Error deleting guest group for user. Response Code : "+statusCode)
+}else{
+  console.log("Unassigned user from guest user group")
+}</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0o6yzpi</bpmn:incoming>
+      <bpmn:outgoing>Flow_0y7tqpi</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:task id="Activity_0n36f0s" name="Admin Update DF User - Approved">
+      <bpmn:incoming>Flow_0y7tqpi</bpmn:incoming>
+      <bpmn:outgoing>Flow_1n8g7l3</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_0plx6ii" name="Action Taken ?">
+      <bpmn:incoming>Flow_0h0p1mf</bpmn:incoming>
+      <bpmn:outgoing>Flow_00xaluy</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0678w13</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_0m2jfkn" name="end">
+      <bpmn:incoming>Flow_0ns9ejh</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:scriptTask id="Activity_1q27rq8" name="Log Decision" scriptFormat="JavaScript">
+      <bpmn:incoming>Flow_0678w13</bpmn:incoming>
+      <bpmn:outgoing>Flow_06q21ap</bpmn:outgoing>
+      <bpmn:script>
+
+// Retrieve the submitted user details from execution
+var submittedUserID = execution.getVariable("currentUserID");
+
+execution.setVariable("submittedUserID",submittedUserID);
+
+console.log("Access Requested Submitted User ID: " + submittedUserID);
+
+</bpmn:script>
+    </bpmn:scriptTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1kb27n1">
+      <bpmndi:BPMNShape id="Participant_039k84p_di" bpmnElement="Participant_039k84p" isHorizontal="true">
+        <dc:Bounds x="130" y="95" width="1368" height="615" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0093n19_di" bpmnElement="Lane_0093n19" isHorizontal="true">
+        <dc:Bounds x="160" y="215" width="1338" height="245" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1741wr7_di" bpmnElement="Lane_1741wr7" isHorizontal="true">
+        <dc:Bounds x="160" y="95" width="1338" height="120" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0js0czn_di" bpmnElement="Lane_0js0czn" isHorizontal="true">
+        <dc:Bounds x="160" y="460" width="1338" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="242" y="137" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="249" y="183" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mneawl_di" bpmnElement="Activity_0y7apav">
+        <dc:Bounds x="370" y="115" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0sdf94t_di" bpmnElement="Activity_0sdf94t">
+        <dc:Bounds x="600" y="105" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_02ehsx2" bpmnElement="Activity_1wydefk">
+        <dc:Bounds x="970" y="245" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1a4d8l5_di" bpmnElement="Event_1a4d8l5">
+        <dc:Bounds x="1392" y="582" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1400" y="628" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0l4y66o_di" bpmnElement="digitalform-admin">
+        <dc:Bounds x="290" y="245" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_06lqfa2" bpmnElement="Activity_153941x">
+        <dc:Bounds x="200" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0e7noy8" bpmnElement="Activity_17l2win">
+        <dc:Bounds x="340" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0a8c1sz" bpmnElement="Activity_00ih7xl">
+        <dc:Bounds x="490" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0u9p4b5" bpmnElement="Activity_1yq9lfa">
+        <dc:Bounds x="630" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1jaw09v" bpmnElement="Activity_1xybaj1">
+        <dc:Bounds x="770" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_029b8lc" bpmnElement="Activity_1pvahuo">
+        <dc:Bounds x="910" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_057yb2h" bpmnElement="Activity_14x3jw2">
+        <dc:Bounds x="1070" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0n36f0s_di" bpmnElement="Activity_0n36f0s">
+        <dc:Bounds x="1220" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0plx6ii_di" bpmnElement="Gateway_0plx6ii" isMarkerVisible="true">
+        <dc:Bounds x="595" y="260" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="584" y="230" width="72" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0m2jfkn_di" bpmnElement="Event_0m2jfkn">
+        <dc:Bounds x="1232" y="267" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1241" y="310" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_09vj4rs" bpmnElement="Activity_1q27rq8">
+        <dc:Bounds x="210" y="355" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1i0bdmy_di" bpmnElement="Flow_1i0bdmy">
+        <di:waypoint x="278" y="155" />
+        <di:waypoint x="370" y="155" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="292" y="137" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1of0gkm_di" bpmnElement="Flow_1of0gkm">
+        <di:waypoint x="470" y="145" />
+        <di:waypoint x="600" y="145" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ghz0nf_di" bpmnElement="Flow_1ghz0nf">
+        <di:waypoint x="650" y="185" />
+        <di:waypoint x="650" y="205" />
+        <di:waypoint x="340" y="205" />
+        <di:waypoint x="340" y="245" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06q21ap_di" bpmnElement="Flow_06q21ap">
+        <di:waypoint x="250" y="435" />
+        <di:waypoint x="250" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ntpsjh_di" bpmnElement="Flow_1ntpsjh">
+        <di:waypoint x="300" y="600" />
+        <di:waypoint x="340" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lybich_di" bpmnElement="Flow_1lybich">
+        <di:waypoint x="440" y="600" />
+        <di:waypoint x="490" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1golohz_di" bpmnElement="Flow_1golohz">
+        <di:waypoint x="590" y="600" />
+        <di:waypoint x="630" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13ewq3z_di" bpmnElement="Flow_13ewq3z">
+        <di:waypoint x="730" y="600" />
+        <di:waypoint x="770" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1faxh7b_di" bpmnElement="Flow_1faxh7b">
+        <di:waypoint x="870" y="600" />
+        <di:waypoint x="910" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o6yzpi_di" bpmnElement="Flow_0o6yzpi">
+        <di:waypoint x="1010" y="600" />
+        <di:waypoint x="1070" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y7tqpi_di" bpmnElement="Flow_0y7tqpi">
+        <di:waypoint x="1170" y="600" />
+        <di:waypoint x="1220" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1n8g7l3_di" bpmnElement="Flow_1n8g7l3">
+        <di:waypoint x="1320" y="600" />
+        <di:waypoint x="1392" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ns9ejh_di" bpmnElement="Flow_0ns9ejh">
+        <di:waypoint x="1070" y="285" />
+        <di:waypoint x="1232" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00xaluy_di" bpmnElement="Flow_00xaluy">
+        <di:waypoint x="645" y="285" />
+        <di:waypoint x="970" y="285" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="689" y="268" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h0p1mf_di" bpmnElement="Flow_0h0p1mf">
+        <di:waypoint x="390" y="285" />
+        <di:waypoint x="595" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0678w13_di" bpmnElement="Flow_0678w13">
+        <di:waypoint x="620" y="315" />
+        <di:waypoint x="620" y="375" />
+        <di:waypoint x="310" y="375" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="611" y="342" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
