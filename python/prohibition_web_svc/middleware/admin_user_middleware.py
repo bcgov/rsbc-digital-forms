@@ -158,7 +158,7 @@ def validate_admin_create_user_payload(**kwargs) -> tuple:
         },
          "business_guid": {
             "type": "string",
-            'minlength': 2,
+            'minlength': 0,
             'maxlength': 120,
             "required": False
         },
