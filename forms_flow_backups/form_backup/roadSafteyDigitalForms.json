@@ -1,14 +1,14 @@
 {
   "forms": [
     {
-      "formTitle": "Jaise - Testing Roadsaftey Digital Forms",
-      "formDescription": "@jaise",
+      "formTitle": "RoadSaftey Digital Forms",
+      "formDescription": "RoadSaftey Digital Forms  - Single page wizard form !!!!DONT UPDATE!!!!",
       "anonymous": false,
       "type": "main",
       "content": {
-        "title": "Jaise - Testing Roadsaftey Digital Forms",
-        "name": "duplicate-version-6763935",
-        "path": "duplicate-version-6763935",
+        "title": "RoadSaftey Digital Forms",
+        "name": "roadSafteyDigitalForms",
+        "path": "roadsafteydigitalforms",
         "type": "form",
         "display": "wizard",
         "tags": [
@@ -96,7 +96,7 @@
                 "type": "button",
                 "event": "cancelSubmission",
                 "input": true,
-                "id": "en91j6",
+                "id": "esbzh1np",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -171,7 +171,7 @@
                 "input": true,
                 "tableView": false,
                 "clearOnHide": false,
-                "id": "ezdk6db",
+                "id": "ezlbe4c",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -239,7 +239,7 @@
                 "input": true,
                 "tableView": false,
                 "clearOnHide": false,
-                "id": "e2cuqs",
+                "id": "eg34o5q",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -367,7 +367,7 @@
                 "allowMultipleMasks": false,
                 "addons": [],
                 "inputType": "hidden",
-                "id": "exdrpr"
+                "id": "e8r6cyp"
               },
               {
                 "label": "Submission Preview Well",
@@ -460,7 +460,7 @@
                             "showWordCount": false,
                             "allowMultipleMasks": false,
                             "addons": [],
-                            "id": "eyxjk3s"
+                            "id": "ebjip4"
                           }
                         ],
                         "width": 10,
@@ -550,7 +550,7 @@
                             "showWordCount": false,
                             "allowMultipleMasks": false,
                             "addons": [],
-                            "id": "e1oo0o"
+                            "id": "eixm9i8"
                           }
                         ],
                         "width": 2,
@@ -565,7 +565,7 @@
                     "type": "columns",
                     "input": false,
                     "tableView": false,
-                    "id": "eucqv6e",
+                    "id": "ef9n9l",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -636,7 +636,7 @@
                     "key": "rsbcImageSubmissionCopy",
                     "type": "rsbcimage",
                     "input": true,
-                    "id": "e7q2rh8",
+                    "id": "eixy43",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -695,7 +695,7 @@
                     "addons": []
                   }
                 ],
-                "id": "ejb8bh",
+                "id": "et53583",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -849,7 +849,7 @@
                             "showWordCount": false,
                             "allowMultipleMasks": false,
                             "addons": [],
-                            "id": "eqsuc1r"
+                            "id": "ez8roy8"
                           }
                         ],
                         "width": 6,
@@ -941,7 +941,7 @@
                             "showWordCount": false,
                             "allowMultipleMasks": false,
                             "addons": [],
-                            "id": "e8dvpxh"
+                            "id": "etm4u49"
                           }
                         ],
                         "width": 6,
@@ -956,7 +956,7 @@
                     "type": "columns",
                     "input": false,
                     "tableView": false,
-                    "id": "ew1au1k",
+                    "id": "eely4g0l",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -1039,7 +1039,7 @@
                             "type": "htmlelement",
                             "input": false,
                             "tableView": false,
-                            "id": "ecbn2nf",
+                            "id": "ecijs7m",
                             "placeholder": "",
                             "prefix": "",
                             "customClass": "",
@@ -1121,7 +1121,7 @@
                     "type": "columns",
                     "input": false,
                     "tableView": false,
-                    "id": "e0aneaa",
+                    "id": "ee9zk8pp",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -1188,7 +1188,7 @@
                     "type": "hidden",
                     "input": true,
                     "tableView": false,
-                    "id": "ev6bc5",
+                    "id": "e2mokhw",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -1256,7 +1256,7 @@
                     "type": "hidden",
                     "input": true,
                     "tableView": false,
-                    "id": "e7qsuum",
+                    "id": "eqfjh8",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -1324,7 +1324,7 @@
                     "type": "hidden",
                     "input": true,
                     "tableView": false,
-                    "id": "eupj2a",
+                    "id": "ep4nybf",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -1402,7 +1402,7 @@
                           {
                             "components": [
                               {
-                                "label": "Vehicle Impound    ",
+                                "label": "Vehicle Impound   ",
                                 "description": "",
                                 "tooltip": "",
                                 "shortcut": "",
@@ -1477,7 +1477,7 @@
                                 "showWordCount": false,
                                 "allowMultipleMasks": false,
                                 "addons": [],
-                                "id": "emc0g5b"
+                                "id": "eyulpda"
                               },
                               {
                                 "label": "24-hour Driving Prohibition",
@@ -1488,7 +1488,7 @@
                                 "customConditional": "// Disable if TwelveHour enabled\ninstance?.refs?.input?.forEach((input) => {\n        input.disabled = data?.TwelveHour;\n});",
                                 "type": "checkbox",
                                 "input": true,
-                                "id": "eknwvo9",
+                                "id": "exq7j1j",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -1558,7 +1558,7 @@
                                 "customConditional": "// Disable if TwentyFourHour enabled\ninstance?.refs?.input?.forEach((input) => {\n        input.disabled = data?.TwentyFourHour;\n});",
                                 "type": "checkbox",
                                 "input": true,
-                                "id": "eh3fiwe",
+                                "id": "ekqc5al",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -1629,7 +1629,7 @@
                                 "key": "IRP",
                                 "type": "checkbox",
                                 "input": true,
-                                "id": "eri8o2",
+                                "id": "ef7dec",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -1711,7 +1711,7 @@
                                 "type": "content",
                                 "input": false,
                                 "tableView": false,
-                                "id": "egp89gr",
+                                "id": "e2kl76c",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -1778,7 +1778,7 @@
                                 "type": "content",
                                 "input": false,
                                 "tableView": false,
-                                "id": "elfg2o2q",
+                                "id": "eskeck5",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -1845,7 +1845,7 @@
                                 "type": "content",
                                 "input": false,
                                 "tableView": false,
-                                "id": "e8epzv",
+                                "id": "ehjdhy",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -1907,7 +1907,7 @@
                                 "type": "hidden",
                                 "input": true,
                                 "tableView": false,
-                                "id": "enli2kk",
+                                "id": "eua5tk",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -1980,7 +1980,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "eq3wedf",
+                        "id": "eg3qla4",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -2120,7 +2120,7 @@
                         "showWordCount": false,
                         "allowMultipleMasks": false,
                         "addons": [],
-                        "id": "edf2m7"
+                        "id": "eis361e"
                       },
                       {
                         "label": "formIdPresent message",
@@ -2200,11 +2200,11 @@
                         "showWordCount": false,
                         "allowMultipleMasks": false,
                         "addons": [],
-                        "id": "e1a758t"
+                        "id": "ezwzwjd"
                       }
                     ],
                     "keyModified": true,
-                    "id": "e5s2no",
+                    "id": "eo8890u",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -2368,7 +2368,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "eujylwf",
+                                "id": "exffm6",
                                 "defaultValue": ""
                               }
                             ],
@@ -2694,7 +2694,7 @@
                                 "customConditional": "show = false\nif(!data?.TwelveHour){\n  show = true\n}\n\nif(show) {\n  \n  // Function to handle jurisdiction change\nconst handleJurisdictionChange = (selectedValue) => {\n  if (selectedValue === \"XX\") {\n    // Fetch data from another table for \"XX\"\n    return window.fetchStaticDataFromTable(\"jurisdictionCountry\").then((items) => {\n      return items.map(item => ({\n        value: item.objectCd,\n        label: item.objectDsc\n      }));\n    }).catch((error) => {\n      console.error(\"Error fetching jurisdictionCountry data:\", error);\n      return [];\n    });\n  } else if (selectedValue === \"XZ\") {\n    // Fetch data for \"XZ\"\n    return window.fetchStaticDataFromTable(\"jurisdictions\").then((items) => {\n      return items.map(item => ({\n        value: item.objectCd,\n        label: item.objectDsc\n      }));\n    }).catch((error) => {\n      console.error(\"Error fetching jurisdictions data:\", error);\n      return [];\n    });\n  } else {\n    // Default data (if needed)\n    return Promise.resolve([]);\n  }\n};\n\nconst initialValues = instance?.component?.data?.json\nif (!initialValues.length) {\n  handleJurisdictionChange('XZ').then((newOptions) => {\n        if(newOptions.length){\n          instance.component.data.json = newOptions;\n          instance.redraw(); // Redraw the component to reflect the new options\n          instance.setValue({\"value\": 'CA_BC', \"label\": 'BRITISH COLUMBIA'})\n          // instance.setItems([], false);\n          // instance.setItems(newOptions,false);\n        }\n       \n      });\n}\n\n\nif (instance) {\n  if (!instance.hasEventHandler('change')) {\n    instance.on('change', (event) => {\n    if (event.changed && event.changed.component.key === instance.component.key) {\n      const selectedValue = event.changed.value.value;\n      console.log(\"Selected value changed to:\", selectedValue);\n      if(!['XZ','XX'].includes(selectedValue)) {\n        return\n      }\n\n      // Update options based on the selected value\n      handleJurisdictionChange(selectedValue).then((newOptions) => {\n        // instance.component.data.values = newOptions;\n        instance.setValue(''); \n        instance.setItems([], false);\n        instance.setItems(newOptions,false);\n        // 2. Make sure dropdown is open\n        instance.choices.showDropdown();\n      });\n    }\n  });\n    \n  }\n \n}\n  \n}",
                                 "type": "select",
                                 "input": true,
-                                "id": "ebw2iac",
+                                "id": "e9r4zks",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -2791,7 +2791,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "edf7k9a",
+                        "id": "eou7tj",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -2942,7 +2942,7 @@
                                         "showWordCount": false,
                                         "allowMultipleMasks": false,
                                         "addons": [],
-                                        "id": "elp7du6"
+                                        "id": "ejyqhie"
                                       }
                                     ],
                                     "offset": 0,
@@ -3035,7 +3035,7 @@
                                         "showWordCount": false,
                                         "allowMultipleMasks": false,
                                         "addons": [],
-                                        "id": "e9gmxxl"
+                                        "id": "eu7xelb"
                                       }
                                     ],
                                     "width": 6,
@@ -3050,7 +3050,7 @@
                                 "type": "columns",
                                 "input": false,
                                 "tableView": false,
-                                "id": "emcj1bb",
+                                "id": "e6vhbz",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -3134,7 +3134,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "e1vkdt9",
+                        "id": "e7ybeim",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -3287,7 +3287,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "e8labur",
+                                "id": "ejyp105",
                                 "defaultValue": ""
                               }
                             ],
@@ -3310,7 +3310,7 @@
                                 "key": "driver_given_name",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "ezerbxb",
+                                "id": "env74ec",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -3517,7 +3517,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "eglou3m"
+                                "id": "e9m5c2ej"
                               }
                             ],
                             "size": "md",
@@ -3530,7 +3530,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "enw6tev",
+                        "id": "e7gvjr",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -3607,7 +3607,7 @@
                                 "key": "driver_address",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "ebhuxd",
+                                "id": "e3032ju",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -3697,7 +3697,7 @@
                                 "type": "phoneNumber",
                                 "input": true,
                                 "inputMaskPlaceholderChar": "#",
-                                "id": "emhgau",
+                                "id": "ekcu9y",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -3781,7 +3781,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "eab8vt",
+                        "id": "ezr69f8",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -3858,7 +3858,7 @@
                                 "key": "driver_city",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "eh90hxi",
+                                "id": "e0pdn5",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -4249,7 +4249,7 @@
                                   "value": "CA_BC",
                                   "label": "BRITISH COLUMBIA"
                                 },
-                                "id": "e1o7h3l",
+                                "id": "e4bfnzd",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -4364,7 +4364,7 @@
                                 "key": "driver_postal",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "egfunm",
+                                "id": "e1vtdvl",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -4433,7 +4433,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "eq9zik",
+                        "id": "el1elmg",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -4539,7 +4539,7 @@
                                 "customConditional": "show = data?.VI",
                                 "type": "select",
                                 "input": true,
-                                "id": "eflhy2s",
+                                "id": "evkpjf9",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -4761,7 +4761,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "etxhg0s"
+                                "id": "edn7ix"
                               }
                             ],
                             "width": 4,
@@ -4859,7 +4859,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "effga5",
+                                "id": "ed9k19ni",
                                 "defaultValue": ""
                               }
                             ],
@@ -4873,7 +4873,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "efor27",
+                        "id": "e5pu1vj",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -4936,7 +4936,7 @@
                       }
                     ],
                     "keyModified": true,
-                    "id": "ey7u2wa",
+                    "id": "ek5mwft",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -5031,7 +5031,7 @@
                                   "key": "vehicle_plate_no",
                                   "type": "textfield",
                                   "input": true,
-                                  "id": "eswbpex",
+                                  "id": "e9sftj",
                                   "placeholder": "",
                                   "prefix": "",
                                   "customClass": "",
@@ -5182,7 +5182,7 @@
                                   "showWordCount": false,
                                   "allowMultipleMasks": false,
                                   "addons": [],
-                                  "id": "eoyn33d"
+                                  "id": "ea3z8gk"
                                 }
                               ]
                             },
@@ -5501,7 +5501,7 @@
                                     "value": "CA_BC",
                                     "label": "BRITISH COLUMBIA"
                                   },
-                                  "id": "eztddtm",
+                                  "id": "e16wcbq",
                                   "placeholder": "",
                                   "prefix": "",
                                   "customClass": "",
@@ -5588,7 +5588,7 @@
                             }
                           ]
                         ],
-                        "id": "ewgmhje",
+                        "id": "e5sbbna",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -5747,7 +5747,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "e93f4gb",
+                                "id": "e6w9mpg",
                                 "defaultValue": ""
                               }
                             ],
@@ -5781,7 +5781,7 @@
                                 "key": "vehicle_type",
                                 "type": "select",
                                 "input": true,
-                                "id": "ehves2e",
+                                "id": "elmb8er",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -5906,7 +5906,7 @@
                                 "key": "vehicle_year",
                                 "type": "select",
                                 "input": true,
-                                "id": "e6e9r08",
+                                "id": "etnvdrk",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -5993,7 +5993,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "e7h3ga",
+                        "id": "ehkvzfj",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -6089,7 +6089,7 @@
                                 "key": "vehicle_mk_md",
                                 "type": "select",
                                 "input": true,
-                                "id": "enpcq3a",
+                                "id": "eju6lv6",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -6205,7 +6205,7 @@
                                 "key": "vehicle_style",
                                 "type": "select",
                                 "input": true,
-                                "id": "eafogxp",
+                                "id": "egr249a",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -6404,7 +6404,7 @@
                                   "include": "score",
                                   "threshold": 0.3
                                 },
-                                "id": "ewlfvvm",
+                                "id": "ecdwm95",
                                 "defaultValue": []
                               }
                             ],
@@ -6418,7 +6418,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "eh2mpw9",
+                        "id": "en2mfms",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -6570,7 +6570,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "ehkpqw",
+                                "id": "ekwo7ni",
                                 "defaultValue": ""
                               }
                             ],
@@ -6696,7 +6696,7 @@
                                   "include": "score",
                                   "threshold": 0.3
                                 },
-                                "id": "eou7xqd",
+                                "id": "e56vt8c",
                                 "defaultValue": {}
                               }
                             ],
@@ -6795,7 +6795,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "ey2u90g",
+                                "id": "ekejdks",
                                 "defaultValue": ""
                               }
                             ],
@@ -6808,7 +6808,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "e6rov6e",
+                        "id": "eugc5qp",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -6872,7 +6872,7 @@
                       }
                     ],
                     "keyModified": true,
-                    "id": "ed98vjm",
+                    "id": "evucesm",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -6959,7 +6959,7 @@
                                 "type": "checkbox",
                                 "input": true,
                                 "defaultValue": false,
-                                "id": "ec42yt",
+                                "id": "eidwzaa",
                                 "placeholder": "",
                                 "prefix": "",
                                 "suffix": "",
@@ -7039,7 +7039,7 @@
                                 "customConditional": "show = data?.VI",
                                 "type": "checkbox",
                                 "input": true,
-                                "id": "ekj9poc",
+                                "id": "e0po6w9",
                                 "placeholder": "",
                                 "prefix": "",
                                 "suffix": "",
@@ -7120,7 +7120,7 @@
                                 "type": "button",
                                 "custom": "if (data) {\n  console.log(\"Filling data from driver insformation\")\n  data['regist_owner_last_name'] = data?.driver_last_name;\n  data['regist_owner_first_name'] = data?.driver_given_name;\n  data['regist_owner_address'] = data?.driver_address;\n  data['regist_owner_dob'] = data?.driver_dob;\n  data['regist_owner_phone'] = data?.driver_phone;\n  data['regist_owner_city'] = data?.driver_city;\n  data['regist_owner_postal'] = data?.driver_postal;\n  data['regist_owner_prov_state'] = data?.driver_prov_state;\n  registeredOwnerPanel = instance.root.getComponent(\"registeredOwnerPanel\")\n  registeredOwnerPanel.redraw()\n}",
                                 "input": true,
-                                "id": "ezt90f",
+                                "id": "eqbbh10v",
                                 "placeholder": "",
                                 "prefix": "",
                                 "suffix": "",
@@ -7195,7 +7195,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "ej9q6em",
+                        "id": "eoe7tqq",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -7343,7 +7343,7 @@
                         "refreshOn": "",
                         "addons": [],
                         "inputType": "text",
-                        "id": "ehdn96f",
+                        "id": "exfr5fh",
                         "defaultValue": ""
                       },
                       {
@@ -7443,7 +7443,7 @@
                                   "refreshOn": "",
                                   "addons": [],
                                   "inputType": "text",
-                                  "id": "eccl44b",
+                                  "id": "eoa2xc",
                                   "defaultValue": ""
                                 }
                               ]
@@ -7536,7 +7536,7 @@
                                   "refreshOn": "",
                                   "addons": [],
                                   "inputType": "text",
-                                  "id": "ec63qm",
+                                  "id": "e940hlm",
                                   "defaultValue": ""
                                 }
                               ]
@@ -7670,7 +7670,7 @@
                                   "allowMultipleMasks": false,
                                   "addons": [],
                                   "datepickerMode": "day",
-                                  "id": "e3nr6f"
+                                  "id": "e6boyn"
                                 }
                               ]
                             }
@@ -7764,7 +7764,7 @@
                                   "refreshOn": "",
                                   "addons": [],
                                   "inputType": "text",
-                                  "id": "ew9sl3a",
+                                  "id": "ety9h5l",
                                   "defaultValue": ""
                                 }
                               ]
@@ -7858,7 +7858,7 @@
                                   "addons": [],
                                   "inputType": "tel",
                                   "inputMode": "decimal",
-                                  "id": "e5cdoj",
+                                  "id": "e25f25h",
                                   "inputMaskPlaceholderChar": "",
                                   "defaultValue": ""
                                 }
@@ -7955,7 +7955,7 @@
                                   "addons": [],
                                   "inputType": "email",
                                   "inputMask": "",
-                                  "id": "e9sxxz",
+                                  "id": "egth2b",
                                   "defaultValue": ""
                                 }
                               ]
@@ -8050,7 +8050,7 @@
                                   "refreshOn": "",
                                   "addons": [],
                                   "inputType": "text",
-                                  "id": "eq7f5ym",
+                                  "id": "emh1p6",
                                   "defaultValue": ""
                                 }
                               ]
@@ -8080,7 +8080,7 @@
                                   "key": "regist_owner_prov_state",
                                   "type": "select",
                                   "input": true,
-                                  "id": "e11lfl7n",
+                                  "id": "exr4kozk",
                                   "placeholder": "",
                                   "prefix": "",
                                   "suffix": "",
@@ -8177,7 +8177,7 @@
                                   "key": "regist_owner_postal",
                                   "type": "textfield",
                                   "input": true,
-                                  "id": "exwg5km",
+                                  "id": "ez2ps0i",
                                   "placeholder": "",
                                   "prefix": "",
                                   "suffix": "",
@@ -8250,7 +8250,7 @@
                             }
                           ]
                         ],
-                        "id": "eqfsimg",
+                        "id": "ei8pd7c",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -8321,7 +8321,7 @@
                         "condensed": false
                       }
                     ],
-                    "id": "el592f",
+                    "id": "evauvfq",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -8491,7 +8491,7 @@
                         "addons": [],
                         "inputType": "radio",
                         "fieldSet": false,
-                        "id": "ewsx8ul",
+                        "id": "e6e81w",
                         "defaultValue": ""
                       },
                       {
@@ -8626,7 +8626,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "exczb9k"
+                                "id": "e7xt6eb"
                               }
                             ],
                             "width": 4,
@@ -8656,7 +8656,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "ebyuzpk",
+                        "id": "e6ctdch",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -8749,7 +8749,7 @@
                         "customConditional": "show = (data?.TwentyFourHour || data?.TwelveHour) && data?.vehicle_impounded === \"YES\"",
                         "type": "radio",
                         "input": true,
-                        "id": "effwr35",
+                        "id": "epxkunhm",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -8930,7 +8930,7 @@
                               "include": "score",
                               "threshold": 0.3
                             },
-                            "id": "e3weuao",
+                            "id": "etbtdho",
                             "defaultValue": {}
                           },
                           {
@@ -9019,7 +9019,7 @@
                             "refreshOn": "",
                             "addons": [],
                             "inputType": "text",
-                            "id": "etzi8xm",
+                            "id": "e0xfe79",
                             "defaultValue": ""
                           },
                           {
@@ -9113,7 +9113,7 @@
                                     "refreshOn": "",
                                     "addons": [],
                                     "inputType": "text",
-                                    "id": "e80wrkm",
+                                    "id": "ezpo0o7",
                                     "defaultValue": ""
                                   }
                                 ],
@@ -9212,7 +9212,7 @@
                                     "refreshOn": "",
                                     "addons": [],
                                     "inputType": "text",
-                                    "id": "eimte2c",
+                                    "id": "ecl813b",
                                     "defaultValue": ""
                                   }
                                 ],
@@ -9312,7 +9312,7 @@
                                     "addons": [],
                                     "inputType": "tel",
                                     "inputMode": "decimal",
-                                    "id": "ec9wqeq",
+                                    "id": "eg3e8nq",
                                     "inputMaskPlaceholderChar": "",
                                     "defaultValue": ""
                                   }
@@ -9326,7 +9326,7 @@
                             "type": "columns",
                             "input": false,
                             "tableView": false,
-                            "id": "en8tydc",
+                            "id": "euuh4us",
                             "placeholder": "",
                             "prefix": "",
                             "customClass": "",
@@ -9389,7 +9389,7 @@
                             "autoAdjust": false
                           }
                         ],
-                        "id": "enqyude",
+                        "id": "ehwqhda",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -9558,7 +9558,7 @@
                         "addons": [],
                         "inputType": "radio",
                         "fieldSet": false,
-                        "id": "eyhvvo",
+                        "id": "eta9n2d",
                         "defaultValue": ""
                       },
                       {
@@ -9652,7 +9652,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "ellmutd",
+                                "id": "edvbejr",
                                 "defaultValue": ""
                               }
                             ],
@@ -9793,7 +9793,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "e7nfgnp"
+                                "id": "e3b8bcd"
                               }
                             ],
                             "width": 4,
@@ -9832,7 +9832,7 @@
                                 },
                                 "type": "textfield",
                                 "input": true,
-                                "id": "egasxq8",
+                                "id": "ejzduh",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -9895,7 +9895,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "ejkjj1f",
+                        "id": "e29f30n",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -9959,7 +9959,7 @@
                       }
                     ],
                     "keyModified": true,
-                    "id": "enelaj",
+                    "id": "e7uuwif",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -10057,7 +10057,7 @@
                     "type": "hidden",
                     "input": true,
                     "tableView": false,
-                    "id": "eetsuow",
+                    "id": "egjq83u",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -10154,7 +10154,7 @@
                     "type": "hidden",
                     "input": true,
                     "tableView": false,
-                    "id": "e44fsc",
+                    "id": "eyumzg1",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -10251,7 +10251,7 @@
                     "type": "hidden",
                     "input": true,
                     "tableView": false,
-                    "id": "efc6oss",
+                    "id": "ekzwi4",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -10416,7 +10416,7 @@
                     "allowMultipleMasks": false,
                     "addons": [],
                     "inputType": "hidden",
-                    "id": "e2wxrhi"
+                    "id": "ecf8ln"
                   },
                   {
                     "label": "ILO-options",
@@ -10487,7 +10487,7 @@
                     "allowMultipleMasks": false,
                     "addons": [],
                     "inputType": "hidden",
-                    "id": "ehkq2xo"
+                    "id": "eq4zil"
                   },
                   {
                     "label": "ILO-name",
@@ -10524,7 +10524,7 @@
                     "type": "hidden",
                     "input": true,
                     "tableView": false,
-                    "id": "eip4xs4",
+                    "id": "em8f2yw",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -10622,7 +10622,7 @@
                         "key": "vehicle_location",
                         "type": "radio",
                         "input": true,
-                        "id": "e4o68r3",
+                        "id": "elpifdh",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -10788,7 +10788,7 @@
                         "addons": [],
                         "inputType": "radio",
                         "fieldSet": false,
-                        "id": "e7w2o",
+                        "id": "e68mvre",
                         "defaultValue": ""
                       },
                       {
@@ -10905,7 +10905,7 @@
                           "include": "score",
                           "threshold": 0.3
                         },
-                        "id": "eib791k",
+                        "id": "efa65em",
                         "defaultValue": {}
                       },
                       {
@@ -10994,7 +10994,7 @@
                         "refreshOn": "",
                         "addons": [],
                         "inputType": "text",
-                        "id": "eusoem",
+                        "id": "ef9iu1x",
                         "defaultValue": ""
                       },
                       {
@@ -11088,7 +11088,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "e8g8su",
+                                "id": "e7iz1y",
                                 "defaultValue": ""
                               }
                             ],
@@ -11228,7 +11228,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "eg45uf9"
+                                "id": "endkw6a"
                               }
                             ],
                             "width": 4,
@@ -11267,7 +11267,7 @@
                                 "customConditional": "show = (data?.vehicle_location === \"released\" || data?.vehicle_location === \"private\")",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "e0tald",
+                                "id": "ejr1ap9",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -11336,7 +11336,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "enqxv",
+                        "id": "e1aq4r",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -11398,7 +11398,7 @@
                         "lazyLoad": false
                       }
                     ],
-                    "id": "eq2j1gl",
+                    "id": "erzskuj",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -11568,7 +11568,7 @@
                         "addons": [],
                         "inputType": "radio",
                         "fieldSet": false,
-                        "id": "etbiyp8",
+                        "id": "ef7ngug",
                         "defaultValue": ""
                       },
                       {
@@ -11662,7 +11662,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "erojsg",
+                                "id": "evozea",
                                 "defaultValue": ""
                               }
                             ],
@@ -11705,7 +11705,7 @@
                                 "key": "offence_city",
                                 "type": "select",
                                 "input": true,
-                                "id": "e9vvx2",
+                                "id": "exsgn",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -11794,7 +11794,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "ewqq0f6",
+                        "id": "eww6ta",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -11947,7 +11947,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "ec4784i",
+                                "id": "e98nre",
                                 "defaultValue": ""
                               }
                             ],
@@ -12087,7 +12087,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "ezdogt4"
+                                "id": "e47jli9"
                               }
                             ],
                             "width": 4,
@@ -12185,7 +12185,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "e4iyyl",
+                                "id": "egsrdlj",
                                 "inputMaskPlaceholderChar": "",
                                 "defaultValue": ""
                               }
@@ -12199,7 +12199,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "ebjalx7",
+                        "id": "ettx9",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -12262,7 +12262,7 @@
                         "autoAdjust": false
                       }
                     ],
-                    "id": "en4zx6n",
+                    "id": "ek1euthb",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -12367,7 +12367,7 @@
                         "key": "irp_impound",
                         "type": "radio",
                         "input": true,
-                        "id": "elto9x",
+                        "id": "ed5pkwb",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -12463,7 +12463,7 @@
                           "when": "irp_impound",
                           "eq": "YES"
                         },
-                        "id": "evyl1ls",
+                        "id": "euvjco",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -12538,7 +12538,7 @@
                         "type": "htmlelement",
                         "input": false,
                         "tableView": false,
-                        "id": "eeyj5o6",
+                        "id": "eq14knl",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -12613,7 +12613,7 @@
                         "type": "htmlelement",
                         "input": false,
                         "tableView": false,
-                        "id": "ex6o05i",
+                        "id": "eiv31kj",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -12688,7 +12688,7 @@
                         "type": "htmlelement",
                         "input": false,
                         "tableView": false,
-                        "id": "e54v8f",
+                        "id": "epob8ot",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -12763,7 +12763,7 @@
                         "type": "htmlelement",
                         "input": false,
                         "tableView": false,
-                        "id": "ew4djwl",
+                        "id": "ek422fk",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -12904,7 +12904,7 @@
                         "refreshOn": "",
                         "addons": [],
                         "inputType": "text",
-                        "id": "ehrosqv",
+                        "id": "e1k7ad",
                         "defaultValue": ""
                       },
                       {
@@ -12993,11 +12993,11 @@
                         "refreshOn": "",
                         "addons": [],
                         "inputType": "text",
-                        "id": "e8myfy4",
+                        "id": "edve9ee",
                         "defaultValue": null
                       }
                     ],
-                    "id": "e70dshh",
+                    "id": "ea3mfzd",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -13084,7 +13084,7 @@
                         "type": "htmlelement",
                         "input": false,
                         "tableView": false,
-                        "id": "ehe62jb",
+                        "id": "eg6f2i9",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13157,7 +13157,7 @@
                           "event": "change",
                           "customAction": "(function() { if (!this.value) { data.speed_limit = null; data.vehicle_speed = null; data.speed_estimation_technique = ''; data.speed_confirmation_technique = ''; } })"
                         },
-                        "id": "ehyvey9",
+                        "id": "exanwd",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13226,7 +13226,7 @@
                         "type": "checkbox",
                         "input": true,
                         "defaultValue": false,
-                        "id": "eehw1ls",
+                        "id": "e2lcrh",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13295,7 +13295,7 @@
                         "type": "checkbox",
                         "input": true,
                         "defaultValue": false,
-                        "id": "ewbcak",
+                        "id": "erv8q49",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13364,7 +13364,7 @@
                         "type": "checkbox",
                         "input": true,
                         "defaultValue": false,
-                        "id": "euodtsb",
+                        "id": "etvwgrc",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13433,7 +13433,7 @@
                         "type": "checkbox",
                         "input": true,
                         "defaultValue": false,
-                        "id": "eg9ngp",
+                        "id": "ewtcew",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13502,7 +13502,7 @@
                         "type": "checkbox",
                         "input": true,
                         "defaultValue": false,
-                        "id": "el2jn8",
+                        "id": "erv3q2k",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13642,10 +13642,10 @@
                         "showWordCount": false,
                         "allowMultipleMasks": false,
                         "addons": [],
-                        "id": "e4azp0o"
+                        "id": "ea1k1op"
                       }
                     ],
-                    "id": "e7z2mv8",
+                    "id": "expmf9l",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -13809,7 +13809,7 @@
                                 "showWordCount": false,
                                 "allowMultipleMasks": false,
                                 "addons": [],
-                                "id": "ek3nkoq",
+                                "id": "earwva",
                                 "defaultValue": null
                               }
                             ],
@@ -13908,7 +13908,7 @@
                                 "showWordCount": false,
                                 "allowMultipleMasks": false,
                                 "addons": [],
-                                "id": "ettyjnm",
+                                "id": "ea0ls9f",
                                 "defaultValue": null
                               }
                             ],
@@ -13924,7 +13924,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "e8is17",
+                        "id": "ec7ek9",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -14083,7 +14083,7 @@
                         "addons": [],
                         "inputType": "radio",
                         "fieldSet": false,
-                        "id": "eig5xdt",
+                        "id": "ed2tiy",
                         "defaultValue": ""
                       },
                       {
@@ -14188,11 +14188,11 @@
                         "addons": [],
                         "inputType": "radio",
                         "fieldSet": false,
-                        "id": "euxbva",
+                        "id": "ec7p6k",
                         "defaultValue": ""
                       }
                     ],
-                    "id": "e9wp3yr",
+                    "id": "eoec10j",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -14351,7 +14351,7 @@
                         "refreshOn": "",
                         "addons": [],
                         "inputType": "text",
-                        "id": "eyj6in",
+                        "id": "e78aka",
                         "defaultValue": ""
                       },
                       {
@@ -14379,7 +14379,7 @@
                           "unique": false,
                           "onlyAvailableItems": false
                         },
-                        "id": "eqyuaa6",
+                        "id": "e47hnpa",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -14464,7 +14464,7 @@
                           "unique": false,
                           "onlyAvailableItems": false
                         },
-                        "id": "eae1eo",
+                        "id": "ey2lc1x",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -14624,7 +14624,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "ec3hufr",
+                                "id": "evk7cj",
                                 "defaultValue": ""
                               }
                             ],
@@ -14947,7 +14947,7 @@
                                 "customConditional": "if(show) {\n  \n  // Function to handle jurisdiction change\nconst handleJurisdictionChange = (selectedValue) => {\n  if (selectedValue === \"XX\") {\n    // Fetch data from another table for \"XX\"\n    return window.fetchStaticDataFromTable(\"jurisdictionCountry\").then((items) => {\n      console.log(\"Fetched jurisdictionCountry data:\", JSON.stringify(items));\n      return items.map(item => ({\n        value: item.objectCd,\n        label: item.objectDsc\n      }));\n    }).catch((error) => {\n      console.error(\"Error fetching jurisdictionCountry data:\", error);\n      return [];\n    });\n  } else if (selectedValue === \"XZ\") {\n    // Fetch data for \"XZ\"\n    return window.fetchStaticDataFromTable(\"jurisdictions\").then((items) => {\n      console.log(\"Fetched jurisdictions data:\", JSON.stringify(items));\n      return items.map(item => ({\n        value: item.objectCd,\n        label: item.objectDsc\n      }));\n    }).catch((error) => {\n      console.error(\"Error fetching jurisdictions data:\", error);\n      return [];\n    });\n  } else {\n    // Default data (if needed)\n    return Promise.resolve([]);\n  }\n};\n\nconst initialValues = instance?.component?.data?.values\nif (initialValues.length < 2) {\n  handleJurisdictionChange('XZ').then((newOptions) => {\n        if(newOptions.length){\n          instance.component.data.values = newOptions;\n          instance.redraw(); // Redraw the component to reflect the new options\n        }\n       \n      });\n}\n\n\nif (instance) {\n  instance.on('change', (event) => {\n    if (event.changed && event.changed.component.key === instance.component.key) {\n      const selectedValue = event.changed.value;\n      console.log(\"Selected value changed to:\", selectedValue);\n      if(!['XZ','XX'].includes(selectedValue)) {\n        return\n      }\n\n      // Update options based on the selected value\n      handleJurisdictionChange(selectedValue).then((newOptions) => {\n        // instance.component.data.values = newOptions;\n        instance.setValue(''); \n        instance.setItems([], false);\n        instance.setItems(newOptions,false);\n        // 2. Make sure dropdown is open\n        instance.choices.showDropdown();\n        // debugger\n        // // 3. Highlight the first item\n        // const firstChoice = instance.choices._currentState.choices[0];\n        // if (firstChoice) {\n        //     // Set highlighted choice\n        //     instance.choices._highlightChoice(firstChoice);\n        // }\n        // Get the dropdown container\n    const dropdownContent = selectInstance.choices.dropdown.element;\n    \n    // Scroll to top\n    if (dropdownContent) {\n        dropdownContent.scrollTop = 0;\n    }\n      });\n    }\n  });\n}\n  \n}",
                                 "type": "select",
                                 "input": true,
-                                "id": "ew3piin",
+                                "id": "ebz6t2",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -15161,7 +15161,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "ef8cbhe"
+                                "id": "ezdleev"
                               }
                             ],
                             "width": 2,
@@ -15172,7 +15172,7 @@
                             "currentWidth": 2
                           }
                         ],
-                        "id": "ed1x5l",
+                        "id": "e7dsmg",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -15230,7 +15230,7 @@
                         "autoAdjust": false
                       }
                     ],
-                    "id": "eocyg1",
+                    "id": "ep61afwd",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -15317,7 +15317,7 @@
                         "type": "htmlelement",
                         "input": false,
                         "tableView": false,
-                        "id": "ea8vcq8",
+                        "id": "e8omxae",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -15383,7 +15383,7 @@
                         "type": "checkbox",
                         "input": true,
                         "tableView": false,
-                        "id": "e7bu14f",
+                        "id": "e5s8b5",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -15531,7 +15531,7 @@
                         "refreshOn": "",
                         "addons": [],
                         "inputType": "text",
-                        "id": "e13v4mm",
+                        "id": "e96y5r",
                         "defaultValue": ""
                       },
                       {
@@ -15540,7 +15540,7 @@
                         "type": "checkbox",
                         "input": true,
                         "tableView": false,
-                        "id": "euvm47r",
+                        "id": "ekl567r",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -15608,7 +15608,7 @@
                         "type": "checkbox",
                         "input": true,
                         "tableView": false,
-                        "id": "eitnt8b",
+                        "id": "ejspzsb",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -15676,7 +15676,7 @@
                         "type": "checkbox",
                         "input": true,
                         "tableView": false,
-                        "id": "e3vgfrm",
+                        "id": "ecunuqr",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -15744,7 +15744,7 @@
                         "type": "checkbox",
                         "input": true,
                         "tableView": false,
-                        "id": "e1e407um",
+                        "id": "e2m2v9o",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -15812,7 +15812,7 @@
                         "type": "checkbox",
                         "input": true,
                         "tableView": false,
-                        "id": "eyleoj8",
+                        "id": "e2tm8g",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -15875,7 +15875,7 @@
                         "name": ""
                       }
                     ],
-                    "id": "euy8qe8",
+                    "id": "ei4fuw7",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -15957,7 +15957,7 @@
                         "input": false,
                         "tableView": false,
                         "content": "<span>The driver was operating a motor vehicle or had care and control of a motor vehicle for the purposes of MVA section 215(1) based on: <span class='required-asterisk'>*</span></span>",
-                        "id": "elfnyc",
+                        "id": "e37hrz",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16024,7 +16024,7 @@
                         "key": "witnessed_by_officer",
                         "type": "checkbox",
                         "input": true,
-                        "id": "ee7x5su",
+                        "id": "ekadvo",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16091,7 +16091,7 @@
                         "type": "checkbox",
                         "input": true,
                         "tableView": false,
-                        "id": "eo8zr5u",
+                        "id": "efgjgos",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16159,7 +16159,7 @@
                         "type": "checkbox",
                         "input": true,
                         "tableView": false,
-                        "id": "ev1kop",
+                        "id": "exj6fka",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16237,7 +16237,7 @@
                         "key": "reasonable_ground_other",
                         "type": "checkbox",
                         "input": true,
-                        "id": "esf93uf",
+                        "id": "escrkgp",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16376,7 +16376,7 @@
                         "refreshOn": "",
                         "addons": [],
                         "inputType": "text",
-                        "id": "eqdqzh",
+                        "id": "e89iewn",
                         "defaultValue": ""
                       },
                       {
@@ -16404,7 +16404,7 @@
                           "unique": false,
                           "onlyAvailableItems": false
                         },
-                        "id": "egjmkx",
+                        "id": "e4dfj7",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16605,7 +16605,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "eetk62u"
+                                "id": "e6grwab"
                               }
                             ],
                             "width": 6,
@@ -16703,7 +16703,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "er0zkw",
+                                "id": "ea035t",
                                 "inputMaskPlaceholderChar": "",
                                 "defaultValue": ""
                               }
@@ -16716,7 +16716,7 @@
                             "currentWidth": 6
                           }
                         ],
-                        "id": "e8kn84s",
+                        "id": "ejfiqs",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16799,7 +16799,7 @@
                         },
                         "type": "radio",
                         "input": true,
-                        "id": "ewb35h",
+                        "id": "eoryoly",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16864,7 +16864,7 @@
                         "fieldSet": false
                       }
                     ],
-                    "id": "eudgbx",
+                    "id": "e0rtg79",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -17039,7 +17039,7 @@
                         "addons": [],
                         "inputType": "radio",
                         "fieldSet": false,
-                        "id": "elh0ic",
+                        "id": "e6f92yr",
                         "defaultValue": ""
                       },
                       {
@@ -17169,7 +17169,7 @@
                         "allowMultipleMasks": false,
                         "addons": [],
                         "datepickerMode": "day",
-                        "id": "ery1uea"
+                        "id": "e5f4r8"
                       },
                       {
                         "label": "Result",
@@ -17205,7 +17205,7 @@
                           "unique": false,
                           "onlyAvailableItems": false
                         },
-                        "id": "erxqa9p",
+                        "id": "epmq4v6",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -17283,7 +17283,7 @@
                           "step": "any",
                           "integer": ""
                         },
-                        "id": "euzwkyn",
+                        "id": "ec2it28",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -17362,7 +17362,7 @@
                         "customConditional": "try {\r\n  show = false;\r\n  if(data?.type_of_prohibition === 'drugs'){\r\n    show = true\r\n  } else {\r\n    show = false;\r\n  }\r\n} catch (error) {\r\n  console.error(error);\r\n}",
                         "type": "radio",
                         "input": true,
-                        "id": "epafjun",
+                        "id": "ej3z1yt",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -17508,7 +17508,7 @@
                         "refreshOn": "",
                         "addons": [],
                         "inputType": "text",
-                        "id": "e6lak1c",
+                        "id": "een67tn",
                         "defaultValue": ""
                       },
                       {
@@ -17522,7 +17522,7 @@
                           "when": "reasonable_test_used_drugs",
                           "eq": "PPCT"
                         },
-                        "id": "eycf85ae",
+                        "id": "elzc42e",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -17590,7 +17590,7 @@
                           "when": "resonable_test_used_alcohol",
                           "eq": "PPCT"
                         },
-                        "id": "exw1l4g",
+                        "id": "e1bt4ni",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -17648,7 +17648,7 @@
                         "name": ""
                       }
                     ],
-                    "id": "efxxdyvf",
+                    "id": "ebzrfkg",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -17814,11 +17814,11 @@
                         "inputType": "text",
                         "inputMask": "",
                         "fixedSize": true,
-                        "id": "e5ic6pv",
+                        "id": "er7u1e",
                         "defaultValue": ""
                       }
                     ],
-                    "id": "ekplton",
+                    "id": "e2fvhiq",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -17918,7 +17918,7 @@
                                 "key": "officer-lastname",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "e2mpv2",
+                                "id": "el499p",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -17996,7 +17996,7 @@
                                 "key": "officer-prime-id",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "e59oe2i",
+                                "id": "e6l1nhs",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -18085,7 +18085,7 @@
                                 "key": "officer-agency",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "eraybs",
+                                "id": "ea3y0w",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -18163,7 +18163,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "eoi5sxt",
+                        "id": "edrr8w3",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -18226,7 +18226,7 @@
                         "autoAdjust": false
                       }
                     ],
-                    "id": "encud8",
+                    "id": "eauod6l",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -18303,7 +18303,7 @@
                             "type": "button",
                             "custom": "function showErrorPopup(errorMessage) {\n  // Create content div\n  const content = instance.ce('div');\n  content.innerHTML = `\n    <div class=\"modal-content\" style=\"min-width: 400px; padding: 20px;\">\n      <div class=\"modal-header\" style=\"border-bottom: 1px solid #dee2e6; margin: -20px -20px 20px; padding: 20px;\">\n        <h5 class=\"modal-title\" style=\"font-size: 1.25rem; margin: 0;\">\n          <i class=\"fas fa-exclamation-circle text-danger\" style=\"margin-right: 8px;\"></i>\n          Error\n        </h5>\n      </div>\n      \n      <div class=\"modal-body\" style=\"padding: 0 0 20px;\">\n        <p style=\"font-size: 1rem; color: #555; margin: 0;\">\n          ${errorMessage}\n        </p>\n      </div>\n      \n      <div class=\"modal-footer\" style=\"border-top: 1px solid #dee2e6; margin: 0 -20px -20px; padding: 20px; display: flex; justify-content: flex-end; gap: 10px;\">\n        <button class=\"btn btn-primary\" ref=\"closeButton\" style=\"min-width: 100px;\">\n          <i class=\"fas fa-times\" style=\"margin-right: 5px;\"></i>Close\n        </button>\n      </div>\n    </div>\n  `;\n\n  // Create the modal\n  const modal = instance.createModal(content);\n  \n  // Add event listener to close button\n  const closeButton = content.querySelector('[ref=\"closeButton\"]');\n  if (closeButton) {\n    closeButton.addEventListener('click', () => {\n      modal.close();\n    });\n  }\n}\n\nconsole.log(\"Validating officer form page\")\nlet formIdsPresent = true;\nif(data?.twenty_four_hour_number === '' || data?.twenty_four_hour_number === \"\" || data?.VI_number === \"\"){\n  console.log(\"Form ids not present\")\n   showErrorPopup(\"Error: You dont have enough form ids to proceed. Please contact admin!!\");\n   formIdsPresent = false\n}\nif(formIdsPresent && data.formsSelected){\n  \n  form.currentPage.getComponents().forEach(component => {\n  component.setPristine(false);\n  component.checkValidity(form.data, true);\n});\n\n  var isValid = form.currentPage.checkValidity(form.submission.data, true);\n  if(isValid){\n    form.nextPage()\n  } else {\n    // \n     const errorsContainer = document.getElementById('errorsContainer');\n     errorsContainer.style.display = 'block';\n     // Scroll to the errors container\n  errorsContainer.scrollIntoView({\n    behavior: 'smooth',\n    block: 'start'\n  });\n  }\n  \n}\n\n",
                             "input": true,
-                            "id": "evws13f",
+                            "id": "ehgeqh",
                             "placeholder": "",
                             "prefix": "",
                             "customClass": "",
@@ -18398,7 +18398,7 @@
                     "type": "columns",
                     "input": false,
                     "tableView": false,
-                    "id": "etknouy",
+                    "id": "e1vzqh9",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -18461,7 +18461,7 @@
                     "autoAdjust": false
                   }
                 ],
-                "id": "e60cvbk",
+                "id": "e257mf",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -18529,7 +18529,7 @@
                 "type": "hidden",
                 "input": true,
                 "tableView": false,
-                "id": "ej2pjo",
+                "id": "egb0xf",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -18597,7 +18597,7 @@
                 "type": "hidden",
                 "input": true,
                 "tableView": false,
-                "id": "e5bxzud",
+                "id": "e26hxr8",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -18665,7 +18665,7 @@
                 "type": "hidden",
                 "input": true,
                 "tableView": false,
-                "id": "eb6n5ze",
+                "id": "e7hamqr",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -18733,7 +18733,7 @@
                 "type": "hidden",
                 "input": true,
                 "tableView": false,
-                "id": "eem8dh",
+                "id": "evqecxw",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -18801,7 +18801,7 @@
                 "type": "hidden",
                 "input": true,
                 "tableView": false,
-                "id": "e833t5p",
+                "id": "e6uvqqb",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -18869,7 +18869,7 @@
                 "type": "hidden",
                 "input": true,
                 "tableView": false,
-                "id": "emz7fo",
+                "id": "ezvalgr",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -18937,7 +18937,7 @@
                 "type": "hidden",
                 "input": true,
                 "tableView": false,
-                "id": "eyw3eds",
+                "id": "eoq2cxq",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -19005,7 +19005,7 @@
                 "type": "hidden",
                 "input": true,
                 "tableView": false,
-                "id": "e8zno0h",
+                "id": "edpmfhg",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -19106,7 +19106,7 @@
             "addons": [],
             "tree": false,
             "lazyLoad": false,
-            "id": "et6cwgn"
+            "id": "e7i048"
           },
           {
             "title": "Driver copy preview/print",
@@ -24406,7 +24406,7 @@
           }
         ],
         "created": "2025-02-06T16:05:31.759Z",
-        "modified": "2025-03-25T00:51:48.136Z"
+        "modified": "2025-03-25T16:53:22.343Z"
       }
     }
   ],
