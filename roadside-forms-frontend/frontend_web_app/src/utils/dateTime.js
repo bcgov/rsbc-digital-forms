@@ -34,3 +34,12 @@ export const pstDate = (datetime) => {
   );
   return pstDate;
 };
+
+export const dateSortReactTable = (a, b, order) => {
+  // Use 1000-01-01 as the default date for null values (only for sorting)
+  const oldDate = '1000-01-01T00:00:00Z';
+  const valueA = moment(a || oldDate);
+  const valueB = moment(b || oldDate);
+  
+  return order === 'asc' ? valueA.valueOf() - valueB.valueOf() : valueB.valueOf() - valueA.valueOf();
+};
