@@ -44,10 +44,10 @@ def update_the_user(**kwargs) -> tuple:
         user = db.session.query(User) \
             .filter(User.user_guid == kwargs.get('payload')['user_guid']) \
             .first()
-        user.username = kwargs.get('username')
+        user.username = kwargs.get('payload')['username']
         user.user_guid = kwargs.get('payload')['user_guid']
-        user.display_name = kwargs.get('display_name')
-        user.login = kwargs.get('login')
+        user.display_name = kwargs.get('payload')['display_name']
+        user.login = kwargs.get('payload')['login']
         user.badge_number = kwargs.get('payload')['badge_number']
         user.agency = kwargs.get('payload')['agency']
         user.first_name = kwargs.get('payload')['first_name']
