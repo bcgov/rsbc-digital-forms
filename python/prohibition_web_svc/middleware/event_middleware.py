@@ -36,7 +36,7 @@ def save_event_data(**kwargs) -> tuple:
     logging.debug('inside save_event_data()')
     data = kwargs.get('payload')
     if kwargs.get('identity_provider') == 'service_account':
-       user_guid = data.get('submitted_user_guid', 'df_service_account')
+       user_guid = data.get('submitted_user_guid', 'service_account')
     else:
        user_guid = kwargs.get('user_guid')
 
@@ -49,39 +49,30 @@ def save_event_data(**kwargs) -> tuple:
             vi_sent_status='pending',
             task_processing_status='pending',
             driver_licence_no=data.get('driver_licence_no'),
-            driver_jurisdiction=data.get(
-                'drivers_licence_jurisdiction', {
-                    'value': None, 'label': None}).get('value'),
+            driver_jurisdiction=safe_get_value(data.get('drivers_licence_jurisdiction', {})),
             driver_last_name=data.get('driver_last_name'),
             driver_given_name=data.get('driver_given_name'),
             driver_dob=datetime.strptime(
                 data.get('driver_dob'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_dob') else None,
             driver_address=data.get('driver_address'),
             driver_city=data.get('driver_city'),
-            driver_prov=data.get('driver_prov_state', {
-                'value': None, 'label': None}).get('value'),
+            driver_prov=safe_get_value(data.get('driver_prov_state', {})),
             driver_postal=data.get('driver_postal'),
             driver_phone=data.get('driver_phone'),
             type_of_prohibition=data.get('type_of_prohibition'),
-            vehicle_jurisdiction=data.get('vehicle_jurisdiction', {
-                'value': None, 'label': None}).get('value'),
+            vehicle_jurisdiction=safe_get_value(data.get('vehicle_jurisdiction', {})),
             vehicle_plate_no=data.get('vehicle_plate_no'),
-            vehicle_registration_no=data.get('vehicle_registration_no'),
-            vehicle_year=data.get('vehicle_year', {
-                'value': None, 'label': None}).get('value'),
-            vehicle_mk_md=data.get('vehicle_mk_md', {
-                'value': None, 'label': None}).get('value'),
-            vehicle_style=data.get('vehicle_style', {
-                'value': None, 'label': None}).get('value'),
+            vehicle_registration_no=safe_get_value(data.get('vehicle_registration_no', {})),
+            vehicle_year=safe_get_value(data.get('vehicle_year', {})),
+            vehicle_mk_md=safe_get_value(data.get('vehicle_mk_md', {})),
+            vehicle_style=safe_get_value(data.get('vehicle_style', {})),
             vehicle_type=(lambda x: x.get('value') if x else None)(data.get('vehicle_type', None)),
             vehicle_colour=data.get('vehicle_colour'),
             vehicle_vin_no=data.get('vehicle_vin_no'),
             intersection_or_address_of_offence=data.get(
                 'intersection_or_address_of_offence'),
-            impound_lot_operator=data.get('ILO-options', {
-                'value': None, 'label': None}).get('value'),
-            offence_city=data.get('offence_city', {
-                'value': None, 'label': None}).get('value'),
+            impound_lot_operator=safe_get_value(data.get('ILO-options', {})),
+            offence_city=safe_get_value(data.get('offence_city', {})),
             date_of_driving=data.get('date_of_driving'),
             time_of_driving=data.get('time_of_driving'),
             nsc_no=data.get('nsc_no', None),
@@ -96,8 +87,7 @@ def save_event_data(**kwargs) -> tuple:
             regist_owner_dob=datetime.strptime(
                 data.get('regist_owner_dob'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('regist_owner_dob') else None,
             regist_owner_city=data.get('regist_owner_city'),
-            regist_owner_prov=data.get('regist_owner_prov_state', {
-                'value': None, 'label': None}).get('value'),
+            regist_owner_prov=safe_get_value(data.get('regist_owner_prov_state', {})),
             regist_owner_postal=data.get('regist_owner_postal'),
             regist_owner_phone=data.get('regist_owner_phone'),
             regist_owner_email=data.get('regist_owner_email'),
@@ -499,3 +489,25 @@ def get_ticket_no(data):
         return data.get('VI_number')
     else:
         return None
+    
+def safe_get_value(data, default=None):
+    """
+    Safely extract the 'value' from a dictionary or handle other input types.
+    
+    Args:
+        data (dict or str or None): Input data to extract value from
+        default (Any, optional): Default value to return if no value found
+    
+    Returns:
+        The extracted value or default
+    """
+    # If data is a dictionary, try to get the 'value' key
+    if isinstance(data, dict):
+        return data.get('value', default)
+    
+    # If data is an empty string, return default
+    if data == "":
+        return default
+    
+    # For None or other types, return default
+    return data if data is not None else default    
