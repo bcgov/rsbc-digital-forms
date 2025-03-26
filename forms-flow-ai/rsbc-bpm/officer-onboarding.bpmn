@@ -52,7 +52,7 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1of0gkm" sourceRef="Activity_0y7apav" targetRef="Activity_0wfr2di" />
     <bpmn:sequenceFlow id="Flow_1ghz0nf" name="DF User Created" sourceRef="Gateway_08urm20" targetRef="digitalform-admin">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${statusCode == 201}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${statusCode == 201 || statusCode == 409}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1ntpsjh" sourceRef="Activity_153941x" targetRef="Activity_17l2win" />
     <bpmn:sequenceFlow id="Flow_1lybich" sourceRef="Activity_17l2win" targetRef="Activity_00ih7xl" />
@@ -335,7 +335,6 @@ system.getenv('REACT_APP_RSBC_API_URL')+"/api/v1/admin/users/"+ user_guid +"/rol
                 <camunda:entry key="Content-Type">application/json</camunda:entry>
               </camunda:map>
             </camunda:inputParameter>
-            <camunda:inputParameter name="payload">${user}</camunda:inputParameter>
             <camunda:outputParameter name="statusCode">#{statusCode}</camunda:outputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
@@ -355,7 +354,7 @@ system.getenv('REACT_APP_RSBC_API_URL')+"/api/v1/admin/users/"+ user_guid +"/rol
     <bpmn:sequenceFlow id="Flow_1aoqm69" sourceRef="Activity_1m4qafv" targetRef="Event_0m2jfkn" />
     <bpmn:sequenceFlow id="Flow_1f6g27i" sourceRef="Activity_0xkoey4" targetRef="Gateway_08urm20" />
     <bpmn:sequenceFlow id="Flow_1713r15" name="DF User Not Created" sourceRef="Gateway_08urm20" targetRef="Activity_0pjcv7b">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${statusCode != 201}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${statusCode != 201 &amp;&amp; statusCode != 409 }</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1h25bh0" sourceRef="Activity_0pjcv7b" targetRef="Event_14w8naw" />
     <bpmn:startEvent id="StartEvent_1" name="start">
