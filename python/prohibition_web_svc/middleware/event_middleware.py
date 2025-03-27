@@ -43,6 +43,30 @@ def save_event_data(**kwargs) -> tuple:
     try:
         logging.debug('Creating Event')
         date_created = datetime.now()
+        
+        # Helper function to parse dates in different formats
+        def parse_date(date_str):
+            if not date_str:
+                return None
+            try:
+                # Try using iso8601 parser first for format like 2025-03-27T00:00:00-07:00
+                return iso8601.parse_date(date_str)
+            except Exception as e:
+                # Fall back to strptime if iso8601 fails
+                try:
+                    return datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S.%f%z")
+                except Exception as e2:
+                    logging.error(f"Error parsing date {date_str}: {e}, {e2}")
+                    return None
+        
+        # Helper function to safely get nested values
+        def safe_get_value(obj, default=None):
+            if not obj or obj == "":
+                return None
+            if isinstance(obj, dict) and 'value' in obj:
+                return obj.get('value')
+            return default
+            
         # logging.debug(f'heres your data {data}')
         event = Event(
             icbc_sent_status='pending',
@@ -52,8 +76,7 @@ def save_event_data(**kwargs) -> tuple:
             driver_jurisdiction=safe_get_value(data.get('drivers_licence_jurisdiction', {})),
             driver_last_name=data.get('driver_last_name'),
             driver_given_name=data.get('driver_given_name'),
-            driver_dob=datetime.strptime(
-                data.get('driver_dob'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_dob') else None,
+            driver_dob=parse_date(data.get('driver_dob')),
             driver_address=data.get('driver_address'),
             driver_city=data.get('driver_city'),
             driver_prov=safe_get_value(data.get('driver_prov_state', {})),
@@ -66,7 +89,7 @@ def save_event_data(**kwargs) -> tuple:
             vehicle_year=safe_get_value(data.get('vehicle_year', {})),
             vehicle_mk_md=safe_get_value(data.get('vehicle_mk_md', {})),
             vehicle_style=safe_get_value(data.get('vehicle_style', {})),
-            vehicle_type=(lambda x: x.get('value') if x else None)(data.get('vehicle_type', None)),
+            vehicle_type=safe_get_value(data.get('vehicle_type', {})),
             vehicle_colour=data.get('vehicle_colour'),
             vehicle_vin_no=data.get('vehicle_vin_no'),
             intersection_or_address_of_offence=data.get(
@@ -76,24 +99,20 @@ def save_event_data(**kwargs) -> tuple:
             date_of_driving=data.get('date_of_driving'),
             time_of_driving=data.get('time_of_driving'),
             nsc_no=data.get('nsc_no', None),
-            # nsc_prov_state=data.get('nsc_prov_state', {
-            #     'value': None, 'label': None}).get('value'),
-            nsc_prov_state=(lambda x: x.get('value') if x else None)(data.get('nsc_prov_state', None)),
+            nsc_prov_state=safe_get_value(data.get('nsc_prov_state', {})),
             owned_by_corp=data.get('owned_by_corp'),
             corporation_name=data.get('corporation_name'),
             regist_owner_last_name=data.get('regist_owner_last_name'),
             regist_owner_first_name=data.get('regist_owner_first_name'),
             regist_owner_address=data.get('regist_owner_address'),
-            regist_owner_dob=datetime.strptime(
-                data.get('regist_owner_dob'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('regist_owner_dob') else None,
+            regist_owner_dob=parse_date(data.get('regist_owner_dob')),
             regist_owner_city=data.get('regist_owner_city'),
             regist_owner_prov=safe_get_value(data.get('regist_owner_prov_state', {})),
             regist_owner_postal=data.get('regist_owner_postal'),
             regist_owner_phone=data.get('regist_owner_phone'),
             regist_owner_email=data.get('regist_owner_email'),
             vehicle_released_to=data.get("vehicle_released_to"),
-            date_released=datetime.strptime(
-                data.get('date_released'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('date_released') else None,
+            date_released=parse_date(data.get('date_released')),
             time_released=data.get("time_released"),
             location_of_keys=data.get('location_of_keys'),
             submitted=True,
@@ -108,11 +127,9 @@ def save_event_data(**kwargs) -> tuple:
         )
         if data.get('VI'):
             vi_form = VIForm(
-                gender=(lambda x: x.get('value') if x else None)(data.get('gender', None)),                
-                # gender=data.get('gender',''),
+                gender=safe_get_value(data.get('gender', {})),                
                 driver_is_regist_owner=data.get('driver_is_regist_owner'),
-                driver_licence_expiry=datetime.strptime(
-                    data.get('driver_licence_expiry'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_licence_expiry') else None,
+                driver_licence_expiry=parse_date(data.get('driver_licence_expiry')),
                 driver_licence_class=data.get('driver_licence_class'),
                 unlicenced_prohibition_number=data.get(
                     'unlicenced_prohibition_number'),
@@ -123,11 +140,8 @@ def save_event_data(**kwargs) -> tuple:
                     'out_of_province_dl_number'),
                 out_of_province_dl_expiry=data.get(
                     'out_of_province_dl_expiry'),
-                out_of_province_dl_jurisdiction=(lambda x: x.get('value') if x else None)(data.get('out_of_province_dl_jurisdiction', None)),
-                # out_of_province_dl_jurisdiction=data.get('out_of_province_dl_jurisdiction', {
-                # 'value': None, 'label': None}).get('value'),                
-                date_of_impound=datetime.strptime(
-                    data.get('date_of_impound'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('date_of_impound') else None,
+                out_of_province_dl_jurisdiction=safe_get_value(data.get('out_of_province_dl_jurisdiction', {})),
+                date_of_impound=parse_date(data.get('date_of_impound')),
                 irp_impound=data.get('irp_impound'),
                 irp_impound_duration=data.get('irp_impound_duration'),
                 IRP_number=data.get('IRP_number'),
@@ -174,15 +188,13 @@ def save_event_data(**kwargs) -> tuple:
                 reasonable_ground_other_reason=data.get(
                     'reasonable_ground_other_reason'),
                 prescribed_test_used=data.get('prescribed_test_used'),
-                reasonable_date_of_test=datetime.strptime(
-                    data.get('reasonable_date_of_test'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('reasonable_date_of_test') else None,
+                reasonable_date_of_test=parse_date(data.get('reasonable_date_of_test')),
                 reasonable_time_of_test=data.get('reasonable_time_of_test'),
                 reason_for_not_using_prescribed_test=data.get(
                     'reason_for_not_using_prescribed_test'),
                 resonable_test_used_alcohol=data.get(
                     'resonable_test_used_alcohol'),
-                reasonable_asd_expiry_date=datetime.strptime(
-                    data.get('reasonable_asd_expiry_date'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('reasonable_asd_expiry_date') else None,
+                reasonable_asd_expiry_date=parse_date(data.get('reasonable_asd_expiry_date')),
                 reasonable_result_alcohol=data.get(
                     'reasonable_result_alcohol'),
                 reasonable_bac_result_mg=data.get('reasonable_bac_result_mg'),
@@ -202,8 +214,7 @@ def save_event_data(**kwargs) -> tuple:
                 requested_BAC_result=data.get('requested_BAC_result'),
                 requested_alcohol_test_result=data.get(
                     'requested_alcohol_test_result'),
-                requested_ASD_expiry_date=datetime.strptime(
-                    data.get('requested_ASD_expiry_date'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('requested_ASD_expiry_date') else None,
+                requested_ASD_expiry_date=parse_date(data.get('requested_ASD_expiry_date')),
                 time_of_requested_test=data.get('time_of_requested_test'),
                 requested_test_used_alcohol=data.get(
                     'requested_test_used_alcohol'),
@@ -490,24 +501,24 @@ def get_ticket_no(data):
     else:
         return None
     
-def safe_get_value(data, default=None):
+def safe_get_value(obj, default=None):
     """
     Safely extract the 'value' from a dictionary or handle other input types.
     
     Args:
-        data (dict or str or None): Input data to extract value from
+        obj (dict or str or None): Input data to extract value from
         default (Any, optional): Default value to return if no value found
     
     Returns:
         The extracted value or default
     """
     # If data is a dictionary, try to get the 'value' key
-    if isinstance(data, dict):
-        return data.get('value', default)
+    if isinstance(obj, dict):
+        return obj.get('value', default)
     
     # If data is an empty string, return default
-    if data == "":
+    if obj == "":
         return default
     
     # For None or other types, return default
-    return data if data is not None else default    
+    return obj if obj is not None else default    
