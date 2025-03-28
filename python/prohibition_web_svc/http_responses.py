@@ -60,8 +60,14 @@ def no_user_guid(**kwargs) -> tuple:
 
 
 def role_already_exists(**kwargs) -> tuple:
-    logging.warning("role for {} already exists".format(kwargs.get('username')))
-    kwargs['response'] = make_response({'error': 'role already exists'}, 400)
+    if kwargs.get('identity_provider') != 'service_account':
+        logging.warning("role for {} already exists".format(kwargs.get('username')))
+        kwargs['response'] = make_response({'error': 'role already exists'}, 400)
+    else:
+        ## handle request from bpm service account. user / role might be existing already in database.
+        # if role already exists send a http 409 - conflict - response.
+        logging.warning("role for {} already exists".format(kwargs.get('payload')['username']))
+        kwargs['response'] = make_response({'error': 'role already exists'}, 409)
     return True, kwargs
 
 
