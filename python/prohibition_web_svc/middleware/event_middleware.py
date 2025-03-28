@@ -36,7 +36,7 @@ def save_event_data(**kwargs) -> tuple:
     logging.debug('inside save_event_data()')
     data = kwargs.get('payload')
     if kwargs.get('identity_provider') == 'service_account':
-       user_guid = data.get('submitted_user_guid', 'service_account')
+       user_guid = data.get('submitted_user_guid', kwargs.get('username'))
     else:
        user_guid = kwargs.get('user_guid')
 
@@ -414,7 +414,7 @@ def request_contains_a_payload(**kwargs) -> tuple:
     try:
         payload = request.get_json()
         kwargs['payload'] = payload
-        logging.debug("payload: " + json.dumps(payload))
+        # logging.debug("payload: " + json.dumps(payload))
     except Exception as e:
         return False, kwargs
     return payload is not None, kwargs
