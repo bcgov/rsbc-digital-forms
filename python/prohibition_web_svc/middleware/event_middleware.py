@@ -269,7 +269,7 @@ def save_event_pdf(**kwargs) -> tuple:
             secure=Config.MINIO_SECURE,
         )
         if(data.get('VI')):
-            len_of_incident_details=len(data.get('incident_details', ''))
+            len_of_incident_details=len(data.get('incident_details', '')) if (data.get('incident_details')) else 0
             filename = str(uuid.uuid4().hex)
             pdf_filename = f"/tmp/{filename}.pdf"
             encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
