@@ -414,7 +414,7 @@ def request_contains_a_payload(**kwargs) -> tuple:
     try:
         payload = request.get_json()
         kwargs['payload'] = payload
-        # logging.debug("payload: " + json.dumps(payload))
+        logging.debug("payload: " + json.dumps(payload))
     except Exception as e:
         return False, kwargs
     return payload is not None, kwargs
