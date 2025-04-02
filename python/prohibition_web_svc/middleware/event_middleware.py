@@ -105,6 +105,7 @@ def save_event_data(**kwargs) -> tuple:
             updated_dt=date_created,
             created_by=user_guid,
             updated_by=user_guid,
+            ff_application_id=data.get('ff_application_id'),
         )
         if data.get('VI'):
             vi_form = VIForm(
