@@ -76,6 +76,10 @@ def user_already_exists(**kwargs) -> tuple:
     kwargs['response'] = make_response({'error': 'user already exists'}, 400)
     return True, kwargs
 
+def application_already_exists(**kwargs) -> tuple:
+    logging.warning("application id {} already exists".format(kwargs.get('payload')['ff_application_id']))
+    kwargs['response'] = make_response({'error': 'application already exists'}, 409)
+    return True, kwargs
 
 def payload_missing(**kwargs) -> tuple:
     kwargs['response'] = make_response({'error': 'missing payload'}, 403)
