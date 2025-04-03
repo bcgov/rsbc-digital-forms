@@ -55,9 +55,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build --exclude 'src/stories/**/*'",
-    "test": "react-scripts test --transformIgnorePatterns '/node_modules/(?!@react-keycloak)/' '/node_modules/(?!(.*.css|.*.mjs$|keycloak.js))' ;",
+    "test": "react-scripts test --transformIgnorePatterns '/node_modules/(?!@react-keycloak)/' '/node_modules/(?!(.*.css|.*.mjs$|keycloak.js))'",
     "eject": "react-scripts eject",
-    "coverage": "react-scripts test --coverage",
+    "coverage": "react-scripts test --coverage  --transformIgnorePatterns '/node_modules/(?!@react-keycloak)/' '/node_modules/(?!(.*.css|.*.mjs$|keycloak.js))'",
     "storybook": "start-storybook -p 6006",
     "cypress:open": "cypress open",
     "build:ci": "react-scripts build --exclude 'src/stories/**/*'",
