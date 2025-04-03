@@ -7,8 +7,8 @@ module.exports = {
       "^.+\\.js$": "babel-jest",
     },
     transformIgnorePatterns: [
-      "node_modules/(?!(.*.mjs$|keycloak.js))",
-      "node_modules/(?!(react|@react-keycloak|@react-keycloak/web)/)"
+      "/node_modules/(?!@react-keycloak)/",
+      "/node_modules/(?!(.*.css|.*.mjs$|keycloak.js)/)",
     ],
     "setupFiles": [
       "fake-indexeddb/auto",

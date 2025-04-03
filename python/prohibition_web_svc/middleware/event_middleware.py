@@ -31,6 +31,32 @@ def log_payload_to_splunk(**kwargs) -> tuple:
     logging.debug("payload: | {}".format(request.get_data()))
     return True, kwargs
 
+def check_if_application_id_exists(**kwargs) -> tuple:
+    """
+    Check if the application id exists in the database.
+    """
+    logging.debug('inside check_if_application_id_exists()')
+    data = kwargs.get('payload')
+    application_id = data.get('ff_application_id')
+    if application_id is None:
+        return True, kwargs
+    try:
+        event = db.session.query(Event).filter(
+            Event.ff_application_id == application_id).first()
+        if event is not None:
+            kwargs['error'] = {
+                'error_code': ErrorCode.E09,
+                'error_details': 'Application ID already exists',
+                'event_id': event.event_id,
+                'event_type': get_event_type(data),
+                'ticket_no': get_ticket_no(data),
+                'func': check_if_application_id_exists,
+            }
+            return False, kwargs
+    except Exception as e:
+        logging.error(e)
+        return False, kwargs
+    return True, kwargs
 
 def save_event_data(**kwargs) -> tuple:
     logging.debug('inside save_event_data()')
