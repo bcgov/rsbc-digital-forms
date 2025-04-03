@@ -57,12 +57,17 @@ def create():
                     {"try": splunk.log_to_splunk, "fail": []},
                     {"try": http_responses.server_error_response, "fail": []},
                 ]},
+                {"try": event_middleware.check_if_application_id_exists, "fail": [
+                    {"try": event_middleware.record_event_error, "fail": []},
+                    {"try": http_responses.application_already_exists, "fail": []},
+                ]},
                 {"try": event_middleware.save_event_data, "fail": [ 
                     {"try": event_middleware.record_event_error, "fail": []},
                     {"try": http_responses.bad_request_response, "fail": []}
                 ]},
                 {"try": event_middleware.save_event_pdf, "fail": [
-                     {"try": event_middleware.record_event_error, "fail": []}
+                     {"try": event_middleware.record_event_error, "fail": []},
+                     {"try": http_responses.server_error_response, "fail": []},
                 ]},
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": http_responses.successful_create_response, "fail": []},

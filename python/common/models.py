@@ -389,6 +389,7 @@ class Event(db.Model):
     updated_dt: datetime
     created_by: str
     updated_by: str
+    ff_application_id: int
 
     event_id = db.Column(db.Integer, primary_key=True)
     icbc_sent_status = db.Column(db.String)
@@ -447,6 +448,7 @@ class Event(db.Model):
     updated_by = db.Column(db.String)
     created_dt = db.Column(db.DateTime)
     updated_dt = db.Column(db.DateTime)
+    ff_application_id = db.Column(db.Integer)
 
     twenty_four_hour_form = db.relationship(
         'TwentyFourHourForm',
