@@ -56,7 +56,9 @@ export function register(config) {
 
 function registerValidSW(swUrl, config) {
   navigator.serviceWorker
-    .register(swUrl)
+    .register(swUrl, {
+      scope: '/roadside-forms'
+    })
     .then((registration) => {
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
@@ -133,7 +135,11 @@ export function unregister() {
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.ready
       .then((registration) => {
-        registration.unregister();
+        // When unregistering, we should target the specific scope
+        // This ensures we only unregister our roadside-forms service worker
+        if (registration.scope.includes('/roadside-forms')) {
+          registration.unregister();
+        }
       })
       .catch((error) => {
         console.error(error.message);
