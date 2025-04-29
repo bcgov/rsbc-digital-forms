@@ -2,6 +2,7 @@ import json
 import logging
 import logging.config
 from python.common import form_middleware
+from python.common.helper import date_time_to_local_tz_string
 from python.form_handler.config import Config
 import logging
 import json
@@ -464,7 +465,7 @@ def prep_icbc_payload(**args)->tuple:
         # convert date_of_driving to string
         date_of_driving=event_data.get("date_of_driving")
         if date_of_driving is not None:
-            date_of_driving=date_of_driving.strftime('%Y%m%d')
+            date_of_driving=date_time_to_local_tz_string(date_of_driving, "%Y%m%d")
             tmp_payload["violationDate"]=date_of_driving
         if "time_of_driving" in event_data: 
             tmp_payload["violationTime"]=event_data["time_of_driving"].replace(" ", "")
