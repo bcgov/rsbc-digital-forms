@@ -97,7 +97,7 @@
                 "event": "cancelSubmission",
                 "input": true,
                 "clearOnHide": true,
-                "id": "e00z4iq",
+                "id": "ex7jbro",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -231,7 +231,7 @@
                 "allowMultipleMasks": false,
                 "addons": [],
                 "inputType": "hidden",
-                "id": "ex987bg"
+                "id": "eofdvsb"
               },
               {
                 "label": "Event Listeners",
@@ -302,7 +302,7 @@
                 "allowMultipleMasks": false,
                 "addons": [],
                 "inputType": "hidden",
-                "id": "e8hru0k"
+                "id": "emhv71n"
               },
               {
                 "label": "Is form in edit / submission mode ?",
@@ -373,7 +373,7 @@
                 "allowMultipleMasks": false,
                 "addons": [],
                 "inputType": "hidden",
-                "id": "ebaplm"
+                "id": "e9v1a4e"
               },
               {
                 "label": "Columns to list in Submission",
@@ -444,7 +444,7 @@
                 "allowMultipleMasks": false,
                 "addons": [],
                 "inputType": "hidden",
-                "id": "eudcx1o"
+                "id": "eern4ti"
               },
               {
                 "label": "Submission Preview Well",
@@ -537,7 +537,7 @@
                             "showWordCount": false,
                             "allowMultipleMasks": false,
                             "addons": [],
-                            "id": "ejyscb"
+                            "id": "etmxn5h"
                           }
                         ],
                         "width": 10,
@@ -627,7 +627,7 @@
                             "showWordCount": false,
                             "allowMultipleMasks": false,
                             "addons": [],
-                            "id": "edtee2e"
+                            "id": "ehlpet"
                           }
                         ],
                         "width": 2,
@@ -642,7 +642,7 @@
                     "type": "columns",
                     "input": false,
                     "tableView": false,
-                    "id": "eaarxi",
+                    "id": "ek569vi",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -714,7 +714,7 @@
                     "type": "rsbcimage",
                     "input": true,
                     "clearOnHide": true,
-                    "id": "egrljov",
+                    "id": "ek0r6d",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -773,7 +773,7 @@
                   }
                 ],
                 "clearOnHide": true,
-                "id": "ej0v60b",
+                "id": "ehd08gm",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -887,7 +887,7 @@
                               "height": ""
                             },
                             "type": "button",
-                            "custom": "date_string = moment().startOf('day').format('YYYY-MM-DDTHH:mm:ssZ');\r\n\r\nsample = {\r\n    \"VI\": true,\r\n    \"TwentyFourHour\": true,\r\n    \"TwelveHour\": false,\r\n    \"IRP\": false,\r\n    \"drivers_licence_jurisdiction\": {\r\n        \"value\": \"CA_BC\",\r\n        \"label\": \"BRITISH COLUMBIA\"\r\n    },\r\n    \"driver_last_name\": \"DEMO\",\r\n    \"driver_address\": \"121 WESTPARLK LN\",\r\n    \"driver_phone\": \"213-123-1231\",\r\n    \"driver_prov_state\": {\r\n        \"value\": \"CA_BC\",\r\n        \"label\": \"BRITISH COLUMBIA\"\r\n    },\r\n    \"driver_postal\": \"V9B3R7\",\r\n    \"gender\": {\r\n        \"label\": \"Male\",\r\n        \"value\": \"M\"\r\n    },\r\n    \"driver_licence_expiry\": \"2029-03-17T00:00:00-07:00\",\r\n    \"vehicle_plate_no\": \"AA649A\",\r\n    \"vehicle_jurisdiction\": {\r\n        \"value\": \"CA_BC\",\r\n        \"label\": \"BRITISH COLUMBIA\"\r\n    },\r\n    \"vehicle_registration_no\": \"10006389\",\r\n    \"vehicle_type\": {\r\n        \"value\": 1,\r\n        \"label\": \"PASSENGER\"\r\n    },\r\n    \"vehicle_year\": {\r\n        \"value\": \"1986\",\r\n        \"label\": \"1986\"\r\n    },\r\n    \"vehicle_mk_md\": {\r\n        \"value\": \"DODGE/RAM - B150\",\r\n        \"label\": \"DODGE/RAM - B150\"\r\n    },\r\n    \"vehicle_style\": {\r\n        \"value\": \"2DR\",\r\n        \"label\": \"2-DOOR SEDAN\"\r\n    },\r\n    \"vehicle_colour\": [\r\n        \"BLK\"\r\n    ],\r\n    \"vehicle_vin_no\": \"2B4GB11H7GK040231\",\r\n    \"nsc_prov_state\": {\r\n        \"value\": \"CA_BC\",\r\n        \"label\": \"BRITISH COLUMBIA\"\r\n    },\r\n    \"regist_owner_last_name\": \"LOCT-TEST\",\r\n    \"regist_owner_first_name\": \"REDIRECT-THREE\",\r\n    \"regist_owner_dob\": \"1980-01-01T08:00:00.000Z\",\r\n    \"regist_owner_address\": \"910 GOVERNMENT ST\",\r\n    \"regist_owner_city\": \"VICTORIA\",\r\n    \"regist_owner_prov_state\": {\r\n        \"value\": \"CA_BC\",\r\n        \"label\": \"BRITISH COLUMBIA\"\r\n    },\r\n    \"regist_owner_postal\": \"V8W1X3\",\r\n    \"vehicle_impounded\": \"YES\",\r\n    \"date_of_impound\": \"\",\r\n    \"locationOfKeys1\": \"WITH DRIVER\",\r\n    \"ILOOptions1\": {\r\n        \"value\": 214,\r\n        \"name\": \"5 STAR TOWING\",\r\n        \"lot_address\": \"733 2ND AVE\",\r\n        \"city\": \"PRINCE GEORGE\",\r\n        \"phone\": \"250-614-9393\",\r\n        \"label\": \"5 STAR TOWING, 733 2ND AVE, PRINCE GEORGE, 250-614-9393\"\r\n    },\r\n    \"ILOName1\": \"5 STAR TOWING\",\r\n    \"ILO-address\": \"733 2ND AVE\",\r\n    \"ILO-city\": \"PRINCE GEORGE\",\r\n    \"ILO-phone\": \"250-614-9393\",\r\n    \"location_of_keys\": \"WITH DRIVER\",\r\n    \"ILO-options\": {\r\n        \"label\": \"5 STAR TOWING, 733 2ND AVE, PRINCE GEORGE, 250-614-9393\",\r\n        \"value\": 214\r\n    },\r\n    \"ILO-name\": \"5 STAR TOWING\",\r\n    \"type_of_prohibition\": \"alcohol\",\r\n    \"intersection_or_address_of_offence\": \"DEMO ADDRESS\",\r\n    \"offence_city\": {\r\n        \"value\": \"OHMH\",\r\n        \"label\": \"100 MILE HOUSE\"\r\n    },\r\n    \"agency_file_no\": \"DEMO\",\r\n    \"irp_vi_number\": 229312081,\r\n    \"excessive_speed\": false,\r\n    \"prohibited\": true,\r\n    \"suspended\": false,\r\n    \"street_racing\": false,\r\n    \"stunt_driving\": false,\r\n    \"motorcycle_seating\": false,\r\n    \"unlicensed\": false,\r\n    \"linkage_location_of_keys\": false,\r\n    \"linkage_location_of_keys_explanation\": \"\",\r\n    \"linkage_driver_principal\": true,\r\n    \"linkage_owner_in_vehicle\": false,\r\n    \"linkage_owner_aware_possesion\": false,\r\n    \"linkage_vehicle_transfer_notice\": false,\r\n    \"linkage_other\": false,\r\n    \"witnessed_by_officer\": false,\r\n    \"admission_by_driver\": false,\r\n    \"independent_witness\": false,\r\n    \"reasonable_ground_other\": false,\r\n    \"prescribed_test_used\": \"NO\",\r\n    \"reason_for_not_using_prescribed_test\": \"refused\",\r\n    \"resonable_approved_instrument_used\": \"\",\r\n    \"reasonable_can_drive_drug\": false,\r\n    \"reasonable_can_drive_alcohol\": false,\r\n    \"incident_details\": \"ACCIDENT\",\r\n    \"officer-lastname\": \"RATHEESH\",\r\n    \"officer-prime-id\": \"RK2345\",\r\n    \"officer-agency\": \"BCHP Campbell River\",\r\n    \"nsc_no\": \"123\",\r\n    \"document_served\": \"\",\r\n    \"confirmation_of_service\": false,\r\n    \"confirmation_of_service_date\": \"2025-03-27T15:03:32-07:00\",\r\n    \"peace_officer_name\": \"RATHEESH, KUMAR\",\r\n    \"badge_number\": \"RK2345\",\r\n    \"enforcement_agency\": \"BCHP Campbell River\",\r\n    \"date_certified\": \"2025-03-27\",\r\n    \"requested_can_drive_drug\": false,\r\n    \"requested_can_drive_alcohol\": false,\r\n}\r\n\r\n// Create a merged data object\r\n// This will only override the keys that exist in sample\r\nconst mergedData = {\r\n  ...data,\r\n  ...sample\r\n};\r\n\r\nform.setValue({\r\n    data: mergedData\r\n}, {\r\n    // Optional flags\r\n    noValidate: true,  // Skip validation\r\n    modified: true,    // Mark as modified\r\n    fromSubmission: false, // Indicate this is from a submission\r\n    resetValue: false   // Reset the value completely\r\n});\r\nform.redraw()",
+                            "custom": "date_string = moment().startOf('day').format('YYYY-MM-DDTHH:mm:ssZ');\r\n\r\nsample = {\r\n    \"VI\": true,\r\n    \"TwentyFourHour\": true,\r\n    \"TwelveHour\": false,\r\n    \"IRP\": false,\r\n    \"drivers_licence_jurisdiction\": {\r\n        \"value\": \"CA_BC\",\r\n        \"label\": \"BRITISH COLUMBIA\"\r\n    },\r\n    \"driver_last_name\": \"DEMO\",\r\n    \"driver_address\": \"121 WESTPARLK LN\",\r\n    \"driver_phone\": \"213-123-1231\",\r\n    \"driver_prov_state\": {\r\n        \"value\": \"CA_BC\",\r\n        \"label\": \"BRITISH COLUMBIA\"\r\n    },\r\n    \"driver_postal\": \"V9B3R7\",\r\n    \"gender\": {\r\n        \"label\": \"Male\",\r\n        \"value\": \"M\"\r\n    },\r\n    \"driver_licence_expiry\": \"2029-03-17T00:00:00-07:00\",\r\n    \"vehicle_plate_no\": \"AA649A\",\r\n    \"vehicle_jurisdiction\": {\r\n        \"value\": \"CA_BC\",\r\n        \"label\": \"BRITISH COLUMBIA\"\r\n    },\r\n    \"vehicle_registration_no\": \"10006389\",\r\n    \"vehicle_type\": {\r\n        \"value\": 1,\r\n        \"label\": \"PASSENGER\"\r\n    },\r\n    \"vehicle_year\": {\r\n        \"value\": \"1986\",\r\n        \"label\": \"1986\"\r\n    },\r\n    \"vehicle_mk_md\": {\r\n        \"value\": \"ACAD-CANS\",\r\n        \"label\": \"ACAD-CANS\"\r\n    },\r\n    \"vehicle_style\": {\r\n        \"value\": \"2DR\",\r\n        \"label\": \"2-DOOR SEDAN\"\r\n    },\r\n    \"vehicle_colour\": [\r\n        \"BLK\"\r\n    ],\r\n    \"vehicle_vin_no\": \"2B4GB11H7GK040231\",\r\n    \"nsc_prov_state\": {\r\n        \"value\": \"CA_BC\",\r\n        \"label\": \"BRITISH COLUMBIA\"\r\n    },\r\n    \"regist_owner_last_name\": \"LOCT-TEST\",\r\n    \"regist_owner_first_name\": \"REDIRECT-THREE\",\r\n    \"regist_owner_dob\": \"1980-01-01T08:00:00.000Z\",\r\n    \"regist_owner_address\": \"910 GOVERNMENT ST\",\r\n    \"regist_owner_city\": \"VICTORIA\",\r\n    \"regist_owner_prov_state\": {\r\n        \"value\": \"CA_BC\",\r\n        \"label\": \"BRITISH COLUMBIA\"\r\n    },\r\n    \"regist_owner_postal\": \"V8W1X3\",\r\n    \"vehicle_impounded\": \"YES\",\r\n    \"date_of_impound\": \"\",\r\n    \"locationOfKeys1\": \"WITH DRIVER\",\r\n    \"ILOOptions1\": {\r\n        \"value\": 214,\r\n        \"name\": \"5 STAR TOWING\",\r\n        \"lot_address\": \"733 2ND AVE\",\r\n        \"city\": \"PRINCE GEORGE\",\r\n        \"phone\": \"250-614-9393\",\r\n        \"label\": \"5 STAR TOWING, 733 2ND AVE, PRINCE GEORGE, 250-614-9393\"\r\n    },\r\n    \"ILOName1\": \"5 STAR TOWING\",\r\n    \"ILO-address\": \"733 2ND AVE\",\r\n    \"ILO-city\": \"PRINCE GEORGE\",\r\n    \"ILO-phone\": \"250-614-9393\",\r\n    \"location_of_keys\": \"WITH DRIVER\",\r\n    \"ILO-options\": {\r\n        \"label\": \"5 STAR TOWING, 733 2ND AVE, PRINCE GEORGE, 250-614-9393\",\r\n        \"value\": 214\r\n    },\r\n    \"ILO-name\": \"5 STAR TOWING\",\r\n    \"type_of_prohibition\": \"alcohol\",\r\n    \"intersection_or_address_of_offence\": \"DEMO ADDRESS\",\r\n    \"offence_city\": {\r\n        \"value\": \"OHMH\",\r\n        \"label\": \"100 MILE HOUSE\"\r\n    },\r\n    \"agency_file_no\": \"DEMO\",\r\n    \"irp_vi_number\": 229312081,\r\n    \"excessive_speed\": false,\r\n    \"prohibited\": true,\r\n    \"suspended\": false,\r\n    \"street_racing\": false,\r\n    \"stunt_driving\": false,\r\n    \"motorcycle_seating\": false,\r\n    \"unlicensed\": false,\r\n    \"linkage_location_of_keys\": false,\r\n    \"linkage_location_of_keys_explanation\": \"\",\r\n    \"linkage_driver_principal\": true,\r\n    \"linkage_owner_in_vehicle\": false,\r\n    \"linkage_owner_aware_possesion\": false,\r\n    \"linkage_vehicle_transfer_notice\": false,\r\n    \"linkage_other\": false,\r\n    \"witnessed_by_officer\": false,\r\n    \"admission_by_driver\": false,\r\n    \"independent_witness\": false,\r\n    \"reasonable_ground_other\": false,\r\n    \"prescribed_test_used\": \"NO\",\r\n    \"reason_for_not_using_prescribed_test\": \"refused\",\r\n    \"resonable_approved_instrument_used\": \"\",\r\n    \"reasonable_can_drive_drug\": false,\r\n    \"reasonable_can_drive_alcohol\": false,\r\n    \"incident_details\": \"ACCIDENT\",\r\n    \"officer-lastname\": \"RATHEESH\",\r\n    \"officer-prime-id\": \"RK2345\",\r\n    \"officer-agency\": \"BCHP Campbell River\",\r\n    \"nsc_no\": \"123\",\r\n    \"document_served\": \"\",\r\n    \"confirmation_of_service\": false,\r\n    \"confirmation_of_service_date\": \"2025-03-27T15:03:32-07:00\",\r\n    \"peace_officer_name\": \"RATHEESH, KUMAR\",\r\n    \"badge_number\": \"RK2345\",\r\n    \"enforcement_agency\": \"BCHP Campbell River\",\r\n    \"date_certified\": \"2025-03-27\",\r\n    \"requested_can_drive_drug\": false,\r\n    \"requested_can_drive_alcohol\": false,\r\n}\r\n\r\n// Create a merged data object\r\n// This will only override the keys that exist in sample\r\nconst mergedData = {\r\n  ...data,\r\n  ...sample\r\n};\r\n\r\nform.setValue({\r\n    data: mergedData\r\n}, {\r\n    // Optional flags\r\n    noValidate: true,  // Skip validation\r\n    modified: true,    // Mark as modified\r\n    fromSubmission: false, // Indicate this is from a submission\r\n    resetValue: false   // Reset the value completely\r\n});\r\nform.redraw()",
                             "hideLabel": false,
                             "input": true,
                             "placeholder": "",
@@ -926,7 +926,7 @@
                             "showWordCount": false,
                             "allowMultipleMasks": false,
                             "addons": [],
-                            "id": "ep68nck"
+                            "id": "e16jktu"
                           }
                         ],
                         "width": 6,
@@ -950,7 +950,7 @@
                             "custom": "console.log(\"generate formids\")\r\nif (window.myFormModule) {\r\n        window.myFormModule.formRenderedSuccess = false;\r\n}\r\n\r\n// Function to insert user details into the user table\r\n// Function to insert user details into the user table with hardcoded values\r\nasync function insertUserDetails() {\r\n  try {\r\n    console.log(\"Inserting hardcoded user details...\");\r\n    \r\n    // Hardcoded user_guid from the example\r\n    const userGuid = \"CC1EF534334340E28D0E210D487EADC6\";\r\n    \r\n    // Open the database\r\n    const dbOpenRequest = indexedDB.open(\"digitalForms\");\r\n    \r\n    dbOpenRequest.onerror = (event) => {\r\n      console.error(\"Error opening database:\", event.target.error);\r\n    };\r\n    \r\n    dbOpenRequest.onsuccess = async (event) => {\r\n      const db = event.target.result;\r\n      console.log(\"Database opened successfully for user insertion\");\r\n      \r\n      // Check if the user already exists\r\n      const transaction = db.transaction(\"user\", \"readonly\");\r\n      const userStore = transaction.objectStore(\"user\");\r\n      const request = userStore.get(userGuid);\r\n      \r\n      request.onsuccess = (event) => {\r\n        const existingUser = event.target.result;\r\n        \r\n        if (existingUser) {\r\n          console.log(\"User already exists in the database\");\r\n          db.close();\r\n          return;\r\n        }\r\n        \r\n        // User doesn't exist, let's insert\r\n        const insertTransaction = db.transaction(\"user\", \"readwrite\");\r\n        const userStore = insertTransaction.objectStore(\"user\");\r\n        \r\n        // Create user object with hardcoded values based on the images shown\r\n        const userRecord = {\r\n          user_guid: \"CC1EF534334340E28D0E210D487EADC6\",\r\n          username: \"cc1ef534334340e28d0e210d487eadc6@idir\",\r\n          display_name: \"Kumar, Ratheesh PSSG:EX\",\r\n          first_name: \"KUMAR\",\r\n          last_name: \"RATHEESH\",\r\n          login: \"RATHKUM@idir\",\r\n          agency: \"BCHP Campbell River\",\r\n          badge_number: \"RK2345\",\r\n          last_active: \"Tue, 11 Mar 2025 18:59:01 GMT\"\r\n        };\r\n        \r\n        const insertRequest = userStore.add(userRecord);\r\n        \r\n        insertRequest.onsuccess = () => {\r\n          console.log(\"Successfully inserted hardcoded user record\");\r\n        };\r\n        \r\n        insertRequest.onerror = (event) => {\r\n          console.error(\"Error inserting user record:\", event.target.error);\r\n        };\r\n        \r\n        insertTransaction.oncomplete = () => {\r\n          console.log(\"User insertion transaction completed successfully\");\r\n          db.close();\r\n        };\r\n        \r\n        insertTransaction.onerror = (event) => {\r\n          console.error(\"User insertion transaction error:\", event.target.error);\r\n          db.close();\r\n        };\r\n      };\r\n      \r\n      request.onerror = (event) => {\r\n        console.error(\"Error checking for existing user:\", event.target.error);\r\n        db.close();\r\n      };\r\n    };\r\n    \r\n    dbOpenRequest.onupgradeneeded = (event) => {\r\n      const db = event.target.result;\r\n      \r\n      // Check if user store exists\r\n      if (!db.objectStoreNames.contains(\"user\")) {\r\n        console.log(\"Creating user object store\");\r\n        const userStore = db.createObjectStore(\"user\", { keyPath: \"user_guid\" });\r\n        userStore.createIndex(\"username\", \"username\", { unique: false });\r\n        userStore.createIndex(\"agency\", \"agency\", { unique: false });\r\n        userStore.createIndex(\"badge_number\", \"badge_number\", { unique: false });\r\n        userStore.createIndex(\"last_active\", \"last_active\", { unique: false });\r\n      }\r\n    };\r\n  } catch (error) {\r\n    console.error(\"Error in insertUserDetails:\", error);\r\n  }\r\n}\r\n\r\n\r\n/**\r\n * This is a script for temporary use by admin/designer when form IDs are not available in dev backend\r\n * It will only execute for users with the designer role and will only insert new form IDs if none are available\r\n */\r\n\r\n// Main function to check and insert records if needed\r\nasync function checkAndInsertFormIds() {\r\n  try {\r\n    // // First check if user has designer role\r\n    // const userDetails = JSON.parse(localStorage.getItem('USER_DETAILS') || '{}');\r\n    // const userGroups = userDetails.groups || [];\r\n    \r\n    // // Check if user has designer role\r\n    // const hasDesignerRole = userGroups.some(group => \r\n    //   group === \"/digitalforms/digitalform-designer\" || \r\n    //   group.includes(\"digitalform-designer\")\r\n    // );\r\n    \r\n    // if (!hasDesignerRole) {\r\n    //   console.warn(\"Script execution halted: User does not have designer role\");\r\n    //   return;\r\n    // }\r\n    \r\n    console.log(\"User has designer role. Proceeding with form ID check...\");\r\n    \r\n    // Define the form types\r\n    const formTypes = ['VI', '12Hour', '24Hour'];\r\n    \r\n    // Open the database\r\n    const dbOpenRequest = indexedDB.open(\"digitalForms\");\r\n    \r\n    dbOpenRequest.onerror = (event) => {\r\n      console.error(\"Error opening database:\", event.target.error);\r\n    };\r\n    \r\n    dbOpenRequest.onsuccess = async (event) => {\r\n      const db = event.target.result;\r\n      console.log(\"Database opened successfully\");\r\n      \r\n      let needToInsert = false;\r\n      const formTypesNeedingIds = [];\r\n      \r\n      // Check if each form type has available IDs\r\n      for (const formType of formTypes) {\r\n        const transaction = db.transaction(\"formID\", \"readonly\");\r\n        const formIDStore = transaction.objectStore(\"formID\");\r\n        \r\n        // Get all records for this form type\r\n        const index = formIDStore.index(\"form_type\");\r\n        const request = index.getAll(formType);\r\n        \r\n        await new Promise((resolve) => {\r\n          request.onsuccess = (event) => {\r\n            const forms = event.target.result;\r\n            const availableForms = forms.filter(form => form.leased === false);\r\n            \r\n            if (availableForms.length === 0) {\r\n              console.log(`No available forms for type ${formType}. Will need to insert new ones.`);\r\n              formTypesNeedingIds.push(formType);\r\n              needToInsert = true;\r\n            } else {\r\n              console.log(`Found ${availableForms.length} available forms for type ${formType}.`);\r\n            }\r\n            resolve();\r\n          };\r\n          \r\n          request.onerror = (event) => {\r\n            console.error(`Error checking forms for type ${formType}:`, event.target.error);\r\n            resolve();\r\n          };\r\n        });\r\n      }\r\n      \r\n      if (!needToInsert) {\r\n        console.log(\"All form types have available IDs. No insertion needed.\");\r\n        db.close();\r\n        return;\r\n      }\r\n      \r\n      console.log(`Need to insert IDs for form types: ${formTypesNeedingIds.join(', ')}`);\r\n      \r\n      // Start insertion for types that need it\r\n      const insertTransaction = db.transaction(\"formID\", \"readwrite\");\r\n      const formIDStore = insertTransaction.objectStore(\"formID\");\r\n      \r\n      let insertCounter = 0;\r\n      let errorCounter = 0;\r\n      const totalToInsert = formTypesNeedingIds.length * 5;\r\n      \r\n      formTypesNeedingIds.forEach(formType => {\r\n  for (let i = 0; i < 5; i++) {\r\n    const record = createFormIdRecord(formType);\r\n    const request = formIDStore.add(record);\r\n    \r\n    request.onsuccess = () => {\r\n      insertCounter++;\r\n      console.log(`Successfully inserted ${formType} record: ${record.id}`);\r\n      \r\n      // Check if all operations completed\r\n      if (insertCounter + errorCounter === totalToInsert) {\r\n        console.log(`Insertion complete. ${insertCounter} records inserted, ${errorCounter} errors.`);\r\n      }\r\n    };\r\n    \r\n    request.onerror = (event) => {\r\n      errorCounter++;\r\n      console.error(`Error inserting ${formType} record:`, event.target.error);\r\n      \r\n      // Check if all operations completed\r\n      if (insertCounter + errorCounter === totalToInsert) {\r\n        console.log(`Insertion complete. ${insertCounter} records inserted, ${errorCounter} errors.`);\r\n      }\r\n    };\r\n  }\r\n});\r\n      \r\n      insertTransaction.oncomplete = () => {\r\n        console.log(\"Transaction completed successfully\");\r\n        db.close();\r\n      };\r\n      \r\n      insertTransaction.onerror = (event) => {\r\n        console.error(\"Transaction error:\", event.target.error);\r\n        db.close();\r\n      };\r\n    };\r\n    \r\n    dbOpenRequest.onupgradeneeded = (event) => {\r\n      // This should only run if the database doesn't exist or is being upgraded\r\n      const db = event.target.result;\r\n      \r\n      // Check if formID store exists\r\n      if (!db.objectStoreNames.contains(\"formID\")) {\r\n        console.log(\"Creating formID object store\");\r\n        const formIDStore = db.createObjectStore(\"formID\", { keyPath: \"id\" });\r\n        formIDStore.createIndex(\"form_type\", \"form_type\", { unique: false });\r\n        formIDStore.createIndex(\"leased\", \"leased\", { unique: false });\r\n        formIDStore.createIndex(\"last_updated\", \"last_updated\", { unique: false });\r\n      }\r\n    };\r\n    \r\n  } catch (error) {\r\n    console.error(\"Error in checkAndInsertFormIds:\", error);\r\n  }\r\n}\r\n\r\n// Function to generate a random ID for a specific form type\r\nfunction generateFormId(formType) {\r\n  const randomNum = Math.floor(10000000 + Math.random() * 90000000); // 8-digit random number\r\n  return randomNum.toString()\r\n}\r\n\r\n// Function to create a form ID record\r\nfunction createFormIdRecord(formType) {\r\n  // Set expiry to a future date (30 days from now)\r\n  const expiryDate = new Date();\r\n  expiryDate.setDate(expiryDate.getDate() + 30);\r\n  \r\n  return {\r\n    id: generateFormId(formType),\r\n    form_type: formType,\r\n    leased: false,\r\n    lease_expiry: expiryDate.toUTCString(),\r\n    printed_timestamp: null,\r\n    spoiled_timestamp: null,\r\n    user_guid: null,\r\n    last_updated: new Date().toISOString()\r\n  };\r\n}\r\n\r\n// Execute the function\r\ncheckAndInsertFormIds().then(() => {\r\n    console.log(\"Form ID check and insertion script completed\");\r\n    return insertUserDetails();\r\n  })\r\n  .then(() => {\r\n  console.log(\"Form ID check and insertion script completed\");\r\n  instance.root.redraw()\r\n}).catch(error => {\r\n  console.error(\"Unhandled error in script:\", error);\r\n});",
                             "input": true,
                             "clearOnHide": true,
-                            "id": "eoc6grmh",
+                            "id": "eqowbjl",
                             "placeholder": "",
                             "prefix": "",
                             "customClass": "",
@@ -1027,7 +1027,7 @@
                     "type": "columns",
                     "input": false,
                     "tableView": false,
-                    "id": "ei1dhs",
+                    "id": "e54hbm",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -1172,7 +1172,7 @@
                             "showWordCount": false,
                             "allowMultipleMasks": false,
                             "addons": [],
-                            "id": "elqwlvi"
+                            "id": "eh0yr9l"
                           }
                         ],
                         "width": 10,
@@ -1197,7 +1197,7 @@
                     "type": "columns",
                     "input": false,
                     "tableView": false,
-                    "id": "ebwvlbm",
+                    "id": "e17h63",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -1265,7 +1265,7 @@
                     "input": true,
                     "tableView": false,
                     "clearOnHide": true,
-                    "id": "eqokcp4",
+                    "id": "eflpkhr",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -1333,7 +1333,7 @@
                     "input": true,
                     "tableView": false,
                     "clearOnHide": true,
-                    "id": "e7xw4jxh",
+                    "id": "e77buzd",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -1401,7 +1401,7 @@
                     "input": true,
                     "tableView": false,
                     "clearOnHide": true,
-                    "id": "e1ytfhh",
+                    "id": "ey1lwe",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -1553,7 +1553,7 @@
                                 "showWordCount": false,
                                 "allowMultipleMasks": false,
                                 "addons": [],
-                                "id": "ej494vb"
+                                "id": "evxzoat"
                               },
                               {
                                 "label": "24-hour Driving Prohibition",
@@ -1565,7 +1565,7 @@
                                 "type": "checkbox",
                                 "input": true,
                                 "clearOnHide": true,
-                                "id": "e34u6nl",
+                                "id": "ecjdq0r",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -1701,7 +1701,7 @@
                                 "showWordCount": false,
                                 "allowMultipleMasks": false,
                                 "addons": [],
-                                "id": "e84wveo"
+                                "id": "eda6iv7n"
                               },
                               {
                                 "label": "IRP",
@@ -1713,7 +1713,7 @@
                                 "key": "IRP",
                                 "type": "checkbox",
                                 "input": true,
-                                "id": "epl1tw",
+                                "id": "e52mew9",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -1796,7 +1796,7 @@
                                 "input": false,
                                 "tableView": false,
                                 "clearOnHide": true,
-                                "id": "eh4okt6",
+                                "id": "ex7h6bm",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -1863,7 +1863,7 @@
                                 "input": false,
                                 "tableView": false,
                                 "clearOnHide": true,
-                                "id": "ekdraio",
+                                "id": "eyxd0b4",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -1930,7 +1930,7 @@
                                 "input": false,
                                 "tableView": false,
                                 "clearOnHide": true,
-                                "id": "ela0wtn",
+                                "id": "epq1la3",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -1992,7 +1992,7 @@
                                 "input": true,
                                 "tableView": false,
                                 "clearOnHide": true,
-                                "id": "ez3ef5",
+                                "id": "e7dkmln",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -2064,7 +2064,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "e3ts9kj",
+                        "id": "e7m2opp",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -2145,7 +2145,7 @@
                         "input": false,
                         "tableView": false,
                         "clearOnHide": true,
-                        "id": "el0x1ec",
+                        "id": "ekee1iq",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -2204,7 +2204,7 @@
                       }
                     ],
                     "keyModified": true,
-                    "id": "eozk42n",
+                    "id": "eea079",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -2368,7 +2368,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "ec5h02",
+                                "id": "e66p3hv",
                                 "defaultValue": ""
                               }
                             ],
@@ -2716,7 +2716,7 @@
                                 "protected": false,
                                 "dbIndex": false,
                                 "encrypted": false,
-                                "clearOnHide": true,
+                                "clearOnHide": false,
                                 "customDefaultValue": "",
                                 "calculateValue": "",
                                 "calculateServer": false,
@@ -2783,7 +2783,7 @@
                                   "include": "score",
                                   "threshold": 0.3
                                 },
-                                "id": "e5pu2gq"
+                                "id": "e8j3ce"
                               }
                             ],
                             "width": 6,
@@ -2799,7 +2799,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "ebkt2t",
+                        "id": "emywp1k",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -2950,7 +2950,7 @@
                                         "showWordCount": false,
                                         "allowMultipleMasks": false,
                                         "addons": [],
-                                        "id": "elbsknq"
+                                        "id": "er1jvd7"
                                       }
                                     ],
                                     "offset": 0,
@@ -3043,7 +3043,7 @@
                                         "showWordCount": false,
                                         "allowMultipleMasks": false,
                                         "addons": [],
-                                        "id": "em6vpzq"
+                                        "id": "emi3gk"
                                       }
                                     ],
                                     "width": 6,
@@ -3058,7 +3058,7 @@
                                 "type": "columns",
                                 "input": false,
                                 "tableView": false,
-                                "id": "etebo1",
+                                "id": "ea6rdk4",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -3142,7 +3142,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "e9gxwaa",
+                        "id": "egm4tgg",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -3295,7 +3295,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "eict5vj",
+                                "id": "ex5s7lg",
                                 "defaultValue": ""
                               }
                             ],
@@ -3394,7 +3394,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "edk5fex",
+                                "id": "emswhno",
                                 "defaultValue": ""
                               }
                             ],
@@ -3534,7 +3534,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "ewepcw"
+                                "id": "ed5rlp"
                               }
                             ],
                             "size": "md",
@@ -3547,7 +3547,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "e6mbn7a",
+                        "id": "e1hxhef",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -3699,7 +3699,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "e3epls",
+                                "id": "emess6b",
                                 "defaultValue": ""
                               }
                             ],
@@ -3800,7 +3800,7 @@
                                 "addons": [],
                                 "inputType": "tel",
                                 "inputMode": "decimal",
-                                "id": "eplymyo",
+                                "id": "e13nj5d",
                                 "defaultValue": null
                               }
                             ],
@@ -3817,7 +3817,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "eaoasx9",
+                        "id": "ejtiy8i",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -3969,7 +3969,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "e9h0c0a",
+                                "id": "e01sy6p",
                                 "defaultValue": ""
                               }
                             ],
@@ -4317,7 +4317,7 @@
                                 "protected": false,
                                 "dbIndex": false,
                                 "encrypted": false,
-                                "clearOnHide": true,
+                                "clearOnHide": false,
                                 "customDefaultValue": "",
                                 "calculateValue": "",
                                 "calculateServer": false,
@@ -4384,7 +4384,7 @@
                                   "include": "score",
                                   "threshold": 0.3
                                 },
-                                "id": "euj4njl"
+                                "id": "e5b0gtm"
                               }
                             ],
                             "width": 4,
@@ -4482,7 +4482,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "ebilzul",
+                                "id": "etzz9i",
                                 "defaultValue": ""
                               }
                             ],
@@ -4496,7 +4496,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "ecnh1x",
+                        "id": "eq3lu97",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -4603,7 +4603,7 @@
                                 "type": "select",
                                 "input": true,
                                 "clearOnHide": true,
-                                "id": "e3j8jdo",
+                                "id": "eyna8cm",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -4824,7 +4824,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "ewc2tot"
+                                "id": "essmp28"
                               }
                             ],
                             "width": 4,
@@ -4922,7 +4922,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "e7hxt88",
+                                "id": "edrxtfh",
                                 "defaultValue": ""
                               }
                             ],
@@ -4936,7 +4936,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "eprxz68",
+                        "id": "edqmipj",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -4999,7 +4999,7 @@
                       }
                     ],
                     "keyModified": true,
-                    "id": "eh28bim",
+                    "id": "etiawyi",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -5163,7 +5163,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "e90ozqj",
+                                "id": "esc8wv",
                                 "defaultValue": ""
                               },
                               {
@@ -5246,7 +5246,7 @@
                                 "showWordCount": false,
                                 "allowMultipleMasks": false,
                                 "addons": [],
-                                "id": "e6wnl22"
+                                "id": "es31zm"
                               }
                             ],
                             "width": 6,
@@ -5593,7 +5593,7 @@
                                 "protected": false,
                                 "dbIndex": false,
                                 "encrypted": false,
-                                "clearOnHide": true,
+                                "clearOnHide": false,
                                 "customDefaultValue": "",
                                 "calculateValue": "",
                                 "calculateServer": false,
@@ -5660,7 +5660,7 @@
                                   "include": "score",
                                   "threshold": 0.3
                                 },
-                                "id": "eil2rf"
+                                "id": "ecoywx"
                               }
                             ],
                             "width": 6,
@@ -5740,7 +5740,7 @@
                         "addons": [],
                         "tree": false,
                         "lazyLoad": false,
-                        "id": "eqb9w39"
+                        "id": "e8ljt4e"
                       },
                       {
                         "label": "Columns",
@@ -5833,7 +5833,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "e6tfr5",
+                                "id": "ew54val",
                                 "defaultValue": ""
                               }
                             ],
@@ -5868,7 +5868,7 @@
                                 "type": "select",
                                 "input": true,
                                 "clearOnHide": true,
-                                "id": "eykvmbl",
+                                "id": "ev6go9j",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -5993,7 +5993,7 @@
                                 "type": "select",
                                 "input": true,
                                 "clearOnHide": true,
-                                "id": "ewjyfp",
+                                "id": "efankwl",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -6079,7 +6079,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "e4olchs",
+                        "id": "ejiccmp",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -6261,7 +6261,7 @@
                                   "include": "score",
                                   "threshold": 0.3
                                 },
-                                "id": "eabh38t",
+                                "id": "eycijdg",
                                 "defaultValue": {}
                               }
                             ],
@@ -6389,7 +6389,7 @@
                                   "include": "score",
                                   "threshold": 0.3
                                 },
-                                "id": "eo3oia",
+                                "id": "ea8p65v",
                                 "defaultValue": {}
                               }
                             ],
@@ -6515,7 +6515,7 @@
                                   "include": "score",
                                   "threshold": 0.3
                                 },
-                                "id": "esf7ps",
+                                "id": "eccl7h",
                                 "defaultValue": []
                               }
                             ],
@@ -6529,7 +6529,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "e72z8q2i",
+                        "id": "ec6h4c",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -6681,7 +6681,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "eetukyo",
+                                "id": "eyj5ss",
                                 "defaultValue": ""
                               }
                             ],
@@ -6807,7 +6807,7 @@
                                   "include": "score",
                                   "threshold": 0.3
                                 },
-                                "id": "e22j653",
+                                "id": "ek33gqj",
                                 "defaultValue": {}
                               }
                             ],
@@ -6906,7 +6906,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "ecrqwdb",
+                                "id": "e8h3ilr",
                                 "defaultValue": ""
                               },
                               {
@@ -6978,7 +6978,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "inputType": "hidden",
-                                "id": "ehz581g"
+                                "id": "evfqwkv"
                               }
                             ],
                             "size": "md",
@@ -6990,7 +6990,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "ewwj0v",
+                        "id": "efavvp",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -7054,7 +7054,7 @@
                       }
                     ],
                     "keyModified": true,
-                    "id": "e54p8ho",
+                    "id": "e2j6vll",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -7142,7 +7142,7 @@
                                 "input": true,
                                 "defaultValue": false,
                                 "clearOnHide": true,
-                                "id": "etv4nwh",
+                                "id": "e37zcld",
                                 "placeholder": "",
                                 "prefix": "",
                                 "suffix": "",
@@ -7222,7 +7222,7 @@
                                 "type": "checkbox",
                                 "input": true,
                                 "clearOnHide": true,
-                                "id": "ec3qw6a",
+                                "id": "e3nw5is",
                                 "placeholder": "",
                                 "prefix": "",
                                 "suffix": "",
@@ -7303,7 +7303,7 @@
                                 "custom": "if (data) {\n  console.log(\"Filling data from driver insformation\")\n  data['regist_owner_last_name'] = data?.driver_last_name;\n  data['regist_owner_first_name'] = data?.driver_given_name;\n  data['regist_owner_address'] = data?.driver_address;\n  data['regist_owner_dob'] = data?.driver_dob;\n  data['regist_owner_phone'] = data?.driver_phone;\n  data['regist_owner_city'] = data?.driver_city;\n  data['regist_owner_postal'] = data?.driver_postal;\n  data['regist_owner_prov_state'] = data?.driver_prov_state;\n  registeredOwnerPanel = instance.root.getComponent(\"registeredOwnerPanel\")\n  registeredOwnerPanel.redraw()\n}",
                                 "input": true,
                                 "clearOnHide": true,
-                                "id": "en5qrkj",
+                                "id": "enh3p9c",
                                 "placeholder": "",
                                 "prefix": "",
                                 "suffix": "",
@@ -7377,7 +7377,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "efhx71l",
+                        "id": "e707yf",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -7525,7 +7525,7 @@
                         "refreshOn": "",
                         "addons": [],
                         "inputType": "text",
-                        "id": "e2ms6bl",
+                        "id": "e1jmpxmr",
                         "defaultValue": ""
                       },
                       {
@@ -7619,7 +7619,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "ecgpyus",
+                                "id": "e7pbtyg",
                                 "defaultValue": null
                               }
                             ],
@@ -7718,7 +7718,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "erer05g",
+                                "id": "eljmeiq",
                                 "defaultValue": null
                               }
                             ],
@@ -7858,7 +7858,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "e2twxg5"
+                                "id": "e92f63n"
                               }
                             ],
                             "size": "md",
@@ -7935,7 +7935,7 @@
                         "addons": [],
                         "tree": false,
                         "lazyLoad": false,
-                        "id": "ehvl6db"
+                        "id": "eq8bog"
                       },
                       {
                         "label": "Columns",
@@ -7955,7 +7955,7 @@
                                 "key": "regist_owner_address",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "emcl8mi",
+                                "id": "e4ifgbv",
                                 "placeholder": "",
                                 "prefix": "",
                                 "suffix": "",
@@ -8120,7 +8120,7 @@
                                 "addons": [],
                                 "inputType": "tel",
                                 "inputMode": "decimal",
-                                "id": "epyz4fg",
+                                "id": "euaa69",
                                 "inputMaskPlaceholderChar": "#",
                                 "defaultValue": ""
                               }
@@ -8223,7 +8223,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "e5kfhyq",
+                                "id": "e9n30a",
                                 "defaultValue": null
                               }
                             ],
@@ -8301,7 +8301,7 @@
                         "addons": [],
                         "tree": false,
                         "lazyLoad": false,
-                        "id": "edgovi"
+                        "id": "en2advr"
                       },
                       {
                         "label": "Columns",
@@ -8321,7 +8321,7 @@
                                 "key": "regist_owner_city",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "ehwx1fo",
+                                "id": "e9kioo",
                                 "placeholder": "",
                                 "prefix": "",
                                 "suffix": "",
@@ -8401,109 +8401,122 @@
                             "components": [
                               {
                                 "label": "Province / State",
+                                "labelPosition": "top",
                                 "widget": "choicesjs",
+                                "placeholder": "",
+                                "description": "",
+                                "tooltip": "",
                                 "customClass": "field-height field-width",
+                                "tabindex": "",
+                                "hidden": false,
+                                "hideLabel": false,
+                                "uniqueOptions": false,
+                                "autofocus": false,
+                                "disabled": false,
                                 "tableView": true,
+                                "modalEdit": false,
+                                "multiple": false,
                                 "dataSrc": "custom",
                                 "data": {
-                                  "custom": "values = window.fetchStaticDataFromTable(\"provinces\").then((items) => {\r\n  console.log(\"Actual Data:\", JSON.stringify(items));\r\n  \r\n  return items.map(item => ({\r\n    value: item.objectCd,\r\n    label: item.objectDsc\r\n  }));\r\n}).catch((error) => {\r\n  console.error(\"Error fetching data:\", error);\r\n  return [];\r\n});\r\n\r\nvalues = Promise.resolve(values);",
                                   "values": [
                                     {
                                       "label": "",
                                       "value": ""
                                     }
                                   ],
-                                  "json": "",
+                                  "resource": "",
                                   "url": "",
-                                  "resource": ""
+                                  "json": "",
+                                  "custom": "values = window.fetchStaticDataFromTable(\"provinces\").then((items) => {\r\n  console.log(\"Actual Data:\", JSON.stringify(items));\r\n  \r\n  return items.map(item => ({\r\n    value: item.objectCd,\r\n    label: item.objectDsc\r\n  }));\r\n}).catch((error) => {\r\n  console.error(\"Error fetching data:\", error);\r\n  return [];\r\n});\r\n\r\nvalues = Promise.resolve(values);"
                                 },
+                                "dataType": "",
+                                "idPath": "id",
+                                "valueProperty": "",
                                 "template": "<span>{{ item.label }}</span><span style=\"display: none;\">{{ item.value }}</span>",
                                 "refreshOn": "fillFromDriver",
-                                "validateWhenHidden": false,
-                                "key": "regist_owner_prov_state",
-                                "type": "select",
-                                "input": true,
-                                "id": "ecmb9q",
-                                "placeholder": "",
-                                "prefix": "",
-                                "suffix": "",
-                                "multiple": false,
-                                "defaultValue": null,
-                                "protected": false,
-                                "unique": false,
+                                "refreshOnBlur": "",
+                                "clearOnRefresh": false,
+                                "searchEnabled": true,
+                                "selectThreshold": 0.3,
+                                "readOnlyValue": false,
+                                "customOptions": {},
+                                "useExactSearch": false,
                                 "persistent": true,
-                                "hidden": false,
-                                "clearOnHide": true,
-                                "redrawOn": "",
-                                "modalEdit": false,
-                                "dataGridLabel": false,
-                                "labelPosition": "top",
-                                "description": "",
-                                "errorLabel": "",
-                                "tooltip": "",
-                                "hideLabel": false,
-                                "tabindex": "",
-                                "disabled": false,
-                                "autofocus": false,
+                                "protected": false,
                                 "dbIndex": false,
+                                "encrypted": false,
+                                "clearOnHide": false,
                                 "customDefaultValue": "",
                                 "calculateValue": "",
                                 "calculateServer": false,
-                                "attributes": {},
+                                "allowCalculateOverride": false,
                                 "validateOn": "change",
                                 "validate": {
                                   "required": false,
+                                  "onlyAvailableItems": false,
+                                  "customMessage": "",
                                   "custom": "",
                                   "customPrivate": false,
+                                  "json": "",
                                   "strictDateValidation": false,
                                   "multiple": false,
-                                  "unique": false,
-                                  "onlyAvailableItems": false
+                                  "unique": false
                                 },
+                                "unique": false,
+                                "validateWhenHidden": false,
+                                "errorLabel": "",
+                                "errors": "",
+                                "key": "regist_owner_prov_state",
+                                "tags": [],
+                                "properties": {},
                                 "conditional": {
                                   "show": null,
                                   "when": null,
-                                  "eq": ""
+                                  "eq": "",
+                                  "json": ""
                                 },
+                                "customConditional": "",
+                                "logic": [],
+                                "attributes": {},
                                 "overlay": {
                                   "style": "",
+                                  "page": "",
                                   "left": "",
                                   "top": "",
                                   "width": "",
                                   "height": ""
                                 },
-                                "allowCalculateOverride": false,
-                                "encrypted": false,
-                                "showCharCount": false,
-                                "showWordCount": false,
-                                "properties": {},
-                                "allowMultipleMasks": false,
-                                "addons": [],
+                                "type": "select",
+                                "indexeddb": {
+                                  "filter": {}
+                                },
+                                "dataGridLabel": false,
+                                "lazyLoad": true,
+                                "selectFields": "",
+                                "searchField": "",
+                                "searchDebounce": 0.3,
+                                "minSearch": 0,
+                                "filter": "",
+                                "limit": 100,
                                 "authenticate": false,
                                 "ignoreCache": false,
-                                "idPath": "id",
-                                "clearOnRefresh": false,
-                                "limit": 100,
-                                "valueProperty": "",
-                                "lazyLoad": true,
-                                "filter": "",
-                                "searchEnabled": true,
-                                "searchDebounce": 0.3,
-                                "searchField": "",
-                                "minSearch": 0,
-                                "readOnlyValue": false,
-                                "selectFields": "",
-                                "selectThreshold": 0.3,
-                                "uniqueOptions": false,
+                                "redrawOn": "",
+                                "input": true,
+                                "prefix": "",
+                                "suffix": "",
+                                "showCharCount": false,
+                                "showWordCount": false,
+                                "allowMultipleMasks": false,
+                                "addons": [],
                                 "fuseOptions": {
                                   "include": "score",
                                   "threshold": 0.3
                                 },
-                                "indexeddb": {
-                                  "filter": {}
-                                },
-                                "customOptions": {},
-                                "useExactSearch": false
+                                "id": "ekcywq",
+                                "defaultValue": {
+                                  "value": "CA_BC",
+                                  "label": "BRITISH COLUMBIA"
+                                }
                               }
                             ],
                             "width": 4,
@@ -8528,7 +8541,7 @@
                                 "key": "regist_owner_postal",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "ehw5584",
+                                "id": "esowlkh",
                                 "placeholder": "",
                                 "prefix": "",
                                 "suffix": "",
@@ -8606,7 +8619,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "e8f7l29",
+                        "id": "ekf2dg",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -8669,7 +8682,7 @@
                         "autoAdjust": false
                       }
                     ],
-                    "id": "eugrvah",
+                    "id": "ebrk14",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -8765,7 +8778,7 @@
                         "customConditional": "show = !data?.VI;\n\n// if this is hidden and VI selected , then set it yo YES\nif(data.VI && !show){\n  instance.setValue(\"YES\")\n}",
                         "type": "radio",
                         "input": true,
-                        "id": "eunkt5d",
+                        "id": "efyctnb",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -8965,7 +8978,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "ebrjvwm"
+                                "id": "e9jpf3p"
                               }
                             ],
                             "width": 4,
@@ -8995,7 +9008,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "eddwwdj",
+                        "id": "e0fjux",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -9089,7 +9102,7 @@
                         "customConditional": "show = (data?.TwentyFourHour || data?.TwelveHour) && data?.vehicle_impounded === \"YES\"",
                         "type": "radio",
                         "input": true,
-                        "id": "eaygl7p",
+                        "id": "eyiyguo",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -9269,7 +9282,7 @@
                               "include": "score",
                               "threshold": 0.3
                             },
-                            "id": "etot4z",
+                            "id": "ekotmsm",
                             "defaultValue": {}
                           },
                           {
@@ -9296,7 +9309,7 @@
                             "key": "ILOName1",
                             "type": "textfield",
                             "input": true,
-                            "id": "eraj01",
+                            "id": "e7r8vkb",
                             "placeholder": "",
                             "prefix": "",
                             "customClass": "",
@@ -9382,7 +9395,7 @@
                                     "key": "ILO-address",
                                     "type": "textfield",
                                     "input": true,
-                                    "id": "exn7j2r",
+                                    "id": "ed5f1l5",
                                     "placeholder": "",
                                     "prefix": "",
                                     "customClass": "",
@@ -9473,7 +9486,7 @@
                                     "key": "ILO-city",
                                     "type": "textfield",
                                     "input": true,
-                                    "id": "eltnk5h",
+                                    "id": "e5ncek",
                                     "placeholder": "",
                                     "prefix": "",
                                     "customClass": "",
@@ -9627,7 +9640,7 @@
                                     "addons": [],
                                     "inputType": "tel",
                                     "inputMode": "decimal",
-                                    "id": "ep28ayr",
+                                    "id": "e2hgcgru",
                                     "inputMaskPlaceholderChar": "#",
                                     "defaultValue": ""
                                   }
@@ -9641,7 +9654,7 @@
                             "type": "columns",
                             "input": false,
                             "tableView": false,
-                            "id": "ev2nppb",
+                            "id": "eb5me6y",
                             "placeholder": "",
                             "prefix": "",
                             "customClass": "",
@@ -9705,7 +9718,7 @@
                           }
                         ],
                         "clearOnHide": true,
-                        "id": "e8qjpem",
+                        "id": "eethe",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -9873,7 +9886,7 @@
                         "addons": [],
                         "inputType": "radio",
                         "fieldSet": false,
-                        "id": "e1gjwwr",
+                        "id": "eqlxfoo",
                         "defaultValue": ""
                       },
                       {
@@ -9910,7 +9923,7 @@
                                 },
                                 "type": "textfield",
                                 "input": true,
-                                "id": "emcy4e5",
+                                "id": "eagtwik",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -10100,7 +10113,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "e1fr34"
+                                "id": "e9gjdh"
                               }
                             ],
                             "width": 4,
@@ -10116,7 +10129,7 @@
                                 "label": "Time",
                                 "labelPosition": "top",
                                 "placeholder": "",
-                                "description": "",
+                                "description": "PACIFIC TIME in 24-hour clock",
                                 "tooltip": "",
                                 "prefix": "",
                                 "suffix": "",
@@ -10198,7 +10211,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "ece8bnj",
+                                "id": "en4akx",
                                 "inputMaskPlaceholderChar": "",
                                 "defaultValue": ""
                               }
@@ -10212,7 +10225,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "ejinei",
+                        "id": "ekdlfm9",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -10276,7 +10289,7 @@
                       }
                     ],
                     "keyModified": true,
-                    "id": "ef8ts2",
+                    "id": "e397dm",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -10375,7 +10388,7 @@
                     "input": true,
                     "tableView": false,
                     "clearOnHide": true,
-                    "id": "eufq8og",
+                    "id": "e2jt1u2",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -10535,7 +10548,7 @@
                     "allowMultipleMasks": false,
                     "addons": [],
                     "inputType": "hidden",
-                    "id": "educ2mu"
+                    "id": "euj13p"
                   },
                   {
                     "label": "time_released",
@@ -10634,7 +10647,7 @@
                     "allowMultipleMasks": false,
                     "addons": [],
                     "inputType": "hidden",
-                    "id": "e9hrx5m"
+                    "id": "etyg0cv"
                   },
                   {
                     "label": "location_of_keys",
@@ -10678,7 +10691,7 @@
                     "input": true,
                     "tableView": false,
                     "clearOnHide": true,
-                    "id": "eye2cak",
+                    "id": "e4xg4i",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -10747,7 +10760,7 @@
                     "input": true,
                     "tableView": false,
                     "clearOnHide": true,
-                    "id": "esv1ftd",
+                    "id": "e5cus8",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -10843,7 +10856,7 @@
                     "input": true,
                     "tableView": false,
                     "clearOnHide": true,
-                    "id": "e4luzzk",
+                    "id": "eeqv4po",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -10941,7 +10954,7 @@
                         "type": "radio",
                         "input": true,
                         "clearOnHide": true,
-                        "id": "eklpv9p",
+                        "id": "e8irnom",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -11040,7 +11053,7 @@
                         "customConditional": "show = (data?.vehicle_location === \"roadside\" || data?.vehicle_location === \"private\")",
                         "type": "radio",
                         "input": true,
-                        "id": "eetcyh",
+                        "id": "eh9tw68",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -11126,7 +11139,7 @@
                         "type": "select",
                         "input": true,
                         "keyModified": true,
-                        "id": "ec2cq3ij",
+                        "id": "e5fa2yl",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -11238,7 +11251,7 @@
                         "customConditional": "show = (data?.vehicle_location === \"private\")",
                         "type": "textfield",
                         "input": true,
-                        "id": "e1xve0s",
+                        "id": "echnr1p",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -11322,7 +11335,7 @@
                                 "customConditional": "show = (data?.vehicle_location === \"released\")",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "e2ennaa",
+                                "id": "eahmhr",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -11515,7 +11528,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "e52q3m8"
+                                "id": "ey6au"
                               }
                             ],
                             "width": 4,
@@ -11531,7 +11544,7 @@
                                 "label": "Time",
                                 "labelPosition": "top",
                                 "placeholder": "",
-                                "description": "",
+                                "description": "PACIFIC TIME in 24-hour clock",
                                 "tooltip": "",
                                 "prefix": "",
                                 "suffix": "",
@@ -11617,7 +11630,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "ekzvhn8",
+                                "id": "e9nrrcf",
                                 "inputMaskPlaceholderChar": "",
                                 "defaultValue": ""
                               }
@@ -11632,7 +11645,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "ebzggqe",
+                        "id": "e8hkl1",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -11694,7 +11707,7 @@
                         "lazyLoad": false
                       }
                     ],
-                    "id": "ejylij",
+                    "id": "ezauo1",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -11892,7 +11905,7 @@
                         "addons": [],
                         "inputType": "radio",
                         "fieldSet": false,
-                        "id": "ejgtljp",
+                        "id": "e75trp",
                         "defaultValue": ""
                       },
                       {
@@ -11923,7 +11936,7 @@
                                 "key": "intersection_or_address_of_offence",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "e3j59n",
+                                "id": "e74dhw",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -12022,7 +12035,7 @@
                                 "type": "select",
                                 "input": true,
                                 "clearOnHide": true,
-                                "id": "eb5tfe",
+                                "id": "e07nxgr",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -12110,7 +12123,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "ebi2tao",
+                        "id": "ein1oh",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -12200,7 +12213,7 @@
                                 "key": "agency_file_no",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "ea4ma4",
+                                "id": "eodu1bf",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -12321,7 +12334,7 @@
                                   "disableWeekdays": false,
                                   "maxDate": "moment().tz('America/Vancouver').format('YYYY-MM-DD')"
                                 },
-                                "id": "emcu7tf",
+                                "id": "e0xbvy",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -12398,7 +12411,7 @@
                                 "label": "Time of Driving - care or control",
                                 "labelPosition": "top",
                                 "placeholder": "",
-                                "description": "",
+                                "description": "PACIFIC TIME in 24-hour clock",
                                 "tooltip": "",
                                 "prefix": "",
                                 "suffix": "",
@@ -12480,7 +12493,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "e4c6ozi",
+                                "id": "e965omq",
                                 "inputMaskPlaceholderChar": "",
                                 "defaultValue": ""
                               }
@@ -12494,7 +12507,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "errzhmb",
+                        "id": "ew4si3b",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -12594,7 +12607,7 @@
                     "addons": [],
                     "tree": false,
                     "lazyLoad": false,
-                    "id": "exle6w"
+                    "id": "enpfctr"
                   },
                   {
                     "title": "Impoundment for Immediate Roadside Prohibition",
@@ -12638,7 +12651,7 @@
                         "key": "irp_impound",
                         "type": "radio",
                         "input": true,
-                        "id": "ebtqexs",
+                        "id": "eq04bdl",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -12735,7 +12748,7 @@
                           "eq": "YES"
                         },
                         "clearOnHide": true,
-                        "id": "eeezqyd",
+                        "id": "e2batch",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -12810,7 +12823,7 @@
                         "input": false,
                         "tableView": false,
                         "clearOnHide": true,
-                        "id": "ec7ootm",
+                        "id": "e8etf9m",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -12885,7 +12898,7 @@
                         "input": false,
                         "tableView": false,
                         "clearOnHide": true,
-                        "id": "ek29gte",
+                        "id": "ee9flp6",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13017,7 +13030,7 @@
                         "showWordCount": false,
                         "allowMultipleMasks": false,
                         "addons": [],
-                        "id": "e2dtcls"
+                        "id": "eh30jyw"
                       },
                       {
                         "label": "impounded for 30 days",
@@ -13097,7 +13110,7 @@
                         "showWordCount": false,
                         "allowMultipleMasks": false,
                         "addons": [],
-                        "id": "eifwxm"
+                        "id": "e3hjw6"
                       },
                       {
                         "label": "IRP Number",
@@ -13127,7 +13140,7 @@
                         },
                         "type": "textfield",
                         "input": true,
-                        "id": "ejm33kh",
+                        "id": "ep9z49gd",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13209,7 +13222,7 @@
                         },
                         "type": "textfield",
                         "input": true,
-                        "id": "exytnwl",
+                        "id": "e5ok51r",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13261,7 +13274,7 @@
                         "truncateMultipleSpaces": false
                       }
                     ],
-                    "id": "eyh9dwp",
+                    "id": "elsbr4",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -13349,7 +13362,7 @@
                         "input": false,
                         "tableView": false,
                         "clearOnHide": true,
-                        "id": "eligvxd",
+                        "id": "ec5fjxm7",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13422,7 +13435,7 @@
                           "customAction": "(function() { if (!this.value) { data.speed_limit = null; data.vehicle_speed = null; data.speed_estimation_technique = ''; data.speed_confirmation_technique = ''; } })"
                         },
                         "clearOnHide": true,
-                        "id": "euj15q5",
+                        "id": "e1fd3eg",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13491,7 +13504,7 @@
                         "input": true,
                         "defaultValue": false,
                         "clearOnHide": true,
-                        "id": "e7bh6c8",
+                        "id": "e6jzh5j",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13560,7 +13573,7 @@
                         "input": true,
                         "defaultValue": false,
                         "clearOnHide": true,
-                        "id": "eplpyz",
+                        "id": "ewhzp7j",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13629,7 +13642,7 @@
                         "input": true,
                         "defaultValue": false,
                         "clearOnHide": true,
-                        "id": "emr0ogl",
+                        "id": "eo9i0ks",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13698,7 +13711,7 @@
                         "input": true,
                         "defaultValue": false,
                         "clearOnHide": true,
-                        "id": "e6uwefr",
+                        "id": "enfofu2",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13767,7 +13780,7 @@
                         "input": true,
                         "defaultValue": false,
                         "clearOnHide": true,
-                        "id": "ep10fji",
+                        "id": "e09qppm",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13848,7 +13861,7 @@
                           "event": "change",
                           "customAction": "(function() { if (!this.value) { data.unlicenced_prohibition_number = ''; data.belief_driver_bc_resident = ''; data.out_of_province_dl = ''; data.out_of_province_dl_number = ''; data.out_of_province_dl_jurisdiction = null; data.out_of_province_dl_expiry = null; } })"
                         },
-                        "id": "eybjw19",
+                        "id": "ebc15xk",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -13968,10 +13981,10 @@
                         "allowMultipleMasks": false,
                         "addons": [],
                         "inputType": "hidden",
-                        "id": "evd9j2"
+                        "id": "eub9vlo"
                       }
                     ],
-                    "id": "e27edaq",
+                    "id": "elns5c9",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -14077,7 +14090,7 @@
                                 "type": "number",
                                 "spellcheck": false,
                                 "input": true,
-                                "id": "emgair4",
+                                "id": "e2l3uipa",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -14167,7 +14180,7 @@
                                 "type": "number",
                                 "spellcheck": false,
                                 "input": true,
-                                "id": "ehtjwiu",
+                                "id": "eqnjdm",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -14232,7 +14245,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "ejchkb",
+                        "id": "eyswtwa",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -14325,7 +14338,7 @@
                         "key": "speed_estimation_technique",
                         "type": "radio",
                         "input": true,
-                        "id": "ephni4e",
+                        "id": "e97mey",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -14420,7 +14433,7 @@
                         "key": "speed_confirmation_technique",
                         "type": "radio",
                         "input": true,
-                        "id": "e3cep4",
+                        "id": "edatxx",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -14480,7 +14493,7 @@
                         "fieldSet": false
                       }
                     ],
-                    "id": "ensv7ej",
+                    "id": "ekococ",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -14576,7 +14589,7 @@
                         "key": "unlicenced_prohibition_number",
                         "type": "textfield",
                         "input": true,
-                        "id": "eaqa8pu",
+                        "id": "epzr9m",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -14660,7 +14673,7 @@
                           "onlyAvailableItems": false
                         },
                         "clearOnHide": true,
-                        "id": "eohsod",
+                        "id": "eenm02s",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -14745,7 +14758,7 @@
                           "onlyAvailableItems": false
                         },
                         "clearOnHide": true,
-                        "id": "ey76n",
+                        "id": "ewa2xb",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -14832,7 +14845,7 @@
                                 "key": "out_of_province_dl_number",
                                 "type": "textfield",
                                 "input": true,
-                                "id": "ew27mhn7",
+                                "id": "end8zld",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -15302,7 +15315,7 @@
                                   "include": "score",
                                   "threshold": 0.3
                                 },
-                                "id": "e3obfn8"
+                                "id": "eln00s3"
                               }
                             ],
                             "width": 4,
@@ -15367,7 +15380,7 @@
                                   "disableWeekdays": false,
                                   "maxDate": null
                                 },
-                                "id": "eqvc1lm",
+                                "id": "e93l54",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -15508,10 +15521,10 @@
                         "addons": [],
                         "tree": false,
                         "lazyLoad": false,
-                        "id": "exjrqtp"
+                        "id": "emc88lb"
                       }
                     ],
-                    "id": "euaywwe",
+                    "id": "e6ithlh",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -15599,7 +15612,7 @@
                         "input": false,
                         "tableView": false,
                         "clearOnHide": true,
-                        "id": "e1k54fp",
+                        "id": "e8pkm1nb",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -15665,7 +15678,7 @@
                         "input": true,
                         "tableView": false,
                         "clearOnHide": true,
-                        "id": "e2vg7jn",
+                        "id": "eb5hsl",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -15743,7 +15756,7 @@
                         },
                         "type": "textfield",
                         "input": true,
-                        "id": "e4l222l",
+                        "id": "eau6gk",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -15814,7 +15827,7 @@
                         "input": true,
                         "tableView": false,
                         "clearOnHide": true,
-                        "id": "eadfu0q",
+                        "id": "eldfyc",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -15882,7 +15895,7 @@
                         "input": true,
                         "tableView": false,
                         "clearOnHide": true,
-                        "id": "esobo8d",
+                        "id": "eb1hvs4",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -15950,7 +15963,7 @@
                         "input": true,
                         "tableView": false,
                         "clearOnHide": true,
-                        "id": "ex2znb",
+                        "id": "e475zxf",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16018,7 +16031,7 @@
                         "input": true,
                         "tableView": false,
                         "clearOnHide": true,
-                        "id": "em1yv5o",
+                        "id": "eeaurqq",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16086,7 +16099,7 @@
                         "input": true,
                         "tableView": false,
                         "clearOnHide": true,
-                        "id": "elksmw6",
+                        "id": "eq8nzn4",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16148,7 +16161,7 @@
                         "name": ""
                       }
                     ],
-                    "id": "e4kpoh",
+                    "id": "ep5y8c",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -16231,7 +16244,7 @@
                         "tableView": false,
                         "content": "<span>The driver was operating a motor vehicle or had care and control of a motor vehicle for the purposes of MVA section 215(1) based on: <span class='required-asterisk'>*</span></span>",
                         "clearOnHide": true,
-                        "id": "e57ver",
+                        "id": "es1370d",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16298,7 +16311,7 @@
                         "type": "checkbox",
                         "input": true,
                         "clearOnHide": true,
-                        "id": "equpgd9",
+                        "id": "e0znkze",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16365,7 +16378,7 @@
                         "input": true,
                         "tableView": false,
                         "clearOnHide": true,
-                        "id": "edt10tr",
+                        "id": "ee5j5wt",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16433,7 +16446,7 @@
                         "input": true,
                         "tableView": false,
                         "clearOnHide": true,
-                        "id": "eyj5h0e",
+                        "id": "eimukz",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16511,7 +16524,7 @@
                         "type": "checkbox",
                         "input": true,
                         "clearOnHide": true,
-                        "id": "esptk1c",
+                        "id": "egapo4e",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16591,7 +16604,7 @@
                         },
                         "type": "textfield",
                         "input": true,
-                        "id": "e09g1kd",
+                        "id": "edganza",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16670,7 +16683,7 @@
                           "onlyAvailableItems": false
                         },
                         "clearOnHide": true,
-                        "id": "ecqni6a",
+                        "id": "e51xpfi",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -16870,7 +16883,7 @@
                                 "allowMultipleMasks": false,
                                 "addons": [],
                                 "datepickerMode": "day",
-                                "id": "en8gz0o"
+                                "id": "elbb9x8"
                               }
                             ],
                             "width": 6,
@@ -16886,7 +16899,7 @@
                                 "label": "Time",
                                 "labelPosition": "top",
                                 "placeholder": "",
-                                "description": "",
+                                "description": "PACIFIC TIME in 24-hour clock",
                                 "tooltip": "",
                                 "prefix": "",
                                 "suffix": "",
@@ -16968,7 +16981,7 @@
                                 "refreshOn": "",
                                 "addons": [],
                                 "inputType": "text",
-                                "id": "ezzufgj",
+                                "id": "eclcsp4",
                                 "inputMaskPlaceholderChar": "",
                                 "defaultValue": ""
                               }
@@ -16981,7 +16994,7 @@
                             "currentWidth": 6
                           }
                         ],
-                        "id": "et094hl",
+                        "id": "embf232",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -17065,7 +17078,7 @@
                         "type": "radio",
                         "input": true,
                         "clearOnHide": true,
-                        "id": "eb7rkzd",
+                        "id": "e2982ui",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -17129,7 +17142,7 @@
                         "fieldSet": false
                       }
                     ],
-                    "id": "emh9xfl",
+                    "id": "ex5wmvo",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -17239,7 +17252,7 @@
                         "customConditional": "try {\r\n  show = false;\r\n  if(data?.type_of_prohibition === 'alcohol'){\r\n    show = true\r\n  } else {\r\n    show = false;\r\n  }\r\n} catch (error) {\r\n  console.error(error);\r\n}",
                         "type": "radio",
                         "input": true,
-                        "id": "e6nvir",
+                        "id": "e6kpsjm",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -17425,7 +17438,7 @@
                         "allowMultipleMasks": false,
                         "addons": [],
                         "datepickerMode": "day",
-                        "id": "ebijme"
+                        "id": "etyk6ci"
                       },
                       {
                         "label": "Result",
@@ -17462,7 +17475,7 @@
                           "onlyAvailableItems": false
                         },
                         "clearOnHide": true,
-                        "id": "ekygh6f",
+                        "id": "ejkqflj",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -17601,7 +17614,7 @@
                         "showWordCount": false,
                         "allowMultipleMasks": false,
                         "addons": [],
-                        "id": "ecdjcmd",
+                        "id": "esbn5u",
                         "defaultValue": null
                       },
                       {
@@ -17636,7 +17649,7 @@
                         "type": "radio",
                         "input": true,
                         "clearOnHide": true,
-                        "id": "eveiuy9",
+                        "id": "eeeq0ks",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -17719,7 +17732,7 @@
                         "customConditional": "try {\r\n  show = false;\r\n  if(data?.reasonable_test_used_drugs=== 'approved-drug' ||  data?.resonable_test_used_alcohol === 'instrument'){\r\n    show = true\r\n  } else {\r\n    show = false;\r\n  }\r\n} catch (error) {\r\n  console.error(error);\r\n}",
                         "type": "textfield",
                         "input": true,
-                        "id": "ebp2ebq",
+                        "id": "egvk10a",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -17789,7 +17802,7 @@
                           "eq": "PPCT"
                         },
                         "clearOnHide": true,
-                        "id": "e9avmm",
+                        "id": "eqb5b9i",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -17857,7 +17870,7 @@
                           "eq": "PPCT"
                         },
                         "clearOnHide": true,
-                        "id": "e8xc7oc",
+                        "id": "ec1310k",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -17914,7 +17927,7 @@
                         "name": ""
                       }
                     ],
-                    "id": "ewfiu5u",
+                    "id": "e7a4asu",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -18056,7 +18069,7 @@
                         "allowMultipleMasks": false,
                         "addons": [],
                         "inputType": "hidden",
-                        "id": "euiwmoo"
+                        "id": "eg7ho4n"
                       },
                       {
                         "label": "Incident Details",
@@ -18151,11 +18164,11 @@
                         "inputType": "text",
                         "inputMask": "",
                         "fixedSize": true,
-                        "id": "euaxbdd",
+                        "id": "ehhd9c",
                         "defaultValue": ""
                       }
                     ],
-                    "id": "e5km759",
+                    "id": "ehdc3k",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -18256,7 +18269,7 @@
                                 "type": "textfield",
                                 "input": true,
                                 "spellcheck": false,
-                                "id": "e80tgj",
+                                "id": "e73jpla",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -18334,7 +18347,7 @@
                                 "type": "textfield",
                                 "input": true,
                                 "spellcheck": false,
-                                "id": "e637ga",
+                                "id": "ee56dw",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -18423,7 +18436,7 @@
                                 "type": "textfield",
                                 "input": true,
                                 "spellcheck": false,
-                                "id": "euwb03u",
+                                "id": "e3qxu5a",
                                 "placeholder": "",
                                 "prefix": "",
                                 "customClass": "",
@@ -18500,7 +18513,7 @@
                         "type": "columns",
                         "input": false,
                         "tableView": false,
-                        "id": "e2xes8",
+                        "id": "eyt3l5s",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -18563,7 +18576,7 @@
                         "autoAdjust": false
                       }
                     ],
-                    "id": "eed1epg",
+                    "id": "ewmp6j",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -18711,7 +18724,7 @@
                             "showWordCount": false,
                             "allowMultipleMasks": false,
                             "addons": [],
-                            "id": "e0znkmj"
+                            "id": "ekg45zp"
                           }
                         ],
                         "width": 3,
@@ -18741,7 +18754,7 @@
                     "type": "columns",
                     "input": false,
                     "tableView": false,
-                    "id": "ee2jwsa",
+                    "id": "edqaxq",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -18805,7 +18818,7 @@
                   }
                 ],
                 "clearOnHide": true,
-                "id": "ewdtda6",
+                "id": "evtfxd",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -18873,7 +18886,7 @@
                 "input": true,
                 "tableView": false,
                 "clearOnHide": true,
-                "id": "e0kcs75",
+                "id": "eng9lbm",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -18941,7 +18954,7 @@
                 "input": true,
                 "tableView": false,
                 "clearOnHide": true,
-                "id": "e6wspcn",
+                "id": "eijjaquk",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -19009,7 +19022,7 @@
                 "input": true,
                 "tableView": false,
                 "clearOnHide": true,
-                "id": "e13308m",
+                "id": "en7pwz7",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -19077,7 +19090,7 @@
                 "input": true,
                 "tableView": false,
                 "clearOnHide": true,
-                "id": "elivmeg",
+                "id": "e1duhzo",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -19145,7 +19158,7 @@
                 "input": true,
                 "tableView": false,
                 "clearOnHide": true,
-                "id": "ev6zq1b",
+                "id": "em9worg",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -19213,7 +19226,7 @@
                 "input": true,
                 "tableView": false,
                 "clearOnHide": true,
-                "id": "epp0z3",
+                "id": "e85xhwg",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -19281,7 +19294,7 @@
                 "input": true,
                 "tableView": false,
                 "clearOnHide": true,
-                "id": "enb0xz5",
+                "id": "el4c3pv",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -19349,7 +19362,7 @@
                 "input": true,
                 "tableView": false,
                 "clearOnHide": true,
-                "id": "e4vytj",
+                "id": "eofamsn",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -19416,7 +19429,7 @@
                 "type": "hidden",
                 "input": true,
                 "tableView": false,
-                "id": "em56489",
+                "id": "eqjppo9",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -19517,7 +19530,7 @@
             "addons": [],
             "tree": false,
             "lazyLoad": false,
-            "id": "eln0s9v"
+            "id": "ecmqsj4"
           },
           {
             "title": "Driver copy preview/print",
@@ -19659,7 +19672,7 @@
                             "showWordCount": false,
                             "allowMultipleMasks": false,
                             "addons": [],
-                            "id": "eiz6yt9"
+                            "id": "exavzd"
                           }
                         ],
                         "width": 2,
@@ -19760,7 +19773,7 @@
                             "showWordCount": false,
                             "allowMultipleMasks": false,
                             "addons": [],
-                            "id": "e4pettk"
+                            "id": "ektar1b"
                           }
                         ],
                         "size": "md",
@@ -19773,7 +19786,7 @@
                     "type": "columns",
                     "input": false,
                     "tableView": false,
-                    "id": "end327",
+                    "id": "ea730u",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -19907,7 +19920,7 @@
                     "showWordCount": false,
                     "allowMultipleMasks": false,
                     "addons": [],
-                    "id": "enr4oq",
+                    "id": "eszqsz8",
                     "defaultValue": null
                   },
                   {
@@ -19979,7 +19992,7 @@
                     "allowMultipleMasks": false,
                     "addons": [],
                     "inputType": "hidden",
-                    "id": "eeaz3va"
+                    "id": "ei3k15h"
                   },
                   {
                     "label": "Printed TimeStamp",
@@ -20050,7 +20063,7 @@
                     "allowMultipleMasks": false,
                     "addons": [],
                     "inputType": "hidden",
-                    "id": "e063lr"
+                    "id": "e9w9cxk"
                   },
                   {
                     "label": "Spoliled TimeStamp",
@@ -20121,7 +20134,7 @@
                     "allowMultipleMasks": false,
                     "addons": [],
                     "inputType": "hidden",
-                    "id": "eelptco"
+                    "id": "eadr0hh"
                   },
                   {
                     "label": "Lock Form Input",
@@ -20192,7 +20205,7 @@
                     "allowMultipleMasks": false,
                     "addons": [],
                     "inputType": "hidden",
-                    "id": "e575c52"
+                    "id": "ejt34t8"
                   },
                   {
                     "label": "Columns",
@@ -20328,7 +20341,7 @@
                                     "showWordCount": false,
                                     "allowMultipleMasks": false,
                                     "addons": [],
-                                    "id": "e8t71l"
+                                    "id": "e9f2zm"
                                   },
                                   {
                                     "label": "Next",
@@ -20410,7 +20423,7 @@
                                     "showWordCount": false,
                                     "allowMultipleMasks": false,
                                     "addons": [],
-                                    "id": "ef2ltv9"
+                                    "id": "ex6bp8pa"
                                   }
                                 ],
                                 "width": 6,
@@ -20425,7 +20438,7 @@
                             "type": "columns",
                             "input": false,
                             "tableView": false,
-                            "id": "e4cpiv",
+                            "id": "eofagj77",
                             "placeholder": "",
                             "prefix": "",
                             "customClass": "",
@@ -20608,7 +20621,7 @@
                                     "showWordCount": false,
                                     "allowMultipleMasks": false,
                                     "addons": [],
-                                    "id": "eccjalu",
+                                    "id": "e136lzc",
                                     "custom": " // Access instance from the outer scope\r\n      const rsbcInstance = instance.root.getComponent(\"rsbcPrintPreviewDriverCopy\");\r\n      if (rsbcInstance) {\r\n        rsbcInstance.handlePrint();\r\n      } else {\r\n        console.error(\"Could not find rsbcPrintPreviewDriverCopy component\");\r\n      }"
                                   }
                                 ],
@@ -20686,7 +20699,7 @@
                             "addons": [],
                             "tree": false,
                             "lazyLoad": false,
-                            "id": "eisxcov"
+                            "id": "ewdutaq"
                           }
                         ],
                         "size": "md",
@@ -20698,7 +20711,7 @@
                     "type": "columns",
                     "input": false,
                     "tableView": false,
-                    "id": "eexx0k6",
+                    "id": "e38n7tu",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -20761,7 +20774,7 @@
                     "autoAdjust": false
                   }
                 ],
-                "id": "evudn6u",
+                "id": "e99gpql",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -20860,7 +20873,7 @@
             "addons": [],
             "tree": false,
             "lazyLoad": false,
-            "id": "edcb0e7"
+            "id": "ek9f3pr"
           },
           {
             "title": "ecos Confirmation",
@@ -20994,7 +21007,7 @@
                         "showWordCount": false,
                         "allowMultipleMasks": false,
                         "addons": [],
-                        "id": "egvyyoq",
+                        "id": "ezdvtsg",
                         "event": "cancelSubmission"
                       }
                     ],
@@ -21096,7 +21109,7 @@
                         "showWordCount": false,
                         "allowMultipleMasks": false,
                         "addons": [],
-                        "id": "eaurqt"
+                        "id": "e88i8f3"
                       }
                     ],
                     "size": "md",
@@ -21173,7 +21186,7 @@
                 "addons": [],
                 "tree": false,
                 "lazyLoad": false,
-                "id": "ecl1rdq"
+                "id": "eztzz8"
               },
               {
                 "title": "Confirmation Step",
@@ -21215,7 +21228,7 @@
                     "customConditional": "show = true;\nconst generateLabel = () => {\n  let formNames = [];\n  if (data?.TwentyFourHour) formNames.push('24-hour Driving Prohibition');\n  if (data?.TwelveHour) formNames.push('12-hour Driving Suspension');\n  let formNamesString = formNames.join(' and ');\n  return `Did you serve the ${formNamesString} document${formNames.length > 1 ? 's' : ''} to ${data?.driver_last_name}, ${data?.driver_given_name}?`;\n};\nif (data?.TwentyFourHour || data?.TwelveHour) {\n  component.label = generateLabel();\n  instance.redraw();\n}",
                     "type": "radio",
                     "input": true,
-                    "id": "em7aocv",
+                    "id": "e955dzo",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -21351,7 +21364,7 @@
                     "showWordCount": false,
                     "allowMultipleMasks": false,
                     "addons": [],
-                    "id": "ebffla"
+                    "id": "ed1crjq"
                   },
                   {
                     "label": "confirmation_of_service_date",
@@ -21422,7 +21435,7 @@
                     "allowMultipleMasks": false,
                     "addons": [],
                     "inputType": "hidden",
-                    "id": "esfg8xa"
+                    "id": "en6yzgs"
                   },
                   {
                     "label": "PEACE OFFICER'S NAME   ",
@@ -21510,7 +21523,7 @@
                     "refreshOn": "",
                     "addons": [],
                     "inputType": "text",
-                    "id": "ewmvgwc",
+                    "id": "er5lzxq",
                     "defaultValue": ""
                   },
                   {
@@ -21599,7 +21612,7 @@
                     "refreshOn": "",
                     "addons": [],
                     "inputType": "text",
-                    "id": "eu5ko9m",
+                    "id": "e4tdjtm",
                     "defaultValue": ""
                   },
                   {
@@ -21688,7 +21701,7 @@
                     "refreshOn": "",
                     "addons": [],
                     "inputType": "text",
-                    "id": "es036yd",
+                    "id": "eiz7j8l",
                     "defaultValue": ""
                   },
                   {
@@ -21777,7 +21790,7 @@
                     "refreshOn": "",
                     "addons": [],
                     "inputType": "text",
-                    "id": "e5tke8i",
+                    "id": "e05iirv",
                     "defaultValue": ""
                   },
                   {
@@ -21850,7 +21863,7 @@
                     "showWordCount": false,
                     "allowMultipleMasks": false,
                     "addons": [],
-                    "id": "ehh7xcg"
+                    "id": "e4zllbp"
                   },
                   {
                     "html": "<p>The individual is prohibited under section 215 of the Motor Vehicle Act from driving a motor vehicle for 24 hours commencing at: {{data?.date_of_driving ? new Date(data?.date_of_driving).toLocaleDateString('en-CA') : 'N/A'}}, {{data?.time_of_driving ? data?.time_of_driving : 'N/A'}} PACIFIC TIME</p>",
@@ -21922,7 +21935,7 @@
                     "showWordCount": false,
                     "allowMultipleMasks": false,
                     "addons": [],
-                    "id": "eb68lx"
+                    "id": "evczd5"
                   },
                   {
                     "label": "Columns",
@@ -22014,7 +22027,7 @@
                                     "showWordCount": false,
                                     "allowMultipleMasks": false,
                                     "addons": [],
-                                    "id": "e28ius"
+                                    "id": "e6b40s7"
                                   }
                                 ],
                                 "width": 6,
@@ -22106,7 +22119,7 @@
                                     "showWordCount": false,
                                     "allowMultipleMasks": false,
                                     "addons": [],
-                                    "id": "ew5q2xr"
+                                    "id": "e4pmnkec"
                                   },
                                   {
                                     "label": "Exit Form",
@@ -22188,7 +22201,7 @@
                                     "showWordCount": false,
                                     "allowMultipleMasks": false,
                                     "addons": [],
-                                    "id": "elfp6b9"
+                                    "id": "en2qe5"
                                   }
                                 ],
                                 "width": 6,
@@ -22268,7 +22281,7 @@
                             "addons": [],
                             "tree": false,
                             "lazyLoad": false,
-                            "id": "e9exh0s"
+                            "id": "ekpju6c"
                           }
                         ],
                         "width": 3,
@@ -22363,10 +22376,10 @@
                     "addons": [],
                     "tree": false,
                     "lazyLoad": false,
-                    "id": "e0ku16j"
+                    "id": "eyeibz"
                   }
                 ],
-                "id": "exdc3o",
+                "id": "ex1hal5l",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -22467,7 +22480,7 @@
             "addons": [],
             "tree": false,
             "lazyLoad": false,
-            "id": "euklcyj"
+            "id": "ed11yfd"
           },
           {
             "title": "Police Details",
@@ -22533,7 +22546,7 @@
                         "input": true,
                         "event": "cancelSubmission",
                         "clearOnHide": true,
-                        "id": "efsmfg",
+                        "id": "edmtrhl",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -22629,7 +22642,7 @@
                         "custom": "// Function to show a confirmation modal\r\nfunction showSpoilConfirmationModal() {\r\n  const content = instance.ce('div');\r\n  content.innerHTML = `\r\n    <div class=\"modal-content\" style=\"min-width: 400px; padding: 20px;\">\r\n      <div class=\"modal-header\" style=\"border-bottom: 1px solid #dee2e6; margin: -20px -20px 20px; padding: 20px;\">\r\n        <h5 class=\"modal-title\" style=\"font-size: 1.25rem; margin: 0;\">\r\n          <i class=\"fas fa-exclamation-circle text-warning\" style=\"margin-right: 8px;\"></i>\r\n          Confirm Spoil Form\r\n        </h5>\r\n      </div>\r\n      \r\n      <div class=\"modal-body\" style=\"padding: 0 0 20px;\">\r\n        <p style=\"font-size: 1rem; color: #555; margin: 0;\">\r\n          Are you sure you want to mark this form as spoiled? This action cannot be undone.\r\n        </p>\r\n      </div>\r\n      \r\n      <div class=\"modal-footer\" style=\"border-top: 1px solid #dee2e6; margin: 0 -20px -20px; padding: 20px; display: flex; justify-content: flex-end; gap: 10px;\">\r\n        <button class=\"btn btn-outline-secondary\" ref=\"cancelButton\" style=\"min-width: 100px; border: 1px solid #6c757d; color: #495057; background-color: #f8f9fa;\">\r\n          <i class=\"fas fa-times\" style=\"margin-right: 5px;\"></i>Cancel\r\n        </button>\r\n        <button class=\"btn btn-primary\" ref=\"confirmButton\" style=\"min-width: 100px;\">\r\n          <i class=\"fas fa-check\" style=\"margin-right: 5px;\"></i>Confirm\r\n        </button>\r\n      </div>\r\n    </div>\r\n  `;\r\n\r\n  // Create the modal\r\n  const modal = instance.createModal(content);\r\n\r\n  // Add event listeners\r\n  const confirmButton = content.querySelector('[ref=\"confirmButton\"]');\r\n  const cancelButton = content.querySelector('[ref=\"cancelButton\"]');\r\n\r\n  // Fixed the event listener to be async\r\n  confirmButton.addEventListener('click', async () => {\r\n    console.log('User confirmed spoil form');\r\n    modal.close();\r\n    \r\n   // Execute the event listner added in the first page\r\n   instance.emit('PatchForm', { action: 'markSpoiled' });\r\n   \r\n  });\r\n\r\n  cancelButton.addEventListener('click', () => {\r\n    console.log('User cancelled spoil form');\r\n    modal.close();\r\n  });\r\n  \r\n  return modal;\r\n}\r\n\r\nshowSpoilConfirmationModal();",
                         "input": true,
                         "clearOnHide": true,
-                        "id": "eg9jdb",
+                        "id": "elzvl6",
                         "placeholder": "",
                         "prefix": "",
                         "customClass": "",
@@ -22706,7 +22719,7 @@
                 "type": "columns",
                 "input": false,
                 "tableView": false,
-                "id": "er0tuv",
+                "id": "eg0o4ac",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -22874,7 +22887,7 @@
                     "addons": [],
                     "inputType": "radio",
                     "fieldSet": false,
-                    "id": "ejk97wp",
+                    "id": "euxpb1p",
                     "defaultValue": ""
                   },
                   {
@@ -22984,7 +22997,7 @@
                     "addons": [],
                     "inputType": "radio",
                     "fieldSet": false,
-                    "id": "ea8ra6s",
+                    "id": "esmqyw",
                     "defaultValue": ""
                   },
                   {
@@ -23114,13 +23127,13 @@
                     "allowMultipleMasks": false,
                     "addons": [],
                     "datepickerMode": "day",
-                    "id": "eehx44q"
+                    "id": "ew58qug"
                   },
                   {
                     "label": "Time the test was administered",
                     "labelPosition": "top",
                     "placeholder": "",
-                    "description": "",
+                    "description": "PACIFIC TIME in 24-hour clock",
                     "tooltip": "",
                     "prefix": "",
                     "suffix": "",
@@ -23202,7 +23215,7 @@
                     "refreshOn": "",
                     "addons": [],
                     "inputType": "text",
-                    "id": "e00ryuk",
+                    "id": "edaq7t",
                     "inputMaskPlaceholderChar": "",
                     "defaultValue": ""
                   },
@@ -23243,7 +23256,7 @@
                     "type": "radio",
                     "input": true,
                     "clearOnHide": true,
-                    "id": "egpvt3d",
+                    "id": "ekdtj5s",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -23387,7 +23400,7 @@
                     "showWordCount": false,
                     "allowMultipleMasks": false,
                     "addons": [],
-                    "id": "e1wkk7",
+                    "id": "erxtmo6",
                     "defaultValue": null
                   },
                   {
@@ -23476,7 +23489,7 @@
                     "refreshOn": "",
                     "addons": [],
                     "inputType": "text",
-                    "id": "e8764k",
+                    "id": "e88iq7g",
                     "defaultValue": null
                   },
                   {
@@ -23511,7 +23524,7 @@
                     "type": "radio",
                     "input": true,
                     "clearOnHide": true,
-                    "id": "ertc2ac",
+                    "id": "esz9xzd",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -23578,7 +23591,7 @@
                     "tableView": true,
                     "customConditional": "show = data?.requested_test_used_drug === 'PPCT' && data?.requested_prescribed_test === 'YES' && data?.type_of_prohibition === 'drugs';",
                     "clearOnHide": true,
-                    "id": "e7mtgk",
+                    "id": "eyr846k",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -23647,7 +23660,7 @@
                     "tableView": true,
                     "customConditional": "show = data?.requested_test_used_alcohol === 'PPCT' && data?.requested_prescribed_test === 'YES' && data?.type_of_prohibition === 'alcohol';",
                     "clearOnHide": true,
-                    "id": "etu2u9",
+                    "id": "ey5vlo",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -23728,7 +23741,7 @@
                                     "custom": "form.setPage(form.page - 1)",
                                     "input": true,
                                     "clearOnHide": true,
-                                    "id": "epce43g",
+                                    "id": "e63kz2",
                                     "placeholder": "",
                                     "prefix": "",
                                     "customClass": "",
@@ -23884,7 +23897,7 @@
                                     "showWordCount": false,
                                     "allowMultipleMasks": false,
                                     "addons": [],
-                                    "id": "eo6fx5r"
+                                    "id": "e9c7nq6"
                                   }
                                 ],
                                 "width": 6,
@@ -23900,7 +23913,7 @@
                             "type": "columns",
                             "input": false,
                             "tableView": false,
-                            "id": "epb89rf",
+                            "id": "e8q6c0i",
                             "placeholder": "",
                             "prefix": "",
                             "customClass": "",
@@ -23989,7 +24002,7 @@
                     "type": "columns",
                     "input": false,
                     "tableView": false,
-                    "id": "ejwn5i",
+                    "id": "e02qd05",
                     "placeholder": "",
                     "prefix": "",
                     "customClass": "",
@@ -24052,7 +24065,7 @@
                     "autoAdjust": false
                   }
                 ],
-                "id": "eos5708",
+                "id": "eh4u2j",
                 "placeholder": "",
                 "prefix": "",
                 "customClass": "",
@@ -24153,7 +24166,7 @@
             "addons": [],
             "tree": false,
             "lazyLoad": false,
-            "id": "er1hx73"
+            "id": "erlqbr"
           },
           {
             "title": "Police copy preview/print",
@@ -25214,7 +25227,7 @@
           }
         ],
         "created": "2025-02-06T16:05:31.759Z",
-        "modified": "2025-04-17T21:30:22.057Z"
+        "modified": "2025-04-30T21:21:45.125Z"
       }
     }
   ],
@@ -25224,7 +25237,7 @@
       "processName": "roadSafteyDigitalForms",
       "processType": "BPMN",
       "type": "main",
-      "content": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" id=\"Definitions_1oubpmc\" targetNamespace=\"http://bpmn.io/schema/bpmn\" exporter=\"Camunda Modeler\" exporterVersion=\"5.31.0\" modeler:executionPlatform=\"Camunda Platform\" modeler:executionPlatformVersion=\"7.22.0\">\n  <bpmn:process id=\"roadSafteyDigitalForms\" name=\"roadSafteyDigitalForms\" isExecutable=\"true\" camunda:historyTimeToLive=\"P30D\">\n    <bpmn:startEvent id=\"StartEvent_1\" name=\"start\" camunda:asyncAfter=\"true\">\n      <bpmn:outgoing>Flow_11aa80b</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:endEvent id=\"Event_0ts53jy\" name=\"end\">\n      <bpmn:incoming>Flow_0np0ks7</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_02ue293\" name=\"Yes\" sourceRef=\"Gateway_0zpx5p0\" targetRef=\"Activity_0azpkne\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">${statusCode == 201}</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:serviceTask id=\"submit_event\" name=\"Submit Event\">\n      <bpmn:extensionElements>\n        <camunda:connector>\n          <camunda:inputOutput>\n            <camunda:inputParameter name=\"method\">POST</camunda:inputParameter>\n            <camunda:inputParameter name=\"url\">\n              <camunda:script scriptFormat=\"groovy\">var system = java.lang.System;\nsystem.getenv('REACT_APP_RSBC_API_URL')+\"/api/v1/event\"</camunda:script>\n            </camunda:inputParameter>\n            <camunda:inputParameter name=\"payload\">${event}</camunda:inputParameter>\n            <camunda:inputParameter name=\"headers\">\n              <camunda:map>\n                <camunda:entry key=\"Authorization\">Bearer ${token}</camunda:entry>\n                <camunda:entry key=\"Content-Type\">application/json</camunda:entry>\n              </camunda:map>\n            </camunda:inputParameter>\n            <camunda:outputParameter name=\"statusCode\">#{statusCode}</camunda:outputParameter>\n          </camunda:inputOutput>\n          <camunda:connectorId>http-connector</camunda:connectorId>\n        </camunda:connector>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_0dibfen</bpmn:incoming>\n      <bpmn:outgoing>Flow_09bu4yq</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:sequenceFlow id=\"Flow_11aa80b\" name=\"start listeners\" sourceRef=\"StartEvent_1\" targetRef=\"Activity_153941x\">\n      <bpmn:extensionElements>\n        <camunda:executionListener event=\"take\">\n          <camunda:script scriptFormat=\"javascript\">execution.setVariable('applicationStatus', 'New');</camunda:script>\n        </camunda:executionListener>\n        <camunda:executionListener class=\"org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener\" event=\"take\"/>\n        <camunda:executionListener class=\"org.camunda.bpm.extension.hooks.listeners.FormBPMJsonDataPipelineListener\" event=\"take\"/>\n      </bpmn:extensionElements>\n    </bpmn:sequenceFlow>\n    <bpmn:scriptTask id=\"Activity_1pvahuo\" name=\"Transform Event Input\" scriptFormat=\"groovy\">\n      <bpmn:incoming>Flow_0es6pgh</bpmn:incoming>\n      <bpmn:outgoing>Flow_0dibfen</bpmn:outgoing>\n      <bpmn:script>import groovy.json.JsonSlurper\nimport groovy.json.JsonOutput\n\n// Get JSON string from execution variable\n//def data = execution.getVariable(\"formData\")\nvar formData = S(execution.getVariable(\"formData\"));\n\n// Remove the `currentUserRole` field\nformData.deleteProp(\"currentUserRole\");\n\ndef applicationId = execution.getVariable(\"applicationId\");\n\nSystem.out.println(\"applicationId from env \"+applicationId);\n\n// Add or update a property in formData\nformData.prop(\"ff_application_id\", applicationId);\n\nexecution.setVariable(\"event\", formData.toString())</bpmn:script>\n    </bpmn:scriptTask>\n    <bpmn:serviceTask id=\"Activity_153941x\" name=\"Get OAuth Token\">\n      <bpmn:extensionElements>\n        <camunda:connector>\n          <camunda:inputOutput>\n            <camunda:inputParameter name=\"method\">POST</camunda:inputParameter>\n            <camunda:inputParameter name=\"url\">\n              <camunda:script scriptFormat=\"groovy\">var system = java.lang.System;\nsystem.getenv('KEYCLOAK_URL')+\"/auth/realms/\"+system.getenv('KEYCLOAK_URL_REALM')+\"/protocol/openid-connect/token\"</camunda:script>\n            </camunda:inputParameter>\n            <camunda:inputParameter name=\"payload\">grant_type=client_credentials</camunda:inputParameter>\n            <camunda:inputParameter name=\"headers\">\n              <camunda:map>\n                <camunda:entry key=\"Authorization\">${basicAuth64}</camunda:entry>\n                <camunda:entry key=\"Content-Type\">application/x-www-form-urlencoded</camunda:entry>\n              </camunda:map>\n            </camunda:inputParameter>\n            <camunda:outputParameter name=\"statusCode\">#{statusCode}</camunda:outputParameter>\n            <camunda:outputParameter name=\"response\">#{response}</camunda:outputParameter>\n          </camunda:inputOutput>\n          <camunda:connectorId>http-connector</camunda:connectorId>\n        </camunda:connector>\n        <camunda:executionListener event=\"end\">\n          <camunda:script scriptFormat=\"JavaScript\">if (statusCode != 200){\n  throw new Error(\"Error from OAuth token call, response Code: \"+statusCode)\n}else{\n}</camunda:script>\n        </camunda:executionListener>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"basicAuth64\">\n            <camunda:script scriptFormat=\"groovy\">import java.util.Base64\n\ndef clientId = System.getenv(\"KEYCLOAK_CLIENTID\")\ndef clientSecret = System.getenv(\"KEYCLOAK_CLIENTSECRET\")\n\ndef credentials = clientId + \":\" + clientSecret\ndef encoded = Base64.encoder.encodeToString(credentials.bytes)\n\nreturn \"Basic \" + encoded</camunda:script>\n          </camunda:inputParameter>\n          <camunda:outputParameter name=\"token\">${S(response).prop(\"access_token\").stringValue()}</camunda:outputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_11aa80b</bpmn:incoming>\n      <bpmn:outgoing>Flow_0es6pgh</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:sequenceFlow id=\"Flow_0es6pgh\" sourceRef=\"Activity_153941x\" targetRef=\"Activity_1pvahuo\"/>\n    <bpmn:exclusiveGateway id=\"Gateway_0zpx5p0\" name=\"Submission Complete ?\">\n      <bpmn:incoming>Flow_09bu4yq</bpmn:incoming>\n      <bpmn:outgoing>Flow_02ue293</bpmn:outgoing>\n      <bpmn:outgoing>Flow_1hp9n9u</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:sequenceFlow id=\"Flow_0np0ks7\" sourceRef=\"Activity_0azpkne\" targetRef=\"Event_0ts53jy\"/>\n    <bpmn:task id=\"Activity_02bgk3e\" name=\"Update Application Status - Failed\">\n      <bpmn:extensionElements>\n        <camunda:executionListener event=\"start\">\n          <camunda:script scriptFormat=\"javascript\">execution.setVariable('applicationStatus', \"Failed\");</camunda:script>\n        </camunda:executionListener>\n        <camunda:executionListener class=\"org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener\" event=\"start\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_1hp9n9u</bpmn:incoming>\n      <bpmn:outgoing>Flow_1843l90</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_1hp9n9u\" name=\"No\" sourceRef=\"Gateway_0zpx5p0\" targetRef=\"Activity_02bgk3e\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">${statusCode != 201}</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:endEvent id=\"Event_1b5671b\" name=\"end\">\n      <bpmn:incoming>Flow_1843l90</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_1843l90\" sourceRef=\"Activity_02bgk3e\" targetRef=\"Event_1b5671b\"/>\n    <bpmn:task id=\"Activity_0azpkne\" name=\"Update Application Status - Submitted\">\n      <bpmn:extensionElements>\n        <camunda:executionListener event=\"start\">\n          <camunda:script scriptFormat=\"javascript\">execution.setVariable('applicationStatus', \"Submitted\");</camunda:script>\n        </camunda:executionListener>\n        <camunda:executionListener class=\"org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener\" event=\"start\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_02ue293</bpmn:incoming>\n      <bpmn:outgoing>Flow_0np0ks7</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_09bu4yq\" sourceRef=\"submit_event\" targetRef=\"Gateway_0zpx5p0\"/>\n    <bpmn:sequenceFlow id=\"Flow_0dibfen\" sourceRef=\"Activity_1pvahuo\" targetRef=\"submit_event\"/>\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"roadSafteyDigitalForms\">\n      <bpmndi:BPMNShape id=\"StartEvent_1_di\" bpmnElement=\"StartEvent_1\">\n        <dc:Bounds x=\"142\" y=\"122\" width=\"36\" height=\"36\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"150\" y=\"165\" width=\"22\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Event_0ts53jy_di\" bpmnElement=\"Event_0ts53jy\">\n        <dc:Bounds x=\"1172\" y=\"412\" width=\"36\" height=\"36\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"1180\" y=\"458\" width=\"19\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_1j3xucw_di\" bpmnElement=\"submit_event\">\n        <dc:Bounds x=\"640\" y=\"100\" width=\"100\" height=\"80\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_0lm1zzi_di\" bpmnElement=\"Activity_1pvahuo\">\n        <dc:Bounds x=\"440\" y=\"100\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"BPMNShape_06lqfa2\" bpmnElement=\"Activity_153941x\">\n        <dc:Bounds x=\"270\" y=\"100\" width=\"100\" height=\"80\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Gateway_0zpx5p0_di\" bpmnElement=\"Gateway_0zpx5p0\" isMarkerVisible=\"true\">\n        <dc:Bounds x=\"915\" y=\"115\" width=\"50\" height=\"50\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"912\" y=\"85\" width=\"57\" height=\"27\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"BPMNShape_0661aot\" bpmnElement=\"Activity_02bgk3e\">\n        <dc:Bounds x=\"1100\" y=\"100\" width=\"100\" height=\"80\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Event_1b5671b_di\" bpmnElement=\"Event_1b5671b\">\n        <dc:Bounds x=\"1252\" y=\"122\" width=\"36\" height=\"36\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"1261\" y=\"165\" width=\"19\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"BPMNShape_0613upj\" bpmnElement=\"Activity_0azpkne\">\n        <dc:Bounds x=\"900\" y=\"390\" width=\"100\" height=\"80\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"Flow_02ue293_di\" bpmnElement=\"Flow_02ue293\">\n        <di:waypoint x=\"940\" y=\"165\"/>\n        <di:waypoint x=\"940\" y=\"390\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"936\" y=\"189\" width=\"18\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_11aa80b_di\" bpmnElement=\"Flow_11aa80b\">\n        <di:waypoint x=\"178\" y=\"140\"/>\n        <di:waypoint x=\"270\" y=\"140\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"191\" y=\"122\" width=\"66\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0es6pgh_di\" bpmnElement=\"Flow_0es6pgh\">\n        <di:waypoint x=\"370\" y=\"140\"/>\n        <di:waypoint x=\"440\" y=\"140\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0np0ks7_di\" bpmnElement=\"Flow_0np0ks7\">\n        <di:waypoint x=\"1000\" y=\"430\"/>\n        <di:waypoint x=\"1172\" y=\"430\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_1hp9n9u_di\" bpmnElement=\"Flow_1hp9n9u\">\n        <di:waypoint x=\"965\" y=\"140\"/>\n        <di:waypoint x=\"1100\" y=\"140\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"1025\" y=\"122\" width=\"15\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_1843l90_di\" bpmnElement=\"Flow_1843l90\">\n        <di:waypoint x=\"1200\" y=\"140\"/>\n        <di:waypoint x=\"1252\" y=\"140\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_09bu4yq_di\" bpmnElement=\"Flow_09bu4yq\">\n        <di:waypoint x=\"740\" y=\"140\"/>\n        <di:waypoint x=\"915\" y=\"140\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0dibfen_di\" bpmnElement=\"Flow_0dibfen\">\n        <di:waypoint x=\"540\" y=\"140\"/>\n        <di:waypoint x=\"640\" y=\"140\"/>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n"
+      "content": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" id=\"Definitions_1oubpmc\" targetNamespace=\"http://bpmn.io/schema/bpmn\" exporter=\"Camunda Modeler\" exporterVersion=\"5.31.0\" modeler:executionPlatform=\"Camunda Platform\" modeler:executionPlatformVersion=\"7.22.0\">\n  <bpmn:process id=\"roadSafteyDigitalForms\" name=\"roadSafteyDigitalForms\" isExecutable=\"true\" camunda:historyTimeToLive=\"P30D\">\n    <bpmn:startEvent id=\"StartEvent_1\" name=\"start\" camunda:asyncAfter=\"true\">\n      <bpmn:outgoing>Flow_11aa80b</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:endEvent id=\"Event_0ts53jy\" name=\"end\">\n      <bpmn:incoming>Flow_0np0ks7</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_02ue293\" name=\"Yes\" sourceRef=\"Gateway_0zpx5p0\" targetRef=\"Activity_0azpkne\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">${statusCode == 201}</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:serviceTask id=\"submit_event\" name=\"Submit Event\">\n      <bpmn:extensionElements>\n        <camunda:connector>\n          <camunda:inputOutput>\n            <camunda:inputParameter name=\"method\">POST</camunda:inputParameter>\n            <camunda:inputParameter name=\"url\">\n              <camunda:script scriptFormat=\"groovy\">var system = java.lang.System;\nsystem.getenv('REACT_APP_RSBC_API_URL')+\"/api/v1/event\"</camunda:script>\n            </camunda:inputParameter>\n            <camunda:inputParameter name=\"payload\">${event}</camunda:inputParameter>\n            <camunda:inputParameter name=\"headers\">\n              <camunda:map>\n                <camunda:entry key=\"Authorization\">Bearer ${token}</camunda:entry>\n                <camunda:entry key=\"Content-Type\">application/json</camunda:entry>\n              </camunda:map>\n            </camunda:inputParameter>\n            <camunda:outputParameter name=\"statusCode\">#{statusCode}</camunda:outputParameter>\n          </camunda:inputOutput>\n          <camunda:connectorId>http-connector</camunda:connectorId>\n        </camunda:connector>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_0dibfen</bpmn:incoming>\n      <bpmn:outgoing>Flow_09bu4yq</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:sequenceFlow id=\"Flow_11aa80b\" name=\"start listeners\" sourceRef=\"StartEvent_1\" targetRef=\"Activity_153941x\">\n      <bpmn:extensionElements>\n        <camunda:executionListener event=\"take\">\n          <camunda:script scriptFormat=\"javascript\">execution.setVariable('applicationStatus', 'New');</camunda:script>\n        </camunda:executionListener>\n        <camunda:executionListener class=\"org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener\" event=\"take\"/>\n        <camunda:executionListener class=\"org.camunda.bpm.extension.hooks.listeners.FormBPMJsonDataPipelineListener\" event=\"take\"/>\n      </bpmn:extensionElements>\n    </bpmn:sequenceFlow>\n    <bpmn:scriptTask id=\"Activity_1pvahuo\" name=\"Transform Event Input\" scriptFormat=\"groovy\">\n      <bpmn:incoming>Flow_0es6pgh</bpmn:incoming>\n      <bpmn:outgoing>Flow_0dibfen</bpmn:outgoing>\n      <bpmn:script>import groovy.json.JsonSlurper\nimport groovy.json.JsonOutput\n\n// Get JSON string from execution variable\n//def data = execution.getVariable(\"formData\")\nvar formData = S(execution.getVariable(\"formData\"));\n\n// Remove the `currentUserRole` field\nformData.deleteProp(\"currentUserRole\");\n\ndef applicationId = execution.getVariable(\"applicationId\");\n\n// Add or update a property in formData\nformData.prop(\"ff_application_id\", applicationId);\n\n//Handle data format differences\n// Fields that should be empty string if null or missing\ndef fieldsToEmptyString = [\n    // VI Form\n    \"location_of_keys\",\n    \"corporation_name\",\n    \"time_released\",\n    \"type_of_prohibition\",\n    \"vehicle_released_to\",\n\n    // 24 Hour Form\n    \"reasonable_ground_other_reason\",\n    \"reasonable_result_alcohol\",\n    \"reasonable_test_used_drugs\",\n    \"reasonable_time_of_test\",\n    \"regist_owner_email\",\n    \"regist_owner_first_name\",\n    \"regist_owner_last_name\",\n    \"regist_owner_phone\",\n    \"requested_approved_instrument_used\",\n    \"requested_test_used_drug\",\n    \"resonable_approved_instrument_used\",\n    \"resonable_test_used_alcohol\"\n];\n\n// Fields that should be false if null or missing\ndef fieldsToFalse = [\n    // VI Form\n    \"confirmation_of_service\",\n    \"incident_details_extra_page\",\n    \"motorcycle_restrictions\",\n\n    // 24 Hour Form\n    \"reasonable_can_drive_alcohol\",\n    \"reasonable_can_drive_drug\",\n    \"requested_can_drive_alcohol\",\n    \"requested_can_drive_drug\"\n];\n\n\n\n// Convert null or missing fields to empty string\nfieldsToEmptyString.each { field -&gt;\n    if (!formData.hasProp(field) || formData.prop(field).isNull()) {\n        formData.prop(field, \"\");\n    }\n}\n\n// Convert null or missing fields to false\nfieldsToFalse.each { field -&gt;\n    if (!formData.hasProp(field) || formData.prop(field).isNull()) {\n        formData.prop(field, false);\n    }\n}\n\nexecution.setVariable(\"event\", formData.toString())</bpmn:script>\n    </bpmn:scriptTask>\n    <bpmn:serviceTask id=\"Activity_153941x\" name=\"Get OAuth Token\">\n      <bpmn:extensionElements>\n        <camunda:connector>\n          <camunda:inputOutput>\n            <camunda:inputParameter name=\"method\">POST</camunda:inputParameter>\n            <camunda:inputParameter name=\"url\">\n              <camunda:script scriptFormat=\"groovy\">var system = java.lang.System;\nsystem.getenv('KEYCLOAK_URL')+\"/auth/realms/\"+system.getenv('KEYCLOAK_URL_REALM')+\"/protocol/openid-connect/token\"</camunda:script>\n            </camunda:inputParameter>\n            <camunda:inputParameter name=\"payload\">grant_type=client_credentials</camunda:inputParameter>\n            <camunda:inputParameter name=\"headers\">\n              <camunda:map>\n                <camunda:entry key=\"Authorization\">${basicAuth64}</camunda:entry>\n                <camunda:entry key=\"Content-Type\">application/x-www-form-urlencoded</camunda:entry>\n              </camunda:map>\n            </camunda:inputParameter>\n            <camunda:outputParameter name=\"statusCode\">#{statusCode}</camunda:outputParameter>\n            <camunda:outputParameter name=\"response\">#{response}</camunda:outputParameter>\n          </camunda:inputOutput>\n          <camunda:connectorId>http-connector</camunda:connectorId>\n        </camunda:connector>\n        <camunda:executionListener event=\"end\">\n          <camunda:script scriptFormat=\"JavaScript\">if (statusCode != 200){\n  throw new Error(\"Error from OAuth token call, response Code: \"+statusCode)\n}else{\n}</camunda:script>\n        </camunda:executionListener>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"basicAuth64\">\n            <camunda:script scriptFormat=\"groovy\">import java.util.Base64\n\ndef clientId = System.getenv(\"KEYCLOAK_CLIENTID\")\ndef clientSecret = System.getenv(\"KEYCLOAK_CLIENTSECRET\")\n\ndef credentials = clientId + \":\" + clientSecret\ndef encoded = Base64.encoder.encodeToString(credentials.bytes)\n\nreturn \"Basic \" + encoded</camunda:script>\n          </camunda:inputParameter>\n          <camunda:outputParameter name=\"token\">${S(response).prop(\"access_token\").stringValue()}</camunda:outputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_11aa80b</bpmn:incoming>\n      <bpmn:outgoing>Flow_0es6pgh</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:sequenceFlow id=\"Flow_0es6pgh\" sourceRef=\"Activity_153941x\" targetRef=\"Activity_1pvahuo\"/>\n    <bpmn:exclusiveGateway id=\"Gateway_0zpx5p0\" name=\"Submission Complete ?\">\n      <bpmn:incoming>Flow_09bu4yq</bpmn:incoming>\n      <bpmn:outgoing>Flow_02ue293</bpmn:outgoing>\n      <bpmn:outgoing>Flow_1hp9n9u</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:sequenceFlow id=\"Flow_0np0ks7\" sourceRef=\"Activity_0azpkne\" targetRef=\"Event_0ts53jy\"/>\n    <bpmn:task id=\"Activity_02bgk3e\" name=\"Update Application Status - Failed\">\n      <bpmn:extensionElements>\n        <camunda:executionListener event=\"start\">\n          <camunda:script scriptFormat=\"javascript\">execution.setVariable('applicationStatus', \"Failed\");</camunda:script>\n        </camunda:executionListener>\n        <camunda:executionListener class=\"org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener\" event=\"start\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_1hp9n9u</bpmn:incoming>\n      <bpmn:outgoing>Flow_1d9b9u2</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_1hp9n9u\" name=\"No\" sourceRef=\"Gateway_0zpx5p0\" targetRef=\"Activity_02bgk3e\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">${statusCode != 201}</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:task id=\"Activity_0azpkne\" name=\"Update Application Status - Submitted\">\n      <bpmn:extensionElements>\n        <camunda:executionListener event=\"start\">\n          <camunda:script scriptFormat=\"javascript\">execution.setVariable('applicationStatus', \"Submitted\");</camunda:script>\n        </camunda:executionListener>\n        <camunda:executionListener class=\"org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener\" event=\"start\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_02ue293</bpmn:incoming>\n      <bpmn:outgoing>Flow_0np0ks7</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_09bu4yq\" sourceRef=\"submit_event\" targetRef=\"Gateway_0zpx5p0\"/>\n    <bpmn:sequenceFlow id=\"Flow_0dibfen\" sourceRef=\"Activity_1pvahuo\" targetRef=\"submit_event\"/>\n    <bpmn:sequenceFlow id=\"Flow_1d9b9u2\" sourceRef=\"Activity_02bgk3e\" targetRef=\"Event_18715np\"/>\n    <bpmn:endEvent id=\"Event_18715np\" name=\"end\">\n      <bpmn:incoming>Flow_1d9b9u2</bpmn:incoming>\n    </bpmn:endEvent>\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"roadSafteyDigitalForms\">\n      <bpmndi:BPMNShape id=\"StartEvent_1_di\" bpmnElement=\"StartEvent_1\">\n        <dc:Bounds x=\"142\" y=\"122\" width=\"36\" height=\"36\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"150\" y=\"165\" width=\"22\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Event_0ts53jy_di\" bpmnElement=\"Event_0ts53jy\">\n        <dc:Bounds x=\"1172\" y=\"412\" width=\"36\" height=\"36\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"1180\" y=\"458\" width=\"19\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_1j3xucw_di\" bpmnElement=\"submit_event\">\n        <dc:Bounds x=\"660\" y=\"100\" width=\"100\" height=\"80\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_0lm1zzi_di\" bpmnElement=\"Activity_1pvahuo\">\n        <dc:Bounds x=\"440\" y=\"100\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"BPMNShape_06lqfa2\" bpmnElement=\"Activity_153941x\">\n        <dc:Bounds x=\"270\" y=\"100\" width=\"100\" height=\"80\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Gateway_0zpx5p0_di\" bpmnElement=\"Gateway_0zpx5p0\" isMarkerVisible=\"true\">\n        <dc:Bounds x=\"915\" y=\"115\" width=\"50\" height=\"50\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"912\" y=\"85\" width=\"57\" height=\"27\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"BPMNShape_0661aot\" bpmnElement=\"Activity_02bgk3e\">\n        <dc:Bounds x=\"1100\" y=\"100\" width=\"100\" height=\"80\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"BPMNShape_0613upj\" bpmnElement=\"Activity_0azpkne\">\n        <dc:Bounds x=\"900\" y=\"390\" width=\"100\" height=\"80\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Event_18715np_di\" bpmnElement=\"Event_18715np\">\n        <dc:Bounds x=\"1392\" y=\"122\" width=\"36\" height=\"36\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"1401\" y=\"165\" width=\"19\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"Flow_02ue293_di\" bpmnElement=\"Flow_02ue293\">\n        <di:waypoint x=\"940\" y=\"165\"/>\n        <di:waypoint x=\"940\" y=\"390\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"951\" y=\"233\" width=\"18\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_11aa80b_di\" bpmnElement=\"Flow_11aa80b\">\n        <di:waypoint x=\"178\" y=\"140\"/>\n        <di:waypoint x=\"270\" y=\"140\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"191\" y=\"122\" width=\"66\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0es6pgh_di\" bpmnElement=\"Flow_0es6pgh\">\n        <di:waypoint x=\"370\" y=\"140\"/>\n        <di:waypoint x=\"440\" y=\"140\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0np0ks7_di\" bpmnElement=\"Flow_0np0ks7\">\n        <di:waypoint x=\"1000\" y=\"430\"/>\n        <di:waypoint x=\"1172\" y=\"430\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_1hp9n9u_di\" bpmnElement=\"Flow_1hp9n9u\">\n        <di:waypoint x=\"965\" y=\"140\"/>\n        <di:waypoint x=\"1100\" y=\"140\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"1025\" y=\"122\" width=\"15\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_09bu4yq_di\" bpmnElement=\"Flow_09bu4yq\">\n        <di:waypoint x=\"760\" y=\"140\"/>\n        <di:waypoint x=\"915\" y=\"140\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0dibfen_di\" bpmnElement=\"Flow_0dibfen\">\n        <di:waypoint x=\"540\" y=\"140\"/>\n        <di:waypoint x=\"660\" y=\"140\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_1d9b9u2_di\" bpmnElement=\"Flow_1d9b9u2\">\n        <di:waypoint x=\"1200\" y=\"140\"/>\n        <di:waypoint x=\"1392\" y=\"140\"/>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n"
     }
   ],
   "rules": [],
