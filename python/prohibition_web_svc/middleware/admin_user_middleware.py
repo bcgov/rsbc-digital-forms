@@ -6,8 +6,6 @@ import json
 from datetime import datetime
 import pytz
 from python.common.models import db, User, UserRole
-import python.common.rsi_email as rsi_email
-from python.prohibition_web_svc.config import Config
 
 class CustomErrorHandler(errors.BasicErrorHandler):
     messages = errors.BasicErrorHandler.messages.copy()
