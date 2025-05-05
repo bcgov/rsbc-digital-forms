@@ -1,3 +1,4 @@
+import os
 from keycloak import KeycloakOpenID
 from python.common.config import Config
 import requests
@@ -59,13 +60,17 @@ def _send(payload, config, eventid='') -> bool:
 
 
 def get_common_services_access_token(config):
+    os.environ['SSL_CERT_FILE'] = ''
     # Configure Keycloak client
     keycloak_openid = KeycloakOpenID(server_url=config.COMM_SERV_AUTH_URL,
                                      client_id=config.COMM_SERV_CLIENT_ID,
                                      realm_name=config.COMM_SERV_REALM,
-                                     client_secret_key=config.COMM_SERV_CLIENT_SECRET)
+                                     client_secret_key=config.COMM_SERV_CLIENT_SECRET,
+                                     verify=False)
     # Get Token
     token = keycloak_openid.token('', '', 'client_credentials')
+
+    os.environ['SSL_CERT_FILE'] = config.MINIO_CERT_FILE
     return token['access_token']
 
 
