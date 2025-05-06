@@ -209,10 +209,10 @@ def vi_event(**args):
     return True, args
 
 def fill_location(args, eventPayload):
-    if 'latitude' in args['event_data'] and 'longitude' in args['event_data']:
+    if 'latitude' in args['event_data'] and 'longitude' in args['event_data'] and args['event_data']['latitude'] and args['event_data']['longitude']:
         eventPayload["locationRequestPayload"] = {}
-        eventPayload["locationRequestPayload"]["latitude"] = args['event_data']['latitude'] or ''
-        eventPayload["locationRequestPayload"]["longitude"] = args['event_data']['longitude'] or ''
+        eventPayload["locationRequestPayload"]["latitude"] = args['event_data']['latitude']
+        eventPayload["locationRequestPayload"]["longitude"] = args['event_data']['longitude']
         eventPayload["locationRequestPayload"]["requestedAddress"] = args['event_data']['requested_address']
         eventPayload["locationRequestPayload"]["fullAddress"] = args['event_data']['full_address'] or 'NA'
 
