@@ -214,7 +214,7 @@ def fill_location(args, eventPayload):
         eventPayload["locationRequestPayload"]["latitude"] = args['event_data']['latitude']
         eventPayload["locationRequestPayload"]["longitude"] = args['event_data']['longitude']
         eventPayload["locationRequestPayload"]["requestedAddress"] = args['event_data']['requested_address']
-        eventPayload["locationRequestPayload"]["fullAddress"] = args['event_data']['full_address']
+        eventPayload["locationRequestPayload"]["fullAddress"] = args['event_data']['full_address'] or 'NA'
 
 
 def fill_common_payload_record(args, payloadRecord):
