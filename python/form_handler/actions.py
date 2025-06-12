@@ -315,6 +315,7 @@ def prep_icbc_payload(**args)->tuple:
     message=args.get('message')
 
     try:
+        application = args.get('app')
         pdf_data=args.get('file_data')
         event_data=args.get('event_data')
         form_data=args.get('form_data')
@@ -355,7 +356,6 @@ def prep_icbc_payload(**args)->tuple:
 
 
         if "driver_jurisdiction" in event_data and event_data["driver_jurisdiction"] is not None:
-            application = args.get('app')
             db = args.get('db')
             tmp_jurisdictionvalue=event_data["driver_jurisdiction"]
             with application.app_context():
@@ -440,7 +440,6 @@ def prep_icbc_payload(**args)->tuple:
         if "offence_city" in event_data and event_data["offence_city"] is not None:
             tmp_city=event_data["offence_city"]
             offence_city_value=''
-            application = args.get('app')
             db = args.get('db')
             with application.app_context():
                 city_data = db.session.query(CityCrossRef) \
@@ -475,7 +474,6 @@ def prep_icbc_payload(**args)->tuple:
             logging.debug(user_data["agency"])
             agency_name=user_data["agency"]
             detachment_city=''
-            application = args.get('app')
             db = args.get('db')
             with application.app_context():
                 agency_data = db.session.query(AgencyCrossref) \

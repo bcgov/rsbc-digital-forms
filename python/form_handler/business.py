@@ -183,10 +183,12 @@ def process_incoming_form() -> dict:
             {"try": actions.prep_icbc_payload, "fail": [
                 {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
                 {"try": actions.add_to_persistent_failed_queue, "fail": []},
+                {"try": actions.record_event_error, "fail": []},
                 {"try": actions.update_event_status_error, "fail": []},
             ]},
             {"try": actions.send_to_icbc, "fail": [
                 {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.record_event_error, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
             {"try": actions.get_event_coordinates, "fail": []},
