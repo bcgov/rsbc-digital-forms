@@ -80,6 +80,8 @@ class ErrorCode(BaseEnum):
                            "Contact DF application support for further investigation", False)
     E08 = ErrorCodeDetails("E08", "General Event process error", ErrorCategory.SYSTEM, ErrorSeverity.CRITICAL, 
                            "Contact DF application support for further investigation", False)
+    E09 = ErrorCodeDetails("E09", "Application ID already exists", ErrorCategory.DATA, ErrorSeverity.LOW, 
+                           "Contact DF application support for further investigation", False)
     
     # Forms related error
     

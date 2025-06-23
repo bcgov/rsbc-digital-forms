@@ -84,7 +84,7 @@ def event_to_vips_dps(**args) -> tuple:
             logging.debug("email not sent to vips")
             raise Exception("email not sent to vips")
     except Exception as e:
-        logging.error(e)
+        logging.exception("Exception in sending email to vips: {}".format(e))
         return False, args
     return True, args
 

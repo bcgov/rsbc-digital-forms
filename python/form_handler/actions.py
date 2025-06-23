@@ -2,6 +2,7 @@ import json
 import logging
 import logging.config
 from python.common import form_middleware
+from python.common.helper import date_time_to_local_tz_string
 from python.form_handler.config import Config
 import logging
 import json
@@ -56,7 +57,7 @@ def get_storage_ref_event_type(**args) -> tuple:
                 args['storage_ref']=form_dict
         # args['event_type']=storage_key
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return False,args
     return True, args
 
@@ -137,7 +138,7 @@ def get_event_form_data(**args) ->tuple:
             else:
                 return False,args
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return False, args
     return True, args
 
@@ -161,7 +162,7 @@ def get_event_user_data(**args) ->tuple:
                 user_dict.pop('_sa_instance_state', None)
                 args['user_data'] = user_dict
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return False, args
     return True,args
 
@@ -208,7 +209,7 @@ def validate_event_retry_count(**args)->tuple:
             return False,args
     
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         # Set error in args to get consumed by the record_event_error function
         message = args.get('message')
         args['error'] = {
@@ -254,7 +255,7 @@ def update_event_status_processing(**args)->tuple:
                 event.icbc_sent_status = 'processing'
                 db.session.commit()
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return False,args
     return True,args
 
@@ -296,7 +297,7 @@ def get_storage_file(**args)->tuple:
 
         # decrypted_data=method2_decrypt(file_data_content,encryptivkey)
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         if file_data is not None:
             file_data.close()
             file_data.release_conn()
@@ -314,6 +315,8 @@ def prep_icbc_payload(**args)->tuple:
     message=args.get('message')
 
     try:
+        application = args.get('app')
+        db = args.get('db')
         pdf_data=args.get('file_data')
         event_data=args.get('event_data')
         form_data=args.get('form_data')
@@ -344,7 +347,7 @@ def prep_icbc_payload(**args)->tuple:
 
         # if "form_id" in form_data: tmp_payload["noticeNumber"]=event_data["form_id"]
 
-        if "driver_licence_no" in event_data: 
+        if "driver_licence_no" in event_data and event_data["driver_licence_no"] is not None: 
             tmpdl=event_data["driver_licence_no"] 
             if len(tmpdl) <8:
                 tmpdl="0"*(8-len(tmpdl))+tmpdl
@@ -353,9 +356,7 @@ def prep_icbc_payload(**args)->tuple:
             tmp_payload["dlNumber"]=None
 
 
-        if "driver_jurisdiction" in event_data:
-            application = args.get('app')
-            db = args.get('db')
+        if "driver_jurisdiction" in event_data and event_data["driver_jurisdiction"] is not None:
             tmp_jurisdictionvalue=event_data["driver_jurisdiction"]
             with application.app_context():
                 # get jurisdiction data
@@ -374,8 +375,8 @@ def prep_icbc_payload(**args)->tuple:
                 tmp_payload["dlJurisdiction"]=icbc_jurisdiction_code
             
         
-        if "driver_last_name" in  event_data: tmp_payload["lastName"]=event_data["driver_last_name"].upper()
-        if "driver_given_name" in event_data: tmp_payload["firstName"]=event_data["driver_given_name"].upper()
+        if "driver_last_name" in  event_data and event_data["driver_last_name"] is not None: tmp_payload["lastName"]=event_data["driver_last_name"].upper()
+        if "driver_given_name" in event_data and event_data["driver_given_name"] is not None: tmp_payload["firstName"]=event_data["driver_given_name"].upper()
 
         # convert birthdate to string
         birthdate=event_data.get("driver_dob")
@@ -396,7 +397,7 @@ def prep_icbc_payload(**args)->tuple:
                 else:
                     tmp_payload["plateJurisdiction"]= juris_data[0].icbc_jurisdiction_code
 
-        if "vehicle_plate_no" in event_data: 
+        if "vehicle_plate_no" in event_data and event_data["vehicle_plate_no"] is not None: 
             tmp_plate_no=event_data["vehicle_plate_no"].upper()
             tmp_plate_no=tmp_plate_no.replace(" ", "")
             tmp_payload["plateNumber"]=tmp_plate_no
@@ -436,11 +437,9 @@ def prep_icbc_payload(**args)->tuple:
         
 
         # get the icbc city code
-        if "offence_city" in event_data:
+        if "offence_city" in event_data and event_data["offence_city"] is not None:
             tmp_city=event_data["offence_city"]
             offence_city_value=''
-            application = args.get('app')
-            db = args.get('db')
             with application.app_context():
                 city_data = db.session.query(CityCrossRef) \
                         .filter(CityCrossRef.city_code == tmp_city) \
@@ -464,18 +463,16 @@ def prep_icbc_payload(**args)->tuple:
         # convert date_of_driving to string
         date_of_driving=event_data.get("date_of_driving")
         if date_of_driving is not None:
-            date_of_driving=date_of_driving.strftime('%Y%m%d')
+            date_of_driving=date_time_to_local_tz_string(date_of_driving, "%Y%m%d")
             tmp_payload["violationDate"]=date_of_driving
         if "time_of_driving" in event_data: 
             tmp_payload["violationTime"]=event_data["time_of_driving"].replace(" ", "")
 
         # TODO: get agency from user table for the event
-        if "agency" in user_data: 
+        if "agency" in user_data and user_data["agency"] is not None: 
             logging.debug(user_data["agency"])
             agency_name=user_data["agency"]
             detachment_city=''
-            application = args.get('app')
-            db = args.get('db')
             with application.app_context():
                 agency_data = db.session.query(AgencyCrossref) \
                     .filter(AgencyCrossref.agency_name == agency_name) \
@@ -500,10 +497,10 @@ def prep_icbc_payload(**args)->tuple:
         
         args['icbc_payload']=tmp_payload
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         args['error'] = {
             'error_code': ErrorCode.I02,
-            'error_details': e,
+            'error_details': str(e),
             'event_id': message.get('event_id') if message else None,
             'event_type': message.get('event_type') if message else None,
             'func': prep_icbc_payload,
@@ -535,7 +532,7 @@ def send_to_icbc(**args)->tuple:
         }
             return False,args
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         args['error'] = {
             'error_code': ErrorCode.I01,
             'error_details': e,
@@ -580,7 +577,7 @@ def send_to_icbc(**args)->tuple:
 #         if vips_response_txt is False:
 #             return False,args
 #     except Exception as e:
-#         logging.error(e)
+#         logging.exception(e)
 #         return False,args
 #     return True,args
 
@@ -619,7 +616,7 @@ def prep_vips_document_payload(**args)->tuple:
 
         args['vips_document_payload']=tmp_payload
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return False,args
     return True,args
 
@@ -641,7 +638,7 @@ def create_vips_document(**args)->tuple:
             vips_doc_id=vips_doc_response_txt.get('document_id')
             args['vips_doc_id']=vips_doc_id
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return False,args
 
     return True,args
@@ -986,7 +983,7 @@ def prep_vips_payload(**args)->tuple:
         args['vips_payload']=tmp_payload
         logging.debug(tmp_payload)
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         logging.error(tmp_payload)
         return False,args
 
@@ -1006,7 +1003,7 @@ def create_vips_impoundment(**args)->tuple:
         if vips_status is False:
             return False,args
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return False,args
 
     return True,args
@@ -1035,7 +1032,7 @@ def update_event_status(**args)->tuple:
                 event.icbc_sent_status = 'sent'
                 db.session.commit()
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return False,args
     return True,args
 
@@ -1077,7 +1074,7 @@ def update_event_status_hold(**args)->tuple:
             }
             record_event_error(**error_args)
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         # Directly call record_event_error
         error_args = {
             'error': {
@@ -1132,7 +1129,7 @@ def update_event_status_error(**args)->tuple:
             }
             record_event_error(**error_args)
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         # If an exception occurs, record it as an error
         error_args = {
             'error': {
@@ -1182,7 +1179,7 @@ def update_event_status_error_retry(**args)->tuple:
                     event.icbc_sent_status = 'retrying'
                 db.session.commit()
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return False,args
     return True,args
 
@@ -1208,7 +1205,7 @@ def add_to_persistent_failed_queue(**args)->tuple:
             logging.critical('unable to write to RabbitMQ {} queue'.format(config.STORAGE_FAIL_QUEUE_PERS))
             return False, args
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         # Set error in args to get consumed by the record_event_error function
         message = args.get('message')
         args['error'] = {
@@ -1235,7 +1232,7 @@ def add_to_transient_failed_queue(**args)->tuple:
             logging.critical('unable to write to RabbitMQ {} queue'.format(config.STORAGE_FAIL_QUEUE))
             return False, args
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return False, args
     return True, args
 
@@ -1252,7 +1249,7 @@ def add_to_hold_queue(**args)->tuple:
             logging.critical('unable to write to RabbitMQ {} queue'.format(config.STORAGE_HOLD_QUEUE))
             return False, args
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return False, args
     return True, args
 
@@ -1288,7 +1285,7 @@ def add_to_retry_queue(**args)->tuple:
             record_event_error(**error_args)
             return False, args
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return False, args
     return True, args
 
@@ -1302,7 +1299,7 @@ def add_unknown_event_error_to_message(**args)->tuple:
         tmp_key = message.get('Key', None)
         args['storage_key'] = tmp_key
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return False, args
     return True,args
 
@@ -1320,7 +1317,7 @@ def add_unknown_event_to_error(**args)->tuple:
             'payload': message,
         }
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return False, args
     return True,args
 

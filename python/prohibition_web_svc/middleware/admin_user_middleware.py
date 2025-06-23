@@ -14,7 +14,7 @@ class CustomErrorHandler(errors.BasicErrorHandler):
 def user_has_not_applied_previously(**kwargs) -> tuple:
     try:
         user_count = db.session.query(User) \
-            .filter(User.user_guid == kwargs.get('user_guid')) \
+            .filter(User.user_guid == kwargs.get('payload')['user_guid']) \
             .count()
         logging.debug("inside user_has_not_applied_previously(): " + str(user_count))
         if user_count:
@@ -28,7 +28,7 @@ def user_has_not_applied_previously(**kwargs) -> tuple:
 def does_role_already_exist(**kwargs) -> tuple:
     try:
         user_role_count = db.session.query(UserRole) \
-            .filter(UserRole.user_guid == kwargs.get('user_guid')) \
+            .filter(UserRole.user_guid == kwargs.get('payload')['user_guid']) \
             .count()
         logging.debug("inside does_role_already_exist(): " + str(user_role_count))
     except Exception as e:
@@ -40,12 +40,12 @@ def does_role_already_exist(**kwargs) -> tuple:
 def update_the_user(**kwargs) -> tuple:
     try:
         user = db.session.query(User) \
-            .filter(User.user_guid == kwargs.get('user_guid')) \
+            .filter(User.user_guid == kwargs.get('payload')['user_guid']) \
             .first()
-        user.username = kwargs.get('username')
-        user.user_guid = kwargs.get('user_guid')
-        user.display_name = kwargs.get('display_name')
-        user.login = kwargs.get('login')
+        user.username = kwargs.get('payload')['username']
+        user.user_guid = kwargs.get('payload')['user_guid']
+        user.display_name = kwargs.get('payload')['display_name']
+        user.login = kwargs.get('payload')['login']
         user.badge_number = kwargs.get('payload')['badge_number']
         user.agency = kwargs.get('payload')['agency']
         user.first_name = kwargs.get('payload')['first_name']
@@ -56,15 +56,15 @@ def update_the_user(**kwargs) -> tuple:
         return False, kwargs
     return True, kwargs
 
-
-def create_a_user(**kwargs) -> tuple:
+## Function to allow service account user create a
+def admin_create_a_user(**kwargs) -> tuple:
     try:
         user = User(
-            username=kwargs.get('username'),
-            user_guid=kwargs.get('user_guid'),
-            business_guid=kwargs.get('business_guid'),
-            display_name=kwargs.get('display_name'),
-            login=kwargs.get('login'),
+            username=kwargs.get('payload')['username'],
+            user_guid=kwargs.get('payload')['user_guid'],
+            business_guid=kwargs.get('payload')['business_guid'],
+            display_name=kwargs.get('payload')['display_name'],
+            login=kwargs.get('payload')['login'],
             badge_number=kwargs.get('payload')['badge_number'],
             agency=kwargs.get('payload')['agency'],
             first_name=kwargs.get('payload')['first_name'],
@@ -78,12 +78,13 @@ def create_a_user(**kwargs) -> tuple:
     return True, kwargs
 
 
+
 def create_user_role(**kwargs) -> tuple:
     tz = pytz.timezone("America/Vancouver")
     now = datetime.now(tz)
     try:
         requested_role = UserRole(
-            user_guid=kwargs.get('user_guid'),
+            user_guid=kwargs.get('payload')['user_guid'],
             role_name="officer",
             submitted_dt=now
         )
@@ -107,45 +108,11 @@ def request_contains_a_payload(**kwargs) -> tuple:
     logging.warning("payload: " + json.dumps(payload))
     return payload is not None, kwargs
 
-def validate_create_user_payload(**kwargs) -> tuple:
-    schema = {
-        "badge_number": {
-            "type": "string",
-            "regex": r"^([A-Z]{2}\d{2,4})|(\d{6})$",
-            "required": True
-        },
-        "agency": {
-            "type": "string",
-            'minlength': 5,
-            'maxlength': 30,
-            "required": True
-        },
-        "first_name": {
-            "type": "string",
-            'minlength': 2,
-            'maxlength': 30,
-            "required": True
-        },
-        "last_name": {
-            "type": "string",
-            'minlength': 2,
-            'maxlength': 30,
-            "required": True
-        }
-    }
-    cerberus = Validator(schema, error_handler=CustomErrorHandler)
-    cerberus.allow_unknown = False
-    if cerberus.validate(kwargs.get('payload')):
-        return True, kwargs
-    logging.warning("validation error: " + json.dumps(cerberus.errors))
-    kwargs['validation_errors'] = cerberus.errors
-    return False, kwargs
-
 
 def get_user(**kwargs) -> tuple:
     try:
         user = db.session.query(User) \
-            .filter(User.user_guid == kwargs.get('user_guid')) \
+            .filter(User.user_guid == kwargs.get('payload')['user_guid']) \
             .first()
         db.session.commit()
         kwargs['response'] = make_response(jsonify(User.serialize(user)), 200)
@@ -156,7 +123,7 @@ def get_user(**kwargs) -> tuple:
 
 
 def validate_update_last_active_request(**kwargs):
-    user_guid = kwargs.get('user_guid')
+    user_guid = kwargs.get('payload')['user_guid']
     if not user_guid:
         kwargs['response'] = {"error": "user_guid is required"}, 400
         return False, kwargs
@@ -164,7 +131,7 @@ def validate_update_last_active_request(**kwargs):
 
 def update_user_last_active(**kwargs):
     try:
-        user_guid = kwargs.get('user_guid')
+        user_guid = kwargs.get('payload')['user_guid']
         user = User.query.get(user_guid)
         if user:
             user.last_active = datetime.now()
@@ -178,3 +145,67 @@ def update_user_last_active(**kwargs):
         db.session.rollback()
         kwargs['response'] = {"error": f"An error occurred: {str(e)}"}, 500
         return False, kwargs
+    
+def validate_admin_create_user_payload(**kwargs) -> tuple:
+    schema = {
+          "user_guid": {
+            "type": "string",
+            'minlength': 2,
+            'maxlength': 120,
+            "required": True
+        },
+         "business_guid": {
+            "type": "string",
+            'minlength': 0,
+            'maxlength': 120,
+            "required": False
+        },
+         "username": {
+            "type": "string",
+            'minlength': 2,
+            'maxlength': 80,
+            "required": True
+        },
+         "agency": {
+            "type": "string",
+            'minlength': 5,
+            'maxlength': 30,
+            "required": True
+        },
+        "badge_number": {
+            "type": "string",
+            "regex": r"^([A-Z]{2}\d{2,4})|(\d{6})$",
+            "required": True
+        },
+        "first_name": {
+            "type": "string",
+            'minlength': 2,
+            'maxlength': 30,
+            "required": True
+        },
+        "last_name": {
+            "type": "string",
+            'minlength': 2,
+            'maxlength': 30,
+            "required": True
+        },
+         "login": {
+            "type": "string",
+            'minlength': 2,
+            'maxlength': 80,
+            "required": True
+        },
+         "display_name": {
+            "type": "string",
+            'minlength': 2,
+            'maxlength': 80,
+            "required": False
+        }
+    }
+    cerberus = Validator(schema, error_handler=CustomErrorHandler)
+    cerberus.allow_unknown = False
+    if cerberus.validate(kwargs.get('payload')):
+        return True, kwargs
+    logging.warning("validation error: " + json.dumps(cerberus.errors))
+    kwargs['validation_errors'] = cerberus.errors
+    return False, kwargs    
