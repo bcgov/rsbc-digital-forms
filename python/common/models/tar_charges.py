@@ -3,7 +3,7 @@ from .base import db
 
 @dataclass
 class TarCharges(db.Model):
-    __tablename__ = 'charges'
+    __tablename__ = 'tar_charges'
 
     charge_id: int
     entity_id: int
@@ -11,8 +11,8 @@ class TarCharges(db.Model):
     section_num: str
     offence_title: str
 
-    charge_id = db.Column(db.Integer, primary_key=True)
+    charge_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     entity_id = db.Column(db.Integer, db.ForeignKey('entity.entity_id'), nullable=False)
-    charge_type = db.Column(db.String)
-    section_num = db.Column(db.String)
-    offence_title = db.Column(db.String)
+    charge_type = db.Column(db.String(1))
+    section_num = db.Column(db.String(10))
+    offence_title = db.Column(db.String(70))

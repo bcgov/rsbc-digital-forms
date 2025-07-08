@@ -3,7 +3,7 @@ from .base import db
 
 @dataclass
 class TarPedestrianLocation(db.Model):
-    __tablename__ = 'pedestrian_location'
+    __tablename__ = 'tar_pedestrian_location'
     code: str
     description: str
     code = db.Column(db.String(2), primary_key=True)

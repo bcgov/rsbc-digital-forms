@@ -54,13 +54,11 @@ from .tar_primary_collision_occurrence import TarPrimaryCollisionOccurrence
 from .tar_pedestrian_location import TarPedestrianLocation
 from .tar_pedestrian_action import TarPedestrianAction
 from .tar_entity_type import TarEntityType
-from .tar_possible_offender import TarPossibleOffender
 from .tar_contributing_factors import TarContributingFactors
-from .tar_licence_class import TarLicenceClass
 from .tar_damage_location import TarDamageLocation
 from .tar_damage_severity import TarDamageSeverity
 from .tar_pre_collision_action import TarPreCollisionAction
-from .tar_vehicle_type_table import TarVehicleTypeTable
+from .tar_vehicle_type import TarVehicleType
 from .tar_vehicle_use import TarVehicleUse
 from .tar_position import TarPosition
 from .tar_safety_equipment import TarSafetyEquipment

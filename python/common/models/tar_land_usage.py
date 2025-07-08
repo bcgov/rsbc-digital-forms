@@ -3,7 +3,7 @@ from .base import db
 
 @dataclass
 class TarLandUsage(db.Model):
-    __tablename__ = 'land_usage'
+    __tablename__ = 'tar_land_usage'
     code: str
     description: str
     code = db.Column(db.String(2), primary_key=True)

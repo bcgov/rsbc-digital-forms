@@ -3,7 +3,7 @@ from .base import db
 
 @dataclass
 class TarSpeedZone(db.Model):
-    __tablename__ = 'speed_zone'
+    __tablename__ = 'tar_speed_zone'
     code: str
     description: str
     code = db.Column(db.String(3), primary_key=True)

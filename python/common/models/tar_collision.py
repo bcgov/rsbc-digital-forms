@@ -4,7 +4,7 @@ from .base import db
 
 @dataclass
 class TarCollision(db.Model):
-    __tablename__ = 'collision'
+    __tablename__ = 'tar_collision'
 
     submission_id: int
     collision_case_num: str
@@ -19,7 +19,7 @@ class TarCollision(db.Model):
     hit_and_run: str
     police_attended: str
     police_agency_type_district: str
-    police_agency_code: str
+    police_agency_code: int
     police_zone: str
     primary_collision_occ_code: str
     first_contact_event: str
@@ -34,28 +34,28 @@ class TarCollision(db.Model):
     investigated_by_traffic_analyst: str
 
     submission_id = db.Column(db.Integer, db.ForeignKey('submission.submission_id'), nullable=False)
-    collision_case_num = db.Column(db.String, primary_key=True, nullable=False)
-    collision_scenario = db.Column(db.String, nullable=False)
-    police_file_num = db.Column(db.String, nullable=False)
-    prime_file_vjur = db.Column(db.String, nullable=False)
-    police_file_prefix = db.Column(db.String)
+    collision_case_num = db.Column(db.String(10), primary_key=True, nullable=False)
+    collision_scenario = db.Column(db.String(2), nullable=False)
+    police_file_num = db.Column(db.String(18), nullable=False)
+    prime_file_vjur = db.Column(db.Integer, db.ForeignKey('agency.id'), nullable=False)
+    police_file_prefix = db.Column(db.String(15))
     date_collision = db.Column(db.Date, nullable=False)
     time_collision = db.Column(db.Time, nullable=False)
-    reported_same_day = db.Column(db.String)
+    reported_same_day = db.Column(db.String(1), nullable=False)
     date_reported = db.Column(db.Date, nullable=False)
-    hit_and_run = db.Column(db.String, nullable=False)
-    police_attended = db.Column(db.String, nullable=False)
-    police_agency_type_district = db.Column(db.String, nullable=False)
-    police_agency_code = db.Column(db.String, nullable=False)
-    police_zone = db.Column(db.String)
-    primary_collision_occ_code = db.Column(db.String, nullable=False)
-    first_contact_event = db.Column(db.String, nullable=False)
-    first_contact_loc = db.Column(db.String, nullable=False)
-    has_countable_fatal = db.Column(db.String, nullable=False)
+    hit_and_run = db.Column(db.String(1), nullable=False)
+    police_attended = db.Column(db.String(1), nullable=False)
+    police_agency_type_district = db.Column(db.String(30), nullable=False)   # Check if needed
+    police_agency_code = db.Column(db.Integer, db.ForeignKey('agency.id'), nullable=False)
+    police_zone = db.Column(db.String(22))
+    primary_collision_occ_code = db.Column(db.String(2), db.ForeignKey('tar_primary_collision_occurrence.code'), nullable=False)
+    first_contact_event = db.Column(db.String(2), db.ForeignKey('tar_type_of_collision.code'), nullable=False)
+    first_contact_loc = db.Column(db.String(2), db.ForeignKey('tar_location_of_first_contact.code'), nullable=False)
+    has_countable_fatal = db.Column(db.String(2), nullable=False)
     countable_fatal_total = db.Column(db.Integer, nullable=False, default=0)
-    completed_by_name = db.Column(db.String, nullable=False)
-    completed_by_id = db.Column(db.String, nullable=False)
-    detachment_unit = db.Column(db.String, nullable=False)
+    completed_by_name = db.Column(db.String(35), nullable=False)
+    completed_by_id = db.Column(db.String(40), db.ForeignKey('user.user_guid'), nullable=False)
+    detachment_unit = db.Column(db.String(30), nullable=False)
     icbc_submission_date = db.Column(db.String, nullable=False)
-    reviewed_by = db.Column(db.String, nullable=False)
-    investigated_by_traffic_analyst = db.Column(db.String, nullable=False)
+    reviewed_by = db.Column(db.String(40))
+    investigated_by_traffic_analyst = db.Column(db.String(1), nullable=False)

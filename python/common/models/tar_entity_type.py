@@ -3,7 +3,7 @@ from .base import db
 
 @dataclass
 class TarEntityType(db.Model):
-    __tablename__ = 'entity_type'
+    __tablename__ = 'tar_entity_type'
     code: str
     description: str
     code = db.Column(db.String(1), primary_key=True)

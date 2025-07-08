@@ -4,18 +4,18 @@ from .base import db
 
 @dataclass
 class TarEntity(db.Model):
-    __tablename__ = 'entity'
+    __tablename__ = 'tar_entity'
 
     entity_id: int
     collision_case_num: str
     entity_type: str
     entity_num: int
-    possible_offender: bool
+    possible_offender: str
     vehicle_parked: bool
     unknown_entity: bool
     driver_license_num: str
     license_prov_state: str
-    license_expiry: str
+    license_expiry: int
     surname: str
     given_name: str
     license_class: str
@@ -35,31 +35,31 @@ class TarEntity(db.Model):
     result_1: str
     result_2: str
 
-    entity_id = db.Column(db.Integer, primary_key=True)
-    collision_case_num = db.Column(db.String, db.ForeignKey('collision.collision_case_num'), nullable=False)
-    entity_type = db.Column(db.String, nullable=False)
+    entity_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    collision_case_num = db.Column(db.String(10), db.ForeignKey('tar_collision.collision_case_num'), nullable=False)
+    entity_type = db.Column(db.String(1), db.ForeignKey('tar_entity_type.code'), nullable=False)
     entity_num = db.Column(db.Integer, nullable=False)
-    possible_offender = db.Column(db.Boolean, nullable=False, default=False)
+    possible_offender = db.Column(db.String(1), nullable=False)
     vehicle_parked = db.Column(db.Boolean)
     unknown_entity = db.Column(db.Boolean)
-    driver_license_num = db.Column(db.String)
-    license_prov_state = db.Column(db.String)
-    license_expiry = db.Column(db.String)
-    surname = db.Column(db.String)
-    given_name = db.Column(db.String)
-    license_class = db.Column(db.String)
-    graduated_license_type = db.Column(db.String)
-    residential_address = db.Column(db.String)
-    business_address = db.Column(db.String)
+    driver_license_num = db.Column(db.String(25))
+    license_prov_state = db.Column(db.String(2))
+    license_expiry = db.Column(db.Integer)
+    surname = db.Column(db.String(28))
+    given_name = db.Column(db.String(25))
+    license_class = db.Column(db.String(10))
+    graduated_license_type = db.Column(db.String(1))
+    residential_address = db.Column(db.String(90))
+    business_address = db.Column(db.String(68))
     date_of_birth = db.Column(db.Date)
     age_at_collision = db.Column(db.Integer)
-    contact_phone_num = db.Column(db.String)
-    sex = db.Column(db.String)
-    contributing_factor_1 = db.Column(db.String, nullable=False)
-    contributing_factor_2 = db.Column(db.String, nullable=False)
-    contributing_factor_3 = db.Column(db.String, nullable=False)
-    contributing_factor_4 = db.Column(db.String, nullable=False)
+    contact_phone_num = db.Column(db.String(25))
+    sex = db.Column(db.String(1))
+    contributing_factor_1 = db.Column(db.String(2), db.ForeignKey('tar_contributing_factors.code'), nullable=False)
+    contributing_factor_2 = db.Column(db.String(2), db.ForeignKey('tar_contributing_factors.code'), nullable=False)
+    contributing_factor_3 = db.Column(db.String(2), db.ForeignKey('tar_contributing_factors.code'), nullable=False)
+    contributing_factor_4 = db.Column(db.String(2), db.ForeignKey('tar_contributing_factors.code'), nullable=False)
     charges_blood_alc_tests_taken = db.Column(db.Boolean)
-    blood_alc_test = db.Column(db.String)
-    result_1 = db.Column(db.String)
-    result_2 = db.Column(db.String)
+    blood_alc_test = db.Column(db.String(3))
+    result_1 = db.Column(db.String(8))
+    result_2 = db.Column(db.String(8))

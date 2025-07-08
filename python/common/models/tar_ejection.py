@@ -3,7 +3,7 @@ from .base import db
 
 @dataclass
 class TarEjection(db.Model):
-    __tablename__ = 'ejection'
+    __tablename__ = 'tar_ejection'
     code: str
     description: str
     code = db.Column(db.String(2), primary_key=True)

@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from .base import db
 
 @dataclass
-class TarVehicleTypeTable(db.Model):
-    __tablename__ = 'vehicle_type_table'
+class TarVehicleType(db.Model):
+    __tablename__ = 'tar_vehicle_type'
     code: str
     description: str
     code = db.Column(db.String(2), primary_key=True)

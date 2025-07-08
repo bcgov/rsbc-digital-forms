@@ -3,7 +3,7 @@ from .base import db
 
 @dataclass
 class TarContributingFactors(db.Model):
-    __tablename__ = 'contributing_factors'
+    __tablename__ = 'tar_contributing_factors'
     code: str
     description: str
     type: str
