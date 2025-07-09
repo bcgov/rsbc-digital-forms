@@ -4,7 +4,7 @@ from ..base import db
 
 @dataclass
 class TarAdditionalCollisionDetails(db.Model):
-    __tablename__ = 'tar_additional_collision_details'
+    __tablename__ = 'additional_collision_details'
     __table_args__ = {'schema': 'TAR'}
 
     collision_case_num: str
@@ -21,9 +21,9 @@ class TarAdditionalCollisionDetails(db.Model):
     total_killed: int
     total_vehicles: int
 
-    collision_case_num = db.Column(db.String(10), db.ForeignKey('TAR.tar_collision.collision_case_num'), primary_key=True)
-    pedestrian_location = db.Column(db.String(2), db.ForeignKey('tar_pedestrian_location.code'))
-    pedestrian_action = db.Column(db.String(2), db.ForeignKey('tar_pedestrian_action.code'))
+    collision_case_num = db.Column(db.String(10), db.ForeignKey('TAR.collision.collision_case_num'), primary_key=True)
+    pedestrian_location = db.Column(db.String(2), db.ForeignKey('TAR.pedestrian_location.code'))
+    pedestrian_action = db.Column(db.String(2), db.ForeignKey('TAR.pedestrian_action.code'))
     has_other_prop_damage = db.Column(db.String(2), nullable=False)
     other_prop_damage_desc = db.Column(db.String(3000))
     prop_damage_est_value = db.Column(db.Numeric(precision=12, scale=2))

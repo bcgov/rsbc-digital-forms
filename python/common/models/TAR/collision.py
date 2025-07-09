@@ -4,7 +4,7 @@ from ..base import db
 
 @dataclass
 class TarCollision(db.Model):
-    __tablename__ = 'tar_collision'
+    __tablename__ = 'collision'
     __table_args__ = {'schema': 'TAR'}
 
     submission_id: int
@@ -49,9 +49,9 @@ class TarCollision(db.Model):
     police_agency_type_district = db.Column(db.String(30), nullable=False)   # Check if needed
     police_agency_code = db.Column(db.Integer, db.ForeignKey('agency.id'), nullable=False)
     police_zone = db.Column(db.String(22))
-    primary_collision_occ_code = db.Column(db.String(2), db.ForeignKey('tar_primary_collision_occurrence.code'), nullable=False)
-    first_contact_event = db.Column(db.String(2), db.ForeignKey('tar_type_of_collision.code'), nullable=False)
-    first_contact_loc = db.Column(db.String(2), db.ForeignKey('tar_location_of_first_contact.code'), nullable=False)
+    primary_collision_occ_code = db.Column(db.String(2), db.ForeignKey('TAR.primary_collision_occurrence.code'), nullable=False)
+    first_contact_event = db.Column(db.String(2), db.ForeignKey('TAR.type_of_collision.code'), nullable=False)
+    first_contact_loc = db.Column(db.String(2), db.ForeignKey('TAR.location_of_first_contact.code'), nullable=False)
     has_countable_fatal = db.Column(db.String(2), nullable=False)
     countable_fatal_total = db.Column(db.Integer, nullable=False, default=0)
     completed_by_name = db.Column(db.String(35), nullable=False)

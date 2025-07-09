@@ -3,7 +3,7 @@ from ..base import db
 
 @dataclass
 class TarPrimaryCollisionOccurrence(db.Model):
-    __tablename__ = 'tar_primary_collision_occurrence'
+    __tablename__ = 'primary_collision_occurrence'
     __table_args__ = {'schema': 'TAR'}
     code: str
     description: str

@@ -3,7 +3,7 @@ from ..base import db
 
 @dataclass
 class TarPreCollisionAction(db.Model):
-    __tablename__ = 'tar_pre_collision_action'
+    __tablename__ = 'pre_collision_action'
     __table_args__ = {'schema': 'TAR'}
     code: str
     description: str

@@ -3,7 +3,7 @@ from ..base import db
 
 @dataclass
 class TarDamageSeverity(db.Model):
-    __tablename__ = 'tar_damage_severity'
+    __tablename__ = 'damage_severity'
     __table_args__ = {'schema': 'TAR'}
     code: str
     description: str

@@ -3,7 +3,7 @@ from ..base import db
 
 @dataclass
 class TarWeatherCondition(db.Model):
-    __tablename__ = 'tar_weather_condition'
+    __tablename__ = 'weather_condition'
     __table_args__ = {'schema': 'TAR'}
     code: str
     description: str

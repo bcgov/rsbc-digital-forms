@@ -4,7 +4,7 @@ from ..base import db
 
 @dataclass
 class TarLocation(db.Model):
-    __tablename__ = 'tar_location'
+    __tablename__ = 'location'
     __table_args__ = {'schema': 'TAR'}
 
     location_id: int
@@ -41,7 +41,7 @@ class TarLocation(db.Model):
     lighting_cond: str
 
     location_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    collision_case_num = db.Column(db.String, db.ForeignKey('tar_collision.collision_case_num'), nullable=False)
+    collision_case_num = db.Column(db.String, db.ForeignKey('TAR.collision.collision_case_num'), nullable=False)
     hwy_code = db.Column(db.String, nullable=False)
     hwy_route_num = db.Column(db.String(4))
     segment_num = db.Column(db.String(4))
@@ -56,19 +56,19 @@ class TarLocation(db.Model):
     long_decim_degrees = db.Column(db.Numeric(precision=9, scale=6), nullable=False)
     lat_degree = db.Column(db.Integer)
     lat_min = db.Column(db.Integer)
-    lat_sec = db.Column(db.Numeric(precision=4, scale=10))
+    lat_sec = db.Column(db.Numeric(precision=5, scale=3))
     long_degree = db.Column(db.Integer)
     long_min = db.Column(db.Integer)
-    long_sec = db.Column(db.Numeric(precision=4, scale=10))
-    road_class = db.Column(db.String(2), db.ForeignKey('tar_road_class.code'), nullable=False)
-    traffic_flow = db.Column(db.String(2), db.ForeignKey('tar_traffic_flow.code'), nullable=False)
-    collision_loc = db.Column(db.String(2), db.ForeignKey('tar_collision_location.code'), nullable=False)
-    primary_speed_zone = db.Column(db.String(3), db.ForeignKey('tar_speed_zone.code'), nullable=False)
-    secondary_speed_zone = db.Column(db.String(3), db.ForeignKey('tar_speed_zone.code'))
-    land_usage = db.Column(db.String(2), db.ForeignKey('tar_land_usage.code'), nullable=False)
-    road_type = db.Column(db.String(2), db.ForeignKey('tar_road_type.code'), nullable=False)
-    traffic_control = db.Column(db.String(2), db.ForeignKey('tar_traffic_control.code'))
-    roadway_character = db.Column(db.String(2), db.ForeignKey('tar_roadway_character.code'), nullable=False)
-    roadway_surface_cond = db.Column(db.String(2), db.ForeignKey('tar_roadway_condition.code'), nullable=False)
-    weather_cond = db.Column(db.String(2), db.ForeignKey('tar_weather_condition.code'), nullable=False)
-    lighting_cond = db.Column(db.String(2), db.ForeignKey('tar_lighting_condition.code'), nullable=False)
+    long_sec = db.Column(db.Numeric(precision=5, scale=3))
+    road_class = db.Column(db.String(2), db.ForeignKey('TAR.road_class.code'), nullable=False)
+    traffic_flow = db.Column(db.String(2), db.ForeignKey('TAR.traffic_flow.code'), nullable=False)
+    collision_loc = db.Column(db.String(2), db.ForeignKey('TAR.collision_location.code'), nullable=False)
+    primary_speed_zone = db.Column(db.String(3), db.ForeignKey('TAR.speed_zone.code'), nullable=False)
+    secondary_speed_zone = db.Column(db.String(3), db.ForeignKey('TAR.speed_zone.code'))
+    land_usage = db.Column(db.String(2), db.ForeignKey('TAR.land_usage.code'), nullable=False)
+    road_type = db.Column(db.String(2), db.ForeignKey('TAR.road_type.code'), nullable=False)
+    traffic_control = db.Column(db.String(2), db.ForeignKey('TAR.traffic_control.code'))
+    roadway_character = db.Column(db.String(2), db.ForeignKey('TAR.roadway_character.code'), nullable=False)
+    roadway_surface_cond = db.Column(db.String(2), db.ForeignKey('TAR.roadway_condition.code'), nullable=False)
+    weather_cond = db.Column(db.String(2), db.ForeignKey('TAR.weather_condition.code'), nullable=False)
+    lighting_cond = db.Column(db.String(2), db.ForeignKey('TAR.lighting_condition.code'), nullable=False)

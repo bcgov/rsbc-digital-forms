@@ -3,7 +3,7 @@ from ..base import db
 
 @dataclass
 class TarSpeedZone(db.Model):
-    __tablename__ = 'tar_speed_zone'
+    __tablename__ = 'speed_zone'
     __table_args__ = {'schema': 'TAR'}
     code: str
     description: str

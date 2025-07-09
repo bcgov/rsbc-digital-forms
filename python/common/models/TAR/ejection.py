@@ -3,7 +3,7 @@ from ..base import db
 
 @dataclass
 class TarEjection(db.Model):
-    __tablename__ = 'tar_ejection'
+    __tablename__ = 'ejection'
     __table_args__ = {'schema': 'TAR'}
     code: str
     description: str

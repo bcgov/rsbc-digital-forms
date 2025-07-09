@@ -4,7 +4,7 @@ from ..base import db
 
 @dataclass
 class TarEntity(db.Model):
-    __tablename__ = 'tar_entity'
+    __tablename__ = 'entity'
     __table_args__ = {'schema': 'TAR'}
 
     entity_id: int
@@ -37,8 +37,8 @@ class TarEntity(db.Model):
     result_2: str
 
     entity_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    collision_case_num = db.Column(db.String(10), db.ForeignKey('tar_collision.collision_case_num'), nullable=False)
-    entity_type = db.Column(db.String(1), db.ForeignKey('tar_entity_type.code'), nullable=False)
+    collision_case_num = db.Column(db.String(10), db.ForeignKey('TAR.collision.collision_case_num'), nullable=False)
+    entity_type = db.Column(db.String(1), db.ForeignKey('TAR.entity_type.code'), nullable=False)
     entity_num = db.Column(db.Integer, nullable=False)
     possible_offender = db.Column(db.String(1), nullable=False)
     vehicle_parked = db.Column(db.Boolean)
@@ -56,10 +56,10 @@ class TarEntity(db.Model):
     age_at_collision = db.Column(db.Integer)
     contact_phone_num = db.Column(db.String(25))
     sex = db.Column(db.String(1))
-    contributing_factor_1 = db.Column(db.String(2), db.ForeignKey('tar_contributing_factors.code'), nullable=False)
-    contributing_factor_2 = db.Column(db.String(2), db.ForeignKey('tar_contributing_factors.code'), nullable=False)
-    contributing_factor_3 = db.Column(db.String(2), db.ForeignKey('tar_contributing_factors.code'), nullable=False)
-    contributing_factor_4 = db.Column(db.String(2), db.ForeignKey('tar_contributing_factors.code'), nullable=False)
+    contributing_factor_1 = db.Column(db.String(2), db.ForeignKey('TAR.contributing_factors.code'), nullable=False)
+    contributing_factor_2 = db.Column(db.String(2), db.ForeignKey('TAR.contributing_factors.code'), nullable=False)
+    contributing_factor_3 = db.Column(db.String(2), db.ForeignKey('TAR.contributing_factors.code'), nullable=False)
+    contributing_factor_4 = db.Column(db.String(2), db.ForeignKey('TAR.contributing_factors.code'), nullable=False)
     charges_blood_alc_tests_taken = db.Column(db.Boolean)
     blood_alc_test = db.Column(db.String(3))
     result_1 = db.Column(db.String(8))

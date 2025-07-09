@@ -3,7 +3,7 @@ from ..base import db
 
 @dataclass
 class TarRoadwayCharacter(db.Model):
-    __tablename__ = 'tar_roadway_character'
+    __tablename__ = 'roadway_character'
     __table_args__ = {'schema': 'TAR'}
     code: str
     description: str

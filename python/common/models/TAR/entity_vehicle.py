@@ -4,7 +4,7 @@ from ..base import db
 
 @dataclass
 class TarEntityVehicle(db.Model):
-    __tablename__ = 'tar_entity_vehicle'
+    __tablename__ = 'entity_vehicle'
     __table_args__ = {'schema': 'TAR'}
 
     vehicle_id: int
@@ -38,7 +38,7 @@ class TarEntityVehicle(db.Model):
     vehicle_use: str
 
     vehicle_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    entity_id = db.Column(db.Integer, db.ForeignKey('tar_entity.entity_id'), nullable=False)
+    entity_id = db.Column(db.Integer, db.ForeignKey('TAR.entity.entity_id'), nullable=False)
     vehicle_plate_num = db.Column(db.String(20))
     vehicle_plate_prov_state = db.Column(db.String(2))
     vehicle_year = db.Column(db.String(4))
@@ -51,8 +51,8 @@ class TarEntityVehicle(db.Model):
     vehicle_owner_address = db.Column(db.String(90))
     nsc_num = db.Column(db.String(50))
     jur_code = db.Column(db.String(45))
-    damage_location_code = db.Column(db.String(2), db.ForeignKey('tar_damage_location.code'), nullable=False)
-    severety_code = db.Column(db.String(2), db.ForeignKey('tar_damage_severity.code'), nullable=False)
+    damage_location_code = db.Column(db.String(2), db.ForeignKey('TAR.damage_location.code'), nullable=False)
+    severety_code = db.Column(db.String(2), db.ForeignKey('TAR.damage_severity.code'), nullable=False)
     estimated_vehicle_damage = db.Column(db.Numeric(16, 2))
     vehicle_stolen = db.Column(db.String(1))
     vehicle_towed = db.Column(db.String(1))
@@ -62,7 +62,7 @@ class TarEntityVehicle(db.Model):
     insurance_coverage = db.Column(db.String(1))
     other_insurer = db.Column(db.String(20))
     other_insurance_policy_num = db.Column(db.String(20))
-    second_contact = db.Column(db.String(2), db.ForeignKey('tar_type_of_collision.code'))
-    pre_collision_vehicle_action_first_event = db.Column(db.String(2), db.ForeignKey('tar_pre_collision_action.code'))
-    vehicle_type = db.Column(db.String(2), db.ForeignKey('tar_vehicle_type.code'))
-    vehicle_use = db.Column(db.String(2), db.ForeignKey('tar_vehicle_use.code'))
+    second_contact = db.Column(db.String(2), db.ForeignKey('TAR.type_of_collision.code'))
+    pre_collision_vehicle_action_first_event = db.Column(db.String(2), db.ForeignKey('TAR.pre_collision_action.code'))
+    vehicle_type = db.Column(db.String(2), db.ForeignKey('TAR.vehicle_type.code'))
+    vehicle_use = db.Column(db.String(2), db.ForeignKey('TAR.vehicle_use.code'))
