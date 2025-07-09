@@ -15,7 +15,8 @@ class TarCollision(db.Model):
     police_file_prefix: str
     date_collision: date
     time_collision: time
-    reported_same_day: str
+    reported_same_day: bool
+    time_collision_unknown: bool
     date_reported: date
     hit_and_run: str
     police_attended: str
@@ -42,7 +43,8 @@ class TarCollision(db.Model):
     police_file_prefix = db.Column(db.String(15))
     date_collision = db.Column(db.Date, nullable=False)
     time_collision = db.Column(db.Time, nullable=False)
-    reported_same_day = db.Column(db.String(1), nullable=False)
+    reported_same_day = db.Column(db.Boolean, nullable=False)
+    time_collision_unknown = db.Column(db.Boolean, nullable=False)
     date_reported = db.Column(db.Date, nullable=False)
     hit_and_run = db.Column(db.String(1), nullable=False)
     police_attended = db.Column(db.String(1), nullable=False)
