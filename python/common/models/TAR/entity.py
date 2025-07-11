@@ -64,3 +64,7 @@ class TarEntity(db.Model):
     blood_alc_test = db.Column(db.String(3))
     result_1 = db.Column(db.String(8))
     result_2 = db.Column(db.String(8))
+
+    vehicle = db.relationship('TarEntityVehicle', backref='entity', uselist=False, lazy='select')
+    involved_person = db.relationship('TarInvolvedPerson', backref='entity', uselist=True, lazy='select')
+    charges = db.relationship('TarCharges', backref='entity', uselist=True, lazy='select')

@@ -24,6 +24,12 @@ def upgrade():
     sa.PrimaryKeyConstraint('code'),
     schema='TAR'
     )
+    op.create_table('collision_scenario',
+    sa.Column('code', sa.String(length=2), nullable=False),
+    sa.Column('description', sa.String(length=100), nullable=False),
+    sa.PrimaryKeyConstraint('code'),
+    schema='TAR'
+    )
     op.create_table('contributing_factors',
     sa.Column('code', sa.String(length=2), nullable=False),
     sa.Column('description', sa.String(length=60), nullable=True),
@@ -258,6 +264,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['primary_collision_occ_code'], ['TAR.primary_collision_occurrence.code'], ),
     sa.ForeignKeyConstraint(['prime_file_vjur'], ['agency.id'], ),
     sa.ForeignKeyConstraint(['submission_id'], ['submission.submission_id'], ),
+    sa.ForeignKeyConstraint(['collision_scenario'], ['TAR.collision_scenario.code'], ),
     sa.PrimaryKeyConstraint('collision_case_num'),
     schema='TAR'
     )
@@ -506,4 +513,5 @@ def downgrade():
     op.drop_table('damage_location', schema='TAR')
     op.drop_table('contributing_factors', schema='TAR')
     op.drop_table('collision_location', schema='TAR')
+    op.drop_table('collision_scenario', schema='TAR')
     # ### end Alembic commands ###

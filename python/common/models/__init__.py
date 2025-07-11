@@ -40,6 +40,7 @@ from .TAR.charges import TarCharges
 from .TAR.road_class import TarRoadClass
 from .TAR.traffic_flow import TarTrafficFlow
 from .TAR.collision_location import TarCollisionLocation
+from .TAR.collision_scenario import TarCollisionScenario
 from .TAR.speed_zone import TarSpeedZone
 from .TAR.land_usage import TarLandUsage
 from .TAR.road_type import TarRoadType

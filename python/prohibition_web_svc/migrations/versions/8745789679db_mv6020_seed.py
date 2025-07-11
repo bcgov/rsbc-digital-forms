@@ -808,6 +808,18 @@ def upgrade():
         ('98', 'Not applicable');
     ''')
 
+    op.execute('''
+        INSERT INTO "TAR"."collision_scenario" (code, description) VALUES
+        ('01', 'Collision on Forest Service or Logging Road'),
+        ('02', 'Collision on Industrial Road'),
+        ('03', 'Collision occurred on Private Driveway/Land'),
+        ('04', 'Workplace Accident'),
+        ('05', 'Collision off-road involving ATV, snowmobile, farm machinery etc.'),
+        ('06', 'Collision not on public road, incl. airport runways, rec. land/campsite. Excl. sidewalks.'),
+        ('07', 'Property damage only, estimated value under $10k (excl. vehicle fires)'),
+        ('08', 'None of the scenarios apply (reportable fatal, injury, or property damage over $10k)');
+    ''')
+
 
 def downgrade():
     # Truncate all code tables in TAR schema (in reverse dependency order if needed)

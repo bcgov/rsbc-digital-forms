@@ -37,7 +37,7 @@ class TarCollision(db.Model):
 
     submission_id = db.Column(db.Integer, db.ForeignKey('submission.submission_id'), nullable=False)
     collision_case_num = db.Column(db.String(10), primary_key=True, nullable=False)
-    collision_scenario = db.Column(db.String(2), nullable=False)
+    collision_scenario = db.Column(db.String(2), db.ForeignKey('TAR.collision_scenario.code'), nullable=False)
     police_file_num = db.Column(db.String(18), nullable=False)
     prime_file_vjur = db.Column(db.Integer, db.ForeignKey('agency.id'), nullable=False)
     police_file_prefix = db.Column(db.String(15))
@@ -62,3 +62,8 @@ class TarCollision(db.Model):
     icbc_submission_date = db.Column(db.DateTime, nullable=True)
     reviewed_by = db.Column(db.String(40))
     investigated_by_traffic_analyst = db.Column(db.String(1), nullable=False)
+
+    additional_details = db.relationship('TarAdditionalCollisionDetails', backref='collision', uselist=False, lazy='select')
+    location = db.relationship('TarLocation', backref='collision', uselist=False, lazy='select')
+    witnesses = db.relationship('TarWitnessInfo', backref='collision', lazy='select')
+    entity = db.relationship('TarEntity', backref='collision', lazy='select')
