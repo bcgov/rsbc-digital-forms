@@ -34,7 +34,6 @@ from .TAR.additional_collision_details import TarAdditionalCollisionDetails
 from .TAR.location import TarLocation
 from .TAR.witness_info import TarWitnessInfo
 from .TAR.entity import TarEntity
-from .TAR.entity_vehicle import TarEntityVehicle
 from .TAR.involved_person import TarInvolvedPerson
 from .TAR.charges import TarCharges
 from .TAR.road_class import TarRoadClass
