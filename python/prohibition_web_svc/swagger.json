@@ -1,0 +1,270 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Digital Forms API",
+    "description": "API documentation for the Digital Forms application.",
+    "version": "1.0.0"
+  },
+  "host": "localhost:5002",
+  "basePath": "",
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/api/v1/collision": {
+      "post": {
+        "summary": "Create a new collision record",
+        "description": "Creates a new collision record in the system.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "CollisionRequestPayload object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CollisionRequestPayload"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Collision created successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {"type": "string"}
+              }
+            }
+          },
+          "400": {"description": "Invalid input"}
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CollisionRequestPayload": {
+      "type": "object",
+      "properties": {
+        "collision_case_num": {"type": "string"},
+        "collision_scenario": {"type": "string"},
+        "police_file_num": {"type": "string"},
+        "prime_file_vjur": {"type": "string"},
+        "police_file_prefix": {"type": "string"},
+        "date_collision": {"type": "string", "format": "date"},
+        "time_collision": {"type": "string", "format": "time"},
+        "reported_same_day": {"type": "boolean"},
+        "time_collision_unknown": {"type": "boolean"},
+        "date_reported": {"type": "string", "format": "date"},
+        "hit_and_run": {"type": "boolean"},
+        "police_attended": {"type": "boolean"},
+        "police_agency_type_district": {"type": "string"},
+        "police_agency_code": {"type": "string"},
+        "police_zone": {"type": "string"},
+        "primary_collision_occ_code": {"type": "string"},
+        "first_contact_event": {"type": "string"},
+        "first_contact_loc": {"type": "string"},
+        "has_countable_fatal": {"type": "boolean"},
+        "countable_fatal_total": {"type": "integer"},
+        "completed_by_name": {"type": "string"},
+        "completed_by_id": {"type": "string"},
+        "detachment_unit": {"type": "string"},
+        "icbc_submission_date": {"type": "string", "format": "date-time"},
+        "reviewed_by": {"type": "string"},
+        "investigated_by_traffic_analyst": {"type": "string"},
+        "pedestrian_location": {"type": "string"},
+        "pedestrian_action": {"type": "string"},
+        "has_other_prop_damage": {"type": "boolean"},
+        "other_prop_damage_desc": {"type": "string"},
+        "prop_damage_est_value": {"type": "number"},
+        "has_witnesses": {"type": "boolean"},
+        "police_comments": {"type": "string"},
+        "collision_type": {"type": "string"},
+        "total_est_damage": {"type": "number"},
+        "total_injured": {"type": "integer"},
+        "total_killed": {"type": "integer"},
+        "total_vehicles": {"type": "integer"},
+        "hwy_code": {"type": "string"},
+        "hwy_route_num": {"type": "string"},
+        "segment_num": {"type": "integer"},
+        "loc_code_km": {"type": "number"},
+        "city_name": {"type": "string"},
+        "city_status": {"type": "string"},
+        "street_on": {"type": "string"},
+        "street_at": {"type": "string"},
+        "street_desc": {"type": "string"},
+        "gps_format": {"type": "string"},
+        "lat_decim_degrees": {"type": "number"},
+        "long_decim_degrees": {"type": "number"},
+        "lat_degree": {"type": "integer"},
+        "lat_min": {"type": "integer"},
+        "lat_sec": {"type": "integer"},
+        "long_degree": {"type": "integer"},
+        "long_min": {"type": "integer"},
+        "long_sec": {"type": "integer"},
+        "road_class": {"type": "string"},
+        "traffic_flow": {"type": "string"},
+        "collision_loc": {"type": "string"},
+        "primary_speed_zone": {"type": "string"},
+        "secondary_speed_zone": {"type": "string"},
+        "land_usage": {"type": "string"},
+        "road_type": {"type": "string"},
+        "traffic_control": {"type": "string"},
+        "roadway_character": {"type": "string"},
+        "roadway_surface_cond": {"type": "string"},
+        "weather_cond": {"type": "string"},
+        "lighting_cond": {"type": "string"},
+        "ff_application_id": {"type": "string"},
+        "submitted_user_guid": {"type": "string"},
+        "witnesses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Witness"
+          }
+        },
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Entity"
+          }
+        }
+      },
+      "required": [
+        "collision_case_num",
+        "collision_scenario",
+        "police_file_num",
+        "prime_file_vjur",
+        "date_collision",
+        "time_collision",
+        "reported_same_day",
+        "time_collision_unknown",
+        "date_reported",
+        "hit_and_run",
+        "police_attended",
+        "police_agency_type_district",
+        "police_agency_code",
+        "primary_collision_occ_code",
+        "first_contact_event",
+        "first_contact_loc",
+        "has_countable_fatal",
+        "countable_fatal_total",
+        "completed_by_name",
+        "completed_by_id",
+        "detachment_unit",
+        "investigated_by_traffic_analyst"
+      ]
+    },
+    "Witness": {
+      "type": "object",
+      "properties": {
+        "witness_name": {"type": "string"},
+        "witness_contact_info": {"type": "string"},
+        "witness_statement": {"type": "string"}
+      },
+      "required": ["witness_name"]
+    },
+    "Entity": {
+      "type": "object",
+      "properties": {
+        "entity_type": {"type": "string"},
+        "entity_num": {"type": "string"},
+        "possible_offender": {"type": "string"},
+        "vehicle_parked": {"type": "boolean"},
+        "unknown_entity": {"type": "boolean"},
+        "driver_license_num": {"type": "string"},
+        "license_prov_state": {"type": "string"},
+        "license_expiry": {"type": "integer"},
+        "surname": {"type": "string"},
+        "given_name": {"type": "string"},
+        "license_class": {"type": "string"},
+        "graduated_license_type": {"type": "string"},
+        "residential_address": {"type": "string"},
+        "business_address": {"type": "string"},
+        "business_phone_num": {"type": "string"},
+        "date_of_birth": {"type": "string", "format": "date"},
+        "age_at_collision": {"type": "integer"},
+        "contact_phone_num": {"type": "string"},
+        "sex": {"type": "string"},
+        "contributing_factor_1": {"type": "string"},
+        "contributing_factor_2": {"type": "string"},
+        "contributing_factor_3": {"type": "string"},
+        "contributing_factor_4": {"type": "string"},
+        "charges_blood_alc_tests_taken": {"type": "string"},
+        "blood_alc_test": {"type": "string"},
+        "result_1": {"type": "string"},
+        "result_2": {"type": "string"},
+        "vehicle_plate_num": {"type": "string"},
+        "vehicle_plate_prov_state": {"type": "string"},
+        "vehicle_year": {"type": "string"},
+        "vehicle_make": {"type": "string"},
+        "vehicle_style": {"type": "string"},
+        "vehicle_colour": {"type": "string"},
+        "trailer_towed_plate_num": {"type": "string"},
+        "trailer_towed_plate_prov_state": {"type": "string"},
+        "is_registered_owner": {"type": "boolean"},
+        "vehicle_owner_name": {"type": "string"},
+        "vehicle_owner_address": {"type": "string"},
+        "nsc_num": {"type": "string"},
+        "jur_code": {"type": "string"},
+        "damage_location_code": {"type": "string"},
+        "severety_code": {"type": "string"},
+        "estimated_vehicle_damage": {"type": "number"},
+        "vehicle_stolen": {"type": "string"},
+        "vehicle_towed": {"type": "string"},
+        "vehicle_towed_by": {"type": "string"},
+        "dir_of_travel": {"type": "string"},
+        "entity_street": {"type": "string"},
+        "insurance_coverage": {"type": "string"},
+        "other_insurer": {"type": "string"},
+        "other_insurance_policy_num": {"type": "string"},
+        "second_contact": {"type": "string"},
+        "pre_collision_vehicle_action_first_event": {"type": "string"},
+        "vehicle_type": {"type": "string"},
+        "vehicle_use": {"type": "string"},
+        "involved_persons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/InvolvedPerson"
+          }
+        },
+        "charges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Charges"
+          }
+        }
+      },
+      "required": ["entity_type", "entity_num"]
+    },
+    "InvolvedPerson": {
+      "type": "object",
+      "properties": {
+        "status": { "type": "string" },
+        "surname": { "type": "string" },
+        "given_name": { "type": "string" },
+        "vehicle_occupied": { "type": "string" },
+        "position_of_person": { "type": "string" },
+        "safety_equipment_used": { "type": "string" },
+        "ejection_from_vehicle": { "type": "string" },
+        "age": { "type": "string" },
+        "sex": { "type": "string" },
+        "severe_injury_location": { "type": "string" },
+        "injury_type": { "type": "string" },
+        "consciousness_state": { "type": "string" },
+        "injured_taken_to": { "type": "string" },
+        "injured_taken_by": { "type": "string" },
+        "injury_classification": { "type": "string" },
+        "date_of_death": { "type": "string", "format": "date" }
+      },
+      "required": ["status", "surname"]
+    },
+    "Charges": {
+      "type": "object",
+      "properties": {
+        "charge_type": {"type": "string"},
+        "section_num": {"type": "string"},
+        "offence_title": {"type": "string"}
+      },
+      "required": ["charge_type", "section_num", "offence_title"]
+    }
+  }
+}
