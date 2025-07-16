@@ -48,7 +48,14 @@ def check_if_application_id_exists(**kwargs) -> tuple:
             }
             return False, kwargs
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
+        kwargs['error'] = {
+            'error_code': ErrorCode.G00,
+            'error_details': str(e),
+            'event_type': event_type,
+            'ticket_no': ticket_no,
+            'func': check_if_application_id_exists,
+        }
         return False, kwargs
     return True, kwargs
 

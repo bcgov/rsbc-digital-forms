@@ -75,7 +75,8 @@ def seed_initial_administrator(database):
                 badge_number='0000',
                 agency="RoadSafety",
                 first_name="Initial",
-                last_name="Administrator")
+                last_name="Administrator",
+                login=Config.ADMIN_USERNAME)
     database.session.add(user)
     roles = [
         UserRole(user_guid=Config.ADMIN_USERNAME, role_name='officer', submitted_dt=current_dt, approved_dt=current_dt),
