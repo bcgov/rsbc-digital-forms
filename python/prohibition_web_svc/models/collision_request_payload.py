@@ -80,7 +80,5 @@ class CollisionRequestPayload(TypedDict):
     ff_application_id: str
     submitted_user_guid: str
 
+    entities: list[Entity]
     witnesses: list[Witness]
-    entity: list[Entity]
-
-

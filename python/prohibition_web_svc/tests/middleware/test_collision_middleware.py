@@ -1,6 +1,12 @@
 import pytest
 from unittest.mock import MagicMock, patch
+from python.common.enums import ErrorCode
 from python.prohibition_web_svc.middleware import collision_middleware
+import json
+import os
+
+test_dir = os.path.dirname(os.path.abspath(__file__))
+collision_json_path = os.path.join(test_dir, '..', 'tests-data', 'collision.json')
 
 # Dummy payload for tests
 DUMMY_PAYLOAD = {
@@ -26,16 +32,74 @@ def test_set_ticket_number_without_case_num():
     assert out_kwargs['ticket_no'] is None
 
 def test_validate_collision_payload_success():
-    kwargs = {'payload': {'foo': 'bar'}}
+    # Provide all required fields for collision, location, additional details, and one valid entity
+    with open(collision_json_path) as f:
+        payload = json.load(f)
+    kwargs = {'payload': payload}
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is True
     assert out_kwargs == kwargs
 
-def test_validate_collision_payload_failure():
-    kwargs = {}
+def test_validate_collision_payload_failure_empty_payload():
+  # Missing required fields (empty payload)
+  kwargs = {'payload': {}}
+  result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
+  assert result is False
+  assert out_kwargs['error']['error_details'] == 'Empty payload'
+
+def test_validate_collision_payload_failure_missing_fields():
+  # Missing required fields
+  kwargs = {'payload': {
+      'collision_case_num': 'MV-001',
+  }}
+  result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
+  assert result is False
+  assert 'error' in out_kwargs
+  assert out_kwargs['error']['error_details'] == "Missing required fields: ['collision_scenario', 'police_file_num', 'prime_file_vjur', 'date_collision', 'time_collision', 'reported_same_day', 'time_collision_unknown', 'date_reported', 'hit_and_run', 'police_attended', 'police_agency_type_district', 'police_agency_code', 'primary_collision_occ_code', 'first_contact_event', 'first_contact_loc', 'has_countable_fatal', 'countable_fatal_total', 'completed_by_name', 'completed_by_id', 'detachment_unit', 'investigated_by_traffic_analyst', 'hwy_code', 'city_name', 'lat_decim_degrees', 'long_decim_degrees', 'road_class', 'traffic_flow', 'collision_loc', 'primary_speed_zone', 'land_usage', 'road_type', 'roadway_character', 'roadway_surface_cond', 'weather_cond', 'lighting_cond', 'has_other_prop_damage', 'has_witnesses', 'collision_type', 'total_est_damage', 'total_injured', 'total_killed', 'total_vehicles', 'entities']"
+
+def test_validate_collision_payload_failure_missing_entity():
+    # Missing required entity fields
+    with open(collision_json_path) as f:
+      payload = json.load(f)
+    payload['entities'] = []  # No entities provided
+    kwargs = {'payload': payload}
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
-    assert out_kwargs == kwargs
+    assert 'error' in out_kwargs
+    assert out_kwargs['error']['error_details'] == "Collision has no entities provided."
+
+
+def test_validate_collision_payload_failure_missing_entity_fields():
+    # Missing required entity fields
+    with open(collision_json_path) as f:
+        payload = json.load(f)
+    payload['entities'] = [{}]  # Empty entity
+    kwargs = {'payload': payload}
+    result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
+    assert result is False
+    assert 'error' in out_kwargs
+    assert out_kwargs['error']['error_details'] == "Missing required fields in entity: ['entity_type', 'entity_num', 'possible_offender', 'contributing_factor_1', 'contributing_factor_2', 'contributing_factor_3', 'contributing_factor_4', 'damage_location_code', 'severety_code']"
+
+def test_validate_collision_payload_failure_missing_witness():
+    # Missing required witness
+    with open(collision_json_path) as f:
+        payload = json.load(f)
+    payload['witnesses'] = []  # Empty witness
+    kwargs = {'payload': payload}
+    result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
+    assert result is False
+    assert out_kwargs['error']['error_details'] == "Collision has witnesses but no witness data provided."
+    
+def test_validate_collision_payload_failure_missing_witness():
+    # Missing required witness
+    with open(collision_json_path) as f:
+        payload = json.load(f)
+    payload['witnesses'] = [{}] 
+    kwargs = {'payload': payload}
+    result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
+    assert result is False
+    assert out_kwargs['error']['error_details'] == "Missing required fields in witness: ['witness_name', 'address', 'contact_phone_num']"
+
 
 def test_save_collision_data_success(monkeypatch):
     mock_db = MagicMock()
