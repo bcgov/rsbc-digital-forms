@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from python.common.models import db, Submission
 from python.common.enums import ErrorCode
+from python.prohibition_web_svc.mappers.collision_mapper import CollisionMapper
 from python.prohibition_web_svc.middleware import common_middleware
 from python.prohibition_web_svc.models.collision_request_payload import CollisionRequestPayload
 
@@ -31,7 +32,7 @@ def validate_collision_payload(**kwargs) -> tuple:
     logging.debug("inside validate_form_payload()")
 
     if(kwargs.get('payload')):
-        collision: CollisionRequestPayload = kwargs['payload']        
+        collision: CollisionRequestPayload = kwargs['payload']
         is_valid = _validate_required_fields(collision, kwargs)
         return is_valid, kwargs
     logging.warning("validation error: empty payload")
@@ -59,7 +60,10 @@ def save_collision_data(**kwargs) -> tuple:
             created_by=user_guid,
             updated_by=user_guid,
         )
-        #TODO: Add Collision Data to submission
+        collision: CollisionRequestPayload = kwargs['payload']
+        # Add Collision Data to submission
+        submission.collision = CollisionMapper.map_to_tar_collision(collision)
+
         db.session.add(submission)
         db.session.commit()
 
@@ -218,7 +222,7 @@ def _validate_witness_required_fields(collision: CollisionRequestPayload, kwargs
     required_witness_fields = [
         "witness_name",
         "address",
-        "contact_phone_num"
+        "contact_phn_num"
     ]
 
     if collision.get("has_witnesses") and (not collision.get('witnesses') or len(collision.get('witnesses')) == 0):

@@ -11,7 +11,7 @@ class TarCollision(db.Model):
     collision_case_num: str
     collision_scenario: str
     police_file_num: str
-    prime_file_vjur: str
+    prime_file_vjur: int
     police_file_prefix: str
     date_collision: date
     time_collision: time
@@ -66,4 +66,5 @@ class TarCollision(db.Model):
     additional_details = db.relationship('TarAdditionalCollisionDetails', backref='collision', uselist=False, lazy='select')
     location = db.relationship('TarLocation', backref='collision', uselist=False, lazy='select')
     witnesses = db.relationship('TarWitnessInfo', backref='collision', lazy='select')
-    entity = db.relationship('TarEntity', backref='collision', lazy='select')
+    entities = db.relationship('TarEntity', backref='collision', lazy='select')
+    submission = db.relationship('Submission', back_populates='collision', uselist=False)

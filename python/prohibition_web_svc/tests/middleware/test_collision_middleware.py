@@ -84,11 +84,18 @@ def test_validate_collision_payload_failure_missing_witness():
     # Missing required witness
     with open(collision_json_path) as f:
         payload = json.load(f)
+    payload['has_witnesses'] = True  # Indicating there are witnesses
     payload['witnesses'] = []  # Empty witness
     kwargs = {'payload': payload}
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
     assert out_kwargs['error']['error_details'] == "Collision has witnesses but no witness data provided."
+
+    payload['witnesses'] = None  # No witnesses provided
+    kwargs = {'payload': payload}
+    result2, out_kwargs2 = collision_middleware.validate_collision_payload(**kwargs)
+    assert result2 is False
+    assert out_kwargs2['error']['error_details'] == "Collision has witnesses but no witness data provided."
     
 def test_validate_collision_payload_failure_missing_witness():
     # Missing required witness
@@ -98,7 +105,7 @@ def test_validate_collision_payload_failure_missing_witness():
     kwargs = {'payload': payload}
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
-    assert out_kwargs['error']['error_details'] == "Missing required fields in witness: ['witness_name', 'address', 'contact_phone_num']"
+    assert out_kwargs['error']['error_details'] == "Missing required fields in witness: ['witness_name', 'address', 'contact_phn_num']"
 
 
 def test_save_collision_data_success(monkeypatch):
@@ -109,7 +116,9 @@ def test_save_collision_data_success(monkeypatch):
     monkeypatch.setattr(collision_middleware, 'db', mock_db)
     monkeypatch.setattr(collision_middleware, 'Submission', MagicMock(return_value=mock_submission))
     monkeypatch.setattr(collision_middleware.common_middleware, 'get_user_guid', lambda **kwargs: 'user-guid')
-    kwargs = {'payload': DUMMY_PAYLOAD}
+    with open(collision_json_path) as f:
+        payload = json.load(f)
+    kwargs = {'payload': payload}
     result, out_kwargs = collision_middleware.save_collision_data(**kwargs)
     assert result is True
     assert out_kwargs['response_dict']['submission_id'] == 42

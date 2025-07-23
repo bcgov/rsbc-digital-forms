@@ -8,7 +8,7 @@ class CollisionRequestPayload(TypedDict):
     collision_case_num: str
     collision_scenario: str
     police_file_num: str
-    prime_file_vjur: str
+    prime_file_vjur: int
     police_file_prefix: str
     date_collision: str
     time_collision: str
