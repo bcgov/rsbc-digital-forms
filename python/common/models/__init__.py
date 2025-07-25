@@ -69,3 +69,5 @@ from .TAR.victim_status import TarVictimStatus
 from .TAR.taken_to import TarTakenTo
 from .TAR.taken_by import TarTakenBy
 from .TAR.injury_classification import TarInjuryClassification
+from .TAR.police_district import TarPoliceDistrict
+from .TAR.police_agency import TarPoliceAgency
