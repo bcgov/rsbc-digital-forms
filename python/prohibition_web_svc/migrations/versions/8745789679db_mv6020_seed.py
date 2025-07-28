@@ -1080,3 +1080,5 @@ def downgrade():
     op.execute('TRUNCATE TABLE "TAR"."collision_location" RESTART IDENTITY CASCADE;')
     op.execute('TRUNCATE TABLE "TAR"."traffic_flow" RESTART IDENTITY CASCADE;')
     op.execute('TRUNCATE TABLE "TAR"."road_class" RESTART IDENTITY CASCADE;')
+    op.execute('TRUNCATE TABLE "TAR"."police_agency" RESTART IDENTITY CASCADE;')
+    op.execute('TRUNCATE TABLE "TAR"."police_district" RESTART IDENTITY CASCADE;')

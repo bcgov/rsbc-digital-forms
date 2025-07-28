@@ -229,6 +229,23 @@ def upgrade():
     sa.ForeignKeyConstraint(['created_by'], ['user.user_guid'], ),
     sa.PrimaryKeyConstraint('submission_id')
     )
+    op.create_table('police_district',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('district_name', sa.String(length=30), nullable=False),
+    sa.Column('prefix', sa.String(length=1), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    schema='TAR'
+    )
+    op.create_table('police_agency',
+    sa.Column('code', sa.Integer(), nullable=False),
+    sa.Column('district_id', sa.Integer(), nullable=False),
+    sa.Column('agency_name', sa.String(length=60), nullable=False),
+    sa.Column('vjur_agency', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['district_id'], ['TAR.police_district.id'], ),
+    sa.ForeignKeyConstraint(['vjur_agency'], ['agency.id'], ),
+    sa.PrimaryKeyConstraint('code'),
+    schema='TAR'
+    )
     op.create_table('collision',
     sa.Column('submission_id', sa.Integer(), nullable=False),
     sa.Column('collision_case_num', sa.String(length=10), nullable=False),
@@ -243,7 +260,6 @@ def upgrade():
     sa.Column('date_reported', sa.Date(), nullable=False),
     sa.Column('hit_and_run', sa.String(length=1), nullable=False),
     sa.Column('police_attended', sa.String(length=1), nullable=False),
-    sa.Column('police_agency_type_district', sa.String(length=30), nullable=False),
     sa.Column('police_agency_code', sa.Integer(), nullable=False),
     sa.Column('police_zone', sa.String(length=22), nullable=True),
     sa.Column('primary_collision_occ_code', sa.String(length=2), nullable=False),
@@ -260,7 +276,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['completed_by_id'], ['user.user_guid'], ),
     sa.ForeignKeyConstraint(['first_contact_event'], ['TAR.type_of_collision.code'], ),
     sa.ForeignKeyConstraint(['first_contact_loc'], ['TAR.location_of_first_contact.code'], ),
-    sa.ForeignKeyConstraint(['police_agency_code'], ['agency.id'], ),
+    sa.ForeignKeyConstraint(['police_agency_code'], ['TAR.police_agency.code'], ),
     sa.ForeignKeyConstraint(['primary_collision_occ_code'], ['TAR.primary_collision_occurrence.code'], ),
     sa.ForeignKeyConstraint(['prime_file_vjur'], ['agency.id'], ),
     sa.ForeignKeyConstraint(['submission_id'], ['submission.submission_id'], ),
@@ -460,23 +476,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['safety_equipment_used'], ['TAR.safety_equipment.code'], ),
     sa.ForeignKeyConstraint(['severe_injury_location'], ['TAR.injury_location.code'], ),
     sa.PrimaryKeyConstraint('person_id'),
-    schema='TAR'
-    )
-    op.create_table('police_district',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('district_name', sa.String(length=30), nullable=False),
-    sa.Column('prefix', sa.String(length=1), nullable=False),
-    sa.PrimaryKeyConstraint('id'),
-    schema='TAR'
-    )
-    op.create_table('police_agency',
-    sa.Column('code', sa.Integer(), nullable=False),
-    sa.Column('district_id', sa.Integer(), nullable=False),
-    sa.Column('agency_name', sa.String(length=60), nullable=False),
-    sa.Column('vjur_agency', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['district_id'], ['TAR.police_district.id'], ),
-    sa.ForeignKeyConstraint(['vjur_agency'], ['agency.id'], ),
-    sa.PrimaryKeyConstraint('code'),
     schema='TAR'
     )
     # ### end Alembic commands ###
