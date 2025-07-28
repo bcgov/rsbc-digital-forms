@@ -298,6 +298,7 @@ def upgrade():
     sa.Column('total_injured', sa.Integer(), nullable=False),
     sa.Column('total_killed', sa.Integer(), nullable=False),
     sa.Column('total_vehicles', sa.Integer(), nullable=False),
+    sa.Column('summary_was_verified', sa.Boolean(), nullable=False, default=False),
     sa.ForeignKeyConstraint(['collision_case_num'], ['TAR.collision.collision_case_num'], ),
     sa.ForeignKeyConstraint(['pedestrian_action'], ['TAR.pedestrian_action.code'], ),
     sa.ForeignKeyConstraint(['pedestrian_location'], ['TAR.pedestrian_location.code'], ),
