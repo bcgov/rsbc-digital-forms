@@ -132,7 +132,6 @@ def _validate_collision_required_fields(collision: CollisionRequestPayload, kwar
         "date_reported",
         "hit_and_run",
         "police_attended",
-        "police_agency_type_district",
         "police_agency_code",
         "primary_collision_occ_code",
         "first_contact_event",
@@ -166,6 +165,8 @@ def _validate_collision_required_fields(collision: CollisionRequestPayload, kwar
         "total_injured",
         "total_killed",
         "total_vehicles",
+        "summary_was_verified",
+        # Entities and witnesses are handled separately
         "entities"
     ]
 

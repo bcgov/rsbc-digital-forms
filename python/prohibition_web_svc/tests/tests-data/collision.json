@@ -12,8 +12,7 @@
   "date_reported": "2025-07-16",
   "hit_and_run": "N",
   "police_attended": "Y",
-  "police_agency_type_district": "Type",
-  "police_agency_code": 123,
+  "police_agency_code": 101,
   "primary_collision_occ_code": "01",
   "first_contact_event": "01",
   "first_contact_loc": "01",
@@ -67,6 +66,7 @@
   "total_injured": 0,
   "total_killed": 0,
   "total_vehicles": 1,
+  "summary_was_verified": true,
   "entities": [
     {
       "entity_type": "V",

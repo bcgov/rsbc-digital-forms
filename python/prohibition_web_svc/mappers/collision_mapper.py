@@ -21,7 +21,6 @@ class CollisionMapper:
             date_reported = collision_request_payload.get('date_reported'),
             hit_and_run = collision_request_payload.get('hit_and_run'),
             police_attended = collision_request_payload.get('police_attended'),
-            police_agency_type_district = collision_request_payload.get('police_agency_type_district'),
             police_agency_code = collision_request_payload.get('police_agency_code'),
             police_zone = collision_request_payload.get('police_zone', None),
             primary_collision_occ_code = collision_request_payload.get('primary_collision_occ_code'),
@@ -98,7 +97,8 @@ class CollisionMapper:
             total_est_damage=collision_request_payload['total_est_damage'],
             total_injured=collision_request_payload['total_injured'],
             total_killed=collision_request_payload['total_killed'],
-            total_vehicles=collision_request_payload['total_vehicles']
+            total_vehicles=collision_request_payload['total_vehicles'],
+            summary_was_verified=collision_request_payload['summary_was_verified']
         )
 
     @staticmethod

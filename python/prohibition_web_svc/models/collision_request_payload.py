@@ -17,7 +17,6 @@ class CollisionRequestPayload(TypedDict):
     date_reported: str
     hit_and_run: bool
     police_attended: bool
-    police_agency_type_district: str
     police_agency_code: str
     police_zone: str
     primary_collision_occ_code: str
@@ -45,6 +44,7 @@ class CollisionRequestPayload(TypedDict):
     total_injured: int
     total_killed: int
     total_vehicles: int
+    summary_was_verified: bool
 
     # Location
     hwy_code: str
