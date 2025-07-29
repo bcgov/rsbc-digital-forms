@@ -20,6 +20,7 @@ class TarAdditionalCollisionDetails(db.Model):
     total_injured: int
     total_killed: int
     total_vehicles: int
+    summary_was_verified: bool = False
 
     collision_case_num = db.Column(db.String(10), db.ForeignKey('TAR.collision.collision_case_num'), primary_key=True)
     pedestrian_location = db.Column(db.String(2), db.ForeignKey('TAR.pedestrian_location.code'))
@@ -34,3 +35,4 @@ class TarAdditionalCollisionDetails(db.Model):
     total_injured = db.Column(db.Integer, nullable=False, default=0)
     total_killed = db.Column(db.Integer, nullable=False, default=0)
     total_vehicles = db.Column(db.Integer, nullable=False, default=0)
+    summary_was_verified = db.Column(db.Boolean, nullable=False, default=False)

@@ -229,6 +229,23 @@ def upgrade():
     sa.ForeignKeyConstraint(['created_by'], ['user.user_guid'], ),
     sa.PrimaryKeyConstraint('submission_id')
     )
+    op.create_table('police_district',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('district_name', sa.String(length=30), nullable=False),
+    sa.Column('prefix', sa.String(length=1), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    schema='TAR'
+    )
+    op.create_table('police_agency',
+    sa.Column('code', sa.Integer(), nullable=False),
+    sa.Column('district_id', sa.Integer(), nullable=False),
+    sa.Column('agency_name', sa.String(length=60), nullable=False),
+    sa.Column('vjur_agency', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['district_id'], ['TAR.police_district.id'], ),
+    sa.ForeignKeyConstraint(['vjur_agency'], ['agency.id'], ),
+    sa.PrimaryKeyConstraint('code'),
+    schema='TAR'
+    )
     op.create_table('collision',
     sa.Column('submission_id', sa.Integer(), nullable=False),
     sa.Column('collision_case_num', sa.String(length=10), nullable=False),
@@ -243,7 +260,6 @@ def upgrade():
     sa.Column('date_reported', sa.Date(), nullable=False),
     sa.Column('hit_and_run', sa.String(length=1), nullable=False),
     sa.Column('police_attended', sa.String(length=1), nullable=False),
-    sa.Column('police_agency_type_district', sa.String(length=30), nullable=False),
     sa.Column('police_agency_code', sa.Integer(), nullable=False),
     sa.Column('police_zone', sa.String(length=22), nullable=True),
     sa.Column('primary_collision_occ_code', sa.String(length=2), nullable=False),
@@ -260,7 +276,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['completed_by_id'], ['user.user_guid'], ),
     sa.ForeignKeyConstraint(['first_contact_event'], ['TAR.type_of_collision.code'], ),
     sa.ForeignKeyConstraint(['first_contact_loc'], ['TAR.location_of_first_contact.code'], ),
-    sa.ForeignKeyConstraint(['police_agency_code'], ['agency.id'], ),
+    sa.ForeignKeyConstraint(['police_agency_code'], ['TAR.police_agency.code'], ),
     sa.ForeignKeyConstraint(['primary_collision_occ_code'], ['TAR.primary_collision_occurrence.code'], ),
     sa.ForeignKeyConstraint(['prime_file_vjur'], ['agency.id'], ),
     sa.ForeignKeyConstraint(['submission_id'], ['submission.submission_id'], ),
@@ -282,6 +298,7 @@ def upgrade():
     sa.Column('total_injured', sa.Integer(), nullable=False),
     sa.Column('total_killed', sa.Integer(), nullable=False),
     sa.Column('total_vehicles', sa.Integer(), nullable=False),
+    sa.Column('summary_was_verified', sa.Boolean(), nullable=False, default=False),
     sa.ForeignKeyConstraint(['collision_case_num'], ['TAR.collision.collision_case_num'], ),
     sa.ForeignKeyConstraint(['pedestrian_action'], ['TAR.pedestrian_action.code'], ),
     sa.ForeignKeyConstraint(['pedestrian_location'], ['TAR.pedestrian_location.code'], ),
@@ -297,7 +314,7 @@ def upgrade():
     sa.Column('vehicle_parked', sa.Boolean(), nullable=True),
     sa.Column('unknown_entity', sa.Boolean(), nullable=True),
     sa.Column('driver_license_num', sa.String(length=25), nullable=True),
-    sa.Column('license_prov_state', sa.String(length=2), nullable=True),
+    sa.Column('license_prov_state', sa.String(length=5), nullable=True),
     sa.Column('license_expiry', sa.Integer(), nullable=True),
     sa.Column('surname', sa.String(length=28), nullable=True),
     sa.Column('given_name', sa.String(length=25), nullable=True),
@@ -319,13 +336,13 @@ def upgrade():
     sa.Column('result_1', sa.String(length=8), nullable=True),
     sa.Column('result_2', sa.String(length=8), nullable=True),
     sa.Column('vehicle_plate_num', sa.String(length=20), nullable=True),
-    sa.Column('vehicle_plate_prov_state', sa.String(length=2), nullable=True),
+    sa.Column('vehicle_plate_prov_state', sa.String(length=5), nullable=True),
     sa.Column('vehicle_year', sa.String(length=4), nullable=True),
     sa.Column('vehicle_make', sa.String(length=30), nullable=True),
     sa.Column('vehicle_style', sa.String(length=15), nullable=True),
     sa.Column('vehicle_colour', sa.String(length=15), nullable=True),
     sa.Column('trailer_towed_plate_num', sa.String(length=20), nullable=True),
-    sa.Column('trailer_towed_plate_prov_state', sa.String(length=2), nullable=True),
+    sa.Column('trailer_towed_plate_prov_state', sa.String(length=5), nullable=True),
     sa.Column('is_registered_owner', sa.Boolean(), nullable=True),
     sa.Column('vehicle_owner_name', sa.String(length=60), nullable=True),
     sa.Column('vehicle_owner_address', sa.String(length=90), nullable=True),
@@ -433,7 +450,7 @@ def upgrade():
     op.create_table('involved_person',
     sa.Column('person_id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('entity_id', sa.Integer(), nullable=False),
-    sa.Column('status', sa.String(length=1), nullable=False),
+    sa.Column('status', sa.String(length=15), nullable=False),
     sa.Column('surname', sa.String(length=30), nullable=True),
     sa.Column('given_name', sa.String(length=30), nullable=True),
     sa.Column('vehicle_occupied', sa.String(length=2), nullable=True),
@@ -463,7 +480,6 @@ def upgrade():
     schema='TAR'
     )
     # ### end Alembic commands ###
-
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
@@ -508,4 +524,6 @@ def downgrade():
     op.drop_table('contributing_factors', schema='TAR')
     op.drop_table('collision_location', schema='TAR')
     op.drop_table('collision_scenario', schema='TAR')
+    op.drop_table('police_agency', schema='TAR')
+    op.drop_table('police_district', schema='TAR')
     # ### end Alembic commands ###

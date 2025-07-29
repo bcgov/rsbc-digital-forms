@@ -20,7 +20,6 @@ class TarCollision(db.Model):
     date_reported: date
     hit_and_run: str
     police_attended: str
-    police_agency_type_district: str
     police_agency_code: int
     police_zone: str
     primary_collision_occ_code: str
@@ -48,8 +47,7 @@ class TarCollision(db.Model):
     date_reported = db.Column(db.Date, nullable=False)
     hit_and_run = db.Column(db.String(1), nullable=False)
     police_attended = db.Column(db.String(1), nullable=False)
-    police_agency_type_district = db.Column(db.String(30), nullable=False)   # Check if needed
-    police_agency_code = db.Column(db.Integer, db.ForeignKey('agency.id'), nullable=False)
+    police_agency_code = db.Column(db.Integer, db.ForeignKey('TAR.police_agency.code'), nullable=False)
     police_zone = db.Column(db.String(22))
     primary_collision_occ_code = db.Column(db.String(2), db.ForeignKey('TAR.primary_collision_occurrence.code'), nullable=False)
     first_contact_event = db.Column(db.String(2), db.ForeignKey('TAR.type_of_collision.code'), nullable=False)

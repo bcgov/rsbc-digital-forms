@@ -28,7 +28,7 @@ class TarInvolvedPerson(db.Model):
 
     person_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     entity_id = db.Column(db.Integer, db.ForeignKey('TAR.entity.entity_id'), nullable=False)
-    status = db.Column(db.String(1), nullable=False)
+    status = db.Column(db.String(15), nullable=False)
     surname = db.Column(db.String(30))
     given_name = db.Column(db.String(30))
     vehicle_occupied = db.Column(db.String(2))
