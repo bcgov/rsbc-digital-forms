@@ -25,7 +25,7 @@ class Config(BaseConfig):
     DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
     # This user has the ability to add, edit and delete other users
-    ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
+    ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'admin@idir')
 
     KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM", "some-realm")
     KEYCLOAK_AUTH_URL = os.getenv(

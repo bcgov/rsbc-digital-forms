@@ -466,31 +466,6 @@ def validate_form_payload(**kwargs) -> tuple:
     logging.warning("validation error: " + json.dumps(''))
     return False, kwargs
 
-def record_event_error(**kwargs):
-    """
-    Record an error that occurred during event processing.
-    
-    Args:
-        **kwargs: Additional keyword arguments, including event_id and event_type.
-    """
-    
-
-    try:
-        error = kwargs.get('error')
-
-        if error is None:
-            logging.warning("Error object is None")
-            return
-        record_error(**error)
-
-
-    except Exception as e:
-        # If recording the error itself fails, log it
-        logging.error(f"Failed to record error: {str(e)}")
-        return True, kwargs
-    
-    return True, kwargs
-
 def get_event_type(data):
     event_type = None
     if data.get('TwelveHour'):

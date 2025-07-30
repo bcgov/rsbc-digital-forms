@@ -4,6 +4,7 @@ from flask import request, Blueprint, make_response, jsonify
 from flask_cors import CORS
 import logging.config
 import python.common.splunk as splunk
+from python.prohibition_web_svc.middleware import common_middleware
 import python.prohibition_web_svc.middleware.splunk_middleware as splunk_middleware
 import python.prohibition_web_svc.middleware.event_middleware as event_middleware
 import python.prohibition_web_svc.http_responses as http_responses
@@ -58,15 +59,15 @@ def create():
                     {"try": http_responses.server_error_response, "fail": []},
                 ]},
                 {"try": event_middleware.check_if_application_id_exists, "fail": [
-                    {"try": event_middleware.record_event_error, "fail": []},
+                    {"try": common_middleware.record_event_error, "fail": []},
                     {"try": http_responses.application_already_exists, "fail": []},
                 ]},
-                {"try": event_middleware.save_event_data, "fail": [ 
-                    {"try": event_middleware.record_event_error, "fail": []},
+                {"try": event_middleware.save_event_data, "fail": [
+                    {"try": common_middleware.record_event_error, "fail": []},
                     {"try": http_responses.bad_request_response, "fail": []}
                 ]},
                 {"try": event_middleware.save_event_pdf, "fail": [
-                     {"try": event_middleware.record_event_error, "fail": []},
+                     {"try": common_middleware.record_event_error, "fail": []},
                      {"try": http_responses.server_error_response, "fail": []},
                 ]},
                 {"try": splunk.log_to_splunk, "fail": []},
