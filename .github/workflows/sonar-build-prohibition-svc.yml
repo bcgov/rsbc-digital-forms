@@ -39,7 +39,7 @@ jobs:
       #     cd python/prohibition_web_svc
       #     pytest
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@4.1.0
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
         if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
