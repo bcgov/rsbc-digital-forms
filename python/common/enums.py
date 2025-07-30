@@ -110,6 +110,10 @@ class ErrorCode(BaseEnum):
     L01 = ErrorCodeDetails("L01", "Error in getting coordinates", ErrorCategory.CONNECTION, ErrorSeverity.MEDIUM,
                             "Contact DF application support for further investigation", False)
 
+    # Collision related error
+
+    C01 = ErrorCodeDetails("C01", "Missing required fields in collision payload", ErrorCategory.VALIDATION, ErrorSeverity.LOW,
+                           "Ensure all required fields are provided in the collision payload", True)
     
     # Add more error codes as needed...
 

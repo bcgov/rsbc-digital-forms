@@ -23,7 +23,7 @@ jobs:
     name: SonarCloud-prohibition-svc
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - uses: actions/setup-python@v4 
@@ -39,7 +39,7 @@ jobs:
       #     cd python/prohibition_web_svc
       #     pytest
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
         if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
