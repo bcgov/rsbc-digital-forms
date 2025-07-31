@@ -1,0 +1,11 @@
+from dataclasses import dataclass
+from ..base import db
+
+@dataclass
+class TarPrimaryCollisionOccurrence(db.Model):
+    __tablename__ = 'primary_collision_occurrence'
+    __table_args__ = {'schema': 'TAR'}
+    code: str
+    description: str
+    code = db.Column(db.String(2), primary_key=True)
+    description = db.Column(db.String(50))

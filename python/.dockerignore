@@ -1,0 +1,10 @@
+**/tests/
+**/test-results/
+*.pyc
+__pycache__/
+**/integration_tests/
+**/htmlcov/
+**/*,cover
+**/.coverage
+**/.dockerignore
+**/Dockerfile*
