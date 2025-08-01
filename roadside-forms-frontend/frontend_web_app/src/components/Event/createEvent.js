@@ -15,7 +15,7 @@ import { ToastContainer } from "react-toastify";
 import { Alert } from "react-bootstrap";
 import Warning from "@mui/icons-material/Warning";
 import { ArrowBack, Error, Refresh } from "@mui/icons-material";
-import { useKeycloak } from "@react-keycloak/web";
+import { useAuth } from "react-oidc-context";
 
 import { Checkbox } from "../common/Checkbox/checkbox";
 import { validationSchema } from "./validationSchema";
@@ -107,7 +107,7 @@ export const CreateEvent = () => {
   const [incompleteEventID, setIncompleteEventID] = useState(null);
 
   const navigate = useNavigate();
-  const { keycloak } = useKeycloak();
+  const auth = useAuth();
 
   // Blocker
   const blocker = useBlocker(({ currentLocation, nextLocation }) => {
@@ -1027,7 +1027,7 @@ export const CreateEvent = () => {
                     variant="danger"
                     onClick={async () => {
                       await setisBlockerActive(false);
-                      keycloak.logout();
+                      auth.signoutRedirect();
                     }}
                   >
                     Log Out of Digital Forms

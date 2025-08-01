@@ -5,12 +5,12 @@ import { MemoryRouter } from 'react-router-dom';
 import { Header } from "../../../components/common/Header/Header";
 import { UserApi } from "../../../api/userApi";
 import { UserRolesApi } from "../../../api/userRolesApi";
-import { useKeycloak } from "@react-keycloak/web";
+import { useAuth } from "react-oidc-context";
 import * as connectivity from "../../../utils/connectivity";
 import * as axiosConfig from "../../../api/config/axiosConfig";
 
-jest.mock('@react-keycloak/web', () => ({
-  useKeycloak: jest.fn(),
+jest.mock('react-oidc-context', () => ({
+  useAuth: jest.fn(),
 }));
 
 jest.mock('../../../api/userApi', () => ({
@@ -60,15 +60,15 @@ describe('Header Component - UpdateLastActive', () => {
   });
 
   beforeEach(() => {
-    useKeycloak.mockReturnValue({
-      keycloak: {
-        authenticated: true,
-        tokenParsed: {
+    useAuth.mockReturnValue({
+      isAuthenticated: true,
+      user: {
+        profile: {
           identity_provider: 'idir',
           idir_user_guid: 'test-user-id'
         }
       },
-      initialized: true
+      isLoading: false
     });
 
     UserApi.get.mockResolvedValue({
