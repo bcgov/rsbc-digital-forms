@@ -9,7 +9,7 @@ def send_new_user_admin_notification(**kwargs):
         "first_name": kwargs.get('payload')['first_name'],
         "last_name": kwargs.get('payload')['last_name'],
         "badge_number": kwargs.get('payload')['badge_number'],
-        "agency": kwargs.get('payload')['agency'],
+        "agency": kwargs.get('payload')['agency_name'],
         "admin_link": Config.REACT_APP_BASE_URL + "/admin-console",
     }
 
