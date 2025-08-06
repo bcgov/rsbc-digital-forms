@@ -9,7 +9,9 @@ from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 
 from python.common.enums import EventType, ErrorCode, ErrorSeverity, ErrorStatus, ErrorCategory
-from python.common.models import db, DFErrors, Event
+from python.common.models.base import db
+from python.common.models.df_errors import DFErrors
+from python.common.models.event import Event
 
 def get_safe_payload():
     """

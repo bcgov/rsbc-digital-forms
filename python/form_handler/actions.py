@@ -159,7 +159,10 @@ def get_event_user_data(**args) ->tuple:
                 return False, args
             for u in user_data:
                 user_dict = u.__dict__
+                agency_ref_dict = u.agency_ref.__dict__
                 user_dict.pop('_sa_instance_state', None)
+                agency_ref_dict.pop('_sa_instance_state', None)
+                user_dict['agency_ref'] = agency_ref_dict
                 args['user_data'] = user_dict
     except Exception as e:
         logging.exception(e)
