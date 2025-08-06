@@ -2,9 +2,9 @@ import { api } from "./config/axiosConfig";
 import { createRequestHeader } from "../utils/requestHeaders";
 
 export const FormSubmissionApi = {
-  post: async function (data) {
+  post: async function (data, auth = null) {
     const headers = {
-      ...await createRequestHeader(),
+      ...await createRequestHeader({}, auth),
     };
     return await api
       .request({
@@ -24,9 +24,9 @@ export const FormSubmissionApi = {
       });
   },
 
-  get: async function () {
+  get: async function (auth = null) {
     const headers = {
-      ...await createRequestHeader(),
+      ...await createRequestHeader({}, auth),
     };
     return await api
       .request({

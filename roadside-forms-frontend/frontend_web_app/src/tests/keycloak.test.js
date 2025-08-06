@@ -1,18 +1,18 @@
 import React from 'react';
 import { render, cleanup, screen } from '@testing-library/react';
 import { Header } from '../components/common/Header/Header';
-import { useKeycloak } from '@react-keycloak/web';
+import { useAuth } from 'react-oidc-context';
 import { BrowserRouter } from 'react-router-dom';
 
-jest.mock('@react-keycloak/web');
+jest.mock('react-oidc-context');
 
-describe('Keycloak test', () => {
+describe('OIDC Auth test', () => {
   beforeEach(cleanup);
 
   test('renders without crashing', async () => {
-    useKeycloak.mockReturnValue({
-      keycloak: { authenticated: false },
-      initialized: true,
+    useAuth.mockReturnValue({
+      isAuthenticated: false,
+      isLoading: false,
     });
 
     render(<BrowserRouter><Header /></BrowserRouter>);
