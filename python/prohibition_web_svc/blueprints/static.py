@@ -7,11 +7,13 @@ from flask import request, make_response, Blueprint
 from python.common.splunk import log_to_splunk
 from flask_cors import CORS
 from python.common.models import db, Agency, City, Country, ImpoundLotOperator, Jurisdiction, Permission, Province, Vehicle, VehicleStyle, VehicleType, VehicleColour, NSCPuj, JurisdictionCountry
+from python.common.models.TAR.police_agency import TarPoliceAgency
 
 import logging.config
 from flask import jsonify
 
 resource_map = {
+    "tar_police_agencies": TarPoliceAgency,
     "agencies": Agency,
     "cities": City,
     "countries": Country,
@@ -117,6 +119,7 @@ def _get_keycloak(**kwargs) -> tuple:
 
 def _is_known_resource(**kwargs) -> tuple:
     known_resources = [
+        'tar_police_agencies',
         'agencies',
         'cities',
         'countries',

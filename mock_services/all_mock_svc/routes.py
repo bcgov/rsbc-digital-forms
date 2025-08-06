@@ -40,7 +40,7 @@ def pingmethod():
 def driver(bcdl_number):
     if request.method == 'GET':
         try:
-            drivers = _load_json_into_dict('python/icbc_mock_svc/data/drivers.json')
+            drivers = _load_json_into_dict('data/drivers.json')
             return make_response(jsonify(drivers[bcdl_number]), 200)
         except Exception as e:
             return make_response(jsonify({
@@ -60,7 +60,7 @@ def vehicle():
     if request.method == 'GET':
         licence_plate = request.args.get('plateNumber')
         try:
-            vehicles = _load_json_into_dict('python/icbc_mock_svc/data/vehicles.json')
+            vehicles = _load_json_into_dict('data/vehicles.json')
             return make_response(jsonify(vehicles[licence_plate]), 200)
         except Exception as e:
             return make_response(jsonify({
@@ -73,7 +73,7 @@ def vehicle():
                     }
                 }), 404)
         
-@application.route('/vips/icbc/dfft/contravention', methods=['POST'])
+@application.route('/dfft/v1/contravention', methods=['POST'])
 @basic_auth_required
 def contravention():
     if request.method == 'POST':

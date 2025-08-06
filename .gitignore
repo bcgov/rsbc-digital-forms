@@ -28,3 +28,4 @@ encryptDecryptPdf
 .run
 env2
 env3
+*.log
