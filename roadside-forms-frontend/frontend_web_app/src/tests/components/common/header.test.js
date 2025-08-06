@@ -108,7 +108,7 @@ describe('Header Component - UpdateLastActive', () => {
     });
 
     expect(UserApi.updateLastActive).toHaveBeenCalledTimes(1);
-    expect(UserApi.updateLastActive).toHaveBeenCalledWith('test-user-id');
+    expect(UserApi.updateLastActive).toHaveBeenCalledWith('test-user-id', expect.anything());
   });
 
   test('calls updateLastActive every 5 minutes', async () => {
