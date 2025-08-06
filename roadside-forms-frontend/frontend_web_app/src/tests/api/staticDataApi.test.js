@@ -3,9 +3,9 @@ import {createRequestHeader} from '../../utils/requestHeaders'
 import { cleanup } from '@testing-library/react';
 import { StaticDataApi } from "../../api/staticDataApi"
 
-jest.mock('@react-keycloak/web', () => ({
-  ...jest.requireActual('@react-keycloak/web'),
-  useKeycloak: jest.fn()
+jest.mock('react-oidc-context', () => ({
+  ...jest.requireActual('react-oidc-context'),
+  useAuth: jest.fn()
 }));
 
 jest.mock('../../utils/requestHeaders', () => ({

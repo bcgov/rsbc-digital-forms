@@ -2,9 +2,9 @@ import { api } from "./config/axiosConfig";
 import { createRequestHeader } from "../utils/requestHeaders";
 
 export const FormStatisticsApi = {
-  getStatistics: async function () {
+  getStatistics: async function (auth = null) {
     const headers = {
-      ...await createRequestHeader(),
+      ...await createRequestHeader({}, auth),
     };
     return await api
       .request({

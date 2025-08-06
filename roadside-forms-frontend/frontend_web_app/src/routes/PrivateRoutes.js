@@ -1,30 +1,30 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { userRolesAtom } from "../atoms/userRoles";
-import { useKeycloak } from "@react-keycloak/web";
+import { useAuth } from "react-oidc-context";
 import { useRecoilValueLoadable } from "recoil";
 
 export const PrivateRoutes = () => {
-  const { keycloak, initialized } = useKeycloak();
+  const auth = useAuth();
   const [userRoleDataLoaded, setUserRoleDataLoaded] = useState(false);
   const userHasRoleRef = useRef(false);
   const userRolesLoadable = useRecoilValueLoadable(userRolesAtom);
 
   useEffect(() => {
-    if (initialized && keycloak.authenticated) {
+    if (!auth.isLoading && auth.isAuthenticated) {
       if (userRolesLoadable.state === "hasValue") {
         const userRoles = userRolesLoadable.contents;
         userHasRoleRef.current = userRoles.length !== 0;
       }
       setUserRoleDataLoaded(true);
     }
-  }, [initialized, keycloak.authenticated, userRolesLoadable]);
+  }, [auth.isLoading, auth.isAuthenticated, userRolesLoadable]);
 
-  if (!initialized) {
+  if (auth.isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (!keycloak.authenticated) {
+  if (!auth.isAuthenticated) {
     return <Navigate to="/login" />;
   }
 

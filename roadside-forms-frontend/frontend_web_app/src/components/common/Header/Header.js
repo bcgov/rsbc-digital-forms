@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useKeycloak } from "@react-keycloak/web";
+import { useAuth } from "react-oidc-context";
+import { getUserInfo } from "../../../auth";
 import CloudOutlinedIcon from "@mui/icons-material/CloudOutlined";
 import CloudOffOutlinedIcon from "@mui/icons-material/CloudOffOutlined";
 import AccountCircle from "@mui/icons-material/AccountCircle";
@@ -24,7 +25,7 @@ export const Header = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userInfo, setUserInfo] = useState({ username: null, agency: null });
   const [userAdminInfo, setuserAdminInfo] = useState(false);
-  const { keycloak, initialized } = useKeycloak();
+  const auth = useAuth();
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
   const [day, setDay] = useState("");
@@ -34,20 +35,20 @@ export const Header = () => {
   const setLoginCompleted = useSetRecoilState(loginCompletedAtom);
 
   useEffect(() => {
-    // Get the userId based on identity_provider from keycloak
-    if (keycloak.authenticated && initialized && keycloak.tokenParsed) {
-      if (keycloak.tokenParsed.identity_provider === "idir") {
-        setUserId(keycloak.tokenParsed.idir_user_guid);
-      } else if (keycloak.tokenParsed.identity_provider === "bceid") {
-        setUserId(keycloak.tokenParsed.bceid_user_guid);
+    // Get the userId based on identity_provider from auth user
+    if (auth.isAuthenticated && auth.user) {
+      if (auth.user.profile?.identity_provider === "idir") {
+        setUserId(auth.user.profile?.idir_user_guid);
+      } else if (auth.user.profile?.identity_provider === "bceid") {
+        setUserId(auth.user.profile?.bceid_user_guid);
       } else {
-        setUserId(keycloak.tokenParsed.bceid_user_guid);
+        setUserId(auth.user.profile?.bceid_user_guid);
       }
     }
 
     // Based on userId, get user information from the DB
     if (userId !== null && userId !== undefined) {
-      UserApi.get(userId)
+      UserApi.get(userId, auth)
         .then((response) => {
           if (
             response &&
@@ -66,7 +67,7 @@ export const Header = () => {
         .catch((error) => {
           setUserData([]);
         });
-      UserRolesApi.get().then((resp) => {
+      UserRolesApi.get(auth).then((resp) => {
         if (resp && (resp.status === 201 || resp.status === 200)) {
           const data = resp.data;
           if (data) {
@@ -96,7 +97,7 @@ export const Header = () => {
     const updateLastActive = async () => {
       if (userId) {
         try {
-          await UserApi.updateLastActive(userId);
+          await UserApi.updateLastActive(userId, auth);
         } catch (error) {
           console.error("Failed to update last active time:", error);
         }
@@ -119,11 +120,10 @@ export const Header = () => {
       clearInterval(lastActiveInterval);
     };
   }, [
-    keycloak.authenticated,
-    initialized,
+    auth,
     setUserData,
     setUserRoleData,
-    keycloak.tokenParsed,
+    setLoginCompleted,
     userId,
   ]);
 
@@ -141,7 +141,7 @@ export const Header = () => {
               <div className="brand-logo"></div>
             </Link>
           </Col>
-          {keycloak.authenticated && !isLoading && (
+          {auth.isAuthenticated && !isLoading && (
             <Col sm={9}>
               <Row>
                 <Col sm={4} className="time fw-bold mt-4">
@@ -185,7 +185,7 @@ export const Header = () => {
                           </Dropdown.Item>
                         </>
                       )}
-                      <Dropdown.Item onClick={() => keycloak.logout()}>Logout</Dropdown.Item>
+                      <Dropdown.Item onClick={() => auth.signoutRedirect()}>Logout</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </Col>
@@ -198,7 +198,3 @@ export const Header = () => {
   );
 
 };
-
-Header.propTypes = {};
-
-Header.defaultProps = {};

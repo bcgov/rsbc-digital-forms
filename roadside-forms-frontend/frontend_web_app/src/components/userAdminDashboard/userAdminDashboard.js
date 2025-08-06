@@ -18,10 +18,12 @@ import { userRolesAtom } from "../../atoms/userRoles";
 import { dateSortReactTable } from "../../utils/dateTime";
 import { UserApi } from "../../api/userApi";
 import { SearchableSelect } from "../common/Select/SearchableSelect";
+import { useAuth } from "react-oidc-context";
 import "./userAdminDashboard.scss";
 
 
 export const UserAdminDashboard = () => {
+  const auth = useAuth();
   const initialValues = {
     user: {},
   };
@@ -55,7 +57,7 @@ export const UserAdminDashboard = () => {
   };
 
   const getAllUsers = () => {
-    UserApi.getAll().then((resp) => {
+    UserApi.getAll(auth).then((resp) => {
       const uniqueUsers = addUniqueIds(resp.data);
       
       // Group users by user_guid
@@ -86,7 +88,7 @@ export const UserAdminDashboard = () => {
   };
 
   const handleAddAdminConfirm = (values, { setSubmitting }) => {
-    UserApi.postAdmin(values.user.value).then(() => {
+    UserApi.postAdmin(values.user.value, auth).then(() => {
       setSubmitting(false);
       getAllUsers();
       setShowAddAdminModal(false);
@@ -116,7 +118,7 @@ export const UserAdminDashboard = () => {
   };
 
   const deleteUser = (user) => {
-    UserApi.delete(user).then(() => {
+    UserApi.delete(user, auth).then(() => {
       setLoading(true);
       getAllUsers();
       showSuccess(`${user.first_name} ${user.last_name} has been successfully deleted.`);
@@ -124,7 +126,7 @@ export const UserAdminDashboard = () => {
   };
 
   const approveUser = (user) => {
-    UserApi.patch(user).then(() => {
+    UserApi.patch(user, auth).then(() => {
       setLoading(true);
       getAllUsers();
       showSuccess(`${user.first_name} ${user.last_name} has been successfully approved.`);

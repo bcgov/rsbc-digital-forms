@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Alert } from 'react-bootstrap';
 import { FormStatisticsApi } from '../../api/formStatisticsApi';
+import { useAuth } from 'react-oidc-context';
 import './formStatistics.scss';
 
 export const FormStatistics = () => {
   const [formData, setFormData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const auth = useAuth();
 
   useEffect(() => {
     fetchFormStatistics();
@@ -14,7 +16,7 @@ export const FormStatistics = () => {
 
   const fetchFormStatistics = async () => {
     try {
-      const response = await FormStatisticsApi.getStatistics();
+      const response = await FormStatisticsApi.getStatistics(auth);
       if (response.status === 200) {
         setFormData(response.data);
       } else {

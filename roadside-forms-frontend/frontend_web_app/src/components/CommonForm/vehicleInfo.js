@@ -13,6 +13,7 @@ import { ICBCVehicleDataApi } from "../../api/icbcVehicleDataApi";
 import { toast } from "react-toastify";
 import { NumberField } from "../common/Input/NumberField";
 import moment from "moment-timezone";
+import { useAuth } from "react-oidc-context";
 
 export const VehicleInfo = (props) => {
   const {
@@ -33,6 +34,7 @@ export const VehicleInfo = (props) => {
   if (nscPuj[0].value) {
     nscPuj.unshift({ value: "", label: "---" });
   }
+  const auth = useAuth();
 
   useEffect(() => {
     if (
@@ -47,7 +49,7 @@ export const VehicleInfo = (props) => {
 
   const fetchICBCVehicleInfo = async () => {
     if (values["vehicle_plate_no"]) {
-      await ICBCVehicleDataApi.get(values["vehicle_plate_no"]).then((resp) => {
+      await ICBCVehicleDataApi.get(values["vehicle_plate_no"], auth).then((resp) => {
         //ICBC sends back different responses based on sucess and fail and only real way to check is if it is an array
         if (resp.status === "success") {
           const vehicle = resp.data[0];
