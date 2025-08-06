@@ -37,7 +37,7 @@ class WebStorageStateStore {
 
 // OIDC Configuration for react-oidc-context
 export const oidcConfig = {
-  authority: `${process.env.REACT_APP_KEYCLOAK_URL}realms/${process.env.REACT_APP_KEYCLOAK_REALM}`,
+  authority: `${process.env.REACT_APP_KEYCLOAK_URL}/realms/${process.env.REACT_APP_KEYCLOAK_REALM}`,
   client_id: process.env.REACT_APP_KEYCLOAK_CLIENT_ID,
   redirect_uri: process.env.REACT_APP_BASE_URL,
   post_logout_redirect_uri: process.env.REACT_APP_BASE_URL,
