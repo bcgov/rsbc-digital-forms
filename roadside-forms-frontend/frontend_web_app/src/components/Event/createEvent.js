@@ -355,7 +355,7 @@ export const CreateEvent = () => {
         values["date_released"] = values["date_of_impound"];
       }
   
-      await FormSubmissionApi.post(values)
+      await FormSubmissionApi.post(values, auth)
         .then((resp) => {
           console.log("response: ", resp);
           if (resp.status === 201) {
@@ -379,7 +379,7 @@ export const CreateEvent = () => {
     }
   }
   const handleSpoilForm = async () => {
-    await spoilForm(incompleteEventID);
+    await spoilForm(incompleteEventID, auth);
     await setisBlockerActive(false);
     navigate("/");
   };
@@ -696,7 +696,7 @@ export const CreateEvent = () => {
           await FormIDApi.patch({
             forms: { ...idsToDelete },
             printed_timestamp: new Date(),
-          });
+          }, auth);
           await unleaseIDs(values);
           handleShow(
             "Print Form",

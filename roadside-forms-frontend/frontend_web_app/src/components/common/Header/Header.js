@@ -37,15 +37,12 @@ export const Header = () => {
   useEffect(() => {
     // Get the userId based on identity_provider from auth user
     if (auth.isAuthenticated && auth.user) {
-      const userProfile = getUserInfo(auth.user);
-      if (userProfile) {
-        if (auth.user.profile?.identity_provider === "idir") {
-          setUserId(auth.user.profile?.idir_user_guid);
-        } else if (auth.user.profile?.identity_provider === "bceid") {
-          setUserId(auth.user.profile?.bceid_user_guid);
-        } else {
-          setUserId(auth.user.profile?.bceid_user_guid);
-        }
+      if (auth.user.profile?.identity_provider === "idir") {
+        setUserId(auth.user.profile?.idir_user_guid);
+      } else if (auth.user.profile?.identity_provider === "bceid") {
+        setUserId(auth.user.profile?.bceid_user_guid);
+      } else {
+        setUserId(auth.user.profile?.bceid_user_guid);
       }
     }
 
@@ -201,7 +198,3 @@ export const Header = () => {
   );
 
 };
-
-Header.propTypes = {};
-
-Header.defaultProps = {};

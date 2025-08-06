@@ -349,7 +349,7 @@ export const Dashboard = () => {
           <tbody>
             {incompleteFormsData.map((data, index) => {
               return (
-                <tr key={data["vehicle_vin_no"]}>
+                <tr key={data["vehicle_vin_no"]+"_"+data["inc_event_id"]}>
                   {/* <td>
                     {data["created_dt"]
                       ? convertToPSTFormat(data["created_dt"])
@@ -471,7 +471,7 @@ export const Dashboard = () => {
           <tbody>
             {completedTableRows.map((data, index) => {
               return data["submitted"] ? (
-                <tr key={data["vehicle_vin_no"]}>
+                <tr key={data["vehicle_vin_no"]+"_"+data["event_id"]}>
                   <td>
                     {data["created_dt"]
                       ? convertToPSTFormat(data["created_dt"])

@@ -47,7 +47,6 @@ export const oidcConfig = {
   includeIdTokenInSilentRenew: true,
   revokeTokensOnSignout: true,
   userStore: new WebStorageStateStore({ store: window.localStorage }),
-  // monitorSession: false,
   checkSessionInterval: 10000,
   onSigninCallback: () => {
     // Clean up the URL after successful sign-in

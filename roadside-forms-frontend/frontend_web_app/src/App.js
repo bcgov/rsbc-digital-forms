@@ -10,7 +10,6 @@ import { RouterProvider } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import { appRouter } from "./routes/appRouter";
-import { Modal } from "react-bootstrap";
 
 library.add(fab, far, fas);
 
