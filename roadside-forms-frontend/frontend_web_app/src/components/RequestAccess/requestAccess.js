@@ -28,14 +28,13 @@ export const RequestAccess = () => {
   const initialValues = {
     last_name: "",
     first_name: "",
-    agency_id: "",
+    agency: {},
     badge_number: "",
   };
 
   const onSubmit = (values, { setSubmitting }) => {
     const data = {
-      agency_id: values.agency.value,
-      agency_name: values.agency.label,
+      agency: values.agency.value,
       badge_number: values.badge_number,
       first_name: values.first_name,
       last_name: values.last_name,
@@ -58,14 +57,14 @@ export const RequestAccess = () => {
         setAgency(resp.data);
         setOptions(
           resp.data.map((item) => {
-            return { label: item.agency_name, value: item.id };
+            return { label: item.agency_name, value: item };
           })
         );
       });
     } else {
       setOptions(
         agencies.map((item) => {
-          return { label: item.agency_name, value: item.id };
+          return { label: item.agency_name, value: item };
         })
       );
     }
