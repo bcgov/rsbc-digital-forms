@@ -2,7 +2,7 @@ from flask_api import FlaskAPI
 import logging
 import pytz
 from datetime import datetime
-from python.common.models import db, migrate, Form, UserRole, User
+from python.common.models import db, migrate, Form, UserRole, User, Agency
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.commands import register_commands
 from python.prohibition_web_svc.blueprints import static, forms, admin_forms, icbc, user_roles, admin_user_roles, admin_users, users, events, collision
@@ -70,10 +70,12 @@ def _seed_forms_for_development(database):
 def seed_initial_administrator(database):
     vancouver_tz = pytz.timezone("America/Vancouver")
     current_dt = datetime.now(vancouver_tz)
+    agency = Agency(agency_name="RoadSafety", agency_id=1)
+    database.session.add(agency)
     user = User(username=Config.ADMIN_USERNAME,
                 user_guid=Config.ADMIN_USERNAME,
                 badge_number='0000',
-                agency="RoadSafety",
+                agency_id=1,
                 first_name="Initial",
                 last_name="Administrator",
                 login=Config.ADMIN_USERNAME)

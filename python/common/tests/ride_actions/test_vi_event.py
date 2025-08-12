@@ -1,16 +1,29 @@
 import datetime
 import json
+import os
 import pytest
 import responses
 from flask_api import FlaskAPI
 
+os.environ['TESTING'] = 'true'
+
 import python.common.ride_actions as ride_actions
-from python.common.models import db
+from python.common.models.base import db
+from python.common.models.df_errors import DFErrors
+from python.common.models.province import Province
+from python.common.models.jurisdiction_crossref import JurisdictionCrossRef
+from python.common.models.vehicle import Vehicle
+from python.common.models.vehicle_style import VehicleStyle
+from python.common.models.vehicle_type import VehicleType
+from python.common.models.city import City
+from python.common.models.impound_lot_operator import ImpoundLotOperator
 from python.form_handler.config import Config
 from python.common.config import Config as CommonConfig
 
 application = FlaskAPI(__name__)
-application.config['SQLALCHEMY_DATABASE_URI'] = Config.DATABASE_URI
+application.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///:memory:"
+application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+application.config['TESTING'] = True
 db.init_app(application)
 
 @pytest.fixture
@@ -75,12 +88,44 @@ def user_data():
   return {
     'display_name': 'John Doe',
     'badge_number': '123456',
-    'agency': 'Vancouver Police Dept.'
+    'agency_ref': {
+      'id': 1,
+      'agency_name': 'Vancouver Police Dept.',
+      'vjur': 'VA'
+    },
   }
 
 @pytest.fixture
 def app():    
-    return application
+    with application.app_context():
+        # Only create the specific table we need for testing
+        DFErrors.__table__.create(db.engine, checkfirst=True)
+        Province.__table__.create(db.engine, checkfirst=True)
+        JurisdictionCrossRef.__table__.create(db.engine, checkfirst=True)
+        Vehicle.__table__.create(db.engine, checkfirst=True)
+        VehicleStyle.__table__.create(db.engine, checkfirst=True)
+        VehicleType.__table__.create(db.engine, checkfirst=True)
+        City.__table__.create(db.engine, checkfirst=True)
+        ImpoundLotOperator.__table__.create(db.engine, checkfirst=True)
+        # Add necessary reference data
+        db.session.add(Province(id=1, objectDsc='BRITISH COLUMBIA', objectCd='CA_BC'))
+        db.session.add(JurisdictionCrossRef(jurisdiction_code='CA_BC', jurisdiction_name='BRITISH COLUMBIA'))
+        db.session.add(Vehicle(id=1, mk='FORD', md='MUST', search='FORD - MUSTANG'))
+        db.session.add(VehicleStyle(name='3-DOOR HATCH', code='3DR'))
+        db.session.add(VehicleType(description='PASSENGER', type_cd=1))
+        db.session.add(City(id=1, objectCd='VAN', objectDsc='VANCOUVER'))
+        db.session.add(ImpoundLotOperator(id=217, name='ABLE TOWING'))
+        db.session.commit()
+        yield application
+        # Clean up
+        DFErrors.__table__.drop(db.engine, checkfirst=True)
+        Province.__table__.drop(db.engine, checkfirst=True)
+        JurisdictionCrossRef.__table__.drop(db.engine, checkfirst=True)
+        Vehicle.__table__.drop(db.engine, checkfirst=True)
+        VehicleStyle.__table__.drop(db.engine, checkfirst=True)
+        VehicleType.__table__.drop(db.engine, checkfirst=True)
+        City.__table__.drop(db.engine, checkfirst=True)
+        ImpoundLotOperator.__table__.drop(db.engine, checkfirst=True)
 
 @responses.activate
 def test_vi_event_valid_input(app, event_data, form_data, user_data):
@@ -89,6 +134,7 @@ def test_vi_event_valid_input(app, event_data, form_data, user_data):
                 json={'status': 'success', 'message': 'Event created successfully'}, status=200)
   
   flag, args = ride_actions.vi_event(
+     message={'event_id': 123},
      event_data=event_data, 
      form_data=form_data, 
      user_data=user_data, 
@@ -99,10 +145,10 @@ def test_vi_event_valid_input(app, event_data, form_data, user_data):
   assert len(responses.calls) == 1
   assert responses.calls[0].request.body.decode() == json.dumps({
      'typeofevent': 'vi_submitted',
-     'viPayload': [
-        {
+     'viPayload': {
           'eventType': 'vi_submitted',
           'viNumber': 'VZ3456',
+          'eventID': 123,
           'eventVersion': 1.0,
           'eventDtm': '2021-01-01 08:00:00',
           'driverLicenceNumber': '01234567',
@@ -153,8 +199,7 @@ def test_vi_event_valid_input(app, event_data, form_data, user_data):
           'vehicleSpeed': 160,
           'speedEstimationTechnique': 'visual',
           'speedConfirmationTechnique': 'radar'
-        }
-     ]
+      }
   })
 
 
@@ -189,6 +234,7 @@ def test_vi_event_invalid_input(app, user_data):
               json={'status': 'success', 'message': 'Event created successfully'}, status=200)
     
   flag, args = ride_actions.vi_event(
+     message={'event_id': 123},
      event_data={}, 
      form_data={}, 
      user_data=user_data, 
@@ -206,6 +252,7 @@ def test_vi_event_invalid_response(app, event_data, form_data, user_data):
               json={'status': 'failed', 'message': 'Event creation failed'}, status=400)
     
   flag, args = ride_actions.vi_event(
+     message={'event_id': 123},
      event_data=event_data, 
      form_data=form_data, 
      user_data=user_data, 

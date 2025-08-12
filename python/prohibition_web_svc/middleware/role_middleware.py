@@ -3,7 +3,7 @@ import pytz
 from datetime import datetime
 import logging
 from python.prohibition_web_svc.config import Config
-from python.common.models import db, UserRole, User
+from python.common.models import db, UserRole, User, Agency
 
 
 def query_current_users_roles(**kwargs) -> tuple:
@@ -116,13 +116,15 @@ def query_all_users(**kwargs) -> tuple:
             UserRole.approved_dt,
             UserRole.submitted_dt,
             User.username,
-            User.agency,
+            User.agency_id,
+            Agency.agency_name,
             User.badge_number,
             User.first_name,
             User.last_name,
             User.login,
             User.last_active)\
-            .join(User) \
+            .join(User, User.user_guid == UserRole.user_guid) \
+            .join(Agency, User.agency_id == Agency.id) \
             .limit(Config.MAX_RECORDS_RETURNED)\
             .all()
         kwargs['response'] = make_response(jsonify(UserRole.collection_to_dict(user_role, "serialize_all_users")))
