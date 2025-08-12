@@ -28,7 +28,7 @@ export const RequestAccess = () => {
   const initialValues = {
     last_name: "",
     first_name: "",
-    agency: {},
+    agency: null,
     badge_number: "",
   };
 
