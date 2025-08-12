@@ -24,7 +24,8 @@ class UserRole(db.Model):
     @staticmethod
     def serialize_all_users(rows):
         return {
-            "agency": rows.agency,
+            "agency_id": rows.agency_id,
+            "agency": rows.agency_name,
             "approved_dt": rows.approved_dt,
             "badge_number": rows.badge_number,
             "first_name": rows.first_name,

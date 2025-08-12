@@ -103,11 +103,8 @@ exports[`RequestAccess should match snapshot 1`] = `
                       class=" css-1fdsijx-ValueContainer"
                     >
                       <div
-                        class=" css-1jqq78o-placeholder"
-                        id="react-select-2-placeholder"
-                      >
-                        Select...
-                      </div>
+                        class=" css-1dimb5e-singleValue"
+                      />
                       <div
                         class=" css-qbdosj-Input"
                         data-value=""
@@ -115,7 +112,6 @@ exports[`RequestAccess should match snapshot 1`] = `
                         <input
                           aria-activedescendant=""
                           aria-autocomplete="list"
-                          aria-describedby="react-select-2-placeholder"
                           aria-expanded="false"
                           aria-haspopup="true"
                           autocapitalize="none"
@@ -167,7 +163,7 @@ exports[`RequestAccess should match snapshot 1`] = `
                   id="agency"
                   name="agency"
                   type="hidden"
-                  value=""
+                  value="{}"
                 />
               </div>
             </div>

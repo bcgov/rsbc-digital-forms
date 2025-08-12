@@ -1,15 +1,19 @@
-import datetime
-import json
 import pytest
+import os
 from flask_api import FlaskAPI
 
+# Set environment to indicate we're in test mode before importing models
+os.environ['TESTING'] = 'true'
+
 from python.common.error_middleware import record_error, get_safe_payload, get_function_info
-from python.common.models import db, DFErrors
-from python.form_handler.config import Config
-from python.common.enums import ErrorCode, ErrorStatus, ErrorCategory, ErrorSeverity, EventType
+from python.common.models.base import db
+from python.common.models.df_errors import DFErrors
+from python.common.enums import ErrorCode, ErrorStatus, EventType
 
 application = FlaskAPI(__name__)
-application.config['SQLALCHEMY_DATABASE_URI'] = Config.DATABASE_URI
+application.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///:memory:"
+application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+application.config['TESTING'] = True
 db.init_app(application)
 
 @pytest.fixture
@@ -23,7 +27,12 @@ def error_data():
 
 @pytest.fixture
 def app():    
-    return application
+    with application.app_context():
+        # Only create the specific table we need for testing
+        DFErrors.__table__.create(db.engine, checkfirst=True)
+        yield application
+        # Clean up
+        DFErrors.__table__.drop(db.engine, checkfirst=True)
 
 @pytest.fixture
 def client(app):
@@ -48,10 +57,6 @@ def test_record_error_success(app, error_data):
         assert error.event_id == error_data['event_id']
         assert error.event_type == str(error_data['event_type'])
         assert error.error_details == error_data['error_details']
-        
-        # Clear the database after the test
-        db.session.query(DFErrors).delete()
-        db.session.commit()
 
 @pytest.mark.parametrize("error_code,event_id,event_type", [
     (ErrorCode.E01, 456, EventType.IRP),
@@ -67,10 +72,6 @@ def test_record_error_different_scenarios(app, error_code, event_id, event_type)
         assert error.error_cd == error_code.code
         assert error.event_id == event_id
         assert error.event_type == (str(event_type) if event_type else None)
-        
-        # Clear the database after each test
-        db.session.query(DFErrors).delete()
-        db.session.commit()
 
 def test_get_safe_payload_json(client):
     with client.application.test_request_context(json={"key": "value"}):
@@ -109,7 +110,3 @@ def test_record_error_with_function_info(app):
         error = DFErrors.query.first()
         assert error is not None
         assert "test_function" in error.error_path
-        
-        # Clear the database after the test
-        db.session.query(DFErrors).delete()
-        db.session.commit()

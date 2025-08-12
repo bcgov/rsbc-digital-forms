@@ -4,7 +4,7 @@ import json
 from python.prohibition_web_svc.config import Config
 from datetime import datetime
 import python.prohibition_web_svc.middleware.keycloak_middleware as middleware
-from python.common.models import db, UserRole, User
+from python.common.models import db, UserRole, User, Agency
 from python.prohibition_web_svc.app import create_app
 import logging
 import json
@@ -35,22 +35,24 @@ def database(application):
 @pytest.fixture
 def roles(database):
     today = datetime.strptime("2021-07-21", "%Y-%m-%d")
+    agency = Agency(agency_name="RoadSafety 2", agency_id=2)
+    database.session.add(agency)
     users = [
         User(username="john@idir",
              user_guid="john@idir",
-             agency='RCMP Terrace',
+             agency_id=2,
              badge_number='0508',
              first_name='John',
              last_name='Smith'),
         User(username="larry@idir",
              user_guid="larry@idir",
-             agency='RCMP Terrace',
+             agency_id=2,
              badge_number='0555',
              first_name='Larry',
              last_name='Smith'),
         User(username="mo@idir",
              user_guid="mo@idir",
-             agency='RCMP Terrace',
+             agency_id=2,
              badge_number='8088',
              first_name='Mo',
              last_name='Smith')

@@ -47,7 +47,7 @@ def update_the_user(**kwargs) -> tuple:
         user.display_name = kwargs.get('display_name')
         user.login = kwargs.get('login')
         user.badge_number = kwargs.get('payload')['badge_number']
-        user.agency = kwargs.get('payload')['agency']
+        user.agency_id = kwargs.get('payload')['agency']['id']
         user.first_name = kwargs.get('payload')['first_name']
         user.last_name = kwargs.get('payload')['last_name']
         db.session.commit()
@@ -66,7 +66,7 @@ def create_a_user(**kwargs) -> tuple:
             display_name=kwargs.get('display_name'),
             login=kwargs.get('login'),
             badge_number=kwargs.get('payload')['badge_number'],
-            agency=kwargs.get('payload')['agency'],
+            agency_id=kwargs.get('payload')['agency']['id'],
             first_name=kwargs.get('payload')['first_name'],
             last_name=kwargs.get('payload')['last_name']
         )
@@ -115,9 +115,7 @@ def validate_create_user_payload(**kwargs) -> tuple:
             "required": True
         },
         "agency": {
-            "type": "string",
-            'minlength': 5,
-            'maxlength': 30,
+            "type": "dict",
             "required": True
         },
         "first_name": {
