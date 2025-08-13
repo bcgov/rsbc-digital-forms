@@ -101,6 +101,16 @@ def request_contains_a_payload(**kwargs) -> tuple:
     request = kwargs.get('request')
     try:
         payload = request.get_json()
+        agency = payload.get('agency')
+        if isinstance(agency, str):
+            try:
+                agency = json.loads(agency)
+                payload['agency'] = agency
+            except json.JSONDecodeError:
+                logging.debug(f"Failed to parse agency string as JSON: {agency}")
+
+        if isinstance(agency, dict):
+            payload['agency'] = agency
     except Exception as e:
         logging.warning(str(e))
         return False, kwargs
