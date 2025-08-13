@@ -29,15 +29,14 @@ jobs:
       - uses: actions/setup-python@v4 
         with:
           python-version: 'pypy3.9' 
-      # - name: Install dependencies
-      #   run: |
-      #     cd python/prohibition_web_svc
-      #     pip install --upgrade pip
-      #     pip install -r requirements.txt
-      # - name: Run Tests
-      #   run: |
-      #     cd python/prohibition_web_svc
-      #     pytest
+      - name: Install dependencies and run tests
+        run: |
+          cd python/prohibition_web_svc
+          pip install -r requirements.txt
+          pip install pytest
+          pytest tests/ --doctest-modules --junitxml=test-results/test-results.xml --cov --cov-report=html:coverage_results --cov-report=xml:coverage.xml
+          cd ../common
+          pytest tests/ --doctest-modules --junitxml=test-results/test-results.xml --cov --cov-report=html:coverage_results --cov-report=xml:coverage.xml
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5.0.0
         if: always()
@@ -46,3 +45,13 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: python/prohibition_web_svc
+          args: >
+            -Dsonar.projectKey=rsbc-digital-forms_prohibition-web-svc
+            -Dsonar.organization=rsbc-digital-forms
+            -Dsonar.sources=.
+            -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.python.xunit.reportPath=test-results/test-results.xml
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.sourceEncoding=UTF-8
+            -Dsonar.exclusions=**/tests/**,**/integration-tests/**,**/__init__.py
+            -Dsonar.python.version=3.9
