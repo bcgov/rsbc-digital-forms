@@ -32,6 +32,7 @@ jobs:
       - name: Install dependencies and run tests
         run: |
           cd python/prohibition_web_svc
+          pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
           pytest tests/ --doctest-modules --junitxml=test-results/test-results.xml --cov --cov-report=html:coverage_results --cov-report=xml:coverage.xml
