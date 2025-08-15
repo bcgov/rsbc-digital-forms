@@ -26,15 +26,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - uses: actions/setup-python@v4 
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: 'pypy3.9' 
+          python-version: 3.9
       - name: Install dependencies and run tests
         run: |
           cd python/prohibition_web_svc
           pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest
+          pip install pytest pytest-cov pytest-mock
           pytest tests/ --doctest-modules --junitxml=test-results/test-results.xml --cov --cov-report=html:coverage_results --cov-report=xml:coverage.xml
           cd ../common
           pytest tests/ --doctest-modules --junitxml=test-results/test-results.xml --cov --cov-report=html:coverage_results --cov-report=xml:coverage.xml
