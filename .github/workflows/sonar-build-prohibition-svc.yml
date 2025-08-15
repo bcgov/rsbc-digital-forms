@@ -45,13 +45,3 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: python/prohibition_web_svc
-          args: >
-            -Dsonar.projectKey=rsbc-digital-forms_prohibition-web-svc
-            -Dsonar.organization=rsbc-digital-forms
-            -Dsonar.sources=.
-            -Dsonar.python.coverage.reportPaths=coverage.xml
-            -Dsonar.python.xunit.reportPath=test-results/test-results.xml
-            -Dsonar.host.url=https://sonarcloud.io
-            -Dsonar.sourceEncoding=UTF-8
-            -Dsonar.exclusions=**/tests/**,**/integration-tests/**,**/__init__.py
-            -Dsonar.python.version=3.9
