@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Use Node.js 16
         uses: actions/setup-node@v3
         with:
@@ -71,7 +71,7 @@ jobs:
         browsers: ['chrome', 'firefox']
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download the build folders
         uses: actions/download-artifact@v4
