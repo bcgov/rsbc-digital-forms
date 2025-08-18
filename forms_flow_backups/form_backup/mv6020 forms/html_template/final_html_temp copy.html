@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electronic MV6020 Traffic Accident Report</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 0.75in 0.5in;
+
+            @top-left {
+                content: "Electronic MV6020 Traffic Accident Report";
+                font-family: Arial, sans-serif;
+                font-size: 11pt;
+                font-weight: bold;
+            }
+
+            @top-right {
+                content: "Protected A - Once completed";
+                font-family: Arial, sans-serif;
+                font-size: 9pt;
+                font-weight: bold;
+                text-align: right;
+            }
+
+            @bottom-center {
+                content: "RCMP GRC ED6190 (eMV6020 2024-07 v1.97 PILOT USE ONLY)     Page " counter(page) " of " counter(pages);
+                font-family: Arial, sans-serif;
+                font-size: 8pt;
+                border-top: 1px solid #000;
+                padding-top: 5px;
+            }
+        }
+
+        
+        /* Screen styles - hide print headers/footers on screen */
+        @media screen {
+            .print-header, .print-footer {
+                display: none;
+            }
+        }
+
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10pt;
+            line-height: 1.2;
+            color: #000;
+            background: #fff;
+        }
+
+        .page {
+            width: 8.5in;
+            min-height: 11in;
+            padding: 0.25in 0.5in;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+        }
+
+        .page:not(:empty) {
+            min-height: 11in;
+        }
+
+        .page:empty {
+            display: none;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex !important;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            position: relative;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rcmp-logo {
+            width: 60px;
+            height: auto;
+        }
+
+        .header-text {
+            font-size: 11pt;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .icbc-logo {
+            width: 80px;
+            height: auto;
+        }
+
+        .protected-label {
+            font-size: 9pt;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        /* Form Title */
+        .form-title {
+            font-size: 16pt;
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        /* Instructions */
+        .instructions {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 9pt;
+            line-height: 1.4;
+            border: 1px solid #ccc;
+        }
+
+        /* Section Headers */
+        .section-header {
+            background-color: #333;
+            color: #fff;
+            padding: 5px 10px;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 0;
+            page-break-after: avoid;
+        }
+
+        /* Section Content */
+        .section-content {
+            border: 2px solid #000;
+            border-top: none;
+            padding: 10px;
+            background-color: #f9f9f9;
+            margin-bottom: 15px;
+            page-break-inside: avoid;
+        }
+
+
+
+        /* Form Fields */
+        .form-row {
+            display: flex;
+            margin-bottom: 5px;
+            align-items: center;
+        }
+
+        .form-group {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        /* Entity form layout */
+        .entity-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .entity-field {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .entity-field label {
+            white-space: nowrap;
+            font-weight: bold;
+            font-size: 9pt;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 5px;
+            font-size: 9pt;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        input[type="tel"],
+        input[type="number"],
+        select {
+            border: 1px solid #000;
+            padding: 2px 4px;
+            font-size: 9pt;
+            background: #fff;
+        }
+
+        input[type="text"] {
+            min-width: 100px;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #000;
+        }
+
+        th,
+        td {
+            padding: 4px;
+            text-align: left;
+            font-size: 9pt;
+        }
+
+        th {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+
+        /* Calculated Fields */
+        .calculated {
+            background-color: #e0e0e0;
+            font-style: italic;
+        }
+
+        /* Collision Diagram */
+        .collision-diagram {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            border: 1px solid #000;
+            padding: 10px;
+            background: #fff;
+            page-break-inside: avoid;
+        }
+
+        .diagram-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            gap: 5px;
+        }
+
+        .diagram-box {
+            border: 1px solid #000;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8pt;
+            text-align: center;
+            background: #fff;
+        }
+
+        .diagram-box.selected {
+            background-color: #000;
+            color: #fff;
+        }
+
+        /* Print Styles */
+        @media print {
+            .page {
+                margin: 0;
+                border: none;
+                box-shadow: none;
+                padding-top: 0.25in;
+                padding-bottom: 0.25in;
+            }
+
+            .page:empty {
+                display: none !important;
+            }
+
+            .section-wrapper,
+            .entity-section {
+                page-break-inside: avoid !important;
+            }
+
+            .section-header {
+                page-break-after: avoid !important;
+            }
+
+            table {
+                page-break-inside: avoid !important;
+            }
+
+            .collision-diagram {
+                page-break-inside: avoid !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Page 1 -->
+    <div class="page">
+        <h1 class="form-title">Electronic MV6020 Traffic Accident Report</h1>
+
+        <div class="instructions">
+            This form will change in response to the data entered; please complete it in order from the beginning.<br>
+            Add Entities (vehicles, cyclists, and pedestrians) and Involved Persons as needed using the buttons. If a
+            person was in a vehicle but was outside the vehicle at the time of collision, enter them as a Pedestrian
+            entity.<br>
+            Fields that are automatically calculated (as indicated in the caption and shaded in grey) cannot be manually
+            changed, and some drop-down fields will only show valid values based on your responses.
+        </div>
+
+        <div class="entity-row">
+            <div class="entity-field">
+                <label>Do any of these scenarios apply?</label>
+                <input type="checkbox" id="scenarios" name="scenarios" {% if data.scenarios %}checked{% endif %}>
+                <label for="scenarios" style="font-weight: normal;">None of the scenarios apply (reportable fatal,
+                    injury, or property damage over $10k)</label>
+            </div>
+        </div>
+
+        <div class="entity-row">
+            <div class="entity-field">
+                <label>Does this collision contain a Countable Fatal?</label>
+                <input type="radio" name="fatal" value="yes" {% if data.fatal == "yes" %}checked{% endif %}> Yes
+                <input type="radio" name="fatal" value="no" {% if data.fatal == "no" %}checked{% endif %}> No
+                <input type="radio" name="fatal" value="na" {% if data.fatal == "na" %}checked{% endif %}> Not Applicable - No Fatality Entered
+            </div>
+            <div class="entity-field">
+                <label>Total Countable Fatals:</label>
+                <input type="text" value="{{ data.total_fatals }}" readonly class="calculated" style="width: 30px;">
+            </div>
+        </div>
+
+        <div class="section-wrapper">
+            <div class="section-header">Police Copy</div>
+            <div class="section-content">
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Officer Name:</label>
+                        <input type="text" value="{{ data.officer_name }}" style="width: 150px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Badge Number:</label>
+                        <input type="text" value="{{ data.badge }}" style="width: 100px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Unit/Detachment:</label>
+                        <input type="text" value="{{ data.detachment }}" style="width: 100px;">
+                    </div>
+                </div>
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Report Status:</label>
+                        <select style="width: 150px;">
+                            <option {% if data.status == "Complete" %}selected{% endif %}>Complete</option>
+                            <option {% if data.status == "Pending" %}selected{% endif %}>Pending</option>
+                            <option {% if data.status == "Under Investigation" %}selected{% endif %}>Under Investigation</option>
+                        </select>
+                    </div>
+                    <div class="entity-field">
+                        <label>Supervisor Reviewed:</label>
+                        <input type="checkbox" {% if data.supervisor_reviewed %}checked{% endif %}>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-wrapper">
+            <div class="section-header">File Details</div>
+            <div class="section-content">
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Prefix:</label>
+                        <input type="text" value="{{ data.prefix }}" readonly class="calculated" style="width: 30px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Collision Case No.:</label>
+                        <input type="text" value="{{ data.case_no }}" style="width: 100px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>PRIME File VJUR:</label>
+                        <input type="text" value="{{ data.prime_vjur }}" style="width: 180px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Police File Number:</label>
+                        <input type="text" value="{{ data.police_file_no }}" style="width: 100px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-wrapper">
+            <div class="section-header">Collision Details</div>
+            <div class="section-content">
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Date of Collision:</label>
+                        <input type="date" value="{{ data.collision_date }}">
+                    </div>
+                    <div class="entity-field">
+                        <input type="checkbox" {% if data.reported_same_day %}checked{% endif %}>
+                        <label style="font-weight: normal;">Collision was reported on day of occurrence</label>
+                    </div>
+                </div>
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <input type="checkbox" {% if data.time_unknown %}checked{% endif %}>
+                        <label style="font-weight: normal;">Time of Collision Unknown</label>
+                    </div>
+                    <div class="entity-field">
+                        <label>Time of Collision:</label>
+                        <input type="time" value="{{ data.collision_time }}">
+                    </div>
+                    <div class="entity-field">
+                        <label>Date Reported:</label>
+                        <input type="date" value="{{ data.date_reported }}">
+                    </div>
+                </div>
+
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Collision Type:</label>
+                        <span class="calculated">{{ data.collision_type }}</span>
+                    </div>
+                </div>
+
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Was it a hit and run?</label>
+                        <input type="radio" name="hitrun" value="yes" {% if data.hitrun == "yes" %}checked{% endif %}> Yes
+                        <input type="radio" name="hitrun" value="no" {% if data.hitrun == "no" %}checked{% endif %}> No
+                    </div>
+                    <div class="entity-field">
+                        <label>Did police attend?</label>
+                        <input type="radio" name="attend" value="yes" {% if data.attend == "yes" %}checked{% endif %}> Yes
+                        <input type="radio" name="attend" value="no" {% if data.attend == "no" %}checked{% endif %}> No
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <p style="font-style: italic; margin-bottom: 10px;">For the Police Agency information, specify the
+                        Agency with jurisdiction where the collision occurred.</p>
+
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+                        <div style="display: flex; align-items: center;">
+                            <label style="white-space: nowrap; margin-right: 5px;">Police Agency Type /
+                                District:</label>
+                            <select style="width: 200px;">
+                                <option {% if data.agency_type == "RCMP - Southeast District" %}selected{% endif %}>RCMP - Southeast District</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <label style="white-space: nowrap; margin-right: 5px;">Police Code:</label>
+                            <select style="width: 150px;">
+                                <option {% if data.police_code == "0101 Armstrong Prov" %}selected{% endif %}>0101 Armstrong Prov</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <label style="white-space: nowrap; margin-right: 5px;">Police Zone:</label>
+                            <input type="text" value="{{ data.police_zone }}" style="width: 60px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 2 -->
+    <div class="page">
+        <div class="section-wrapper">
+            <div class="section-header">Location Information</div>
+            <div class="section-content">
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Highway Code:</label>
+                        <select style="width: 120px;">
+                            <option {% if data.highway_code == "2 City/Mun" %}selected{% endif %}>2 City/Mun</option>
+                        </select>
+                    </div>
+                    <div class="entity-field">
+                        <label>Location Code (Highway or Route Number):</label>
+                        <input type="text" value="{{ data.loc_route }}" style="width: 100px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Location Code (Segment Number):</label>
+                        <input type="text" value="{{ data.loc_segment }}" style="width: 100px;">
+                    </div>
+                </div>
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Location Code (Kilometre):</label>
+                        <input type="text" value="{{ data.loc_km }}" style="width: 100px;">
+                    </div>
+                </div>
+
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Name of City, Municipality, Town, District or Village:</label>
+                        <input type="text" value="{{ data.city }}" style="width: 200px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Status:</label>
+                        <input type="radio" name="territory" {% if data.territory == "Organized" %}checked{% endif %}> Organized Territory
+                        <input type="radio" name="territory" {% if data.territory == "Unorganized" %}checked{% endif %}> Unorganized Territory
+                    </div>
+                </div>
+
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Collision Location - Street (On):</label>
+                        <input type="text" value="{{ data.street_on }}" style="width: 200px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Collision Location - Cross Street (At):</label>
+                        <input type="text" value="{{ data.street_at }}" style="width: 200px;">
+                    </div>
+                </div>
+
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Collision Location Description:</label>
+                        <input type="text" value="{{ data.loc_desc }}" style="width: 300px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-wrapper">
+            <div class="section-header">GPS Coordinates</div>
+            <div class="section-content">
+                <div style="margin-bottom: 10px;">
+                    <p>GPS coordinates will automatically be converted into both formats. Select the format you are
+                        entering:</p>
+                    <input type="radio" name="gpsformat" {% if data.gps_format == "dd" %}checked{% endif %}> Decimal Degrees
+                    <input type="radio" name="gpsformat" {% if data.gps_format == "dms" %}checked{% endif %}> Degrees Minutes Seconds
+                </div>
+
+                <table style="margin-top: 10px;">
+                    <tr>
+                        <td><label>Lat.</label></td>
+                        <td><input type="radio" name="lat" {% if data.lat_ns == "N" %}checked{% endif %}> N+ <input type="radio" name="lat" {% if data.lat_ns == "S" %}checked{% endif %}> S-</td>
+                        <td><label>Lat. Deg.</label> <input type="text" value="{{ data.lat_deg }}" style="width: 40px;"></td>
+                        <td><label>Lat. Min.</label> <input type="text" value="{{ data.lat_min }}" style="width: 40px;"></td>
+                        <td><label>Lat. Sec.</label> <input type="text" value="{{ data.lat_sec }}" style="width: 60px;"></td>
+                    </tr>
+                    <tr>
+                        <td><label>Long.</label></td>
+                        <td><input type="radio" name="long" {% if data.lon_ew == "E" %}checked{% endif %}> E+ <input type="radio" name="long" {% if data.lon_ew == "W" %}checked{% endif %}> W-</td>
+                        <td><label>Long. Deg.</label> <input type="text" value="{{ data.lon_deg }}" style="width: 40px;"></td>
+                        <td><label>Long. Min.</label> <input type="text" value="{{ data.lon_min }}" style="width: 40px;"></td>
+                        <td><label>Long. Sec.</label> <input type="text" value="{{ data.lon_sec }}" style="width: 60px;"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-wrapper">
+            <div class="section-header">Collision Characteristics</div>
+            <div class="section-content">
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Box 1 Road Class:</label>
+                        <select style="width: 180px;">
+                            <option {% if data.road_class == "11 One Lane Undivided" %}selected{% endif %}>11 One Lane Undivided</option>
+                        </select>
+                    </div>
+                    <div class="entity-field">
+                        <label>Box 1A Traffic Flow:</label>
+                        <select style="width: 120px;">
+                            <option {% if data.traffic_flow == "01 One Way" %}selected{% endif %}>01 One Way</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Box 2 Collision Location:</label>
+                        <select style="width: 150px;">
+                            <option {% if data.collision_location == "01 At Intersection" %}selected{% endif %}>01 At Intersection</option>
+                        </select>
+                    </div>
+                    <div class="entity-field">
+                        <label>Box 2A Primary Speed Zone:</label>
+                        <select style="width: 150px;">
+                            <option {% if data.speed_primary == "14 Posted - 40 km/h" %}selected{% endif %}>14 Posted - 40 km/h</option>
+                        </select>
+                    </div>
+                    <div class="entity-field">
+                        <label>Box 2B Secondary Speed Zone:</label>
+                        <select style="width: 180px;">
+                            <option {% if data.speed_secondary == "24 Advisory - 40 km/h" %}selected{% endif %}>24 Advisory - 40 km/h</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Box 3 Land Usage:</label>
+                        <select style="width: 200px;">
+                            <option {% if data.land_usage == "03 Apartment Residential" %}selected{% endif %}>03 Apartment Residential</option>
+                        </select>
+                    </div>
+                    <div class="entity-field">
+                        <label>Box 4 Road Type:</label>
+                        <select style="width: 120px;">
+                            <option {% if data.road_type == "01 Asphalt" %}selected{% endif %}>01 Asphalt</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Box 5 Traffic Control:</label>
+                        <select style="width: 180px;">
+                            <option {% if data.traffic_control == "21 Traffic Signal - Red" %}selected{% endif %}>21 Traffic Signal - Red</option>
+                        </select>
+                    </div>
+                    <div class="entity-field">
+                        <label>Box 6 Roadway Character:</label>
+                        <select style="width: 150px;">
+                            <option {% if data.roadway_character == "11 Straight / Flat" %}selected{% endif %}>11 Straight / Flat</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Box 7 Roadway Surface:</label>
+                        <select style="width: 100px;">
+                            <option {% if data.surface == "01 Dry" %}selected{% endif %}>01 Dry</option>
+                        </select>
+                    </div>
+                    <div class="entity-field">
+                        <label>Box 8 Weather:</label>
+                        <select style="width: 100px;">
+                            <option {% if data.weather == "01 Clear" %}selected{% endif %}>01 Clear</option>
+                        </select>
+                    </div>
+                    <div class="entity-field">
+                        <label>Box 9 Lighting:</label>
+                        <select style="width: 120px;">
+                            <option {% if data.lighting == "01 Daylight" %}selected{% endif %}>01 Daylight</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-wrapper">
+            <div class="section-header">Primary Collision Occurrence</div>
+            <div class="section-content">
+                <p style="margin-bottom: 10px;">For Primary Collision Occurrence Code, select the code that best illustrates
+                    the key occurrence according to the Primary Collision Occurrence diagram:</p>
+
+                <div class="collision-diagram">
+                    <div class="diagram-grid">
+                        <div class="diagram-box {% if '1' in data.pco %}selected{% endif %}">1<br>REAR END</div>
+                        <div class="diagram-box {% if '2' in data.pco %}selected{% endif %}">2<br>HEAD ON</div>
+                        <div class="diagram-box {% if '3' in data.pco %}selected{% endif %}">3<br>SIDE SWIPE</div>
+                        <div class="diagram-box {% if '4' in data.pco %}selected{% endif %}">4<br>BACKING</div>
+                        <div class="diagram-box {% if '5' in data.pco %}selected{% endif %}">5<br>INTERSECTION</div>
+                        <div class="diagram-box {% if '6' in data.pco %}selected{% endif %}">6<br>2V PERP</div>
+                        <div class="diagram-box {% if '7' in data.pco %}selected{% endif %}">7<br>2V HEAD</div>
+                        <div class="diagram-box {% if '8' in data.pco %}selected{% endif %}">8<br>RIGHT TURN</div>
+                        <div class="diagram-box {% if '9' in data.pco %}selected{% endif %}">9<br>RIGHT TURN</div>
+                        <div class="diagram-box {% if '10' in data.pco %}selected{% endif %}">10<br>LEFT TURN</div>
+                        <div class="diagram-box {% if '11' in data.pco %}selected{% endif %}">11<br>LEFT TURN</div>
+                        <div class="diagram-box {% if '12' in data.pco %}selected{% endif %}">12<br>LEFT TURN</div>
+                        <div class="diagram-box {% if '13' in data.pco %}selected{% endif %}">13<br>OFF ROAD</div>
+                        <div class="diagram-box {% if '14' in data.pco %}selected{% endif %}">14<br>OFF ROAD LEFT</div>
+                        <div class="diagram-box {% if '15' in data.pco %}selected{% endif %}">15<br>OFF ROAD RIGHT</div>
+                        <div class="diagram-box {% if '16' in data.pco %}selected{% endif %}">16<br>ONE WAY STREET</div>
+                    </div>
+                </div>
+
+                <div class="entity-row" style="margin-top: 15px;">
+                    <div class="entity-field">
+                        <label>Primary Collision Occurrence Code:</label>
+                        <input type="text" value="{{ data.pco }}" style="width: 150px;">
+                    </div>
+                </div>
+
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Box 21 First Contact/Event:</label>
+                        <select style="width: 150px;">
+                            <option {% if data.first_contact == "03 Pedestrian" %}selected{% endif %}>03 Pedestrian</option>
+                        </select>
+                    </div>
+                    <div class="entity-field">
+                        <label>Box 24 Location of First Contact:</label>
+                        <select style="width: 150px;">
+                            <option {% if data.first_contact_loc == "01 On Roadway" %}selected{% endif %}>01 On Roadway</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-wrapper">
+            <div class="section-header">Entity No. 1</div>
+            <div class="section-content">
+    
+            <div class="entity-row">
+                <div class="entity-field">
+                    <label>Entity Type:</label>
+                    <input type="radio" name="entity1type" {% if data.entity1_type == "Vehicle" %}checked{% endif %}> Vehicle
+                    <input type="radio" name="entity1type" {% if data.entity1_type == "Pedestrian" %}checked{% endif %}> Pedestrian
+                    <input type="radio" name="entity1type" {% if data.entity1_type == "Cyclist" %}checked{% endif %}> Cyclist
+                    <input type="radio" name="entity1type" {% if data.entity1_type == "Other" %}checked{% endif %}> Other
+                        <label>Entity Type:</label>
+                        <input type="radio" name="entity1type" {% if data.entity1_type == "Vehicle" %}checked{% endif %}> Vehicle
+                        <input type="radio" name="entity1type" {% if data.entity1_type == "Pedestrian" %}checked{% endif %}> Pedestrian
+                        <input type="radio" name="entity1type" {% if data.entity1_type == "Cyclist" %}checked{% endif %}> Cyclist
+                        <input type="radio" name="entity1type" {% if data.entity1_type == "Other" %}checked{% endif %}> Other
+                    </div>
+                    <div class="entity-field">
+                        <label>Entity Number:</label>
+                        <input type="text" value="{{ data.entity1_no }}" style="width: 40px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Possible Offender?</label>
+                        <input type="radio" name="offender1" {% if data.entity1_offender == "Yes" %}checked{% endif %}> Yes
+                        <input type="radio" name="offender1" {% if data.entity1_offender == "No" %}checked{% endif %}> No
+                    </div>
+                </div>
+    
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <input type="checkbox" {% if data.entity1_parked %}checked{% endif %}> <label style="font-weight: normal;">The vehicle was parked at the time of the collision</label>
+                    </div>
+                    <div class="entity-field">
+                        <input type="checkbox" {% if data.entity1_unknown %}checked{% endif %}> <label style="font-weight: normal;">Unknown Entity</label>
+                    </div>
+                </div>
+    
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Driver's Licence Number:</label>
+                        <input type="text" value="{{ data.e1_dl }}" style="width: 100px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Licence Province:</label>
+                        <select style="width: 150px;">
+                            <option {% if data.e1_dl_prov == "BC British Columbia" %}selected{% endif %}>BC British Columbia</option>
+                        </select>
+                    </div>
+                    <div class="entity-field">
+                        <label>Licence Expiry:</label>
+                        <input type="text" value="{{ data.e1_dl_exp }}" style="width: 60px;">
+                    </div>
+                </div>
+    
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Surname:</label>
+                        <input type="text" value="{{ data.e1_surname }}" style="width: 150px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Given Names:</label>
+                        <input type="text" value="{{ data.e1_given }}" style="width: 200px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Date of Birth:</label>
+                        <input type="date" value="{{ data.e1_dob }}">
+                    </div>
+                </div>
+    
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Gender:</label>
+                        <select style="width: 100px;">
+                            <option {% if data.e1_gender == "Male" %}selected{% endif %}>Male</option>
+                            <option {% if data.e1_gender == "Female" %}selected{% endif %}>Female</option>
+                            <option {% if data.e1_gender == "Other" %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+                    <div class="entity-field">
+                        <label>Address:</label>
+                        <input type="text" value="{{ data.e1_addr }}" style="width: 250px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Phone:</label>
+                        <input type="tel" value="{{ data.e1_phone }}" style="width: 120px;">
+                    </div>
+                </div>
+    
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Vehicle Year:</label>
+                        <input type="text" value="{{ data.e1_veh_year }}" style="width: 60px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Make:</label>
+                        <input type="text" value="{{ data.e1_veh_make }}" style="width: 100px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Model:</label>
+                        <input type="text" value="{{ data.e1_veh_model }}" style="width: 100px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Colour:</label>
+                        <input type="text" value="{{ data.e1_veh_color }}" style="width: 80px;">
+                    </div>
+                </div>
+    
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Licence Plate:</label>
+                        <input type="text" value="{{ data.e1_plate }}" style="width: 100px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Province:</label>
+                        <select style="width: 150px;">
+                            <option {% if data.e1_plate_prov == "BC British Columbia" %}selected{% endif %}>BC British Columbia</option>
+                        </select>
+                    </div>
+                    <div class="entity-field">
+                        <label>VIN:</label>
+                        <input type="text" value="{{ data.e1_vin }}" style="width: 180px;">
+                    </div>
+                </div>
+    
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Vehicle Style:</label>
+                        <input type="text" value="{{ data.e1_style }}" style="width: 120px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Insurance Company:</label>
+                        <input type="text" value="{{ data.e1_insurer }}" style="width: 150px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Policy Number:</label>
+                        <input type="text" value="{{ data.e1_policy }}" style="width: 120px;">
+                    </div>
+                </div>
+    
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <input type="checkbox" {% if data.e1_owner_same %}checked{% endif %}>
+                        <label style="font-weight: normal;">Registered owner has the same name and residential address as the person listed in this Entity.</label>
+                    </div>
+                </div>
+    
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Vehicle Owner Name:</label>
+                        <input type="text" value="{{ data.e1_owner_name }}" style="width: 200px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Vehicle Owner Address:</label>
+                        <input type="text" value="{{ data.e1_owner_addr }}" style="width: 250px;">
+                    </div>
+                </div>
+    
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Damage Location:</label>
+                        <select style="width: 150px;">
+                            <option {% if data.e1_damage_loc == "01 Front End" %}selected{% endif %}>01 Front End</option>
+                        </select>
+                    </div>
+                    <div class="entity-field">
+                        <label>Severity of Damage:</label>
+                        <select style="width: 250px;">
+                            <option {% if data.e1_damage_sev == "04 Severe - Major structural repairs needed" %}selected{% endif %}>04 Severe - Major structural repairs needed</option>
+                        </select>
+                    </div>
+                </div>
+    
+                <div class="entity-row">
+                    <div class="entity-field">
+                        <label>Estimated Damage:</label>
+                        <input type="text" value="{{ data.e1_damage_est }}" style="width: 100px;">
+                    </div>
+                    <div class="entity-field">
+                        <label>Vehicle Stolen?</label>
+                        <input type="radio" name="stolen1" {% if data.e1_stolen == "Yes" %}checked{% endif %}> Yes
+                        <input type="radio" name="stolen1" {% if data.e1_stolen == "No" %}checked{% endif %}> No
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
