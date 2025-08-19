@@ -6,6 +6,7 @@ from python.common.models import db, migrate, Form, UserRole, User, Agency
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.commands import register_commands
 from python.prohibition_web_svc.blueprints import static, forms, admin_forms, icbc, user_roles, admin_user_roles, admin_users, users, events, collision
+from python.prohibition_web_svc.custom_json_encoder import CustomJSONEncoder
 
 
 application = FlaskAPI(__name__)
@@ -28,6 +29,8 @@ application.register_blueprint(collision.bp)
 db.init_app(application)
 migrate.init_app(application, db)
 register_commands(application)
+
+application.json_encoder = CustomJSONEncoder
 
 def create_app():
     with application.app_context():

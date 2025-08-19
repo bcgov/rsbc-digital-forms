@@ -115,6 +115,12 @@ class ErrorCode(BaseEnum):
     C01 = ErrorCodeDetails("C01", "Missing required fields in collision payload", ErrorCategory.VALIDATION, ErrorSeverity.LOW,
                            "Ensure all required fields are provided in the collision payload", True)
     
+    C02 = ErrorCodeDetails("C02", "Error getting collision data", ErrorCategory.CONNECTION, ErrorSeverity.LOW, \
+                           "Ensure that the provided collision case number is valid", False)
+    
+    C03 = ErrorCodeDetails("C03", "Collision not found", ErrorCategory.DATA, ErrorSeverity.LOW, \
+                           "Ensure that the provided collision case number is valid", True)
+
     # Add more error codes as needed...
 
     @property

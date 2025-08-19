@@ -154,3 +154,269 @@ def test_save_event_pdf_exception(monkeypatch):
             collision_middleware.save_event_pdf(payload=DUMMY_PAYLOAD)
         except Exception as e:
             assert str(e) == 'pdf error'
+
+
+def test_get_collision_data_success():
+    """Test successful retrieval of collision data"""
+    mock_collision = MagicMock()
+    mock_collision.collision_case_num = 'MV-001'
+    mock_collision.collision_scenario = 'test_scenario'
+    mock_collision.police_file_num = 'PF-001'
+    
+    # Mock location
+    mock_location = MagicMock()
+    mock_location.lat_decim_degrees = 49.2827
+    mock_location.long_decim_degrees = -123.1207
+    mock_collision.location = mock_location
+    
+    # Mock additional details
+    mock_additional_details = MagicMock()
+    mock_additional_details.pedestrian_location = 'sidewalk'
+    mock_additional_details.pedestrian_action = 'standing'
+    mock_collision.additional_details = mock_additional_details
+    
+    # Mock entities with charges and involved persons
+    mock_entity = MagicMock()
+    mock_entity.entity_id = 1
+    mock_entity.entity_type = 'V'
+    
+    mock_charge = MagicMock()
+    mock_charge.charge_id = 1
+    mock_charge.charge_type = 'S'
+    mock_entity.charges = [mock_charge]
+    
+    mock_person = MagicMock()
+    mock_person.person_id = 1
+    mock_person.surname = 'Doe'
+    mock_entity.involved_persons = [mock_person]
+    
+    mock_collision.entities = [mock_entity]
+    
+    # Mock witnesses
+    mock_witness = MagicMock()
+    mock_witness.witness_name = 'John Witness'
+    mock_witness.address = '123 Main St'
+    mock_collision.witnesses = [mock_witness]
+
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.asdict') as mock_asdict:
+        
+        mock_db.session.query.return_value.filter.return_value.first.return_value = mock_collision
+        
+        # Mock asdict to return predictable values
+        mock_asdict.side_effect = [
+            {'collision_case_num': 'MV-001', 'collision_scenario': 'test_scenario'},  # collision_data
+            {'lat_decim_degrees': 49.2827, 'long_decim_degrees': -123.1207},  # location
+            {'pedestrian_location': 'sidewalk', 'pedestrian_action': 'standing'},  # additional_details
+            {'entity_id': 1, 'entity_type': 'V'},  # entity dict
+            {'charge_id': 1, 'charge_type': 'S'},  # charge dict
+            {'person_id': 1, 'surname': 'Doe'},  # person dict
+            {'witness_name': 'John Witness', 'address': '123 Main St'}  # witness dict
+        ]
+
+        kwargs = {'collision_case_num': 'MV-001'}
+        result, out_kwargs = collision_middleware.get_collision_data(**kwargs)
+        
+        assert result is True
+        assert 'response_dict' in out_kwargs
+        assert out_kwargs['response_dict']['collision_case_num'] == 'MV-001'
+        assert 'location' in out_kwargs['response_dict']
+        assert 'additional_details' in out_kwargs['response_dict']
+        assert 'entities' in out_kwargs['response_dict']
+        assert 'witnesses' in out_kwargs['response_dict']
+        assert len(out_kwargs['response_dict']['entities']) == 1
+        assert len(out_kwargs['response_dict']['witnesses']) == 1
+
+
+def test_get_collision_data_not_found():
+    """Test when collision data is not found"""
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
+        mock_db.session.query.return_value.filter.return_value.first.return_value = None
+        
+        kwargs = {'collision_case_num': 'MV-999'}
+        result, out_kwargs = collision_middleware.get_collision_data(**kwargs)
+        
+        assert result is False
+        assert 'error' in out_kwargs
+        assert out_kwargs['error']['error_code'] == ErrorCode.C03
+        assert 'Collision not found for case number: MV-999' in out_kwargs['error']['error_details']
+        assert out_kwargs['error']['ticket_no'] == 'MV-999'
+        assert out_kwargs['error']['event_type'] == collision_middleware.EVENT_TYPE
+
+
+def test_get_collision_data_database_exception():
+    """Test when database query raises an exception"""
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
+        mock_db.session.query.side_effect = Exception('Database connection error')
+        
+        kwargs = {'collision_case_num': 'MV-001'}
+        result, out_kwargs = collision_middleware.get_collision_data(**kwargs)
+        
+        assert result is False
+        assert 'error' in out_kwargs
+        assert out_kwargs['error']['error_code'] == ErrorCode.C02
+        assert 'Database connection error' in out_kwargs['error']['error_details']
+        assert out_kwargs['error']['ticket_no'] == 'MV-001'
+        assert out_kwargs['error']['event_type'] == collision_middleware.EVENT_TYPE
+
+
+def test_get_collision_data_with_null_location():
+    """Test collision data retrieval when location is None"""
+    mock_collision = MagicMock()
+    mock_collision.collision_case_num = 'MV-001'
+    mock_collision.location = None
+    mock_collision.additional_details = None
+    mock_collision.entities = []
+    mock_collision.witnesses = []
+    
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.asdict') as mock_asdict:
+        
+        mock_db.session.query.return_value.filter.return_value.first.return_value = mock_collision
+        
+        # Mock asdict to return the collision data
+        mock_asdict.return_value = {'collision_case_num': 'MV-001'}
+        
+        kwargs = {'collision_case_num': 'MV-001'}
+        result, out_kwargs = collision_middleware.get_collision_data(**kwargs)
+        
+        assert result is True
+        assert out_kwargs['response_dict']['location'] is None
+        assert out_kwargs['response_dict']['additional_details'] is None
+        assert out_kwargs['response_dict']['entities'] == []
+        assert out_kwargs['response_dict']['witnesses'] == []
+
+
+def test_get_collision_data_with_empty_entities():
+    """Test collision data retrieval with empty entities list"""
+    mock_collision = MagicMock()
+    mock_collision.collision_case_num = 'MV-001'
+    mock_collision.location = None
+    mock_collision.additional_details = None
+    mock_collision.entities = []
+    mock_collision.witnesses = []
+    
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.asdict') as mock_asdict:
+        
+        mock_db.session.query.return_value.filter.return_value.first.return_value = mock_collision
+        
+        # Mock asdict to return the collision data
+        mock_asdict.return_value = {'collision_case_num': 'MV-001'}
+        
+        kwargs = {'collision_case_num': 'MV-001'}
+        result, out_kwargs = collision_middleware.get_collision_data(**kwargs)
+        
+        assert result is True
+        assert out_kwargs['response_dict']['entities'] == []
+
+
+def test_get_collision_data_with_multiple_entities_and_witnesses():
+    """Test collision data retrieval with multiple entities and witnesses"""
+    mock_collision = MagicMock()
+    mock_collision.collision_case_num = 'MV-001'
+    mock_collision.location = None
+    mock_collision.additional_details = None
+    
+    # Create multiple entities
+    mock_entity1 = MagicMock()
+    mock_entity1.entity_id = 1
+    mock_entity1.charges = []
+    mock_entity1.involved_persons = []
+    
+    mock_entity2 = MagicMock()
+    mock_entity2.entity_id = 2
+    mock_entity2.charges = []
+    mock_entity2.involved_persons = []
+    
+    mock_collision.entities = [mock_entity1, mock_entity2]
+    
+    # Create multiple witnesses
+    mock_witness1 = MagicMock()
+    mock_witness1.witness_name = 'John Witness'
+    
+    mock_witness2 = MagicMock()
+    mock_witness2.witness_name = 'Jane Witness'
+    
+    mock_collision.witnesses = [mock_witness1, mock_witness2]
+    
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.asdict') as mock_asdict:
+        
+        mock_db.session.query.return_value.filter.return_value.first.return_value = mock_collision
+        
+        # Mock asdict to return predictable values
+        mock_asdict.side_effect = [
+            {'collision_case_num': 'MV-001'},  # collision_data
+            {'entity_id': 1},  # entity1 dict
+            {'entity_id': 2},  # entity2 dict
+            {'witness_name': 'John Witness'},  # witness1 dict
+            {'witness_name': 'Jane Witness'}   # witness2 dict
+        ]
+        
+        kwargs = {'collision_case_num': 'MV-001'}
+        result, out_kwargs = collision_middleware.get_collision_data(**kwargs)
+        
+        assert result is True
+        assert len(out_kwargs['response_dict']['entities']) == 2
+        assert len(out_kwargs['response_dict']['witnesses']) == 2
+
+
+def test_load_entity_helper_function():
+    """Test the _load_entity helper function used by get_collision_data"""
+    mock_entity = MagicMock()
+    mock_entity.entity_id = 1
+    mock_entity.entity_type = 'V'
+    
+    # Mock charges
+    mock_charge1 = MagicMock()
+    mock_charge1.charge_id = 1
+    mock_charge2 = MagicMock()
+    mock_charge2.charge_id = 2
+    mock_entity.charges = [mock_charge1, mock_charge2]
+    
+    # Mock involved persons
+    mock_person1 = MagicMock()
+    mock_person1.person_id = 1
+    mock_person2 = MagicMock()
+    mock_person2.person_id = 2
+    mock_entity.involved_persons = [mock_person1, mock_person2]
+    
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.asdict') as mock_asdict:
+        # Mock asdict to return predictable values
+        mock_asdict.side_effect = [
+            {'entity_id': 1, 'entity_type': 'V'},  # entity dict
+            {'charge_id': 1},  # charge1 dict
+            {'charge_id': 2},  # charge2 dict
+            {'person_id': 1},  # person1 dict
+            {'person_id': 2}   # person2 dict
+        ]
+        
+        result = collision_middleware._load_entity(mock_entity)
+        
+        assert result['entity_id'] == 1
+        assert result['entity_type'] == 'V'
+        assert len(result['charges']) == 2
+        assert len(result['involved_persons']) == 2
+        assert result['charges'][0]['charge_id'] == 1
+        assert result['charges'][1]['charge_id'] == 2
+        assert result['involved_persons'][0]['person_id'] == 1
+        assert result['involved_persons'][1]['person_id'] == 2
+
+
+def test_load_entity_with_null_charges_and_persons():
+    """Test _load_entity when charges and involved_persons are None"""
+    mock_entity = MagicMock()
+    mock_entity.entity_id = 1
+    mock_entity.charges = None
+    mock_entity.involved_persons = None
+    
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.asdict') as mock_asdict:
+        mock_asdict.return_value = {'entity_id': 1}
+        
+        result = collision_middleware._load_entity(mock_entity)
+        
+        assert result['entity_id'] == 1
+        assert result['charges'] == []
+        assert result['involved_persons'] == []
+

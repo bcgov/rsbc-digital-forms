@@ -54,3 +54,22 @@ def create_collision():
         config=Config
     )
     return kwargs.get('response')
+
+@bp.route('/collision/<collision_case_num>', methods=['GET'])
+def get_collision(collision_case_num):
+    logging.info(f"Inside get_collision() for collision_case_num: {collision_case_num}")    
+    kwargs = middle_logic(
+        get_authorized_keycloak_user() + [
+            {"try": collision_middleware.get_collision_data, "fail": [
+                {"try": common_middleware.record_event_error, "fail": []},
+                {"try": http_responses.not_found_response, "fail": []}
+            ]},
+            {"try": splunk.log_to_splunk, "fail": []},
+            {"try": http_responses.successful_get_response, "fail": []}
+        ],
+        required_permission='forms-get',
+        request=request,
+        config=Config,
+        collision_case_num=collision_case_num
+    )
+    return kwargs.get('response')
