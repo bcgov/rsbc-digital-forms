@@ -101,3 +101,7 @@ def no_payload(**kwargs) -> tuple:
 def successful_get_response(**kwargs) -> tuple:
     response = make_response(jsonify(kwargs.get('response_dict')), 200)
     return True, {'response': response}
+
+def not_found_response(**kwargs) -> tuple:
+    kwargs['response'] = make_response({'error': 'not found'}, 404)
+    return True, kwargs

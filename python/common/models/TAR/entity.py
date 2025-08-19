@@ -127,5 +127,5 @@ class TarEntity(db.Model):
     vehicle_use = db.Column(db.String(2), db.ForeignKey('TAR.vehicle_use.code'))
     
 
-    involved_persons = db.relationship('TarInvolvedPerson', backref='entity', uselist=True, lazy='select')
-    charges = db.relationship('TarCharges', backref='entity', uselist=True, lazy='select')
+    involved_persons = db.relationship('TarInvolvedPerson', backref='entity', uselist=True, lazy='joined')
+    charges = db.relationship('TarCharges', backref='entity', uselist=True, lazy='joined')

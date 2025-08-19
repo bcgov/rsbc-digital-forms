@@ -1,6 +1,7 @@
+from dataclasses import asdict
 import logging
 from datetime import datetime
-from python.common.models import db, Submission
+from python.common.models import db, Submission, TarCollision
 from python.common.enums import ErrorCode
 from python.prohibition_web_svc.mappers.collision_mapper import CollisionMapper
 from python.prohibition_web_svc.middleware import common_middleware
@@ -250,3 +251,49 @@ def _validate_witness_required_fields(collision: CollisionRequestPayload, kwargs
             }
             return False
     return True
+
+def get_collision_data(**kwargs) -> tuple:
+    collision_case_num = kwargs.get('collision_case_num')
+    logging.info(f"Retrieving collision data for collision: {collision_case_num}")
+    try:
+        collision_data = db.session.query(TarCollision)\
+                        .filter(TarCollision.collision_case_num == collision_case_num)\
+                        .first()
+        if not collision_data:
+            kwargs['error'] = {
+                'error_code': ErrorCode.C03,
+                'error_details': f"Collision not found for case number: {collision_case_num}",
+                'event_type': EVENT_TYPE,
+                'ticket_no': collision_case_num,
+                'func': get_collision_data,
+            }
+            return False, kwargs
+        
+        kwargs['response_dict'] = asdict(collision_data)
+        location = asdict(collision_data.location) if collision_data.location else None
+        kwargs['response_dict']['location'] = location
+        additional_details = asdict(collision_data.additional_details) if collision_data.additional_details else None
+        kwargs['response_dict']['additional_details'] = additional_details
+        entities = [_load_entity(entity) for entity in collision_data.entities]
+        kwargs['response_dict']['entities'] = entities
+        witnesses = [asdict(witness) for witness in collision_data.witnesses]
+        kwargs['response_dict']['witnesses'] = witnesses
+        return True, kwargs
+    except Exception as e:
+        logging.exception(e)
+        kwargs['error'] = {
+            'error_code': ErrorCode.C02,
+            'error_details': str(e),
+            'event_type': EVENT_TYPE,
+            'ticket_no': collision_case_num,
+            'func': get_collision_data,
+        }
+        return False, kwargs
+
+def _load_entity(entity):
+    entity_dict = asdict(entity)
+    charges = entity.charges if entity.charges else []
+    entity_dict['charges'] = [asdict(charge) for charge in charges]
+    involved_persons = entity.involved_persons if entity.involved_persons else []
+    entity_dict['involved_persons'] = [asdict(person) for person in involved_persons]
+    return entity_dict

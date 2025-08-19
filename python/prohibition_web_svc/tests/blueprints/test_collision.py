@@ -42,3 +42,13 @@ def test_create_collision_server_error(client, monkeypatch):
     response = client.post('/api/v1/collision', json={})
     assert response.status_code == 500
     assert b'server error' in response.data
+
+def test_get_collision_success(client, monkeypatch):
+    # Patch middle_logic to simulate a successful retrieval
+    def fake_middle_logic(*args, **kwargs):
+        return {'response': ('{"message": "retrieved"}', 200, {'Content-Type': 'application/json'})}
+    monkeypatch.setattr(collision_blueprint, 'middle_logic', fake_middle_logic)
+    monkeypatch.setattr(collision_blueprint, 'get_authorized_keycloak_user', lambda: [])
+    response = client.get('/api/v1/collision/1')
+    assert response.status_code == 200
+    assert b'retrieved' in response.data
