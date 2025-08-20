@@ -1,8 +1,8 @@
 from datetime import date, time, datetime
 from decimal import Decimal
-from json import JSONEncoder
+from flask.json.provider import DefaultJSONProvider
 
-class CustomJSONEncoder(JSONEncoder):
+class CustomJSONEncoder(DefaultJSONProvider):
     def default(self, obj):
         if isinstance(obj, (date, time, datetime)):
             return obj.isoformat()

@@ -30,7 +30,7 @@ db.init_app(application)
 migrate.init_app(application, db)
 register_commands(application)
 
-application.json_encoder = CustomJSONEncoder
+application.json = CustomJSONEncoder(application)
 
 def create_app():
     with application.app_context():
