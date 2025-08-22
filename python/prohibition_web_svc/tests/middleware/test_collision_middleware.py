@@ -41,33 +41,41 @@ def test_validate_collision_payload_success():
     assert out_kwargs == kwargs
 
 def test_validate_collision_payload_failure_empty_payload():
-  # Missing required fields (empty payload)
-  kwargs = {'payload': {}}
-  result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
-  assert result is False
-  assert out_kwargs['error']['error_details'] == 'Empty payload'
+    # Missing required fields (empty payload)
+    kwargs = {'payload': {}}
+    result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
+    assert result is False
+    assert out_kwargs['error']['error_details'] == 'Empty payload'
+    assert out_kwargs['response_dict'] == {
+        'error_details': 'Empty payload'
+    }
 
 def test_validate_collision_payload_failure_missing_fields():
-  # Missing required fields
-  kwargs = {'payload': {
-      'collision_case_num': 'MV-001',
-  }}
-  result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
-  assert result is False
-  assert 'error' in out_kwargs
-  assert out_kwargs['error']['error_details'] == "Missing required fields: ['collision_scenario', 'police_file_num', 'prime_file_vjur', 'date_collision', 'time_collision', 'reported_same_day', 'time_collision_unknown', 'date_reported', 'hit_and_run', 'police_attended', 'police_agency_code', 'primary_collision_occ_code', 'first_contact_event', 'first_contact_loc', 'has_countable_fatal', 'countable_fatal_total', 'completed_by_name', 'completed_by_id', 'detachment_unit', 'investigated_by_traffic_analyst', 'hwy_code', 'city_name', 'lat_decim_degrees', 'long_decim_degrees', 'road_class', 'traffic_flow', 'collision_loc', 'primary_speed_zone', 'land_usage', 'road_type', 'roadway_character', 'roadway_surface_cond', 'weather_cond', 'lighting_cond', 'has_other_prop_damage', 'has_witnesses', 'collision_type', 'total_est_damage', 'total_injured', 'total_killed', 'total_vehicles', 'summary_was_verified', 'entities']"
+    # Missing required fields
+    kwargs = {'payload': {
+        'collision_case_num': 'MV-001',
+    }}
+    result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
+    assert result is False
+    assert 'error' in out_kwargs
+    assert out_kwargs['error']['error_details'] == "Missing required fields: ['collision_scenario', 'police_file_num', 'prime_file_vjur', 'date_collision', 'time_collision', 'reported_same_day', 'time_collision_unknown', 'date_reported', 'hit_and_run', 'police_attended', 'police_agency_code', 'primary_collision_occ_code', 'first_contact_event', 'first_contact_loc', 'has_countable_fatal', 'countable_fatal_total', 'completed_by_name', 'completed_by_id', 'detachment_unit', 'investigated_by_traffic_analyst', 'hwy_code', 'city_name', 'lat_decim_degrees', 'long_decim_degrees', 'road_class', 'traffic_flow', 'collision_loc', 'primary_speed_zone', 'land_usage', 'road_type', 'roadway_character', 'roadway_surface_cond', 'weather_cond', 'lighting_cond', 'has_other_prop_damage', 'has_witnesses', 'collision_type', 'total_est_damage', 'total_injured', 'total_killed', 'total_vehicles', 'summary_was_verified', 'entities', 'form_version']"
+    assert out_kwargs['response_dict'] == {
+        'error_details': out_kwargs['error']['error_details']
+    }
 
 def test_validate_collision_payload_failure_missing_entity():
     # Missing required entity fields
     with open(collision_json_path) as f:
-      payload = json.load(f)
+        payload = json.load(f)
     payload['entities'] = []  # No entities provided
     kwargs = {'payload': payload}
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
     assert 'error' in out_kwargs
     assert out_kwargs['error']['error_details'] == "Collision has no entities provided."
-
+    assert out_kwargs['response_dict'] == {
+        'error_details': out_kwargs['error']['error_details']
+    }
 
 def test_validate_collision_payload_failure_missing_entity_fields():
     # Missing required entity fields
@@ -79,34 +87,46 @@ def test_validate_collision_payload_failure_missing_entity_fields():
     assert result is False
     assert 'error' in out_kwargs
     assert out_kwargs['error']['error_details'] == "Missing required fields in entity: ['entity_type', 'entity_num', 'possible_offender', 'contributing_factor_1', 'contributing_factor_2', 'contributing_factor_3', 'contributing_factor_4', 'damage_location_code', 'severety_code']"
+    assert out_kwargs['response_dict'] == {
+        'error_details': out_kwargs['error']['error_details']
+    }
 
-def test_validate_collision_payload_failure_missing_witness():
-    # Missing required witness
+def test_validate_collision_payload_failure_missing_witness_data():
+    # Missing required witness data when has_witnesses is True
     with open(collision_json_path) as f:
         payload = json.load(f)
     payload['has_witnesses'] = True  # Indicating there are witnesses
-    payload['witnesses'] = []  # Empty witness
+    payload['witnesses'] = []  # Empty witness list
     kwargs = {'payload': payload}
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
     assert out_kwargs['error']['error_details'] == "Collision has witnesses but no witness data provided."
+    assert out_kwargs['response_dict'] == {
+        'error_details': out_kwargs['error']['error_details']
+    }
 
+    # Test with None witnesses
     payload['witnesses'] = None  # No witnesses provided
     kwargs = {'payload': payload}
     result2, out_kwargs2 = collision_middleware.validate_collision_payload(**kwargs)
     assert result2 is False
     assert out_kwargs2['error']['error_details'] == "Collision has witnesses but no witness data provided."
-    
-def test_validate_collision_payload_failure_missing_witness():
-    # Missing required witness
+    assert out_kwargs2['response_dict'] == {
+        'error_details': out_kwargs2['error']['error_details']
+    }
+
+def test_validate_collision_payload_failure_missing_witness_fields():
+    # Missing required witness fields
     with open(collision_json_path) as f:
         payload = json.load(f)
-    payload['witnesses'] = [{}] 
+    payload['witnesses'] = [{}]  # Empty witness object
     kwargs = {'payload': payload}
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
     assert out_kwargs['error']['error_details'] == "Missing required fields in witness: ['witness_name', 'address', 'contact_phn_num']"
-
+    assert out_kwargs['response_dict'] == {
+        'error_details': out_kwargs['error']['error_details']
+    }
 
 def test_save_collision_data_success(monkeypatch):
     mock_db = MagicMock()
@@ -122,7 +142,7 @@ def test_save_collision_data_success(monkeypatch):
     result, out_kwargs = collision_middleware.save_collision_data(**kwargs)
     assert result is True
     assert out_kwargs['response_dict']['submission_id'] == 42
-    assert out_kwargs['submission'] == mock_submission
+    assert out_kwargs['submission_id'] == 42
 
 def test_save_collision_data_exception(monkeypatch):
     mock_db = MagicMock()
@@ -136,25 +156,33 @@ def test_save_collision_data_exception(monkeypatch):
     result, out_kwargs = collision_middleware.save_collision_data(**kwargs)
     assert result is False
     assert 'error' in out_kwargs
-    assert out_kwargs['error']['error_code']
+    assert out_kwargs['error']['error_code'] == ErrorCode.E01
 
 def test_save_event_pdf_success():
-    kwargs = {'payload': DUMMY_PAYLOAD}
-    result, out_kwargs = collision_middleware.save_event_pdf(**kwargs)
-    assert result is True
-    assert out_kwargs == kwargs
+    kwargs = {'payload': DUMMY_PAYLOAD, 'submission_id': 42}
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
+        mock_session = MagicMock()
+        mock_db.session = mock_session
+        
+        result, out_kwargs = collision_middleware.save_event_pdf(**kwargs)
+        assert result is True
+        assert out_kwargs == kwargs
+        # Verify that db operations were called
+        mock_session.add.assert_called_once()
+        mock_session.commit.assert_called_once()
 
-def test_save_event_pdf_exception(monkeypatch):
-    def raise_exc(**kwargs):
-        raise Exception('pdf error')
-    monkeypatch.setattr(collision_middleware, 'save_event_pdf', lambda **kwargs: (_ for _ in ()).throw(Exception('pdf error')))
-    # Instead, patch the body of save_event_pdf to raise
-    with patch('python.prohibition_web_svc.middleware.collision_middleware.save_event_pdf', side_effect=Exception('pdf error')):
-        try:
-            collision_middleware.save_event_pdf(payload=DUMMY_PAYLOAD)
-        except Exception as e:
-            assert str(e) == 'pdf error'
-
+def test_save_event_pdf_exception():
+    kwargs = {'payload': DUMMY_PAYLOAD, 'submission_id': 42}
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
+        mock_session = MagicMock()
+        mock_db.session = mock_session
+        mock_session.add.side_effect = Exception('pdf error')
+        
+        result, out_kwargs = collision_middleware.save_event_pdf(**kwargs)
+        assert result is False
+        assert 'error' in out_kwargs
+        assert out_kwargs['error']['error_code'] == ErrorCode.C04
+        assert 'pdf error' in str(out_kwargs['error']['error_details'])
 
 def test_get_collision_data_success():
     """Test successful retrieval of collision data"""
@@ -227,7 +255,6 @@ def test_get_collision_data_success():
         assert len(out_kwargs['response_dict']['entities']) == 1
         assert len(out_kwargs['response_dict']['witnesses']) == 1
 
-
 def test_get_collision_data_not_found():
     """Test when collision data is not found"""
     with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
@@ -243,7 +270,6 @@ def test_get_collision_data_not_found():
         assert out_kwargs['error']['ticket_no'] == 'MV-999'
         assert out_kwargs['error']['event_type'] == collision_middleware.EVENT_TYPE
 
-
 def test_get_collision_data_database_exception():
     """Test when database query raises an exception"""
     with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
@@ -258,7 +284,6 @@ def test_get_collision_data_database_exception():
         assert 'Database connection error' in out_kwargs['error']['error_details']
         assert out_kwargs['error']['ticket_no'] == 'MV-001'
         assert out_kwargs['error']['event_type'] == collision_middleware.EVENT_TYPE
-
 
 def test_get_collision_data_with_null_location():
     """Test collision data retrieval when location is None"""
@@ -286,7 +311,6 @@ def test_get_collision_data_with_null_location():
         assert out_kwargs['response_dict']['entities'] == []
         assert out_kwargs['response_dict']['witnesses'] == []
 
-
 def test_get_collision_data_with_empty_entities():
     """Test collision data retrieval with empty entities list"""
     mock_collision = MagicMock()
@@ -309,7 +333,6 @@ def test_get_collision_data_with_empty_entities():
         
         assert result is True
         assert out_kwargs['response_dict']['entities'] == []
-
 
 def test_get_collision_data_with_multiple_entities_and_witnesses():
     """Test collision data retrieval with multiple entities and witnesses"""
@@ -361,7 +384,6 @@ def test_get_collision_data_with_multiple_entities_and_witnesses():
         assert len(out_kwargs['response_dict']['entities']) == 2
         assert len(out_kwargs['response_dict']['witnesses']) == 2
 
-
 def test_load_entity_helper_function():
     """Test the _load_entity helper function used by get_collision_data"""
     mock_entity = MagicMock()
@@ -403,7 +425,6 @@ def test_load_entity_helper_function():
         assert result['involved_persons'][0]['person_id'] == 1
         assert result['involved_persons'][1]['person_id'] == 2
 
-
 def test_load_entity_with_null_charges_and_persons():
     """Test _load_entity when charges and involved_persons are None"""
     mock_entity = MagicMock()
@@ -419,4 +440,3 @@ def test_load_entity_with_null_charges_and_persons():
         assert result['entity_id'] == 1
         assert result['charges'] == []
         assert result['involved_persons'] == []
-

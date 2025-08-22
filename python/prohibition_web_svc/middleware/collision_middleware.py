@@ -1,13 +1,14 @@
 from dataclasses import asdict
 import logging
 from datetime import datetime
-from python.common.models import db, Submission, TarCollision
+from python.common.models import db, Submission, SubmissionFormRef, SubmissionEvent, TarCollision
 from python.common.enums import ErrorCode
 from python.prohibition_web_svc.mappers.collision_mapper import CollisionMapper
 from python.prohibition_web_svc.middleware import common_middleware
 from python.prohibition_web_svc.models.collision_request_payload import CollisionRequestPayload
 
 EVENT_TYPE = 'Collision - MV6020'
+MV6020_FORM_TYPE = 'MV6020'
 
 def set_event_type(**kwargs) -> tuple:
     """
@@ -32,20 +33,25 @@ def set_ticket_number(**kwargs) -> tuple:
 def validate_collision_payload(**kwargs) -> tuple:
     logging.debug("inside validate_form_payload()")
 
+    is_valid = False
     if(kwargs.get('payload')):
         collision: CollisionRequestPayload = kwargs['payload']
         is_valid = _validate_required_fields(collision, kwargs)
-        return is_valid, kwargs
-    logging.warning("validation error: empty payload")
-    # Set error in kwargs to get consumed by the record_event_error function
-    kwargs['error'] = {
-        'error_code': ErrorCode.C01,
-        'error_details': "Empty payload",
-        'event_type': EVENT_TYPE,
-        'ticket_no': None,
-        'func': validate_collision_payload,
-    }
-    return False, kwargs
+    else:
+        logging.warning("validation error: empty payload")
+        # Set error in kwargs to get consumed by the record_event_error function
+        kwargs['error'] = {
+            'error_code': ErrorCode.C01,
+            'error_details': "Empty payload",
+            'event_type': EVENT_TYPE,
+            'ticket_no': None,
+            'func': validate_collision_payload,
+        }
+    if not is_valid:
+        kwargs['response_dict'] = {
+            'error_details': kwargs.get('error', {}).get('error_details', None),
+        }
+    return is_valid, kwargs
 
 def save_collision_data(**kwargs) -> tuple:
     logging.debug('inside save_collision_data()')
@@ -68,11 +74,12 @@ def save_collision_data(**kwargs) -> tuple:
         db.session.add(submission)
         db.session.commit()
 
-        logging.debug(f"Collision data saved with submission_id: {submission.submission_id}")
+        logging.info(f"Collision data saved with submission_id: {submission.submission_id}")
+        kwargs['submission_id'] = submission.submission_id
         kwargs['response_dict'] = {
-            "message": "Collision created successfully",
-            "submission_id": submission.submission_id
-            }
+            'message': 'Collision data saved successfully',
+            'submission_id': submission.submission_id
+        }
     except Exception as e:
         logging.exception(e)
         # Set error in kwargs to get consumed by the record_event_error function
@@ -85,28 +92,41 @@ def save_collision_data(**kwargs) -> tuple:
             'func': save_collision_data,
         }
         return False, kwargs
-    kwargs['response_dict'] = {
-        'message': 'Collision data saved successfully',
-        'submission_id': submission.submission_id
-    }
-    kwargs['submission'] = submission
+
     return True, kwargs
 
 
 def save_event_pdf(**kwargs) -> tuple:
     logging.debug('inside save_event_pdf()')    
     data = kwargs.get('payload')
+    submission_id = kwargs.get('submission_id')
+    collision_case_num = data.get("collision_case_num")
     try:
         #TODO: generate the PDF and save it to Minio
-        pass
+        storage_key = f'collision/{collision_case_num}.pdf' #TODO: update with Minio path
+        form_ref = SubmissionFormRef(
+            submission_id=submission_id,
+            form_type=MV6020_FORM_TYPE,
+            form_id=collision_case_num,
+            form_version=data.get("form_version"),
+            storage_key=storage_key,
+        )
+        form_ref.events = []  # Initialize events as an empty list
+        event = SubmissionEvent(
+            destination='ICBC',
+        )
+        form_ref.events.append(event)
+        db.session.add(form_ref)
+        db.session.commit()
+        logging.debug(f"PDF saved for submission {submission_id} with storage key: {storage_key}")
     except Exception as e:
         logging.warning(str(e))
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
-                'error_code': ErrorCode.E02,
+                'error_code': ErrorCode.C04,
                 'error_details': e,
                 'event_type': EVENT_TYPE,
-                'ticket_no': data.get("collision_case_num"),
+                'ticket_no': collision_case_num,
                 'func': save_event_pdf,
             }
         return False, kwargs
@@ -168,7 +188,8 @@ def _validate_collision_required_fields(collision: CollisionRequestPayload, kwar
         "total_vehicles",
         "summary_was_verified",
         # Entities and witnesses are handled separately
-        "entities"
+        "entities",
+        "form_version"
     ]
 
     missing_fields = [field for field in required_fields if field not in collision]
