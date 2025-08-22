@@ -373,6 +373,7 @@
             background: transparent;
             font-family: 'Courier New', Courier, monospace;
             font-size: 10pt;
+            width: 100%;
         }
 
         .grid-label {
@@ -892,7 +893,769 @@
                     
                 </div>
 
+                <!-- Entity Section - Dynamic based on data.entities array -->
+                {% for entity in data.entities %}
+                {% set entity_index = loop.index %}
+                <div class="section-divider">
+                    <h4 class="subsection-header">Entity No. {{ entity_index }}</h4>
+                    
+                    <!-- Entity Type and Basic Info -->
+                    <div class="grid-table grid-table-4col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Entity Type (calculated)</label><br>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="entity_type_{{ loop.index }}" value="V" {% if entity.entity_type.value == 'V' %}checked{% endif %}>
+                                    <label>Vehicle</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="entity_type_{{ loop.index }}" value="P" {% if entity.entity_type.value == 'P' %}checked{% endif %}>
+                                    <label>Pedestrian</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="entity_type_{{ loop.index }}" value="C" {% if entity.entity_type.value == 'C' %}checked{% endif %}>
+                                    <label>Cyclist</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="entity_type_{{ loop.index }}" value="O" {% if entity.entity_type.value == 'O' %}checked{% endif %}>
+                                    <label>Other</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Entity Number</label><br>
+                            <input type="text" value="{{ entity.entity_num }}" class="grid-input" style="width: 60px;">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Possible Offender?</label><br>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="possible_offender_{{ loop.index }}" value="Y" {% if entity.possible_offender == 'Y' %}checked{% endif %}>
+                                    <label>Yes</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="possible_offender_{{ loop.index }}" value="N" {% if entity.possible_offender == 'N' %}checked{% endif %}>
+                                    <label>No</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-cell">
+                            <input type="checkbox" {% if entity.vehicle_parked %}checked{% endif %}>
+                            <label style="font-weight: normal; font-size: 9pt; font-style: italic; margin-left: 5px;">
+                                The vehicle was parked at the time of the collision; if checked, do not complete the Personal Information in this section; add any person as an Involved Person.
+                            </label>
+                        </div>
+                    </div>
 
+                    <!-- Unknown Entity Checkbox -->
+                    <div class="grid-table grid-table-1col">
+                        <div class="grid-cell">
+                            <input type="checkbox" {% if entity.unknown_entity %}checked{% endif %}>
+                            <label style="font-weight: normal;">Unknown Entity (enter as much information as possible but blank fields are acceptable)</label>
+                        </div>
+                    </div>
+
+                    <!-- Driver Information -->
+                    <div class="grid-table grid-table-4col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Driver's Licence Number</label><br>
+                            <input type="text" value="{{ entity.driver_license_num }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Licence Province or State of Issue</label><br>
+                            <input type="text" value="{{ entity.license_prov_state.label if entity.license_prov_state else '' }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Licence Expiry</label><br>
+                            <input type="text" value="{{ entity.license_expiry }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <!-- Empty cell for spacing -->
+                        </div>
+                    </div>
+
+                    <div class="grid-table grid-table-4col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Surname</label><br>
+                            <input type="text" value="{{ entity.surname }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Given Names</label><br>
+                            <input type="text" value="{{ entity.given_name }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Licence Class</label><br>
+                            <input type="text" value="{{ entity.license_class }}" class="grid-input" style="width: 60px;">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Graduated Licence Type</label><br>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="grad_license_{{ loop.index }}" value="L" {% if entity.graduated_license_type == 'L' %}checked{% endif %}>
+                                    <label>L</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="grad_license_{{ loop.index }}" value="N" {% if entity.graduated_license_type == 'N' %}checked{% endif %}>
+                                    <label>N</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="grad_license_{{ loop.index }}" value="NA" {% if entity.graduated_license_type == 'NA' %}checked{% endif %}>
+                                    <label>N/A</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address Information -->
+                    <div class="grid-table grid-table-2col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Residential Address</label><br>
+                            <input type="text" value="{{ entity.residential_address }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <!-- Empty for layout -->
+                        </div>
+                    </div>
+
+                    <div class="grid-table grid-table-2col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Business Address</label><br>
+                            <input type="text" value="{{ entity.business_address }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Business Telephone</label><br>
+                            <input type="text" value="{{ entity.business_telephone }}" class="grid-input">
+                        </div>
+                    </div>
+
+                    <!-- Personal Details -->
+                    <div class="grid-table grid-table-4col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Date of Birth (yyyy-mm-dd)</label><br>
+                            <input type="text" value="{{ entity.date_of_birth[:10] if entity.date_of_birth else '' }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Age at Time of Collision</label><br>
+                            <input type="text" value="{{ entity.age_at_collision }}" class="grid-input" style="width: 60px;">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Contact Phone Number</label><br>
+                            <input type="text" value="{{ entity.contact_phone_num }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Sex</label><br>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="sex_{{ loop.index }}" value="M" {% if entity.sex == 'M' %}checked{% endif %}>
+                                    <label>Male</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="sex_{{ loop.index }}" value="F" {% if entity.sex == 'F' %}checked{% endif %}>
+                                    <label>Female</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="sex_{{ loop.index }}" value="U" {% if entity.sex == 'F' %}checked{% endif %}>
+                                    <label>Unknown</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle Information Note -->
+                    <div class="grid-table grid-table-1col">
+                        <div class="grid-cell">
+                            <div style="font-size: 9pt; font-style: italic; border: 1px solid #ccc; padding: 5px; background-color: #f9f9f9;">
+                                For vehicles, enter Year, Make, Style, Colour, and Style exactly as shown on the registration document. If a combination unit vehicle, enter the the plate number of the driver's power unit for Vehicle Plate Number, and the trailer towed unit plate/registration information under Trailer/Towed Vehicle Plate Number and Trailer/Towed Vehicle Plate Number. Do not enter combination vehicle units as separate entities.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle Details -->
+                    <div class="grid-table grid-table-4col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Vehicle Colour</label><br>
+                            <input type="text" value="{{ entity.vehicle_colour }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Vehicle Plate Number</label><br>
+                            <input type="text" value="{{ entity.vehicle_plate_num }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Vehicle Plate Province or State</label><br>
+                            <input type="text" value="{{ entity.vehicle_plate_prov_state.label if entity.vehicle_plate_prov_state else '' }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Vehicle Year</label><br>
+                            <input type="text" value="{{ entity.vehicle_year.label if entity.vehicle_year else '' }}" class="grid-input">
+                        </div>
+                    </div>
+
+                    <div class="grid-table grid-table-3col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Vehicle Make</label><br>
+                            <input type="text" value="{{ entity.vehicle_make.label if entity.vehicle_make else '' }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Vehicle Style</label><br>
+                            <input type="text" value="{{ entity.vehicle_style.label if entity.vehicle_style else '' }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Trailer/Towed Vehicle Plate Number</label><br>
+                            <input type="text" value="{{ entity.trailer_towed_plate_num }}" class="grid-input">
+                        </div>
+                    </div>
+
+                    <div class="grid-table grid-table-1col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Trailer/Towed Plate Prov. or State</label><br>
+                            <input type="text" value="{{ entity.trailer_towed_plate_prov_state.label if entity.trailer_towed_plate_prov_state else '' }}" class="grid-input">
+                        </div>
+                    </div>
+
+                    <!-- Registered Owner -->
+                    <div class="grid-table grid-table-1col">
+                        <div class="grid-cell">
+                            <input type="checkbox" {% if entity.is_registered_owner %}checked{% endif %}>
+                            <label style="font-weight: normal;">Registered owner has the same name and residential address as the person listed in this Entity</label>
+                        </div>
+                    </div>
+
+                    <div class="grid-table grid-table-2col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Vehicle Owner Name</label><br>
+                            <input type="text" value="{{ entity.vehicle_owner_name }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <!-- Empty for layout -->
+                        </div>
+                    </div>
+
+                    <div class="grid-table grid-table-1col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Vehicle Owner Address</label><br>
+                            <input type="text" value="{{ entity.vehicle_owner_address }}" class="grid-input">
+                        </div>
+                    </div>
+
+                    <!-- Commercial Vehicle Info -->
+                    <div class="grid-table grid-table-2col">
+                        <div class="grid-cell">
+                            <label class="grid-label">National Safety Code (NSC) Number (Canadian commercial vehicles only)</label><br>
+                            <input type="text" value="{{ entity.nsc_num }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Jurisdiction Code (Canadian commercial vehicles only)</label><br>
+                            <input type="text" value="{{ entity.jur_code }}" class="grid-input">
+                        </div>
+                    </div>
+
+                    <!-- Damage and Incident Details -->
+                    <div class="grid-table grid-table-2col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Damage Location on Entity</label><br>
+                            <input type="text" value="{{ entity.damage_location_code.label }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Severity of Damage</label><br>
+                            <input type="text" value="{{ entity.severety_code.label }}" class="grid-input">
+                        </div>
+                    </div>
+
+                    <div class="grid-table grid-table-3col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Estimated Vehicle Damage ($)</label><br>
+                            <input type="text" value="{{ entity.estimated_vehicle_damage }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Vehicle Stolen?</label><br>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="stolen_{{ loop.index }}" value="Y" {% if entity.vehicle_stolen == 'Y' %}checked{% endif %}>
+                                    <label>Yes</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="stolen_{{ loop.index }}" value="N" {% if entity.vehicle_stolen == 'N' %}checked{% endif %}>
+                                    <label>No</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Vehicle Towed?</label><br>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="towed_{{ loop.index }}" value="Y" {% if entity.vehicle_towed == 'Y' %}checked{% endif %}>
+                                    <label>Yes</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="towed_{{ loop.index }}" value="N" {% if entity.vehicle_towed == 'N' %}checked{% endif %}>
+                                    <label>No</label>
+                                </div>
+                            </div>
+                            {% if entity.vehicle_towed == 'Y' and entity.vehicle_towed_by %}
+                            <div style="margin-top: 5px; font-size: 9pt;">
+                                Towed by: {{ entity.vehicle_towed_by.name }} , {{ entity.vehicle_towed_by.lot_address }} , {{ entity.vehicle_towed_by.phone }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Direction and Location -->
+                    <div class="grid-table grid-table-2col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Direction of Travel</label><br>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="direction_{{ loop.index }}" value="N" {% if entity.dir_of_travel == 'N' %}checked{% endif %}>
+                                    <label>N</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="direction_{{ loop.index }}" value="E" {% if entity.dir_of_travel == 'E' %}checked{% endif %}>
+                                    <label>E</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="direction_{{ loop.index }}" value="W" {% if entity.dir_of_travel == 'W' %}checked{% endif %}>
+                                    <label>W</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="direction_{{ loop.index }}" value="S" {% if entity.dir_of_travel == 'S' %}checked{% endif %}>
+                                    <label>S</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="direction_{{ loop.index }}" value="S" {% if entity.dir_of_travel == 'P' %}checked{% endif %}>
+                                    <label>Parked</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="direction_{{ loop.index }}" value="S" {% if entity.dir_of_travel == 'U' %}checked{% endif %}>
+                                    <label>Unknown</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Street on Which Entity was Travelling/Parked</label><br>
+                            <input type="text" value="{{ entity.entity_street }}" class="grid-input">
+                        </div>
+                    </div>
+
+                    <!-- Insurance Coverage -->
+                    <div class="grid-table grid-table-1col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Insurance Coverage</label><br>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="insurance_{{ loop.index }}" value="I" {% if entity.insurance_coverage == 'I' %}checked{% endif %}>
+                                    <label>ICBC</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="insurance_{{ loop.index }}" value="N" {% if entity.insurance_coverage == 'N' %}checked{% endif %}>
+                                    <label>None</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="insurance_{{ loop.index }}" value="O" {% if entity.insurance_coverage == 'O' %}checked{% endif %}>
+                                    <label>Other</label>
+                                </div>
+                            </div>
+                            <div style="margin-top: 5px;">
+                                <label style="font-weight: normal;">If other, specify insurer:</label>
+                                <input type="text" class="grid-input" value="{{ entity.other_insurer }}"style="margin-left: 10px; width: 200px;">
+                            </div>
+                            <div style="margin-top: 5px;">
+                                <label style="font-weight: normal;">If other, specify policy no.:</label>
+                                <input type="text" class="grid-input" value="{{ entity.other_insurance_policy_num }}"style="margin-left: 10px; width: 200px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Box 22 and Box 25 -->
+                    <div class="grid-table grid-table-2col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Box 22 Second Contact/Event</label><br>
+                            <input type="text" value="{{ entity.second_contact.label }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Box 25 Pre-Collision Vehicle Action First Event</label><br>
+                            <input type="text" value="{{ entity.pre_collision_vehicle_action_first_event.label }}" class="grid-input">
+                        </div>
+                    </div>
+
+                    <!-- Box 27 Vehicle Type -->
+                    <div class="grid-table grid-table-1col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Box 27 Vehicle Type</label><br>
+                            <input type="text" value="{{ entity.vehicle_type.label }}" class="grid-input">
+                        </div>
+                    </div>
+
+                    <!-- Box 27A Vehicle Use -->
+                    <div class="grid-table grid-table-1col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Box 27A Vehicle Use</label><br>
+                            <input type="text" value="{{ entity.vehicle_use.label }}" class="grid-input">
+                        </div>
+                    </div>
+
+                    <!-- Contributing Factors -->
+                    <div class="grid-table grid-table-2col">
+                        <div class="grid-cell">
+                            <label class="grid-label">{% if entity.entity_type == 'C' %}<b>Box 34</b> Contributing Factor{% else %}<b>Box 31</b> Contributing Factor{% endif %}</label><br>
+                            <input type="text" value="{{ entity.contributing_factor_1.label }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell" style="background-color: #ffffcc;">
+                            <label class="grid-label">{% if entity.entity_type == 'C' %}<b>Box 35</b> Contributing Factor{% else %}<b>Box 32</b> Contributing Factor{% endif %}</label><br>
+                            <input type="text" value="{{ entity.contributing_factor_2.label }}" class="grid-input">
+                        </div>
+                    </div>
+
+                    <div class="grid-table grid-table-2col">
+                        <div class="grid-cell">
+                            <label class="grid-label">{% if entity.entity_type == 'C' %}<b>Box 36</b> Contributing Factor{% else %}<b>Box 33</b> Contributing Factor{% endif %}</label><br>
+                            <input type="text" value="{{ entity.contributing_factor_3.label }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell" style="background-color: #ffffcc;">
+                            <label class="grid-label">{% if entity.entity_type == 'C' %}<b>Box 36A</b> Contributing Factor{% else %}<b>Box 33A</b> Contributing Factor{% endif %}</label><br>
+                            <input type="text" value="{{ entity.contributing_factor_4.label }}" class="grid-input">
+                        </div>
+                    </div>
+
+                    <!-- Charges and Blood Alcohol Tests -->
+                    <div class="grid-table grid-table-1col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Are there charges and/or Blood Alcohol Tests for this entity?</label><br>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="charges_blood_tests_{{ loop.index }}" value="Y" {% if entity.charges_blood_alc_tests_taken == 'Y' %}checked{% endif %}>
+                                    <label>Yes</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="charges_blood_tests_{{ loop.index }}" value="N" {% if entity.charges_blood_alc_tests_taken == 'N' %}checked{% endif %}>
+                                    <label>No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charges and Blood Alcohol Tests for Entity Driver -->
+                    <div class="section-divider" style="margin-top: 15px;">
+                        <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold;">
+                            Charges and Blood Alcohol Tests for Entity No. {{ loop.index }} Driver
+                        </h5>
+
+                        <!-- Blood Alcohol Tests -->
+                        <div class="grid-table grid-table-1col" style="margin-top: 10px;">
+                            <div class="grid-cell">
+                                <label class="grid-label">Blood Alcohol Tests</label><br>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" name="blood_alc_{{ loop.index }}" value="BAC" {% if entity.blood_alc_test == 'BAC' %}checked{% endif %}>
+                                        <label>BAC</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="blood_alc_{{ loop.index }}" value="BTA" {% if entity.blood_alc_test == 'BTA' %}checked{% endif %}>
+                                        <label>BTA</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="blood_alc_{{ loop.index }}" value="notTaken" {% if entity.blood_alc_test == 'NOT' %}checked{% endif %}>
+                                        <label>Not Taken</label>
+                                    </div>
+                                </div>
+                                <div style="display: inline-block; margin-left: 20px;">
+                                    <label style="font-weight: normal;">If taken, result 1:</label>
+                                    <input type="text" value="{{ entity.result_1 }}" class="grid-input" style="width: 100px; margin-left: 5px;">
+                                </div>
+                                <div style="display: inline-block; margin-left: 20px;">
+                                    <label style="font-weight: normal;">If taken, result 2:</label>
+                                    <input type="text" value="{{ entity.result_2 }}" class="grid-input" style="width: 100px; margin-left: 5px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Charges Table -->
+                        {% if entity.charges and entity.charges|length > 0 %}
+                        <div class="grid-table grid-table-1col" style="margin-top: 10px;">
+                            <div class="grid-cell">
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+                                    <thead>
+                                        <tr style="background-color: #f0f0f0;">
+                                            <th style="border: 1px solid #000; padding: 5px; text-align: left; font-weight: bold;">Charge Type</th>
+                                            <th style="border: 1px solid #000; padding: 5px; text-align: left; font-weight: bold;">Sec. Number</th>
+                                            <th style="border: 1px solid #000; padding: 5px; text-align: left; font-weight: bold;">Short Title of Offence</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for charge in entity.charges %}
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 5px;">{{ charge.charge_type.label }}</td>
+                                            <td style="border: 1px solid #000; padding: 5px;">{{ charge.section_num }}</td>
+                                            <td style="border: 1px solid #000; padding: 5px;">{{ charge.offence_title }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% else %}
+                        <!-- Empty charges table when no charges -->
+                        <div class="grid-table grid-table-1col" style="margin-top: 10px;">
+                            <div class="grid-cell">
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+                                    <thead>
+                                        <tr style="background-color: #f0f0f0;">
+                                            <th style="border: 1px solid #000; padding: 5px; text-align: left; font-weight: bold;">Charge Type</th>
+                                            <th style="border: 1px solid #000; padding: 5px; text-align: left; font-weight: bold;">Sec. Number</th>
+                                            <th style="border: 1px solid #000; padding: 5px; text-align: left; font-weight: bold;">Short Title of Offence</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 5px; height: 25px;">&nbsp;</td>
+                                            <td style="border: 1px solid #000; padding: 5px; height: 25px;">&nbsp;</td>
+                                            <td style="border: 1px solid #000; padding: 5px; height: 25px;">&nbsp;</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Involved Persons Section -->
+                    {% for person in entity.involved_persons %}
+                    <div class="section-divider" style="margin-top: 15px;">
+                        <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold;">
+                            Involved Person No. {{ loop.index }} associated to Entity No. {{ entity_index }} (Vehicle {{ entity.entity_num }})
+                        </h5>
+
+                        <!-- Status and Names -->
+                        <div class="grid-table grid-table-3col" style="margin-top: 10px;">
+                            <div class="grid-cell">
+                                <label class="grid-label">Status (required)</label><br>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" name="status_{{ entity_index }}_{{ loop.index }}" value="notInjured" {% if person.status == 'notInjured' %}checked{% endif %}>
+                                        <label>Not Injured</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="status_{{ entity_index }}_{{ loop.index }}" value="injured" {% if person.status == 'injured' %}checked{% endif %}>
+                                        <label>Injured</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="status_{{ entity_index }}_{{ loop.index }}" value="deceased" {% if person.status == 'deceased' %}checked{% endif %}>
+                                        <label>Deceased</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-cell">
+                                <label class="grid-label">Surname</label><br>
+                                <input type="text" value="{{ person.surname }}" class="grid-input">
+                            </div>
+                            <div class="grid-cell">
+                                <label class="grid-label">Given Names</label><br>
+                                <input type="text" value="{{ person.given_name }}" class="grid-input">
+                            </div>
+                        </div>
+
+                        <!-- Date of Death - Only show if deceased -->
+                        {% if person.status == 'deceased' %}
+                        <div class="grid-table grid-table-1col">
+                            <div class="grid-cell">
+                                <label class="grid-label">Date of Death (required: yyyy-mm-dd - if unknown, use Date of Collision and note in Box 99 Police Comments)</label><br>
+                                <input type="text" class="grid-input" value="{{ person.date_of_death }}" style="width: 150px;">
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Box 10 Vehicle Occupied and Box 11 Position -->
+                        <div class="grid-table grid-table-3col">
+                            <div class="grid-cell">
+                                <label class="grid-label">Box 10 Vehicle Occupied</label><br>
+                                <input type="text" value="{{ person.vehicle_occupied }}" class="grid-input">
+                            </div>
+                            <div class="grid-cell">
+                                <label class="grid-label">Position Reference for Box 11:</label><br>
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJMAAABZCAIAAAC19IGQAAAQAElEQVR4AezdB6yVxbMAcPXZe3v23hsq9hYLihoVOxoRe5eiYkFFUZCiCEakKUWqioggIE2kY0VUQIqgIIodlIdix/d+YfK+3MD3HTiXc8i9N/+byTpnv9nZ2Wk7u2vCOv9bQf+WLl0aK/vrr7/+/PPPwJcsWRJI0v77778otUlPeUHWWauC/rFHrGy99dZbd9112cPPjTfeWH8CDLb22muvs846Wl/LF1RYyzHG33//zUhhD/g///wD/69lf6zlv1o95RQqrOXE2XrrrSeqGIaF1l9/fT1wwRed8ATYNcHLC1JhLcdCgkzksQTcbhfmiR6x6GtiQjZGVr6gwlpu0aJFggywx2+//cZOiXmEoH6gM8yJptxBhbXcVlttFcb4448/FCbAz59//nn+/PmLFy+GAylUCCaRp6ccQYW1HBt89913Y8aMGTly5Ny5c/389NNPe/bs2blz59dff33mzJkRbSJPCPpa7mDNWc5mAxIFUVwqJASriQisK6+88vrrr69Ro8Z55503dOjQE044YfTo0XPmzGnZsmXVqlWnT59uChue9vfff9cWFWRmc5XUwGpOt+YsV1JQuF0nFeSugsC0adO23HLLrl27jhs3rkGDBpdffnndunX79+/fo0cP7fnnn//GG29IpM4GhNloo40KMmkOJoLbXJKz6QoCa9RyJeXmg6kgdxUE5s2bR4+nnHLKYYcdJvgOOOCA2267jcv/9NNPu+++e5UqVWxyG264oZ+iU8wVZNIcTApirZJMim45ygooOSucD6ZCEK9+yzyKkbeW/Yk5e1779u35ytZbb/3VV19NmDBBtUIMPxUvYm71Z8zNQaoEBABcytSrCUW3XCJfyYCzyKR/OcSngsDxxx+/7bbb3nLLLTfeeOPkyZMfffTRAQMGHHXUUTvssINPEydOPOecc2Jqt5q//vprQSbNwUSqBJxVKzRj6tVp14Tl2AyElNyN64H4uWJrVQUBZzhVidqyXbt2bdu2Vap069btwgsvrF27dqtWrfr06XPMMcd8//33UuUGG2yw6aabFmTSHEySlSaqYOYcekjos5CiWy4RNCQIcWWM+LliKwIKAhIg5sKuSpUqe+yxxw8//HDIIYc0atTooYceuuCCC3baaSdfRcDmm2+uhRdk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" alt="Position Reference" style="width: 80px; height: 60px; border: 1px solid #000;">
+                            </div>
+                            <div class="grid-cell">
+                                <label class="grid-label">Box 11 Indicate Position of Person</label><br>
+                                <input type="text" value="{{ person.position_of_person.label }}" class="grid-input">
+                            </div>
+                        </div>
+
+                        <!-- Box 12, 13, 14 -->
+                        <div class="grid-table grid-table-3col">
+                            <div class="grid-cell">
+                                <label class="grid-label">Box 12 Safety Equipment Used</label><br>
+                                <input type="text" value="{{ person.safety_equipment_used.label }}" class="grid-input">
+                            </div>
+                            <div class="grid-cell">
+                                <label class="grid-label">Box 13 Ejection From Vehicle</label><br>
+                                <input type="text" value="{{ person.ejection_from_vehicle }}" class="grid-input">
+                            </div>
+                            <div class="grid-cell">
+                                <label class="grid-label">Box 14 Age</label><br>
+                                <input type="text" value="{{ person.age }}" class="grid-input">
+                            </div>
+                        </div>
+
+                        <!-- Box 15, 16, 17, 18 -->
+                        <div class="grid-table grid-table-4col">
+                            <div class="grid-cell">
+                                <label class="grid-label">Box 15 Sex</label><br>
+                                <input type="text" value="{{ person.sex.label }}" class="grid-input">
+                            </div>
+                            <div class="grid-cell">
+                                <label class="grid-label">Box 16 Location of Most Severe Injury</label><br>
+                                <input type="text" value="{{ person.severe_injury_location.label }}" class="grid-input">
+                            </div>
+                            <div class="grid-cell">
+                                <label class="grid-label">Box 17 Type of Injury</label><br>
+                                <input type="text" value="{{ person.injury_type.label }}" class="grid-input">
+                            </div>
+                            <div class="grid-cell">
+                                <label class="grid-label">Box 18 State of Consciousness</label><br>
+                                <input type="text" value="{{ person.consciousness_state.label }}" class="grid-input">
+                            </div>
+                        </div>
+
+                        <!-- Box 19, 20, 20A -->
+                        <div class="grid-table grid-table-3col">
+                            <div class="grid-cell">
+                                <label class="grid-label">Box 19 Injured Taken To</label><br>
+                                <input type="text" value="{{ person.injured_taken_to.label }}" class="grid-input">
+                            </div>
+                            <div class="grid-cell">
+                                <label class="grid-label">Box 20 Injured Taken By</label><br>
+                                <input type="text" value="{{ person.injured_taken_by.label }}" class="grid-input">
+                            </div>
+                            <div class="grid-cell">
+                                <label class="grid-label">Box 20A Injury Classification</label><br>
+                                <input type="text" value="{{ person.injury_classification.label }}" class="grid-input">
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+                <!-- Additional Collision Details Section -->
+                <div class="section-divider">
+                    <h4 class="subsection-header">Additional Collision Details</h4>
+                    
+                    <!-- Box 29 and Box 30 -->
+                    <div class="grid-table grid-table-2col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Box 29 Pedestrian Location</label><br>
+                            <input type="text" value="{{ data.pedestrian_location.label }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Box 30 Pedestrian Action</label><br>
+                            <input type="text" value="{{ data.pedestrian_action.label }}" class="grid-input">
+                        </div>
+                    </div>
+
+                    <!-- Property Damage -->
+                    <div class="grid-table grid-table-1col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Was there other property damage?</label><br>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="property_damage" value="No" {% if data.has_other_prop_damage == 'N' %}checked{% endif %}>
+                                    <label>No</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="property_damage" value="Yes_unknown" {% if data.has_other_prop_damage == 'U' %}checked{% endif %}>
+                                    <label>Yes, unknown value</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="property_damage" value="Yes_estimated" {% if data.has_other_prop_damage == 'Y' %}checked{% endif %}>
+                                    <label>Yes estimated value:</label>
+                                    <input type="text" value="{{ data.property_damage_value }}" class="grid-input" style="width: 150px; margin-left: 10px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Witnesses -->
+                    <div class="grid-table grid-table-1col">
+                        <div class="grid-cell">
+                            <input type="checkbox" {% if data.has_witnesses %}checked{% endif %}>
+                            <label style="font-weight: normal; margin-left: 5px;">Are there witnesses?</label>
+                        </div>
+                    </div>
+
+                    <!-- Witness Table -->
+                    {% if data.witnesses %}
+                    <div class="grid-table grid-table-1col">
+                        <div class="grid-cell">
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                                <thead>
+                                    <tr>
+                                        <th style="border: 1px solid #000; padding: 5px; background-color: #f0f0f0;">Witness Name (this field expands)</th>
+                                        <th style="border: 1px solid #000; padding: 5px; background-color: #f0f0f0;">Address (this field expands)</th>
+                                        <th style="border: 1px solid #000; padding: 5px; background-color: #f0f0f0;">Contact Phone Number</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for witness in data.witnesses %}
+                                    <tr>
+                                        <td style="border: 1px solid #000; padding: 5px;">{{ witness.witness_name }}</td>
+                                        <td style="border: 1px solid #000; padding: 5px;">{{ witness.address }}</td>
+                                        <td style="border: 1px solid #000; padding: 5px;">{{ witness.contact_phn_num }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Box 99 Police Comments -->
+                    <div class="grid-table grid-table-1col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Box 99 Police Comments</label><br>
+                            <textarea class="grid-input" style="height: 100px; resize: vertical;">{{ data.police_comments }}</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Collision Totals -->
+                    <div class="grid-table grid-table-1col" style="margin-top: 20px;">
+                        <div class="grid-cell">
+                            <label class="grid-label">Collision Type (Collision Type and all Totals are calculated)</label><br>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="collision_type" value="Fatality" {% if data.collision_type == 'F' %}checked{% endif %}>
+                                    <label>Fatality</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="collision_type" value="Personal_Injury" {% if data.collision_type == 'PI' %}checked{% endif %}>
+                                    <label>Personal Injury</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="collision_type" value="Property_Damage" {% if data.collision_type == 'PD' %}checked{% endif %}>
+                                    <label>Property Damage over $10000</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Totals -->
+                    <div class="grid-table grid-table-4col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Total Estimated Damage</label><br>
+                            <input type="text" value="${{ data.total_est_damage }}" class="grid-input" readonly>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Total Injured</label><br>
+                            <input type="text" value="{{ data.total_injured }}" class="grid-input" readonly>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Total Killed</label><br>
+                            <input type="text" value="{{ data.total_killed }}" class="grid-input" readonly>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Total Vehicles</label><br>
+                            <input type="text" value="{{ data.total_vehicles }}" class="grid-input" readonly>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
