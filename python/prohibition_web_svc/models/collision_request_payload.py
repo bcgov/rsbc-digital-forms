@@ -1,12 +1,14 @@
 
 from typing import TypedDict
+from python.prohibition_web_svc.models.dropdown_option import DropdownOption
 from python.prohibition_web_svc.models.entity import Entity
+from python.prohibition_web_svc.models.police_agency import PoliceAgency
 from python.prohibition_web_svc.models.witness import Witness
 
 
 class CollisionRequestPayload(TypedDict):
     collision_case_num: str
-    collision_scenario: str
+    collision_scenario: DropdownOption
     police_file_num: str
     prime_file_vjur: int
     police_file_prefix: str
@@ -17,11 +19,11 @@ class CollisionRequestPayload(TypedDict):
     date_reported: str
     hit_and_run: bool
     police_attended: bool
-    police_agency_code: str
+    police_agency_code: PoliceAgency
     police_zone: str
-    primary_collision_occ_code: str
-    first_contact_event: str
-    first_contact_loc: str
+    primary_collision_occ_code: DropdownOption
+    first_contact_event: DropdownOption
+    first_contact_loc: DropdownOption
     has_countable_fatal: bool
     countable_fatal_total: int
     completed_by_name: str
@@ -32,8 +34,8 @@ class CollisionRequestPayload(TypedDict):
     investigated_by_traffic_analyst: str
 
     # Additional details
-    pedestrian_location: str
-    pedestrian_action: str
+    pedestrian_location: DropdownOption
+    pedestrian_action: DropdownOption
     has_other_prop_damage: bool
     other_prop_damage_desc: str
     prop_damage_est_value: float
@@ -65,18 +67,18 @@ class CollisionRequestPayload(TypedDict):
     long_degree: int
     long_min: int
     long_sec: int
-    road_class: str
-    traffic_flow: str
-    collision_loc: str
-    primary_speed_zone: str
-    secondary_speed_zone: str
-    land_usage: str
-    road_type: str
-    traffic_control: str
-    roadway_character: str
-    roadway_surface_cond: str
-    weather_cond: str
-    lighting_cond: str
+    road_class: DropdownOption
+    traffic_flow: DropdownOption
+    collision_loc: DropdownOption
+    primary_speed_zone: DropdownOption
+    secondary_speed_zone: DropdownOption
+    land_usage: DropdownOption
+    road_type: DropdownOption
+    traffic_control: DropdownOption
+    roadway_character: DropdownOption
+    roadway_surface_cond: DropdownOption
+    weather_cond: DropdownOption
+    lighting_cond: DropdownOption
     ff_application_id: str
     submitted_user_guid: str
 
