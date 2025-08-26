@@ -80,7 +80,7 @@ class TarEntity(db.Model):
     surname = db.Column(db.String(28))
     given_name = db.Column(db.String(25))
     license_class = db.Column(db.String(10))
-    graduated_license_type = db.Column(db.String(1))
+    graduated_license_type = db.Column(db.String(2))
     residential_address = db.Column(db.String(90))
     business_address = db.Column(db.String(68))
     business_phone_num = db.Column(db.String(25))
