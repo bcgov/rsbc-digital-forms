@@ -19,6 +19,16 @@ def request_contains_a_payload(**kwargs) -> tuple:
         kwargs['payload'] = payload
         logging.debug(f"payload: {payload}")
     except Exception as e:
+        kwargs['error'] = {
+            'error_code': ErrorCode.E01,
+            'error_details': 'Invalid JSON payload',
+            'ticket_no': None,
+            'func': request_contains_a_payload,
+        }
+        kwargs['response_dict'] = {
+            'error': 'bad request',
+            'error_details': 'Invalid JSON payload'
+        }
         return False, kwargs
     return payload is not None, kwargs
 

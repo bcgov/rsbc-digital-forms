@@ -116,10 +116,13 @@ class ErrorCode(BaseEnum):
                            "Ensure all required fields are provided in the collision payload", True)
     
     C02 = ErrorCodeDetails("C02", "Error getting collision data", ErrorCategory.CONNECTION, ErrorSeverity.LOW, \
-                           "Ensure that the provided collision case number is valid", False)
+                           "Contact DF application support for further investigation", False)
     
     C03 = ErrorCodeDetails("C03", "Collision not found", ErrorCategory.DATA, ErrorSeverity.LOW, \
                            "Ensure that the provided collision case number is valid", True)
+    
+    C04 = ErrorCodeDetails("C04", "Collision PDF saving error", ErrorCategory.DATA, ErrorSeverity.HIGH, 
+                           "Contact DF application support for further investigation", False)
 
     # Add more error codes as needed...
 

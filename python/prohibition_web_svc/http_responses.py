@@ -21,7 +21,11 @@ def server_error_response(**kwargs) -> tuple:
 
 
 def bad_request_response(**kwargs) -> tuple:
-    kwargs['response'] = make_response({'error': 'bad request'}, 400)
+    detail = kwargs.get('response_dict', {}).get('error_details', None)
+    kwargs['response'] = make_response({
+        'error': 'bad request',
+        'error_details': str(detail) if detail else None
+    }, 400)
     return True, kwargs
 
 
