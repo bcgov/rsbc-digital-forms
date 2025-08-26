@@ -1,7 +1,11 @@
 {
-  "ff_application_id": 9,
+  "form_version": "v1.0",
+  "ff_application_id": 35,
   "collision_case_num": "MV-001",
-  "collision_scenario": "01",
+  "collision_scenario": {
+    "label": "Collision on Forest Service or Logging Road",
+    "value": "01"
+  },
   "police_file_num": "PF123",
   "prime_file_vjur": 12,
   "police_file_prefix": "PF",
@@ -12,20 +16,42 @@
   "date_reported": "2025-07-16",
   "hit_and_run": "N",
   "police_attended": "Y",
-  "police_agency_code": 101,
-  "primary_collision_occ_code": "01",
-  "first_contact_event": "01",
-  "first_contact_loc": "01",
+  "police_agency_type_district": "Type",
+  "police_agency_code": {
+    "agency_name": "Enderby Prov",
+    "code": 102,
+    "district_id": 1,
+    "vjur_agency": null
+  },
+  "police_zone": "12",
+  "primary_collision_occ_code": {
+    "label": "02 Head On",
+    "value": "02"
+  },
+  "first_contact_event": {
+    "label": "06 Railroad Train",
+    "value": "06"
+  },
+  "first_contact_loc": {
+    "label": "01 On Roadway",
+    "value": "01"
+  },
   "has_countable_fatal": "N",
   "countable_fatal_total": 0,
   "completed_by_name": "Officer",
-  "completed_by_id": "e865ec95-82bc-4fa7-a1b0-e822219ffa15",
+  "completed_by_id": "31A21CA7406E4AA9A3037E416DE241B6",
   "detachment_unit": "Unit",
   "icbc_submission_date": "2025-07-16T12:00:00Z",
   "reviewed_by": "Reviewer",
   "investigated_by_traffic_analyst": "N",
-  "pedestrian_location": "01",
-  "pedestrian_action": "01",
+  "pedestrian_location": {
+    "label": "98 No Pedestrian Involved",
+    "value": "98"
+  },
+  "pedestrian_action": {
+    "label": "98 No Pedestrian Involved",
+    "value": "98"
+  },
   "hwy_code": "HWY",
   "hwy_route_num": "001",
   "segment_num": "0001",
@@ -34,18 +60,46 @@
   "city_status": "01",
   "lat_decim_degrees": 49.123456,
   "long_decim_degrees": -123.123456,
-  "road_class": "11",
-  "traffic_flow": "01",
-  "collision_loc": "01",
-  "primary_speed_zone": "110",
-  "secondary_speed_zone": "201",
-  "land_usage": "01",
-  "road_type": "01",
-  "traffic_control": "01",
-  "roadway_character": "01",
-  "roadway_surface_cond": "01",
-  "weather_cond": "01",
-  "lighting_cond": "01",
+  "road_class": {
+    "label": "11 One Lane Undivided",
+    "value": "11"
+  },
+  "traffic_flow": {
+    "label": "02 Two Way",
+    "value": "02"
+  },
+  "collision_loc": {
+    "label": "18 Forest Service / Logging Road",
+    "value": "18"
+  },
+  "primary_speed_zone": {
+    "label": "102 Posted - 20 km/h",
+    "value": "102"
+  },
+  "land_usage": {
+    "label": "02 Urban Residential",
+    "value": "02"
+  },
+  "road_type": {
+    "label": "02 Gravel",
+    "value": "02"
+  },
+  "roadway_character": {
+    "label": "11 Straight / Flat",
+    "value": "11"
+  },
+  "roadway_surface_cond": {
+    "label": "99 Other",
+    "value": "99"
+  },
+  "weather_cond": {
+    "label": "07 Smog/Smoke",
+    "value": "07"
+  },
+  "lighting_cond": {
+    "label": "06 Dark / Some Illum.",
+    "value": "06"
+  },
   "has_other_prop_damage": "Y",
   "other_prop_damage_desc": "Property damage description",
   "prop_damage_est_value": 5000,
@@ -69,19 +123,43 @@
   "summary_was_verified": true,
   "entities": [
     {
-      "entity_type": "V",
+      "entity_type": {
+        "value": "V",
+        "label": "Vehicle"
+      },
       "entity_num": "01",
       "possible_offender": "N",
-      "contributing_factor_1": "00",
-      "contributing_factor_2": "00",
-      "contributing_factor_3": "00",
-      "contributing_factor_4": "00",
-      "damage_location_code": "01",
-      "severety_code": "01",
+      "contributing_factor_1": {
+        "label": "00 Unknown",
+        "value": "00"
+      },
+      "contributing_factor_2": {
+        "label": "00 Unknown",
+        "value": "00"
+      },
+      "contributing_factor_3": {
+        "label": "00 Unknown",
+        "value": "00"
+      },
+      "contributing_factor_4": {
+        "label": "00 Unknown",
+        "value": "00"
+      },
+      "damage_location_code": {
+        "label": "02 Windshield",
+        "value": "02"
+      },
+      "severety_code": {
+        "label": "02 Light - Conspicuous but slight",
+        "value": "02"
+      },
       "vehicle_parked": true,
       "unknown_entity": true,
       "driver_license_num": "DL1234567",
-      "license_prov_state": "BC",
+      "license_prov_state": {
+        "value": "BC",
+        "label": "BRITISH COLUMBIA"
+      },
       "license_expiry": 2025,
       "surname": "Smith",
       "given_name": "Alice",
@@ -99,13 +177,28 @@
       "result_1": "0.00",
       "result_2": "0.00",
       "vehicle_plate_num": "ABC123",
-      "vehicle_plate_prov_state": "BC",
-      "vehicle_year": "2020",
-      "vehicle_make": "Toyota",
-      "vehicle_style": "Sedan",
+      "vehicle_plate_prov_state": {
+        "value": "BC",
+        "label": "BRITISH COLUMBIA"
+      },
+      "vehicle_year": {
+        "label": "2020",
+        "value": 2020
+      },
+      "vehicle_make": {
+        "label": "Toyota",
+        "value": "TOYOTA"
+      },
+      "vehicle_style": {
+        "label": "Sedan",
+        "value": "SEDAN"
+      },
       "vehicle_colour": "Blue",
       "trailer_towed_plate_num": "TR1234",
-      "trailer_towed_plate_prov_state": "BC",
+      "trailer_towed_plate_prov_state": {
+        "value": "BC",
+        "label": "BRITISH COLUMBIA"
+      },
       "is_registered_owner": true,
       "vehicle_owner_name": "Bob Smith",
       "vehicle_owner_address": "123 Test Ave, Vancouver, BC",
@@ -120,13 +213,25 @@
       "insurance_coverage": "I",
       "other_insurer": "None",
       "other_insurance_policy_num": "",
-      "second_contact": "29",
-      "pre_collision_vehicle_action_first_event": "01",
-      "vehicle_type": "01",
-      "vehicle_use": "02",
+      "second_contact": {
+        "label": "Bridge Deck or Parapet",
+        "value": 29
+      },
+      "pre_collision_vehicle_action_first_event": {
+        "label": "01 Going Straight Ahead",
+        "value": "01"
+      },
+      "vehicle_type": {
+        "label": "01 Passenger Car Only",
+        "value": "01"
+      },
+      "vehicle_use": {
+        "label": "02 Personal",
+        "value": "02"
+      },
       "involved_persons": [
         {
-          "status": "I",
+          "status": "i",
           "surname": "Smith",
           "given_name": "Alice",
           "vehicle_occupied": "01",
@@ -134,14 +239,29 @@
           "safety_equipment_used": "03",
           "ejection_from_vehicle": "03",
           "age": "35",
-          "sex": "F",
-          "severe_injury_location": "02",
+          "sex": {
+            "label": "Female",
+            "value": "F"
+          },
+          "severe_injury_location": {
+            "label": "01 No Injury",
+            "value": "01"
+          },
           "injury_type": "02",
-          "consciousness_state": "02",
-          "injured_taken_to": "HOSP",
-          "injured_taken_by": "AMBU",
+          "consciousness_state": {
+            "label": "02 Agitated",
+            "value": "02"
+          },
+          "injured_taken_to": {
+            "label": "HOSPITAL",
+            "value": "HOSP"
+          },
+          "injured_taken_by": {
+            "label": "AMBULANCE",
+            "value": "AMBU"
+          },
           "injury_classification": "02",
-          "date_of_death": null
+          "date_of_death": "2025-07-16"
         }
       ],
       "charges": [

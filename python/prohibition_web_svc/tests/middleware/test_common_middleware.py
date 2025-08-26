@@ -29,6 +29,12 @@ def test_request_contains_a_payload_failure():
     req = DummyRequest(json_data=Exception("bad json"))
     result, kwargs = common_middleware.request_contains_a_payload(request=req)
     assert result is False
+    assert kwargs['error']['error_code'] == common_middleware.ErrorCode.E01
+    assert kwargs['error']['error_details'] == "Invalid JSON payload"
+    assert kwargs['response_dict'] == {
+        'error': 'bad request',
+        'error_details': kwargs['error']['error_details']
+    }
 
 def test_check_if_application_id_exists_found(monkeypatch):
     mock_db = MagicMock()

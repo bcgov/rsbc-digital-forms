@@ -1,6 +1,8 @@
 from datetime import date
 from typing import TypedDict
 
+from python.prohibition_web_svc.models.dropdown_option import DropdownOption
+
 
 class InvolvedPerson(TypedDict):
     status: str
@@ -11,11 +13,11 @@ class InvolvedPerson(TypedDict):
     safety_equipment_used: str
     ejection_from_vehicle: str
     age: str
-    sex: str
-    severe_injury_location: str
+    sex: DropdownOption
+    severe_injury_location: DropdownOption
     injury_type: str
-    consciousness_state: str
-    injured_taken_to: str
-    injured_taken_by: str
+    consciousness_state: DropdownOption
+    injured_taken_to: DropdownOption
+    injured_taken_by: DropdownOption
     injury_classification: str
     date_of_death: date
