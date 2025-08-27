@@ -13,9 +13,9 @@ logging.config.dictConfig(Config.LOGGING)
 logging.info('*** print blueprint loaded ***')
 
 bp = Blueprint('print', __name__, url_prefix=Config.URL_PREFIX + '/api/v1')
-CORS(bp, resources={Config.URL_PREFIX + "/api/v1/render/*": {"origins": Config.ACCESS_CONTROL_ALLOW_ORIGIN}})
+CORS(bp, resources={Config.URL_PREFIX + "/api/v1/print/*": {"origins": Config.ACCESS_CONTROL_ALLOW_ORIGIN}})
 
-@bp.route('/render', methods=['GET', 'POST'])
+@bp.route('/print', methods=['GET', 'POST'])
 def render_document():
     logging.info(f"Inside render_document()")
     kwargs = middle_logic(
