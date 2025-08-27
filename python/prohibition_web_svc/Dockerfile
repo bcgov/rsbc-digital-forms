@@ -11,6 +11,9 @@ RUN source /opt/app-root/etc/scl_enable && \
     sha256sum "${APP_ROOT}/src/requirements.txt" > ${APP_ROOT}/requirements.sha256  && \
     cd ${APP_ROOT}/src && pip3 install -r requirements.txt
 
+# Switch to root user for system package installation
+USER root
+
 # Install system dependencies for Playwright
 RUN yum update -y && \
     yum install -y \
@@ -31,6 +34,9 @@ RUN yum update -y && \
     liberation-fonts \
     dejavu-fonts-common \
     && yum clean all
+
+# Switch back to the default user
+USER 1001
 
 # Install Playwright browsers
 RUN source /opt/app-root/etc/scl_enable && \
