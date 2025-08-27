@@ -11,6 +11,35 @@ RUN source /opt/app-root/etc/scl_enable && \
     sha256sum "${APP_ROOT}/src/requirements.txt" > ${APP_ROOT}/requirements.sha256  && \
     cd ${APP_ROOT}/src && pip3 install -r requirements.txt
 
+# Install system dependencies for Playwright
+RUN yum update -y && \
+    yum install -y \
+    glib2-devel \
+    nss \
+    nspr \
+    atk \
+    at-spi2-atk \
+    cups-libs \
+    drm \
+    gtk3 \
+    libXcomposite \
+    libXdamage \
+    libXrandr \
+    libgbm \
+    libxss \
+    alsa-lib \
+    liberation-fonts \
+    dejavu-fonts-common \
+    && yum clean all
+
+# Install Playwright browsers
+RUN source /opt/app-root/etc/scl_enable && \
+    playwright install chromium
+
+# Install Playwright system dependencies (skip problematic fonts)
+RUN source /opt/app-root/etc/scl_enable && \
+    playwright install-deps chromium || true
+
 COPY __init__.py ${APP_ROOT}/src/python/
 COPY common ${APP_ROOT}/src/python/common
 COPY prohibition_web_svc ${APP_ROOT}/src/python/prohibition_web_svc

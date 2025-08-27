@@ -123,6 +123,14 @@ class ErrorCode(BaseEnum):
     
     C04 = ErrorCodeDetails("C04", "Collision PDF saving error", ErrorCategory.DATA, ErrorSeverity.HIGH, 
                            "Contact DF application support for further investigation", False)
+    
+    
+    # Collision related error
+
+    P01 = ErrorCodeDetails("C01", "Missing required fields in print payload", ErrorCategory.VALIDATION, ErrorSeverity.LOW,
+                           "Ensure all required fields are provided in the print payload", True)
+    P02 = ErrorCodeDetails("C01", "Print Service Error", ErrorCategory.SYSTEM, ErrorSeverity.HIGH,
+                           "Ensure all required fields are provided in the print payload", True)
 
     # Add more error codes as needed...
 
