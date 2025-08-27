@@ -11,7 +11,7 @@ class CollisionRequestPayload(TypedDict):
     collision_scenario: DropdownOption
     police_file_num: str
     prime_file_vjur: int
-    police_file_prefix: str
+    collision_case_prefix: str
     date_collision: str
     time_collision: str
     reported_same_day: bool
