@@ -143,6 +143,7 @@ def _validate_collision_required_fields(collision: CollisionRequestPayload, kwar
     required_fields = [
         # Collision required fields
         "collision_case_num",
+        "collision_case_prefix",
         "collision_scenario",
         "police_file_num",
         "prime_file_vjur",

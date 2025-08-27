@@ -49,7 +49,7 @@
         "collision_scenario": {"type": "string"},
         "police_file_num": {"type": "string"},
         "prime_file_vjur": {"type": "string"},
-        "police_file_prefix": {"type": "string"},
+        "collision_case_prefix": {"type": "string"},
         "date_collision": {"type": "string", "format": "date"},
         "time_collision": {"type": "string", "format": "time"},
         "reported_same_day": {"type": "boolean"},
