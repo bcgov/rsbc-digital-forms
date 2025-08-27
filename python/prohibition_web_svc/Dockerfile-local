@@ -5,6 +5,9 @@ COPY prohibition_web_svc/requirements.txt /tmp/
 RUN pip3 install -U pip
 RUN pip3 install -r /tmp/requirements.txt
 
+# Switch to root user for system package installation
+USER root
+
 # Install system dependencies for Playwright
 RUN yum update -y && \
     yum install -y \
@@ -14,15 +17,15 @@ RUN yum update -y && \
     atk \
     at-spi2-atk \
     cups-libs \
-    drm \
+    libdrm \
     gtk3 \
     libXcomposite \
     libXdamage \
     libXrandr \
-    libgbm \
-    libxss \
+    mesa-libgbm \
+    libXScrnSaver \
     alsa-lib \
-    liberation-fonts \
+    liberation-fonts-common \
     dejavu-fonts-common \
     && yum clean all
 

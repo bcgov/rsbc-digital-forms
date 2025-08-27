@@ -13,7 +13,7 @@ class CollisionMapper:
             collision_scenario=collision_request_payload['collision_scenario']['value'] if collision_request_payload.get('collision_scenario') else None,
             police_file_num=collision_request_payload['police_file_num'],
             prime_file_vjur=collision_request_payload['prime_file_vjur'],
-            police_file_prefix=collision_request_payload.get('police_file_prefix'),
+            collision_case_prefix=collision_request_payload.get('collision_case_prefix'),
             date_collision=collision_request_payload['date_collision'],
             time_collision=collision_request_payload['time_collision'] if not collision_request_payload['time_collision_unknown'] else None,
             reported_same_day=collision_request_payload['reported_same_day'],
