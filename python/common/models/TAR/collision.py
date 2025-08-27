@@ -12,7 +12,7 @@ class TarCollision(db.Model):
     collision_scenario: str
     police_file_num: str
     prime_file_vjur: int
-    police_file_prefix: str
+    collision_case_prefix: str
     date_collision: date
     time_collision: time
     reported_same_day: bool
@@ -39,7 +39,7 @@ class TarCollision(db.Model):
     collision_scenario = db.Column(db.String(2), db.ForeignKey('TAR.collision_scenario.code'), nullable=False)
     police_file_num = db.Column(db.String(18), nullable=False)
     prime_file_vjur = db.Column(db.Integer, db.ForeignKey('agency.id'), nullable=False)
-    police_file_prefix = db.Column(db.String(15))
+    collision_case_prefix = db.Column(db.String(15))
     date_collision = db.Column(db.Date, nullable=False)
     time_collision = db.Column(db.Time, nullable=True)
     reported_same_day = db.Column(db.Boolean, nullable=False)

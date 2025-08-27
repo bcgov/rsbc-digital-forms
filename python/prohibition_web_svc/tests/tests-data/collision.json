@@ -8,7 +8,7 @@
   },
   "police_file_num": "PF123",
   "prime_file_vjur": 12,
-  "police_file_prefix": "PF",
+  "collision_case_prefix": "PF",
   "date_collision": "2025-07-16",
   "time_collision": "12:00",
   "reported_same_day": true,

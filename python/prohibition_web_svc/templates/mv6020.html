@@ -563,7 +563,7 @@
                     <div class="grid-table grid-table-3col">
                         <div class="grid-cell">
                             <label class="grid-label">Prefix (calculated):</label><br>
-                            <input type="text" value="{{ data.police_file_prefix }}" readonly
+                            <input type="text" value="{{ data.collision_case_prefix }}" readonly
                                 class="calculated grid-input" style="width: 50px;">
                         </div>
                         <div class="grid-cell">
@@ -747,14 +747,14 @@
                         <div class="grid-cell">
                             <div class="radio-option">
                                 <input type="radio" name="gps_format" value="decimalDegrees" {% if
-                                    data.gps_format=="decimalDegrees" %}checked{% endif %}>
+                                    data.gps_format=="D" %}checked{% endif %}>
                                 <label>Decimal Degrees</label>
                             </div>
                         </div>
                         <div class="grid-cell">
                             <div class="radio-option">
                                 <input type="radio" name="gps_format" value="degreesMinutesSeconds" {% if
-                                    data.gps_format=="degreesMinutesSeconds" %}checked{% endif %}>
+                                    data.gps_format=="M" %}checked{% endif %}>
                                 <label>Degrees Minutes Seconds</label>
                             </div>
                         </div>
