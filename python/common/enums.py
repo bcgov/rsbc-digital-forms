@@ -127,9 +127,9 @@ class ErrorCode(BaseEnum):
     
     # Collision related error
 
-    P01 = ErrorCodeDetails("C01", "Missing required fields in print payload", ErrorCategory.VALIDATION, ErrorSeverity.LOW,
+    P01 = ErrorCodeDetails("P01", "Missing required fields in print payload", ErrorCategory.VALIDATION, ErrorSeverity.LOW,
                            "Ensure all required fields are provided in the print payload", True)
-    P02 = ErrorCodeDetails("C01", "Print Service Error", ErrorCategory.SYSTEM, ErrorSeverity.HIGH,
+    P02 = ErrorCodeDetails("P02", "Print Service Error", ErrorCategory.SYSTEM, ErrorSeverity.HIGH,
                            "Ensure all required fields are provided in the print payload", True)
 
     # Add more error codes as needed...
