@@ -23,15 +23,15 @@ RUN yum update -y && \
     atk \
     at-spi2-atk \
     cups-libs \
-    drm \
+    libdrm \
     gtk3 \
     libXcomposite \
     libXdamage \
     libXrandr \
-    libgbm \
-    libxss \
+    mesa-libgbm \
+    libXScrnSaver \
     alsa-lib \
-    liberation-fonts \
+    liberation-fonts-common \
     dejavu-fonts-common \
     && yum clean all
 
