@@ -9,15 +9,15 @@ class InvolvedPerson(TypedDict):
     surname: str
     given_name: str
     vehicle_occupied: str
-    position_of_person: str
+    position_of_person: DropdownOption
     safety_equipment_used: str
-    ejection_from_vehicle: str
+    ejection_from_vehicle: DropdownOption
     age: str
     sex: DropdownOption
     severe_injury_location: DropdownOption
-    injury_type: str
+    injury_type: DropdownOption
     consciousness_state: DropdownOption
     injured_taken_to: DropdownOption
     injured_taken_by: DropdownOption
-    injury_classification: str
+    injury_classification: DropdownOption
     date_of_death: date

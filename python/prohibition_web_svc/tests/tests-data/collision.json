@@ -7,7 +7,10 @@
     "value": "01"
   },
   "police_file_num": "PF123",
-  "prime_file_vjur": 12,
+  "prime_file_vjur": {
+    "label": "VJUR Label",
+    "value": 12
+  },
   "collision_case_prefix": "PF",
   "date_collision": "2025-07-16",
   "time_collision": "12:00",
@@ -235,9 +238,15 @@
           "surname": "Smith",
           "given_name": "Alice",
           "vehicle_occupied": "01",
-          "position_of_person": "04",
+          "position_of_person": {
+            "label": "04 Driver",
+            "value": "04"
+          },
           "safety_equipment_used": "03",
-          "ejection_from_vehicle": "03",
+          "ejection_from_vehicle": {
+            "label": "03 Ejected",
+            "value": "03"
+          },
           "age": "35",
           "sex": {
             "label": "Female",
@@ -247,7 +256,10 @@
             "label": "01 No Injury",
             "value": "01"
           },
-          "injury_type": "02",
+          "injury_type": {
+            "label": "05 Bleeding",
+            "value": "05"
+          },
           "consciousness_state": {
             "label": "02 Agitated",
             "value": "02"
@@ -260,7 +272,10 @@
             "label": "AMBULANCE",
             "value": "AMBU"
           },
-          "injury_classification": "02",
+          "injury_classification": {
+            "label": "02 Minor abrasion",
+            "value": "02"
+          },
           "date_of_death": "2025-07-16"
         }
       ],
