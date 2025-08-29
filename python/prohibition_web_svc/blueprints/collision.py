@@ -34,6 +34,10 @@ def create_collision():
                   {"try": common_middleware.record_event_error, "fail": []},
                   {"try": http_responses.application_already_exists, "fail": []},
             ]},
+            {"try": collision_middleware.check_if_case_number_exists, "fail": [
+                  {"try": common_middleware.record_event_error, "fail": []},
+                  {"try": http_responses.application_already_exists, "fail": []},
+            ]},
             {"try": collision_middleware.validate_collision_payload, "fail": [
                 {"try": common_middleware.record_event_error, "fail": []},
                 {"try": http_responses.bad_request_response, "fail": []}

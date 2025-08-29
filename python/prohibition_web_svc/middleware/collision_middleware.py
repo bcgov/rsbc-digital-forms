@@ -30,6 +30,39 @@ def set_ticket_number(**kwargs) -> tuple:
         kwargs['ticket_no'] = None
     return True, kwargs
 
+def check_if_case_number_exists(**kwargs) -> tuple:
+    """
+    Check if the case number exists in the database.
+    """
+    logging.debug('inside check_if_case_number_exists()')
+    case_number = kwargs.get('ticket_no')
+    if case_number is None:
+        return True, kwargs
+    try:
+        submission = db.session.query(TarCollision).filter(
+            TarCollision.collision_case_num == case_number).first()
+        if submission is not None:
+            kwargs['error'] = {
+                'error_code': ErrorCode.E09,
+                'error_details': 'Collision case number already exists',
+                'submission_id': submission.submission_id,
+                'event_type': EVENT_TYPE,
+                'ticket_no': case_number,
+                'func': check_if_case_number_exists,
+            }
+            return False, kwargs
+    except Exception as e:
+        logging.exception(e)
+        kwargs['error'] = {
+            'error_code': ErrorCode.G00,
+            'error_details': str(e),
+            'event_type': EVENT_TYPE,
+            'ticket_no': case_number,
+            'func': check_if_case_number_exists,
+        }
+        return False, kwargs
+    return True, kwargs
+
 def validate_collision_payload(**kwargs) -> tuple:
     logging.debug("inside validate_form_payload()")
 

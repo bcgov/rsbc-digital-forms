@@ -440,3 +440,88 @@ def test_load_entity_with_null_charges_and_persons():
         assert result['entity_id'] == 1
         assert result['charges'] == []
         assert result['involved_persons'] == []
+
+def test_check_if_case_number_exists_no_ticket_number():
+    """Test check_if_case_number_exists when ticket_no is None"""
+    kwargs = {'ticket_no': None}
+    result, out_kwargs = collision_middleware.check_if_case_number_exists(**kwargs)
+    
+    assert result is True
+    assert out_kwargs == kwargs
+
+def test_check_if_case_number_exists_case_number_not_found():
+    """Test check_if_case_number_exists when case number doesn't exist in database"""
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
+        mock_db.session.query.return_value.filter.return_value.first.return_value = None
+        
+        kwargs = {'ticket_no': 'MV-999'}
+        result, out_kwargs = collision_middleware.check_if_case_number_exists(**kwargs)
+        
+        assert result is True
+        assert out_kwargs == kwargs
+        # Verify the database query was called correctly
+        mock_db.session.query.assert_called_once()
+        mock_db.session.query.return_value.filter.assert_called_once()
+
+def test_check_if_case_number_exists_case_number_already_exists():
+    """Test check_if_case_number_exists when case number already exists in database"""
+    mock_submission = MagicMock()
+    mock_submission.submission_id = 42
+    
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
+        mock_db.session.query.return_value.filter.return_value.first.return_value = mock_submission
+        
+        kwargs = {'ticket_no': 'MV-001'}
+        result, out_kwargs = collision_middleware.check_if_case_number_exists(**kwargs)
+        
+        assert result is False
+        assert 'error' in out_kwargs
+        assert out_kwargs['error']['error_code'] == ErrorCode.E09
+        assert out_kwargs['error']['error_details'] == 'Collision case number already exists'
+        assert out_kwargs['error']['submission_id'] == 42
+        assert out_kwargs['error']['ticket_no'] == 'MV-001'
+        assert out_kwargs['error']['event_type'] == collision_middleware.EVENT_TYPE
+        assert out_kwargs['error']['func'] == collision_middleware.check_if_case_number_exists
+
+def test_check_if_case_number_exists_database_exception():
+    """Test check_if_case_number_exists when database query raises an exception"""
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
+        mock_db.session.query.side_effect = Exception('Database connection error')
+        
+        kwargs = {'ticket_no': 'MV-001'}
+        result, out_kwargs = collision_middleware.check_if_case_number_exists(**kwargs)
+        
+        assert result is False
+        assert 'error' in out_kwargs
+        assert out_kwargs['error']['error_code'] == ErrorCode.G00
+        assert 'Database connection error' in out_kwargs['error']['error_details']
+        assert out_kwargs['error']['ticket_no'] == 'MV-001'
+        assert out_kwargs['error']['event_type'] == collision_middleware.EVENT_TYPE
+        assert out_kwargs['error']['func'] == collision_middleware.check_if_case_number_exists
+
+def test_check_if_case_number_exists_empty_ticket_number():
+    """Test check_if_case_number_exists with empty string ticket number"""
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
+        mock_db.session.query.return_value.filter.return_value.first.return_value = None
+        
+        kwargs = {'ticket_no': ''}
+        result, out_kwargs = collision_middleware.check_if_case_number_exists(**kwargs)
+        
+        assert result is True
+        assert out_kwargs == kwargs
+        # Verify the database query was still called (empty string is not None)
+        mock_db.session.query.assert_called_once()
+
+def test_check_if_case_number_exists_with_special_characters():
+    """Test check_if_case_number_exists with special characters in case number"""
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
+        mock_db.session.query.return_value.filter.return_value.first.return_value = None
+        
+        kwargs = {'ticket_no': 'MV-001@#$'}
+        result, out_kwargs = collision_middleware.check_if_case_number_exists(**kwargs)
+        
+        assert result is True
+        assert out_kwargs == kwargs
+        # Verify the database query was called with the special characters
+        mock_db.session.query.assert_called_once()
+
