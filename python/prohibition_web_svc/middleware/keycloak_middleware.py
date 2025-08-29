@@ -106,7 +106,11 @@ def get_user_guid_from_decoded_access_token(**kwargs) -> tuple:
 
 
 def load_roles_and_permissions_from_static_file(**kwargs) -> tuple:
-    permissions = load_permissions_into_dict(Permission.query.all())
+    try:
+        permissions = load_permissions_into_dict(Permission.query.all())
+    except Exception as e:
+        logging.exception(e)
+        return False, kwargs
     kwargs['permissions'] = permissions
     return permissions is not None, kwargs
 

@@ -10,7 +10,7 @@ class CollisionRequestPayload(TypedDict):
     collision_case_num: str
     collision_scenario: DropdownOption
     police_file_num: str
-    prime_file_vjur: int
+    prime_file_vjur: DropdownOption
     collision_case_prefix: str
     date_collision: str
     time_collision: str
