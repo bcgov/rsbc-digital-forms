@@ -210,7 +210,10 @@
       "estimated_vehicle_damage": 2000,
       "vehicle_stolen": "N",
       "vehicle_towed": "Y",
-      "vehicle_towed_by": "TowCo",
+      "vehicle_towed_by": {
+        "name": "TowCo",
+        "value": 3
+      },
       "dir_of_travel": "N",
       "entity_street": "Main St",
       "insurance_coverage": "I",

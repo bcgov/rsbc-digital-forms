@@ -159,3 +159,11 @@ def yes_no_string_to_bool(value):
     if value is None or value == '':
         return None
     return value.upper() == 'YES'
+
+def str_to_integer(value: str) -> int:
+    if value is None or value == '':
+        return None
+    try:
+        return int(value)
+    except ValueError:
+        return None
