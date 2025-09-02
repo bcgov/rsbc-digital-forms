@@ -1,3 +1,4 @@
+from python.common.helper import str_to_integer
 from python.common.models import TarCollision, TarLocation, TarAdditionalCollisionDetails, TarWitnessInfo, TarEntity, TarInvolvedPerson, TarCharges
 from python.prohibition_web_svc.models.collision_request_payload import CollisionRequestPayload
 
@@ -168,7 +169,7 @@ class CollisionMapper:
             unknown_entity=entity_data.get('unknown_entity'),
             driver_license_num=entity_data.get('driver_license_num'),
             license_prov_state=entity_data['license_prov_state']['value'] if entity_data.get('license_prov_state') else None,
-            license_expiry=entity_data.get('license_expiry'),
+            license_expiry=str_to_integer(entity_data.get('license_expiry')),
             surname=entity_data.get('surname'),
             given_name=entity_data.get('given_name'),
             license_class=entity_data.get('license_class'),
@@ -206,7 +207,7 @@ class CollisionMapper:
             estimated_vehicle_damage=entity_data.get('estimated_vehicle_damage'),
             vehicle_stolen=entity_data.get('vehicle_stolen'),
             vehicle_towed=entity_data.get('vehicle_towed'),
-            vehicle_towed_by=entity_data.get('vehicle_towed_by'),
+            vehicle_towed_by=entity_data['vehicle_towed_by']['value'] if entity_data.get('vehicle_towed_by') else None,
             dir_of_travel=entity_data.get('dir_of_travel'),
             entity_street=entity_data.get('entity_street'),
             insurance_coverage=entity_data.get('insurance_coverage'),
