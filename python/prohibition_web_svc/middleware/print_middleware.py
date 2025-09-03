@@ -132,16 +132,28 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
                     final_html = await page.content()
                     return final_html
                 else:
+                    # Set explicit page dimensions to US Letter (8.5in x 11in) with 0.5in margins on sides, 0.75in top/bottom
+                    # This gives a content area of 7.5in x 9.5in
+                    await page.set_viewport_size({"width": 816, "height": 1056})  # 8.5in x 11in at 96 DPI
+                    
                     pdf_bytes = await page.pdf(
-                        format="Letter",
+                        width="8.5in",
+                        height="11in",
                         print_background=True,
                         display_header_footer=True,
-                        margin={
-                            "top": "0.75in",
-                            "bottom": "0.75in", 
-                            "left": "0.5in",
-                            "right": "0.5in"
-                        },
+                        #TODO: Remove this once the header and footer are dynamic
+                        header_template="""
+                            <div style="display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; font-family: Arial, sans-serif;">
+                                <span style="font-size: 11pt; font-weight: bold;">Electronic MV6020 Traffic Accident Report</span>
+                                <span style="font-size: 9pt; font-weight: bold;">Protected A - Once completed</span>
+                            </div>
+                        """,
+                        footer_template="""
+                            <div style="font-size: 8pt; width: 100%; text-align: center; border-top: 1px solid #000; padding-top: 5px;">
+                                RCMP GRC ED6190 (eMV6020 2024-07 v1.97 PILOT USE ONLY) &nbsp;&nbsp;&nbsp;&nbsp; 
+                                Page <span class="pageNumber"></span> of <span class="totalPages"></span>
+                            </div>
+                        """,
                         prefer_css_page_size=False,
                     )
                     return pdf_bytes
