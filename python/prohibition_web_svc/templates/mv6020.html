@@ -6,36 +6,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electronic MV6020 Traffic Accident Report</title>
     <style>
-        @page {
-            size: letter;
-            margin: 0.75in 0.5in;
-
-            @top-left {
-                content: "Electronic MV6020 Traffic Accident Report";
-                font-family: Arial, sans-serif;
-                font-size: 11pt;
-                font-weight: bold;
+        /* Page-level styles for print and display */
+    
+        @media print {
+            @page {
+                size: 8.5in 11in; /* US Letter size */
+                margin: 0.75in 0.5in; /* 0.75in top/bottom, 0.2in left/right */
+            }
+            
+            body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+            }
+            
+            .page {
+                width: 7.5in; /* 8.5in - 0.5in (left) - 0.5in (right) */
+                min-height: 9.5in; /* 11in - 0.75in (top) - 0.75in (bottom) */
+                margin: 0 auto;
+                padding: 0.25in; /* Internal content padding */
+                page-break-before: always;
+                page-break-after: auto;
+                border: none;
+                box-shadow: none;
+                box-sizing: border-box;
+                position: relative;
+                background: white;
+            }
+            
+            .page:empty {
+                display: none !important;
+            }
+            
+            .grid-table {
+                page-break-inside: avoid;
+                table-layout: fixed;
+                width: 100%;
+            }
+            
+            .grid-cell {
+                overflow: hidden;
+            }
+            
+            .grid-input {
+                max-width: 100% !important;
+            }
+            
+            .section-header {
+                page-break-after: avoid !important;
+                box-decoration-break: clone;
+                -webkit-box-decoration-break: clone;
             }
 
-            @top-center {
-                margin-top: 0.2in;
+            /* Ensure section wrappers look complete when broken across pages */
+            .section-wrapper {
+                box-decoration-break: clone;
+                -webkit-box-decoration-break: clone;
             }
 
-            @top-right {
-                content: "Protected A - Once completed";
-                font-family: Arial, sans-serif;
-                font-size: 9pt;
-                font-weight: bold;
-                text-align: right;
-            }
-
-            @bottom-center {
-                margin-top: 0.2in;
-                content: "RCMP GRC ED6190 (eMV6020 2024-07 v1.97 PILOT USE ONLY)     Page " counter(page) " of " counter(pages);
-                font-family: Arial, sans-serif;
-                font-size: 8pt;
+            /* Add bottom border to section content when it breaks */
+            .section-content {
+                box-decoration-break: clone;
+                -webkit-box-decoration-break: clone;
+                border-bottom: 1px solid #000;
                 border-top: 1px solid #000;
-                padding-top: 5px;
             }
         }
 
@@ -67,10 +102,18 @@
         .page {
             width: 8.5in;
             min-height: 11in;
+            max-width: 8.5in;
             padding: 0.25in 0.5in;
             margin: 0 auto;
             background: white;
             position: relative;
+            page-break-after: auto;
+            box-sizing: border-box;
+        }
+
+        /* Only force new page for ICBC Copy section */
+        .page.icbc-copy {
+            page-break-before: always;
         }
 
         .page:not(:empty) {
@@ -287,6 +330,39 @@
             background: #fff;
         }
 
+        /* ICBC Box Styles */
+        .icbc-boxes-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .icbc-box {
+            border: 1px solid #ccc;
+            text-align: center;
+            min-height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .icbc-box-label {
+            font-weight: bold;
+            font-size: 11px;
+            padding: 2px;
+            background-color: #e9e9e9;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .icbc-box-value {
+            padding: 4px 2px;
+            font-size: 12px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .diagram-grid {
             display: grid;
             grid-template-columns: repeat(8, 60px);
@@ -332,18 +408,32 @@
             grid-template-columns: 1fr 1fr 1fr 1fr;
         }
 
+        .grid-table-10col {
+            grid-template-columns: repeat(10, 1fr);
+        }
+
+        .grid-table-auto {
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        }
+
+        .grid-table-13col {
+            grid-template-columns: repeat(13, 1fr);
+        }
+
         .grid-cell {
             padding: 4px;
             border-right: 1px solid #000;
             border-bottom: 1px solid #000;
         }
-
-        /* Remove right border from last cell in each row */
+        
+        /* Remove right border from the last cell in each row */
+        /*
         .grid-table-2col .grid-cell:nth-child(2n),
         .grid-table-3col .grid-cell:nth-child(3n),
         .grid-table-4col .grid-cell:nth-child(4n) {
             border-right: none;
         }
+        */
 
         /* Remove bottom border only from cells that are actually in the last row */
         .grid-cell-full {
@@ -354,6 +444,23 @@
         .grid-table.single-row .grid-cell {
             border-bottom: none !important;
         }
+
+        /* Auto-fit grid cells to prevent overflow */
+        .grid-table {
+            table-layout: fixed;
+            width: 100%;
+        }
+        
+        .grid-cell {
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+        
+        .grid-input {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
 
         .grid-cell-full {
             grid-column: 1 / -1;
@@ -394,7 +501,7 @@
             background-color: #e0e0e0;
             padding: 5px;
             border: 1px solid #000;
-            border-bottom: none;
+            border-bottom: none;D
         }
 
         .section-note {
@@ -406,49 +513,10 @@
             margin-bottom: 10px;
         }
 
-        /* Print Styles */
-        @media print {
-            .page {
-                margin: 0;
-                border: none;
-                box-shadow: none;
-                padding-top: 0.25in;
-                padding-bottom: 0.25in;
-            }
-
-            .page:empty {
-                display: none !important;
-            }
-
-            .section-header {
-                page-break-after: avoid !important;
-            }
-
-            /* Ensure section wrappers look complete when broken across pages */
-            .section-wrapper {
-                box-decoration-break: clone;
-                -webkit-box-decoration-break: clone;
-            }
-
-            /* Add bottom border to section content when it breaks */
-            .section-content {
-                box-decoration-break: clone;
-                -webkit-box-decoration-break: clone;
-                border-bottom: 1px solid #000;
-                border-top: 1px solid #000;
-            }
-
-            /* Ensure section headers repeat on new pages when section breaks */
-            .section-header {
-                box-decoration-break: clone;
-                -webkit-box-decoration-break: clone;
-            }
-        }
     </style>
 </head>
 
 <body>
-
     <!-- Page 1 -->
     <div class="page">
         <!-- Header with logos -->
@@ -573,7 +641,7 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">PRIME File VJUR:</label><br>
-                            <input type="text" value="{{ data.prime_file_vjur }}" class="grid-input"
+                            <input type="text" value="{{ data.prime_file_vjur.label }}" class="grid-input"
                                 style="width: 180px;">
                         </div>
                         <div class="grid-cell grid-cell-full">
@@ -1540,20 +1608,29 @@
                         </div>
 
                         <!-- Box 19, 20, 20A -->
-                        <div class="grid-table grid-table-3col">
+                        <div class="grid-table grid-table-2col">
                             <div class="grid-cell">
-                                <label class="grid-label">Box 19 Injured Taken To</label><br>
-                                <input type="text" value="{{ person.injured_taken_to.label }}" class="grid-input">
+                                <div class="grid-table grid-table-2col">
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 19 Injured Taken To</label><br>
+                                        <input type="text" value="{{ person.injured_taken_to.label }}" class="grid-input">
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 20 Injured Taken By</label><br>
+                                        <input type="text" value="{{ person.injured_taken_by.label }}" class="grid-input">
+                                    </div>
+                                </div>
                             </div>
                             <div class="grid-cell">
-                                <label class="grid-label">Box 20 Injured Taken By</label><br>
-                                <input type="text" value="{{ person.injured_taken_by.label }}" class="grid-input">
-                            </div>
-                            <div class="grid-cell">
-                                <label class="grid-label">Box 20A Injury Classification</label><br>
-                                <input type="text" value="{{ person.injury_classification.label }}" class="grid-input">
+                                <div class="grid-table grid-table-1col">
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 20A Injury Classification</label><br>
+                                        <input type="text" value="{{ person.injury_classification.label }}" class="grid-input">
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        
                     </div>
                     {% endfor %}
                 </div>
@@ -1683,7 +1760,551 @@
             </div>
         </div>
 
+       
 
+
+    </div>
+
+    <div class="page icbc-copy">
+        <div class="section-wrapper">
+            <div class="section-header">ICBC Copy</div>
+            <div class="section-content">
+                
+                <!-- Accident Data Subsection -->
+                <div class="section-divider">
+                    <h4 class="subsection-header">Accident Data</h4>
+
+                    
+                    
+                    <!-- Collision Case Number and Boxes -->
+                    <div class="grid-table grid-table-2col single-row">
+                        <div class="grid-cell">
+                            <div class="grid-table grid-table-1col single-row">
+                                <div class="grid-cell">
+                                    <label class="grid-label">Collision Case Number:</label><br>
+                                    <input type="text" value="{{ data.collision_case_num }}" class="grid-input" style="width: 200px;">
+                                </div>
+                            </div>
+        
+                            <div class="grid-table grid-table-2col single-row">
+                                <div class="grid-cell">
+                                    <label class="grid-label">Date of Collision (yyyy-mm-dd):</label><br>
+                                    <input type="text" value="{{ data.date_collision }}" class="grid-input">
+                                </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Time of Collision (hh:mm):</label><br>
+                                    <input type="text" value="{{ data.time_collision }}" class="grid-input">
+                                </div>
+                            </div>    
+
+                            <div class="grid-table grid-table-3col single-row">
+                                <div class="grid-cell">
+                                    <label class="grid-label">Collision Type: (TBD)</label><br>
+                                    <input type="text" value="{{ data.collision_type }}" class="grid-input" style="width: 50px;">
+                                </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Hit and Run:</label><br>
+                                    <input type="text" value="{% if data.hit_and_run == 'Y' %}6{% else %}0{% endif %}" class="grid-input">
+                                </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Diagram:</label><br>
+                                    <input type="text" value="{{ data.primary_collision_occ_code.value }}" class="grid-input">
+                                </div>
+                            </div>
+
+                            <!-- Police Attended and Police Code -->
+                            <div class="grid-table grid-table-2col single-row">
+                                <div class="grid-cell">
+                                    <label class="grid-label">Police Attended:</label><br>
+                                    <input type="text" value="{% if data.police_attended == 'Y' %}1{% else %}2{% endif %}" class="grid-input" style="width: 50px;">
+                                </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Police Code:</label><br>
+                                    <input type="text" value="{{ data.police_agency_code.code }}" class="grid-input" style="width: 100px;">
+                                </div>
+                            </div>
+                        
+                        </div>
+                        <div class="grid-cell">
+                            <div class="icbc-boxes-container">
+                                <div class="grid-table grid-table-4col">
+                                    <!-- Row 1 -->
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 1</div>
+                                            <div class="icbc-box-value">{{ data.road_class.value }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 1A</div>
+                                            <div class="icbc-box-value">{{ data.traffic_flow.value }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 2</div>
+                                            <div class="icbc-box-value">{{ data.collision_loc.value }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 2A</div>
+                                            <div class="icbc-box-value">{{ data.primary_speed_zone.value }}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Row 2 -->
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 2B</div>
+                                            <div class="icbc-box-value">{{ data.secondary_speed_zone.value }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 3</div>
+                                            <div class="icbc-box-value">{{ data.land_usage.value }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 4</div>
+                                            <div class="icbc-box-value">{{ data.road_type.value }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 5</div>
+                                            <div class="icbc-box-value">{{ data.traffic_control.value }}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Row 3 -->
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 6</div>
+                                            <div class="icbc-box-value">{{ data.roadway_character.value }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 7</div>
+                                            <div class="icbc-box-value">{{ data.roadway_surface_cond.value }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 8</div>
+                                            <div class="icbc-box-value">{{ data.weather_cond.value }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 9</div>
+                                            <div class="icbc-box-value">{{ data.lighting_cond.value }}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Row 4 -->
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 21</div>
+                                            <div class="icbc-box-value">{{ data.first_contact_event.value }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 24</div>
+                                            <div class="icbc-box-value">{{ data.first_contact_loc.value }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 29</div>
+                                            <div class="icbc-box-value">{{ data.pedestrian_location.value }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <div class="icbc-box">
+                                            <div class="icbc-box-label">Box 30</div>
+                                            <div class="icbc-box-value">{{ data.pedestrian_action.value }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+              
+                </div>
+                
+                <!-- Location Data Subsection -->
+                <div class="section-divider">
+                    <h4 class="subsection-header">Location Data</h4>
+                    
+                    <!-- City and Highway -->
+                    <div class="grid-table grid-table-4col single-row">
+                        <div class="grid-cell">
+                            <label class="grid-label">City:</label><br>
+                            <input type="text" value="{{ data.city_name }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">LKI Route:</label><br>
+                            <input type="text" value="{{ data.hwy_route_num }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">LKI Segment:</label><br>
+                            <input type="text" value="{{ data.segment_num }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Highway:</label><br>
+                            <input type="text" value="{{ data.hwy_code }}" class="grid-input" style="width: 50px;">
+                        </div>
+                    </div>
+                    
+                    <!-- LKI Offset -->
+                    <div class="grid-table grid-table-1col single-row">
+                        <div class="grid-cell">
+                            <label class="grid-label">LKI Offset:</label><br>
+                            <input type="text" value="{{ data.loc_code_km }}" class="grid-input">
+                        </div>
+                    </div>
+                    
+                    <!-- Location Description - On and At -->
+                    <div class="grid-table grid-table-2col single-row">
+                        <div class="grid-cell">
+                            <label class="grid-label">Location Description - On:</label><br>
+                            <input type="text" value="{{ data.street_on }}" class="grid-input">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Location Description - At:</label><br>
+                            <input type="text" value="{{ data.street_at }}" class="grid-input">
+                        </div>
+                    </div>
+                    
+                    <!-- Latitude and Longitude -->
+                    <div class="grid-table grid-table-4col single-row">
+                        <div class="grid-cell">
+                            <label class="grid-label">Latitude Direction:</label><br>
+                            <input type="text" value="N+" class="grid-input" style="width: 50px;">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Latitude Degrees:</label><br>
+                            <input type="text" value="{{ data.lat_degree }}" class="grid-input" style="width: 50px;">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Latitude Minutes:</label><br>
+                            <input type="text" value="{{ data.lat_min }}" class="grid-input" style="width: 50px;">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Latitude Seconds:</label><br>
+                            <input type="text" value="{{ data.lat_sec }}" class="grid-input" style="width: 80px;">
+                        </div>
+                    </div>
+                    
+                    <div class="grid-table grid-table-4col single-row">
+                        <div class="grid-cell">
+                            <label class="grid-label">Longitude Direction:</label><br>
+                            <input type="text" value="W-" class="grid-input" style="width: 50px;">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Longitude Degrees:</label><br>
+                            <input type="text" value="{{ data.long_degree }}" class="grid-input" style="width: 50px;">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Longitude Minutes:</label><br>
+                            <input type="text" value="{{ data.long_min }}" class="grid-input" style="width: 50px;">
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Longitude Seconds:</label><br>
+                            <input type="text" value="{{ data.long_sec }}" class="grid-input" style="width: 80px;">
+                        </div>
+                    </div>
+                </div>
+
+                
+
+
+                <!-- Entities Section -->
+                <div class="section-divider" style="break-before: always;">
+                    <h4 class="subsection-header" style="break-after: avoid;">Entities</h4>
+                    <div class="grid-table grid-table-1col single-row">
+                        {% for entity in data.entities %}
+                        {% set entity_index = loop.index %}
+                        <div style="margin-bottom: 20px;">
+                            <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold;">
+                                Entity {{ entity_index }} (Vehicle {{ entity.entity_num }})
+                            </h5>
+                            
+                            <!-- Main Entity Grid - 2 columns like ICBC boxes -->
+                            <div class="grid-table grid-table-2col single-row" style="margin-top: 5px;">
+                                <div class="grid-cell">
+                                    <!-- Left side - Entity details -->
+                                    <div class="grid-table grid-table-2col single-row">
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Police File Number</label><br>
+                                            <input type="text" value="{{ data.police_file_num }}" class="grid-input">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Entity No.</label><br>
+                                            <input type="text" value="{{ entity.entity_num }}" class="grid-input" style="width: 40px;">
+                                        </div>
+                            
+                                    </div>
+                                    <div class="grid-table grid-table-2col single-row">
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Entity Type</label><br>
+                                            <input type="text" value="{{ entity.entity_type.value }}" class="grid-input" style="width: 30px;">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Possible Offender</label><br>
+                                            <input type="text" value="{{ entity.possible_offender }}" class="grid-input" style="width: 30px;">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid-table grid-table-3col">
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Driver's Licence No.</label><br>
+                                            <input type="text" value="{{ entity.driver_license_num }}" class="grid-input">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Name (Surname, Given Names)</label><br>
+                                            <input type="text" value="{{ entity.surname }}, {{ entity.given_name }}" class="grid-input">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Vehicle Plate Number</label><br>
+                                            <input type="text" value="{{ entity.vehicle_plate_num }}" class="grid-input">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid-table grid-table-3col">
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Licence Class</label><br>
+                                            <input type="text" value="{{ entity.license_class }}" class="grid-input" style="width: 40px;">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Vehicle Plate Province or State</label><br>
+                                            <input type="text" value="{{ entity.vehicle_plate_prov_state.label if entity.vehicle_plate_prov_state else '' }}" class="grid-input">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Vehicle Stolen</label><br>
+                                            <input type="text" value="{{ entity.vehicle_stolen if entity.vehicle_stolen else 'N' }}" class="grid-input" style="width: 30px;">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid-table grid-table-3col">
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Licence Prov. or State</label><br>
+                                            <input type="text" value="{{ entity.license_prov_state.label if entity.license_prov_state else '' }}" class="grid-input">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Date of Birth (yyyy-mm-dd)</label><br>
+                                            <input type="text" value="{{ entity.date_of_birth[:10] if entity.date_of_birth else '' }}" class="grid-input">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Vehicle Towed</label><br>
+                                            <input type="text" value="{{ entity.vehicle_towed}}" class="grid-input" style="width: 30px;">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid-table grid-table-3col">
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Licence Indicator</label><br>
+                                            <input type="text" value="{{ entity.graduated_license_type }}" class="grid-input" style="width: 30px;">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Sex</label><br>
+                                            <input type="text" value="{{ entity.sex }}" class="grid-input" style="width: 30px;">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Vehicle Towed By</label><br>
+                                            <input type="text" value="{{ entity.vehicle_towed_by.name if entity.vehicle_towed_by else '' }}" class="grid-input">
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="grid-cell">
+                                    <!-- Right side - ICBC Boxes -->
+                                    <div class="grid-table grid-table-2col">
+                                        <!-- Row 1 -->
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Damage Loc.</label><br>
+                                            <input type="text" value="{{ entity.damage_location_code.value if entity.damage_location_code else '' }}" class="grid-input">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Damage Sev.</label><br>
+                                            <input type="text" value="{{ entity.severety_code.value if entity.severety_code else '' }}" class="grid-input">
+                                        </div>
+                                       
+                                    </div>
+    
+                                    <div class="grid-table grid-table-2col">
+                                         <div class="grid-cell">
+                                            <label class="grid-label">Dir. of Travel</label><br>
+                                            <input type="text" value="{{ entity.dir_of_travel if entity.dir_of_travel else '' }}" class="grid-input">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Box 22/23</label><br>
+                                            <input type="text" value="{{ entity.second_contact.value if entity.second_contact else '' }}" class="grid-input">
+                                        </div>
+                                    </div>
+    
+                                    <div class="grid-table grid-table-2col">
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Box 25/26</label><br>
+                                            <input type="text" value="{{ entity.pre_collision_vehicle_action_first_event.value if entity.pre_collision_vehicle_action_first_event else '' }}" class="grid-input">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Box 27/28</label><br>
+                                            <input type="text" value="{{ entity.vehicle_type.value if entity.vehicle_type else '' }}" class="grid-input">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid-table grid-table-2col">
+                                       
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Box 27A/28A</label><br>
+                                            <input type="text" value="{{ entity.vehicle_use.value if entity.vehicle_use else '' }}" class="grid-input">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Breath</label><br>
+                                            <input type="text" value="TBD" class="grid-input">
+                                        </div>
+                                    </div>
+    
+                                    <div class="grid-table grid-table-2col">
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Box 31/34</label><br>
+                                            <input type="text" value="{{ entity.contributing_factor_1.value if entity.contributing_factor_1 else '' }}" class="grid-input">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Box 32/35</label><br>
+                                            <input type="text" value="{{ entity.contributing_factor_2.value if entity.contributing_factor_2 else '' }}" class="grid-input">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid-table grid-table-2col">
+                                       
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Box 33/36</label><br>
+                                            <input type="text" value="{{ entity.contributing_factor_3.value if entity.contributing_factor_3 else '' }}" class="grid-input">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Box 33A/36A</label><br>
+                                            <input type="text" value="{{ entity.contributing_factor_4.value if entity.contributing_factor_4 else '' }}" class="grid-input">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid-table grid-table-3col">
+                                        <!-- Row 4 - Charges -->
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Charge 1</label><br><input type="text" value="{{ entity.charges[0].charge_type.value if entity.charges and entity.charges|length > 0 else '' }} {{ entity.charges[0].section_num if entity.charges and entity.charges|length > 0 else '' }}" class="grid-input">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Charge 2</label><br><input type="text" value="{{ entity.charges[1].charge_type.value if entity.charges and entity.charges|length > 1 else '' }} {{ entity.charges[1].section_num if entity.charges and entity.charges|length > 1 else '' }}" class="grid-input">
+                                        </div>
+                                        <div class="grid-cell">
+                                            <label class="grid-label">Charge 3</label><br><input type="text" value="{{ entity.charges[2].charge_type.value if entity.charges and entity.charges|length > 2 else '' }} {{ entity.charges[2].section_num if entity.charges and entity.charges|length > 2 else '' }}" class="grid-input">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="grid-table grid-table-2col single-row" style="margin-top: 5px;">
+                                <div class="grid-cell">
+                                    <label class="grid-label">Vehicle Year</label><br>
+                                    <input type="text" value="{{ entity.vehicle_year.label if entity.vehicle_year else '' }}" class="grid-input">
+                                </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Vehicle Make</label><br>
+                                    <input type="text" value="{{ entity.vehicle_make.label if entity.vehicle_make else '' }}" class="grid-input">
+                                </div>
+                            </div>
+                            {% for person in entity.involved_persons %}
+                            <div style="margin-bottom: 20px;">
+                                <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold;">
+                                    Involved Person {{ loop.index }} associated to Entity {{ entity_index }}
+                                </h5>
+                                   <!-- Person Header Row with Boxes -->
+                                <div class="grid-table grid-table-auto single-row" style="margin-top: 5px;">
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 10</label><br>
+                                        <input type="text" value="{{ person.vehicle_occupied.value if person.vehicle_occupied else '01' }}" class="grid-input" style="width: 40px;">
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 11</label><br>
+                                        <input type="text" value="{{ person.position_of_person.value if person.position_of_person else '' }}" class="grid-input" style="width: 40px;">
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 12</label><br>
+                                        <input type="text" value="{{ person.safety_equipment_used.value if person.safety_equipment_used else '' }}" class="grid-input" style="width: 40px;">
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 13</label><br>
+                                        <input type="text" value="{{ person.ejection_from_vehicle.value if person.ejection_from_vehicle else '1' }}" class="grid-input" style="width: 40px;">
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 14</label><br>
+                                        <input type="text" value="{{ person.age if person.age else '' }}" class="grid-input" style="width: 40px;">
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 15</label><br>
+                                        <input type="text" value="{{ person.sex.value if person.sex else '' }}" class="grid-input" style="width: 40px;">
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 16</label><br>
+                                        <input type="text" value="{{ person.severe_injury_location.value if person.severe_injury_location else '' }}" class="grid-input" style="width: 40px;">
+                                    </div>
+                                </div>
+                                <div class="grid-table grid-table-auto single-row" style="margin-top: 5px;">
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 17</label><br>
+                                        <input type="text" value="{{ person.injury_type.value if person.injury_type else '' }}" class="grid-input" style="width: 40px;">
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 18</label><br>
+                                        <input type="text" value="{{ person.consciousness_state.value if person.consciousness_state else '' }}" class="grid-input" style="width: 40px;">
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box19</label><br>
+                                        <input type="text" value="{{ person.injured_taken_to.value if person.injured_taken_to else '' }}" class="grid-input" style="width: 40px;">
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 20</label><br>
+                                        <input type="text" value="{{ person.injured_taken_by.value if person.injured_taken_by else '' }}" class="grid-input" style="width: 40px;">
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 20A</label><br>
+                                        <input type="text" value="{{ person.injury_classification.value if person.injury_classification else '' }}" class="grid-input" style="width: 40px;">
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Date of Death (yyyy-mm-dd)</label><br>
+                                        <input type="text" value="{{ person.date_of_death[:10] if person.date_of_death else '' }}" class="grid-input">
+                                    </div>
+                                </div>
+                                <div class="grid-table grid-table-auto single-row" style="margin-top: 5px;">
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Name:</label><br>
+                                        <input type="text" value="{{ person.surname }} , {{ person.given_name }}" class="grid-input" style="width: 40px;">
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    
+                </div>
+                
+                
+            </div>
+        
+        </div>
     </div>
 
 </body>
