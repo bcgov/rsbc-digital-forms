@@ -537,7 +537,7 @@
 
         <h1 class="form-title">Electronic MV6020 Traffic Accident Report</h1>
 
-        {% if data.print_options and data.print_options.type == "police" %}
+        {% if data.print_options and data.print_options.type == "police"%}
         <div class="instructions">
             This form will change in response to the data entered; please complete it in order from the beginning.<br>
             Add Entities (vehicles, cyclists, and pedestrians) and Involved Persons as needed using the buttons. If a
@@ -618,7 +618,7 @@
                 {% elif data.print_options and data.print_options.type == "police" %}
                     Police Copy
                 {% elif data.print_options and data.print_options.type == "icbc" %}
-                    ICBC Copy
+                    Police Copy
                 {% else %}
                     Police Copy
                 {% endif %}
@@ -1764,7 +1764,7 @@
 
 
     </div>
-
+    {% if data.print_options and data.print_options.type == "icbc" %}
     <div class="page icbc-copy">
         <div class="section-wrapper">
             <div class="section-header">ICBC Copy</div>
@@ -2306,6 +2306,9 @@
         
         </div>
     </div>
+    {% endif %}
+
+   
 
 </body>
 
