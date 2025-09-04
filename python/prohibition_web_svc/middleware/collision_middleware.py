@@ -404,9 +404,9 @@ def log_payload_to_splunk(**kwargs) -> tuple:
 def log_get_collision_to_splunk(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         'event': "get collision",
-        'user_guid': kwargs.get('user_guid', ''),
+        'user_guid': kwargs.get('user_guid'),
         'username': kwargs.get('username'),
         'form_type': MV6020_FORM_TYPE,
-        'collision_case_number': kwargs.get('collision_case_num', '')
+        'collision_case_number': kwargs.get('collision_case_num')
     }
     return True, kwargs
