@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { ReactKeycloakProvider } from "@react-keycloak/web";
-import keycloak, { keycloakInitConfig } from "./keycloak";
+import { AuthProvider } from "react-oidc-context";
+import { oidcConfig } from "./auth";
 import "../src/utils/commonStyles.scss";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
@@ -10,7 +10,6 @@ import { RouterProvider } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import { appRouter } from "./routes/appRouter";
-import { Modal } from "react-bootstrap";
 
 library.add(fab, far, fas);
 
@@ -62,12 +61,9 @@ function App() {
           </button>
         </Modal.Footer>
       </Modal> */}
-      <ReactKeycloakProvider
-        authClient={keycloak}
-        initOptions={keycloakInitConfig}
-      >
+      <AuthProvider {...oidcConfig}>
         <RouterProvider router={appRouter} />
-      </ReactKeycloakProvider>
+      </AuthProvider>
     </div>
   );
 }
