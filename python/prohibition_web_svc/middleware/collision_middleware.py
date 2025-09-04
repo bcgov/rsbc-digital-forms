@@ -309,7 +309,7 @@ def _validate_witness_required_fields(collision: CollisionRequestPayload, kwargs
 
 def get_collision_data(**kwargs) -> tuple:
     collision_case_num = kwargs.get('collision_case_num')
-    logging.info(f"Retrieving collision data for collision: {collision_case_num}")
+    logging.debug(f"Retrieving collision data for collision: {collision_case_num}")
     try:
         collision_data = db.session.query(TarCollision)\
                         .filter(TarCollision.collision_case_num == collision_case_num)\
@@ -358,7 +358,6 @@ def _mask_sensitive_data(payload):
         'driver_license_num',
         'surname',
         'given_name',
-        'date_of_birth',
         'contact_phone_num',
         'vehicle_plate_num',
         'vehicle_owner_name',
@@ -376,10 +375,10 @@ def _mask_sensitive_data(payload):
             payload['entities'] = [
                 _mask_sensitive_data(entity) for entity in payload['entities']
             ]
-            if 'involved_persons' in payload['entities']:
-                payload['entities']['involved_persons'] = [
-                    _mask_sensitive_data(person) for person in payload['entities']['involved_persons']
-                ]
+        if 'involved_persons' in payload:
+            payload['involved_persons'] = [
+                _mask_sensitive_data(person) for person in payload['involved_persons']
+            ]
         if 'witnesses' in payload:
             payload['witnesses'] = [
                 _mask_sensitive_data(witness) for witness in payload['witnesses']
@@ -392,12 +391,22 @@ def log_payload_to_splunk(**kwargs) -> tuple:
         payload = request.get_json()
         payload = _mask_sensitive_data(payload)
         kwargs['splunk_data'] = {
-            "event": "create collision",
-            "user_guid": kwargs.get('user_guid', ''),
-            "username": kwargs.get('username'),
+            'event': "create collision",
+            'user_guid': kwargs.get('user_guid', ''),
+            'username': kwargs.get('username'),
             'form_type': MV6020_FORM_TYPE,
             'payload': payload
         }
     except Exception as e:
         logging.exception(e)
+    return True, kwargs
+
+def log_get_collision_to_splunk(**kwargs) -> tuple:
+    kwargs['splunk_data'] = {
+        'event': "get collision",
+        'user_guid': kwargs.get('user_guid', ''),
+        'username': kwargs.get('username'),
+        'form_type': MV6020_FORM_TYPE,
+        'collision_case_number': kwargs.get('collision_case_num', '')
+    }
     return True, kwargs
