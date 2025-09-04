@@ -5,7 +5,10 @@ import logging
 import logging.config
 import datetime
 from python.common.config import Config
+from python.common.verbose_logging import VERBOSE_LEVEL_NUM, verbose
 
+logging.addLevelName(VERBOSE_LEVEL_NUM, 'VERBOSE')
+logging.verbose = verbose
 logging.config.dictConfig(Config.LOGGING)
 
 local_tz = pytz.timezone('America/Vancouver')
@@ -106,13 +109,13 @@ def middle_logic(functions: list, **args):
     """
     if functions:
         try_fail_node = functions.pop(0)
-        logging.debug('calling try function: ' + try_fail_node['try'].__name__)
+        logging.verbose('calling try function: ' + try_fail_node['try'].__name__)
         flag, args = try_fail_node['try'](**args)
-        logging.debug("result from {} is {}".format(try_fail_node['try'].__name__, flag))
+        logging.verbose("result from {} is {}".format(try_fail_node['try'].__name__, flag))
         if flag:
             args = middle_logic(functions, **args)
         else:
-            logging.debug('calling try function: ' + try_fail_node['try'].__name__)
+            logging.verbose('calling try function: ' + try_fail_node['try'].__name__)
             args = middle_logic(try_fail_node['fail'], **args)
     return args
 

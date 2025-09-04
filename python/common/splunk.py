@@ -20,7 +20,7 @@ def log_to_splunk(**kwargs) -> tuple:
 
 
 def _post_to_splunk(splunk_payload: dict, **args) -> bool:
-    logging.debug("inside _post_to_splunk()")
+    logging.verbose("inside _post_to_splunk()")
     config = args.get('config')
     endpoint = "{}:{}/services/collector".format(config.SPLUNK_HOST, config.SPLUNK_PORT)
     headers = {"Authorization": "Splunk " + config.SPLUNK_TOKEN}

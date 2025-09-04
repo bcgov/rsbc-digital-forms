@@ -37,7 +37,7 @@ def officer_has_not_applied_previously(**kwargs) -> tuple:
             .filter(UserRole.role_name == 'officer') \
             .filter(UserRole.user_guid == kwargs.get('username')) \
             .count()
-        logging.debug("inside officer_has_not_applied_previously(): " + str(roles))
+        logging.debug("officer_has_not_applied_previously() result: " + str(roles))
     except Exception as e:
         logging.warning(str(e))
         return False, kwargs
@@ -63,7 +63,7 @@ def approve_officers_role(**kwargs) -> tuple:
             .filter(UserRole.role_name == 'officer') \
             .filter(UserRole.user_guid == kwargs.get('requested_user_guid')) \
             .first()
-        logging.warning("user_guid: " + kwargs.get('requested_user_guid'))
+        logging.info("approve_officers_role - user_guid: " + kwargs.get('requested_user_guid'))
         tz = pytz.timezone('America/Vancouver')
         user_role.approved_dt = datetime.now(tz)
         db.session.commit()
