@@ -26,9 +26,16 @@ def validate_update(**kwargs) -> tuple:
 
 
 def log_payload_to_splunk(**kwargs) -> tuple:
-    request = kwargs.get('request')
     # TODO - log to Splunk
-    logging.debug("payload: | {}".format(request.get_data()))
+    data = kwargs.get('payload')
+    logging.debug("payload: | {}".format(data))
+    kwargs['splunk_data'] = {
+        'event': "get collision",
+        'user_guid': kwargs.get('user_guid', ''),
+        'username': kwargs.get('username'),
+        'form_type': get_event_type(data),
+        'ticket_no': get_ticket_no(data),
+    }
     return True, kwargs
 
 def check_if_application_id_exists(**kwargs) -> tuple:
@@ -59,7 +66,7 @@ def check_if_application_id_exists(**kwargs) -> tuple:
     return True, kwargs
 
 def save_event_data(**kwargs) -> tuple:
-    logging.debug('inside save_event_data()')
+    logging.verbose('inside save_event_data()')
     data = kwargs.get('payload')
     if kwargs.get('identity_provider') == 'service_account':
        user_guid = data.get('submitted_user_guid', kwargs.get('username'))
@@ -67,7 +74,6 @@ def save_event_data(**kwargs) -> tuple:
        user_guid = kwargs.get('user_guid')
 
     try:
-        logging.debug('Creating Event')
         date_created = datetime.now()
         # logging.debug(f'heres your data {data}')
         event = Event(
@@ -260,7 +266,7 @@ def save_event_data(**kwargs) -> tuple:
             event.twelve_hour_form = twelve_hour_form
         if data.get('IRP'):
             return
-        logging.debug('Saving Event')
+        logging.verbose('Saving Event')
 
         db.session.add(event)
         db.session.commit()
