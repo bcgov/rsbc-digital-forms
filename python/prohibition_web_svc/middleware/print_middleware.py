@@ -13,14 +13,14 @@ EVENT_TYPE = 'Print - Document Render'
 
 def set_event_type(**kwargs) -> tuple:
     """Set the event type for the print event."""
-    logging.debug('inside set_event_type()')
+    logging.verbose('inside set_event_type()')
     kwargs['event_type'] = EVENT_TYPE
     return True, kwargs
 
 
 def validate_print_payload(**kwargs) -> tuple:
     """Validate the print request payload using PrintRequestPayload model."""
-    logging.debug("inside validate_print_payload()")
+    logging.verbose("inside validate_print_payload()")
     
     request = kwargs.get('request')
     if not request:
@@ -174,7 +174,7 @@ def render_with_playwright(template_path: str, data: dict, output_type: str = "p
 
 def render_document_with_playwright(**kwargs) -> tuple:
     """Render document using Playwright and store result in kwargs."""
-    logging.debug('inside render_document_with_playwright()')
+    logging.verbose('inside render_document_with_playwright()')
     
     try:
         payload = kwargs.get('payload', {})
@@ -218,7 +218,7 @@ def render_document_with_playwright(**kwargs) -> tuple:
 
 def return_rendered_response(**kwargs) -> tuple:
     """Return the rendered content as Flask Response."""
-    logging.debug('inside return_rendered_response()')
+    logging.verbose('inside return_rendered_response()')
     
     try:
         content = kwargs.get('rendered_content')

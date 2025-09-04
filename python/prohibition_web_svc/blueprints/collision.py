@@ -17,13 +17,14 @@ CORS(bp, resources={Config.URL_PREFIX + "/api/v1/collision/*": {"origins": Confi
 
 @bp.route('/collision', methods=['POST'])
 def create_collision():
-    logging.info(f"Inside create_collision()")
+    logging.info(f"POST /collision endpoint called")
     kwargs = middle_logic(
         get_authorized_keycloak_user() + [
-            {"try": common_middleware.log_payload_to_splunk, "fail": [
+            {"try": collision_middleware.log_payload_to_splunk, "fail": [
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": http_responses.server_error_response, "fail": []},
             ]},
+            {"try": splunk.log_to_splunk, "fail": []},
             {"try": common_middleware.request_contains_a_payload, "fail": [
                 {"try": common_middleware.record_event_error, "fail": []},
                 {"try": http_responses.bad_request_response, "fail": []}

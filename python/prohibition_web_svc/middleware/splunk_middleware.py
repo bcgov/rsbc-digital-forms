@@ -191,3 +191,14 @@ def update_user_last_active_splunk(**kwargs):
         "username": username,
     }
     return True, kwargs
+
+
+def collision_submitted(**kwargs) -> tuple:
+    kwargs['splunk_data'] = {
+        "event": "collision submitted",
+        "user_guid": kwargs.get('user_guid', ''),
+        "username": kwargs.get('username'),
+        'form_type': kwargs.get('form_type'),
+        'id': kwargs.get('ticket_no')
+    }
+    return True, kwargs

@@ -4,15 +4,15 @@ from python.common.error_middleware import record_error
 from python.common.models import db, Submission
 
 def log_payload_to_splunk(**kwargs) -> tuple:
-    logging.debug('inside log_payload_to_splunk()')
+    logging.verbose('inside log_payload_to_splunk()')
     request = kwargs.get('request')
     # TODO - log to Splunk
-    logging.debug(f"payload: | {request.get_data()}")
+    logging.verbose(f"payload: | {request.get_data()}")
     return True, kwargs
 
 
 def request_contains_a_payload(**kwargs) -> tuple:
-    logging.debug("inside request_contains_a_payload()")
+    logging.verbose("inside request_contains_a_payload()")
     request = kwargs.get('request')
     try:
         payload = request.get_json()
@@ -37,7 +37,7 @@ def check_if_application_id_exists(**kwargs) -> tuple:
     """
     Check if the application id exists in the database.
     """
-    logging.debug('inside check_if_application_id_exists()')
+    logging.verbose('inside check_if_application_id_exists()')
     data = kwargs.get('payload')
     application_id = data.get('ff_application_id')
     event_type = kwargs.get('event_type', 'Unknown Event Type')
@@ -92,13 +92,13 @@ def safe_get_value(data, default=None):
     return data if data is not None else default    
 
 def get_user_guid(**kwargs) -> tuple:
-    logging.debug('inside get_user_guid()')
+    logging.verbose('inside get_user_guid()')
     data = kwargs.get('payload')
     if kwargs.get('identity_provider') == 'service_account':
        user_guid = data.get('submitted_user_guid', kwargs.get('username'))
     else:
        user_guid = kwargs.get('user_guid')
-    logging.debug(f"user_guid: {user_guid}")
+    logging.info(f"user_guid: {user_guid}")
     return user_guid
 
 def record_event_error(**kwargs):

@@ -14,7 +14,7 @@ def set_event_type(**kwargs) -> tuple:
     """
     Set the event type for the collision event.
     """
-    logging.debug('inside set_event_type()')
+    logging.verbose('inside set_event_type()')
     kwargs['event_type'] = EVENT_TYPE
     return True, kwargs
 
@@ -22,10 +22,11 @@ def set_ticket_number(**kwargs) -> tuple:
     """
     Set the ticket number for the collision event.
     """
-    logging.debug('inside set_ticket_number()')
+    logging.verbose('inside set_ticket_number()')
     data = kwargs.get('payload')
     if data and 'collision_case_num' in data:
         kwargs['ticket_no'] = data['collision_case_num']
+        logging.info(f"collision_case_num set to {kwargs['ticket_no']}")
     else:
         kwargs['ticket_no'] = None
     return True, kwargs
@@ -34,7 +35,7 @@ def check_if_case_number_exists(**kwargs) -> tuple:
     """
     Check if the case number exists in the database.
     """
-    logging.debug('inside check_if_case_number_exists()')
+    logging.verbose('inside check_if_case_number_exists()')
     case_number = kwargs.get('ticket_no')
     if case_number is None:
         return True, kwargs
@@ -64,14 +65,13 @@ def check_if_case_number_exists(**kwargs) -> tuple:
     return True, kwargs
 
 def validate_collision_payload(**kwargs) -> tuple:
-    logging.debug("inside validate_form_payload()")
+    logging.verbose("inside validate_form_payload()")
 
     is_valid = False
     if(kwargs.get('payload')):
         collision: CollisionRequestPayload = kwargs['payload']
         is_valid = _validate_required_fields(collision, kwargs)
     else:
-        logging.warning("validation error: empty payload")
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
             'error_code': ErrorCode.C01,
@@ -87,7 +87,7 @@ def validate_collision_payload(**kwargs) -> tuple:
     return is_valid, kwargs
 
 def save_collision_data(**kwargs) -> tuple:
-    logging.debug('inside save_collision_data()')
+    logging.verbose('inside save_collision_data()')
     date_created = datetime.now()
     data = kwargs.get('payload')
     user_guid = common_middleware.get_user_guid(**kwargs)
@@ -130,7 +130,7 @@ def save_collision_data(**kwargs) -> tuple:
 
 
 def save_event_pdf(**kwargs) -> tuple:
-    logging.debug('inside save_event_pdf()')    
+    logging.verbose('inside save_event_pdf()')    
     data = kwargs.get('payload')
     submission_id = kwargs.get('submission_id')
     collision_case_num = data.get("collision_case_num")
@@ -151,9 +151,9 @@ def save_event_pdf(**kwargs) -> tuple:
         form_ref.events.append(event)
         db.session.add(form_ref)
         db.session.commit()
-        logging.debug(f"PDF saved for submission {submission_id} with storage key: {storage_key}")
+        logging.info(f"PDF saved for submission {submission_id} with storage key: {storage_key}")
     except Exception as e:
-        logging.warning(str(e))
+        logging.exception(e)
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
                 'error_code': ErrorCode.C04,
@@ -228,7 +228,7 @@ def _validate_collision_required_fields(collision: CollisionRequestPayload, kwar
 
     missing_fields = [field for field in required_fields if field not in collision]
     if missing_fields:
-        logging.info(f"Missing required fields: {missing_fields}")
+        logging.debug(f"Missing required fields: {missing_fields}")
         kwargs['error'] = {
             'error_code': ErrorCode.C01,
             'error_details': f"Missing required fields: {missing_fields}",
@@ -252,7 +252,7 @@ def _validate_entity_required_fields(collision: CollisionRequestPayload, kwargs:
         "severety_code",
     ]
     if not collision.get('entities') or len(collision.get('entities')) == 0:
-        logging.info("Collision has no entities provided.")
+        logging.debug("Collision has no entities provided.")
         kwargs['error'] = {
             'error_code': ErrorCode.C01,
             'error_details': "Collision has no entities provided.",
@@ -264,7 +264,7 @@ def _validate_entity_required_fields(collision: CollisionRequestPayload, kwargs:
     for entity in collision.get('entities', []):
         missing_fields = [field for field in required_entity_fields if not entity.get(field)]
         if missing_fields:
-            logging.info(f"Missing required fields in entity: {missing_fields}")
+            logging.debug(f"Missing required fields in entity: {missing_fields}")
             kwargs['error'] = {
                 'error_code': ErrorCode.C01,
                 'error_details': f"Missing required fields in entity: {missing_fields}",
@@ -283,7 +283,7 @@ def _validate_witness_required_fields(collision: CollisionRequestPayload, kwargs
     ]
 
     if collision.get("has_witnesses") and (not collision.get('witnesses') or len(collision.get('witnesses')) == 0):
-        logging.info("Collision has witnesses but no witness data provided.")
+        logging.debug("Collision has witnesses but no witness data provided.")
         kwargs['error'] = {
             'error_code': ErrorCode.C01,
             'error_details': "Collision has witnesses but no witness data provided.",
@@ -296,7 +296,7 @@ def _validate_witness_required_fields(collision: CollisionRequestPayload, kwargs
     for witness in collision.get('witnesses', []):
         missing_fields = [field for field in required_witness_fields if not witness.get(field)]
         if missing_fields:
-            logging.info(f"Missing required fields in witness: {missing_fields}")
+            logging.debug(f"Missing required fields in witness: {missing_fields}")
             kwargs['error'] = {
                 'error_code': ErrorCode.C01,
                 'error_details': f"Missing required fields in witness: {missing_fields}",
@@ -352,3 +352,52 @@ def _load_entity(entity):
     involved_persons = entity.involved_persons if entity.involved_persons else []
     entity_dict['involved_persons'] = [asdict(person) for person in involved_persons]
     return entity_dict
+
+def _mask_sensitive_data(payload):
+    sensitive_fields = [
+        'driver_license_num',
+        'surname',
+        'given_name',
+        'date_of_birth',
+        'contact_phone_num',
+        'vehicle_plate_num',
+        'vehicle_owner_name',
+        'vehicle_owner_address',
+        'nsc_num',
+        'other_insurance_policy_num',
+        'witness_name',
+        'address',
+        'contact_phn_num'
+    ]
+    for field in sensitive_fields:
+        if field in payload:
+            payload[field] = "[REDACTED]"
+        if 'entities' in payload:
+            payload['entities'] = [
+                _mask_sensitive_data(entity) for entity in payload['entities']
+            ]
+            if 'involved_persons' in payload['entities']:
+                payload['entities']['involved_persons'] = [
+                    _mask_sensitive_data(person) for person in payload['entities']['involved_persons']
+                ]
+        if 'witnesses' in payload:
+            payload['witnesses'] = [
+                _mask_sensitive_data(witness) for witness in payload['witnesses']
+            ]
+    return payload
+
+def log_payload_to_splunk(**kwargs) -> tuple:
+    try:
+        request = kwargs.get('request')
+        payload = request.get_json()
+        payload = _mask_sensitive_data(payload)
+        kwargs['splunk_data'] = {
+            "event": "create collision",
+            "user_guid": kwargs.get('user_guid', ''),
+            "username": kwargs.get('username'),
+            'form_type': MV6020_FORM_TYPE,
+            'payload': payload
+        }
+    except Exception as e:
+        logging.exception(e)
+    return True, kwargs
