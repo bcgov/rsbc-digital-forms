@@ -525,3 +525,141 @@ def test_check_if_case_number_exists_with_special_characters():
         # Verify the database query was called with the special characters
         mock_db.session.query.assert_called_once()
 
+
+def test_log_get_collision_to_splunk_success_with_all_fields():
+    """Test log_get_collision_to_splunk with all required fields present"""
+    kwargs = {
+        'user_guid': 'test-user-guid-123',
+        'username': 'test.user@example.com',
+        'collision_case_num': 'MV-001'
+    }
+    
+    result, out_kwargs = collision_middleware.log_get_collision_to_splunk(**kwargs)
+    
+    assert result is True
+    assert 'splunk_data' in out_kwargs
+    splunk_data = out_kwargs['splunk_data']
+    
+    # Verify all expected fields are present in splunk_data
+    assert splunk_data['event'] == "get collision"
+    assert splunk_data['user_guid'] == 'test-user-guid-123'
+    assert splunk_data['username'] == 'test.user@example.com'
+    assert splunk_data['form_type'] == collision_middleware.MV6020_FORM_TYPE
+    assert splunk_data['collision_case_number'] == 'MV-001'
+
+def test_log_get_collision_to_splunk_success_with_missing_optional_fields():
+    """Test log_get_collision_to_splunk with missing optional fields"""
+    kwargs = {}
+    
+    result, out_kwargs = collision_middleware.log_get_collision_to_splunk(**kwargs)
+    
+    assert result is True
+    assert 'splunk_data' in out_kwargs
+    splunk_data = out_kwargs['splunk_data']
+    
+    # Verify required fields are present with default values
+    assert splunk_data['event'] == "get collision"
+    assert splunk_data['user_guid'] is None  # Missing user_guid returns None
+    assert splunk_data['username'] is None  # Missing username returns None
+    assert splunk_data['form_type'] == collision_middleware.MV6020_FORM_TYPE
+    assert splunk_data['collision_case_number'] is None  # Missing case number returns None
+
+def test_log_get_collision_to_splunk_with_empty_strings():
+    """Test log_get_collision_to_splunk with empty string values"""
+    kwargs = {
+        'user_guid': '',
+        'username': '',
+        'collision_case_num': ''
+    }
+    
+    result, out_kwargs = collision_middleware.log_get_collision_to_splunk(**kwargs)
+    
+    assert result is True
+    assert 'splunk_data' in out_kwargs
+    splunk_data = out_kwargs['splunk_data']
+    
+    assert splunk_data['event'] == "get collision"
+    assert splunk_data['user_guid'] == ''
+    assert splunk_data['username'] == ''
+    assert splunk_data['form_type'] == collision_middleware.MV6020_FORM_TYPE
+    assert splunk_data['collision_case_number'] == ''
+
+def test_log_get_collision_to_splunk_kwargs_preservation():
+    """Test that log_get_collision_to_splunk preserves original kwargs"""
+    original_kwargs = {
+        'user_guid': 'test-guid',
+        'username': 'test.user',
+        'collision_case_num': 'MV-001',
+        'other_field': 'should_be_preserved'
+    }
+    
+    result, out_kwargs = collision_middleware.log_get_collision_to_splunk(**original_kwargs)
+    
+    assert result is True
+    
+    # Verify original kwargs are preserved
+    assert out_kwargs['user_guid'] == 'test-guid'
+    assert out_kwargs['username'] == 'test.user'
+    assert out_kwargs['collision_case_num'] == 'MV-001'
+    assert out_kwargs['other_field'] == 'should_be_preserved'
+    
+    # Verify splunk_data was added
+    assert 'splunk_data' in out_kwargs
+
+def test_log_get_collision_to_splunk_form_type_constant():
+    """Test that log_get_collision_to_splunk uses the correct form type constant"""
+    kwargs = {'collision_case_num': 'MV-001'}
+    
+    result, out_kwargs = collision_middleware.log_get_collision_to_splunk(**kwargs)
+    
+    assert result is True
+    assert out_kwargs['splunk_data']['form_type'] == 'MV6020'
+    # Verify it matches the constant
+    assert out_kwargs['splunk_data']['form_type'] == collision_middleware.MV6020_FORM_TYPE
+
+def test_log_get_collision_to_splunk_event_name():
+    """Test that log_get_collision_to_splunk sets correct event name"""
+    kwargs = {}
+    
+    result, out_kwargs = collision_middleware.log_get_collision_to_splunk(**kwargs)
+    
+    assert result is True
+    assert out_kwargs['splunk_data']['event'] == "get collision"
+
+def test_log_get_collision_to_splunk_with_large_case_number():
+    """Test log_get_collision_to_splunk with very long collision case number"""
+    large_case_number = 'MV-' + 'X' * 100  # Very long case number
+    kwargs = {
+        'user_guid': 'test-guid',
+        'username': 'test.user',
+        'collision_case_num': large_case_number
+    }
+    
+    result, out_kwargs = collision_middleware.log_get_collision_to_splunk(**kwargs)
+    
+    assert result is True
+    assert out_kwargs['splunk_data']['collision_case_number'] == large_case_number
+
+def test_log_get_collision_to_splunk_data_structure():
+    """Test the complete structure of splunk_data returned"""
+    kwargs = {
+        'user_guid': 'test-guid',
+        'username': 'test.user',
+        'collision_case_num': 'MV-001'
+    }
+    
+    result, out_kwargs = collision_middleware.log_get_collision_to_splunk(**kwargs)
+    
+    assert result is True
+    splunk_data = out_kwargs['splunk_data']
+    
+    # Verify splunk_data has exactly the expected keys
+    expected_keys = {'event', 'user_guid', 'username', 'form_type', 'collision_case_number'}
+    assert set(splunk_data.keys()) == expected_keys
+    
+    # Verify all values are strings (except username which can be None)
+    assert isinstance(splunk_data['event'], str)
+    assert isinstance(splunk_data['user_guid'], str)
+    assert isinstance(splunk_data['form_type'], str)
+    assert isinstance(splunk_data['collision_case_number'], str)
+    # username can be str or None
