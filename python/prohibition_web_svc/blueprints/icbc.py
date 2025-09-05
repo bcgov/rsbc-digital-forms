@@ -18,6 +18,7 @@ CORS(bp, resources={Config.URL_PREFIX + "/api/v1/icbc/*": {"origins": Config.ACC
 @bp.route('/icbc/drivers/<string:dl_number>', methods=['GET'])
 def get_driver(dl_number):
     if request.method == 'GET':
+        logging.debug('GET /icbc/drivers/{}'.format(dl_number))
         kwargs = middle_logic(
             get_authorized_keycloak_user() + [
                 {"try": icbc_middleware.get_icbc_api_authorization_header, "fail": [
@@ -33,12 +34,14 @@ def get_driver(dl_number):
             dl_number=dl_number,
             request=request,
             config=Config)
+        logging.debug(f'GET /icbc/drivers/{dl_number} completed with status {kwargs.get("response").status_code}')
         return kwargs.get('response')
 
 
 @bp.route('/icbc/vehicles/<string:plate_number>', methods=['GET'])
 def get_vehicle(plate_number):
     if request.method == 'GET':
+        logging.debug('GET /icbc/vehicles/{}'.format(plate_number))
         kwargs = middle_logic(
             get_authorized_keycloak_user() + [
                 {"try": icbc_middleware.get_icbc_api_authorization_header, "fail": [
@@ -54,4 +57,5 @@ def get_vehicle(plate_number):
             plate_number=plate_number.upper(),
             request=request,
             config=Config)
+        logging.debug(f'GET /icbc/vehicles/{plate_number} completed with status {kwargs.get("response").status_code}')
         return kwargs.get('response')

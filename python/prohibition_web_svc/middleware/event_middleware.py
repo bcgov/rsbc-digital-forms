@@ -33,7 +33,7 @@ def log_payload_to_splunk(**kwargs) -> tuple:
         'event': "get collision",
         'user_guid': kwargs.get('user_guid', ''),
         'username': kwargs.get('username'),
-        'form_type': get_event_type(data),
+        'form_type': get_event_type(data).code,
         'ticket_no': get_ticket_no(data),
     }
     return True, kwargs
