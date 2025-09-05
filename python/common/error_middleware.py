@@ -56,7 +56,7 @@ def get_function_info(func):
     else:
         return f"{module_name}.unknown_function"
 
-def record_error(error_code: ErrorCode, error_details, event_id: int = None, event_type: EventType = None, ticket_no=None, func=None, payload=None):
+def record_error(error_code: ErrorCode, error_details, event_id: int = None, submission_id: int = None, event_type: EventType = None, ticket_no=None, func=None, payload=None):
     """
     Record an error in the database.
     """
@@ -81,6 +81,7 @@ def record_error(error_code: ErrorCode, error_details, event_id: int = None, eve
             error_severity_level_cd=str(error_code.severity),
             error_status_cd=str(ErrorStatus.NEW),
             event_id=event_id,
+            submission_id=submission_id,
             event_type=str(event_type) if event_type else None,
             ticket_no=ticket_no,
             req_payload=payload,

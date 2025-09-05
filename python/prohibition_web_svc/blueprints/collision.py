@@ -7,7 +7,6 @@ from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.keycloak_logic import get_authorized_keycloak_user
 import python.prohibition_web_svc.http_responses as http_responses
 from python.prohibition_web_svc.middleware import collision_middleware, common_middleware
-from python.prohibition_web_svc.models.collision_request_payload import CollisionRequestPayload
 
 logging.config.dictConfig(Config.LOGGING)
 logging.info('*** collision blueprint loaded ***')
@@ -17,13 +16,14 @@ CORS(bp, resources={Config.URL_PREFIX + "/api/v1/collision/*": {"origins": Confi
 
 @bp.route('/collision', methods=['POST'])
 def create_collision():
-    logging.info(f"Inside create_collision()")
+    logging.info(f"POST /collision endpoint called")
     kwargs = middle_logic(
         get_authorized_keycloak_user() + [
-            {"try": common_middleware.log_payload_to_splunk, "fail": [
+            {"try": collision_middleware.log_payload_to_splunk, "fail": [
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": http_responses.server_error_response, "fail": []},
             ]},
+            {"try": splunk.log_to_splunk, "fail": []},
             {"try": common_middleware.request_contains_a_payload, "fail": [
                 {"try": common_middleware.record_event_error, "fail": []},
                 {"try": http_responses.bad_request_response, "fail": []}
@@ -57,18 +57,20 @@ def create_collision():
         request=request,
         config=Config
     )
+    logging.info(f"POST /collision endpoint response code: {kwargs.get('response').status_code}")
     return kwargs.get('response')
 
 @bp.route('/collision/<collision_case_num>', methods=['GET'])
 def get_collision(collision_case_num):
-    logging.info(f"Inside get_collision() for collision_case_num: {collision_case_num}")    
+    logging.info(f"GET /collision/{collision_case_num} endpoint called")
     kwargs = middle_logic(
         get_authorized_keycloak_user() + [
+            {"try": collision_middleware.log_get_collision_to_splunk, "fail": []},
+            {"try": splunk.log_to_splunk, "fail": []},
             {"try": collision_middleware.get_collision_data, "fail": [
                 {"try": common_middleware.record_event_error, "fail": []},
                 {"try": http_responses.not_found_response, "fail": []}
             ]},
-            {"try": splunk.log_to_splunk, "fail": []},
             {"try": http_responses.successful_get_response, "fail": []}
         ],
         required_permission='forms-get',
@@ -76,4 +78,5 @@ def get_collision(collision_case_num):
         config=Config,
         collision_case_num=collision_case_num
     )
+    logging.info(f"GET /collision/{collision_case_num} endpoint response code: {kwargs.get('response').status_code}")
     return kwargs.get('response')
