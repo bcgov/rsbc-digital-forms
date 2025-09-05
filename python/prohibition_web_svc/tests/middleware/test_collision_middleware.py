@@ -663,3 +663,342 @@ def test_log_get_collision_to_splunk_data_structure():
     assert isinstance(splunk_data['form_type'], str)
     assert isinstance(splunk_data['collision_case_number'], str)
     # username can be str or None
+
+
+def test_log_payload_to_splunk_success_with_valid_request():
+    """Test log_payload_to_splunk with valid request and payload"""
+    mock_request = MagicMock()
+    mock_payload = {
+        'collision_case_num': 'MV-001',
+        'driver_license_num': '12345678',
+        'surname': 'Doe',
+        'given_name': 'John',
+        'entities': [
+            {
+                'vehicle_plate_num': 'ABC123',
+                'involved_persons': [
+                    {'surname': 'Smith', 'given_name': 'Jane'}
+                ]
+            }
+        ],
+        'witnesses': [
+            {'witness_name': 'Bob Wilson', 'address': '123 Main St'}
+        ]
+    }
+    mock_request.get_json.return_value = mock_payload
+
+    kwargs = {
+        'request': mock_request,
+        'user_guid': 'test-user-guid-123',
+        'username': 'test.user@example.com'
+    }
+    
+    result, out_kwargs = collision_middleware.log_payload_to_splunk(**kwargs)
+    
+    assert result is True
+    assert 'splunk_data' in out_kwargs
+    splunk_data = out_kwargs['splunk_data']
+    
+    # Verify splunk_data structure
+    assert splunk_data['event'] == "create collision"
+    assert splunk_data['user_guid'] == 'test-user-guid-123'
+    assert splunk_data['username'] == 'test.user@example.com'
+    assert splunk_data['form_type'] == collision_middleware.MV6020_FORM_TYPE
+    assert 'payload' in splunk_data
+    
+    # Verify sensitive data is masked
+    masked_payload = splunk_data['payload']
+    assert masked_payload['driver_license_num'] == "[REDACTED]"
+    assert masked_payload['surname'] == "[REDACTED]"
+    assert masked_payload['given_name'] == "[REDACTED]"
+    assert masked_payload['entities'][0]['vehicle_plate_num'] == "[REDACTED]"
+    assert masked_payload['entities'][0]['involved_persons'][0]['surname'] == "[REDACTED]"
+    assert masked_payload['entities'][0]['involved_persons'][0]['given_name'] == "[REDACTED]"
+    assert masked_payload['witnesses'][0]['witness_name'] == "[REDACTED]"
+    assert masked_payload['witnesses'][0]['address'] == "[REDACTED]"
+    
+    # Verify non-sensitive data is preserved
+    assert masked_payload['collision_case_num'] == 'MV-001'
+
+def test_log_payload_to_splunk_success_with_missing_user_info():
+    """Test log_payload_to_splunk with missing user information"""
+    mock_request = MagicMock()
+    mock_payload = {'collision_case_num': 'MV-002'}
+    mock_request.get_json.return_value = mock_payload
+
+    kwargs = {'request': mock_request}
+    
+    result, out_kwargs = collision_middleware.log_payload_to_splunk(**kwargs)
+    
+    assert result is True
+    assert 'splunk_data' in out_kwargs
+    splunk_data = out_kwargs['splunk_data']
+    
+    assert splunk_data['event'] == "create collision"
+    assert splunk_data['user_guid'] == ''  # Default empty string
+    assert splunk_data['username'] is None  # Missing username returns None
+    assert splunk_data['form_type'] == collision_middleware.MV6020_FORM_TYPE
+    assert splunk_data['payload'] == mock_payload
+
+def test_log_payload_to_splunk_success_with_empty_payload():
+    """Test log_payload_to_splunk with empty payload"""
+    mock_request = MagicMock()
+    mock_request.get_json.return_value = {}
+
+    kwargs = {
+        'request': mock_request,
+        'user_guid': 'test-guid',
+        'username': 'test.user'
+    }
+    
+    result, out_kwargs = collision_middleware.log_payload_to_splunk(**kwargs)
+    
+    assert result is True
+    assert 'splunk_data' in out_kwargs
+    splunk_data = out_kwargs['splunk_data']
+    
+    assert splunk_data['event'] == "create collision"
+    assert splunk_data['user_guid'] == 'test-guid'
+    assert splunk_data['username'] == 'test.user'
+    assert splunk_data['form_type'] == collision_middleware.MV6020_FORM_TYPE
+    assert splunk_data['payload'] == {}
+
+def test_log_payload_to_splunk_masks_all_sensitive_fields():
+    """Test that log_payload_to_splunk masks all sensitive fields"""
+    mock_request = MagicMock()
+    mock_payload = {
+        'driver_license_num': 'DL123456',
+        'surname': 'TestSurname',
+        'given_name': 'TestGivenName',
+        'contact_phone_num': '555-1234',
+        'vehicle_plate_num': 'PLATE123',
+        'vehicle_owner_name': 'Owner Name',
+        'vehicle_owner_address': '123 Owner St',
+        'nsc_num': 'NSC123',
+        'other_insurance_policy_num': 'INS456',
+        'witness_name': 'Witness Name',
+        'address': '456 Witness Ave',
+        'contact_phn_num': '555-5678',
+        'non_sensitive_field': 'should_not_be_masked'
+    }
+    mock_request.get_json.return_value = mock_payload
+
+    kwargs = {'request': mock_request}
+    
+    result, out_kwargs = collision_middleware.log_payload_to_splunk(**kwargs)
+    
+    assert result is True
+    masked_payload = out_kwargs['splunk_data']['payload']
+    
+    # Verify all sensitive fields are masked
+    sensitive_fields = [
+        'driver_license_num', 'surname', 'given_name', 'contact_phone_num',
+        'vehicle_plate_num', 'vehicle_owner_name', 'vehicle_owner_address',
+        'nsc_num', 'other_insurance_policy_num', 'witness_name', 'address', 'contact_phn_num'
+    ]
+    
+    for field in sensitive_fields:
+        assert masked_payload[field] == "[REDACTED]"
+    
+    # Verify non-sensitive field is not masked
+    assert masked_payload['non_sensitive_field'] == 'should_not_be_masked'
+
+def test_log_payload_to_splunk_handles_nested_entities():
+    """Test log_payload_to_splunk properly masks nested entities"""
+    mock_request = MagicMock()
+    mock_payload = {
+        'entities': [
+            {
+                'driver_license_num': 'DL001',
+                'surname': 'Entity1Surname',
+                'vehicle_plate_num': 'PLATE001',
+                'involved_persons': [
+                    {'surname': 'Person1', 'given_name': 'FirstPerson'},
+                    {'surname': 'Person2', 'given_name': 'SecondPerson'}
+                ]
+            },
+            {
+                'driver_license_num': 'DL002',
+                'surname': 'Entity2Surname',
+                'vehicle_plate_num': 'PLATE002'
+            }
+        ]
+    }
+    mock_request.get_json.return_value = mock_payload
+
+    kwargs = {'request': mock_request}
+    
+    result, out_kwargs = collision_middleware.log_payload_to_splunk(**kwargs)
+    
+    assert result is True
+    masked_payload = out_kwargs['splunk_data']['payload']
+    
+    # Verify first entity is masked
+    entity1 = masked_payload['entities'][0]
+    assert entity1['driver_license_num'] == "[REDACTED]"
+    assert entity1['surname'] == "[REDACTED]"
+    assert entity1['vehicle_plate_num'] == "[REDACTED]"
+    
+    # Verify involved persons in first entity are masked
+    assert entity1['involved_persons'][0]['surname'] == "[REDACTED]"
+    assert entity1['involved_persons'][0]['given_name'] == "[REDACTED]"
+    assert entity1['involved_persons'][1]['surname'] == "[REDACTED]"
+    assert entity1['involved_persons'][1]['given_name'] == "[REDACTED]"
+    
+    # Verify second entity is masked
+    entity2 = masked_payload['entities'][1]
+    assert entity2['driver_license_num'] == "[REDACTED]"
+    assert entity2['surname'] == "[REDACTED]"
+    assert entity2['vehicle_plate_num'] == "[REDACTED]"
+
+def test_log_payload_to_splunk_handles_nested_witnesses():
+    """Test log_payload_to_splunk properly masks nested witnesses"""
+    mock_request = MagicMock()
+    mock_payload = {
+        'witnesses': [
+            {
+                'witness_name': 'Witness One',
+                'address': '123 First St',
+                'contact_phn_num': '555-0001'
+            },
+            {
+                'witness_name': 'Witness Two',
+                'address': '456 Second Ave',
+                'contact_phn_num': '555-0002'
+            }
+        ]
+    }
+    mock_request.get_json.return_value = mock_payload
+
+    kwargs = {'request': mock_request}
+    
+    result, out_kwargs = collision_middleware.log_payload_to_splunk(**kwargs)
+    
+    assert result is True
+    masked_payload = out_kwargs['splunk_data']['payload']
+    
+    # Verify all witnesses are masked
+    for witness in masked_payload['witnesses']:
+        assert witness['witness_name'] == "[REDACTED]"
+        assert witness['address'] == "[REDACTED]"
+        assert witness['contact_phn_num'] == "[REDACTED]"
+
+def test_log_payload_to_splunk_exception_handling():
+    """Test log_payload_to_splunk handles exceptions gracefully"""
+    mock_request = MagicMock()
+    mock_request.get_json.side_effect = Exception("JSON parsing error")
+
+    kwargs = {
+        'request': mock_request,
+        'user_guid': 'test-guid',
+        'username': 'test.user'
+    }
+    
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.logging') as mock_logging:
+        result, out_kwargs = collision_middleware.log_payload_to_splunk(**kwargs)
+        
+        # Function should still return True even with exception
+        assert result is True
+        
+        # Should log the exception
+        mock_logging.exception.assert_called_once()
+        
+        # splunk_data should not be set due to exception
+        assert 'splunk_data' not in out_kwargs
+
+def test_log_payload_to_splunk_no_request_object():
+    """Test log_payload_to_splunk when request object is missing"""
+    kwargs = {
+        'user_guid': 'test-guid',
+        'username': 'test.user'
+    }
+    
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.logging') as mock_logging:
+        result, out_kwargs = collision_middleware.log_payload_to_splunk(**kwargs)
+        
+        # Function should still return True even with missing request
+        assert result is True
+        
+        # Should log the exception
+        mock_logging.exception.assert_called_once()
+        
+        # splunk_data should not be set due to exception
+        assert 'splunk_data' not in out_kwargs
+
+def test_log_payload_to_splunk_kwargs_preservation():
+    """Test that log_payload_to_splunk preserves original kwargs"""
+    mock_request = MagicMock()
+    mock_request.get_json.return_value = {'test': 'data'}
+
+    original_kwargs = {
+        'request': mock_request,
+        'user_guid': 'test-guid',
+        'username': 'test.user',
+        'other_field': 'should_be_preserved'
+    }
+    
+    result, out_kwargs = collision_middleware.log_payload_to_splunk(**original_kwargs)
+    
+    assert result is True
+    
+    # Verify original kwargs are preserved
+    assert out_kwargs['request'] == mock_request
+    assert out_kwargs['user_guid'] == 'test-guid'
+    assert out_kwargs['username'] == 'test.user'
+    assert out_kwargs['other_field'] == 'should_be_preserved'
+    
+    # Verify splunk_data was added
+    assert 'splunk_data' in out_kwargs
+
+def test_log_payload_to_splunk_form_type_constant():
+    """Test that log_payload_to_splunk uses the correct form type constant"""
+    mock_request = MagicMock()
+    mock_request.get_json.return_value = {}
+
+    kwargs = {'request': mock_request}
+    
+    result, out_kwargs = collision_middleware.log_payload_to_splunk(**kwargs)
+    
+    assert result is True
+    assert out_kwargs['splunk_data']['form_type'] == 'MV6020'
+    # Verify it matches the constant
+    assert out_kwargs['splunk_data']['form_type'] == collision_middleware.MV6020_FORM_TYPE
+
+def test_log_payload_to_splunk_event_name():
+    """Test that log_payload_to_splunk sets correct event name"""
+    mock_request = MagicMock()
+    mock_request.get_json.return_value = {}
+
+    kwargs = {'request': mock_request}
+    
+    result, out_kwargs = collision_middleware.log_payload_to_splunk(**kwargs)
+    
+    assert result is True
+    assert out_kwargs['splunk_data']['event'] == "create collision"
+
+def test_log_payload_to_splunk_data_structure():
+    """Test the complete structure of splunk_data returned"""
+    mock_request = MagicMock()
+    mock_request.get_json.return_value = {'test': 'payload'}
+
+    kwargs = {
+        'request': mock_request,
+        'user_guid': 'test-guid',
+        'username': 'test.user'
+    }
+    
+    result, out_kwargs = collision_middleware.log_payload_to_splunk(**kwargs)
+    
+    assert result is True
+    splunk_data = out_kwargs['splunk_data']
+    
+    # Verify splunk_data has exactly the expected keys
+    expected_keys = {'event', 'user_guid', 'username', 'form_type', 'payload'}
+    assert set(splunk_data.keys()) == expected_keys
+    
+    # Verify data types
+    assert isinstance(splunk_data['event'], str)
+    assert isinstance(splunk_data['user_guid'], str)
+    assert isinstance(splunk_data['form_type'], str)
+    assert isinstance(splunk_data['payload'], dict)
+    # username can be str or None
