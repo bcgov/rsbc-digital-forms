@@ -9,18 +9,20 @@ def log_to_splunk(**kwargs) -> tuple:
     received successfully or not. We don't want the failure of Splunk logging
     call to disrupt the business flow where this function was called.
     """
-    config = kwargs.get('config')
     splunk_data = kwargs.get('splunk_data')
-    splunk_payload = dict({})
-    # From DF-2908: Need to ensure that splunk_data is not None
-    splunk_payload['event'] = splunk_data if splunk_data is not None else {}
-    splunk_payload['source'] = config.OPENSHIFT_PLATE
-    _post_to_splunk(splunk_payload, **kwargs)
+    if splunk_data is not None:
+        config = kwargs.get('config')
+        splunk_payload = dict({})
+        # From DF-2908: Need to ensure that splunk_data is not None
+        splunk_payload['event'] = splunk_data if splunk_data is not None else {}
+        splunk_payload['source'] = config.OPENSHIFT_PLATE
+        _post_to_splunk(splunk_payload, **kwargs)
+        kwargs['splunk_data'] = None
     return True, kwargs
 
 
 def _post_to_splunk(splunk_payload: dict, **args) -> bool:
-    logging.debug("inside _post_to_splunk()")
+    logging.verbose("inside _post_to_splunk()")
     config = args.get('config')
     endpoint = "{}:{}/services/collector".format(config.SPLUNK_HOST, config.SPLUNK_PORT)
     headers = {"Authorization": "Splunk " + config.SPLUNK_TOKEN}
@@ -32,6 +34,7 @@ def _post_to_splunk(splunk_payload: dict, **args) -> bool:
     except requests.ConnectionError as error:
         logging.warning('No response from the Splunk API: {}'.format(error))
         return False
+    logging.debug('response from Splunk: {}'.format(response.status_code))
     if response.status_code != 200:
         logging.warning('response from Splunk was not successful: {}: {}'.format(response.status_code, response.text))
         return False

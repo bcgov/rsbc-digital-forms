@@ -42,6 +42,7 @@ def index(resource):
     List all static ids
     """
     if request.method == 'GET':
+        logging.debug(f"GET /static/{resource} endpoint called")
         kwargs = middle_logic([
               {"try": _is_not_configuration, "fail": [
                   {"try": splunk_middleware.log_static_get, "fail": []},
@@ -76,6 +77,7 @@ def index(resource):
             required_permission='static-get',
             request=request,
             config=Config)
+        logging.info(f"GET /static/{resource} endpoint response code: {kwargs.get('response').status_code}")
         return kwargs.get('response')
 
 
@@ -162,7 +164,7 @@ def _get_resource(**kwargs) -> tuple:
     try:
         data = jsonify(db.session.query(resource_map[resource]).all())
         if resource == 'impound_lot_operators':
-            logging.debug("impound data: {}".format(data))
+            logging.verbose("impound data: {}".format(data))
         kwargs['response'] = make_response(data, 200)
         return True, kwargs
     except Exception as e:

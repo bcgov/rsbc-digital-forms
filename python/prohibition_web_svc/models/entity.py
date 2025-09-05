@@ -55,7 +55,7 @@ class Entity(TypedDict):
     estimated_vehicle_damage: Decimal
     vehicle_stolen: str
     vehicle_towed: str
-    vehicle_towed_by: str
+    vehicle_towed_by: DropdownOption
     dir_of_travel: str
     entity_street: str
     insurance_coverage: str

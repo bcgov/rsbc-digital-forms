@@ -21,6 +21,7 @@ CORS(bp, resources={Config.URL_PREFIX + "/api/v1/event/*": {"origins": Config.AC
 @bp.route('/event', methods=['GET'])
 def index():
     if request.method == 'GET':
+        logging.debug(f"GET /event endpoint called")
         kwargs = middle_logic(
             get_authorized_keycloak_user() + [
                 {"try": splunk.log_to_splunk, "fail": []},
@@ -31,6 +32,7 @@ def index():
             required_permission='forms-get',
             request=request,
             config=Config)
+        logging.info(f"GET /event endpoint response code: {kwargs.get('response').status_code}")
         return kwargs.get('response')
 
 
@@ -52,12 +54,15 @@ def create():
     """
     # logging.debug("new event post: {}".format(request.data))
     if request.method == 'POST':
+        logging.info(f"POST /event endpoint called")
         kwargs = middle_logic(
             get_authorized_keycloak_user() + [
                 {"try": event_middleware.request_contains_a_payload, "fail": [
                     {"try": splunk.log_to_splunk, "fail": []},
                     {"try": http_responses.server_error_response, "fail": []},
                 ]},
+                {"try": event_middleware.log_payload_to_splunk, "fail": []},
+                {"try": splunk.log_to_splunk, "fail": []},
                 {"try": event_middleware.check_if_application_id_exists, "fail": [
                     {"try": common_middleware.record_event_error, "fail": []},
                     {"try": http_responses.application_already_exists, "fail": []},
@@ -76,6 +81,7 @@ def create():
             required_permission='forms-create',
             request=request,
             config=Config)
+        logging.info(f"POST /event endpoint response code: {kwargs.get('response').status_code}")
         return kwargs.get('response')
 
 
