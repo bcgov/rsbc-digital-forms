@@ -131,7 +131,7 @@ class CollisionMapper:
             given_name=person_data.get('given_name'),
             vehicle_occupied=person_data.get('vehicle_occupied'),
             position_of_person=person_data['position_of_person']['value'] if person_data.get('position_of_person') else None,
-            safety_equipment_used=person_data.get('safety_equipment_used'),
+            safety_equipment_used=person_data['safety_equipment_used']['value'] if person_data.get('safety_equipment_used') else None,
             ejection_from_vehicle=person_data['ejection_from_vehicle']['value'] if person_data.get('ejection_from_vehicle') else None,
             age=person_data.get('age'),
             sex=person_data['sex']['value'] if person_data.get('sex') else None,

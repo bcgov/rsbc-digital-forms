@@ -245,7 +245,10 @@
             "label": "04 Driver",
             "value": "04"
           },
-          "safety_equipment_used": "03",
+          "safety_equipment_used": {
+            "label": "01 Seat Belt Used",
+            "value": "01"
+          },
           "ejection_from_vehicle": {
             "label": "03 Ejected",
             "value": "03"
