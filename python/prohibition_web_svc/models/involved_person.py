@@ -10,7 +10,7 @@ class InvolvedPerson(TypedDict):
     given_name: str
     vehicle_occupied: str
     position_of_person: DropdownOption
-    safety_equipment_used: str
+    safety_equipment_used: DropdownOption
     ejection_from_vehicle: DropdownOption
     age: str
     sex: DropdownOption
