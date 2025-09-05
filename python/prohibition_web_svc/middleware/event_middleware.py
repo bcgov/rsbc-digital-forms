@@ -30,7 +30,7 @@ def log_payload_to_splunk(**kwargs) -> tuple:
     data = kwargs.get('payload')
     logging.debug("payload: | {}".format(data))
     kwargs['splunk_data'] = {
-        'event': "get collision",
+        'event': "create VI/24h/12h event",
         'user_guid': kwargs.get('user_guid', ''),
         'username': kwargs.get('username'),
         'form_type': get_event_type(data).code,
