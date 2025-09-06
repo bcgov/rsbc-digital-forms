@@ -6,6 +6,7 @@ from python.common.enums import ErrorCode
 from python.prohibition_web_svc.mappers.collision_mapper import CollisionMapper
 from python.prohibition_web_svc.middleware import common_middleware
 from python.prohibition_web_svc.models.collision_request_payload import CollisionRequestPayload
+import copy
 
 EVENT_TYPE = 'Collision - MV6020'
 MV6020_FORM_TYPE = 'MV6020'
@@ -389,13 +390,14 @@ def log_payload_to_splunk(**kwargs) -> tuple:
     try:
         request = kwargs.get('request')
         payload = request.get_json()
-        payload = _mask_sensitive_data(payload)
+        payload = copy.deepcopy(payload)
+        payload_masked = _mask_sensitive_data(payload)
         kwargs['splunk_data'] = {
             'event': "create collision",
             'user_guid': kwargs.get('user_guid', ''),
             'username': kwargs.get('username'),
             'form_type': MV6020_FORM_TYPE,
-            'payload': payload
+            'payload': payload_masked
         }
     except Exception as e:
         logging.exception(e)
