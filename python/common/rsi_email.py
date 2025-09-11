@@ -456,6 +456,25 @@ def admin_unknown_event_type(**args) -> tuple:
     logging.critical('unknown event type: {}'.format(message['event_type']))
     return send_email_to_admin(config=config, title=title, body=body_text), args
 
+# Send MV6020 Entity Copy to entity email
+def send_mv6020_entity_copy(**args) -> tuple:
+    config = args.get('config')
+    subject = args.get('subject')
+    email_address = args.get('email_address')
+    message = args.get('message')
+    #t = 'MV6020_send_entity_copy.html'
+    t = 'admin_notice.html'
+    args['email_template'] = t
+    template = get_jinja2_env().get_template(t)
+    logging.debug('template loaded ', template)
+    return common_email_services.send_email(
+        [email_address],
+        subject,
+        config,
+        template.render(subject=subject, message=message),
+        message.get('collision_case_number')), args
+
+
 
 def get_jinja2_env(path="./python/common/templates"):
     template_loader = FileSystemLoader(searchpath=path)
@@ -622,5 +641,9 @@ def content_data() -> dict:
         "applicant_applied_at_icbc.html": {
             "raw_subject": "Applied at ICBC - Driving Prohibition {} Review",
             "title": "Applied at ICBC",
+        },
+        "MV6020_send_entity_copy.html": {
+            "raw_subject": "Traffic Accident Report Copy Attached - Collision Case Number {}",
+            "title": "Send MV6020 Entity Copy",
         }
     })

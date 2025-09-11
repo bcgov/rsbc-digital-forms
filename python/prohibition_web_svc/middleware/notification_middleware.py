@@ -1,3 +1,5 @@
+import logging
+from typing import Tuple, Dict, Any
 from python.prohibition_web_svc.config import Config
 import python.common.rsi_email as rsi_email
 
@@ -16,3 +18,45 @@ def send_new_user_admin_notification(**kwargs):
     rsi_email.send_new_user_admin_notification(config=Config, subject=subject, body=body, message=message)
 
     return True, kwargs
+
+def send_mv6020_entity_copy(**kwargs):
+    logging.verbose('inside send_mv6020_entity_copy()')
+    # do the print orchestration here.
+    # print()
+    print("Payload:", kwargs.get('payload'))
+    payload = kwargs.get('payload', {}) or {}
+    data = payload.get('data', {}) or {}
+    collision_case_no = data.get('collision_case_num')
+    print("Collision Num:", collision_case_no)
+    subject = "Traffic Accident Report Copy Attached - Collision Case Number {}".format(collision_case_no)
+    body = "Collision Report Attached"
+    full_name, email_address = get_entity_data(data)
+    message = {
+        "full_name": full_name,
+        "collision_case_number": collision_case_no,
+        "collision_date": data.get('date_collision')
+    }
+   
+
+    rsi_email.send_mv6020_entity_copy(config=Config, subject=subject, body=body, email_address=email_address,message=message)
+
+    return True, kwargs
+
+
+def get_entity_data(data: dict) -> Tuple[str, Dict[str, Any]]:
+    entities = data.get("entities", [])
+    selected_num = data.get("print_options", {}).get("entity_num")
+
+    # find entity by matching entity_num
+    recipient = next(
+        (e for e in entities if e.get("entity_num") == selected_num),
+        None
+    )
+
+    if recipient:
+        given = recipient.get("given_name", "").strip()
+        surname = recipient.get("surname", "").strip()
+        email_address = recipient.get("email_address", "").strip()
+        return f"{given} {surname}".strip(), email_address
+
+    return ""  # fallback if no match found
