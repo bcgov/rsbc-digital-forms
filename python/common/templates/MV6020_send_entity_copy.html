@@ -1,0 +1,18 @@
+{% extends "email_alert_base.html" %}
+
+{% block primary_text_1 %}
+    Attached is the Traffic Accident Report (MV6020) for the incident {{ collision_case_number }} you were involved in on {{ collision_date }}.
+{% endblock %}
+
+{% block primary_text_2 %}
+    This copy has been provided to you as an involved party.
+    Personal details of other individuals have been removed to protect their privacy.
+{% endblock %}
+
+{% block timeline %}disclosure.png{% endblock %}
+
+{% block primary_text_3 %}{% endblock %}
+{% block primary_text_4 %}{% endblock %}
+{% block callout %}Make sure you can open the attachments.{% endblock %}
+
+{% block email_not_monitored %}{% endblock %}
