@@ -6,6 +6,7 @@ import json
 import logging
 import logging.config
 from jinja2 import Environment, select_autoescape, FileSystemLoader
+import os
 
 logging.config.dictConfig(Config.LOGGING)
 
@@ -461,9 +462,9 @@ def send_mv6020_entity_copy(**args) -> tuple:
     config = args.get('config')
     subject = args.get('subject')
     email_address = args.get('email_address')
+    full_name= args.get('full_name')
     message = args.get('message')
-    #t = 'MV6020_send_entity_copy.html'
-    t = 'admin_notice.html'
+    t = 'MV6020_send_entity_copy.html'
     args['email_template'] = t
     template = get_jinja2_env().get_template(t)
     logging.debug('template loaded ', template)
@@ -471,7 +472,8 @@ def send_mv6020_entity_copy(**args) -> tuple:
         [email_address],
         subject,
         config,
-        template.render(subject=subject, message=message),
+        template.render(subject=subject, 
+        full_name=full_name, message=message),
         message.get('collision_case_number')), args
 
 
