@@ -49,12 +49,25 @@ def send_mv6020_entity_copy(**kwargs):
     }
    
 
-    rsi_email.send_mv6020_entity_copy(
-        config=Config, subject=subject, body=body, email_address=email_address, full_name=full_name,message=message)
-    
-    kwargs['response_dict'] = {'message': f'successfully sent email to entity'}
+    success = rsi_email.send_mv6020_entity_copy(
+        config=Config,
+        subject=subject,
+        body=body,
+        email_address=email_address,
+        full_name=full_name,
+        message=message,
+    )
 
-    return True, kwargs
+    if success:
+        kwargs['response_dict'] = {
+            'message': f'Successfully sent email to {full_name} at {email_address}'
+        }
+        return True, kwargs
+    else:
+        kwargs['response_dict'] = {
+            'message': f'Failed to send email to {full_name} at {email_address}'
+        }
+        return False, kwargs
 
 
 def get_entity_data(data: dict) -> Tuple[str, Dict[str, Any]]:
