@@ -1,25 +1,18 @@
 import logging
 import json
-import pytz
-import iso8601
 import os
 from dataclasses import asdict
-from PIL import Image
-from io import BytesIO
 from minio import Minio
 from datetime import datetime
-from cerberus import Validator
 from base64 import b64decode
 from flask import jsonify, make_response
 from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, IRPForm, FormStorageRefs
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_method1
-import img2pdf
 import uuid
 from split_image import split_image
 from python.common.enums import ErrorCode, EventType
-from python.common.error_middleware import record_error
-
+from python.prohibition_web_svc.helpers.pdf_helpers import create_pdf_with_images
 
 def validate_update(**kwargs) -> tuple:
     return True, kwargs
@@ -307,18 +300,19 @@ def save_event_pdf(**kwargs) -> tuple:
             pdf_filename = f"/tmp/{filename}.pdf"
             encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
             b64encoded = data.get("VI_form_png").split(",")[1]
-            # extra_page_flag=data.get('incident_details_extra_page',False)
             extra_page_flag=len_of_incident_details>500
             page_num=3 if extra_page_flag else 2
             with open(f"/tmp/{filename}.png", "wb") as fh:
                 fh.write(b64decode(b64encoded))
             split_image(f"/tmp/{filename}.png", page_num, 1, False, True,output_dir="/tmp")
-            # pdf_bytes = img2pdf.convert(f"/tmp/{filename}.png")
-            pdf_bytes=None
+            
             if extra_page_flag:
-                pdf_bytes = img2pdf.convert(f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png", f"/tmp/{filename}_2.png")
+                list_of_images=[f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png", f"/tmp/{filename}_2.png"]
             else:
-                pdf_bytes = img2pdf.convert(f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png")
+                list_of_images=[f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png"]
+
+            pdf_bytes=None
+            pdf_bytes = create_pdf_with_images(*list_of_images)
             with open(pdf_filename, "wb") as file:
                 file.write(pdf_bytes)
             encryptPdf_method1(
@@ -348,7 +342,7 @@ def save_event_pdf(**kwargs) -> tuple:
             b64encoded = data.get("TwentyFourHour_form_png").split(",")[1]
             with open(f"/tmp/{filename}.png", "wb") as fh:
                 fh.write(b64decode(b64encoded))
-            pdf_bytes = img2pdf.convert(f"/tmp/{filename}.png")
+            pdf_bytes = create_pdf_with_images(f"/tmp/{filename}.png", is_landscape=True)
             with open(pdf_filename, "wb") as file:
                 file.write(pdf_bytes)
             encryptPdf_method1(
@@ -379,7 +373,7 @@ def save_event_pdf(**kwargs) -> tuple:
             b64encoded = data.get("TwelveHour_form_png").split(",")[1]
             with open(f"/tmp/{filename}.png", "wb") as fh:
                 fh.write(b64decode(b64encoded))
-            pdf_bytes = img2pdf.convert(f"/tmp/{filename}.png")
+            pdf_bytes = create_pdf_with_images(f"/tmp/{filename}.png", is_landscape=True)
             with open(pdf_filename, "wb") as file:
                 file.write(pdf_bytes)
             encryptPdf_method1(
