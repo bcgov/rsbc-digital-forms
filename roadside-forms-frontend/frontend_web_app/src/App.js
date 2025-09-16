@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { AuthProvider } from "react-oidc-context";
-import { oidcConfig } from "./auth";
+import React, { useEffect, useState } from "react";
+import { ReactKeycloakProvider } from "@react-keycloak/web";
+import keycloak, { keycloakInitConfig } from "./keycloak";
 import "../src/utils/commonStyles.scss";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
@@ -10,6 +10,7 @@ import { RouterProvider } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import { appRouter } from "./routes/appRouter";
+import { Modal } from "react-bootstrap";
 
 library.add(fab, far, fas);
 
@@ -21,11 +22,27 @@ function App() {
     (state) => state.serviceWorkerRegistration
   );
 
+  const [initOptions, setInitOptions] = useState(keycloakInitConfig);
+  const [loadedStoredTokens, setLoadedStoredTokens] = useState(false);
+
   useEffect(() => {
     if (isServiceWorkerUpdated) {
       updateServiceWorker();
     }
   }, [isServiceWorkerUpdated, serviceWorkerRegistration]);
+
+  const storedToken = sessionStorage.getItem('keycloak-token');
+  const storedRefreshToken = sessionStorage.getItem('keycloak-refresh-token');
+  if (storedToken && storedRefreshToken && !loadedStoredTokens) {
+    console.log('[Keycloak] Loading stored tokens from sessionStorage');
+    setLoadedStoredTokens(true);
+    setInitOptions({
+      ...keycloakInitConfig,
+      token: storedToken,
+      refreshToken: storedRefreshToken,
+      checkLoginIframe: false, // Disable iframe check when using stored tokens
+    });
+  }
 
   const updateServiceWorker = () => {
     if (!serviceWorkerRegistration) return;
@@ -39,6 +56,46 @@ function App() {
           window.location.reload();
         }
       });
+    }
+  };
+
+  // Keycloak event handler for logging auth events
+  const onKeycloakEvent = (eventType, error) => {
+    console.log(`[Keycloak Event] ${eventType}`, {
+      timestamp: new Date().toISOString(),
+      eventType,
+      error: error ? error.message || error : null,
+      realm: keycloak.realm || "unknown",
+    });
+
+    if (error) {
+      console.error(`[Keycloak Error] ${eventType}:`, error);
+    }
+
+    // Clear sessionStorage on logout
+    if (eventType === 'onAuthLogout') {
+      console.log('[Keycloak] Clearing stored tokens from sessionStorage');
+      sessionStorage.removeItem('keycloak-token');
+      sessionStorage.removeItem('keycloak-refresh-token');
+    }
+  };
+
+  // Keycloak tokens handler for logging and storing token updates
+  const onKeycloakTokens = (tokens) => {
+    console.log("[Keycloak Tokens] Updated", {
+      timestamp: new Date().toISOString(),
+      hasAccessToken: !!tokens.token,
+      hasRefreshToken: !!tokens.refreshToken
+    });
+
+    // Store tokens in sessionStorage
+    if (tokens.token) {
+      sessionStorage.setItem('keycloak-token', tokens.token);
+      console.log('[Keycloak] Stored access token in sessionStorage');
+    }
+    if (tokens.refreshToken) {
+      sessionStorage.setItem('keycloak-refresh-token', tokens.refreshToken);
+      console.log('[Keycloak] Stored refresh token in sessionStorage');
     }
   };
 
@@ -61,9 +118,14 @@ function App() {
           </button>
         </Modal.Footer>
       </Modal> */}
-      <AuthProvider {...oidcConfig}>
+      <ReactKeycloakProvider
+        authClient={keycloak}
+        initOptions={initOptions}
+        onEvent={onKeycloakEvent}
+        onTokens={onKeycloakTokens}
+      >
         <RouterProvider router={appRouter} />
-      </AuthProvider>
+      </ReactKeycloakProvider>
     </div>
   );
 }
