@@ -12,8 +12,7 @@ from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_me
 import uuid
 from split_image import split_image
 from python.common.enums import ErrorCode, EventType
-from python.prohibition_web_svc.helpers.image_helpers import create_pdf_with_image
-
+from python.prohibition_web_svc.helpers.pdf_helpers import create_pdf_with_images
 
 def validate_update(**kwargs) -> tuple:
     return True, kwargs
@@ -313,7 +312,7 @@ def save_event_pdf(**kwargs) -> tuple:
                 list_of_images=[f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png"]
 
             pdf_bytes=None
-            pdf_bytes = create_pdf_with_image(*list_of_images)
+            pdf_bytes = create_pdf_with_images(*list_of_images)
             with open(pdf_filename, "wb") as file:
                 file.write(pdf_bytes)
             encryptPdf_method1(
@@ -343,7 +342,7 @@ def save_event_pdf(**kwargs) -> tuple:
             b64encoded = data.get("TwentyFourHour_form_png").split(",")[1]
             with open(f"/tmp/{filename}.png", "wb") as fh:
                 fh.write(b64decode(b64encoded))
-            pdf_bytes = create_pdf_with_image(f"/tmp/{filename}.png")
+            pdf_bytes = create_pdf_with_images(f"/tmp/{filename}.png", is_landscape=True)
             with open(pdf_filename, "wb") as file:
                 file.write(pdf_bytes)
             encryptPdf_method1(
@@ -374,7 +373,7 @@ def save_event_pdf(**kwargs) -> tuple:
             b64encoded = data.get("TwelveHour_form_png").split(",")[1]
             with open(f"/tmp/{filename}.png", "wb") as fh:
                 fh.write(b64decode(b64encoded))
-            pdf_bytes = create_pdf_with_image(f"/tmp/{filename}.png")
+            pdf_bytes = create_pdf_with_images(f"/tmp/{filename}.png", is_landscape=True)
             with open(pdf_filename, "wb") as file:
                 file.write(pdf_bytes)
             encryptPdf_method1(
