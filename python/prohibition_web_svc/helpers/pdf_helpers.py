@@ -1,7 +1,7 @@
 import io
 from PIL import Image
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import letter, landscape
 
 import logging
 
@@ -20,7 +20,7 @@ def set_transparency_to_white(image_path, output_image_path):
     combined.save(output_image_path)
     logging.debug(f"Image transparency set to white and saved to {output_image_path}")
 
-def create_pdf_with_image(*image_paths):
+def create_pdf_with_images(*image_paths, is_landscape=False):
     """
     Creates a PDF file containing the provided images and returns the PDF with pages in letter size as bytes.
     
@@ -39,7 +39,8 @@ def create_pdf_with_image(*image_paths):
     
     buffer = io.BytesIO()
     try:
-        c = canvas.Canvas(buffer, pagesize=letter, cropMarks=None)
+        page_size = letter if not is_landscape else landscape(letter)
+        c = canvas.Canvas(buffer, pagesize=page_size, cropMarks=None)
         
         # Add each image to a separate page
         for image_path in image_paths:
@@ -51,7 +52,9 @@ def create_pdf_with_image(*image_paths):
                 set_transparency_to_white(image_path, image_path)
 
                 # Draw image on the page (adjust positioning and size as needed)
-                c.drawImage(image_path, 0, 0, 612, 792,
+                width = 612 if not is_landscape else 792
+                height = 792 if not is_landscape else 612
+                c.drawImage(image_path, 0, 0, width, height,
                             preserveAspectRatio=True,
                             anchor='c', 
                             showBoundary=False)
