@@ -3,9 +3,9 @@ import { api} from "../../api/config/axiosConfig"
 import { cleanup } from '@testing-library/react';
 import {createRequestHeader} from '../../utils/requestHeaders';
 
-jest.mock('react-oidc-context', () => ({
-  ...jest.requireActual('react-oidc-context'),
-  useAuth: jest.fn()
+jest.mock('@react-keycloak/web', () => ({
+  ...jest.requireActual('@react-keycloak/web'),
+  useKeycloak: jest.fn()
 }));
 
 jest.mock('../../utils/requestHeaders', () => ({

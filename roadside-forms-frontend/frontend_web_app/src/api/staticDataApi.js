@@ -2,9 +2,9 @@ import { api } from "./config/axiosConfig";
 import { createRequestHeader } from "../utils/requestHeaders";
 
 export const StaticDataApi = {
-  get: async function (resource, auth = null) {
+  get: async function (resource) {
     const headers = {
-      ...await createRequestHeader({}, auth),
+      ...await createRequestHeader(),
     };
     return await api
       .request({
