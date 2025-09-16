@@ -15,7 +15,7 @@ import { ToastContainer } from "react-toastify";
 import { Alert } from "react-bootstrap";
 import Warning from "@mui/icons-material/Warning";
 import { ArrowBack, Error, Refresh } from "@mui/icons-material";
-import { useAuth } from "react-oidc-context";
+import { useKeycloak } from "@react-keycloak/web";
 
 import { Checkbox } from "../common/Checkbox/checkbox";
 import { validationSchema } from "./validationSchema";
@@ -107,7 +107,7 @@ export const CreateEvent = () => {
   const [incompleteEventID, setIncompleteEventID] = useState(null);
 
   const navigate = useNavigate();
-  const auth = useAuth();
+  const { keycloak } = useKeycloak();
 
   // Blocker
   const blocker = useBlocker(({ currentLocation, nextLocation }) => {
@@ -355,7 +355,7 @@ export const CreateEvent = () => {
         values["date_released"] = values["date_of_impound"];
       }
   
-      await FormSubmissionApi.post(values, auth)
+      await FormSubmissionApi.post(values)
         .then((resp) => {
           console.log("response: ", resp);
           if (resp.status === 201) {
@@ -379,7 +379,7 @@ export const CreateEvent = () => {
     }
   }
   const handleSpoilForm = async () => {
-    await spoilForm(incompleteEventID, auth);
+    await spoilForm(incompleteEventID);
     await setisBlockerActive(false);
     navigate("/");
   };
@@ -696,7 +696,7 @@ export const CreateEvent = () => {
           await FormIDApi.patch({
             forms: { ...idsToDelete },
             printed_timestamp: new Date(),
-          }, auth);
+          });
           await unleaseIDs(values);
           handleShow(
             "Print Form",
@@ -1027,7 +1027,7 @@ export const CreateEvent = () => {
                     variant="danger"
                     onClick={async () => {
                       await setisBlockerActive(false);
-                      auth.signoutRedirect();
+                      keycloak.logout();
                     }}
                   >
                     Log Out of Digital Forms

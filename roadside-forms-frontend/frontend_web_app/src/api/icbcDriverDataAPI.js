@@ -2,9 +2,9 @@ import { api } from "./config/axiosConfig";
 import { createRequestHeader } from "../utils/requestHeaders";
 
 export const ICBCDriverDataApi = {
-  get: async function (driver_licence_no, auth = null) {
+  get: async function (driver_licence_no) {
     const headers = {
-      ...await createRequestHeader({}, auth),
+      ...await createRequestHeader(),
     };
     return await api
       .request({
