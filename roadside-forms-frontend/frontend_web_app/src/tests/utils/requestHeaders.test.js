@@ -1,15 +1,14 @@
 import {createRequestHeader} from '../../utils/requestHeaders';
+import keycloak from '../../keycloak';
+
+jest.mock('../../keycloak', () => ({
+  updateToken: jest.fn(),
+  token: 'token'
+}));
 
 describe('requestHeaders', () => {
   test('should return the header with authentication token if success', async () => {
-    const now = Date.now() / 1000;
-    const auth = { 
-      user: {
-        access_token: 'token',
-        expires_at: now + 3600
-      }
-    }
-    const header =  await createRequestHeader({}, auth);
+    const header =  await createRequestHeader();
 
     expect(header).toEqual({
       "Content-Type": "application/json",
@@ -20,15 +19,9 @@ describe('requestHeaders', () => {
   });
 
   test('should return base header if token refresh fails', async () => {
-    const now = Date.now() / 1000;
-    const auth = { 
-      user: {
-        access_token: 'token',
-        expires_at: now - 3600
-      },
-      signinSilent: jest.fn().mockRejectedValue(new Error('Token refresh failed'))
-    }
-    const header =  await createRequestHeader({}, auth);
+    keycloak.updateToken.mockRejectedValue(false);
+
+    const header =  await createRequestHeader();
 
     expect(header).toEqual({
       "Content-Type": "application/json",
