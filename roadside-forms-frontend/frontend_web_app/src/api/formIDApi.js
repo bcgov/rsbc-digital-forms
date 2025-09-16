@@ -2,9 +2,9 @@ import { api } from "./config/axiosConfig";
 import { createRequestHeader } from "../utils/requestHeaders";
 
 export const FormIDApi = {
-  post: async function (data, auth = null) {
+  post: async function (data) {
     const headers = {
-      ...await createRequestHeader({}, auth),
+      ...await createRequestHeader(),
     };
 
     try {
@@ -22,9 +22,9 @@ export const FormIDApi = {
     return null;
   },
 
-  get: async function (auth = null) {
+  get: async function () {
     const headers = {
-      ...await createRequestHeader({}, auth),
+      ...await createRequestHeader(),
     };
     return await api
       .request({
@@ -42,9 +42,9 @@ export const FormIDApi = {
         };
       });
   },
-  patch: async function (data, auth = null) {
+  patch: async function (data) {
     const headers = {
-      ...await createRequestHeader({}, auth),
+      ...await createRequestHeader(),
     };
     return await api
       .request({

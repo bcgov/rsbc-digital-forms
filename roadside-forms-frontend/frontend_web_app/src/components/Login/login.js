@@ -1,28 +1,28 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "react-oidc-context";
+import { useKeycloak } from "@react-keycloak/web";
 import { Button } from "../common/Button/Button";
 import "./login.scss";
 
 export const Login = () => {
-  const auth = useAuth();
+  const { keycloak, initialized } = useKeycloak();
   // const redirectUri = `${process.env.REACT_APP_BASE_URL}/requestAccess`;
   const redirectUri = `${process.env.REACT_APP_BASE_URL}/`;
 
   const handleClick = async () => {
-    await auth.signinRedirect();
+    await keycloak.login({ redirectUri: redirectUri, scope: "offline_access" });
   };
 
-  if (auth.isLoading) {
+  if (!initialized) {
     return <div>Loading...</div>;
   }
-  if (auth.isAuthenticated) {
+  if (keycloak.authenticated) {
     return <Navigate to="/requestAccess" />;
   }
 
   return (
     <div className="wrapper">
-      {!auth.isAuthenticated && (
+      {!keycloak.authenticated && (
         <div className="border-design text-font">
           <span className="fw-bold">Welcome!</span>&nbsp; Please log in to get
           started.&nbsp;
