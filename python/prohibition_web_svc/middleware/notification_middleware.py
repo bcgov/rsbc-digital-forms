@@ -1,8 +1,10 @@
 import logging
 from typing import Tuple, Dict, Any
 from datetime import datetime
+import base64
 from python.prohibition_web_svc.config import Config
 import python.common.rsi_email as rsi_email
+from python.prohibition_web_svc.middleware import print_middleware
 
 
 def send_new_user_admin_notification(**kwargs):
@@ -22,41 +24,67 @@ def send_new_user_admin_notification(**kwargs):
 
 def send_mv6020_entity_copy(**kwargs):
     logging.verbose('inside send_mv6020_entity_copy()')
-    # do the print orchestration here.
-    # print()
-    print("Payload:", kwargs.get('payload'))
+
     payload = kwargs.get('payload', {}) or {}
     data = payload.get('data', {}) or {}
     collision_case_no = data.get('collision_case_num')
-    date_str = data.get('date_collision')  # e.g. "2025-08-22T00:00:00-07:00"
+    date_str = data.get('date_collision')
     collision_date = None
 
     if date_str:
         try:
             # parse ISO 8601 string into datetime (Python 3.7+)
             dt = datetime.fromisoformat(date_str)
-            collision_date = dt.strftime("%B %d, %Y %H:%M")
+            collision_date = dt.strftime("%B %d, %Y")
         except ValueError:
             collision_date = date_str
     #collision_date=data.get('date_collision').strftime("%B %d, %Y %H:%M"),
-    print("Collision Num:", collision_case_no)
     subject = "Traffic Accident Report Copy Attached - Collision Case Number {}".format(collision_case_no)
-    body = "Collision Report Attached"
     full_name, email_address = get_entity_data(data)
     message = {
         "collision_case_number": collision_case_no,
         "collision_date": collision_date
     }
-   
+
+    # do the print orchestration here.
+    success, print_result  = print_middleware.render_document_with_playwright(**kwargs)
+
+    pdf_bytes = print_result.get("rendered_content")
+    filename = print_result.get("filename") or "MV6020-{}.pdf".format(collision_case_no)
+    content_type = print_result.get("content_type")
+    
+    print("filename:", filename)
+    #print("pdf_bytes:", pdf_bytes)
+    print("content_type:", content_type)
+
+    #Attach PDF if provided
+    if pdf_bytes and content_type == "application/pdf":
+        if isinstance(pdf_bytes, str):
+            pdf_bytes = pdf_bytes.encode("utf-8")
+
+        pdf_b64 = base64.b64encode(pdf_bytes).decode("utf-8")  
+        attachments = [
+            {
+                "content": pdf_b64,
+                "contentType": "application/pdf",
+                "encoding": "base64",
+                "filename": filename or "MV6020.pdf",
+            }
+        ]  
+
 
     success = rsi_email.send_mv6020_entity_copy(
         config=Config,
         subject=subject,
-        body=body,
         email_address=email_address,
         full_name=full_name,
         message=message,
+        attachments=attachments
     )
+
+    #,attachments=attachments
+
+    print("response from email: ",success)
 
     if success:
         kwargs['response_dict'] = {

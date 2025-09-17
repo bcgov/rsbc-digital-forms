@@ -464,17 +464,17 @@ def send_mv6020_entity_copy(**args) -> tuple:
     email_address = args.get('email_address')
     full_name= args.get('full_name')
     message = args.get('message')
+    attachments = args.get('attachments')
     t = 'MV6020_send_entity_copy.html'
     args['email_template'] = t
     template = get_jinja2_env().get_template(t)
-    logging.debug('template loaded ', template)
     return common_email_services.send_email(
         [email_address],
         subject,
         config,
         template.render(subject=subject, 
         full_name=full_name, message=message),
-        message.get('collision_case_number')), args
+        message.get('collision_case_number'),attachments), args
 
 
 
