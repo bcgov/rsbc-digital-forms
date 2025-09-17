@@ -1,17 +1,10 @@
 {% extends "email_alert_base.html" %}
 
 {% block primary_text_1 %}
-    Attached is the Copy of MV6020 Traffic Accident Report for the incident <strong>{{ message.collision_case_number }}</strong> you were involved in on {{ message.collision_date }}.
+    Attached is your Driver Copy of the Traffic Accident Report for Collision Case Number <strong>{{ message.collision_case_number }}</strong> which occurred on {{ message.collision_date }}. Personal details of other individuals have been removed to protect their privacy.
 {% endblock %}
 
 {% block primary_text_2 %}
-    This copy has been provided to you as an involved party.
-    Personal details of other individuals have been removed to protect their privacy.
+    Are they required to take any action?
+    If assistance is needed, please visit <a href="https://www.icbc.com/claims">ICBC Claims</a> online or contact ICBC at 604-520-8222 (Vancouver) 1-800-910-4222 or 1-800-910-4222 (Toll-free).
 {% endblock %}
-
-
-{% block primary_text_3 %}{% endblock %}
-{% block primary_text_4 %}{% endblock %}
-{% block callout %}Make sure you can open the attachments.{% endblock %}
-
-{% block email_not_monitored %}{% include 'partials/call_appeals_registry.html' %}{% endblock %}
