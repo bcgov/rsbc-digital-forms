@@ -39,7 +39,7 @@ def send_mv6020_entity_copy(**kwargs):
         except ValueError:
             collision_date = date_str
     #collision_date=data.get('date_collision').strftime("%B %d, %Y %H:%M"),
-    subject = "Traffic Accident Report Copy Attached - Collision Case Number {}".format(collision_case_no)
+    subject = "Traffic Accident Report Driver Copy - Collision Case Number {}".format(collision_case_no)
     full_name, email_address = get_entity_data(data)
     message = {
         "collision_case_number": collision_case_no,
