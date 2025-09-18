@@ -2,6 +2,7 @@
 def log_static_get(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "get static resource",
+        "request_id": kwargs.get('request_id', ''),
         "resource": kwargs.get('resource'),
         "user_guid": kwargs.get('user_guid', ''),
         "username": kwargs.get('username', '')
@@ -12,24 +13,32 @@ def log_static_get(**kwargs) -> tuple:
 def log_form_index(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "get form index",
+        "request_id": kwargs.get('request_id', ''),
         "user_guid": kwargs.get('user_guid', ''),
-        "username": kwargs.get('username')
+        "username": kwargs.get('username', '')
     }
     return True, kwargs
 
 
 def log_form_create(**kwargs) -> tuple:
     forms_response = kwargs.get('response_dict')
-    kwargs['splunk_data'] = forms_response
+    kwargs['splunk_data'] = {
+        "event": "form numbers leased",
+        "request_id": kwargs.get('request_id', ''),
+        "user_guid": kwargs.get('user_guid', ''),
+        "username": kwargs.get('username', ''),
+        "response": forms_response.get_json()
+    }
     return True, kwargs
 
 
 def insufficient_form_ids(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "insufficient form ids",
+        "request_id": kwargs.get('request_id', ''),
         "user_guid": kwargs.get('user_guid', ''),
-        "username": kwargs.get('username'),
-        'form_type': kwargs.get('form_type'),
+        "username": kwargs.get('username', ''),
+        'form_type': kwargs.get('form_type', ''),
     }
     return True, kwargs
 
@@ -38,20 +47,22 @@ def unable_to_renew_lease(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "unable to renew form lease",
         "user_guid": kwargs.get('user_guid', ''),
-        "username": kwargs.get('username'),
-        'form_type': kwargs.get('form_type'),
-        'id': kwargs.get('form_id')
+        "request_id": kwargs.get('request_id', ''),
+        "username": kwargs.get('username', ''),
+        'form_type': kwargs.get('form_type', ''),
+        'id': kwargs.get('form_id', '')
     }
     return True, kwargs
 
 
-def form_submitted(**kwargs) -> tuple:
+def mark_form_as_printed_or_spoiled_submitted(**kwargs) -> tuple:
+    payload = kwargs.get('request').get_json()
     kwargs['splunk_data'] = {
-        "event": "form submitted",
+        "event": "mark form printed/spoiled",
+        "request_id": kwargs.get('request_id', ''),
         "user_guid": kwargs.get('user_guid', ''),
-        "username": kwargs.get('username'),
-        'form_type': kwargs.get('form_type'),
-        'id': kwargs.get('form_id')
+        "username": kwargs.get('username', ''),
+        "payload": payload
     }
     return True, kwargs
 
@@ -59,6 +70,7 @@ def form_submitted(**kwargs) -> tuple:
 def form_lease_renewed(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "form lease renewed",
+        "request_id": kwargs.get('request_id', ''),
         "user_guid": kwargs.get('user_guid', ''),
         "username": kwargs.get('username'),
         'form_type': kwargs.get('form_type'),
@@ -70,6 +82,7 @@ def form_lease_renewed(**kwargs) -> tuple:
 def officer_has_applied(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "officer has applied",
+        "request_id": kwargs.get('request_id', ''),
         "user_guid": kwargs.get('user_guid', ''),
         "username": kwargs.get('username'),
         'badge_number': kwargs.get('payload')['badge_number']
@@ -81,7 +94,8 @@ def get_user(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "get user",
         "user_guid": kwargs.get('user_guid', ''),
-        "username": kwargs.get('username')
+        "request_id": kwargs.get('request_id', ''),
+        "username": kwargs.get('username', '')
     }
     return True, kwargs
 
@@ -90,7 +104,8 @@ def get_user_role(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "get user-role",
         "user_guid": kwargs.get('user_guid', ''),
-        "username": kwargs.get('username')
+        "username": kwargs.get('username', ''),
+        "request_id": kwargs.get('request_id', '')
     }
     return True, kwargs
 
@@ -99,7 +114,8 @@ def admin_get_users(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "admin get users",
         "user_guid": kwargs.get('user_guid', ''),
-        "username": kwargs.get('username')
+        "username": kwargs.get('username', ''),
+        "request_id": kwargs.get('request_id', '')
     }
     return True, kwargs
 
@@ -108,8 +124,9 @@ def admin_get_user_role(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "admin get user-role",
         "admin_user_guid": kwargs.get('user_guid', ''),
-        "admin_username": kwargs.get('username'),
-        "requested_user_guid": kwargs.get('requested_user_guid')
+        "admin_username": kwargs.get('username', ''),
+        "requested_user_guid": kwargs.get('requested_user_guid', ''),
+        "request_id": kwargs.get('request_id', '')
     }
     return True, kwargs
 
@@ -118,9 +135,10 @@ def admin_update_user_role(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "admin update user-role",
         "admin_user_guid": kwargs.get('user_guid', ''),
-        "admin_username": kwargs.get('username'),
-        "requested_user_guid": kwargs.get('requested_user_guid'),
-        'role_name': kwargs.get('role_name')
+        "admin_username": kwargs.get('username', ''),
+        "requested_user_guid": kwargs.get('requested_user_guid', ''),
+        'role_name': kwargs.get('role_name', ''),
+        "request_id": kwargs.get('request_id', '')
     }
     return True, kwargs
 
@@ -129,9 +147,10 @@ def admin_delete_user_role(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "admin delete user-role",
         "admin_user_guid": kwargs.get('user_guid', ''),
-        "admin_username": kwargs.get('username'),
-        "requested_user_guid": kwargs.get('requested_user_guid'),
-        'role_name': kwargs.get('role_name')
+        "admin_username": kwargs.get('username', ''),
+        "requested_user_guid": kwargs.get('requested_user_guid', ''),
+        'role_name': kwargs.get('role_name', ''),
+        "request_id": kwargs.get('request_id', '')
     }
     return True, kwargs
 
@@ -139,7 +158,10 @@ def admin_delete_user_role(**kwargs) -> tuple:
 def admin_get_forms(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "admin get forms",
-        "form_type": kwargs.get('form_type')
+        "form_type": kwargs.get('form_type', ''),
+        "user_guid": kwargs.get('user_guid', ''),
+        "username": kwargs.get('username', ''),
+        "request_id": kwargs.get('request_id', '')
     }
     return True, kwargs
 
@@ -149,7 +171,10 @@ def admin_create_form(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "admin create form",
         "form_type": payload.get('form_type'),
-        "form_id": payload.get('form_id')
+        "form_id": payload.get('form_id'),
+        "user_guid": kwargs.get('user_guid', ''),
+        "username": kwargs.get('username', ''),
+        "request_id": kwargs.get('request_id', '')
     }
     return True, kwargs
 
@@ -158,7 +183,8 @@ def permission_denied(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "permission denied",
         "user_guid": kwargs.get('user_guid', ''),
-        "username": kwargs.get('username')
+        "username": kwargs.get('username', ''),
+        "request_id": kwargs.get('request_id', '')
     }
     return True, kwargs
 
@@ -166,6 +192,7 @@ def permission_denied(**kwargs) -> tuple:
 def unauthenticated(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
         "event": "unauthenticated",
+        "request_id": kwargs.get('request_id', '')
     }
     return True, kwargs
 
@@ -189,5 +216,6 @@ def update_user_last_active_splunk(**kwargs):
         "event": "update user last active",
         "user_guid": user_guid,
         "username": username,
+        "request_id": kwargs.get('request_id', '')
     }
     return True, kwargs

@@ -5,6 +5,7 @@ import logging
 import logging.config
 import datetime
 from python.common.config import Config
+from python.common.logging_utils import get_logger
 from python.common.verbose_logging import VERBOSE_LEVEL_NUM, verbose
 
 logging.addLevelName(VERBOSE_LEVEL_NUM, 'VERBOSE')
@@ -107,15 +108,16 @@ def middle_logic(functions: list, **args):
 
     The middleware is called like this: middle_logic(example['rules'])
     """
+    logger = get_logger(__name__)
     if functions:
         try_fail_node = functions.pop(0)
-        logging.verbose('calling try function: ' + try_fail_node['try'].__name__)
+        logger.verbose('calling try function: ' + try_fail_node['try'].__name__)
         flag, args = try_fail_node['try'](**args)
-        logging.verbose("result from {} is {}".format(try_fail_node['try'].__name__, flag))
+        logger.verbose("result from {} is {}".format(try_fail_node['try'].__name__, flag))
         if flag:
             args = middle_logic(functions, **args)
         else:
-            logging.verbose('calling try function: ' + try_fail_node['try'].__name__)
+            logger.verbose('calling try function: ' + try_fail_node['try'].__name__)
             args = middle_logic(try_fail_node['fail'], **args)
     return args
 
@@ -133,12 +135,12 @@ def get_listeners(listeners: dict, key: str) -> list:
 
 def localize_timezone(date_time: datetime) -> datetime:
     localized = local_tz.localize(date_time)
-    logging.debug("localized datetime: {}".format(localized))
+    get_logger(__name__).verbose("localized datetime: {}".format(localized))
     return localized
 
 
 def check_credentials(username, password, username_submitted, password_submitted) -> bool:
-    logging.debug('credentials: {}:{}'.format(username, password))
+    get_logger(__name__).verbose('credentials: {}:{}'.format(username, password))
     if username_submitted == username and password_submitted == password:
         return True
     return False

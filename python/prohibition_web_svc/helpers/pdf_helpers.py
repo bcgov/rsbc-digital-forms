@@ -3,7 +3,9 @@ from PIL import Image
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, landscape
 
-import logging
+from python.common.logging_utils import get_logger
+
+logger = get_logger(__name__)
 
 def set_transparency_to_white(image_path, output_image_path):
     """
@@ -13,12 +15,13 @@ def set_transparency_to_white(image_path, output_image_path):
         image_path (str): Path to the input image.
         output_image_path (str): Path to save the converted image.
     """
+    logger.verbose(f"Converting image {image_path} to have a white background")
     img = Image.open(image_path).convert("RGBA")
     background = Image.new("RGBA", img.size, (255, 255, 255, 255))  # White background
     combined = Image.alpha_composite(background, img)
     combined = combined.convert("RGB")  # Remove alpha channel
     combined.save(output_image_path)
-    logging.debug(f"Image transparency set to white and saved to {output_image_path}")
+    logger.verbose(f"Image transparency set to white and saved to {output_image_path}")
 
 def create_pdf_with_images(*image_paths, is_landscape=False):
     """
@@ -35,8 +38,10 @@ def create_pdf_with_images(*image_paths, is_landscape=False):
         Exception: For other PDF generation errors
     """
     if not image_paths:
+        logger.error("No image paths provided")
         raise ValueError("At least one image path must be provided")
     
+    logger.verbose(f"Creating PDF with {len(image_paths)} images, landscape={is_landscape}")
     buffer = io.BytesIO()
     try:
         page_size = letter if not is_landscape else landscape(letter)
@@ -71,3 +76,4 @@ def create_pdf_with_images(*image_paths, is_landscape=False):
         raise e    
     finally:
         buffer.close()
+        logger.verbose("PDF creation completed")
