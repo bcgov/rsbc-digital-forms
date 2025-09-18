@@ -72,6 +72,11 @@
                 border-bottom: 1px solid #000;
                 border-top: 1px solid #000;
             }
+
+            .draft-watermark {
+                position: absolute;
+                display: block !important;
+            }
         }
 
 
@@ -82,6 +87,21 @@
             .print-footer {
                 display: none;
             }
+        }
+
+
+        .draft-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 5rem;
+            font-weight: bold;
+            color: rgba(128, 128, 128, 0.2);
+            z-index: 1;
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
         }
 
 
@@ -517,6 +537,11 @@
 </head>
 
 <body>
+
+    {% if data.print_options.is_draft %}
+        <div class="draft-watermark">DRAFT COPY</div>
+    {% endif %}
+
     <!-- Page 1 -->
     <div class="page">
         <!-- Header with logos -->
