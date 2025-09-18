@@ -3,6 +3,7 @@ from typing import Tuple, Dict, Any
 from python.prohibition_web_svc.config import Config
 import python.common.rsi_email as rsi_email
 from python.prohibition_web_svc.helpers import mv6020_helper
+from python.prohibition_web_svc.middleware import print_middleware
 
 
 def send_new_user_admin_notification(**kwargs):
@@ -19,8 +20,24 @@ def send_new_user_admin_notification(**kwargs):
     rsi_email.send_new_user_admin_notification(config=Config, subject=subject, body=body, message=message)
 
     return True, kwargs
+
+# Do data structure validation
+def validate_email_payload(**kwargs) -> tuple:
+    #Reuse the validation logic in print middleware for now. Change later if needed.
+    success, kwargs = print_middleware.validate_print_payload(**kwargs)
+    if not success:
+        return False, kwargs
+    return True, kwargs
     
 def send_email(**kwargs):
+    payload = kwargs.get('payload', {})
+    template_name = payload.get('template')
 
-    result, kwargs = mv6020_helper.send_mv6020_entity_copy(**kwargs)
-    return result , kwargs
+    if template_name == "mv6020.html":
+        result, kwargs = mv6020_helper.send_mv6020_copy(**kwargs)
+    else:
+        result = False
+        kwargs = {"response_dict": {"message": "Unknown form type"}}
+    
+    return result, kwargs
+

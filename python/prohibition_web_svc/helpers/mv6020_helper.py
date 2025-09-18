@@ -8,24 +8,18 @@ import python.common.rsi_email as rsi_email
 from python.prohibition_web_svc.middleware import print_middleware
 
 
-def send_mv6020_entity_copy(**kwargs):
-    logging.verbose('inside send_mv6020_entity_copy()')
+def send_mv6020_copy(**kwargs):
+    logging.verbose('inside send_mv6020_copy')
 
     success, kwargs = print_middleware.set_event_type(**kwargs)
-    if not success:
-        return False, kwargs
-
-    success, kwargs = print_middleware.validate_print_payload(**kwargs)
     if not success:
         return False, kwargs
 
     payload = kwargs.get('payload', {}) or {}
     data = payload.get('data', {}) or {}
     collision_case_no = data.get('collision_case_num')
-    #date_str = data.get('date_collision')
     collision_date = helper.format_date_iso(data.get('date_collision'))
   
-    #collision_date=data.get('date_collision').strftime("%B %d, %Y %H:%M"),
     subject = "Traffic Accident Report Driver Copy - Collision Case Number {}".format(collision_case_no)
     full_name, email_address = get_entity_data(data)
     message = {
@@ -92,4 +86,4 @@ def get_entity_data(data: dict) -> Tuple[str, Dict[str, Any]]:
         email_address = recipient.get("email_address", "").strip()
         return f"{given} {surname}".strip(), email_address
 
-    return ""  # fallback if no match found    
+    return ""   
