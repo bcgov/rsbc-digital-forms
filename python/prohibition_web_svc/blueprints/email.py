@@ -23,12 +23,7 @@ def send_entity_copy():
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": http_responses.server_error_response, "fail": []},
             ]},
-            {"try": print_middleware.set_event_type, "fail": []},
-            {"try": print_middleware.validate_print_payload, "fail": [
-                {"try": common_middleware.record_event_error, "fail": []},
-                {"try": http_responses.bad_request_response, "fail": []}
-            ]},
-            {"try": notification_middleware.send_mv6020_entity_copy, "fail": [
+            {"try": notification_middleware.send_email, "fail": [
                 {"try": common_middleware.record_event_error, "fail": []},
                 {"try": http_responses.server_error_response, "fail": []}
             ]},
