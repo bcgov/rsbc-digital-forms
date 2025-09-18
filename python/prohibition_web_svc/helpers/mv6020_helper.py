@@ -19,9 +19,20 @@ def send_mv6020_copy(**kwargs):
     data = payload.get('data', {}) or {}
     collision_case_no = data.get('collision_case_num')
     collision_date = helper.format_date_iso(data.get('date_collision'))
+
+    print_options = data.get('print_options', {})
+    ptype = print_options.get('type', '').lower()
+    if ptype in ('icbc', 'police'):
+        subject = f"Traffic Accident Report - Collision Case Number {collision_case_no}"
+        full_name = "Officer"
+        email_address = print_options.get('email', '')
+    elif ptype == 'entity':
+        subject = f"Traffic Accident Report Driver Copy - Collision Case Number {collision_case_no}"
+        full_name, email_address = get_entity_data(data)
+    else:
+        subject = f"Traffic Accident Report - Collision Case Number {collision_case_no}"
   
-    subject = "Traffic Accident Report Driver Copy - Collision Case Number {}".format(collision_case_no)
-    full_name, email_address = get_entity_data(data)
+    
     message = {
         "collision_case_number": collision_case_no,
         "collision_date": collision_date
@@ -50,13 +61,14 @@ def send_mv6020_copy(**kwargs):
         ]  
 
 
-    success = rsi_email.send_mv6020_entity_copy(
+    success = rsi_email.send_mv6020_copy(
         config=Config,
         subject=subject,
         email_address=email_address,
         full_name=full_name,
         message=message,
-        attachments=attachments
+        attachments=attachments,
+        email_type=ptype
     )
 
     if success:
