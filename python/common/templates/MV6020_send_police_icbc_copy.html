@@ -1,0 +1,5 @@
+{% extends "email_alert_base.html" %}
+
+{% block primary_text_1 %}
+    Attached is the Copy of the Traffic Accident Report for Collision Case Number <strong>{{ message.collision_case_number }}</strong> which occurred on {{ message.collision_date }}.
+{% endblock %}

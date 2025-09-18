@@ -458,14 +458,19 @@ def admin_unknown_event_type(**args) -> tuple:
     return send_email_to_admin(config=config, title=title, body=body_text), args
 
 # Send MV6020 Entity Copy to entity email
-def send_mv6020_entity_copy(**args) -> tuple:
+def send_mv6020_copy(**args) -> tuple:
     config = args.get('config')
     subject = args.get('subject')
     email_address = args.get('email_address')
     full_name= args.get('full_name')
     message = args.get('message')
     attachments = args.get('attachments')
-    t = 'MV6020_send_entity_copy.html'
+    email_type = args.get('email_type')
+    if email_type == 'entity' :
+        t = 'MV6020_send_entity_copy.html'
+    else:    
+        t = 'MV6020_send_police_icbc_copy.html'
+    
     args['email_template'] = t
     template = get_jinja2_env().get_template(t)
     return common_email_services.send_email(
