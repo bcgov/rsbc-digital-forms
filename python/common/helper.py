@@ -4,6 +4,7 @@ import pytz
 import logging
 import logging.config
 import datetime
+from typing import Optional
 from python.common.config import Config
 from python.common.verbose_logging import VERBOSE_LEVEL_NUM, verbose
 
@@ -170,3 +171,18 @@ def str_to_integer(value: str) -> int:
         return int(value)
     except ValueError:
         return None
+
+def format_date_iso(date_str: str, output_format: str = "%B %d, %Y") -> Optional[str]:
+    """
+    Convert an ISO 8601 date string to the desired output format.
+    Returns None if input is None or empty.
+    """
+    if not date_str:
+        return None
+
+    try:
+        dt = datetime.datetime.fromisoformat(date_str)
+        return dt.strftime(output_format)
+    except ValueError:
+        # fallback: return original string if parsing fails
+        return date_str

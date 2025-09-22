@@ -6,6 +6,7 @@ import json
 import logging
 import logging.config
 from jinja2 import Environment, select_autoescape, FileSystemLoader
+import os
 
 logging.config.dictConfig(Config.LOGGING)
 
@@ -456,6 +457,31 @@ def admin_unknown_event_type(**args) -> tuple:
     logging.critical('unknown event type: {}'.format(message['event_type']))
     return send_email_to_admin(config=config, title=title, body=body_text), args
 
+# Send MV6020 Entity Copy to entity email
+def send_mv6020_copy(**args) -> tuple:
+    config = args.get('config')
+    subject = args.get('subject')
+    email_address = args.get('email_address')
+    full_name= args.get('full_name')
+    message = args.get('message')
+    attachments = args.get('attachments')
+    email_type = args.get('email_type')
+    if email_type == 'entity' :
+        t = 'MV6020_send_entity_copy.html'
+    else:    
+        t = 'MV6020_send_police_icbc_copy.html'
+    
+    args['email_template'] = t
+    template = get_jinja2_env().get_template(t)
+    return common_email_services.send_email(
+        [email_address],
+        subject,
+        config,
+        template.render(subject=subject, 
+        full_name=full_name, message=message),
+        message.get('collision_case_number'),attachments), args
+
+
 
 def get_jinja2_env(path="./python/common/templates"):
     template_loader = FileSystemLoader(searchpath=path)
@@ -622,5 +648,9 @@ def content_data() -> dict:
         "applicant_applied_at_icbc.html": {
             "raw_subject": "Applied at ICBC - Driving Prohibition {} Review",
             "title": "Applied at ICBC",
+        },
+        "MV6020_send_entity_copy.html": {
+            "raw_subject": "Traffic Accident Report Copy Attached - Collision Case Number {}",
+            "title": "Send MV6020 Entity Copy",
         }
     })
