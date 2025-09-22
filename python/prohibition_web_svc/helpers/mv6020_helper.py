@@ -98,4 +98,4 @@ def get_entity_data(data: dict) -> Tuple[str, Dict[str, Any]]:
         email_address = recipient.get("email_address", "").strip()
         return f"{given} {surname}".strip(), email_address
 
-    return ""   
+    return "", ""  
