@@ -41,7 +41,7 @@ def send_mv6020_copy(**kwargs):
             f"MV6020 - {collision_type} - {collision_case_no} - "
             f"{prime_file_vjur} - {police_file_number}"
         )
-        
+
         full_name = "Officer"
         email_address = print_options.get('email', '')
     elif ptype == 'entity':
@@ -49,9 +49,11 @@ def send_mv6020_copy(**kwargs):
         full_name, email_address = get_entity_data(data)
     elif ptype == 'police':
         subject = f"Traffic Accident Report - Collision Case Number {collision_case_no}"
+        full_name = "Officer"
+        email_address = print_options.get('email', '')
     else:
         kwargs['response_dict'] = {
-            'message': f'Failed to send email to {full_name} at {email_address}',
+            'message': f'Failed to send email',
             'description': 'Unknown message type found in print options' 
         }
         return False, kwargs
