@@ -22,15 +22,39 @@ def send_mv6020_copy(**kwargs):
 
     print_options = data.get('print_options', {})
     ptype = print_options.get('type', '').lower()
-    if ptype in ('icbc', 'police'):
-        subject = f"Traffic Accident Report - Collision Case Number {collision_case_no}"
+    if ptype == 'icbc':
+
+        # Map collision_type codes to labels
+        COLLISION_TYPE_MAP = {
+            "5": "Fatality",
+            "3": "Personal Injury",
+            "2": "Property Damage",
+        }
+
+        collision_type_code = str(data.get("collision_type", "")).strip()
+        collision_type = COLLISION_TYPE_MAP.get(collision_type_code, collision_type_code)
+
+        prime_file_vjur = data.get("prime_file_vjur", {}).get("label", "")
+        police_file_number = data.get("police_file_num", "")
+
+        subject = (
+            f"MV6020 - {collision_type} - {collision_case_no} - "
+            f"{prime_file_vjur} - {police_file_number}"
+        )
+        
         full_name = "Officer"
         email_address = print_options.get('email', '')
     elif ptype == 'entity':
         subject = f"Traffic Accident Report Driver Copy - Collision Case Number {collision_case_no}"
         full_name, email_address = get_entity_data(data)
-    else:
+    elif ptype == 'police':
         subject = f"Traffic Accident Report - Collision Case Number {collision_case_no}"
+    else:
+        kwargs['response_dict'] = {
+            'message': f'Failed to send email to {full_name} at {email_address}',
+            'description': 'Unknown message type found in print options' 
+        }
+        return False, kwargs
   
     
     message = {
