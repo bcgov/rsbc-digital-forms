@@ -356,7 +356,7 @@ def _load_entity(entity):
     entity_dict['involved_persons'] = [asdict(person) for person in involved_persons]
     return entity_dict
 
-def _mask_sensitive_data(payload):
+def mask_sensitive_data(payload):
     sensitive_fields = [
         'driver_license_num',
         'surname',
@@ -376,16 +376,18 @@ def _mask_sensitive_data(payload):
             payload[field] = "[REDACTED]"
         if 'entities' in payload:
             payload['entities'] = [
-                _mask_sensitive_data(entity) for entity in payload['entities']
+                mask_sensitive_data(entity) for entity in payload['entities']
             ]
         if 'involved_persons' in payload:
             payload['involved_persons'] = [
-                _mask_sensitive_data(person) for person in payload['involved_persons']
+                mask_sensitive_data(person) for person in payload['involved_persons']
             ]
         if 'witnesses' in payload:
             payload['witnesses'] = [
-                _mask_sensitive_data(witness) for witness in payload['witnesses']
+                mask_sensitive_data(witness) for witness in payload['witnesses']
             ]
+        if 'data' in payload and isinstance(payload['data'], dict):
+            payload['data'] = mask_sensitive_data(payload['data'])
     return payload
 
 def log_payload_to_splunk(**kwargs) -> tuple:
@@ -393,7 +395,7 @@ def log_payload_to_splunk(**kwargs) -> tuple:
         request = kwargs.get('request')
         payload = request.get_json()
         payload = copy.deepcopy(payload)
-        payload_masked = _mask_sensitive_data(payload)
+        payload_masked = mask_sensitive_data(payload)
         kwargs['splunk_data'] = {
             'event': "create collision",
             'request_id': kwargs.get('request_id', ''),

@@ -21,10 +21,12 @@ def render_document():
     logger.verbose(f"Inside render_document()")
     kwargs = middle_logic(
         get_authorized_keycloak_user() + [
-            {"try": common_middleware.log_payload_to_splunk, "fail": [
-                {"try": splunk.log_to_splunk, "fail": []},
-                {"try": http_responses.server_error_response, "fail": []},
+            {"try": common_middleware.request_contains_a_payload, "fail": [
+                {"try": common_middleware.record_event_error, "fail": []},
+                {"try": http_responses.bad_request_response, "fail": []}
             ]},
+            {"try": print_middleware.log_payload_to_splunk, "fail": []},
+            {"try": splunk.log_to_splunk, "fail": []},
             {"try": print_middleware.set_event_type, "fail": []},
             {"try": print_middleware.validate_print_payload, "fail": [
                 {"try": common_middleware.record_event_error, "fail": []},

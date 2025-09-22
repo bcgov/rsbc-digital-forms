@@ -1,4 +1,5 @@
 import asyncio
+import copy
 import json
 from pathlib import Path
 from flask import Response
@@ -7,6 +8,7 @@ from playwright.async_api import async_playwright
 from python.common.enums import ErrorCode
 from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.middleware import common_middleware
+from python.prohibition_web_svc.middleware import collision_middleware
 from python.prohibition_web_svc.models.print_request_payload import PrintRequestPayload
 
 logger = get_logger(__name__)
@@ -249,3 +251,20 @@ def return_rendered_response(**kwargs) -> tuple:
         }
         return False, kwargs
 
+
+def log_payload_to_splunk(**kwargs) -> tuple:
+    try:
+        request = kwargs.get('request')
+        payload = request.get_json()
+        payload = copy.deepcopy(payload)
+        payload_masked = collision_middleware.mask_sensitive_data(payload)
+        kwargs['splunk_data'] = {
+            'event': 'print request received',
+            'request_id': kwargs.get('request_id', ''),
+            'user_guid': kwargs.get('user_guid', ''),
+            'username': kwargs.get('username', ''),
+            'payload': payload_masked
+        }
+    except Exception as e:
+        logger.error(e)
+    return True, kwargs
