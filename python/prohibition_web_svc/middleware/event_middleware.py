@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 from dataclasses import asdict
@@ -19,18 +20,36 @@ logger = get_logger(__name__)
 def validate_update(**kwargs) -> tuple:
     return True, kwargs
 
+def _mask_sensitive_data(data: dict) -> dict:
+    """
+    Mask sensitive data in the payload before logging to Splunk.
+    """
+    masked_data = copy.deepcopy(data)
+    sensitive_fields = [
+        'driver_licence_no', 'driver_last_name', 'driver_given_name',
+        'regist_owner_last_name', 'regist_owner_first_name',
+        'TwelveHour_form_png', 'TwentyFourHour_form_png', 'VI_form_png',
+    ]
+    for field in sensitive_fields:
+        if field in masked_data:
+            masked_data[field] = '[REDACTED]'
+    return masked_data
 
 def log_payload_to_splunk(**kwargs) -> tuple:
-    # TODO - log to Splunk
-    data = kwargs.get('payload')
-    logger.debug("payload: | {}".format(data))
-    kwargs['splunk_data'] = {
-        'event': "create VI/24h/12h event",
-        'user_guid': kwargs.get('user_guid', ''),
-        'username': kwargs.get('username'),
-        'form_type': get_event_type(data).code,
-        'ticket_no': get_ticket_no(data),
-    }
+    try:
+        payload = kwargs.get('payload')
+        payload_masked = _mask_sensitive_data(payload)
+        kwargs['splunk_data'] = {
+            'event': "create VI/24h/12h event",
+            'request_id': kwargs.get('request_id', ''),
+            'user_guid': kwargs.get('user_guid', ''),
+            'username': kwargs.get('username'),
+            'form_type': get_event_type(payload).code,
+            'ticket_no': get_ticket_no(payload),
+            'payload': payload_masked
+        }
+    except Exception as e:
+        logger.error(e)
     return True, kwargs
 
 def check_if_application_id_exists(**kwargs) -> tuple:
@@ -266,7 +285,7 @@ def save_event_data(**kwargs) -> tuple:
         db.session.add(event)
         db.session.commit()
     except Exception as e:
-        logger.error(e, stack_info=True)
+        logger.error(e)
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
             'error_code': ErrorCode.E01,
@@ -319,13 +338,13 @@ def save_event_pdf(**kwargs) -> tuple:
                 file.write(pdf_bytes)
             encryptPdf_method1(
                 pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-            logger.debug('File encrypted')
+            logger.verbose('File encrypted')
             encoded_file_name = f"{filename}_encrypted.pdf"
             encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
             with open(encoded_pdf_filepath, 'rb') as file_data:
                 client.fput_object(Config.STORAGE_BUCKET_NAME,
                                    encoded_file_name, encoded_pdf_filepath)
-            logger.debug('File uploaded')
+            logger.verbose('File uploaded')
 
             form_storage = FormStorageRefs(
                 form_id_vi=event.vi_form.form_id,
@@ -349,13 +368,13 @@ def save_event_pdf(**kwargs) -> tuple:
                 file.write(pdf_bytes)
             encryptPdf_method1(
                 pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-            logger.debug('File encrypted')
+            logger.verbose('File encrypted')
             encoded_file_name = f"{filename}_encrypted.pdf"
             encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
             with open(encoded_pdf_filepath, 'rb') as file_data:
                 client.fput_object(Config.STORAGE_BUCKET_NAME,
                                    encoded_file_name, encoded_pdf_filepath)
-            logger.debug('File uploaded')
+            logger.verbose('File uploaded')
 
             form_storage = FormStorageRefs(
                 form_id_24h=event.twenty_four_hour_form.form_id,
@@ -380,13 +399,13 @@ def save_event_pdf(**kwargs) -> tuple:
                 file.write(pdf_bytes)
             encryptPdf_method1(
                 pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-            logger.debug('File encrypted')
+            logger.verbose('File encrypted')
             encoded_file_name = f"{filename}_encrypted.pdf"
             encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
             with open(encoded_pdf_filepath, 'rb') as file_data:
                 client.fput_object(Config.STORAGE_BUCKET_NAME,
                                    encoded_file_name, encoded_pdf_filepath)
-            logger.debug('File uploaded')
+            logger.verbose('File uploaded')
             
 
             form_storage = FormStorageRefs(
@@ -401,7 +420,7 @@ def save_event_pdf(**kwargs) -> tuple:
             db.session.commit()
 
     except Exception as e:
-        logger.warning(str(e))
+        logger.error(e)
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
                 'error_code': ErrorCode.E02,
@@ -434,6 +453,7 @@ def get_events_for_user(**kwargs) -> tuple:
             event_dict.append(event_obj)
         kwargs['response'] = make_response(jsonify(event_dict), 200)
     except Exception as e:
+        logger.error(e)
         return False, kwargs
     return True, kwargs
 
@@ -443,14 +463,14 @@ def request_contains_a_payload(**kwargs) -> tuple:
     try:
         payload = request.get_json()
         kwargs['payload'] = payload
-        # logger.debug("payload: " + json.dumps(payload))
+        logger.verbose("payload: " + json.dumps(payload))
     except Exception as e:
         return False, kwargs
     return payload is not None, kwargs
 
 
 def get_json_payload(**kwargs) -> tuple:
-    logger.debug("inside get_json_payload()")
+    logger.verbose("inside get_json_payload()")
     try:
         request = kwargs.get('request')
         kwargs['payload'] = request.json
@@ -461,7 +481,7 @@ def get_json_payload(**kwargs) -> tuple:
 
 
 def validate_form_payload(**kwargs) -> tuple:
-    logger.debug("inside validate_form_payload()")
+    logger.verbose("inside validate_form_payload()")
 
     if(kwargs.get('payload')):
         return True, kwargs

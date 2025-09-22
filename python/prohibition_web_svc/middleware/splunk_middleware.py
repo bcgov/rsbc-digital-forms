@@ -219,3 +219,12 @@ def update_user_last_active_splunk(**kwargs):
         "request_id": kwargs.get('request_id', '')
     }
     return True, kwargs
+
+def log_get_events_for_user(**kwargs) -> tuple:
+    kwargs['splunk_data'] = {
+        "event": "get events for user",
+        "user_guid": kwargs.get('user_guid', ''),
+        "request_id": kwargs.get('request_id', ''),
+        "username": kwargs.get('username', '')
+    }
+    return True, kwargs

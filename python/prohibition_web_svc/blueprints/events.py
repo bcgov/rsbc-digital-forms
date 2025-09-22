@@ -24,6 +24,7 @@ def index():
         logger.verbose(f"GET /event endpoint called")
         kwargs = middle_logic(
             get_authorized_keycloak_user() + [
+                {"try": splunk_middleware.log_get_events_for_user, "fail": []},
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": event_middleware.get_events_for_user, "fail": [
                     {"try": http_responses.server_error_response, "fail": []}
