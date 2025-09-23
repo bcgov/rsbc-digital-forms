@@ -1,14 +1,6 @@
-import json
-import csv
-import pytz
 import logging
-import logging.config
-from python.task_scheduler.config import Config
 from python.common.models import Event,FormStorageRefs
 import logging
-import json
-from datetime import datetime
-from sqlalchemy import or_
 from python.task_scheduler.eventqueuefuncs import record_queue_error
 
 def query_pending_events(app,db):
@@ -45,14 +37,17 @@ def query_pending_events(app,db):
                         events.append(eventobj)
                 except Exception as e:
                     logging.error('Error in processing event row')
-                    logging.error(e)
+                    logging.error(e, exc_info=True)
                     continue
     except Exception as e:
-        logging.error(e)
+        logging.error(e, exc_info=True)
         record_queue_error(app, None, query_pending_events, str(e) )
         errmsg=f"Error querying pending events: {e}"
         return False,errmsg, None
     logging.debug(events)
+    if len(events) == 0:
+        errmsg="No pending events found"
+        return False,errmsg, None
     return True,None, events
 
 def update_event_status(app,db,event_id,status):
@@ -72,7 +67,7 @@ def update_event_status(app,db,event_id,status):
                 e.task_processing_status=status
                 db.session.commit()
     except Exception as e:
-        logging.error(e)
+        logging.error(e, exc_info=True)
         record_queue_error(app, {'event_id': event_id}, update_event_status, str(e) )
         errmsg=f"Error updating processed event status: {e}"
         return False,errmsg
