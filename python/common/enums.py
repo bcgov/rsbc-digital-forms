@@ -60,6 +60,8 @@ class ErrorCode(BaseEnum):
     # General error
     G00 = ErrorCodeDetails("G00", "General error", ErrorCategory.OTHER, ErrorSeverity.LOW, 
                            "Contact DF application support for further investigation", False)
+    G01 = ErrorCodeDetails("G01", "Error sending email", ErrorCategory.SYSTEM, ErrorSeverity.MEDIUM, 
+                           "Retry the operation. If the issue persists, contact DF application support", False)
     
     # Events related error
     
@@ -76,7 +78,7 @@ class ErrorCode(BaseEnum):
                            "Contact DF application support for further investigation", False)
     E06 = ErrorCodeDetails("E06", "Form handler: Event On Hold", ErrorCategory.DATA, ErrorSeverity.CRITICAL, 
                            "Contact DF application support for further investigation", False)
-    E07 = ErrorCodeDetails("E07", "Form handlerr: Event process error", ErrorCategory.DATA, ErrorSeverity.CRITICAL, 
+    E07 = ErrorCodeDetails("E07", "Form handler: Event process error", ErrorCategory.DATA, ErrorSeverity.CRITICAL, 
                            "Contact DF application support for further investigation", False)
     E08 = ErrorCodeDetails("E08", "General Event process error", ErrorCategory.SYSTEM, ErrorSeverity.CRITICAL, 
                            "Contact DF application support for further investigation", False)

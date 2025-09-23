@@ -8,14 +8,6 @@ from python.common.models import db, Submission
 
 logger = get_logger(__name__)
 
-def log_payload_to_splunk(**kwargs) -> tuple:
-    logger.verbose('inside log_payload_to_splunk()')
-    request = kwargs.get('request')
-    # TODO - log to Splunk
-    logger.verbose(f"payload: | {request.get_data()}")
-    return True, kwargs
-
-
 def request_contains_a_payload(**kwargs) -> tuple:
     logger.verbose("inside request_contains_a_payload()")
     request = kwargs.get('request')

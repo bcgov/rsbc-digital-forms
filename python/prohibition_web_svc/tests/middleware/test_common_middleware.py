@@ -13,12 +13,6 @@ class DummyRequest:
     def get_data(self):
         return self._data
 
-def test_log_payload_to_splunk_logs_and_returns_true():
-    req = DummyRequest(data=b'{"foo": "bar"}')
-    result, kwargs = common_middleware.log_payload_to_splunk(request=req)
-    assert result is True
-    assert kwargs['request'] == req
-
 def test_request_contains_a_payload_success():
     req = DummyRequest(json_data={"foo": "bar"})
     result, kwargs = common_middleware.request_contains_a_payload(request=req)
