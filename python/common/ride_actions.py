@@ -136,8 +136,7 @@ def twenty_four_hours_event(**args):
 
 def vi_event(**args):
     try:
-        logging.info("sending vi_submitted to RIDE")
-        logging.debug(args)
+        logging.verbose(f"sending vi_submitted to RIDE with args: {args}")
         if len(args.keys())==0:
             return True, args
 
@@ -192,7 +191,7 @@ def vi_event(**args):
             logging.error('error in sending vi_submitted event to RIDE')
             return False, args
         else:
-            logging.debug(response.json())
+            logging.debug(response.text)
     except Exception as e:
         logging.error('error in sending vi_submitted event to RIDE')
         logging.exception(e)

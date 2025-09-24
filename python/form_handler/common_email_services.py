@@ -46,7 +46,11 @@ def _send(payload, config, eventid='') -> bool:
     token = get_common_services_access_token(config)
     auth_header = {"Authorization": "Bearer {}".format(token)}
     try:
-        response = requests.post(Config.COMM_SERV_API_ROOT_URL + '/api/v1/email', headers=auth_header, json=payload)
+        url = Config.COMM_SERV_API_ROOT_URL + '/api/v1/email'
+        logging.debug(f'Email service URL: {url}')
+        logging.debug(f'Email auth header: {auth_header}')
+        logging.verbose(f'Email payload: {payload}')
+        response = requests.post(url, headers=auth_header, json=payload)
     except AssertionError as error:
         logging.critical('No response from BC Common Services')
         logging.critical(json.dumps(error))
@@ -55,7 +59,7 @@ def _send(payload, config, eventid='') -> bool:
         data = response.json()
         _log_sent_email_response(eventid, payload, data)
         return True
-    logging.info('response from common services not successful: {}'.format(response.text))
+    logging.error('response from common services not successful: {}'.format(response.text))
     return False
 
 
@@ -75,7 +79,7 @@ def get_common_services_access_token(config):
 
 
 def _log_sent_email_response(eventid, payload, response) -> None:
-    logging.info('response from common services successful')
+    logging.debug('response from common services successful')
     logging.info(json.dumps(dict({
         "email": "success",
         "eventid": eventid,
