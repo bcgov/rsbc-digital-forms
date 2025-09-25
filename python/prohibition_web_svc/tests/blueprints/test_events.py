@@ -183,10 +183,13 @@ class TestEventsBlueprint:
         assert response.status_code == 500
         assert b'Failed to save PDF' in response.data
 
-    def test_get_method_not_implemented(self, client, monkeypatch):
+    def test_get_method_invalid_payload(self, client, monkeypatch):
         """Test POST /event request with missing payload."""
         def mock_middle_logic(*args, **kwargs):
-            return {'response': ('{"error": "payload required"}', 400, {'Content-Type': 'application/json'})}
+            from flask import make_response
+            mock_response = make_response('{"error": "payload required"}', 400)
+            mock_response.headers['Content-Type'] = 'application/json'
+            return {'response': mock_response}
 
         monkeypatch.setattr('python.common.helper.middle_logic', mock_middle_logic)
         monkeypatch.setattr('python.prohibition_web_svc.business.keycloak_logic.get_authorized_keycloak_user', lambda: [])
@@ -197,59 +200,6 @@ class TestEventsBlueprint:
         assert response.status_code == 400
         assert b'payload required' in response.data
 
-    def test_create_application_already_exists(self, client, monkeypatch):
-        """Test POST /event request when application ID already exists."""
-        def mock_middle_logic(*args, **kwargs):
-            from flask import make_response
-            mock_response = make_response('{"error": "Application already exists"}', 409)
-            mock_response.headers['Content-Type'] = 'application/json'
-            return {'response': mock_response}
-        
-        monkeypatch.setattr('python.common.helper.middle_logic', mock_middle_logic)
-        monkeypatch.setattr('python.prohibition_web_svc.business.keycloak_logic.get_authorized_keycloak_user', lambda: [])
-        
-        test_payload = {"VI": True, "ff_application_id": "existing123"}
-        response = client.post('/api/v1/event',
-                              data=json.dumps(test_payload),
-                              content_type='application/json')
-        assert response.status_code == 409
-        assert b'Application already exists' in response.data
-
-    def test_create_save_event_error(self, client, monkeypatch):
-        """Test POST /event request with event save error."""
-        def mock_middle_logic(*args, **kwargs):
-            from flask import make_response
-            mock_response = make_response('{"error": "Failed to save event"}', 400)
-            mock_response.headers['Content-Type'] = 'application/json'
-            return {'response': mock_response}
-        
-        monkeypatch.setattr('python.common.helper.middle_logic', mock_middle_logic)
-        monkeypatch.setattr('python.prohibition_web_svc.business.keycloak_logic.get_authorized_keycloak_user', lambda: [])
-        
-        test_payload = {"VI": True, "VI_number": "VI123"}
-        response = client.post('/api/v1/event',
-                              data=json.dumps(test_payload),
-                              content_type='application/json')
-        assert response.status_code == 400
-        assert b'Failed to save event' in response.data
-
-    def test_create_pdf_save_error(self, client, monkeypatch):
-        """Test POST /event request with PDF save error."""
-        def mock_middle_logic(*args, **kwargs):
-            from flask import make_response
-            mock_response = make_response('{"error": "Failed to save PDF"}', 500)
-            mock_response.headers['Content-Type'] = 'application/json'
-            return {'response': mock_response}
-        
-        monkeypatch.setattr('python.common.helper.middle_logic', mock_middle_logic)
-        monkeypatch.setattr('python.prohibition_web_svc.business.keycloak_logic.get_authorized_keycloak_user', lambda: [])
-        
-        test_payload = {"VI": True, "VI_number": "VI123"}
-        response = client.post('/api/v1/event',
-                              data=json.dumps(test_payload),
-                              content_type='application/json')
-        assert response.status_code == 500
-        assert b'Failed to save PDF' in response.data
 
     def test_get_method_not_implemented(self, client):
         """Test GET request to unimplemented endpoint returns 405."""

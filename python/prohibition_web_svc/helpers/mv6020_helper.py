@@ -62,7 +62,7 @@ def send_mv6020_copy(**kwargs):
                 'func': send_mv6020_copy,
             }
             kwargs['response_dict'] = {
-                'message': f'Failed to send email',
+                'message': 'Failed to send email',
                 'description': 'Unknown message type found in print options' 
             }
             return False, kwargs
@@ -125,7 +125,7 @@ def send_mv6020_copy(**kwargs):
             'func': send_mv6020_copy,
         }
         kwargs['response_dict'] = {
-            'message': f'Failed to send email',
+            'message': 'Failed to send email',
             'description': str(e)
         }
         return False, kwargs

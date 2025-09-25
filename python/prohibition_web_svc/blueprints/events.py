@@ -21,7 +21,7 @@ CORS(bp, resources={Config.URL_PREFIX + "/api/v1/event/*": {"origins": Config.AC
 @bp.route('/event', methods=['GET'])
 def index():
     if request.method == 'GET':
-        logger.verbose(f"GET /event endpoint called")
+        logger.verbose("GET /event endpoint called")
         kwargs = middle_logic(
             get_authorized_keycloak_user() + [
                 {"try": splunk_middleware.log_get_events_for_user, "fail": []},
@@ -55,7 +55,7 @@ def create():
     """
     # logger.debug("new event post: {}".format(request.data))
     if request.method == 'POST':
-        logger.verbose(f"POST /event endpoint called")
+        logger.verbose("POST /event endpoint called")
         kwargs = middle_logic(
             get_authorized_keycloak_user() + [
                 {"try": event_middleware.request_contains_a_payload, "fail": [

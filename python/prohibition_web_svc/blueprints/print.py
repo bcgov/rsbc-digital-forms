@@ -18,7 +18,7 @@ CORS(bp, resources={Config.URL_PREFIX + "/api/v1/print/*": {"origins": Config.AC
 
 @bp.route('/print', methods=['GET', 'POST'])
 def render_document():
-    logger.verbose(f"Inside render_document()")
+    logger.verbose("Inside render_document()")
     kwargs = middle_logic(
         get_authorized_keycloak_user() + [
             {"try": common_middleware.request_contains_a_payload, "fail": [
