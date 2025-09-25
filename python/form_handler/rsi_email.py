@@ -80,6 +80,11 @@ def event_to_vips_dps(**args) -> tuple:
         email_sent,respargs=send_email_to_vips(config=config, title=title, body=body_text, eventid=eventid,file_data=file_data)
         if email_sent:
             logging.debug("email sent to vips")
+            args['splunk_data'] = {
+                "event": "email sent to vips",
+                "event_id": eventid,
+                "event_type": args.get('event_type'),
+            }
         else:
             logging.debug("email not sent to vips")
             raise Exception("email not sent to vips")

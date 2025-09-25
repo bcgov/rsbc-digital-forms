@@ -532,8 +532,15 @@ def send_to_icbc(**args)->tuple:
             'event_type': message.get('event_type') if message else None,
             'func': send_to_icbc,
             'payload': icbc_payload,
-        }
+            }
             return False,args
+
+        args['splunk_data'] = {
+            "event": "event_sent_to_icbc",
+            "event_type": message.get('event_type') if message else None,
+            "event_id": message.get('event_id') if message else None,
+            "icbc_resp_code": icbc_resp_code,
+        }
     except Exception as e:
         logging.exception(e)
         args['error'] = {
