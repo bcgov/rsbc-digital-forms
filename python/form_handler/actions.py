@@ -10,6 +10,7 @@ from minio import Minio
 from python.common.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef,ImpoundReasonCodes,IloIdCrossRef,ImpoundLotOperator
 from python.form_handler.geocoding_service import get_coordinates
 from python.form_handler.icbc_service import submit_to_icbc
+from python.form_handler.rsi_email import send_email_to_rsiops, send_error_to_rsiops
 from python.form_handler.vips_service import create_vips_doc,create_vips_imp
 from python.form_handler.payloads import vips_payload,vips_document_payload
 from python.form_handler.message import encode_message
@@ -27,7 +28,7 @@ def get_storage_ref_event_type(**args) -> tuple:
     """
     Get the event type from the message
     """
-    logging.debug("inside actions_get_storage_ref_event_type()")
+    logging.verbose("inside actions_get_storage_ref_event_type()")
     
     try:
         
@@ -48,6 +49,7 @@ def get_storage_ref_event_type(**args) -> tuple:
             # db.session.commit()
             # print(form)
             if len(form) == 0 or len(form) > 1:
+                logging.info(f"form storage ref not found for storage key: {storage_key}")
                 return False,args
             for f in form:
                 event_type=f.form_type.lower()
@@ -63,7 +65,7 @@ def get_storage_ref_event_type(**args) -> tuple:
 
 
 def get_event_form_data(**args) ->tuple:
-    logging.debug("inside get_event_form_data()")
+    logging.verbose("inside get_event_form_data()")
     try:
         application = args.get('app')
         db = args.get('db')
@@ -78,6 +80,7 @@ def get_event_form_data(**args) ->tuple:
                 .filter(Event.event_id == event_id) \
                 .all()
             if len(event_data) == 0 or len(event_data) > 1:
+                logging.info(f"event data not found for event id: {event_id}")
                 return False, args
             for e in event_data:
                 event_dict = e.__dict__
@@ -91,6 +94,7 @@ def get_event_form_data(**args) ->tuple:
                     .filter(VIForm.form_id == form_id) \
                     .all()
                 if len(form_data) == 0 or len(form_data) > 1:
+                    logging.info(f"VI form data not found for form id: {form_id}")
                     return False, args
                 for f in form_data:
                     form_dict = f.__dict__
@@ -104,6 +108,7 @@ def get_event_form_data(**args) ->tuple:
                     .filter(IRPForm.form_id == form_id) \
                     .all()
                 if len(form_data) == 0 or len(form_data) > 1:
+                    logging.info(f"IRP form data not found for form id: {form_id}")
                     return False, args
                 for f in form_data:
                     form_dict = f.__dict__
@@ -117,6 +122,7 @@ def get_event_form_data(**args) ->tuple:
                     .filter(TwentyFourHourForm.form_id == form_id) \
                     .all()
                 if len(form_data) == 0 or len(form_data) > 1:
+                    logging.info(f"24h form data not found for form id: {form_id}")
                     return False, args
                 for f in form_data:
                     form_dict = f.__dict__
@@ -130,12 +136,14 @@ def get_event_form_data(**args) ->tuple:
                     .filter(TwelveHourForm.form_id == form_id) \
                     .all()
                 if len(form_data) == 0 or len(form_data) > 1:
+                    logging.info(f"12h form data not found for form id: {form_id}")
                     return False, args
                 for f in form_data:
                     form_dict = f.__dict__
                     form_dict.pop('_sa_instance_state', None)
                     args['form_data'] = form_dict
             else:
+                logging.warning(f"unknown event type: {event_type}")
                 return False,args
     except Exception as e:
         logging.exception(e)
@@ -143,8 +151,7 @@ def get_event_form_data(**args) ->tuple:
     return True, args
 
 def get_event_user_data(**args) ->tuple:
-    logging.debug("inside get_form_event_data()")
-    logging.debug(args)
+    logging.verbose(f"inside get_event_user_data() with args: {args}")
     try:
         application = args.get('app')
         db = args.get('db')
@@ -171,8 +178,7 @@ def get_event_user_data(**args) ->tuple:
 
 
 def validate_event_retry_count(**args)->tuple:
-    logging.info("inside validate_event_retry_count()")
-    logging.debug(args)
+    logging.verbose(f"inside validate_event_retry_count() with args: {args}")
     # DONE: if event retry count is more than 10
     # DONE: Update retry count in event table
     try:
@@ -228,20 +234,19 @@ def validate_event_retry_count(**args)->tuple:
 
 
 def validate_event_data(**args)->tuple:
-    logging.debug("inside validate_event_data()")
-    logging.debug(args)
+    logging.verbose(f"inside validate_event_data() with args: {args}")
     # TODO: validate vips payload
     return True,args
 
 
 def update_event_status_processing(**args)->tuple:
-    logging.debug("inside update_event_status_processing()")
-    logging.debug(args)
+    logging.verbose(f"inside update_event_status_processing() with args: {args}")
     try:
         application=args.get('app')
         db=args.get('db')
         event_id=args.get('event_data').get('event_id')
         event_type=args.get('event_type')
+        logging.info(f"updating event status to processing for event id: {event_id}, event type: {event_type}")
         with application.app_context():
             if event_type=='vi':
                 event = db.session.query(Event) \
@@ -264,8 +269,7 @@ def update_event_status_processing(**args)->tuple:
 
 
 def get_storage_file(**args)->tuple:
-    logging.debug("inside get_storage_file()")
-    logging.debug(args)
+    logging.verbose(f"inside get_storage_file() with args: {args}")
     minio_host=f'{Config.STORAGE_HOST}:{Config.STORAGE_PORT}'
     storage_key=args.get('storage_ref').get('storage_key')
     # encryptivkey=args.get('storage_ref').get('encryptiv')
@@ -291,7 +295,7 @@ def get_storage_file(**args)->tuple:
         if decrypted_status is False or decrypted_data is None:
             raise Exception("decryption failed")
         args['file_data'] = decrypted_data
-        logging.debug(file_data)
+        logging.verbose(file_data)
         os.remove(f'{tmp_storage_local}{storage_file_name}')
 
         # stpre decrypted_data base64 string to local file
@@ -313,8 +317,7 @@ def get_storage_file(**args)->tuple:
 
 
 def prep_icbc_payload(**args)->tuple:
-    logging.debug("inside prep_icbc_payload()")
-    logging.debug(args)
+    logging.verbose(f"inside prep_icbc_payload() with args: {args}")
     message=args.get('message')
 
     try:
@@ -514,13 +517,10 @@ def prep_icbc_payload(**args)->tuple:
     return True,args
 
 def send_to_icbc(**args)->tuple:
-    logging.debug("inside send_to_icbc()")
-    logging.debug(args)
+    logging.verbose(f"inside send_to_icbc() with args: {args}")
     message=args.get('message')
     try:
-        logging.debug(args['icbc_payload'])
         icbc_payload=args.get('icbc_payload')
-        logging.debug(icbc_payload)
         send_status, icbc_response_txt,icbc_resp_code = submit_to_icbc(icbc_payload,logging)
         args['icbc_response_txt']=icbc_response_txt
         args['icbc_resp_code']=icbc_resp_code
@@ -532,8 +532,15 @@ def send_to_icbc(**args)->tuple:
             'event_type': message.get('event_type') if message else None,
             'func': send_to_icbc,
             'payload': icbc_payload,
-        }
+            }
             return False,args
+
+        args['splunk_data'] = {
+            "event": "event_sent_to_icbc",
+            "event_type": message.get('event_type') if message else None,
+            "event_id": message.get('event_id') if message else None,
+            "icbc_resp_code": icbc_resp_code,
+        }
     except Exception as e:
         logging.exception(e)
         args['error'] = {
@@ -585,8 +592,7 @@ def send_to_icbc(**args)->tuple:
 #     return True,args
 
 def prep_vips_document_payload(**args)->tuple:
-    logging.debug("inside prep_vips_document_payload()")
-    logging.debug(args)
+    logging.verbose(f"inside prep_vips_document_payload() with args: {args}")
 
     try:
         pdf_data=args.get('file_data')
@@ -624,11 +630,9 @@ def prep_vips_document_payload(**args)->tuple:
     return True,args
 
 def create_vips_document(**args)->tuple:
-    logging.debug("inside create_vips_document()")
-    logging.debug(args)
+    logging.verbose(f"inside create_vips_document() with args: {args}")
     try:
         vips_document_payload=args.get('vips_document_payload')
-        logging.debug(vips_document_payload)
         vips_doc_status, vips_doc_response_txt, vips_doc_resp_code = create_vips_doc(vips_document_payload,logging)
         args['vips_doc_response_txt']=vips_doc_response_txt
         args['vips_doc_resp_code']=vips_doc_resp_code
@@ -647,8 +651,7 @@ def create_vips_document(**args)->tuple:
     return True,args
 
 def prep_vips_payload(**args)->tuple:
-    logging.debug("inside prep_vips_payload()")
-    logging.debug(args)
+    logging.verbose(f"inside prep_vips_payload() with args: {args}")
     try:
         event_data=args.get('event_data')
         form_data=args.get('form_data')
@@ -656,7 +659,6 @@ def prep_vips_payload(**args)->tuple:
         form_id=args.get('form_id')
         # copy a dict
         tmp_payload=vips_payload.copy()
-        logging.debug(tmp_payload)
 
         # get data from db
         application = args.get('app')
@@ -666,12 +668,12 @@ def prep_vips_payload(**args)->tuple:
             policeDetatchmentId=''
             agency_name=''
             if "agency" in user_data: 
-                logging.debug(user_data["agency"])
+                logging.verbose(user_data["agency"])
                 agency_name=user_data["agency"]
                 agency_data = db.session.query(AgencyCrossref) \
                     .filter(AgencyCrossref.agency_name == agency_name) \
                     .all()
-                logging.debug(agency_data)
+                logging.verbose(agency_data)
                 if len(agency_data) == 0:
                     logging.error("agency not found")
                     pass
@@ -984,21 +986,18 @@ def prep_vips_payload(**args)->tuple:
         tmp_payload["vipsImpoundmentArray"]=vipsImpoundmentArray
 
         args['vips_payload']=tmp_payload
-        logging.debug(tmp_payload)
+        logging.verbose(f"VIPS payload prepared: {tmp_payload}")
     except Exception as e:
         logging.exception(e)
-        logging.error(tmp_payload)
         return False,args
 
     return True,args
 
 def create_vips_impoundment(**args)->tuple:
-    logging.debug("inside create_vips_impoundment()")
-    logging.debug(args)
+    logging.verbose(f"inside create_vips_impoundment() with args: {args}")
     try:
         vips_payload=args.get('vips_payload')
-        logging.debug('This is the payload sent to VIPS')
-        logging.debug(json.dumps(vips_payload))
+        logging.verbose(f'This is the payload sent to VIPS: {json.dumps(vips_payload)}')
         vips_status, vips_response_txt, vips_resp_code = create_vips_imp(vips_payload,logging)
         args['vips_response_txt']=vips_response_txt
         args['vips_resp_code']=vips_resp_code
@@ -1012,8 +1011,7 @@ def create_vips_impoundment(**args)->tuple:
     return True,args
 
 def update_event_status(**args)->tuple:
-    logging.debug("inside update_event_status()")
-    logging.debug(args)
+    logging.verbose(f"inside update_event_status() with args: {args}")
     try:
         application=args.get('app')
         db=args.get('db')
@@ -1040,8 +1038,7 @@ def update_event_status(**args)->tuple:
     return True,args
 
 def update_event_status_hold(**args)->tuple:
-    logging.debug("inside update_event_status_hold()")
-    logging.debug(args)
+    logging.verbose(f"inside update_event_status_hold() with args: {args}")
     try:
         application=args.get('app')
         db=args.get('db')
@@ -1095,8 +1092,7 @@ def update_event_status_hold(**args)->tuple:
     return True,args
 
 def update_event_status_error(**args)->tuple:
-    logging.debug("inside update_event_status_error()")
-    logging.debug(args)
+    logging.verbose(f"inside update_event_status_error() with args: {args}")
     try:
         application=args.get('app')
         db=args.get('db')
@@ -1151,8 +1147,7 @@ def update_event_status_error(**args)->tuple:
 
 
 def update_event_status_error_retry(**args)->tuple:
-    logging.debug("inside update_event_status_error_retry()")
-    logging.debug(args)
+    logging.verbose(f"inside update_event_status_error_retry() with args: {args}")
     try:
         application=args.get('app')
         db=args.get('db')
@@ -1187,14 +1182,14 @@ def update_event_status_error_retry(**args)->tuple:
     return True,args
 
 def add_to_persistent_failed_queue(**args)->tuple:
-    logging.debug("inside add_to_persistent_failed_queue()")
-    logging.debug(args)
+    logging.verbose(f"inside add_to_persistent_failed_queue() with args: {args}")
     try:
         config = args.get('config')
         message = args.get('message')
         message['queue_name'] = config.STORAGE_FAIL_QUEUE_PERS
         writer = args.get('writer')
-        logging.debug('add_to_hold_queue(): {}'.format(json.dumps(message)))
+        logging.debug(f'Using persistent fail queue: {config.STORAGE_FAIL_QUEUE_PERS}')
+        logging.verbose(f'add_to_persistent_failed_queue(): {json.dumps(message)}')
         if not writer.publish(config.STORAGE_FAIL_QUEUE_PERS, encode_message(message, config.ENCRYPT_KEY)):
             # Set error in args to get consumed by the record_event_error function
             args['error'] = {
@@ -1223,14 +1218,13 @@ def add_to_persistent_failed_queue(**args)->tuple:
     return True, args
 
 def add_to_transient_failed_queue(**args)->tuple:
-    logging.debug("inside add_to_transient_failed_queue()")
-    logging.debug(args)
+    logging.verbose(f"inside add_to_transient_failed_queue() with args: {args}")
     try:
         config = args.get('config')
         message = args.get('message')
         message['queue_name'] = config.STORAGE_FAIL_QUEUE
         writer = args.get('writer')
-        logging.debug('add_to_transient_failed_queue(): {}'.format(json.dumps(message)))
+        logging.verbose(f'add_to_transient_failed_queue(): {json.dumps(message)}')
         if not writer.publish(config.STORAGE_FAIL_QUEUE, encode_message(message, config.ENCRYPT_KEY)):
             logging.critical('unable to write to RabbitMQ {} queue'.format(config.STORAGE_FAIL_QUEUE))
             return False, args
@@ -1240,14 +1234,13 @@ def add_to_transient_failed_queue(**args)->tuple:
     return True, args
 
 def add_to_hold_queue(**args)->tuple:
-    logging.debug("inside add_to_hold_queue()")
-    logging.debug(args)
+    logging.verbose(f"inside add_to_hold_queue() with args: {args}")
     try:
         config = args.get('config')
         message = args.get('message')
         message['queue_name'] = config.STORAGE_HOLD_QUEUE
         writer = args.get('writer')
-        logging.debug('add_to_hold_queue(): {}'.format(json.dumps(message)))
+        logging.verbose(f'add_to_hold_queue(): {json.dumps(message)}')
         if not writer.publish(config.STORAGE_HOLD_QUEUE, encode_message(message, config.ENCRYPT_KEY)):
             logging.critical('unable to write to RabbitMQ {} queue'.format(config.STORAGE_HOLD_QUEUE))
             return False, args
@@ -1258,19 +1251,19 @@ def add_to_hold_queue(**args)->tuple:
 
 
 def add_to_retry_queue(**args)->tuple:
-    logging.debug("inside add_to_retry_queue()")
-    logging.debug(args)
+    logging.verbose(f"inside add_to_retry_queue() with args: {args}")
     try:    
         config = args.get('config')
         message = args.get('message')
         put_to_queue_name=args.get('put_to_queue_name',None)
         writer = args.get('writer')
-        logging.debug('add_to_retry_queue(): {}'.format(json.dumps(message)))
+        logging.verbose(f'add_to_retry_queue(): {json.dumps(message)}')
         if put_to_queue_name is None:
             put_to_queue_name=config.STORAGE_HOLD_QUEUE
             args['message']['queue_name']=config.STORAGE_HOLD_QUEUE
         else:
-            args['message']['queue_name']=put_to_queue_name         
+            args['message']['queue_name']=put_to_queue_name
+        logging.debug(f'Using retry queue: {put_to_queue_name}')
         if not writer.publish(put_to_queue_name, encode_message(message, config.ENCRYPT_KEY)):
             logging.critical('unable to write to RabbitMQ {} queue'.format(put_to_queue_name))
             # If an exception occurs, record it as an error
@@ -1295,8 +1288,7 @@ def add_to_retry_queue(**args)->tuple:
 
 
 def add_unknown_event_error_to_message(**args)->tuple:
-    logging.debug("inside add_unknown_event_error_to_message()")
-    logging.debug(args)
+    logging.verbose(f"inside add_unknown_event_error_to_message() with args: {args}")
     try:
         message = args.get('message')
         tmp_key = message.get('Key', None)
@@ -1307,8 +1299,7 @@ def add_unknown_event_error_to_message(**args)->tuple:
     return True,args
 
 def add_unknown_event_to_error(**args)->tuple:
-    logging.debug("inside add_unknown_event_error()")
-    logging.debug(args)
+    logging.verbose(f"inside add_unknown_event_to_error() with args: {args}")
     try:
         message = args.get('message')
         args['error'] = {
@@ -1360,6 +1351,13 @@ def record_event_error(**args):
                 }
             
             record_error(**error_obj)
+            email = {
+                'title': f"[DF_FORM_HANDLER] {error_obj['error_code']} - {error_obj['error_code'].description}",
+                'config': args.get('config'),
+                'message': json.dumps(message) if message else None,
+                'body': error_obj,
+            }
+            send_error_to_rsiops(**email)
         return True, args
     except Exception as e:
         # If recording the error itself fails, log it
@@ -1368,7 +1366,7 @@ def record_event_error(**args):
 
 
 def get_event_coordinates(**args)->tuple:
-    logging.debug("inside get_event_coordinates()")
+    logging.verbose(f"inside get_event_coordinates() with args: {args}")
     try:
         address = args['event_data']['intersection_or_address_of_offence']
         city = form_middleware.get_city_name(args['event_data']['offence_city'], args)

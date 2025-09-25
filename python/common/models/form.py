@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+
+from python.common.logging_utils import get_logger
 from .base import db
 
 @dataclass
@@ -31,8 +33,7 @@ class Form(db.Model):
         lease_expiry = today + timedelta(days=30)
         self.lease_expiry = lease_expiry
         self.user_guid = user_guid
-        import logging
-        logging.info(f"{self.user_guid} leased {self.id} until {self.lease_expiry.strftime('%Y-%m-%d')}")
+        get_logger(__name__).info(f"{self.user_guid} leased {self.id} until {self.lease_expiry.strftime('%Y-%m-%d')}")
 
     @staticmethod
     def _format_lease_expiry(lease_expiry):

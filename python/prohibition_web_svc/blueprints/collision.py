@@ -1,22 +1,23 @@
 from flask import Blueprint, request
 from flask_cors import CORS
-import logging.config
 from python.common import splunk
 from python.common.helper import middle_logic
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.keycloak_logic import get_authorized_keycloak_user
 import python.prohibition_web_svc.http_responses as http_responses
 from python.prohibition_web_svc.middleware import collision_middleware, common_middleware
+from python.common.logging_utils import get_logger
 
-logging.config.dictConfig(Config.LOGGING)
-logging.info('*** collision blueprint loaded ***')
+logger = get_logger(__name__)
+
+logger.info('*** collision blueprint loaded ***')
 
 bp = Blueprint('collision', __name__, url_prefix=Config.URL_PREFIX + '/api/v1')
 CORS(bp, resources={Config.URL_PREFIX + "/api/v1/collision/*": {"origins": Config.ACCESS_CONTROL_ALLOW_ORIGIN}})
 
 @bp.route('/collision', methods=['POST'])
 def create_collision():
-    logging.info(f"POST /collision endpoint called")
+    logger.verbose("POST /collision endpoint called")
     kwargs = middle_logic(
         get_authorized_keycloak_user() + [
             {"try": collision_middleware.log_payload_to_splunk, "fail": [
@@ -57,12 +58,12 @@ def create_collision():
         request=request,
         config=Config
     )
-    logging.info(f"POST /collision endpoint response code: {kwargs.get('response').status_code}")
+    logger.verbose(f"POST /collision endpoint response code: {kwargs.get('response').status_code}")
     return kwargs.get('response')
 
 @bp.route('/collision/<collision_case_num>', methods=['GET'])
 def get_collision(collision_case_num):
-    logging.info(f"GET /collision/{collision_case_num} endpoint called")
+    logger.verbose(f"GET /collision/{collision_case_num} endpoint called")
     kwargs = middle_logic(
         get_authorized_keycloak_user() + [
             {"try": collision_middleware.log_get_collision_to_splunk, "fail": []},
@@ -78,5 +79,5 @@ def get_collision(collision_case_num):
         config=Config,
         collision_case_num=collision_case_num
     )
-    logging.info(f"GET /collision/{collision_case_num} endpoint response code: {kwargs.get('response').status_code}")
+    logger.verbose(f"GET /collision/{collision_case_num} endpoint response code: {kwargs.get('response').status_code}")
     return kwargs.get('response')

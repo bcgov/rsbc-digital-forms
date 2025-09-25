@@ -91,7 +91,7 @@ class TestFormsBlueprint:
                               content_type='application/json')
         assert response.status_code == 400
         # Flask returns default HTML error page for invalid JSON, which is expected behavior
-        assert b'Bad Request' in response.data
+        assert b'bad request' in response.data
 
     def test_create_insufficient_form_ids(self, client, monkeypatch):
         """Test POST /forms request when insufficient form IDs are available."""
@@ -214,7 +214,7 @@ class TestFormsBlueprint:
         # since they're handled by Flask-CORS middleware
         assert response.status_code == 200
 
-    @patch('python.prohibition_web_svc.blueprints.forms.logging')
+    @patch('python.prohibition_web_svc.blueprints.forms.logger')
     def test_logging_on_create(self, mock_logging, client, monkeypatch):
         """Test that logging occurs during form creation."""
         test_payload = {"24Hour": 1}
@@ -230,7 +230,7 @@ class TestFormsBlueprint:
                               content_type='application/json')
         
         # Verify logging was called
-        mock_logging.info.assert_called()
+        mock_logging.verbose.assert_called()
         assert response.status_code == 201
 
     def test_invalid_http_methods(self, client):

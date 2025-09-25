@@ -1,13 +1,11 @@
 import logging
-import logging.config
 import requests
 from python.common import form_middleware
 from python.common.helper import date_time_to_local_tz_string, format_date_only, yes_no_string_to_bool
 from python.common.config import Config
 from python.common.enums import ErrorCode
-import pytz
 
-from python.common.models import Agency, City, ImpoundLotOperator, JurisdictionCrossRef, Province, Vehicle, VehicleColour, VehicleStyle, VehicleType
+from python.common.models import ImpoundLotOperator, JurisdictionCrossRef, Province, Vehicle, VehicleStyle, VehicleType
 
 ride_url=Config.RIDE_API_URL
 ride_key=Config.RIDE_API_KEY
@@ -18,8 +16,8 @@ vi_submitted = "vi_submitted"
 
 def twelve_hours_event(**args):
     try:
-        logging.info("sending 12hr_submitted event to RIDE")
-        logging.debug(args)
+        logging.debug("sending 12hr_submitted event to RIDE")
+        logging.verbose(args)
         if len(args.keys()) == 0:
             return True, args
 
@@ -71,8 +69,8 @@ def twelve_hours_event(**args):
 
 def twenty_four_hours_event(**args):
     try:
-        logging.info("sending 24hr_submitted event to RIDE")
-        logging.debug(args)
+        logging.debug("sending 24hr_submitted event to RIDE")
+        logging.verbose(args)
         if len(args.keys())==0:
             return True, args
 
@@ -136,8 +134,7 @@ def twenty_four_hours_event(**args):
 
 def vi_event(**args):
     try:
-        logging.info("sending vi_submitted to RIDE")
-        logging.debug(args)
+        logging.verbose(f"sending vi_submitted to RIDE with args: {args}")
         if len(args.keys())==0:
             return True, args
 
@@ -192,7 +189,7 @@ def vi_event(**args):
             logging.error('error in sending vi_submitted event to RIDE')
             return False, args
         else:
-            logging.debug(response.json())
+            logging.debug(response.text)
     except Exception as e:
         logging.error('error in sending vi_submitted event to RIDE')
         logging.exception(e)

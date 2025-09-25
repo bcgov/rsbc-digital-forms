@@ -1,7 +1,9 @@
 from flask import make_response
-import logging
 from flask import jsonify
 
+from python.common.logging_utils import get_logger
+
+logger = get_logger(__name__)
 
 def successful_create_response(**kwargs) -> tuple:
     response_dict = kwargs.get('response_dict')
@@ -40,48 +42,48 @@ def unauthorized(**kwargs) -> tuple:
 
 
 def unable_to_retrieve_keycloak_certificates(**kwargs) -> tuple:
-    logging.warning("unable to retrieve keycloak certificates")
+    logger.warning("unable to retrieve keycloak certificates")
     kwargs['response'] = make_response({'error': 'unable to retrieve keycloak certificates'}, 500)
     return True, kwargs
 
 
 def keycloak_token_not_valid(**kwargs) -> tuple:
-    logging.warning("keycloak access token not valid")
+    logger.warning("keycloak access token not valid")
     kwargs['response'] = make_response({'error': 'token not valid'}, 401)
     return True, kwargs
 
 
 def keycloak_no_username(**kwargs) -> tuple:
-    logging.warning("decoded keycloak token has no username")
+    logger.warning("decoded keycloak token has no username")
     kwargs['response'] = make_response({'error': 'server error'}, 500)
     return True, kwargs
 
 
 def no_user_guid(**kwargs) -> tuple:
-    logging.warning("decoded keycloak token has no user_guid")
+    logger.warning("decoded keycloak token has no user_guid")
     kwargs['response'] = make_response({'error': 'server error'}, 500)
     return True, kwargs
 
 
 def role_already_exists(**kwargs) -> tuple:
     if kwargs.get('identity_provider') != 'service_account':
-        logging.warning("role for {} already exists".format(kwargs.get('username')))
+        logger.warning("role for {} already exists".format(kwargs.get('username')))
         kwargs['response'] = make_response({'error': 'role already exists'}, 400)
     else:
         ## handle request from bpm service account. user / role might be existing already in database.
         # if role already exists send a http 409 - conflict - response.
-        logging.warning("role for {} already exists".format(kwargs.get('payload')['username']))
+        logger.warning("role for {} already exists".format(kwargs.get('payload')['username']))
         kwargs['response'] = make_response({'error': 'role already exists'}, 409)
     return True, kwargs
 
 
 def user_already_exists(**kwargs) -> tuple:
-    logging.warning("user for {} already exists".format(kwargs.get('username')))
+    logger.warning("user for {} already exists".format(kwargs.get('username')))
     kwargs['response'] = make_response({'error': 'user already exists'}, 400)
     return True, kwargs
 
 def application_already_exists(**kwargs) -> tuple:
-    logging.warning("application id {} already exists".format(kwargs.get('payload')['ff_application_id']))
+    logger.warning("application id {} already exists".format(kwargs.get('payload')['ff_application_id']))
     kwargs['response'] = make_response({'error': 'application already exists'}, 409)
     return True, kwargs
 

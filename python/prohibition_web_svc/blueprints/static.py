@@ -1,16 +1,18 @@
+from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.config import Config
-from python.common.helper import middle_logic, load_json_into_dict
-from python.prohibition_web_svc.business.keycloak_logic import get_authorized_keycloak_user
+from python.common.helper import middle_logic
 import python.prohibition_web_svc.http_responses as http_responses
+from python.prohibition_web_svc.middleware import common_middleware
 import python.prohibition_web_svc.middleware.splunk_middleware as splunk_middleware
 from flask import request, make_response, Blueprint
 from python.common.splunk import log_to_splunk
 from flask_cors import CORS
 from python.common.models import db, Agency, City, Country, ImpoundLotOperator, Jurisdiction, Permission, Province, Vehicle, VehicleStyle, VehicleType, VehicleColour, NSCPuj, JurisdictionCountry
 from python.common.models.TAR.police_agency import TarPoliceAgency
-
-import logging.config
 from flask import jsonify
+
+
+logger = get_logger(__name__)
 
 resource_map = {
     "tar_police_agencies": TarPoliceAgency,
@@ -29,8 +31,7 @@ resource_map = {
     "jurisdiction_country": JurisdictionCountry
 }
 
-logging.config.dictConfig(Config.LOGGING)
-logging.info('*** static blueprint loaded ***')
+logger.info('*** static blueprint loaded ***')
 
 bp = Blueprint('static', __name__, url_prefix=Config.URL_PREFIX + '/api/v1')
 CORS(bp, resources={Config.URL_PREFIX + "/api/v1/static/*": {"origins": Config.ACCESS_CONTROL_ALLOW_ORIGIN}})
@@ -42,8 +43,9 @@ def index(resource):
     List all static ids
     """
     if request.method == 'GET':
-        logging.debug(f"GET /static/{resource} endpoint called")
+        logger.verbose(f"GET /static/{resource} endpoint called")
         kwargs = middle_logic([
+              {"try": common_middleware.get_request_id, "fail": []},
               {"try": _is_not_configuration, "fail": [
                   {"try": splunk_middleware.log_static_get, "fail": []},
                   {"try": _get_configuration, "fail": [
@@ -77,7 +79,7 @@ def index(resource):
             required_permission='static-get',
             request=request,
             config=Config)
-        logging.info(f"GET /static/{resource} endpoint response code: {kwargs.get('response').status_code}")
+        logger.verbose(f"GET /static/{resource} endpoint response code: {kwargs.get('response').status_code}")
         return kwargs.get('response')
 
 
@@ -105,7 +107,7 @@ def _get_agencies(**kwargs) -> tuple:
         kwargs['response'] = make_response(data, 200)
         return True, kwargs
     except Exception as e:
-        logging.warning("error getting static data", e)
+        logger.warning("error getting static data", e)
         return False, kwargs
 
 
@@ -152,6 +154,7 @@ def _is_not_configuration(**kwargs) -> tuple:
 
 
 def _get_configuration(**kwargs) -> tuple:
+    logger.verbose("inside _get_configuration()")
     config = {
         "environment": Config.ENVIRONMENT,
     }
@@ -161,12 +164,13 @@ def _get_configuration(**kwargs) -> tuple:
 
 def _get_resource(**kwargs) -> tuple:
     resource = kwargs.get('resource')
+    logger.verbose(f"{kwargs.get('request_id')} inside _get_resource() for resource: {resource}")
     try:
         data = jsonify(db.session.query(resource_map[resource]).all())
         if resource == 'impound_lot_operators':
-            logging.verbose("impound data: {}".format(data))
+            logger.verbose(f"{kwargs.get('request_id')} impound data: {data}")
         kwargs['response'] = make_response(data, 200)
         return True, kwargs
     except Exception as e:
-        logging.warning("error getting {} data".format(resource))
+        logger.warning(f"{kwargs.get('request_id')} error getting {resource} data: {e}")
         return False, kwargs

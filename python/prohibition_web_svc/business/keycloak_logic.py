@@ -1,3 +1,4 @@
+from python.prohibition_web_svc.middleware import common_middleware
 import python.prohibition_web_svc.middleware.keycloak_middleware as keycloak_middleware
 import python.prohibition_web_svc.http_responses as http_responses
 import python.prohibition_web_svc.middleware.splunk_middleware as splunk_middleware
@@ -6,6 +7,7 @@ import python.common.splunk as splunk
 
 def get_keycloak_user() -> list:
     return [
+        {"try": common_middleware.get_request_id, "fail": []},
         {"try": keycloak_middleware.get_authorization_header_from_request, "fail": [
             {"try": splunk_middleware.unauthenticated, "fail": []},
             {"try": splunk.log_to_splunk, "fail": []},

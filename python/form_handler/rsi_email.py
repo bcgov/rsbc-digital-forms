@@ -67,7 +67,7 @@ def rsiops_event_to_retry_queue(**args) -> tuple:
 def event_to_vips_dps(**args) -> tuple:
     # message = args.get('message')
     # config = args.get('config')
-    logging.debug("inside event_to_vips_dps()")
+    logging.verbose(f"inside event_to_vips_dps() with args: {args}")
     config = args.get('config')
     # event_type = args.get('event_type')
     storage_key = args.get('storage_key')
@@ -80,6 +80,11 @@ def event_to_vips_dps(**args) -> tuple:
         email_sent,respargs=send_email_to_vips(config=config, title=title, body=body_text, eventid=eventid,file_data=file_data)
         if email_sent:
             logging.debug("email sent to vips")
+            args['splunk_data'] = {
+                "event": "email sent to vips",
+                "event_id": eventid,
+                "event_type": args.get('event_type'),
+            }
         else:
             logging.debug("email not sent to vips")
             raise Exception("email not sent to vips")
@@ -141,3 +146,26 @@ def get_jinja2_env(path="./python/form_handler/templates"):
         loader=template_loader,
         autoescape=select_autoescape(['html', 'xml'])
     )
+
+
+
+def send_error_to_rsiops(**args):
+    if not args.get('config') or not args.get('title') or not args.get('body'):
+        return False, args
+    subject = args.get('title')
+    config = args.get('config')
+    message = args.get('message')
+    eventid = args.get('eventid')
+    body = args.get('body')
+    template = get_jinja2_env().get_template('error_notification.html')
+    to_emails=config.RSIOPS_EMAIL_ADDRESS.split(',')
+    return common_email_services.send_email(
+        to_emails,
+        subject,
+        config,
+        template.render(subject=subject, body=body, message=json.dumps(message)), eventid,[{
+                "content": json.dumps(message),
+                "contentType": "string",
+                # "encoding": "base64",
+                "filename": "event.json"
+            }]), args    

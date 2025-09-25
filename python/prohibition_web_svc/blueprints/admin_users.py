@@ -1,10 +1,10 @@
+from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.config import Config
 import python.prohibition_web_svc.middleware.splunk_middleware as splunk_middleware
 import python.common.splunk as splunk
 import python.common.helper as helper
 from flask import request, Blueprint, make_response, jsonify
 from flask_cors import CORS
-import logging.config
 import python.prohibition_web_svc.business.keycloak_logic as keycloak_logic
 import python.prohibition_web_svc.http_responses as http_responses
 import python.prohibition_web_svc.middleware.keycloak_middleware as keycloak_middleware
@@ -13,8 +13,9 @@ import python.prohibition_web_svc.middleware.admin_user_middleware as admin_user
 import python.prohibition_web_svc.middleware.notification_middleware as notification_middleware
 
 
-logging.config.dictConfig(Config.LOGGING)
-logging.info('*** admin/users blueprint loaded ***')
+logger = get_logger(__name__)
+
+logger.info('*** admin/users blueprint loaded ***')
 
 bp = Blueprint('admin_users', __name__, url_prefix=Config.URL_PREFIX + '/api/v1')
 CORS(bp, resources={Config.URL_PREFIX + "/api/v1/admin/users": {"origins": Config.ACCESS_CONTROL_ALLOW_ORIGIN}})
@@ -75,7 +76,7 @@ def create():
                             {"try": http_responses.server_error_response, "fail": []},
                         ]},
                         {"try": notification_middleware.send_new_user_admin_notification, "fail": [
-                            {"try": logging.warning, "args": ["Failed to send admin notification email"], "fail": []}
+                            {"try": logger.warning, "args": ["Failed to send admin notification email"], "fail": []}
                         ]},
                     ]},
                     {"try": http_responses.role_already_exists, "fail": []},
@@ -90,7 +91,7 @@ def create():
                         {"try": http_responses.server_error_response, "fail": []},
                     ]},
                     {"try": notification_middleware.send_new_user_admin_notification, "fail": [
-                            {"try": logging.warning, "args": ["Failed to send admin notification email"], "fail": []}
+                            {"try": logger.warning, "args": ["Failed to send admin notification email"], "fail": []}
                         ]},
                 ]},
                 {"try": http_responses.role_already_exists, "fail": []},
