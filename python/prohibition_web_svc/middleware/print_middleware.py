@@ -1,6 +1,8 @@
 import asyncio
+import base64
 import copy
 import json
+import re
 from pathlib import Path
 from flask import Response
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -120,6 +122,36 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
         tpl = env.get_template(template_name)
         template_data = {**data, 'output_type': output_type}
         html_str = tpl.render(data=template_data)
+        
+        # Convert relative image paths to base64 data URLs for Playwright
+        
+        def replace_image_src(match):
+            src = match.group(1)
+            if not src.startswith(('http://', 'https://', 'data:', 'file://')):
+                # Handle relative paths
+                image_path = Path(template_dir) / src
+                if image_path.exists():
+                    try:
+                        with open(image_path, 'rb') as img_file:
+                            img_data = img_file.read()
+                            img_base64 = base64.b64encode(img_data).decode('utf-8')
+                            # Determine MIME type based on file extension
+                            ext = image_path.suffix.lower()
+                            mime_type = {
+                                '.png': 'image/png',
+                                '.jpg': 'image/jpeg', 
+                                '.jpeg': 'image/jpeg',
+                                '.gif': 'image/gif',
+                                '.svg': 'image/svg+xml'
+                            }.get(ext, 'image/png')
+                            return f'src="data:{mime_type};base64,{img_base64}"'
+                    except Exception as e:
+                        print(f"Warning: Could not load image {image_path}: {e}")
+                        return match.group(0)  # Return original if failed
+            return match.group(0)  # Return original for absolute URLs
+        
+        # Replace image src attributes
+        html_str = re.sub(r'src="([^"]*)"', replace_image_src, html_str)
 
         # Use Playwright to process HTML
         async with async_playwright() as p:
