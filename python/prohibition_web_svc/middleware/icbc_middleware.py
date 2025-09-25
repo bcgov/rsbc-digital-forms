@@ -1,10 +1,10 @@
-import logging
 import requests
-from datetime import datetime
 from flask import make_response
 import base64
+from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.config import Config
 
+logger = get_logger(__name__)
 
 def get_icbc_api_authorization_header(**kwargs) -> tuple:
     username = kwargs.get('username')
@@ -15,7 +15,7 @@ def get_icbc_api_authorization_header(**kwargs) -> tuple:
             "loginUserId": username
         }
     except Exception as e:
-        logging.warning("error creating ICBC authorization header")
+        logger.error(f"error creating ICBC authorization header {e}")
         return False, kwargs
     return True, kwargs
 
@@ -23,18 +23,17 @@ def get_icbc_api_authorization_header(**kwargs) -> tuple:
 def get_icbc_driver(**kwargs) -> tuple:
     url = "{}/drivers/{}".format(Config.ICBC_API_ROOT, kwargs.get('dl_number'))
     try:
-        logging.debug("ICBC url:" + url)
-        logging.debug("ICBC header:" + str(kwargs.get('icbc_header')))
+        logger.debug("ICBC url:" + url)
+        logger.debug("ICBC header:" + str(kwargs.get('icbc_header')))
         icbc_response = requests.get(url, headers=kwargs.get('icbc_header'))
-        logging.debug(f'ICBC response status code: {icbc_response.status_code}')
-        # logging.debug(icbc_response.json())
-        # logging.debug(icbc_response.reason)
+        logger.debug(f'ICBC response status code: {icbc_response.status_code}')
+        logger.verbose(icbc_response.json())
         if icbc_response.status_code == 400:
             kwargs['response'] = make_response({}, 200)
         else:
             kwargs['response'] = make_response(icbc_response.json(), icbc_response.status_code)
     except Exception as e:
-        logging.exception(e)
+        logger.error(e)
         return False, kwargs
     return True, kwargs
 
@@ -47,13 +46,15 @@ def get_icbc_vehicle(**kwargs) -> tuple:
         # "effectiveDate": datetime.now().astimezone().replace(microsecond=0).isoformat()
     }
     try:
+        logger.debug("ICBC url:" + url)
+        logger.debug("ICBC header:" + str(kwargs.get('icbc_header')))
+        logger.debug("ICBC url parameters:" + str(url_parameters))
         icbc_response = requests.get(url, headers=kwargs.get('icbc_header'), params=url_parameters)
-        logging.warning("icbc url:" + icbc_response.url)
-        logging.debug("---------------------------Made it here---------------------------")
-        logging.debug(icbc_response.json())
-        logging.debug("------------------------------------------------------------------")
+        logger.debug(f'ICBC response status code: {icbc_response.status_code}')
+        logger.verbose(icbc_response.json())
         kwargs['response'] = make_response(icbc_response.json(), icbc_response.status_code)
     except Exception as e:
+        logger.error(e)
         return False, kwargs
     return True, kwargs
 
@@ -63,6 +64,7 @@ def splunk_get_driver(**kwargs) -> tuple:
         "event": "icbc_get_driver",
         "username": kwargs.get('username'),
         "user_guid": kwargs.get('user_guid'),
+        "request_id": kwargs.get('request_id', ''),
         "queried_bcdl": kwargs.get("dl_number")
     }
     return True, kwargs
@@ -73,6 +75,7 @@ def splunk_get_vehicle(**kwargs) -> tuple:
         "event": "icbc_get_vehicle",
         "username": kwargs.get('username'),
         "user_guid": kwargs.get('user_guid'),
+        "request_id": kwargs.get('request_id', ''),
         "queried_plate": kwargs.get('plate_number')
     }
     return True, kwargs

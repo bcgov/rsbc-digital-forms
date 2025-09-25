@@ -1,8 +1,8 @@
+from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.config import Config
 from python.common.helper import middle_logic
 from flask import request, Blueprint, make_response, jsonify
 from flask_cors import CORS
-import logging.config
 import python.common.splunk as splunk
 from python.prohibition_web_svc.middleware import common_middleware
 import python.prohibition_web_svc.middleware.splunk_middleware as splunk_middleware
@@ -11,8 +11,8 @@ import python.prohibition_web_svc.http_responses as http_responses
 from python.prohibition_web_svc.business.keycloak_logic import get_authorized_keycloak_user
 
 
-logging.config.dictConfig(Config.LOGGING)
-logging.info('*** forms blueprint loaded ***')
+logger = get_logger(__name__)
+logger.info('*** forms blueprint loaded ***')
 
 bp = Blueprint('event', __name__, url_prefix=Config.URL_PREFIX + '/api/v1')
 CORS(bp, resources={Config.URL_PREFIX + "/api/v1/event/*": {"origins": Config.ACCESS_CONTROL_ALLOW_ORIGIN}})
@@ -21,9 +21,10 @@ CORS(bp, resources={Config.URL_PREFIX + "/api/v1/event/*": {"origins": Config.AC
 @bp.route('/event', methods=['GET'])
 def index():
     if request.method == 'GET':
-        logging.debug(f"GET /event endpoint called")
+        logger.verbose("GET /event endpoint called")
         kwargs = middle_logic(
             get_authorized_keycloak_user() + [
+                {"try": splunk_middleware.log_get_events_for_user, "fail": []},
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": event_middleware.get_events_for_user, "fail": [
                     {"try": http_responses.server_error_response, "fail": []}
@@ -32,7 +33,7 @@ def index():
             required_permission='forms-get',
             request=request,
             config=Config)
-        logging.info(f"GET /event endpoint response code: {kwargs.get('response').status_code}")
+        logger.verbose(f"GET /event endpoint response code: {kwargs.get('response').status_code}")
         return kwargs.get('response')
 
 
@@ -52,9 +53,9 @@ def create():
     for 30 days and save the user's name in the form table. This endpoint is not
     used to submit a new form.  All payloads to this endpoint are ignored.
     """
-    # logging.debug("new event post: {}".format(request.data))
+    # logger.debug("new event post: {}".format(request.data))
     if request.method == 'POST':
-        logging.info(f"POST /event endpoint called")
+        logger.verbose("POST /event endpoint called")
         kwargs = middle_logic(
             get_authorized_keycloak_user() + [
                 {"try": event_middleware.request_contains_a_payload, "fail": [
@@ -81,7 +82,7 @@ def create():
             required_permission='forms-create',
             request=request,
             config=Config)
-        logging.info(f"POST /event endpoint response code: {kwargs.get('response').status_code}")
+        logger.verbose(f"POST /event endpoint response code: {kwargs.get('response').status_code}")
         return kwargs.get('response')
 
 

@@ -77,7 +77,7 @@ class TestFormMiddleware:
     def test_log_payload_to_splunk_logs_payload(self):
         """Test that log_payload_to_splunk logs the payload and returns True."""
         request = MockRequest(data=b'{"test": "data"}')
-        with patch('python.prohibition_web_svc.middleware.form_middleware.logging') as mock_logging:
+        with patch('python.prohibition_web_svc.middleware.form_middleware.logger') as mock_logging:
             result, kwargs = form_middleware.log_payload_to_splunk(request=request)
             
         assert result is True
@@ -475,7 +475,7 @@ class TestFormMiddleware:
         
         request = BadRequest()
         
-        with patch('python.prohibition_web_svc.middleware.form_middleware.logging'):
+        with patch('python.prohibition_web_svc.middleware.form_middleware.logger'):
             result, kwargs = form_middleware.get_json_payload(request=request)
         
         assert result is False
@@ -669,7 +669,7 @@ class TestFormMiddleware:
         mock_record_error.assert_not_called()
 
     @patch('python.prohibition_web_svc.middleware.form_middleware.record_error')
-    @patch('python.prohibition_web_svc.middleware.form_middleware.logging')
+    @patch('python.prohibition_web_svc.middleware.form_middleware.logger')
     def test_record_form_error_exception(self, mock_logging, mock_record_error):
         """Test error recording when record_error raises an exception."""
         # Setup

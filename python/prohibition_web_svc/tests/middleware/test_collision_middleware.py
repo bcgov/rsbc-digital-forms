@@ -645,7 +645,8 @@ def test_log_get_collision_to_splunk_data_structure():
     kwargs = {
         'user_guid': 'test-guid',
         'username': 'test.user',
-        'collision_case_num': 'MV-001'
+        'collision_case_num': 'MV-001',
+        'request_id': 'req-123'
     }
     
     result, out_kwargs = collision_middleware.log_get_collision_to_splunk(**kwargs)
@@ -654,12 +655,13 @@ def test_log_get_collision_to_splunk_data_structure():
     splunk_data = out_kwargs['splunk_data']
     
     # Verify splunk_data has exactly the expected keys
-    expected_keys = {'event', 'user_guid', 'username', 'form_type', 'collision_case_number'}
+    expected_keys = {'event', 'user_guid', 'username', 'request_id', 'form_type', 'collision_case_number'}
     assert set(splunk_data.keys()) == expected_keys
     
     # Verify all values are strings (except username which can be None)
     assert isinstance(splunk_data['event'], str)
     assert isinstance(splunk_data['user_guid'], str)
+    assert isinstance(splunk_data['request_id'], str)
     assert isinstance(splunk_data['form_type'], str)
     assert isinstance(splunk_data['collision_case_number'], str)
     # username can be str or None
@@ -894,14 +896,14 @@ def test_log_payload_to_splunk_exception_handling():
         'username': 'test.user'
     }
     
-    with patch('python.prohibition_web_svc.middleware.collision_middleware.logging') as mock_logging:
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.logger') as mock_logging:
         result, out_kwargs = collision_middleware.log_payload_to_splunk(**kwargs)
         
         # Function should still return True even with exception
         assert result is True
         
         # Should log the exception
-        mock_logging.exception.assert_called_once()
+        mock_logging.error.assert_called_once()
         
         # splunk_data should not be set due to exception
         assert 'splunk_data' not in out_kwargs
@@ -913,14 +915,14 @@ def test_log_payload_to_splunk_no_request_object():
         'username': 'test.user'
     }
     
-    with patch('python.prohibition_web_svc.middleware.collision_middleware.logging') as mock_logging:
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.logger') as mock_logging:
         result, out_kwargs = collision_middleware.log_payload_to_splunk(**kwargs)
         
         # Function should still return True even with missing request
         assert result is True
         
         # Should log the exception
-        mock_logging.exception.assert_called_once()
+        mock_logging.error.assert_called_once()
         
         # splunk_data should not be set due to exception
         assert 'splunk_data' not in out_kwargs
@@ -984,7 +986,8 @@ def test_log_payload_to_splunk_data_structure():
     kwargs = {
         'request': mock_request,
         'user_guid': 'test-guid',
-        'username': 'test.user'
+        'username': 'test.user',
+        'request_id': 'req-123'
     }
     
     result, out_kwargs = collision_middleware.log_payload_to_splunk(**kwargs)
@@ -993,12 +996,13 @@ def test_log_payload_to_splunk_data_structure():
     splunk_data = out_kwargs['splunk_data']
     
     # Verify splunk_data has exactly the expected keys
-    expected_keys = {'event', 'user_guid', 'username', 'form_type', 'payload'}
+    expected_keys = {'event', 'user_guid', 'username', 'request_id', 'form_type', 'payload'}
     assert set(splunk_data.keys()) == expected_keys
     
     # Verify data types
     assert isinstance(splunk_data['event'], str)
     assert isinstance(splunk_data['user_guid'], str)
     assert isinstance(splunk_data['form_type'], str)
+    assert isinstance(splunk_data['request_id'], str)
     assert isinstance(splunk_data['payload'], dict)
     # username can be str or None

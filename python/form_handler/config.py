@@ -76,6 +76,12 @@ class Config():
     GEOCODING_API_URL = os.getenv('GEOCODING_API_URL', 'http://localhost:8000')
     GEOCODING_API_KEY = os.getenv('GEOCODING_API_KEY', 'TEST')
 
+    # Splunk settings
+    OPENSHIFT_PLATE                     = os.getenv('OPENSHIFT_PLATE', "be78d6-prod-form-handler")
+    SPLUNK_HOST                         = os.getenv('SPLUNK_HOST', 'http://localhost')
+    SPLUNK_PORT                         = int(os.getenv('SPLUNK_PORT', '8088'))
+    SPLUNK_TOKEN                        = os.getenv('SPLUNK_TOKEN', 'aaaa-bbbb-cccc')
+
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
