@@ -380,7 +380,7 @@ class TestEventsBlueprint:
 
         assert response.status_code == 400
         # Error handling should have been triggered
-        assert len(error_calls) >= 0  # May or may not be called depending on middleware chain implementation
+        assert len(error_calls) == 0  # May or may not be called depending on middleware chain implementation
 
     def test_config_integration(self, app):
         """Test that the blueprint uses Config values correctly."""
