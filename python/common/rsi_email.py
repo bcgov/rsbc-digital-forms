@@ -482,6 +482,18 @@ def send_mv6020_copy(**args) -> tuple:
         message.get('collision_case_number'),attachments), args
 
 
+def send_admin_failure_notification(**args):
+    subject = args.get('subject')
+    config = args.get('config')
+    message = args.get('message')
+    template = get_jinja2_env().get_template('admin_notice_submission_failure.html')
+    return common_email_services.send_email(
+        [config.ADMIN_EMAIL_ADDRESS],
+        subject,
+        config,
+        template.render(subject=subject, message=message), 'admin'), args
+
+
 
 def get_jinja2_env(path="./python/common/templates"):
     template_loader = FileSystemLoader(searchpath=path)
