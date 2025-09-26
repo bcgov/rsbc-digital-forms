@@ -1,4 +1,6 @@
 from python.common.logging_utils import get_logger
+from python.common.models.TAR.lki_highway import TarLkiHighway
+from python.common.models.TAR.lki_segment import TarLkiSegment
 from python.prohibition_web_svc.config import Config
 from python.common.helper import middle_logic
 import python.prohibition_web_svc.http_responses as http_responses
@@ -28,7 +30,9 @@ resource_map = {
     "vehicle_colours": VehicleColour,
     "vehicles": Vehicle,
     "nsc_puj": NSCPuj,
-    "jurisdiction_country": JurisdictionCountry
+    "jurisdiction_country": JurisdictionCountry,
+    "lki_highway": TarLkiHighway,
+    "lki_segment": TarLkiSegment,
 }
 
 logger.info('*** static blueprint loaded ***')
@@ -63,6 +67,7 @@ def index(resource):
               {"try": splunk_middleware.log_static_get, "fail": []},
               {"try": _is_known_resource, "fail": [
                   {"try": http_responses.bad_request_response, "fail": []},
+                  {"try": log_to_splunk, "fail": []},
               ]},
               {"try": _is_resource_agencies, "fail": [
                   {"try": _get_resource, "fail": [
@@ -72,6 +77,7 @@ def index(resource):
               ]},
               {"try": _get_agencies, "fail": [
                   {"try": http_responses.server_error_response, "fail": []},
+                  {"try": log_to_splunk, "fail": []},
               ]},
               {"try": log_to_splunk, "fail": []},
             ],
@@ -122,23 +128,7 @@ def _get_keycloak(**kwargs) -> tuple:
 
 
 def _is_known_resource(**kwargs) -> tuple:
-    known_resources = [
-        'tar_police_agencies',
-        'agencies',
-        'cities',
-        'countries',
-        'impound_lot_operators',
-        'jurisdictions',
-        'keycloak',
-        'provinces',
-        'vehicle_styles',
-        'vehicle_types',
-        'vehicle_colours',
-        'vehicles',
-        "nsc_puj",
-        "jurisdiction_country",
-    ]
-    return kwargs.get('resource') in known_resources, kwargs
+    return kwargs.get('resource') in resource_map.keys(), kwargs
 
 
 def _is_resource_agencies(**kwargs) -> tuple:
