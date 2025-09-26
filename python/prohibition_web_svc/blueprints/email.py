@@ -16,7 +16,7 @@ CORS(bp, resources={Config.URL_PREFIX + "/api/v1/email/*": {"origins": Config.AC
 
 @bp.route('/email', methods=['POST'])
 def send_entity_copy():
-    logging.info(f"Inside send_entity_copy()")
+    logging.info(f"Inside send_mail()")
     kwargs = middle_logic(
         get_authorized_keycloak_user() + [
             {"try": common_middleware.log_payload_to_splunk, "fail": [
