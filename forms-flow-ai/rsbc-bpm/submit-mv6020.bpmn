@@ -118,7 +118,7 @@ execution.setVariable("collision","");</camunda:script>
 throw new Error("Error submitting form, response Code: "+statusCode);</camunda:script>
         </camunda:executionListener>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0idn300</bpmn:incoming>
+      <bpmn:incoming>Flow_1cs9gzs</bpmn:incoming>
       <bpmn:outgoing>Flow_1drchzm</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Activity_0azpkne" name="Update Application Status - Submitted">
@@ -132,16 +132,6 @@ throw new Error("Error submitting form, response Code: "+statusCode);</camunda:s
       <bpmn:outgoing>Flow_0np0ks7</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_0dibfen" sourceRef="Activity_1pvahuo" targetRef="submit_collision" />
-    <bpmn:callActivity id="Activity_1ge3ykx" name="Send Admin Notification Email" calledElement="common-email-workflow">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-        <camunda:inputOutput>
-          <camunda:inputParameter name="category">mv6020_submission_failed</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1jlp88q</bpmn:incoming>
-      <bpmn:outgoing>Flow_0idn300</bpmn:outgoing>
-    </bpmn:callActivity>
     <bpmn:endEvent id="Event_1egd12n" name="end">
       <bpmn:incoming>Flow_1drchzm</bpmn:incoming>
     </bpmn:endEvent>
@@ -215,42 +205,92 @@ execution.setVariable("collision","");</camunda:script>
       <bpmn:outgoing>Flow_0mt8kcs</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_0mt8kcs" sourceRef="Activity_179m48l" targetRef="Event_0aqqwja" />
-    <bpmn:scriptTask id="Activity_0gxlnmc" name="Set Mail Variables" scriptFormat="javascript">
+    <bpmn:scriptTask id="Activity_0gxlnmc" name="Generate Mail Content" scriptFormat="groovy">
       <bpmn:incoming>Flow_08qg5ne</bpmn:incoming>
       <bpmn:outgoing>Flow_1jlp88q</bpmn:outgoing>
-      <bpmn:script>var LocalDateTime = Java.type("java.time.LocalDateTime");
-var ZoneId = Java.type("java.time.ZoneId");
-var DateTimeFormatter = Java.type("java.time.format.DateTimeFormatter");
+      <bpmn:script>import groovy.json.JsonOutput
+import java.lang.System
 
-var now = LocalDateTime.now(ZoneId.of("America/Vancouver"));
-var formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd HH:mm:ss");
-var formattedDateTime = now.format(formatter);
+// Collect execution variables
+def formId = "MV6020"
+def applicationId = execution.getVariable("applicationId")
+def submittedDate = execution.getVariable("submissionDate")
+def errorDetails = "Error while submitting MV6020 application. Please check logs for details."
 
-execution.setVariable("submissionDate", formattedDateTime);
 
-var applicationId = execution.getVariable("applicationId");
-execution.setVariable("ff_application_id", applicationId);
-execution.setVariable(
-  "submissionUrl",
-  "https://forms-flow-web-be78d6-dev.apps.silver.devops.gov.bc.ca/digital-forms-v3/application/" + applicationId
-);
+// Base URL from a process variable or hardcoded
+def baseUrl = System.getenv('FORMSFLOW_WEB_URL')
+// Application URL
+def applicationUrl = "${baseUrl}/application/${applicationId}"
+
+// Regex: strip everything after the host up to the first "/" in path
+def matcher = baseUrl =~ "^(https?://[^/]+)/[^/]+/"
+def hostUrl = matcher ? matcher[0][1] : baseUrl   // e.g. https://example.com
+def camundaBaseUrl = "${hostUrl}/camunda"
+
+def processInstanceId = execution.getProcessInstanceId()
+def incidentUrl = "${camundaBaseUrl}/app/cockpit/default/#/process-instance/${processInstanceId}"
+
+// Create payload map
+def payload = [
+    template            : "admin_notice_submission_failure.html",
+    form_id             : formId,
+    application_id      : applicationId,
+    submitted_date      : submittedDate,
+    error_details       : errorDetails,
+    application_url     : applicationUrl,
+    camunda_incident_url: incidentUrl
+]
+
+// Convert to JSON string
+def payloadJson = JsonOutput.toJson(payload)
+
+// Store payload as process variable
+execution.setVariable("emailPayload", payloadJson)
 </bpmn:script>
     </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="Flow_1jlp88q" sourceRef="Activity_0gxlnmc" targetRef="Activity_1ge3ykx" />
-    <bpmn:sequenceFlow id="Flow_0idn300" sourceRef="Activity_1ge3ykx" targetRef="Activity_02bgk3e" />
+    <bpmn:sequenceFlow id="Flow_1jlp88q" sourceRef="Activity_0gxlnmc" targetRef="Activity_04q3sgs" />
     <bpmn:sequenceFlow id="Flow_1drchzm" sourceRef="Activity_02bgk3e" targetRef="Event_1egd12n" />
+    <bpmn:serviceTask id="Activity_04q3sgs" name="Send Email - Notify Failure" camunda:asyncAfter="true">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="groovy">var system = java.lang.System;
+system.getenv('REACT_APP_RSBC_API_URL')+"/api/v1/email"</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">${emailPayload}</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">Bearer ${token}</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="statusCode">#{statusCode}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:failedJobRetryTimeCycle>R0/PT1M</camunda:failedJobRetryTimeCycle>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1jlp88q</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cs9gzs</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1cs9gzs" sourceRef="Activity_04q3sgs" targetRef="Activity_02bgk3e" />
   </bpmn:process>
   <bpmn:error id="BUSINESS_ERROR" name="BUSINESS_ERROR" errorCode="BUSINESS_ERROR" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="digital_forms_events">
-      <bpmndi:BPMNShape id="BPMNShape_0zio69l" bpmnElement="Activity_1xpaggf">
-        <dc:Bounds x="280" y="250" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="272" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="160" y="315" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ts53jy_di" bpmnElement="Event_0ts53jy">
+        <dc:Bounds x="1302" y="522" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1310" y="498" width="19" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1j3xucw_di" bpmnElement="submit_collision">
@@ -265,6 +305,24 @@ execution.setVariable(
         <dc:Bounds x="530" y="250" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0661aot" bpmnElement="Activity_02bgk3e">
+        <dc:Bounds x="1580" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0613upj" bpmnElement="Activity_0azpkne">
+        <dc:Bounds x="1040" y="500" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1egd12n_di" bpmnElement="Event_1egd12n">
+        <dc:Bounds x="1802" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1811" y="145" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0zio69l" bpmnElement="Activity_1xpaggf">
+        <dc:Bounds x="280" y="250" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0l66sc4_di" bpmnElement="Gateway_0l66sc4" isMarkerVisible="true">
         <dc:Bounds x="435" y="265" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -273,16 +331,6 @@ execution.setVariable(
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1142" y="280" width="57" height="27" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0ts53jy_di" bpmnElement="Event_0ts53jy">
-        <dc:Bounds x="1302" y="522" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1310" y="498" width="19" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0613upj" bpmnElement="Activity_0azpkne">
-        <dc:Bounds x="1040" y="500" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_17ut9lx_di" bpmnElement="Gateway_17ut9lx" isMarkerVisible="true">
         <dc:Bounds x="1065" y="95" width="50" height="50" />
@@ -300,22 +348,12 @@ execution.setVariable(
         <dc:Bounds x="670" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1egd12n_di" bpmnElement="Event_1egd12n">
-        <dc:Bounds x="1802" y="102" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1811" y="145" width="19" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0e6xit1_di" bpmnElement="Activity_0gxlnmc">
         <dc:Bounds x="1230" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0klzee0_di" bpmnElement="Activity_1ge3ykx">
-        <dc:Bounds x="1400" y="80" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0661aot" bpmnElement="Activity_02bgk3e">
-        <dc:Bounds x="1580" y="80" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_1ywbbj4" bpmnElement="Activity_04q3sgs">
+        <dc:Bounds x="1410" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_11aa80b_di" bpmnElement="Flow_11aa80b">
@@ -325,29 +363,29 @@ execution.setVariable(
           <dc:Bounds x="197" y="273" width="66" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_08bdel0_di" bpmnElement="Flow_08bdel0">
-        <di:waypoint x="380" y="290" />
-        <di:waypoint x="435" y="290" />
+      <bpmndi:BPMNEdge id="Flow_0es6pgh_di" bpmnElement="Flow_0es6pgh">
+        <di:waypoint x="630" y="290" />
+        <di:waypoint x="720" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0np0ks7_di" bpmnElement="Flow_0np0ks7">
+        <di:waypoint x="1140" y="540" />
+        <di:waypoint x="1302" y="540" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0dibfen_di" bpmnElement="Flow_0dibfen">
         <di:waypoint x="820" y="290" />
         <di:waypoint x="880" y="290" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_03v93rj_di" bpmnElement="Flow_03v93rj">
-        <di:waypoint x="980" y="290" />
-        <di:waypoint x="1065" y="290" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0es6pgh_di" bpmnElement="Flow_0es6pgh">
-        <di:waypoint x="630" y="290" />
-        <di:waypoint x="720" y="290" />
+      <bpmndi:BPMNEdge id="Flow_08bdel0_di" bpmnElement="Flow_08bdel0">
+        <di:waypoint x="380" y="290" />
+        <di:waypoint x="435" y="290" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17fr8p5_di" bpmnElement="Flow_17fr8p5">
         <di:waypoint x="485" y="290" />
         <di:waypoint x="530" y="290" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fa4hmr_di" bpmnElement="Flow_0fa4hmr">
-        <di:waypoint x="460" y="138" />
-        <di:waypoint x="460" y="265" />
+      <bpmndi:BPMNEdge id="Flow_03v93rj_di" bpmnElement="Flow_03v93rj">
+        <di:waypoint x="980" y="290" />
+        <di:waypoint x="1065" y="290" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04z5ai6_di" bpmnElement="Flow_04z5ai6">
         <di:waypoint x="1090" y="315" />
@@ -363,10 +401,6 @@ execution.setVariable(
           <dc:Bounds x="1098" y="202" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0np0ks7_di" bpmnElement="Flow_0np0ks7">
-        <di:waypoint x="1140" y="540" />
-        <di:waypoint x="1302" y="540" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08qg5ne_di" bpmnElement="Flow_08qg5ne">
         <di:waypoint x="1115" y="120" />
         <di:waypoint x="1230" y="120" />
@@ -381,21 +415,25 @@ execution.setVariable(
           <dc:Bounds x="954" y="102" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fa4hmr_di" bpmnElement="Flow_0fa4hmr">
+        <di:waypoint x="460" y="138" />
+        <di:waypoint x="460" y="265" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0mt8kcs_di" bpmnElement="Flow_0mt8kcs">
         <di:waypoint x="670" y="120" />
         <di:waypoint x="478" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1jlp88q_di" bpmnElement="Flow_1jlp88q">
         <di:waypoint x="1330" y="120" />
-        <di:waypoint x="1400" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0idn300_di" bpmnElement="Flow_0idn300">
-        <di:waypoint x="1500" y="120" />
-        <di:waypoint x="1580" y="120" />
+        <di:waypoint x="1410" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1drchzm_di" bpmnElement="Flow_1drchzm">
         <di:waypoint x="1680" y="120" />
         <di:waypoint x="1802" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cs9gzs_di" bpmnElement="Flow_1cs9gzs">
+        <di:waypoint x="1510" y="120" />
+        <di:waypoint x="1580" y="120" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
