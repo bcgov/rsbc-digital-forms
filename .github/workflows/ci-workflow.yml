@@ -155,16 +155,16 @@ jobs:
           allow-repeats: true
           message-path: |
             trivy_updated.html
-      - name: Post SARIF findings in the issue
-        uses: sett-and-hive/sarif-to-issue-action@v1
-        if: failure()
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          branch: ${{ github.head_ref }}
-          sarif-file: trivy.sarif
-          title: "Critical vulnerabilities found in ${{ inputs.DOCKER_IMAGE_NAME }} on PR ${{ github.event.number }}"
-          odc-sarif: false
+      # - name: Post SARIF findings in the issue
+      #   uses: sett-and-hive/sarif-to-issue-action@v1
+      #   if: failure()
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     repository: ${{ github.repository }}
+      #     branch: ${{ github.head_ref }}
+      #     sarif-file: trivy.sarif
+      #     title: "Critical vulnerabilities found in ${{ inputs.DOCKER_IMAGE_NAME }} on PR ${{ github.event.number }}"
+      #     odc-sarif: false
       
       
 

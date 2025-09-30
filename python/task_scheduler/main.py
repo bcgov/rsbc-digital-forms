@@ -1,5 +1,6 @@
 from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
+from python.common.verbose_logging import VERBOSE_LEVEL_NUM, verbose
 from python.task_scheduler.config import Config
 import logging
 import logging.config
@@ -12,6 +13,9 @@ from python.task_scheduler.rabbitmq import RabbitMQ
 
 from flask_api import FlaskAPI
 from python.common.models import db
+
+logging.addLevelName(VERBOSE_LEVEL_NUM, 'VERBOSE')
+logging.verbose = verbose
 logging.config.dictConfig(Config.LOGGING)
 
 app = FlaskAPI(__name__)
@@ -32,7 +36,7 @@ def my_periodic_task():
     query_pending_events(app,db)
 
 def process_pending_events():
-    logging.debug("process_pending_events() invoked")
+    logging.verbose("process_pending_events() invoked")
     try:        
         statusval,errmsg,all_events=query_pending_events(app,db)
         if statusval:
@@ -45,15 +49,17 @@ def process_pending_events():
                         logging.error(errmsg)
                         continue
                     else:
-                        logging.debug("Event added to queue")
-                        logging.info("Updating processed event status")
+                        logging.info(f"Updating processed event status for event_id: {event['event_id']}")
                         update_status,update_err=update_event_status(app,db,event['event_id'],'processed')
                         if not update_status:
-                            logging.error("error in updating event status")
+                            logging.error(f"Error in updating event status for event_id: {event['event_id']}")
                             raise Exception(update_err)
                 except Exception as e:
                     logging.error(e)
                     continue
+        elif errmsg == "No pending events found":
+            logging.info(errmsg)
+            return True
         else:
             raise Exception(errmsg)
     except Exception as e:

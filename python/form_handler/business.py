@@ -1,4 +1,5 @@
 # import python.common.middleware as middleware
+from python.common import splunk
 import python.form_handler.actions as actions
 import python.form_handler.rsi_email as rsi_email
 # import python.common.splunk_application_for_review as splunk
@@ -73,6 +74,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.add_to_retry_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
+            {"try": splunk.log_to_splunk, "fail": []},
             # {"try": actions.prep_vips_document_payload, "fail": [
             #     {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
             #     {"try": actions.add_to_persistent_failed_queue, "fail": []},
@@ -141,6 +143,7 @@ def process_incoming_form() -> dict:
                  {"try": actions.record_event_error, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
+            {"try": splunk.log_to_splunk, "fail": []},
             {"try": actions.get_event_coordinates, "fail": []},
             {"try": ride_actions.twenty_four_hours_event, "fail": [
                 {"try": actions.record_event_error, "fail": []},
@@ -191,6 +194,7 @@ def process_incoming_form() -> dict:
                 {"try": actions.record_event_error, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
+            {"try": splunk.log_to_splunk, "fail": []},
             {"try": actions.get_event_coordinates, "fail": []},
             {"try": ride_actions.twelve_hours_event, "fail": [
                  {"try": actions.record_event_error, "fail": []},

@@ -1,11 +1,13 @@
 from flask import jsonify, make_response
 from cerberus import Validator
 from cerberus import errors
-import logging
 import json
 from datetime import datetime
 import pytz
+from python.common.logging_utils import get_logger
 from python.common.models import db, User, UserRole
+
+logger = get_logger(__name__)
 
 class CustomErrorHandler(errors.BasicErrorHandler):
     messages = errors.BasicErrorHandler.messages.copy()
@@ -16,11 +18,11 @@ def user_has_not_applied_previously(**kwargs) -> tuple:
         user_count = db.session.query(User) \
             .filter(User.user_guid == kwargs.get('user_guid')) \
             .count()
-        logging.debug("inside user_has_not_applied_previously(): " + str(user_count))
+        logger.debug("inside user_has_not_applied_previously(): " + str(user_count))
         if user_count:
-            logging.warning('user already exists: ' + str(user_count))
+            logger.warning('user already exists: ' + str(user_count))
     except Exception as e:
-        logging.warning(str(e))
+        logger.error(e)
         return False, kwargs
     return user_count == 0, kwargs
 
@@ -30,9 +32,9 @@ def does_role_already_exist(**kwargs) -> tuple:
         user_role_count = db.session.query(UserRole) \
             .filter(UserRole.user_guid == kwargs.get('user_guid')) \
             .count()
-        logging.debug("inside does_role_already_exist(): " + str(user_role_count))
+        logger.debug("inside does_role_already_exist(): " + str(user_role_count))
     except Exception as e:
-        logging.warning(str(e))
+        logger.error(e)
         return False, kwargs
     return user_role_count != 0, kwargs
 
@@ -52,7 +54,7 @@ def update_the_user(**kwargs) -> tuple:
         user.last_name = kwargs.get('payload')['last_name']
         db.session.commit()
     except Exception as e:
-        logging.warning(str(e))
+        logger.error(e)
         return False, kwargs
     return True, kwargs
 
@@ -73,7 +75,7 @@ def create_a_user(**kwargs) -> tuple:
         db.session.add(user)
         db.session.commit()
     except Exception as e:
-        logging.warning(str(e))
+        logger.error(e)
         return False, kwargs
     return True, kwargs
 
@@ -91,7 +93,7 @@ def create_user_role(**kwargs) -> tuple:
         db.session.commit()
         kwargs['response'] = make_response(jsonify(UserRole.serialize(requested_role)), 201)
     except Exception as e:
-        logging.warning(str(e))
+        logger.error(e)
         return False, kwargs
     return True, kwargs
 
@@ -101,10 +103,10 @@ def request_contains_a_payload(**kwargs) -> tuple:
     try:
         payload = request.get_json()
     except Exception as e:
-        logging.warning(str(e))
+        logger.error(e)
         return False, kwargs
     kwargs['payload'] = payload
-    logging.warning("payload: " + json.dumps(payload))
+    logger.debug("payload: " + json.dumps(payload))
     return payload is not None, kwargs
 
 def validate_create_user_payload(**kwargs) -> tuple:
@@ -135,7 +137,7 @@ def validate_create_user_payload(**kwargs) -> tuple:
     cerberus.allow_unknown = False
     if cerberus.validate(kwargs.get('payload')):
         return True, kwargs
-    logging.warning("validation error: " + json.dumps(cerberus.errors))
+    logger.warning("validation error: " + json.dumps(cerberus.errors))
     kwargs['validation_errors'] = cerberus.errors
     return False, kwargs
 
@@ -148,7 +150,7 @@ def get_user(**kwargs) -> tuple:
         db.session.commit()
         kwargs['response'] = make_response(jsonify(User.serialize(user)), 200)
     except Exception as e:
-        logging.warning(str(e))
+        logger.error(e)
         return False, kwargs
     return True, kwargs
 

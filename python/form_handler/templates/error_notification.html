@@ -1,0 +1,24 @@
+{% extends "email_alert_base.html" %}
+
+{% block primary_text_1 %}
+<div>
+    <p>Error Code: {{body['error_code']}} - {{body['error_code'].description}}</p>
+    <p>
+      Category: {{body['error_code'].category.description}}</br>
+      Severity: {{body['error_code'].severity.description}}</br>
+      Resolution: {{body['error_code'].resolution}}</br>
+    </p>
+    Event ID: {{body['event_id']}}</br>
+    Event Type: {{body['event_type']}}</br>
+    Function: {{body['func'].__name__}}</br>
+    </p>
+    <p>Details: </br><i>{{body['error_details']}}</i></p>
+    <p>Payload: </br><i>{{body['payload']}}</i></p>
+</div>
+{% endblock %}
+
+{% block salutation_block %}{% endblock %}
+
+{% block callout_block %}{% endblock %}
+{% block sign_off %}{% endblock %}
+{% block email_not_monitored %}{% endblock %}
