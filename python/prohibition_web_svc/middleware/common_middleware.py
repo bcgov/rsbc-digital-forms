@@ -1,23 +1,20 @@
-import logging
+import uuid
+
+from flask import g
 from python.common.enums import ErrorCode
 from python.common.error_middleware import record_error
+from python.common.logging_utils import get_logger
 from python.common.models import db, Submission
 
-def log_payload_to_splunk(**kwargs) -> tuple:
-    logging.verbose('inside log_payload_to_splunk()')
-    request = kwargs.get('request')
-    # TODO - log to Splunk
-    logging.verbose(f"payload: | {request.get_data()}")
-    return True, kwargs
-
+logger = get_logger(__name__)
 
 def request_contains_a_payload(**kwargs) -> tuple:
-    logging.verbose("inside request_contains_a_payload()")
+    logger.verbose("inside request_contains_a_payload()")
     request = kwargs.get('request')
     try:
         payload = request.get_json()
         kwargs['payload'] = payload
-        logging.debug(f"payload: {payload}")
+        logger.debug(f"payload: {payload}")
     except Exception as e:
         kwargs['error'] = {
             'error_code': ErrorCode.E01,
@@ -37,7 +34,7 @@ def check_if_application_id_exists(**kwargs) -> tuple:
     """
     Check if the application id exists in the database.
     """
-    logging.verbose('inside check_if_application_id_exists()')
+    logger.verbose('inside check_if_application_id_exists()')
     data = kwargs.get('payload')
     application_id = data.get('ff_application_id')
     event_type = kwargs.get('event_type', 'Unknown Event Type')
@@ -58,7 +55,7 @@ def check_if_application_id_exists(**kwargs) -> tuple:
             }
             return False, kwargs
     except Exception as e:
-        logging.exception(e)
+        logger.error(f"Error occurred while checking application ID existence: {str(e)}")
         kwargs['error'] = {
             'error_code': ErrorCode.G00,
             'error_details': str(e),
@@ -92,13 +89,13 @@ def safe_get_value(data, default=None):
     return data if data is not None else default    
 
 def get_user_guid(**kwargs) -> tuple:
-    logging.verbose('inside get_user_guid()')
+    logger.verbose('inside get_user_guid()')
     data = kwargs.get('payload')
     if kwargs.get('identity_provider') == 'service_account':
        user_guid = data.get('submitted_user_guid', kwargs.get('username'))
     else:
        user_guid = kwargs.get('user_guid')
-    logging.info(f"user_guid: {user_guid}")
+    logger.info(f"user_guid: {user_guid}")
     return user_guid
 
 def record_event_error(**kwargs):
@@ -113,13 +110,20 @@ def record_event_error(**kwargs):
         error = kwargs.get('error')
 
         if error is None:
-            logging.warning("Error object is None")
+            logger.warning("Error object is None")
             return
         record_error(**error)
 
     except Exception as e:
         # If recording the error itself fails, log it
-        logging.error(f"Failed to record error: {str(e)}")
+        logger.error(f"Failed to record error: {str(e)}")
         return True, kwargs
     
+    return True, kwargs
+
+def get_request_id(**kwargs) -> tuple:
+    logger.verbose('inside get_request_id()')
+    request_id = g.get('request_context').request_id if hasattr(g, 'request_context') else str(uuid.uuid4().hex)[:12]
+    kwargs['request_id'] = request_id
+    logger.verbose(f"request_id: {request_id}")
     return True, kwargs

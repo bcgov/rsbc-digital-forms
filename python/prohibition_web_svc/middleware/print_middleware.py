@@ -1,6 +1,6 @@
 import asyncio
 import base64
-import logging
+import copy
 import json
 import re
 from pathlib import Path
@@ -8,21 +8,25 @@ from flask import Response
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from playwright.async_api import async_playwright
 from python.common.enums import ErrorCode
+from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.middleware import common_middleware
+from python.prohibition_web_svc.middleware import collision_middleware
 from python.prohibition_web_svc.models.print_request_payload import PrintRequestPayload
+
+logger = get_logger(__name__)
 
 EVENT_TYPE = 'Print - Document Render'
 
 def set_event_type(**kwargs) -> tuple:
     """Set the event type for the print event."""
-    logging.verbose('inside set_event_type()')
+    logger.verbose('inside set_event_type()')
     kwargs['event_type'] = EVENT_TYPE
     return True, kwargs
 
 
 def validate_print_payload(**kwargs) -> tuple:
     """Validate the print request payload using PrintRequestPayload model."""
-    logging.verbose("inside validate_print_payload()")
+    logger.verbose("inside validate_print_payload()")
     
     request = kwargs.get('request')
     if not request:
@@ -47,7 +51,7 @@ def validate_print_payload(**kwargs) -> tuple:
             
         # Validate required fields based on PrintRequestPayload model
         if 'template' not in payload or not payload['template']:
-            logging.warning("validation error: missing or empty template")
+            logger.warning("validation error: missing or empty template")
             kwargs['error'] = {
                 'error_code': ErrorCode.P01,
                 'error_details': "Missing required field: template",
@@ -57,7 +61,7 @@ def validate_print_payload(**kwargs) -> tuple:
             return False, kwargs
         
         if 'data' not in payload or not payload['data']:
-            logging.warning("validation error: missing or empty data")
+            logger.warning("validation error: missing or empty data")
             kwargs['error'] = {
                 'error_code': ErrorCode.P01,
                 'error_details': "Missing required field: data",
@@ -89,11 +93,11 @@ def validate_print_payload(**kwargs) -> tuple:
         validated_payload: PrintRequestPayload = payload
         kwargs['payload'] = validated_payload
         
-        logging.debug("payload validation successful")
+        logger.verbose("payload validation successful")
         return True, kwargs
         
     except Exception as e:
-        logging.warning(f"validation error: {str(e)}")
+        logger.error(e)
         kwargs['error'] = {
             'error_code': ErrorCode.P01,
             'error_details': f"Invalid JSON payload: {str(e)}",
@@ -206,7 +210,7 @@ def render_with_playwright(template_path: str, data: dict, output_type: str = "p
 
 def render_document_with_playwright(**kwargs) -> tuple:
     """Render document using Playwright and store result in kwargs."""
-    logging.verbose('inside render_document_with_playwright()')
+    logger.verbose('inside render_document_with_playwright()')
     
     try:
         payload = kwargs.get('payload', {})
@@ -239,7 +243,7 @@ def render_document_with_playwright(**kwargs) -> tuple:
         return True, kwargs
         
     except Exception as e:
-        logging.exception(e)
+        logger.error(e)
         kwargs['error'] = {
             'error_code': ErrorCode.P02,
             'error_details': str(e),
@@ -250,7 +254,7 @@ def render_document_with_playwright(**kwargs) -> tuple:
 
 def return_rendered_response(**kwargs) -> tuple:
     """Return the rendered content as Flask Response."""
-    logging.verbose('inside return_rendered_response()')
+    logger.verbose('inside return_rendered_response()')
     
     try:
         content = kwargs.get('rendered_content')
@@ -270,7 +274,7 @@ def return_rendered_response(**kwargs) -> tuple:
         return True, kwargs
         
     except Exception as e:
-        logging.exception(e)
+        logger.error(e)
         kwargs['error'] = {
             'error_code': ErrorCode.P02,
             'error_details': str(e),
@@ -279,3 +283,20 @@ def return_rendered_response(**kwargs) -> tuple:
         }
         return False, kwargs
 
+
+def log_payload_to_splunk(**kwargs) -> tuple:
+    try:
+        request = kwargs.get('request')
+        payload = request.get_json()
+        payload = copy.deepcopy(payload)
+        payload_masked = collision_middleware.mask_sensitive_data(payload)
+        kwargs['splunk_data'] = {
+            'event': 'print request received',
+            'request_id': kwargs.get('request_id', ''),
+            'user_guid': kwargs.get('user_guid', ''),
+            'username': kwargs.get('username', ''),
+            'payload': payload_masked
+        }
+    except Exception as e:
+        logger.error(e)
+    return True, kwargs

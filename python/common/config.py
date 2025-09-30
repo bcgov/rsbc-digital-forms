@@ -1,10 +1,12 @@
 import os
 
+from python.common.custom_log_formatter import CustomLogFormatter
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    LOG_FORMAT                          = "[DF_BACKEND_API] %(asctime)s::%(levelname)s::%(name)s::%(message)s"
+    LOG_FORMAT                          = "[DF_BACKEND_API] %(asctime)s::%(levelname)s::%(request_id)s::%(name)s %(message)s"
     LOG_LEVEL                           = os.environ.get('LOG_LEVEL', 'INFO').upper()
 
     RABBITMQ_URL                        = os.getenv('RABBITMQ_URL', 'localhost')
@@ -58,6 +60,7 @@ class Config:
                 'format': '[DF_BACKEND_API] %(asctime)s %(filename)s %(funcName)s %(levelname)s %(lineno)d %(module)s %(message)s %(pathname)s'
             },
             'brief': {
+                '()': CustomLogFormatter,
                 'format': LOG_FORMAT
             }
         },

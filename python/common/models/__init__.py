@@ -73,3 +73,5 @@ from .TAR.taken_by import TarTakenBy
 from .TAR.injury_classification import TarInjuryClassification
 from .TAR.police_district import TarPoliceDistrict
 from .TAR.police_agency import TarPoliceAgency
+from .TAR.lki_highway import TarLkiHighway
+from .TAR.lki_segment import TarLkiSegment
