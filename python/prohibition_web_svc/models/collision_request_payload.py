@@ -2,6 +2,8 @@
 from typing import TypedDict
 from python.prohibition_web_svc.models.dropdown_option import DropdownOption
 from python.prohibition_web_svc.models.entity import Entity
+from python.prohibition_web_svc.models.lki_highway import LkiHighway
+from python.prohibition_web_svc.models.lki_segment import LkiSegment
 from python.prohibition_web_svc.models.police_agency import PoliceAgency
 from python.prohibition_web_svc.models.witness import Witness
 
@@ -50,8 +52,8 @@ class CollisionRequestPayload(TypedDict):
 
     # Location
     hwy_code: str
-    hwy_route_num: str
-    segment_num: int
+    hwy_route_num: LkiHighway
+    segment_num: LkiSegment
     loc_code_km: float
     city_name: str
     city_status: str
