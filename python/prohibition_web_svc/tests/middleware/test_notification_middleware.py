@@ -9,6 +9,7 @@ class MockRequest:
         self._json = json_data
         self._data = data
         self.json = json_data
+        self.is_json = True 
 
     def get_json(self):
         if isinstance(self._json, Exception):
