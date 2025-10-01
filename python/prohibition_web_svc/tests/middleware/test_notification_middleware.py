@@ -83,3 +83,39 @@ def test_send_email_with_unknown_template():
     result, updated_kwargs = notification_middleware.send_email(**kwargs)
     assert result is False
     assert "Unknown form type" in updated_kwargs["response_dict"]["message"]
+
+def test_log_payload_to_splunk_mv6020():
+    # Arrange
+    payload = {"template": "mv6020.html", "data": {"vehicle_owner_name": "John Doe"}}
+    request = MockRequest(json_data=payload)
+
+    with patch("python.prohibition_web_svc.middleware.notification_middleware.mv6020_helper._mask_sensitive_data",
+               return_value={"vehicle_owner_name": "[REDACTED]"}):
+        result, kwargs = notification_middleware.log_payload_to_splunk(
+            request=request, user_guid="guid123", username="tester"
+        )
+
+    # Assert
+    assert result is True
+    splunk_data = kwargs["splunk_data"]
+    assert splunk_data["form_type"] == notification_middleware.MV6020_FORM_TYPE
+    assert splunk_data["user_guid"] == "guid123"
+    assert splunk_data["username"] == "tester"
+    assert splunk_data["payload"]["data"] == {"vehicle_owner_name": "[REDACTED]"} 
+
+def test_log_payload_to_splunk_generic_template():
+    # Arrange
+    payload = {"template": "other_form.html", "form_id": "GENERIC123", "data": {"field": "value"}}
+    request = MockRequest(json_data=payload)
+
+    result, kwargs = notification_middleware.log_payload_to_splunk(
+        request=request, user_guid="guid456", username="tester2"
+    )
+
+    # Assert
+    assert result is True
+    splunk_data = kwargs["splunk_data"]
+    assert splunk_data["form_type"] == "GENERIC123"  # pulled from form_id
+    assert splunk_data["user_guid"] == "guid456"
+    assert splunk_data["username"] == "tester2"
+    assert splunk_data["payload"]["data"] == {"field": "value"}      
