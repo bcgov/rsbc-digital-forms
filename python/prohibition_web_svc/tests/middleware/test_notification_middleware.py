@@ -3,6 +3,11 @@ from unittest.mock import MagicMock, patch
 
 from python.prohibition_web_svc.middleware import notification_middleware
 
+def test_set_event_type():
+    result, kwargs = notification_middleware.set_event_type()
+    assert result is True
+    assert kwargs['event_type'] == notification_middleware.EVENT_TYPE
+
 
 def test_send_new_user_admin_notification_calls_rsi_email():
     kwargs = {
