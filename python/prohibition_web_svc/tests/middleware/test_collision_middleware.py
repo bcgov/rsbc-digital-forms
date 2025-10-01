@@ -128,6 +128,116 @@ def test_validate_collision_payload_failure_missing_witness_fields():
         'error_details': out_kwargs['error']['error_details']
     }
 
+def test_validate_lki_fields_success_hwy_code_1_with_route_and_segment():
+    """Test _validate_lki_fields when hwy_code is 1 and both hwy_route_num and segment_num are present"""
+    collision = {
+        'hwy_code': 1,
+        'hwy_route_num': '001',
+        'segment_num': '0203',
+        'collision_case_num': 'MV-001'
+    }
+    kwargs = {}
+    result = collision_middleware._validate_lki_fields(collision, kwargs)
+    assert result is True
+    assert 'error' not in kwargs
+
+def test_validate_lki_fields_failure_hwy_code_1_missing_hwy_route_num():
+    """Test _validate_lki_fields when hwy_code is 1 but hwy_route_num is missing"""
+    collision = {
+        'hwy_code': 1,
+        'segment_num': '0203',
+        'collision_case_num': 'MV-001'
+    }
+    kwargs = {}
+    result = collision_middleware._validate_lki_fields(collision, kwargs)
+    assert result is False
+    assert 'error' in kwargs
+    assert kwargs['error']['error_code'] == ErrorCode.C01
+    assert "For Hwy Code '1', both hwy_route_num and segment_num are required" in kwargs['error']['error_details']
+    assert kwargs['error']['ticket_no'] == 'MV-001'
+    assert kwargs['error']['event_type'] == collision_middleware.EVENT_TYPE
+    assert kwargs['error']['func'] == collision_middleware._validate_lki_fields
+
+def test_validate_lki_fields_failure_hwy_code_1_missing_segment_num():
+    """Test _validate_lki_fields when hwy_code is 1 but segment_num is missing"""
+    collision = {
+        'hwy_code': 1,
+        'hwy_route_num': '001',
+        'collision_case_num': 'MV-001'
+    }
+    kwargs = {}
+    result = collision_middleware._validate_lki_fields(collision, kwargs)
+    assert result is False
+    assert 'error' in kwargs
+    assert kwargs['error']['error_code'] == ErrorCode.C01
+    assert "For Hwy Code '1', both hwy_route_num and segment_num are required" in kwargs['error']['error_details']
+    assert kwargs['error']['ticket_no'] == 'MV-001'
+    assert kwargs['error']['event_type'] == collision_middleware.EVENT_TYPE
+    assert kwargs['error']['func'] == collision_middleware._validate_lki_fields
+
+def test_validate_lki_fields_failure_hwy_code_1_missing_both_route_and_segment():
+    """Test _validate_lki_fields when hwy_code is 1 but both hwy_route_num and segment_num are missing"""
+    collision = {
+        'hwy_code': 1,
+        'collision_case_num': 'MV-001'
+    }
+    kwargs = {}
+    result = collision_middleware._validate_lki_fields(collision, kwargs)
+    assert result is False
+    assert 'error' in kwargs
+    assert kwargs['error']['error_code'] == ErrorCode.C01
+    assert "For Hwy Code '1', both hwy_route_num and segment_num are required" in kwargs['error']['error_details']
+    assert kwargs['error']['ticket_no'] == 'MV-001'
+    assert kwargs['error']['event_type'] == collision_middleware.EVENT_TYPE
+    assert kwargs['error']['func'] == collision_middleware._validate_lki_fields
+
+def test_validate_lki_fields_success_hwy_code_not_1():
+    """Test _validate_lki_fields when hwy_code is not 1 (should pass regardless of route/segment nums)"""
+    collision = {
+        'hwy_code': 97,
+        'collision_case_num': 'MV-001'
+        # No hwy_route_num or segment_num provided
+    }
+    kwargs = {}
+    result = collision_middleware._validate_lki_fields(collision, kwargs)
+    assert result is True
+    assert 'error' not in kwargs
+
+def test_validate_lki_fields_success_hwy_code_not_1_with_route_and_segment():
+    """Test _validate_lki_fields when hwy_code is not 1 but route and segment are provided"""
+    collision = {
+        'hwy_code': 97,
+        'hwy_route_num': '097',
+        'segment_num': '0356',
+        'collision_case_num': 'MV-001'
+    }
+    kwargs = {}
+    result = collision_middleware._validate_lki_fields(collision, kwargs)
+    assert result is True
+    assert 'error' not in kwargs
+
+def test_validate_lki_fields_success_no_hwy_code():
+    """Test _validate_lki_fields when hwy_code is not present (should pass)"""
+    collision = {
+        'collision_case_num': 'MV-001'
+        # No hwy_code provided
+    }
+    kwargs = {}
+    result = collision_middleware._validate_lki_fields(collision, kwargs)
+    assert result is True
+    assert 'error' not in kwargs
+
+def test_validate_lki_fields_success_hwy_code_none():
+    """Test _validate_lki_fields when hwy_code is None (should pass)"""
+    collision = {
+        'hwy_code': None,
+        'collision_case_num': 'MV-001'
+    }
+    kwargs = {}
+    result = collision_middleware._validate_lki_fields(collision, kwargs)
+    assert result is True
+    assert 'error' not in kwargs
+
 def test_save_collision_data_success(monkeypatch):
     mock_db = MagicMock()
     mock_session = MagicMock()
