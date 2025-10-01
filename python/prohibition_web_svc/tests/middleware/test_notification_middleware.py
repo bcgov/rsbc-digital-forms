@@ -51,7 +51,8 @@ def test_send_new_user_admin_notification_calls_rsi_email():
 
 def test_validate_mv6020_email_payload_success():
     request = MockRequest(json_data={"template": "mv6020.html","data": {}})
-    with patch("python.prohibition_web_svc.middleware.notification_middleware.print_middleware.validate_print_payload", return_value=(True, kwargs)):
+    patched_kwargs = {"request": request} 
+    with patch("python.prohibition_web_svc.middleware.notification_middleware.print_middleware.validate_print_payload", return_value=(True, patched_kwargs)):
         result, kwargs = notification_middleware.validate_email_payload(request=request)
     assert result is True
     assert kwargs['request'] == request
@@ -59,7 +60,8 @@ def test_validate_mv6020_email_payload_success():
 
 def test_validate_email_payload_failure():
     request = MockRequest(json_data={})
-    with patch("python.prohibition_web_svc.middleware.notification_middleware.print_middleware.validate_print_payload", return_value=(False, kwargs)):
+    patched_kwargs = {"request": request} 
+    with patch("python.prohibition_web_svc.middleware.notification_middleware.print_middleware.validate_print_payload", return_value=(False, patched_kwargs)):
         result, kwargs  = notification_middleware.validate_email_payload(request=request)
     assert result is False
     assert kwargs['request'] == request
