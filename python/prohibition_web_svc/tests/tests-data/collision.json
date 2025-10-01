@@ -56,8 +56,19 @@
     "value": "98"
   },
   "hwy_code": "HWY",
-  "hwy_route_num": "001",
-  "segment_num": "0001",
+  "hwy_route_num": {
+      "code": "019A",
+      "description": "OLD ISLAND",
+      "letter": "A",
+      "number": 19
+  },
+  "segment_num": {
+      "code": "0356",
+      "description": "BRECHIN RD: STEWART AVE (DEPT.BAY) - ISLAND HWY",
+      "direction": "N",
+      "hwy_code": "019A",
+      "length_km": 0.99
+  },
   "loc_code_km": 1.23,
   "city_name": "City",
   "city_status": "01",

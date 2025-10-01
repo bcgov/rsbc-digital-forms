@@ -50,8 +50,8 @@ class CollisionMapper:
         return TarLocation(
             collision_case_num=collision_request_payload['collision_case_num'],
             hwy_code=collision_request_payload['hwy_code'],
-            hwy_route_num=collision_request_payload.get('hwy_route_num'),
-            segment_num=collision_request_payload.get('segment_num'),
+            hwy_route_num=collision_request_payload['hwy_route_num']['code'] if collision_request_payload.get('hwy_route_num') else None,
+            segment_num=collision_request_payload['segment_num']['code'] if collision_request_payload.get('segment_num') else None,
             loc_code_km=collision_request_payload.get('loc_code_km'),
             city_name=collision_request_payload['city_name'],
             city_status=collision_request_payload.get('city_status'),
