@@ -133,6 +133,13 @@ class ErrorCode(BaseEnum):
                            "Ensure all required fields are provided in the print payload", True)
     P02 = ErrorCodeDetails("P02", "Print Service Error", ErrorCategory.SYSTEM, ErrorSeverity.HIGH,
                            "Ensure all required fields are provided in the print payload", True)
+    
+    # Collision related error
+
+    N01 = ErrorCodeDetails("N01", "Missing required fields in email payload", ErrorCategory.VALIDATION, ErrorSeverity.LOW,
+                           "Ensure all required fields are provided in the email payload", True)
+    N02 = ErrorCodeDetails("N02", "Notification Service Error", ErrorCategory.SYSTEM, ErrorSeverity.HIGH,
+                           "Ensure all required fields are provided in the email payload", True)
 
     # Add more error codes as needed...
 
