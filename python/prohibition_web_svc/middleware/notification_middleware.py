@@ -82,6 +82,7 @@ def send_admin_submission_failure_notification(**kwargs):
     return False, kwargs
 
 def validate_email_payload(**kwargs) -> tuple:
+    logger.verbose("inside validate_email_payload()")
     request = kwargs.get('request')
     if not request:
         kwargs['error'] = {
@@ -91,12 +92,16 @@ def validate_email_payload(**kwargs) -> tuple:
             'func': validate_email_payload.__name__,
         }
         return False, kwargs
+   
     try:
         # Get the JSON payload from the request
         if request.is_json:
             payload = request.get_json()
 
-        # Validate required fields based on PrintRequestPayload model
+        if not isinstance(payload, dict):
+            raise ValueError("Payload must be a JSON object")
+            
+        # Validate required fields
         if 'template' not in payload or not payload['template']:
             logger.warning("validation error: missing or empty template")
             kwargs['error'] = {

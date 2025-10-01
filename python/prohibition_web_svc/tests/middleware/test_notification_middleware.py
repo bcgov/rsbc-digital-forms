@@ -3,6 +3,21 @@ from unittest.mock import MagicMock, patch
 
 from python.prohibition_web_svc.middleware import notification_middleware
 
+class MockRequest:
+    """Mock request object for testing."""
+    def __init__(self, json_data=None, data=None):
+        self._json = json_data
+        self._data = data
+        self.json = json_data
+
+    def get_json(self):
+        if isinstance(self._json, Exception):
+            raise self._json
+        return self._json
+
+    def get_data(self):
+        return self._data
+
 def test_set_event_type():
     result, kwargs = notification_middleware.set_event_type()
     assert result is True
@@ -34,20 +49,20 @@ def test_send_new_user_admin_notification_calls_rsi_email():
     assert "admin-console" in called_kwargs["message"]["admin_link"]
 
 
-def test_validate_email_payload_success():
-    kwargs = {"payload": {"foo": "bar"}}
+def test_validate_mv6020_email_payload_success():
+    request = MockRequest(json_data={"template": "mv6020.html","data": {}})
     with patch("python.prohibition_web_svc.middleware.notification_middleware.print_middleware.validate_print_payload", return_value=(True, kwargs)):
-        result, updated_kwargs = notification_middleware.validate_email_payload(**kwargs)
+        result, kwargs = notification_middleware.validate_email_payload(request=request)
     assert result is True
-    assert updated_kwargs == kwargs
+    assert kwargs['request'] == request
 
 
 def test_validate_email_payload_failure():
-    kwargs = {"payload": {}}
+    request = MockRequest(json_data={})
     with patch("python.prohibition_web_svc.middleware.notification_middleware.print_middleware.validate_print_payload", return_value=(False, kwargs)):
-        result, updated_kwargs = notification_middleware.validate_email_payload(**kwargs)
+        result, kwargs  = notification_middleware.validate_email_payload(request=request)
     assert result is False
-    assert updated_kwargs == kwargs
+    assert kwargs['request'] == request
 
 
 def test_send_email_with_mv6020_template():
