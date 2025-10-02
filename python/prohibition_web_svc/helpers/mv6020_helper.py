@@ -10,6 +10,10 @@ from python.prohibition_web_svc.middleware import print_middleware
 
 logger = get_logger(__name__)
 
+# constants for mv6020. move to enums.
+FORM_TYPE = 'MV6020'
+EMAIL_TEMPLATE = 'mv6020.html'
+
 def send_mv6020_copy(**kwargs):
     logger.verbose('inside send_mv6020_copy')
 
