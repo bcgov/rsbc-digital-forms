@@ -186,7 +186,7 @@ def test_log_payload_to_splunk_mv6020():
     # Assert
     assert result is True
     splunk_data = kwargs["splunk_data"]
-    assert splunk_data["form_type"] == notification_middleware.MV6020_FORM_TYPE
+    assert splunk_data["form_type"] == "MV6020"
     assert splunk_data["user_guid"] == "guid123"
     assert splunk_data["username"] == "tester"
     assert splunk_data["payload"]["data"] == {"vehicle_owner_name": "[REDACTED]"} 
