@@ -119,3 +119,67 @@ def test_log_payload_to_splunk_generic_template():
     assert splunk_data["user_guid"] == "guid456"
     assert splunk_data["username"] == "tester2"
     assert splunk_data["payload"]["data"] == {"field": "value"}      
+
+def test_log_payload_to_splunk_fallback_template():
+    payload = {"template": "no_formid.html", "data": {"field": "value"}}
+    request = MockRequest(json_data=payload)
+
+    result, kwargs = notification_middleware.log_payload_to_splunk(
+        request=request, username="tester3"
+    )
+
+    splunk_data = kwargs["splunk_data"]
+    assert splunk_data["form_type"] == "no_formid.html"   
+
+def test_send_admin_submission_failure_notification_success():
+    payload = {
+        "application_id": "APP123",
+        "form_id": "FORM456",
+        "submitted_date": "2025-10-01",
+        "error_details": "Some error",
+        "application_url": "http://app.link",
+        "camunda_incident_url": "http://camunda.link"
+    }
+    kwargs = {"payload": payload}
+
+    with patch("python.prohibition_web_svc.middleware.notification_middleware.rsi_email.send_admin_failure_notification",
+               return_value=True) as mock_email:
+        result, returned_kwargs = notification_middleware.send_admin_submission_failure_notification(**kwargs)
+
+    # Assertions
+    assert result is True
+    assert "response_dict" in returned_kwargs
+    assert returned_kwargs["response_dict"]["message"] == "email sent successfully"
+
+    # Check that email was called with correct subject and message
+    expected_subject = f"Digital Forms: Application {payload['application_id']} – Submission Failed"
+    expected_message = {
+        "form_id": payload["form_id"],
+        "application_id": payload["application_id"],
+        "submitted_date": payload["submitted_date"],
+        "error_details": payload["error_details"],
+        "application_link": payload["application_url"],
+        "camunda_incident_link": payload["camunda_incident_url"]
+    }
+    mock_email.assert_called_once_with(config=notification_middleware.Config,
+                                       subject=expected_subject,
+                                       message=expected_message)   
+
+def test_send_admin_submission_failure_notification_failure():
+    payload = {
+        "application_id": "APP123",
+        "form_id": "FORM456",
+        "submitted_date": "2025-10-01",
+        "error_details": "Some error",
+        "application_url": "http://app.link",
+        "camunda_incident_url": "http://camunda.link"
+    }
+    kwargs = {"payload": payload}
+
+    with patch("python.prohibition_web_svc.middleware.notification_middleware.rsi_email.send_admin_failure_notification",
+               return_value=False):
+        result, returned_kwargs = notification_middleware.send_admin_submission_failure_notification(**kwargs)
+
+    # Assertions
+    assert result is False
+    assert "response_dict" not in returned_kwargs      
