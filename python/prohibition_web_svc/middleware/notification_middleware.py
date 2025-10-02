@@ -133,10 +133,6 @@ def validate_email_payload(**kwargs) -> tuple:
     
     logger.debug("payload validation successful")
     return True, kwargs
-
-# Do data structure validation
-
-    
     
 def send_email(**kwargs):
     payload = kwargs.get('payload', {})
@@ -165,3 +161,4 @@ def send_email(**kwargs):
         kwargs["response_dict"] = {"message": "Unknown form type"}
 
     return result, kwargs
+
