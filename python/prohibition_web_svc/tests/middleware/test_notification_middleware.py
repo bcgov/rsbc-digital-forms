@@ -67,6 +67,94 @@ def test_validate_email_payload_failure():
     assert result is False
     assert kwargs['request'] == request
 
+def test_validate_email_payload_no_request():
+    # Arrange: kwargs without 'request'
+    kwargs = {}
+
+    # Act
+    result, returned_kwargs = notification_middleware.validate_email_payload(**kwargs)
+
+    # Assert
+    assert result is False
+    assert "error" in returned_kwargs
+    error = returned_kwargs["error"]
+    assert error["error_code"] == notification_middleware.ErrorCode.N01
+    assert error["error_details"] == "No request object found"
+    assert error["func"] == "validate_email_payload"
+    assert error["event_type"] == notification_middleware.EVENT_TYPE 
+
+def test_validate_email_payload_request_is_json_false():
+    # Arrange
+    payload = {"template": "generic.html", "data": {"field": "value"}}
+    
+    class MockRequest:
+        def __init__(self, json_data):
+            self._json = json_data
+            self.is_json = False  # triggers the False branch
+
+        def get_json(self):
+            return self._json
+
+    request = MockRequest(json_data=payload)
+    kwargs = {"request": request}
+
+    # Act
+    result, returned_kwargs = notification_middleware.validate_email_payload(**kwargs)
+
+    # Assert
+    # Even though payload won't be assigned in the 'if request.is_json' block,
+    # the function will eventually fail on 'if not isinstance(payload, dict):'
+    # so we need to handle that.
+    assert result is False
+    assert "error" in returned_kwargs
+    assert "Invalid JSON payload" in returned_kwargs["error"]["error_details"]
+
+def test_validate_email_payload_payload_not_dict():
+    # Arrange: MockRequest with JSON that is not a dict
+    class MockRequest:
+        def __init__(self):
+            self.is_json = True  # triggers 'if request.is_json:'
+        
+        def get_json(self):
+            return "this is a string, not a dict"
+
+    request = MockRequest()
+    kwargs = {"request": request}
+
+    # Act
+    result, returned_kwargs = notification_middleware.validate_email_payload(**kwargs)
+
+    # Assert
+    assert result is False
+    assert "error" in returned_kwargs
+    error = returned_kwargs["error"]
+    assert error["error_code"] == notification_middleware.ErrorCode.N01
+    assert "Payload must be a JSON object" in error["error_details"]
+
+def test_validate_email_payload_exception_handling():
+    # Arrange: MockRequest where get_json raises an exception
+    class MockRequest:
+        def __init__(self):
+            self.is_json = True
+
+        def get_json(self):
+            raise ValueError("forced exception for testing")
+
+    request = MockRequest()
+    kwargs = {"request": request}
+
+    # Act
+    result, returned_kwargs = notification_middleware.validate_email_payload(**kwargs)
+
+    # Assert
+    assert result is False
+    assert "error" in returned_kwargs
+    error = returned_kwargs["error"]
+    assert error["error_code"] == notification_middleware.ErrorCode.N01
+    assert "Invalid JSON payload" in error["error_details"]
+    assert "forced exception for testing" in error["error_details"]
+    assert error["func"] == "validate_email_payload"
+    assert error["event_type"] == notification_middleware.EVENT_TYPE    
 
 def test_send_email_with_mv6020_template():
     kwargs = {"payload": {"template": "mv6020.html"}}
@@ -137,8 +225,8 @@ def test_send_admin_submission_failure_notification_success():
         "form_id": "FORM456",
         "submitted_date": "2025-10-01",
         "error_details": "Some error",
-        "application_url": "http://app.link",
-        "camunda_incident_url": "http://camunda.link"
+        "application_url": "https://app.link",
+        "camunda_incident_url": "https://camunda.link"
     }
     kwargs = {"payload": payload}
 
@@ -164,6 +252,34 @@ def test_send_admin_submission_failure_notification_success():
     mock_email.assert_called_once_with(config=notification_middleware.Config,
                                        subject=expected_subject,
                                        message=expected_message)   
+    
+def test_send_email_admin_notice_submission_failure():
+    # Arrange
+    payload = {
+        "template": "admin_notice_submission_failure.html",
+        "application_id": "APP123",
+        "form_id": "FORM456",
+        "submitted_date": "2025-10-01",
+        "error_details": "Some error",
+        "application_url": "https://app.link",
+        "camunda_incident_url": "https://camunda.link"
+    }
+    kwargs = {"payload": payload}
+
+    # Patch the send_admin_submission_failure_notification function
+    with patch("python.prohibition_web_svc.middleware.notification_middleware.send_admin_submission_failure_notification",
+               return_value=(True, {"payload": payload, "response_dict": {"message": "email sent successfully"}})) as mock_func:
+        
+        # Act
+        result, returned_kwargs = notification_middleware.send_email(**kwargs)
+
+    # Assert
+    assert result is True
+    assert "response_dict" in returned_kwargs
+    assert returned_kwargs["response_dict"]["message"] == "email sent successfully"
+    
+    # Ensure the patched function was called once with the same kwargs
+    mock_func.assert_called_once_with(**kwargs)    
 
 def test_send_admin_submission_failure_notification_failure():
     payload = {
@@ -171,8 +287,8 @@ def test_send_admin_submission_failure_notification_failure():
         "form_id": "FORM456",
         "submitted_date": "2025-10-01",
         "error_details": "Some error",
-        "application_url": "http://app.link",
-        "camunda_incident_url": "http://camunda.link"
+        "application_url": "https://app.link",
+        "camunda_incident_url": "https://camunda.link"
     }
     kwargs = {"payload": payload}
 
