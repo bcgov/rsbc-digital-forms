@@ -12,7 +12,6 @@ from python.prohibition_web_svc.middleware import collision_middleware, print_mi
 logger = get_logger(__name__)
 
 EVENT_TYPE = 'Notification Email'
-MV6020_FORM_TYPE = 'MV6020'
 
 def set_event_type(**kwargs) -> tuple:
     """Set the event type for the print event."""
@@ -27,8 +26,8 @@ def log_payload_to_splunk(**kwargs) -> tuple:
         template_name = payload.get('template')
         splunk_payload = copy.deepcopy(payload)
         # do form specific masking if needed.
-        if template_name == "mv6020.html":
-            form_type = MV6020_FORM_TYPE # add form_id to request payload
+        if template_name == mv6020_helper.EMAIL_TEMPLATE:
+            form_type = mv6020_helper.FORM_TYPE # add form_id to request payload
             splunk_payload['data'] = mv6020_helper._mask_sensitive_data(splunk_payload['data'])  
         else:
             # generic notifications will have form_id field set.
@@ -115,7 +114,7 @@ def validate_email_payload(**kwargs) -> tuple:
         # Set validate payload in kwargs
         kwargs['payload'] = payload
         template_name = payload['template']
-        if template_name == "mv6020.html":
+        if template_name == mv6020_helper.EMAIL_TEMPLATE:
             #Reuse the validation logic in print middleware for now. Change later if needed.
             success, kwargs =  print_middleware.validate_print_payload(**kwargs)
             if not success:
@@ -140,7 +139,7 @@ def send_email(**kwargs):
     data = payload.get('data', {}) or {}
     collision_case_no = data.get('collision_case_num')
 
-    if template_name == "mv6020.html":
+    if template_name == mv6020_helper.EMAIL_TEMPLATE:
         try:
             result, kwargs = mv6020_helper.send_mv6020_copy(**kwargs)
         except Exception as e:
