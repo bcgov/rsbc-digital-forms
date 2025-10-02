@@ -10,6 +10,10 @@ from python.prohibition_web_svc.middleware import print_middleware
 
 logger = get_logger(__name__)
 
+# constants for mv6020. move to enums.
+FORM_TYPE = 'MV6020'
+EMAIL_TEMPLATE = 'mv6020.html'
+
 def send_mv6020_copy(**kwargs):
     logger.verbose('inside send_mv6020_copy')
 
@@ -147,3 +151,35 @@ def get_entity_data(data: dict) -> Tuple[str, Dict[str, Any]]:
         return f"{given} {surname}".strip(), email_address
 
     return "", ""  
+
+def _mask_sensitive_data(data):
+    sensitive_fields = [
+        'driver_license_num',
+        'surname',
+        'given_name',
+        'contact_phone_num',
+        'vehicle_plate_num',
+        'vehicle_owner_name',
+        'vehicle_owner_address',
+        'nsc_num',
+        'other_insurance_policy_num',
+        'witness_name',
+        'address',
+        'contact_phn_num'
+    ]
+    for field in sensitive_fields:
+        if field in data:
+            data[field] = "[REDACTED]"
+        if 'entities' in data:
+            data['entities'] = [
+                _mask_sensitive_data(entity) for entity in data['entities']
+            ]
+        if 'involved_persons' in data:
+            data['involved_persons'] = [
+                _mask_sensitive_data(person) for person in data['involved_persons']
+            ]
+        if 'witnesses' in data:
+            data['witnesses'] = [
+                _mask_sensitive_data(witness) for witness in data['witnesses']
+            ]
+    return data
