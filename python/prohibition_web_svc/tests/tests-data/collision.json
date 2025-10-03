@@ -298,7 +298,10 @@
       ],
       "charges": [
         {
-          "charge_type": "B",
+          "charge_type": {
+            "label": "Bylaw",
+            "value": "B"
+          },
           "section_num": "148",
           "offence_title": "Exceed Speed Limit"
         }
