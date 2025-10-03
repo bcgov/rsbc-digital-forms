@@ -151,7 +151,7 @@ class CollisionMapper:
         """
         return TarCharges(
             charge_id=charge_data.get('charge_id'),
-            charge_type=charge_data.get('charge_type'),
+            charge_type=charge_data['charge_type']['value'] if charge_data.get('charge_type') else None,
             section_num=charge_data.get('section_num'),
             offence_title=charge_data.get('offence_title')
         )
