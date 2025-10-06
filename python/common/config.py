@@ -50,6 +50,8 @@ class Config:
     RIDE_API_URL                         = os.getenv('RIDE_API_URL', 'http://localhost')
     RIDE_API_KEY                         = os.getenv('RIDE_API_KEY', 'http://localhost')
 
+    # ETK Issuance service
+    ETK_ISSUANCE_SVC_URL                         = os.getenv('ETK_ISSUANCE_SVC_URL', 'http://localhost')
 
     LOGGING = {
         'version': 1,
