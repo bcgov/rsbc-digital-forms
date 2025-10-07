@@ -181,7 +181,7 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
                         header_template="""
                             <div style="display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; font-family: Arial, sans-serif;">
                                 <span style="font-size: 11pt; font-weight: bold;">Electronic MV6020 Traffic Accident Report</span>
-                                <span style="font-size: 9pt; font-weight: bold;">Protected A - Once completed</span>
+                                <span style="font-size: 9pt; font-weight: bold;">Protected A</span>
                             </div>
                         """,
                         footer_template="""
