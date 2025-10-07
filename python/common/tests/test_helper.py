@@ -108,12 +108,12 @@ class TestStrToInteger:
     def test_str_to_integer_leading_whitespace(self):
         """Test str_to_integer with leading whitespace"""
         result = str_to_integer("  123")
-        assert result is 123
+        assert result == 123
 
     def test_str_to_integer_trailing_whitespace(self):
         """Test str_to_integer with trailing whitespace"""
         result = str_to_integer("123  ")
-        assert result is 123
+        assert result == 123
 
     def test_str_to_integer_mixed_case_invalid(self):
         """Test str_to_integer with mixed case letters"""

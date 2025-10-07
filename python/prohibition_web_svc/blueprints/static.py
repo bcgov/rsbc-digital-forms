@@ -1,3 +1,5 @@
+from dataclasses import is_dataclass
+
 from python.common.logging_utils import get_logger
 from python.common.models.TAR.lki_highway import TarLkiHighway
 from python.common.models.TAR.lki_segment import TarLkiSegment
@@ -8,10 +10,12 @@ from python.prohibition_web_svc.middleware import common_middleware
 import python.prohibition_web_svc.middleware.splunk_middleware as splunk_middleware
 from flask import request, make_response, Blueprint
 from python.common.splunk import log_to_splunk
+from python.common.charge_types_service import get_charge_types
 from flask_cors import CORS
 from python.common.models import db, Agency, City, Country, ImpoundLotOperator, Jurisdiction, Permission, Province, Vehicle, VehicleStyle, VehicleType, VehicleColour, NSCPuj, JurisdictionCountry
 from python.common.models.TAR.police_agency import TarPoliceAgency
 from flask import jsonify
+from python.prohibition_web_svc.cache import cache
 
 
 logger = get_logger(__name__)
@@ -33,6 +37,7 @@ resource_map = {
     "jurisdiction_country": JurisdictionCountry,
     "lki_highway": TarLkiHighway,
     "lki_segment": TarLkiSegment,
+    "charge_types": lambda: get_charge_types(Config),  # function to get charge types from ETK issuance service
 }
 
 logger.info('*** static blueprint loaded ***')
@@ -69,13 +74,7 @@ def index(resource):
                   {"try": http_responses.bad_request_response, "fail": []},
                   {"try": log_to_splunk, "fail": []},
               ]},
-              {"try": _is_resource_agencies, "fail": [
-                  {"try": _get_resource, "fail": [
-                      {"try": http_responses.server_error_response, "fail": []},
-                  ]},
-                  {"try": log_to_splunk, "fail": []},
-              ]},
-              {"try": _get_agencies, "fail": [
+              {"try": _get_resource_cached, "fail": [
                   {"try": http_responses.server_error_response, "fail": []},
                   {"try": log_to_splunk, "fail": []},
               ]},
@@ -107,13 +106,30 @@ def update(resource, static_id):
         return make_response({"error": "method not implemented"}, 405)
 
 
-def _get_agencies(**kwargs) -> tuple:
-    try:
-        data = jsonify(Agency.query.all())
-        kwargs['response'] = make_response(data, 200)
+def _get_resource_cached(**kwargs) -> tuple:
+    """Get resource data with caching"""
+    resource = kwargs.get('resource')
+    cache_key = f'static_resource::{resource}'
+
+    cached_data = cache.get(cache_key)
+    
+    if cached_data is not None:
+        logger.debug(f"Returning cached {resource} data")
+        kwargs['response'] = make_response(cached_data, 200)
         return True, kwargs
+    
+    try:
+        # Get fresh data using existing logic
+        success, updated_kwargs = _get_resource(**kwargs)
+        
+        if success:
+            # Cache the JSON response data
+            response_data = updated_kwargs['response'].get_json()
+            cache.set(cache_key, response_data)
+        
+        return success, updated_kwargs
     except Exception as e:
-        logger.warning("error getting static data", e)
+        logger.warning(f"error getting cached {resource} data: {e}")
         return False, kwargs
 
 
@@ -129,10 +145,6 @@ def _get_keycloak(**kwargs) -> tuple:
 
 def _is_known_resource(**kwargs) -> tuple:
     return kwargs.get('resource') in resource_map.keys(), kwargs
-
-
-def _is_resource_agencies(**kwargs) -> tuple:
-    return kwargs.get('resource') == 'agencies', kwargs
 
 
 def _is_not_keycloak(**kwargs) -> tuple:
@@ -156,11 +168,14 @@ def _get_resource(**kwargs) -> tuple:
     resource = kwargs.get('resource')
     logger.verbose(f"{kwargs.get('request_id')} inside _get_resource() for resource: {resource}")
     try:
-        data = jsonify(db.session.query(resource_map[resource]).all())
-        if resource == 'impound_lot_operators':
-            logger.verbose(f"{kwargs.get('request_id')} impound data: {data}")
-        kwargs['response'] = make_response(data, 200)
-        return True, kwargs
+        if is_dataclass(resource_map[resource]):
+            data = jsonify(db.session.query(resource_map[resource]).all())
+            kwargs['response'] = make_response(data, 200)
+            return True, kwargs
+        else:
+            data = jsonify(resource_map[resource]())
+            kwargs['response'] = make_response(data, 200)
+            return True, kwargs
     except Exception as e:
         logger.warning(f"{kwargs.get('request_id')} error getting {resource} data: {e}")
         return False, kwargs
