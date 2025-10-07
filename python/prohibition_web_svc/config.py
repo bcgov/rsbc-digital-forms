@@ -53,3 +53,5 @@ class Config(BaseConfig):
     ENCRYPT_KEY_SALT = os.environ.get('ENCRYPT_KEY_SALT')
     
     REACT_APP_BASE_URL = os.environ.get('REACT_APP_BASE_URL', 'http://localhost:3000/roadside-forms')
+
+    CACHE_TIMEOUT = int(os.getenv('CACHE_TIMEOUT', 300))  # in seconds
