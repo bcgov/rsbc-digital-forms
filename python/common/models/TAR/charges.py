@@ -16,4 +16,4 @@ class TarCharges(db.Model):
     entity_id = db.Column(db.Integer, db.ForeignKey('TAR.entity.entity_id'), nullable=False)
     charge_type = db.Column(db.String(1))
     section_num = db.Column(db.String(10))
-    offence_title = db.Column(db.String(70))
+    offence_title = db.Column(db.String(4000))
