@@ -14,6 +14,7 @@ import uuid
 from split_image import split_image
 from python.common.enums import ErrorCode, EventType
 from python.prohibition_web_svc.helpers.pdf_helpers import create_pdf_with_images
+from python.prohibition_web_svc.middleware.common_middleware import safe_get_value
 
 logger = get_logger(__name__)
 
@@ -513,25 +514,3 @@ def get_ticket_no(data):
         return data.get('VI_number')
     else:
         return None
-    
-def safe_get_value(data, default=None):
-    """
-    Safely extract the 'value' from a dictionary or handle other input types.
-    
-    Args:
-        data (dict or str or None): Input data to extract value from
-        default (Any, optional): Default value to return if no value found
-    
-    Returns:
-        The extracted value or default
-    """
-    # If data is a dictionary, try to get the 'value' key
-    if isinstance(data, dict):
-        return data.get('value', default)
-    
-    # If data is an empty string, return default
-    if data == "":
-        return default
-    
-    # For None or other types, return default
-    return data if data is not None else default    
