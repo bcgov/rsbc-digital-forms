@@ -89,8 +89,9 @@ def generate_presigned_url(filename, expiry_seconds):
         return jsonify({"error": "Failed to generate URL"}), 500
 
 
-def list_files(prefix):
+def list_files(**kwargs):
     """Lists objects in the bucket"""
+    prefix = kwargs.get('prefix')
     try:
         objects = minio_client.list_objects(BUCKET, prefix=prefix, recursive=True)
         items = [{
@@ -98,10 +99,21 @@ def list_files(prefix):
             "size": obj.size,
             "last_modified": obj.last_modified.isoformat() if obj.last_modified else None
         } for obj in objects]
-        return jsonify({"items": items})
+
+        kwargs['response'] = jsonify({"items": items})
+        kwargs['status'] = 200
+        return True, kwargs
     except S3Error as e:
-        logger.exception("Error listing files: %s", e)
-        return jsonify({"error": "Unable to list files"}), 500
+        # Use warning/error instead of exception for your custom ContextLogger
+        logger.error(f"Error listing files from bucket '{BUCKET}': {e}")
+        kwargs['response'] = jsonify({"error": "Unable to list files"})
+        kwargs['status'] = 500
+        return False, kwargs
+    except Exception as e:
+        logger.error(f"Unexpected error while listing files: {e}")
+        kwargs['response'] = jsonify({"error": "Internal server error"})
+        kwargs['status'] = 500
+        return False, kwargs
 
 
 def delete_file(**kwargs):

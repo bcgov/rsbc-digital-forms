@@ -56,7 +56,20 @@ def presigned_url(filename):
 @bp.route('/files', methods=['GET'])
 def list_all_files():
     prefix = request.args.get('prefix', '')
-    return files_middleware.list_files(prefix)
+    kwargs = helper.middle_logic(
+        keycloak_logic.get_authorized_keycloak_user() + [
+            {"try": files_middleware.list_files, "fail": [
+                {"try": http_responses.server_error_response, "fail": []},
+            ]},
+        ],
+        required_permission='admin_user_roles-index',
+        request=request,
+        prefix=prefix,
+        config=Config
+    )
+    response = kwargs.get('response')
+    status = kwargs.get('status', 200)
+    return response, status
 
 @bp.route('/files/<path:filename>', methods=['DELETE'])
 def remove_file(filename):
