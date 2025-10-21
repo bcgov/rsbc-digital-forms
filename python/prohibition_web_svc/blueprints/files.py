@@ -33,7 +33,20 @@ def create_file():
 
 @bp.route('/files/<path:filename>', methods=['GET'])
 def download_file(filename):
-    return files_middleware.get_file_stream(filename)
+    kwargs = helper.middle_logic(
+        keycloak_logic.get_authorized_keycloak_user() + [
+            {"try": files_middleware.get_file_stream, "fail": [
+                {"try": http_responses.server_error_response, "fail": []},
+            ]},
+        ],
+        required_permission='forms-get',
+        request=request,
+        filename=filename,
+        config=Config
+    )
+    response = kwargs.get('response')
+    status = kwargs.get('status', 200)
+    return response, status
 
 @bp.route('/files/url/<path:filename>', methods=['GET'])
 def presigned_url(filename):

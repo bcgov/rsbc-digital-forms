@@ -3,6 +3,7 @@ from minio import Minio
 from minio.error import S3Error
 from io import BytesIO
 import os
+import mimetypes
 from datetime import timedelta
 from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.config import Config
@@ -40,20 +41,42 @@ def upload_file(**kwargs):
         return False, {"response": jsonify({"error": "Failed to upload file"}), "status": 500}
 
 
-def get_file_stream(filename):
+def get_file_stream(**kwargs):
     """Streams a file to the caller"""
+    request = kwargs.get('request')
+    filename = kwargs.get('filename')
+    mimetype, _ = mimetypes.guess_type(filename)
+
+    if mimetype is None:
+        # fallback if unknown
+        mimetype = "application/octet-stream"
+
     try:
         obj = minio_client.get_object(BUCKET, filename)
+
+        # Define generator for streaming
         def generate():
             for chunk in obj.stream(32 * 1024):
                 yield chunk
             obj.close()
             obj.release_conn()
-        return Response(generate(), mimetype="application/octet-stream",
-                        headers={'Content-Disposition': f'attachment; filename=\"{os.path.basename(filename)}\"'})
+
+        response = Response(
+            generate(),
+            mimetype=mimetype,
+            headers={
+                "Content-Disposition": f'inline; filename="{os.path.basename(filename)}"'
+            },
+        )
+
+        kwargs["response"] = response
+        kwargs["status"] = 200
+        return True, kwargs
     except S3Error as e:
-        logger.warning("File not found: %s", e)
-        return jsonify({"error": "Not found"}), 404
+        logger.warning(f"File not found: {e}")
+        kwargs['response'] = jsonify({"error": "Not found"})
+        kwargs['status'] = 404
+        return False, kwargs
 
 
 def generate_presigned_url(filename, expiry_seconds):
