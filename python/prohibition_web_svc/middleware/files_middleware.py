@@ -79,14 +79,42 @@ def get_file_stream(**kwargs):
         return False, kwargs
 
 
-def generate_presigned_url(filename, expiry_seconds):
-    """Generate a temporary URL for the file"""
+def generate_presigned_url(filename, expiry=3600, **kwargs):
+    """Generates a presigned URL for downloading or viewing a file"""
     try:
-        url = minio_client.presigned_get_object(BUCKET, filename, expires=timedelta(seconds=expiry_seconds))
-        return jsonify({"url": url})
+        # Check if the object exists
+        minio_client.stat_object(BUCKET, filename)
     except S3Error as e:
-        logger.exception("Error generating presigned URL: %s", e)
-        return jsonify({"error": "Failed to generate URL"}), 500
+        logger.warning(f"Cannot generate presigned URL, file not found: {filename}")
+        kwargs['response'] = jsonify({"error": "File not found"})
+        kwargs['status'] = 404
+        return False, kwargs
+    
+    try:
+        # Convert seconds to timedelta
+        expires = timedelta(seconds=expiry)
+        url = minio_client.presigned_get_object(BUCKET, filename, expires=expires)
+
+        kwargs['response'] = jsonify({
+            "filename": filename,
+            "url": url,
+            "expiry": expiry
+        })
+        kwargs['status'] = 200
+        return True, kwargs
+
+    except S3Error as e:
+        logger.error(f"Error generating presigned URL for '{filename}': {e}")
+        kwargs['response'] = jsonify({"error": "Unable to generate presigned URL"})
+        kwargs['status'] = 500
+        return False, kwargs
+
+    except Exception as e:
+        logger.error(f"Unexpected error while generating presigned URL: {e}")
+        kwargs['response'] = jsonify({"error": "Internal server error"})
+        kwargs['status'] = 500
+        return False, kwargs
+
 
 
 def list_files(**kwargs):
