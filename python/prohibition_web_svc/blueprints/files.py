@@ -60,4 +60,17 @@ def list_all_files():
 
 @bp.route('/files/<path:filename>', methods=['DELETE'])
 def remove_file(filename):
-    return files_middleware.delete_file(filename)
+    kwargs = helper.middle_logic(
+        keycloak_logic.get_authorized_keycloak_user() + [
+            {"try": files_middleware.delete_file, "fail": [
+                {"try": http_responses.server_error_response, "fail": []},
+            ]},
+        ],
+        required_permission='admin_user_roles-delete',
+        request=request,
+        filename=filename,
+        config=Config
+    )
+    response = kwargs.get('response')
+    status = kwargs.get('status', 200)
+    return response, status

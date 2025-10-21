@@ -104,11 +104,35 @@ def list_files(prefix):
         return jsonify({"error": "Unable to list files"}), 500
 
 
-def delete_file(filename):
+def delete_file(**kwargs):
     """Deletes an object"""
+    filename = kwargs.get('filename')
+    if not filename:
+        kwargs['response'] = jsonify({"error": "Filename not provided"})
+        kwargs['status'] = 400
+        return False, kwargs
     try:
+         # Check if the file exists. If not minio will throw an exception.
+        minio_client.stat_object(BUCKET, filename)
+
         minio_client.remove_object(BUCKET, filename)
-        return jsonify({"message": f"{filename} deleted successfully"})
+        kwargs['response'] = jsonify({"message": f"{filename} deleted successfully"})
+        kwargs['status'] = 200
+        return True, kwargs
     except S3Error as e:
-        logger.exception("Error deleting file: %s", e)
-        return jsonify({"error": "Unable to delete file"}), 500
+       # Handle missing file or other MinIO errors
+        if e.code == "NoSuchKey":
+            logger.warning(f"File not found: {filename}")
+            kwargs['response'] = jsonify({"error": f"File '{filename}' not found"})
+            kwargs['status'] = 404
+        else:
+            logger.error(f"S3 error while deleting '{filename}': {e}")
+            kwargs['response'] = jsonify({"error": "S3 operation failed"})
+            kwargs['status'] = 500
+        return False, kwargs
+    except Exception as e:
+        # Handle unexpected issues
+        logger.error(f"Unexpected error deleting '{filename}': {e}")
+        kwargs['response'] = jsonify({"error": "Internal server error"})
+        kwargs['status'] = 500
+        return False, kwargs
