@@ -1,5 +1,5 @@
 import pytest
-from flask import Flask, json
+from flask import Flask, jsonify
 from python.prohibition_web_svc.blueprints import files
 
 @pytest.fixture
@@ -16,10 +16,10 @@ def client(app):
 
 # -------------------- Helper functions for monkeypatch --------------------
 def fake_middle_logic_success(*args, **kwargs):
-    return True, {'response': json.dumps({'message': 'success'}), 'status': 200}
+    return True, {'response': jsonify({'message': 'success'}), 'status': 200}
 
 def fake_middle_logic_failure(*args, **kwargs):
-    return False, {'response': json.dumps({'error': 'failure'}), 'status': 500}
+    return False, {'response': jsonify({'error': 'failure'}), 'status': 500}
 
 
 # -------------------- CREATE FILE --------------------
