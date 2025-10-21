@@ -51,7 +51,24 @@ def download_file(filename):
 @bp.route('/files/url/<path:filename>', methods=['GET'])
 def presigned_url(filename):
     expiry = int(request.args.get('expiry', 3600))
-    return files_middleware.generate_presigned_url(filename, expiry)
+
+    kwargs = helper.middle_logic(
+        keycloak_logic.get_authorized_keycloak_user() + [
+            {"try": files_middleware.generate_presigned_url, "fail": [
+                {"try": http_responses.server_error_response, "fail": []},
+            ]},
+        ],
+        required_permission='admin_user_roles-index',
+        request=request,
+        filename=filename,
+        expiry=expiry,
+        config=Config
+    )
+
+    response = kwargs.get('response')
+    status = kwargs.get('status', 200)
+    return response, status
+
 
 @bp.route('/files', methods=['GET'])
 def list_all_files():
