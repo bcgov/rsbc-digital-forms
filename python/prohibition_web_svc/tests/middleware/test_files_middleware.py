@@ -2,7 +2,7 @@ import pytest
 from io import BytesIO
 from unittest.mock import patch, MagicMock
 
-from flask import Flask, Response
+from flask import Flask, Response, jsonify
 
 from python.prohibition_web_svc.middleware import files_middleware
 
@@ -16,7 +16,13 @@ class MockRequest:
 from minio.error import S3Error
 
 def make_fake_s3_error(code="NoSuchKey", message="Object does not exist"):
-    return S3Error(code=code, message=message)
+    # S3Error(resource, request_id, host_id, code, message, response)
+    return S3Error(resource="mock_resource",
+                   request_id="mock_request",
+                   host_id="mock_host",
+                   code=code,
+                   message=message,
+                   response=None)
 
 # ---------- Pytest fixtures ----------
 @pytest.fixture
