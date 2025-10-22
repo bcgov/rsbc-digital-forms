@@ -9,6 +9,7 @@ from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.config import Config
 
 logger = get_logger(__name__)
+INTERNAL_SERVER_ERROR="Internal server error"
 
 minio_client = Minio(
     Config.MINIO_BUCKET_URL,
@@ -48,7 +49,7 @@ def upload_file(**kwargs):
     
     except Exception as e:
         logger.error(f"Unexpected error while generating presigned URL: {e}")
-        kwargs['response'] = jsonify({"error": "Internal server error"})
+        kwargs['response'] = jsonify({"error": INTERNAL_SERVER_ERROR})
         kwargs['status'] = 500
         return False, kwargs
 
@@ -56,7 +57,6 @@ def upload_file(**kwargs):
 
 def get_file_stream(**kwargs):
     """Streams a file to the caller"""
-    request = kwargs.get('request')
     filename = kwargs.get('filename')
     mimetype, _ = mimetypes.guess_type(filename)
 
@@ -92,7 +92,7 @@ def get_file_stream(**kwargs):
         return False, kwargs
     except Exception as e:
         logger.error(f"Unexpected error while streaming file '{filename}': {e}")
-        kwargs['response'] = jsonify({"error": "Internal server error"})
+        kwargs['response'] = jsonify({"error": INTERNAL_SERVER_ERROR})
         kwargs['status'] = 500
         return False, kwargs
 
@@ -129,7 +129,7 @@ def generate_presigned_url(filename, expiry=3600, **kwargs):
 
     except Exception as e:
         logger.error(f"Unexpected error while generating presigned URL: {e}")
-        kwargs['response'] = jsonify({"error": "Internal server error"})
+        kwargs['response'] = jsonify({"error": INTERNAL_SERVER_ERROR})
         kwargs['status'] = 500
         return False, kwargs
 
@@ -157,7 +157,7 @@ def list_files(**kwargs):
         return False, kwargs
     except Exception as e:
         logger.error(f"Unexpected error while listing files: {e}")
-        kwargs['response'] = jsonify({"error": "Internal server error"})
+        kwargs['response'] = jsonify({"error": INTERNAL_SERVER_ERROR})
         kwargs['status'] = 500
         return False, kwargs
 
@@ -191,6 +191,6 @@ def delete_file(**kwargs):
     except Exception as e:
         # Handle unexpected issues
         logger.error(f"Unexpected error deleting '{filename}': {e}")
-        kwargs['response'] = jsonify({"error": "Internal server error"})
+        kwargs['response'] = jsonify({"error": INTERNAL_SERVER_ERROR})
         kwargs['status'] = 500
         return False, kwargs
