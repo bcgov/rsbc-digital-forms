@@ -21,24 +21,37 @@ BUCKET = getattr(Config, 'MINIO_BUCKET', 'rsbc-static-files')
 def upload_file(**kwargs):
     """Uploads a file to MinIO"""
     request = kwargs.get('request')
-    file = request.files.get('file')
-    object_name = request.form.get('object_name') or (file.filename if file else None)
+    file = request.files.get('file') if request else None
+    object_name = request.form.get('object_name') if request else None
+    if not object_name and file:
+        object_name = file.filename
+
     if not file:
-        return jsonify({'error': 'No file uploaded'}), 400
+        kwargs['response'] = jsonify({"error": "No file uploaded"})
+        kwargs['status'] = 400
+        return False, kwargs
+    
     try:
         data = file.read()
         stream = BytesIO(data)
         minio_client.put_object(BUCKET, object_name, stream, length=len(data))
 
-       # Build a proper response here
-          # Return flag + args mapping
+        # Build success response in kwargs
         kwargs['response'] = jsonify({"message": f"{object_name} uploaded successfully"})
         kwargs['status'] = 201
         return True, kwargs
     except S3Error as e:
-        logger.exception("Error uploading file: %s", e)
-        response = jsonify({"error": "Failed to upload file"})
-        return False, {"response": jsonify({"error": "Failed to upload file"}), "status": 500}
+        logger.error(f"Error uploading file: {e}")
+        kwargs['response'] = jsonify({"error": "Failed to upload file"})
+        kwargs['status'] = 500
+        return False, kwargs
+    
+    except Exception as e:
+        logger.error(f"Unexpected error while generating presigned URL: {e}")
+        kwargs['response'] = jsonify({"error": "Internal server error"})
+        kwargs['status'] = 500
+        return False, kwargs
+
 
 
 def get_file_stream(**kwargs):
