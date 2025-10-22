@@ -90,6 +90,11 @@ def get_file_stream(**kwargs):
         kwargs['response'] = jsonify({"error": "Not found"})
         kwargs['status'] = 404
         return False, kwargs
+    except Exception as e:
+        logger.error(f"Unexpected error while streaming file '{filename}': {e}")
+        kwargs['response'] = jsonify({"error": "Internal server error"})
+        kwargs['status'] = 500
+        return False, kwargs
 
 
 def generate_presigned_url(filename, expiry=3600, **kwargs):
