@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_cors import CORS
 
 from python.common.logging_utils import get_logger
-import python.common.helper as helper
+from python.common.helper import middle_logic
 
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.middleware import files_middleware
@@ -15,7 +15,7 @@ CORS(bp, resources={Config.URL_PREFIX + "/api/v1/files/*": {"origins": Config.AC
 
 @bp.route('/files', methods=['POST'])
 def create_file():
-    kwargs = helper.middle_logic(
+    kwargs = middle_logic(
         keycloak_logic.get_authorized_keycloak_user() + [
             {"try": files_middleware.upload_file, "fail": [  
                 {"try": http_responses.server_error_response, "fail": []},
@@ -33,7 +33,7 @@ def create_file():
 
 @bp.route('/files/<path:filename>', methods=['GET'])
 def download_file(filename):
-    kwargs = helper.middle_logic(
+    kwargs = middle_logic(
         keycloak_logic.get_authorized_keycloak_user() + [
             {"try": files_middleware.get_file_stream, "fail": [
                 {"try": http_responses.server_error_response, "fail": []},
@@ -52,7 +52,7 @@ def download_file(filename):
 def presigned_url(filename):
     expiry = int(request.args.get('expiry', 3600))
 
-    kwargs = helper.middle_logic(
+    kwargs = middle_logic(
         keycloak_logic.get_authorized_keycloak_user() + [
             {"try": files_middleware.generate_presigned_url, "fail": [
                 {"try": http_responses.server_error_response, "fail": []},
@@ -73,7 +73,7 @@ def presigned_url(filename):
 @bp.route('/files', methods=['GET'])
 def list_all_files():
     prefix = request.args.get('prefix', '')
-    kwargs = helper.middle_logic(
+    kwargs = middle_logic(
         keycloak_logic.get_authorized_keycloak_user() + [
             {"try": files_middleware.list_files, "fail": [
                 {"try": http_responses.server_error_response, "fail": []},
@@ -90,7 +90,7 @@ def list_all_files():
 
 @bp.route('/files/<path:filename>', methods=['DELETE'])
 def remove_file(filename):
-    kwargs = helper.middle_logic(
+    kwargs = middle_logic(
         keycloak_logic.get_authorized_keycloak_user() + [
             {"try": files_middleware.delete_file, "fail": [
                 {"try": http_responses.server_error_response, "fail": []},
