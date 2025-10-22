@@ -1,5 +1,6 @@
 import pytest
 from io import BytesIO
+from minio.error import S3Error
 from unittest.mock import patch, MagicMock
 
 from flask import Flask, Response, jsonify
@@ -148,3 +149,123 @@ def test_delete_file_not_found(app):
     assert flag is False
     assert result["status"] == 404
     assert b"not found" in result["response"].data
+
+# ---------- Additional negative tests for full coverage ----------
+
+# ---------- Helper for generic Exception ----------
+class DummyException(Exception):
+    pass
+
+# ---------- UPLOAD FILE EXCEPTIONS ----------
+def test_upload_file_s3error(app):
+    mock_file = MagicMock()
+    mock_file.read.return_value = b"data"
+    request = MagicMock()
+    request.files = {"file": mock_file}
+    request.form = {"object_name": "file.txt"}
+    kwargs = {"request": request}
+    
+    fake_error = S3Error("res", "req", "host", "SomeCode", "SomeMessage", None)
+
+    with patch.object(files_middleware.minio_client, "put_object", side_effect=fake_error):
+        flag, result = files_middleware.upload_file(**kwargs)
+
+    assert flag is False
+    assert result["status"] == 500
+    assert b"Failed to upload file" in result["response"].data
+
+
+def test_upload_file_generic_exception(app):
+    mock_file = MagicMock()
+    mock_file.read.side_effect = DummyException("Oops")
+    request = MagicMock()
+    request.files = {"file": mock_file}
+    kwargs = {"request": request}
+
+    flag, result = files_middleware.upload_file(**kwargs)
+
+    assert flag is False
+    assert result["status"] == 500
+    assert b"Internal server error" in result["response"].data
+
+
+# ---------- GET FILE STREAM GENERIC EXCEPTION ----------
+def test_get_file_stream_generic_exception(app):
+    kwargs = {"filename": "file.txt"}
+    with patch.object(files_middleware.minio_client, "get_object", side_effect=DummyException("Boom")):
+        flag, result = files_middleware.get_file_stream(**kwargs)
+
+    assert flag is False
+    assert result["status"] == 500
+    assert b"Internal server error" in result["response"].data
+
+
+# ---------- GENERATE PRESIGNED URL S3ERROR ----------
+def test_generate_presigned_url_s3error(app):
+    kwargs = {}
+    with patch.object(files_middleware.minio_client, "stat_object", return_value=True), \
+         patch.object(files_middleware.minio_client, "presigned_get_object", side_effect=S3Error("r", "r", "h", "code", "msg", None)):
+
+        flag, result = files_middleware.generate_presigned_url("file.txt", **kwargs)
+
+    assert flag is False
+    assert result["status"] == 500
+    assert b"Unable to generate presigned URL" in result["response"].data
+
+
+def test_generate_presigned_url_generic_exception(app):
+    kwargs = {}
+    with patch.object(files_middleware.minio_client, "stat_object", return_value=True), \
+         patch.object(files_middleware.minio_client, "presigned_get_object", side_effect=DummyException("Boom")):
+
+        flag, result = files_middleware.generate_presigned_url("file.txt", **kwargs)
+
+    assert flag is False
+    assert result["status"] == 500
+    assert b"Internal server error" in result["response"].data
+
+
+# ---------- LIST FILES EXCEPTIONS ----------
+def test_list_files_s3error(app):
+    kwargs = {}
+    with patch.object(files_middleware.minio_client, "list_objects", side_effect=S3Error("r","r","h","code","msg",None)):
+        flag, result = files_middleware.list_files(**kwargs)
+
+    assert flag is False
+    assert result["status"] == 500
+    assert b"Unable to list files" in result["response"].data
+
+
+def test_list_files_generic_exception(app):
+    kwargs = {}
+    with patch.object(files_middleware.minio_client, "list_objects", side_effect=DummyException("Boom")):
+        flag, result = files_middleware.list_files(**kwargs)
+
+    assert flag is False
+    assert result["status"] == 500
+    assert b"Internal server error" in result["response"].data
+
+
+# ---------- DELETE FILE EXCEPTIONS ----------
+def test_delete_file_generic_s3error(app):
+    kwargs = {"filename": "file.txt"}
+    fake_error = S3Error("r","r","h","SomeCode","SomeMessage",None)
+
+    with patch.object(files_middleware.minio_client, "stat_object", return_value=True), \
+         patch.object(files_middleware.minio_client, "remove_object", side_effect=fake_error):
+        flag, result = files_middleware.delete_file(**kwargs)
+
+    assert flag is False
+    assert result["status"] == 500
+    assert b"S3 operation failed" in result["response"].data
+
+
+def test_delete_file_generic_exception(app):
+    kwargs = {"filename": "file.txt"}
+    with patch.object(files_middleware.minio_client, "stat_object", side_effect=DummyException("Boom")):
+        flag, result = files_middleware.delete_file(**kwargs)
+
+    assert flag is False
+    assert result["status"] == 500
+    assert b"Internal server error" in result["response"].data
+
