@@ -88,13 +88,14 @@ def test_get_file_stream_not_found(app):
 
 def test_generate_presigned_url_success(app):
     kwargs = {}
+    fake_url = "https://mocked-presigned-url.test/file.txt"
     with patch.object(files_middleware.minio_client, "stat_object", return_value=True), \
-         patch.object(files_middleware.minio_client, "presigned_get_object", return_value="https://signed.url"):
+         patch.object(files_middleware.minio_client, "presigned_get_object", return_value=fake_url):
         flag, result = files_middleware.generate_presigned_url("file.txt", expiry=600, **kwargs)
 
     assert flag is True
     assert result["status"] == 200
-    assert b"https://signed.url" in result["response"].data
+    assert fake_url.encode() in result["response"].data
 
 
 def test_generate_presigned_url_not_found(app):
