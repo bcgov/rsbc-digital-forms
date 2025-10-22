@@ -27,8 +27,7 @@ def create_file():
     )
 
     response = kwargs.get('response')
-    status = kwargs.get('status', 200)
-    return response, status
+    return response
 
 
 @bp.route('/files/<path:filename>', methods=['GET'])
@@ -45,8 +44,7 @@ def download_file(filename):
         config=Config
     )
     response = kwargs.get('response')
-    status = kwargs.get('status', 200)
-    return response, status
+    return response
 
 @bp.route('/files/url/<path:filename>', methods=['GET'])
 def presigned_url(filename):
@@ -66,8 +64,7 @@ def presigned_url(filename):
     )
 
     response = kwargs.get('response')
-    status = kwargs.get('status', 200)
-    return response, status
+    return response
 
 
 @bp.route('/files', methods=['GET'])
@@ -85,8 +82,7 @@ def list_all_files():
         config=Config
     )
     response = kwargs.get('response')
-    status = kwargs.get('status', 200)
-    return response, status
+    return response
 
 @bp.route('/files/<path:filename>', methods=['DELETE'])
 def remove_file(filename):
@@ -102,5 +98,4 @@ def remove_file(filename):
         config=Config
     )
     response = kwargs.get('response')
-    status = kwargs.get('status', 200)
-    return response, status
+    return response
