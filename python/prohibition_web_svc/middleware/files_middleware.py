@@ -17,7 +17,7 @@ minio_client = Minio(
     secret_key=Config.MINIO_SK,
     secure=getattr(Config, 'MINIO_SECURE', False)
 )
-BUCKET = getattr(Config, 'MINIO_BUCKET', 'rsbc-static-files')
+BUCKET = getattr(Config, 'MINIO_STATIC_BUCKET_NAME', 'not-configured')
 
 def upload_file(**kwargs):
     """Uploads a file to MinIO"""
