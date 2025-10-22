@@ -21,7 +21,7 @@ def test_create_file_success(client, monkeypatch):
     monkeypatch.setattr(files_blueprint, 'middle_logic', fake_middle_logic)
     response = client.post('/api/v1/files')
     assert response.status_code == 201
-    assert b'success' in response.data
+    assert b'created' in response.data
 
 def test_create_file_failure(client, monkeypatch):
     # Patch middle_logic to simulate a server error
