@@ -11,6 +11,12 @@ from python.prohibition_web_svc.config import Config
 logger = get_logger(__name__)
 INTERNAL_SERVER_ERROR="Internal server error"
 
+# SSL cert setup for self-signed MinIO certificates
+cert_path = getattr(Config, 'MINIO_CERT_FILE', None)
+if cert_path and os.path.exists(cert_path):
+    os.environ['SSL_CERT_FILE'] = cert_path
+
+
 minio_client = Minio(
     Config.MINIO_BUCKET_URL,
     access_key=Config.MINIO_AK,
