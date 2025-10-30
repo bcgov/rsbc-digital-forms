@@ -275,7 +275,6 @@
     "police_agency_code": 101,
     "police_attended": "Y",
     "police_file_num": "PF123",
-    "collision_case_prefix": "PF",
     "police_zone": "12",
     "primary_collision_occ_code": "01",
     "prime_file_vjur": 12,
