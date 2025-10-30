@@ -699,25 +699,20 @@
                 <!-- File Details Subsection -->
                 <h4 class="subsection-header">
                     File Details</h4>
-                <div class="grid-table grid-table-2col">
-                    <div class="grid-cell">
-                        <label class="grid-label">Prefix</label><br>
-                        <div class="grid-input grid-display calculated" contenteditable="false" style="width: 50px;">{{
-                            data.collision_case_prefix }}</div>
-                    </div>
+                <div class="grid-table grid-table-3col">
                     <div class="grid-cell">
                         <label class="grid-label">Collision Case No</label><br>
-                        <div class="grid-input grid-display" contenteditable="false" style="width: 100px;">{{
+                        <div class="grid-input grid-display" contenteditable="false">{{
                             data.collision_case_num }}</div>
                     </div>
                     <div class="grid-cell">
                         <label class="grid-label">PRIME File VJUR</label><br>
-                        <div class="grid-input grid-display" contenteditable="false" style="width: 180px;">{{
+                        <div class="grid-input grid-display" contenteditable="false">{{
                             data.prime_file_vjur.label }}</div>
                     </div>
                     <div class="grid-cell">
                         <label class="grid-label">Police File Number</label><br>
-                        <div class="grid-input grid-display" contenteditable="false" style="width: 200px;">{{
+                        <div class="grid-input grid-display" contenteditable="false">{{
                             data.police_file_num }}</div>
                     </div>
                 </div>
@@ -784,11 +779,19 @@
                     </div>
                     <div class="grid-cell">
                         <label class="grid-label">Highway or Route Number</label><br>
-                        <div class="grid-input grid-display" contenteditable="false">{{ data.hwy_route_num.code }}</div>
+                        <div class="grid-input grid-display" contenteditable="false">
+                            {% if data.hwy_route_num %}
+                                {{ data.hwy_route_num.code }}
+                            {% endif %}
+                        </div>
                     </div>
                     <div class="grid-cell">
                         <label class="grid-label">Segment Number</label><br>
-                        <div class="grid-input grid-display" contenteditable="false">{{ data.segment_num.code }}</div>
+                        <div class="grid-input grid-display" contenteditable="false">
+                            {% if data.segment_num %}
+                                {{ data.segment_num.code }}
+                            {% endif %}
+                        </div>
                     </div>
                     <div class="grid-cell">
                         <label class="grid-label">Location Code (Kilometres)</label><br>
