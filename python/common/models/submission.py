@@ -13,6 +13,7 @@ class Submission(db.Model):
     created_by: str
     updated_by: str
     task_processing_status: str
+    submitted_offline: bool
 
     submission_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     ff_application_id = db.Column(db.Integer, nullable=False)
@@ -21,5 +22,6 @@ class Submission(db.Model):
     created_by = db.Column(db.String(120), db.ForeignKey('user.user_guid'), nullable=False)
     updated_by = db.Column(db.String(120))
     task_processing_status = db.Column(db.String(30), default='pending', nullable=False)
+    submitted_offline = db.Column(db.Boolean, default=False, nullable=False)
 
     collision = db.relationship('TarCollision', back_populates='submission', uselist=False)

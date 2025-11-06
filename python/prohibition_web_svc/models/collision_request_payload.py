@@ -83,6 +83,7 @@ class CollisionRequestPayload(TypedDict):
     lighting_cond: DropdownOption
     ff_application_id: str
     submitted_user_guid: str
+    submitted_offline: bool
 
     entities: list[Entity]
     witnesses: list[Witness]
