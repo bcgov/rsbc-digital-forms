@@ -92,7 +92,7 @@ def get_user_guid(**kwargs) -> tuple:
     logger.verbose('inside get_user_guid()')
     data = kwargs.get('payload')
     if kwargs.get('identity_provider') == 'service_account':
-       user_guid = data.get('submitted_user_guid', kwargs.get('username'))
+       user_guid = data.get('submitted_user_guid', data.get('completed_by_id', kwargs.get('username')))
     else:
        user_guid = kwargs.get('user_guid')
     logger.info(f"user_guid: {user_guid}")

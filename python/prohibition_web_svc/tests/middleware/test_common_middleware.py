@@ -79,6 +79,10 @@ def test_get_user_guid_other():
     kwargs = {'payload': {}, 'user_guid': 'xyz'}
     assert common_middleware.get_user_guid(**kwargs) == 'xyz'
 
+def test_get_user_guid_service_account_with_completed_by_id():
+    kwargs = {'payload': {'completed_by_id': 'def'}, 'identity_provider': 'service_account', 'username': 'user'}
+    assert common_middleware.get_user_guid(**kwargs) == 'def'
+
 def test_record_event_error_calls_record_error(monkeypatch):
     called = {}
     def fake_record_error(**kwargs):
