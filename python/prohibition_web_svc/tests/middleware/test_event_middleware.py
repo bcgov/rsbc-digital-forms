@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock, patch
 from python.common.models import Event
 from python.common.enums import ErrorCode, EventType
-from python.prohibition_web_svc.middleware.event_middleware import _mask_sensitive_data, check_if_application_id_exists, log_payload_to_splunk
+from python.prohibition_web_svc.middleware.event_middleware import _mask_sensitive_data, check_if_application_id_exists, log_payload_to_splunk, save_event_data
 
 @pytest.fixture
 def mock_db_session():
@@ -190,3 +190,237 @@ def test_log_payload_to_splunk_no_payload():
         assert result is True
         assert 'splunk_data' not in updated_kwargs  # No splunk_data added
         mock_logger.error.assert_called_once()  # Error was logged due to None payload
+
+
+# Tests for save_event_data function
+def test_save_event_data_vi_form_success(mock_db_session):
+    """Test successful save_event_data with VI form"""
+    payload = {
+        'VI': True,
+        'VI_number': 'VI123',
+        'ff_application_id': 'app-123',
+        'driver_licence_no': 'DL123456',
+        'driver_last_name': 'Doe',
+        'driver_given_name': 'John',
+        'driver_dob': '1990-01-01T00:00:00.000Z',
+        'vehicle_plate_no': 'ABC123',
+        'VI_form_png': 'base64data',
+        'submitted_offline': False
+    }
+    kwargs = {
+        'payload': payload,
+        'user_guid': 'user-guid-123',
+        'username': 'testuser',
+        'identity_provider': 'idir'
+    }
+
+    mock_event = MagicMock()
+    mock_event.event_id = 1
+    mock_vi_form = MagicMock()
+    mock_vi_form.form_id = 1
+    mock_event.vi_form = mock_vi_form
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.Event', return_value=mock_event), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.VIForm', return_value=mock_vi_form), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Submission'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.datetime') as mock_datetime, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.jsonify') as mock_jsonify:
+
+        mock_datetime.now.return_value = '2023-01-01T00:00:00'
+        mock_jsonify.return_value = {'event': 'data'}
+
+        result, updated_kwargs = save_event_data(**kwargs)
+
+        assert result is True
+        assert 'response_dict' in updated_kwargs
+        assert 'event' in updated_kwargs
+        assert updated_kwargs['event'] == mock_event
+        mock_db_session.add.assert_any_call(mock_event)
+        mock_db_session.commit.assert_called()
+
+
+def test_save_event_data_twenty_four_hour_form_success(mock_db_session):
+    """Test successful save_event_data with TwentyFourHour form"""
+    payload = {
+        'TwentyFourHour': True,
+        'twenty_four_hour_number': '24H456',
+        'ff_application_id': 'app-456',
+        'driver_licence_no': 'DL789012',
+        'driver_last_name': 'Smith',
+        'driver_given_name': 'Jane',
+        'vehicle_plate_no': 'XYZ789',
+        'TwentyFourHour_form_png': 'base64data',
+        'submitted_offline': True
+    }
+    kwargs = {
+        'payload': payload,
+        'user_guid': 'user-guid-456',
+        'username': 'testuser',
+        'identity_provider': 'idir'
+    }
+
+    mock_event = MagicMock()
+    mock_event.event_id = 2
+    mock_24h_form = MagicMock()
+    mock_24h_form.form_id = 2
+    mock_event.twenty_four_hour_form = mock_24h_form
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.Event', return_value=mock_event), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.TwentyFourHourForm', return_value=mock_24h_form), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Submission'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.datetime') as mock_datetime, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.jsonify') as mock_jsonify:
+
+        mock_datetime.now.return_value = '2023-01-01T00:00:00'
+        mock_jsonify.return_value = {'event': 'data'}
+
+        result, updated_kwargs = save_event_data(**kwargs)
+
+        assert result is True
+        assert 'response_dict' in updated_kwargs
+        assert 'event' in updated_kwargs
+        assert updated_kwargs['event'] == mock_event
+        mock_db_session.add.assert_any_call(mock_event)
+        mock_db_session.commit.assert_called()
+
+
+def test_save_event_data_twelve_hour_form_success(mock_db_session):
+    """Test successful save_event_data with TwelveHour form"""
+    payload = {
+        'TwelveHour': True,
+        'twelve_hour_number': '12H789',
+        'ff_application_id': 'app-789',
+        'driver_licence_no': 'DL345678',
+        'driver_last_name': 'Johnson',
+        'driver_given_name': 'Bob',
+        'vehicle_plate_no': 'DEF456',
+        'TwelveHour_form_png': 'base64data',
+        'submitted_offline': False
+    }
+    kwargs = {
+        'payload': payload,
+        'user_guid': 'user-guid-789',
+        'username': 'testuser',
+        'identity_provider': 'idir'
+    }
+
+    mock_event = MagicMock()
+    mock_event.event_id = 3
+    mock_12h_form = MagicMock()
+    mock_12h_form.form_id = 3
+    mock_event.twelve_hour_form = mock_12h_form
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.Event', return_value=mock_event), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.TwelveHourForm', return_value=mock_12h_form), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Submission'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.datetime') as mock_datetime, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.jsonify') as mock_jsonify:
+
+        mock_datetime.now.return_value = '2023-01-01T00:00:00'
+        mock_jsonify.return_value = {'event': 'data'}
+
+        result, updated_kwargs = save_event_data(**kwargs)
+
+        assert result is True
+        assert 'response_dict' in updated_kwargs
+        assert 'event' in updated_kwargs
+        assert updated_kwargs['event'] == mock_event
+        mock_db_session.add.assert_any_call(mock_event)
+        mock_db_session.commit.assert_called()
+
+
+def test_save_event_data_irp_form_returns_early(mock_db_session):
+    """Test save_event_data with IRP form (returns early without saving)"""
+    payload = {
+        'IRP': True,
+        'IRP_number': 'IRP999',
+        'ff_application_id': 'app-999'
+    }
+    kwargs = {
+        'payload': payload,
+        'user_guid': 'user-guid-999',
+        'username': 'testuser',
+        'identity_provider': 'idir'
+    }
+
+    # IRP forms return early without any return value (None)
+    result = save_event_data(**kwargs)
+
+    # Should return None (not a tuple) for IRP forms
+    assert result is None
+    # No database operations should have been performed
+    mock_db_session.add.assert_not_called()
+    mock_db_session.commit.assert_not_called()
+
+
+def test_save_event_data_service_account_identity_provider(mock_db_session):
+    """Test save_event_data with service_account identity provider"""
+    payload = {
+        'VI': True,
+        'VI_number': 'VI999',
+        'ff_application_id': 'app-999',
+        'driver_licence_no': 'DL999999',
+        'submitted_user_guid': 'submitted-user-guid',
+        'submitted_offline': False
+    }
+    kwargs = {
+        'payload': payload,
+        'username': 'service-account-user',
+        'identity_provider': 'service_account'
+    }
+
+    mock_event = MagicMock()
+    mock_event.event_id = 4
+    mock_vi_form = MagicMock()
+    mock_vi_form.form_id = 4
+    mock_event.vi_form = mock_vi_form
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.Event', return_value=mock_event), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.VIForm', return_value=mock_vi_form), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Submission'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.datetime') as mock_datetime, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.jsonify') as mock_jsonify:
+
+        mock_datetime.now.return_value = '2023-01-01T00:00:00'
+        mock_jsonify.return_value = {'event': 'data'}
+
+        result, updated_kwargs = save_event_data(**kwargs)
+
+        assert result is True
+        # Verify that submitted_user_guid was used instead of username
+        # This would be verified by checking the Event constructor call
+
+
+def test_save_event_data_database_exception_handling(mock_db_session):
+    """Test save_event_data handles database exceptions properly"""
+    payload = {
+        'VI': True,
+        'VI_number': 'VI000',
+        'ff_application_id': 'app-000',
+        'driver_licence_no': 'DL000000'
+    }
+    kwargs = {
+        'payload': payload,
+        'user_guid': 'user-guid-000',
+        'username': 'testuser',
+        'identity_provider': 'idir'
+    }
+
+    # Make database commit raise an exception
+    mock_db_session.commit.side_effect = Exception("Database connection failed")
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.Event'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.VIForm'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Submission'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.datetime'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.get_event_type', return_value=EventType.VI), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.get_ticket_no', return_value='VI000'):
+
+        result, updated_kwargs = save_event_data(**kwargs)
+
+        assert result is False
+        assert 'error' in updated_kwargs
+        assert updated_kwargs['error']['error_code'] == ErrorCode.E01
+        assert 'Database connection failed' in updated_kwargs['error']['error_details']
+        assert updated_kwargs['error']['event_type'] == EventType.VI
+        assert updated_kwargs['error']['ticket_no'] == 'VI000'
