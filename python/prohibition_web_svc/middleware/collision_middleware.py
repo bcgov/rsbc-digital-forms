@@ -98,6 +98,7 @@ def save_collision_data(**kwargs) -> tuple:
     try:
         submission = Submission(
             ff_application_id=data.get('ff_application_id'),
+            submitted_offline=data.get('submitted_offline', False),
             created_dt=date_created,
             updated_dt=date_created,
             created_by=user_guid,

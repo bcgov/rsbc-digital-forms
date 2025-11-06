@@ -7,7 +7,7 @@ from datetime import datetime
 from base64 import b64decode
 from flask import jsonify, make_response
 from python.common.logging_utils import get_logger
-from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, IRPForm, FormStorageRefs
+from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, IRPForm, FormStorageRefs, Submission
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_method1
 import uuid
@@ -281,9 +281,19 @@ def save_event_data(**kwargs) -> tuple:
             event.twelve_hour_form = twelve_hour_form
         if data.get('IRP'):
             return
-        logger.verbose('Saving Event')
 
+        submission = Submission(
+            ff_application_id=data.get('ff_application_id'),
+            submitted_offline=data.get('submitted_offline', False),
+            created_dt=date_created,
+            updated_dt=date_created,
+            created_by=user_guid,
+            updated_by=user_guid,
+        )
+
+        logger.verbose('Saving Event')
         db.session.add(event)
+        db.session.add(submission)
         db.session.commit()
     except Exception as e:
         logger.error(e)
