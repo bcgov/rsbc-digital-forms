@@ -1,0 +1,144 @@
+$warning-bg: #fcf8e3;
+$warning-border: #f0ad4e;
+$warning-text: #8a6d3b;
+$notice-color: #d9534f;
+$link-color: #003366;
+$link-hover: #002244;
+
+.retirement-banner {
+  background-color: $warning-bg;
+  border-bottom: 3px solid $warning-border;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  .retirement-banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    color: $warning-text;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    
+    .retirement-banner-text {
+      flex: 1;
+    }
+    
+    .retirement-banner-title {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      
+      strong {
+        font-weight: 700;
+        color: $notice-color;
+      }
+    }
+    
+    .retirement-banner-message {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      
+      strong {
+        font-weight: 600;
+      }
+    }
+    
+    .retirement-banner-actions {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      
+      .retirement-banner-button {
+        display: inline-block;
+        background-color: $link-color;
+        color: white;
+        padding: 0.5rem 1.25rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+        white-space: nowrap;
+        
+        &:hover {
+          background-color: $link-hover;
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        &:active {
+          transform: translateY(0);
+        }
+      }
+      
+      .retirement-banner-close {
+        background: none;
+        border: none;
+        color: $warning-text;
+        cursor: pointer;
+        padding: 0.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s ease, transform 0.2s ease;
+        
+        &:hover {
+          color: darken($warning-text, 15%);
+          transform: scale(1.1);
+        }
+        
+        &:active {
+          transform: scale(0.95);
+        }
+        
+        svg {
+          font-size: 1.5rem;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .retirement-banner {
+    padding: 1rem;
+    
+    .retirement-banner-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      
+      .retirement-banner-title {
+        font-size: 1rem;
+      }
+      
+      .retirement-banner-message {
+        font-size: 0.9rem;
+      }
+      
+      .retirement-banner-actions {
+        align-self: stretch;
+        flex-direction: column;
+        gap: 0.75rem;
+        
+        .retirement-banner-button {
+          font-size: 0.9rem;
+          padding: 0.45rem 1rem;
+          display: block;
+          text-align: center;
+        }
+        
+        .retirement-banner-close {
+          align-self: flex-end;
+        }
+      }
+    }
+  }
+}
+
+@media print {
+  .retirement-banner {
+    display: none;
+  }
+}
