@@ -1053,13 +1053,13 @@
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.contact_phone_num }}
                             </div>
                         </div>
-                        {% endif %}
                         <div class="grid-cell">
                             <label class="grid-label">Sex</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{% if
                                 entity.sex == 'M' %}Male{% elif entity.sex == 'F' %}Female{% elif entity.sex == 'U'
                                 %}Unknown{% else %}{{ entity.sex }}{% endif %}</div>
                         </div>
+                         {% endif %}
                         <div class="grid-cell">
                             <label class="grid-label">Vehicle Colour</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_colour }}
@@ -1257,6 +1257,9 @@
                         <div class="grid-cell"></div>
                     </div>
 
+                    {% if not (data.print_options and data.print_options.type == "entity" and
+                        data.print_options.entity_num != entity.entity_num) %}
+
                     {% if entity.charges_blood_alc_tests_taken == 'Y' %}
 
                     <!-- Charges and Blood Alcohol Tests for Entity Driver -->
@@ -1321,7 +1324,7 @@
                         {% endif %}
                     </div>
                     {% endif %}
-
+                    {% endif %}
 
                     <!-- Involved Persons Section -->
                     {% for person in entity.involved_persons %}
@@ -1486,10 +1489,13 @@
                                     <tr>
                                         <th style="border: 1px solid #000; padding: 5px; background-color: #f0f0f0;">
                                             Witness Name</th>
+                                        {% if not (data.print_options and data.print_options.type == "entity") %}
                                         <th style="border: 1px solid #000; padding: 5px; background-color: #f0f0f0;">
                                             Address</th>
                                         <th style="border: 1px solid #000; padding: 5px; background-color: #f0f0f0;">
                                             Contact Phone Number</th>
+                                        
+                                        {% endif %}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1497,19 +1503,23 @@
                                     <tr>
                                         <td style="border: 1px solid #000; padding: 5px;">{{ witness.witness_name }}
                                         </td>
+                                        {% if not (data.print_options and data.print_options.type == "entity") %}
                                         <td style="border: 1px solid #000; padding: 5px;">{{ witness.address }}</td>
                                         <td style="border: 1px solid #000; padding: 5px;">{{ witness.contact_phn_num }}
                                         </td>
+                                        {% endif %}
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
                         {% endif %}
+                         {% if not (data.print_options and data.print_options.type == "entity") %}
                         <div class="grid-cell">
                             <label class="grid-label">Box 99 Police Comments</label><br>
                             <textarea class="grid-input auto-resize">{{ data.police_comments }}</textarea>
                         </div>
+                        {% endif %}
                         <div class="grid-cell">
                             <label class="grid-label">Collision Type</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 200px;">{% if
