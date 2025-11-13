@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1oubpmc" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.31.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
   <bpmn:process id="digital_forms_events" name="Digital Forms Events" isExecutable="true" camunda:historyTimeToLive="P30D">
-    <bpmn:startEvent id="StartEvent_1" name="start">
+    <bpmn:startEvent id="StartEvent_1" name="start" camunda:asyncAfter="true">
       <bpmn:outgoing>Flow_11aa80b</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:endEvent id="Event_0ts53jy" name="end">
-      <bpmn:incoming>Flow_0np0ks7</bpmn:incoming>
+      <bpmn:incoming>Flow_063y4h1</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:serviceTask id="submit_collision" name="Submit Colliision" camunda:asyncAfter="true">
       <bpmn:extensionElements>
@@ -27,10 +27,19 @@ system.getenv('REACT_APP_RSBC_API_URL')+"/api/v1/collision"</camunda:script>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
         </camunda:connector>
-        <camunda:failedJobRetryTimeCycle>R0/PT1M</camunda:failedJobRetryTimeCycle>
+        <camunda:failedJobRetryTimeCycle>R3/PT5M</camunda:failedJobRetryTimeCycle>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', statusCode === 201 ? "Submitted" : "Failed"); execution.setVariable('collision',"");</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">if(statusCode != 201){
+    throw new Error("Error submitting mv6020 form - Check Incidents, response Code: "+statusCode);
+}</camunda:script>
+        </camunda:executionListener>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0dibfen</bpmn:incoming>
-      <bpmn:outgoing>Flow_03v93rj</bpmn:outgoing>
+      <bpmn:incoming>Flow_1yn1lqp</bpmn:incoming>
+      <bpmn:outgoing>Flow_17xtjse</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_11aa80b" name="start listeners" sourceRef="StartEvent_1" targetRef="Activity_1xpaggf">
       <bpmn:extensionElements>
@@ -42,8 +51,8 @@ system.getenv('REACT_APP_RSBC_API_URL')+"/api/v1/collision"</camunda:script>
       </bpmn:extensionElements>
     </bpmn:sequenceFlow>
     <bpmn:scriptTask id="Activity_1pvahuo" name="Transform Input" scriptFormat="groovy">
-      <bpmn:incoming>Flow_0es6pgh</bpmn:incoming>
-      <bpmn:outgoing>Flow_0dibfen</bpmn:outgoing>
+      <bpmn:incoming>Flow_08ly59q</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yn1lqp</bpmn:outgoing>
       <bpmn:script>import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -83,7 +92,7 @@ system.getenv('KEYCLOAK_URL')+"/auth/realms/"+system.getenv('KEYCLOAK_URL_REALM'
         <camunda:executionListener event="end">
           <camunda:script scriptFormat="JavaScript">if (statusCode != 200){
   throw new Error("Error from OAuth token call, response Code: "+statusCode)
-}else{
+}else{         
 }</camunda:script>
         </camunda:executionListener>
         <camunda:inputOutput>
@@ -101,157 +110,23 @@ return "Basic " + encoded</camunda:script>
           <camunda:outputParameter name="token">${S(response).prop("access_token").stringValue()}</camunda:outputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_17fr8p5</bpmn:incoming>
-      <bpmn:outgoing>Flow_0es6pgh</bpmn:outgoing>
+      <bpmn:incoming>Flow_0rl0vxr</bpmn:incoming>
+      <bpmn:outgoing>Flow_08ly59q</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0es6pgh" sourceRef="Activity_153941x" targetRef="Activity_1pvahuo" />
-    <bpmn:sequenceFlow id="Flow_0np0ks7" sourceRef="Activity_0azpkne" targetRef="Event_0ts53jy" />
-    <bpmn:task id="Activity_02bgk3e" name="Update Application Status - Failed">
-      <bpmn:extensionElements>
-        <camunda:executionListener event="start">
-          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Failed");
-execution.setVariable("collision","");</camunda:script>
-        </camunda:executionListener>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="start" />
-        <camunda:executionListener event="end">
-          <camunda:script scriptFormat="javascript">execution.setVariable('retry', 0);
-throw new Error("Error submitting form, response Code: "+statusCode);</camunda:script>
-        </camunda:executionListener>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1cs9gzs</bpmn:incoming>
-      <bpmn:outgoing>Flow_1drchzm</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:task id="Activity_0azpkne" name="Update Application Status - Submitted">
-      <bpmn:extensionElements>
-        <camunda:executionListener event="start">
-          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Submitted");</camunda:script>
-        </camunda:executionListener>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="start" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_04z5ai6</bpmn:incoming>
-      <bpmn:outgoing>Flow_0np0ks7</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:sequenceFlow id="Flow_0dibfen" sourceRef="Activity_1pvahuo" targetRef="submit_collision" />
-    <bpmn:endEvent id="Event_1egd12n" name="end">
-      <bpmn:incoming>Flow_1drchzm</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:task id="Activity_1xpaggf" name="Update Application Status - Processing" camunda:asyncAfter="true">
       <bpmn:extensionElements>
         <camunda:executionListener event="start">
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Processing");</camunda:script>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="start" />
-        <camunda:executionListener event="start">
-          <camunda:script scriptFormat="javascript">execution.setVariable('retry', 0);</camunda:script>
-        </camunda:executionListener>
-        <camunda:inputOutput>
-          <camunda:outputParameter name="retry">0</camunda:outputParameter>
-        </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_11aa80b</bpmn:incoming>
-      <bpmn:outgoing>Flow_08bdel0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0rl0vxr</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="Flow_08bdel0" sourceRef="Activity_1xpaggf" targetRef="Gateway_0l66sc4" />
-    <bpmn:exclusiveGateway id="Gateway_0l66sc4">
-      <bpmn:incoming>Flow_08bdel0</bpmn:incoming>
-      <bpmn:incoming>Flow_0fa4hmr</bpmn:incoming>
-      <bpmn:outgoing>Flow_17fr8p5</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_17fr8p5" sourceRef="Gateway_0l66sc4" targetRef="Activity_153941x" />
-    <bpmn:exclusiveGateway id="Gateway_0p51y5n" name="Submission Complete ?">
-      <bpmn:incoming>Flow_03v93rj</bpmn:incoming>
-      <bpmn:outgoing>Flow_04z5ai6</bpmn:outgoing>
-      <bpmn:outgoing>Flow_08q6qgc</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_03v93rj" sourceRef="submit_collision" targetRef="Gateway_0p51y5n" />
-    <bpmn:sequenceFlow id="Flow_04z5ai6" name="Yes" sourceRef="Gateway_0p51y5n" targetRef="Activity_0azpkne">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${statusCode == 201}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:exclusiveGateway id="Gateway_17ut9lx" name="Has Retried ?">
-      <bpmn:incoming>Flow_08q6qgc</bpmn:incoming>
-      <bpmn:outgoing>Flow_08qg5ne</bpmn:outgoing>
-      <bpmn:outgoing>Flow_17gk87h</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_08q6qgc" name="No" sourceRef="Gateway_0p51y5n" targetRef="Gateway_17ut9lx">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${statusCode != 201}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_08qg5ne" name="Yes" sourceRef="Gateway_17ut9lx" targetRef="Activity_0gxlnmc">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('retry') == 1}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_17gk87h" name="No" sourceRef="Gateway_17ut9lx" targetRef="Activity_179m48l">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('retry') != 1}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:intermediateCatchEvent id="Event_0aqqwja" name="wait 60s">
-      <bpmn:incoming>Flow_0mt8kcs</bpmn:incoming>
-      <bpmn:outgoing>Flow_0fa4hmr</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="TimerEventDefinition_0d7vzde">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT60S</bpmn:timeDuration>
-      </bpmn:timerEventDefinition>
-    </bpmn:intermediateCatchEvent>
-    <bpmn:sequenceFlow id="Flow_0fa4hmr" sourceRef="Event_0aqqwja" targetRef="Gateway_0l66sc4" />
-    <bpmn:task id="Activity_179m48l" name="Update Application Status - Retry" camunda:asyncAfter="true">
-      <bpmn:extensionElements>
-        <camunda:executionListener event="start">
-          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Retry");
-execution.setVariable('retry', 1);</camunda:script>
-        </camunda:executionListener>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="start" />
-        <camunda:executionListener event="start">
-          <camunda:script scriptFormat="javascript">execution.setVariable('retry', 1);
-execution.setVariable("collision","");</camunda:script>
-        </camunda:executionListener>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_17gk87h</bpmn:incoming>
-      <bpmn:outgoing>Flow_0mt8kcs</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:sequenceFlow id="Flow_0mt8kcs" sourceRef="Activity_179m48l" targetRef="Event_0aqqwja" />
-    <bpmn:scriptTask id="Activity_0gxlnmc" name="Generate Mail Content" scriptFormat="groovy">
-      <bpmn:incoming>Flow_08qg5ne</bpmn:incoming>
-      <bpmn:outgoing>Flow_1jlp88q</bpmn:outgoing>
-      <bpmn:script>import groovy.json.JsonOutput
-import java.lang.System
-
-// Collect execution variables
-def formId = "MV6020"
-def applicationId = execution.getVariable("applicationId")
-def submittedDate = execution.getVariable("submissionDate")
-def errorDetails = "Error while submitting MV6020 application. Please check logs for details."
-
-
-// Base URL from a process variable or hardcoded
-def baseUrl = System.getenv('FORMSFLOW_WEB_URL')
-// Application URL
-def applicationUrl = "${baseUrl}/application/${applicationId}"
-
-// Regex: strip everything after the host up to the first "/" in path
-def matcher = baseUrl =~ "^(https?://[^/]+)/[^/]+/"
-def hostUrl = matcher ? matcher[0][1] : baseUrl   // e.g. https://example.com
-def camundaBaseUrl = "${hostUrl}/camunda"
-
-def processInstanceId = execution.getProcessInstanceId()
-def incidentUrl = "${camundaBaseUrl}/app/cockpit/default/#/process-instance/${processInstanceId}"
-
-// Create payload map
-def payload = [
-    template            : "admin_notice_submission_failure.html",
-    form_id             : formId,
-    application_id      : applicationId,
-    submitted_date      : submittedDate,
-    error_details       : errorDetails,
-    application_url     : applicationUrl,
-    camunda_incident_url: incidentUrl
-]
-
-// Convert to JSON string
-def payloadJson = JsonOutput.toJson(payload)
-
-// Store payload as process variable
-execution.setVariable("emailPayload", payloadJson)
-</bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="Flow_1jlp88q" sourceRef="Activity_0gxlnmc" targetRef="Activity_04q3sgs" />
-    <bpmn:sequenceFlow id="Flow_1drchzm" sourceRef="Activity_02bgk3e" targetRef="Event_1egd12n" />
-    <bpmn:serviceTask id="Activity_04q3sgs" name="Send Email - Notify Failure" camunda:asyncAfter="true">
+    <bpmn:sequenceFlow id="Flow_0rl0vxr" sourceRef="Activity_1xpaggf" targetRef="Activity_153941x" />
+    <bpmn:sequenceFlow id="Flow_08ly59q" sourceRef="Activity_153941x" targetRef="Activity_1pvahuo" />
+    <bpmn:sequenceFlow id="Flow_1yn1lqp" sourceRef="Activity_1pvahuo" targetRef="submit_collision" />
+    <bpmn:serviceTask id="Activity_0v0k59l" name="Send to ICBC" camunda:asyncAfter="true">
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
@@ -260,7 +135,7 @@ execution.setVariable("emailPayload", payloadJson)
               <camunda:script scriptFormat="groovy">var system = java.lang.System;
 system.getenv('REACT_APP_RSBC_API_URL')+"/api/v1/email"</camunda:script>
             </camunda:inputParameter>
-            <camunda:inputParameter name="payload">${emailPayload}</camunda:inputParameter>
+            <camunda:inputParameter name="payload">${payload}</camunda:inputParameter>
             <camunda:inputParameter name="headers">
               <camunda:map>
                 <camunda:entry key="Authorization">Bearer ${token}</camunda:entry>
@@ -271,169 +146,162 @@ system.getenv('REACT_APP_RSBC_API_URL')+"/api/v1/email"</camunda:script>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
         </camunda:connector>
-        <camunda:failedJobRetryTimeCycle>R0/PT1M</camunda:failedJobRetryTimeCycle>
+        <camunda:failedJobRetryTimeCycle>R3/PT5M</camunda:failedJobRetryTimeCycle>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', statusCode === 201 ? "Submitted" : "ICBC Send Failed"); execution.setVariable('payload',"");</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">if(statusCode != 201){
+    throw new Error("Error sending mv6020 pdf to ICBC - Check Incidents, response Code: "+statusCode);
+}</camunda:script>
+        </camunda:executionListener>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1jlp88q</bpmn:incoming>
-      <bpmn:outgoing>Flow_1cs9gzs</bpmn:outgoing>
+      <bpmn:incoming>Flow_0ga72ox</bpmn:incoming>
+      <bpmn:outgoing>Flow_063y4h1</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1cs9gzs" sourceRef="Activity_04q3sgs" targetRef="Activity_02bgk3e" />
+    <bpmn:sequenceFlow id="Flow_063y4h1" sourceRef="Activity_0v0k59l" targetRef="Event_0ts53jy" />
+    <bpmn:scriptTask id="Activity_0tryrtf" name="Generate Email Payload" scriptFormat="groovy">
+      <bpmn:incoming>Flow_17xtjse</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ga72ox</bpmn:outgoing>
+      <bpmn:script>import org.camunda.spin.Spin
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+// Get JSON string from execution variable
+var formData = S(execution.getVariable("formData"));
+
+// Remove the `currentUserRole` field
+formData.deleteProp("currentUserRole");
+
+def applicationId = execution.getVariable("applicationId");
+
+// Add or update a property in formData
+formData.prop("ff_application_id", applicationId);
+
+// Read environment variable
+def system = java.lang.System
+def icbcEmail = system.getenv('ICBC_OPS_EMAIL')
+
+// Build print_options dynamically using Spin
+def printOptions = Spin.JSON('''{
+  "type": "icbc",
+  "email": "",
+  "is_draft": false
+}''')
+
+// Inject dynamic email value
+printOptions.prop("email", icbcEmail)
+
+formData.prop("print_options", printOptions)
+
+
+// Build the nested payload as a Spin JSON object
+def payload = Spin.JSON('''{
+    "template": "mv6020.html",
+    "data": {},
+    "options": {
+        "type": "email",
+        "filename": ""
+    }
+}''')
+
+// Set the dynamic values
+payload.prop("data", formData)
+
+// Extract collision case number as plain string
+def collisionCaseNum = formData.prop("collision_case_num")?.stringValue()
+
+// Fallback if null
+if (!collisionCaseNum) {
+    collisionCaseNum = "unknown"
+}
+payload.prop("options").prop("filename", "MV6020_${collisionCaseNum}.pdf")
+
+
+execution.setVariable("payload", payload.toString())
+
+</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_0ga72ox" sourceRef="Activity_0tryrtf" targetRef="Activity_0v0k59l" />
+    <bpmn:sequenceFlow id="Flow_17xtjse" sourceRef="submit_collision" targetRef="Activity_0tryrtf" />
+    <bpmn:textAnnotation id="TextAnnotation_1w0m47l">
+      <bpmn:text>If there is any errors during http events, process will generate incident and send a email using a background java process. State changes that needs to be preserved should be marked async.</bpmn:text>
+    </bpmn:textAnnotation>
   </bpmn:process>
-  <bpmn:error id="BUSINESS_ERROR" name="BUSINESS_ERROR" errorCode="BUSINESS_ERROR" />
+  <bpmn:error id="BUSINESS_ERROR" name="BUSINESS_ERROR" errorCode="BUSINESS_ERROR" camunda:errorMessage="Error while submitting collision report" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="digital_forms_events">
       <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
-        <dc:Bounds x="152" y="272" width="36" height="36" />
+        <dc:Bounds x="152" y="302" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="160" y="315" width="22" height="14" />
+          <dc:Bounds x="160" y="345" width="22" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0ts53jy_di" bpmnElement="Event_0ts53jy">
-        <dc:Bounds x="1302" y="522" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1310" y="498" width="19" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1j3xucw_di" bpmnElement="submit_collision">
-        <dc:Bounds x="880" y="250" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0lm1zzi_di" bpmnElement="Activity_1pvahuo">
-        <dc:Bounds x="720" y="250" width="100" height="80" />
+        <dc:Bounds x="680" y="280" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_06lqfa2" bpmnElement="Activity_153941x">
-        <dc:Bounds x="530" y="250" width="100" height="80" />
+        <dc:Bounds x="490" y="280" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0661aot" bpmnElement="Activity_02bgk3e">
-        <dc:Bounds x="1580" y="80" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_0akhtud" bpmnElement="Activity_1xpaggf">
+        <dc:Bounds x="310" y="280" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0613upj" bpmnElement="Activity_0azpkne">
-        <dc:Bounds x="1040" y="500" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1j3xucw_di" bpmnElement="submit_collision">
+        <dc:Bounds x="860" y="280" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1egd12n_di" bpmnElement="Event_1egd12n">
-        <dc:Bounds x="1802" y="102" width="36" height="36" />
+      <bpmndi:BPMNShape id="BPMNShape_1kvkc23" bpmnElement="Activity_0tryrtf">
+        <dc:Bounds x="1040" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_17hqgme" bpmnElement="Activity_0v0k59l">
+        <dc:Bounds x="1240" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ts53jy_di" bpmnElement="Event_0ts53jy">
+        <dc:Bounds x="1432" y="302" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1811" y="145" width="19" height="14" />
+          <dc:Bounds x="1440" y="348" width="19" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0zio69l" bpmnElement="Activity_1xpaggf">
-        <dc:Bounds x="280" y="250" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0l66sc4_di" bpmnElement="Gateway_0l66sc4" isMarkerVisible="true">
-        <dc:Bounds x="435" y="265" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0p51y5n_di" bpmnElement="Gateway_0p51y5n" isMarkerVisible="true">
-        <dc:Bounds x="1065" y="265" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1142" y="280" width="57" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_17ut9lx_di" bpmnElement="Gateway_17ut9lx" isMarkerVisible="true">
-        <dc:Bounds x="1065" y="95" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1056" y="65" width="68" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_05r0jtv_di" bpmnElement="Event_0aqqwja">
-        <dc:Bounds x="442" y="102" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="440" y="72" width="41" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1e2z65i" bpmnElement="Activity_179m48l">
-        <dc:Bounds x="670" y="80" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0e6xit1_di" bpmnElement="Activity_0gxlnmc">
-        <dc:Bounds x="1230" y="80" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1ywbbj4" bpmnElement="Activity_04q3sgs">
-        <dc:Bounds x="1410" y="80" width="100" height="80" />
+      <bpmndi:BPMNShape id="TextAnnotation_1w0m47l_di" bpmnElement="TextAnnotation_1w0m47l">
+        <dc:Bounds x="750" y="80" width="250" height="84" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_11aa80b_di" bpmnElement="Flow_11aa80b">
-        <di:waypoint x="188" y="290" />
-        <di:waypoint x="280" y="290" />
+        <di:waypoint x="188" y="320" />
+        <di:waypoint x="310" y="320" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="197" y="273" width="66" height="14" />
+          <dc:Bounds x="199" y="303" width="66" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0es6pgh_di" bpmnElement="Flow_0es6pgh">
-        <di:waypoint x="630" y="290" />
-        <di:waypoint x="720" y="290" />
+      <bpmndi:BPMNEdge id="Flow_0rl0vxr_di" bpmnElement="Flow_0rl0vxr">
+        <di:waypoint x="410" y="320" />
+        <di:waypoint x="490" y="320" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0np0ks7_di" bpmnElement="Flow_0np0ks7">
-        <di:waypoint x="1140" y="540" />
-        <di:waypoint x="1302" y="540" />
+      <bpmndi:BPMNEdge id="Flow_08ly59q_di" bpmnElement="Flow_08ly59q">
+        <di:waypoint x="590" y="320" />
+        <di:waypoint x="680" y="320" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0dibfen_di" bpmnElement="Flow_0dibfen">
-        <di:waypoint x="820" y="290" />
-        <di:waypoint x="880" y="290" />
+      <bpmndi:BPMNEdge id="Flow_1yn1lqp_di" bpmnElement="Flow_1yn1lqp">
+        <di:waypoint x="780" y="320" />
+        <di:waypoint x="860" y="320" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_08bdel0_di" bpmnElement="Flow_08bdel0">
-        <di:waypoint x="380" y="290" />
-        <di:waypoint x="435" y="290" />
+      <bpmndi:BPMNEdge id="Flow_063y4h1_di" bpmnElement="Flow_063y4h1">
+        <di:waypoint x="1340" y="320" />
+        <di:waypoint x="1432" y="320" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17fr8p5_di" bpmnElement="Flow_17fr8p5">
-        <di:waypoint x="485" y="290" />
-        <di:waypoint x="530" y="290" />
+      <bpmndi:BPMNEdge id="Flow_0ga72ox_di" bpmnElement="Flow_0ga72ox">
+        <di:waypoint x="1140" y="320" />
+        <di:waypoint x="1240" y="320" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_03v93rj_di" bpmnElement="Flow_03v93rj">
-        <di:waypoint x="980" y="290" />
-        <di:waypoint x="1065" y="290" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_04z5ai6_di" bpmnElement="Flow_04z5ai6">
-        <di:waypoint x="1090" y="315" />
-        <di:waypoint x="1090" y="500" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1096" y="405" width="18" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_08q6qgc_di" bpmnElement="Flow_08q6qgc">
-        <di:waypoint x="1090" y="265" />
-        <di:waypoint x="1090" y="145" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1098" y="202" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_08qg5ne_di" bpmnElement="Flow_08qg5ne">
-        <di:waypoint x="1115" y="120" />
-        <di:waypoint x="1230" y="120" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1162" y="102" width="18" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17gk87h_di" bpmnElement="Flow_17gk87h">
-        <di:waypoint x="1065" y="120" />
-        <di:waypoint x="770" y="120" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="954" y="102" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fa4hmr_di" bpmnElement="Flow_0fa4hmr">
-        <di:waypoint x="460" y="138" />
-        <di:waypoint x="460" y="265" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0mt8kcs_di" bpmnElement="Flow_0mt8kcs">
-        <di:waypoint x="670" y="120" />
-        <di:waypoint x="478" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1jlp88q_di" bpmnElement="Flow_1jlp88q">
-        <di:waypoint x="1330" y="120" />
-        <di:waypoint x="1410" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1drchzm_di" bpmnElement="Flow_1drchzm">
-        <di:waypoint x="1680" y="120" />
-        <di:waypoint x="1802" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1cs9gzs_di" bpmnElement="Flow_1cs9gzs">
-        <di:waypoint x="1510" y="120" />
-        <di:waypoint x="1580" y="120" />
+      <bpmndi:BPMNEdge id="Flow_17xtjse_di" bpmnElement="Flow_17xtjse">
+        <di:waypoint x="960" y="320" />
+        <di:waypoint x="1040" y="320" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
