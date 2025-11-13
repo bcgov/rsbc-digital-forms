@@ -282,18 +282,19 @@ def save_event_data(**kwargs) -> tuple:
         if data.get('IRP'):
             return
 
-        submission = Submission(
-            ff_application_id=data.get('ff_application_id'),
-            submitted_offline=data.get('submitted_offline', False),
-            created_dt=date_created,
-            updated_dt=date_created,
-            created_by=user_guid,
-            updated_by=user_guid,
-        )
+        if (data.get('ff_application_id') is not None):
+            submission = Submission(
+                ff_application_id=data.get('ff_application_id'),
+                submitted_offline=data.get('submitted_offline', False),
+                created_dt=date_created,
+                updated_dt=date_created,
+                created_by=user_guid,
+                updated_by=user_guid,
+            )
+            db.session.add(submission)
 
         logger.verbose('Saving Event')
         db.session.add(event)
-        db.session.add(submission)
         db.session.commit()
     except Exception as e:
         logger.error(e)
