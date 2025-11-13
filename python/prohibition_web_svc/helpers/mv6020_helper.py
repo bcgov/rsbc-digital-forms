@@ -54,6 +54,9 @@ def send_mv6020_copy(**kwargs):
         elif ptype == 'entity':
             subject = f"Traffic Accident Report Driver Copy - Collision Case Number {collision_case_no}"
             full_name, email_address = get_entity_data(data)
+            # Fallback: use email from print_options if entity email is missing or empty
+            if not email_address:
+                email_address = print_options.get('email', '')
         elif ptype == 'police':
             subject = f"Traffic Accident Report - Collision Case Number {collision_case_no}"
             full_name = "Officer"
