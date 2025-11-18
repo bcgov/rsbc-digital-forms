@@ -4,6 +4,7 @@ import csv
 import pytz
 import logging
 import logging.config
+from python.common.verbose_logging import VERBOSE_LEVEL_NUM, verbose
 from python.form_handler.config import Config
 from cerberus import Validator
 from cerberus import errors
@@ -15,6 +16,8 @@ import pyaes, pbkdf2, binascii, os, secrets
 import base64
 import fitz
 
+logging.addLevelName(VERBOSE_LEVEL_NUM, 'VERBOSE')
+logging.verbose = verbose
 logging.config.dictConfig(Config.LOGGING)
 
 enc_password = Config.ENCRYPT_KEY
@@ -74,7 +77,7 @@ def get_storage_ref_event_type(message,app,db,event_types) -> str:
     """
     Get the event type from the message
     """
-    logging.debug("inside get_storage_ref_event_type()")
+    logging.verbose("inside get_storage_ref_event_type()")
     try:
         application=app
         db=db
@@ -87,20 +90,19 @@ def get_storage_ref_event_type(message,app,db,event_types) -> str:
             return event_type
         # storage_key=tmp_key.split('/')[1]
         storage_key = tmp_key
-        logging.debug("storage_key: {}".format(storage_key))
+        logging.verbose("storage_key: {}".format(storage_key))
         # print(storage_key)
         with application.app_context():
             form = db.session.query(FormStorageRefs) \
                 .filter(FormStorageRefs.storage_key == storage_key) \
                 .all()
             # db.session.commit()
-            logging.debug("Form returned from query: {}".format(form))
-            print(form)
+            logging.verbose("Form returned from query: {}".format(form))
             if len(form) == 0 or len(form) > 1:
-                logging.debug("Unexpected number of records returned from db. Setting event_type to unknown_event. Number of Records: {}".format(len(form)))
+                logging.info("Unexpected number of records returned from db. Setting event_type to unknown_event. Number of Records: {}".format(len(form)))
                 return "unknown_event"
             for f in form:
-                logging.debug("Parsing event type and event ID from form: {}".format(f))
+                logging.verbose("Parsing event type and event ID from form: {}".format(f))
                 # read form_ype as lower
                 event_type=f.form_type.lower()
                 event_id=f.event_id
@@ -111,7 +113,7 @@ def get_storage_ref_event_type(message,app,db,event_types) -> str:
             raise Exception("event type not found")
         # args['event_type']=storage_key
     except Exception as e:
-        logging.error(e)
+        logging.error(e, exc_info=True)
         return "unknown_event",event_id
     return event_type,event_id
 
@@ -119,7 +121,7 @@ def get_event_status(message,app,db,event_types,event_type,event_id) -> str:
     """
     Get the event status from the message
     """
-    logging.debug("inside get_event_status()")
+    logging.verbose("inside get_event_status()")
     try:
         application=app
         db=db
@@ -137,7 +139,6 @@ def get_event_status(message,app,db,event_types,event_type,event_id) -> str:
                 .filter(Event.event_id == event_id) \
                 .all()
             # db.session.commit()
-            print(form)
             if len(form) == 0 or len(form) > 1:
                 return "pending"
             for f in form:
@@ -154,7 +155,7 @@ def get_event_status(message,app,db,event_types,event_type,event_id) -> str:
                     event_status=f.icbc_sent_status
         # args['event_type']=storage_key
     except Exception as e:
-        logging.error(e)
+        logging.error(e, exc_info=True)
         return "error"
     return event_status
 

@@ -25,7 +25,7 @@ class Config(BaseConfig):
     DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
     # This user has the ability to add, edit and delete other users
-    ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
+    ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'admin@idir')
 
     KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM", "some-realm")
     KEYCLOAK_AUTH_URL = os.getenv(
@@ -46,6 +46,7 @@ class Config(BaseConfig):
     MINIO_BUCKET_URL = os.environ.get("MINIO_BUCKET_URL", 'minio:9000')
     MINIO_SECURE = os.environ.get("MINIO_SECURE", False)
     STORAGE_BUCKET_NAME = os.environ.get("STORAGE_BUCKET_NAME", "test")
+    MINIO_STATIC_BUCKET_NAME = os.environ.get("MINIO_STATIC_BUCKET_NAME", "test-static")
     MINIO_CERT_FILE = os.environ.get(
         "MINIO_CERT_FILE", "/opt/app-root/src/ca.crt")
 
@@ -53,3 +54,5 @@ class Config(BaseConfig):
     ENCRYPT_KEY_SALT = os.environ.get('ENCRYPT_KEY_SALT')
     
     REACT_APP_BASE_URL = os.environ.get('REACT_APP_BASE_URL', 'http://localhost:3000/roadside-forms')
+
+    CACHE_TIMEOUT = int(os.getenv('CACHE_TIMEOUT', 300))  # in seconds

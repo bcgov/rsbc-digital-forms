@@ -2,9 +2,9 @@ import { api } from "./config/axiosConfig";
 import { createRequestHeader } from "../utils/requestHeaders";
 
 export const UserApi = {
-  getAll: async function (auth = null) {
+  getAll: async function () {
     const headers = {
-      ...await createRequestHeader({}, auth),
+      ...await createRequestHeader(),
     };
     return await api
       .request({
@@ -25,8 +25,8 @@ export const UserApi = {
         };
       });
   },
-  delete: async function (data, auth = null) {
-    const headers = await createRequestHeader({}, auth);
+  delete: async function (data) {
+    const headers = await createRequestHeader();
     return await api
       .request({
         url: `/api/v1/admin/users/${data.user_guid}/roles/${data.role_name}`,
@@ -46,9 +46,9 @@ export const UserApi = {
         };
       });
   },
-  get: async function (userId, auth = null) {
+  get: async function (userId) {
     const headers = {
-      ...await createRequestHeader({}, auth),
+      ...await createRequestHeader(),
     };
     return await api
       .request({
@@ -69,8 +69,8 @@ export const UserApi = {
         };
       });
   },
-  post: async function (data, auth = null) {
-    const headers = await createRequestHeader({}, auth);
+  post: async function (data) {
+    const headers = await createRequestHeader();
     return await api
       .request({
         url: "/api/v1/users",
@@ -91,8 +91,8 @@ export const UserApi = {
         };
       });
   },
-  patch: async function (data, auth = null) {
-    const headers = await createRequestHeader({}, auth);
+  patch: async function (data) {
+    const headers = await createRequestHeader();
     return await api
       .request({
         url: `/api/v1/admin/users/${data.user_guid}/roles/officer`,
@@ -112,8 +112,8 @@ export const UserApi = {
         };
       });
   },
-  postAdmin: async function (data, auth = null) {
-    const headers = await createRequestHeader({}, auth);
+  postAdmin: async function (data) {
+    const headers = await createRequestHeader();
     return await api
       .request({
         url: `/api/v1/admin/users/${data.user_guid}/roles`,
@@ -134,8 +134,8 @@ export const UserApi = {
         };
       });
   },
-  updateLastActive: async function (userId, auth = null) {
-    const headers = await createRequestHeader({}, auth);
+  updateLastActive: async function (userId) {
+    const headers = await createRequestHeader();
     return await api
       .request({
         url: `/api/v1/users/${userId}/update-last-active`,

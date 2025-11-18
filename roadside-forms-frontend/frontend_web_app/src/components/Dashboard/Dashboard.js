@@ -19,7 +19,6 @@ import { StaticDataApi } from "../../api/staticDataApi";
 import { Button } from "../common/Button/Button";
 import { db } from "../../db";
 import { userAtom } from "../../atoms/users";
-import { useAuth } from "react-oidc-context";
 import "./dashboard.scss";
 import { FormIDApi } from "../../api/formIDApi";
 import { getAllFormIDs } from "../../utils/dbHelpers";
@@ -27,7 +26,6 @@ import { useSharedIsOnline } from "../../utils/connectivity";
 import { ArrowDownwardRounded, ArrowUpwardRounded } from "@mui/icons-material";
 
 export const Dashboard = () => {
-  const auth = useAuth();
   const { isConnected } = useSharedIsOnline();
   const navigate = useNavigate();
   const [formsData, setFormsData] = useState([]);
@@ -111,19 +109,19 @@ export const Dashboard = () => {
     const fetchData = async () => {
       if (isConnected) {
         try {
-          const agencyData = await StaticDataApi.get("agencies", auth);
-          const cityData = await StaticDataApi.get("cities", auth);
-          const countryData = await StaticDataApi.get("countries", auth);
-          const jurisdictionData = await StaticDataApi.get("jurisdictions", auth);
-          const impoundData = await StaticDataApi.get("impound_lot_operators", auth);
-          const provinceData = await StaticDataApi.get("provinces", auth);
-          const vehicleStyleData = await StaticDataApi.get("vehicle_styles", auth);
-          const vehicleTypeData = await StaticDataApi.get("vehicle_types", auth);
-          const vehicleColourData = await StaticDataApi.get("vehicle_colours", auth);
-          const vehicleData = await StaticDataApi.get("vehicles", auth);
-          const nscPujData = await StaticDataApi.get("nsc_puj", auth);
+          const agencyData = await StaticDataApi.get("agencies");
+          const cityData = await StaticDataApi.get("cities");
+          const countryData = await StaticDataApi.get("countries");
+          const jurisdictionData = await StaticDataApi.get("jurisdictions");
+          const impoundData = await StaticDataApi.get("impound_lot_operators");
+          const provinceData = await StaticDataApi.get("provinces");
+          const vehicleStyleData = await StaticDataApi.get("vehicle_styles");
+          const vehicleTypeData = await StaticDataApi.get("vehicle_types");
+          const vehicleColourData = await StaticDataApi.get("vehicle_colours");
+          const vehicleData = await StaticDataApi.get("vehicles");
+          const nscPujData = await StaticDataApi.get("nsc_puj");
           const jurisdictionCountryData = await StaticDataApi.get(
-            "jurisdiction_country", auth
+            "jurisdiction_country"
           );
 
           // Sort vehicle data alphabetically
@@ -211,13 +209,12 @@ export const Dashboard = () => {
     setJurisdictionCountryResource,
     setNscPujResource,
     isConnected,
-    auth,
   ]);
 
   useEffect(() => {
     const fetchEventData = async () => {
       if (isConnected) {
-        const eventData = await FormSubmissionApi.get(auth);
+        const eventData = await FormSubmissionApi.get();
         const flattenedEventData = eventDataFormatter(
           eventObjectFlatener(eventData),
           userResource,
@@ -256,7 +253,6 @@ export const Dashboard = () => {
     jurisdictionCountryResource,
     nscPujResource,
     isConnected,
-    auth,
   ]);
 
   useEffect(() => {
@@ -288,7 +284,7 @@ export const Dashboard = () => {
     const fetchNeededIDs = async () => {
       const neededFormID = await getAllFormIDs();
       if (neededFormID["12Hour"] > 0 || neededFormID["24Hour"] > 0 || neededFormID["VI"] > 0) {
-        const newIDs = await FormIDApi.post(neededFormID, auth);
+        const newIDs = await FormIDApi.post(neededFormID);
         if (newIDs) { 
           const seededIDs = await seedLeasedValues(newIDs.forms);
           await db.formID.bulkPut(seededIDs);
@@ -298,7 +294,7 @@ export const Dashboard = () => {
     };
 
     const fetchCurrentIDs = async () => {
-      const currentIDs = await FormIDApi.get(auth);
+      const currentIDs = await FormIDApi.get();
       const seededIDs = await seedLeasedValues(currentIDs);
       await db.formID.bulkPut(seededIDs);
     };
@@ -309,7 +305,7 @@ export const Dashboard = () => {
         // fetchCurrentIDs().then(() => );
       }
     }
-  }, [staticDataLoaded, isConnected, auth]);
+  }, [staticDataLoaded, isConnected]);
 
   const handleClick = () => {
     navigate("/createEvent");

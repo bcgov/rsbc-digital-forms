@@ -13,10 +13,8 @@ import { useRecoilValue } from "recoil";
 import { userRolesAtom } from "../../atoms/userRoles";
 import { loginCompletedAtom } from "../../atoms/loginCompleted";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "react-oidc-context";
 
 export const RequestAccess = () => {
-  const auth = useAuth();
   const [showApplication, setShowApplication] = useState(false);
   const [options, setOptions] = useState([]);
   const [showApplicationReceived, setShowApplicationReceived] = useState(false);
@@ -28,7 +26,7 @@ export const RequestAccess = () => {
   const initialValues = {
     last_name: "",
     first_name: "",
-    agency: "",
+    agency: null,
     badge_number: "",
   };
 
@@ -39,7 +37,7 @@ export const RequestAccess = () => {
       first_name: values.first_name,
       last_name: values.last_name,
     };
-    UserApi.post(data, auth)
+    UserApi.post(data)
       .then((data) => {
         setSubmitting(false);
         setShowApplication(false);
@@ -53,18 +51,18 @@ export const RequestAccess = () => {
   const handleClick = () => {
     setShowApplication(true);
     if (agencies === undefined || (agencies && agencies.length === 0)) {
-      StaticDataApi.get("agencies", auth).then((resp) => {
+      StaticDataApi.get("agencies").then((resp) => {
         setAgency(resp.data);
         setOptions(
           resp.data.map((item) => {
-            return { label: item.agency_name, value: item.agency_name };
+            return { label: item.agency_name, value: item };
           })
         );
       });
     } else {
       setOptions(
         agencies.map((item) => {
-          return { label: item.agency_name, value: item.agency_name };
+          return { label: item.agency_name, value: item };
         })
       );
     }

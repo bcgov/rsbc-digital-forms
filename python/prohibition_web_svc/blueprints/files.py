@@ -1,0 +1,101 @@
+from flask import Blueprint, request, jsonify
+from flask_cors import CORS
+
+from python.common.logging_utils import get_logger
+from python.common.helper import middle_logic
+
+from python.prohibition_web_svc.config import Config
+from python.prohibition_web_svc.middleware import files_middleware
+import python.prohibition_web_svc.business.keycloak_logic as keycloak_logic
+import python.prohibition_web_svc.http_responses as http_responses
+
+logger = get_logger(__name__)
+bp = Blueprint('files', __name__, url_prefix=Config.URL_PREFIX + '/api/v1')
+CORS(bp, resources={Config.URL_PREFIX + "/api/v1/files/*": {"origins": Config.ACCESS_CONTROL_ALLOW_ORIGIN}})
+
+@bp.route('/files', methods=['POST'])
+def create_file():
+    kwargs = middle_logic(
+        keycloak_logic.get_authorized_keycloak_user() + [
+            {"try": files_middleware.upload_file, "fail": [  
+                {"try": http_responses.server_error_response, "fail": []},
+            ]},
+        ],
+        required_permission='admin_user_roles-create',
+        request=request,
+        config=Config
+    )
+
+    response = kwargs.get('response')
+    return response
+
+
+@bp.route('/files/<path:filename>', methods=['GET'])
+def download_file(filename):
+    kwargs = middle_logic(
+        keycloak_logic.get_authorized_keycloak_user() + [
+            {"try": files_middleware.get_file_stream, "fail": [
+                {"try": http_responses.server_error_response, "fail": []},
+            ]},
+        ],
+        required_permission='forms-get',
+        request=request,
+        filename=filename,
+        config=Config
+    )
+    response = kwargs.get('response')
+    return response
+
+@bp.route('/files/url/<path:filename>', methods=['GET'])
+def presigned_url(filename):
+    expiry = int(request.args.get('expiry', 3600))
+
+    kwargs = middle_logic(
+        keycloak_logic.get_authorized_keycloak_user() + [
+            {"try": files_middleware.generate_presigned_url, "fail": [
+                {"try": http_responses.server_error_response, "fail": []},
+            ]},
+        ],
+        required_permission='admin_user_roles-index',
+        request=request,
+        filename=filename,
+        expiry=expiry,
+        config=Config
+    )
+
+    response = kwargs.get('response')
+    return response
+
+
+@bp.route('/files', methods=['GET'])
+def list_all_files():
+    prefix = request.args.get('prefix', '')
+    kwargs = middle_logic(
+        keycloak_logic.get_authorized_keycloak_user() + [
+            {"try": files_middleware.list_files, "fail": [
+                {"try": http_responses.server_error_response, "fail": []},
+            ]},
+        ],
+        required_permission='admin_user_roles-index',
+        request=request,
+        prefix=prefix,
+        config=Config
+    )
+    response = kwargs.get('response')
+    return response
+
+@bp.route('/files/<path:filename>', methods=['DELETE'])
+def remove_file(filename):
+    kwargs = middle_logic(
+        keycloak_logic.get_authorized_keycloak_user() + [
+            {"try": files_middleware.delete_file, "fail": [
+                {"try": http_responses.server_error_response, "fail": []},
+            ]},
+        ],
+        required_permission='admin_user_roles-delete',
+        request=request,
+        filename=filename,
+        config=Config
+    )
+    response = kwargs.get('response')
+    return response

@@ -1,25 +1,23 @@
 
-import logging.config
 from python.task_scheduler.config import Config
 from python.task_scheduler.message import encode_message
 import logging
 import json
 from python.common.error_middleware import record_error
 from python.common.enums import ErrorCode
-from python.common.models import Event,FormStorageRefs
 
 def add_to_event_queue(app, writer, message):
     logging.debug("inside add_to_event_queue()")
     errmsg=''
     try:
         queue_name = Config.STORAGE_WATCH_QUEUE
-        logging.debug('add_to_event_queue(): {}'.format(json.dumps(message)))
+        logging.verbose('add_to_event_queue(): {}'.format(json.dumps(message)))
         if not writer.publish(queue_name, encode_message(message, Config.ENCRYPT_KEY)):
             logging.critical('unable to write to RabbitMQ {} queue'.format(queue_name))
             record_queue_error(app, message, add_to_event_queue, 'unable to write to RabbitMQ {} queue'.format(queue_name))
             return False, errmsg
     except Exception as e:
-        logging.error(e)
+        logging.error(e, exc_info=True)
         record_queue_error(app, message, add_to_event_queue, str(e))
         return False, errmsg
     return True, errmsg

@@ -1,11 +1,16 @@
 from flask_api import FlaskAPI
 import logging
 import pytz
+import uuid
 from datetime import datetime
-from python.common.models import db, migrate, Form, UserRole, User
+from flask import request, g
+from python.common.models import db, migrate, Form, UserRole, User, Agency
+from python.prohibition_web_svc.cache import cache
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.commands import register_commands
-from python.prohibition_web_svc.blueprints import static, forms, admin_forms, icbc, user_roles, admin_user_roles, admin_users, users, events
+from python.prohibition_web_svc.blueprints import static, forms, admin_forms, icbc, user_roles, admin_user_roles, admin_users, users, events, collision, print, email, files
+from python.prohibition_web_svc.custom_json_encoder import CustomJSONEncoder
+from python.common.logging_utils import RequestContext, get_logger
 
 
 application = FlaskAPI(__name__)
@@ -23,10 +28,61 @@ application.register_blueprint(static.bp)
 application.register_blueprint(user_roles.bp)
 application.register_blueprint(users.bp)
 application.register_blueprint(events.bp)
+application.register_blueprint(collision.bp)
+application.register_blueprint(print.bp)
+application.register_blueprint(email.bp)
+application.register_blueprint(files.bp)
 
+cache.init_app(application)
 db.init_app(application)
 migrate.init_app(application, db)
 register_commands(application)
+
+application.json = CustomJSONEncoder(application)
+
+# Before Request Middleware - Set up RequestContext
+@application.before_request
+def setup_request_context():
+    """Set up RequestContext for every request"""
+        
+    # Generate request ID
+    request_id = str(uuid.uuid4().hex)[:12]
+    
+    # Create and enter RequestContext
+    context = RequestContext(
+        request_id=request_id
+    )
+    
+    # Enter the context and store the context object and tokens
+    g.request_context = context
+    g.context_tokens = context.__enter__()
+    
+    # Log the incoming request with context
+    logger = get_logger(__name__)
+    logger.info(f"{request.method} {request.path} Incoming request")
+
+# After Request Middleware - Clean up RequestContext
+@application.after_request
+def cleanup_request_context(response):
+    """Clean up RequestContext after every request"""
+    
+    # Log the response with context
+    logger = get_logger(__name__)
+    logger.info(f"{request.method} {request.path} Response code {response.status_code}")
+    
+    # Exit the RequestContext if it exists
+    if hasattr(g, 'request_context') and hasattr(g, 'context_tokens'):
+        try:
+            g.request_context.__exit__(None, None, None)
+        except Exception as e:
+            logger.error(f"Error cleaning up request context: {e}")
+    
+    # Add request ID to response headers for debugging
+    if hasattr(g, 'request_context'):
+        response.headers['X-DF-Request-ID'] = g.request_context.request_id
+    
+    return response
+
 
 def create_app():
     with application.app_context():
@@ -69,12 +125,15 @@ def _seed_forms_for_development(database):
 def seed_initial_administrator(database):
     vancouver_tz = pytz.timezone("America/Vancouver")
     current_dt = datetime.now(vancouver_tz)
+    agency = Agency(agency_name="RoadSafety", agency_id=1)
+    database.session.add(agency)
     user = User(username=Config.ADMIN_USERNAME,
                 user_guid=Config.ADMIN_USERNAME,
                 badge_number='0000',
-                agency="RoadSafety",
+                agency_id=1,
                 first_name="Initial",
-                last_name="Administrator")
+                last_name="Administrator",
+                login=Config.ADMIN_USERNAME)
     database.session.add(user)
     roles = [
         UserRole(user_guid=Config.ADMIN_USERNAME, role_name='officer', submitted_dt=current_dt, approved_dt=current_dt),

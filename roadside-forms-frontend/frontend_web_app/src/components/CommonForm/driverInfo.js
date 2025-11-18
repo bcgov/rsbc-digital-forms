@@ -20,7 +20,6 @@ import { formatBCDL } from "../../utils/formatBCDL";
 import { genderDropdown } from "../../utils/constants";
 import "./commonForm.scss";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { useAuth } from "react-oidc-context";
 
 export const DriverInfo = (props) => {
   const { jurisdictions, provinces, jurisdictionCountry } = props;
@@ -33,7 +32,6 @@ export const DriverInfo = (props) => {
   const [driverJurisdictionOptions, setDriverJurisdictionOptions] =
     useState(jurisdictions);
   const driversLicenceJurisdiction = values["drivers_licence_jurisdiction"];
-  const auth = useAuth();
 
   useEffect(() => {
     if (
@@ -135,7 +133,7 @@ export const DriverInfo = (props) => {
     );
     console.log("Attempting to fetch info for DL", values["driver_licence_no"]);
     if (values["driver_licence_no"]) {
-      ICBCDriverDataApi.get(values["driver_licence_no"], auth)
+      ICBCDriverDataApi.get(values["driver_licence_no"])
         .then((resp) => {
           console.log("ICBC Response Status: ", resp.status);
           if (!_.isEmpty(resp.data) && resp.status === "success") {

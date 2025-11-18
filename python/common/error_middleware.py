@@ -1,7 +1,6 @@
 # Error middleware functions
 import json
 import traceback
-import logging
 import functools
 import inspect
 from flask import request, current_app
@@ -9,7 +8,12 @@ from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 
 from python.common.enums import EventType, ErrorCode, ErrorSeverity, ErrorStatus, ErrorCategory
-from python.common.models import db, DFErrors, Event
+from python.common.logging_utils import get_logger
+from python.common.models.base import db
+from python.common.models.df_errors import DFErrors
+from python.common.models.event import Event
+
+logger = get_logger(__name__)
 
 def get_safe_payload():
     """
@@ -54,7 +58,7 @@ def get_function_info(func):
     else:
         return f"{module_name}.unknown_function"
 
-def record_error(error_code: ErrorCode, error_details, event_id: int = None, event_type: EventType = None, ticket_no=None, func=None, payload=None):
+def record_error(error_code: ErrorCode, error_details, event_id: int = None, submission_id: int = None, event_type: EventType = None, ticket_no=None, func=None, payload=None):
     """
     Record an error in the database.
     """
@@ -79,6 +83,7 @@ def record_error(error_code: ErrorCode, error_details, event_id: int = None, eve
             error_severity_level_cd=str(error_code.severity),
             error_status_cd=str(ErrorStatus.NEW),
             event_id=event_id,
+            submission_id=submission_id,
             event_type=str(event_type) if event_type else None,
             ticket_no=ticket_no,
             req_payload=payload,
@@ -89,10 +94,11 @@ def record_error(error_code: ErrorCode, error_details, event_id: int = None, eve
         )
         db.session.add(error_log)
         db.session.commit()
-        logging.error(f"Error recorded: {error_code} - {error_code.description} - Event ID: {event_id} - Event Type: {event_type} - Function: {function_path} - {error_details}")
+        logger.error(f"Error recorded: {error_code} - {error_code.description} - Event ID: {event_id} - Event Type: {event_type} - Function: {function_path} - {error_details}")
     except SQLAlchemyError as e:
         db.session.rollback()
-        logging.error(f"Failed to record error: {error_code} - {error_code.description} - Event ID: {event_id} - Event Type: {event_type} - Function: {function_path} - {error_details}")
+        logger.error(f"Failed to record error: {error_code} - {error_code.description} - Event ID: {event_id} - Event Type: {event_type} - Function: {function_path} - {error_details}")
+        logger.exception(e)
 
 def error_handler(func):
     """

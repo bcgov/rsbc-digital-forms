@@ -4,7 +4,7 @@ import { RecoilRoot } from 'recoil';
 import { CreateEvent } from '../../../components/Event/createEvent';
 import { vehicleStyles, jurisdictions, provinces, vehicles, vehicleColours, cities, impoundLotOperators } from '../../../atoms/staticData';
 import { useBlocker, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from 'react-oidc-context';
+import { useKeycloak } from '@react-keycloak/web';
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -12,9 +12,9 @@ jest.mock('react-router-dom', () => ({
     useBlocker: jest.fn(),
     useLocation: jest.fn(),
 }));
-jest.mock('react-oidc-context', () => ({
-    ...jest.requireActual('react-oidc-context'),
-    useAuth: jest.fn(),
+jest.mock('@react-keycloak/web', () => ({
+    ...jest.requireActual('@react-keycloak/web'),
+    useKeycloak: jest.fn(),
 }));
 
 const mockNavigate = jest.fn();
@@ -24,7 +24,7 @@ describe('CreateEvent component', () => {
     test('renders create event component correctly', async () => {
         
         useNavigate.mockImplementation(() => mockNavigate);
-        useAuth.mockImplementation(() => mockKeycloak);
+        useKeycloak.mockImplementation(() => mockKeycloak);
         useBlocker.mockImplementation(() => mockBlocker);
         useLocation.mockImplementation(() => ({}));
 
