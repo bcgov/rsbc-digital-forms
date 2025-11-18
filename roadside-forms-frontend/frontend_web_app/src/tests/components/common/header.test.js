@@ -5,12 +5,12 @@ import { MemoryRouter } from 'react-router-dom';
 import { Header } from "../../../components/common/Header/Header";
 import { UserApi } from "../../../api/userApi";
 import { UserRolesApi } from "../../../api/userRolesApi";
-import { useAuth } from "react-oidc-context";
+import { useKeycloak } from "@react-keycloak/web";
 import * as connectivity from "../../../utils/connectivity";
 import * as axiosConfig from "../../../api/config/axiosConfig";
 
-jest.mock('react-oidc-context', () => ({
-  useAuth: jest.fn(),
+jest.mock('@react-keycloak/web', () => ({
+  useKeycloak: jest.fn(),
 }));
 
 jest.mock('../../../api/userApi', () => ({
@@ -60,15 +60,15 @@ describe('Header Component - UpdateLastActive', () => {
   });
 
   beforeEach(() => {
-    useAuth.mockReturnValue({
-      isAuthenticated: true,
-      user: {
-        profile: {
+    useKeycloak.mockReturnValue({
+      keycloak: {
+        authenticated: true,
+        tokenParsed: {
           identity_provider: 'idir',
           idir_user_guid: 'test-user-id'
         }
       },
-      isLoading: false
+      initialized: true
     });
 
     UserApi.get.mockResolvedValue({
@@ -108,7 +108,7 @@ describe('Header Component - UpdateLastActive', () => {
     });
 
     expect(UserApi.updateLastActive).toHaveBeenCalledTimes(1);
-    expect(UserApi.updateLastActive).toHaveBeenCalledWith('test-user-id', expect.anything());
+    expect(UserApi.updateLastActive).toHaveBeenCalledWith('test-user-id');
   });
 
   test('calls updateLastActive every 5 minutes', async () => {

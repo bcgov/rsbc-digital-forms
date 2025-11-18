@@ -2,9 +2,9 @@ import { api } from "./config/axiosConfig";
 import { createRequestHeader } from "../utils/requestHeaders";
 
 export const UserRolesApi = {
-  get: async function (auth = null) {
+  get: async function () {
     const headers = {
-      ...await createRequestHeader({}, auth),
+      ...await createRequestHeader(),
     };
     return await api
       .request({
@@ -26,9 +26,9 @@ export const UserRolesApi = {
       });
   },
 
-  post: async function (data, auth = null) {
+  post: async function (data) {
     const headers = {
-      ...await createRequestHeader({}, auth),
+      ...await createRequestHeader(),
     };
     const response = await api.request({
       url: "/api/v1/user_roles",

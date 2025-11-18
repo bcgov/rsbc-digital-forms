@@ -2,6 +2,7 @@
     "officer": {
         "permissions": [
             "forms-index",
+            "forms-print",
             "forms-create",
             "forms-get",
             "forms-update",

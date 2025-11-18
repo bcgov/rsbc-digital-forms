@@ -1,0 +1,56 @@
+{% extends "email_alert_base.html" %}
+
+{% block primary_text_1 %}
+    <p style="font-family: Arial, sans-serif; font-size: 16px; color: #c0392b; line-height: 1.5;">
+        The following application submission has <strong>failed</strong>. Please review the details below and take the necessary actions.
+    </p>
+{% endblock %}
+
+{% block primary_text_2 %}
+    <h3 style="font-family: Arial, sans-serif; font-size: 18px; color: #2c3e50; margin-top: 20px; margin-bottom: 10px;">Submission Failure Details:</h3>
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <tr style="background-color: #f2f2f2;">
+            <th style="font-family: Arial, sans-serif; font-size: 14px; color: #2c3e50; text-align: left; padding: 10px; border: 1px solid #ddd;">Field</th>
+            <th style="font-family: Arial, sans-serif; font-size: 14px; color: #2c3e50; text-align: left; padding: 10px; border: 1px solid #ddd;">Value</th>
+        </tr>
+        <tr>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; padding: 10px; border: 1px solid #ddd;">Form</td>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; padding: 10px; border: 1px solid #ddd;">{{ message.form_id }}</td>
+        </tr>
+        <tr>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; padding: 10px; border: 1px solid #ddd;">Application ID</td>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; padding: 10px; border: 1px solid #ddd;">{{ message.application_id }}</td>
+        </tr>
+        <tr>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; padding: 10px; border: 1px solid #ddd;">Submitted Date</td>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; padding: 10px; border: 1px solid #ddd;">{{ message.submitted_date }}</td>
+        </tr>
+        <tr>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; padding: 10px; border: 1px solid #ddd;">Error Details</td>
+            <td style="font-family: Arial, sans-serif; font-size: 14px; color: #c0392b; padding: 10px; border: 1px solid #ddd;">{{ message.error_details }}</td>
+        </tr>
+    </table>
+{% endblock %}
+
+{% block primary_text_3 %}
+    <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333333; line-height: 1.5; margin-bottom: 20px;">
+        You can review the failed application and related incident details using the links below:
+    </p>
+
+    <a href="{{ message.application_link }}" style="display: inline-block; padding: 10px 20px; background-color: #3498db; color: #ffffff; text-decoration: none; font-family: Arial, sans-serif; font-size: 16px; border-radius: 5px; margin-bottom: 20px;">View Application</a>
+    <br>
+    <a href="{{ message.camunda_incident_link }}" style="display: inline-block; padding: 10px 20px; background-color: #e74c3c; color: #ffffff; text-decoration: none; font-family: Arial, sans-serif; font-size: 16px; border-radius: 5px; margin-bottom: 20px;">View Camunda Incident</a>
+
+    <p style="font-family: Arial, sans-serif; font-size: 14px; color: #7f8c8d; line-height: 1.5;">
+        If you're unable to click the buttons, copy and paste the following URLs into your browser:
+        <br>
+        <span style="color: #3498db;">{{ message.application_link }}</span><br>
+        <span style="color: #e74c3c;">{{ message.camunda_incident_link }}</span>
+    </p>
+{% endblock %}
+
+{% block salutation_block %}{% endblock %}
+{% block callout_block %}{% endblock %}
+{% block timeline_image %}{% endblock %}
+{% block sign_off %}{% endblock %}
+{% block email_not_monitored %}{% endblock %}

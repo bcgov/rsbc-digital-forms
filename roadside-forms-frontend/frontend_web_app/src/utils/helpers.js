@@ -707,7 +707,7 @@ export const deleteIncompleteEvent = async (incEventID) => {
   return;
 };
 
-export const spoilForm = async (incEventID, auth) => {
+export const spoilForm = async (incEventID) => {
   await db.incompleteEvent
     .where("inc_event_id")
     .equals(incEventID)
@@ -727,6 +727,6 @@ export const spoilForm = async (incEventID, auth) => {
       FormIDApi.patch({
         forms: { ...idsToDelete },
         spoiled_timestamp: new Date(),
-      }, auth).then(() => deleteIncompleteEvent(incEventID));
+      }).then(() => deleteIncompleteEvent(incEventID));
     });
 };

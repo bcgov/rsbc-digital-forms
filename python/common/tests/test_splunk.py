@@ -60,6 +60,7 @@ def test_splunk_logs_icbc_get_driver_event():
         "event": 'icbc_get_driver',
         "user_guid": '',
         "username": username,
+        'request_id': '',
         "queried_bcdl": dl_number},
         "source": "be78d6"}
 
@@ -92,6 +93,7 @@ def test_splunk_logs_icbc_get_vehicle_event():
     assert payload == {"event": {
         "event": 'icbc_get_vehicle',
         "user_guid": '',
+        'request_id': '',
         "username": "someuser@bceid",
         'queried_plate': plate_number
     }, "source": "be78d6"}

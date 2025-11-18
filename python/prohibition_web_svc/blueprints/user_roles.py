@@ -1,17 +1,17 @@
+from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.config import Config
 import python.common.helper as helper
 from flask import request, Blueprint, make_response, jsonify
 from flask_cors import CORS
 import python.prohibition_web_svc.middleware.splunk_middleware as splunk_middleware
 import python.common.splunk as splunk
-import logging.config
 import python.prohibition_web_svc.middleware.role_middleware as role_middleware
 import python.prohibition_web_svc.business.keycloak_logic as keycloak_logic
 import python.prohibition_web_svc.http_responses as http_responses
 
+logger = get_logger(__name__)
 
-logging.config.dictConfig(Config.LOGGING)
-logging.info('*** user_roles blueprint loaded ***')
+logger.info('*** user_roles blueprint loaded ***')
 
 bp = Blueprint('user_roles', __name__, url_prefix=Config.URL_PREFIX + '/api/v1')
 CORS(bp, resources={Config.URL_PREFIX + "/api/v1/user_roles/*": {"origins": Config.ACCESS_CONTROL_ALLOW_ORIGIN}})

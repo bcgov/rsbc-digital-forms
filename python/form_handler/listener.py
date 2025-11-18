@@ -1,3 +1,4 @@
+from python.common.verbose_logging import VERBOSE_LEVEL_NUM, verbose
 from python.form_handler.config import Config
 import python.form_handler.helper as helper
 import python.form_handler.business as business
@@ -14,6 +15,8 @@ from python.form_handler.helper import get_storage_ref_event_type,get_event_stat
 from flask_api import FlaskAPI
 from python.common.models import db
 
+logging.addLevelName(VERBOSE_LEVEL_NUM, 'VERBOSE')
+logging.verbose = verbose
 logging.config.dictConfig(Config.LOGGING)
 
 application = FlaskAPI(__name__)
@@ -51,16 +54,15 @@ class Listener:
         try:
             # convert body (in bytes) to string
             message_dict = decode_message(body, self.config.ENCRYPT_KEY)
-            logging.info('message_dict: {}'.format(message_dict))
+            logging.debug('message_dict: {}'.format(message_dict))
             # DONE: Get event type by querying db
             message_dict['event_type'],event_id_val = get_storage_ref_event_type(message_dict,application,db,Config.EVENT_TYPES)
-            logging.info('event id: {}'.format(event_id_val))
+            logging.info('event id: {} - type: {}'.format(event_id_val, message_dict['event_type']))
             event_status_val = get_event_status(message_dict, application, db, Config.EVENT_TYPES,message_dict['event_type'],event_id_val)
-            logging.info('event type: {}'.format(message_dict['event_type']))
             logging.info('event status: {}'.format(event_status_val))
             if event_status_val in Config.PENDING_EVENT_STATUSES:
                 # DONE: Pass event type and event to middle logic
-                logging.info("callback() invoked: {}".format(json.dumps(message_dict)))
+                logging.debug("callback() invoked: {}".format(json.dumps(message_dict)))
                 helper.middle_logic(helper.get_listeners(business.process_incoming_form(), message_dict['event_type']),
                                 message=message_dict,
                                 config=self.config,

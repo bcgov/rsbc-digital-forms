@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1oubpmc" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.31.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
+  <bpmn:process id="digital_forms_events" name="Digital Forms Events" isExecutable="true" camunda:historyTimeToLive="P30D">
+    <bpmn:startEvent id="StartEvent_1" name="start" camunda:asyncAfter="true">
+      <bpmn:outgoing>Flow_11aa80b</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_0ts53jy" name="end">
+      <bpmn:incoming>Flow_063y4h1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="submit_collision" name="Submit Colliision" camunda:asyncAfter="true">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="groovy">var system = java.lang.System;
+system.getenv('REACT_APP_RSBC_API_URL')+"/api/v1/collision"</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">${collision}</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">Bearer ${token}</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="statusCode">#{statusCode}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:failedJobRetryTimeCycle>R3/PT5M</camunda:failedJobRetryTimeCycle>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', statusCode === 201 ? "Submitted" : "Failed"); execution.setVariable('collision',"");</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">if(statusCode != 201){
+    throw new Error("Error submitting mv6020 form - Check Incidents, response Code: "+statusCode);
+}</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1yn1lqp</bpmn:incoming>
+      <bpmn:outgoing>Flow_17xtjse</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_11aa80b" name="start listeners" sourceRef="StartEvent_1" targetRef="Activity_1xpaggf">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', 'New');</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMJsonDataPipelineListener" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:scriptTask id="Activity_1pvahuo" name="Transform Input" scriptFormat="groovy">
+      <bpmn:incoming>Flow_08ly59q</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yn1lqp</bpmn:outgoing>
+      <bpmn:script>import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+// Get JSON string from execution variable
+var formData = S(execution.getVariable("formData"));
+
+// Remove the `currentUserRole` field
+formData.deleteProp("currentUserRole");
+
+def applicationId = execution.getVariable("applicationId");
+
+// Add or update a property in formData
+formData.prop("ff_application_id", applicationId);
+execution.setVariable("collision", formData.toString())</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:serviceTask id="Activity_153941x" name="Get OAuth Token">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="groovy">var system = java.lang.System;
+system.getenv('KEYCLOAK_URL')+"/auth/realms/"+system.getenv('KEYCLOAK_URL_REALM')+"/protocol/openid-connect/token"</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">grant_type=client_credentials</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">${basicAuth64}</camunda:entry>
+                <camunda:entry key="Content-Type">application/x-www-form-urlencoded</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="statusCode">#{statusCode}</camunda:outputParameter>
+            <camunda:outputParameter name="response">#{response}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="JavaScript">if (statusCode != 200){
+  throw new Error("Error from OAuth token call, response Code: "+statusCode)
+}else{         
+}</camunda:script>
+        </camunda:executionListener>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="basicAuth64">
+            <camunda:script scriptFormat="groovy">import java.util.Base64
+
+def clientId = System.getenv("KEYCLOAK_CLIENTID")
+def clientSecret = System.getenv("KEYCLOAK_CLIENTSECRET")
+
+def credentials = clientId + ":" + clientSecret
+def encoded = Base64.encoder.encodeToString(credentials.bytes)
+
+return "Basic " + encoded</camunda:script>
+          </camunda:inputParameter>
+          <camunda:outputParameter name="token">${S(response).prop("access_token").stringValue()}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0rl0vxr</bpmn:incoming>
+      <bpmn:outgoing>Flow_08ly59q</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:task id="Activity_1xpaggf" name="Update Application Status - Processing" camunda:asyncAfter="true">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Processing");</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_11aa80b</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rl0vxr</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0rl0vxr" sourceRef="Activity_1xpaggf" targetRef="Activity_153941x" />
+    <bpmn:sequenceFlow id="Flow_08ly59q" sourceRef="Activity_153941x" targetRef="Activity_1pvahuo" />
+    <bpmn:sequenceFlow id="Flow_1yn1lqp" sourceRef="Activity_1pvahuo" targetRef="submit_collision" />
+    <bpmn:serviceTask id="Activity_0v0k59l" name="Send to ICBC" camunda:asyncAfter="true">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="groovy">var system = java.lang.System;
+system.getenv('REACT_APP_RSBC_API_URL')+"/api/v1/email"</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">${payload}</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">Bearer ${token}</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="statusCode">#{statusCode}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:failedJobRetryTimeCycle>R3/PT5M</camunda:failedJobRetryTimeCycle>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', statusCode === 201 ? "Submitted" : "ICBC Send Failed"); execution.setVariable('payload',"");</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">if(statusCode != 201){
+    throw new Error("Error sending mv6020 pdf to ICBC - Check Incidents, response Code: "+statusCode);
+}</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ga72ox</bpmn:incoming>
+      <bpmn:outgoing>Flow_063y4h1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_063y4h1" sourceRef="Activity_0v0k59l" targetRef="Event_0ts53jy" />
+    <bpmn:scriptTask id="Activity_0tryrtf" name="Generate Email Payload" scriptFormat="groovy">
+      <bpmn:incoming>Flow_17xtjse</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ga72ox</bpmn:outgoing>
+      <bpmn:script>import org.camunda.spin.Spin
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+// Get JSON string from execution variable
+var formData = S(execution.getVariable("formData"));
+
+// Remove the `currentUserRole` field
+formData.deleteProp("currentUserRole");
+
+def applicationId = execution.getVariable("applicationId");
+
+// Add or update a property in formData
+formData.prop("ff_application_id", applicationId);
+
+// Read environment variable
+def system = java.lang.System
+def icbcEmail = system.getenv('ICBC_OPS_EMAIL')
+
+// Build print_options dynamically using Spin
+def printOptions = Spin.JSON('''{
+  "type": "icbc",
+  "email": "",
+  "is_draft": false
+}''')
+
+// Inject dynamic email value
+printOptions.prop("email", icbcEmail)
+
+formData.prop("print_options", printOptions)
+
+
+// Build the nested payload as a Spin JSON object
+def payload = Spin.JSON('''{
+    "template": "mv6020.html",
+    "data": {},
+    "options": {
+        "type": "email",
+        "filename": ""
+    }
+}''')
+
+// Set the dynamic values
+payload.prop("data", formData)
+
+// Extract collision case number as plain string
+def collisionCaseNum = formData.prop("collision_case_num")?.stringValue()
+
+// Fallback if null
+if (!collisionCaseNum) {
+    collisionCaseNum = "unknown"
+}
+payload.prop("options").prop("filename", "MV6020_${collisionCaseNum}.pdf")
+
+
+execution.setVariable("payload", payload.toString())
+
+</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_0ga72ox" sourceRef="Activity_0tryrtf" targetRef="Activity_0v0k59l" />
+    <bpmn:sequenceFlow id="Flow_17xtjse" sourceRef="submit_collision" targetRef="Activity_0tryrtf" />
+    <bpmn:textAnnotation id="TextAnnotation_1w0m47l">
+      <bpmn:text>If there is any errors during http events, process will generate incident and send a email using a background java process. State changes that needs to be preserved should be marked async.</bpmn:text>
+    </bpmn:textAnnotation>
+  </bpmn:process>
+  <bpmn:error id="BUSINESS_ERROR" name="BUSINESS_ERROR" errorCode="BUSINESS_ERROR" camunda:errorMessage="Error while submitting collision report" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="digital_forms_events">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="302" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="160" y="345" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0lm1zzi_di" bpmnElement="Activity_1pvahuo">
+        <dc:Bounds x="680" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_06lqfa2" bpmnElement="Activity_153941x">
+        <dc:Bounds x="490" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0akhtud" bpmnElement="Activity_1xpaggf">
+        <dc:Bounds x="310" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1j3xucw_di" bpmnElement="submit_collision">
+        <dc:Bounds x="860" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1kvkc23" bpmnElement="Activity_0tryrtf">
+        <dc:Bounds x="1040" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_17hqgme" bpmnElement="Activity_0v0k59l">
+        <dc:Bounds x="1240" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ts53jy_di" bpmnElement="Event_0ts53jy">
+        <dc:Bounds x="1432" y="302" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1440" y="348" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1w0m47l_di" bpmnElement="TextAnnotation_1w0m47l">
+        <dc:Bounds x="750" y="80" width="250" height="84" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_11aa80b_di" bpmnElement="Flow_11aa80b">
+        <di:waypoint x="188" y="320" />
+        <di:waypoint x="310" y="320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="199" y="303" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rl0vxr_di" bpmnElement="Flow_0rl0vxr">
+        <di:waypoint x="410" y="320" />
+        <di:waypoint x="490" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08ly59q_di" bpmnElement="Flow_08ly59q">
+        <di:waypoint x="590" y="320" />
+        <di:waypoint x="680" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yn1lqp_di" bpmnElement="Flow_1yn1lqp">
+        <di:waypoint x="780" y="320" />
+        <di:waypoint x="860" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_063y4h1_di" bpmnElement="Flow_063y4h1">
+        <di:waypoint x="1340" y="320" />
+        <di:waypoint x="1432" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ga72ox_di" bpmnElement="Flow_0ga72ox">
+        <di:waypoint x="1140" y="320" />
+        <di:waypoint x="1240" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17xtjse_di" bpmnElement="Flow_17xtjse">
+        <di:waypoint x="960" y="320" />
+        <di:waypoint x="1040" y="320" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,13 +1,11 @@
 import logging
-import logging.config
 import requests
 from python.common import form_middleware
 from python.common.helper import date_time_to_local_tz_string, format_date_only, yes_no_string_to_bool
 from python.common.config import Config
 from python.common.enums import ErrorCode
-import pytz
 
-from python.common.models import Agency, City, ImpoundLotOperator, JurisdictionCrossRef, Province, Vehicle, VehicleColour, VehicleStyle, VehicleType
+from python.common.models import ImpoundLotOperator, JurisdictionCrossRef, Province, Vehicle, VehicleStyle, VehicleType
 
 ride_url=Config.RIDE_API_URL
 ride_key=Config.RIDE_API_KEY
@@ -18,8 +16,8 @@ vi_submitted = "vi_submitted"
 
 def twelve_hours_event(**args):
     try:
-        logging.info("sending 12hr_submitted event to RIDE")
-        logging.debug(args)
+        logging.debug("sending 12hr_submitted event to RIDE")
+        logging.verbose(args)
         if len(args.keys()) == 0:
             return True, args
 
@@ -46,7 +44,7 @@ def twelve_hours_event(**args):
                         'error_details': f'Error in sending 12hr_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
                         'event_type': '12hr',
                         'func': twelve_hours_event,
-                        'ticket_no': args['form_data']['twelve_hour_number'],
+                        'ticket_no': args['form_data']['twelve_hour_number'] if 'twelve_hour_number' in args['form_data'] else None,
                         'event_id': args['message']['event_id']
                     }
             logging.error('error in sending 12hr_submitted event to RIDE')
@@ -56,13 +54,13 @@ def twelve_hours_event(**args):
             logging.debug(response.json())
     except Exception as e:
         logging.error('error in sending 12hr_submitted event to RIDE')
-        logging.error(e)
+        logging.exception(e)
         args['error'] = {
                         'error_code': ErrorCode.R01,
                         'error_details': e,
                         'event_type': '12hr',
                         'func': twelve_hours_event,
-                        'ticket_no': args['form_data']['twelve_hour_number'],
+                        'ticket_no': args['form_data']['twelve_hour_number'] if 'twelve_hour_number' in args['form_data'] else None,
                         'event_id': args['message']['event_id']
                     }
         return False, args
@@ -71,8 +69,8 @@ def twelve_hours_event(**args):
 
 def twenty_four_hours_event(**args):
     try:
-        logging.info("sending 24hr_submitted event to RIDE")
-        logging.debug(args)
+        logging.debug("sending 24hr_submitted event to RIDE")
+        logging.verbose(args)
         if len(args.keys())==0:
             return True, args
 
@@ -110,7 +108,7 @@ def twenty_four_hours_event(**args):
                         'error_details': f'Error in sending 24hr_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
                         'event_type': '24hr',
                         'func': twenty_four_hours_event,
-                        'ticket_no': args['form_data']['twenty_four_hour_number'],
+                        'ticket_no': args['form_data']['twenty_four_hour_number'] if 'twenty_four_hour_number' in args['form_data'] else None,
                         'event_id': args['message']['event_id']
                     }
             logging.error('error in sending 24hr_submitted event to RIDE')
@@ -120,13 +118,13 @@ def twenty_four_hours_event(**args):
             logging.debug(response.json())
     except Exception as e:
         logging.error('error in sending 24hr_submitted event to RIDE')
-        logging.error(e)
+        logging.exception(e)
         args['error'] = {
                         'error_code': ErrorCode.R01,
                         'error_details': e,
                         'event_type': '24hr',
                         'func': twenty_four_hours_event,
-                        'ticket_no': args['form_data']['twenty_four_hour_number'],
+                        'ticket_no': args['form_data']['twenty_four_hour_number'] if 'twenty_four_hour_number' in args['form_data'] else None,
                         'event_id': args['message']['event_id']
                     }
         return False, args
@@ -136,8 +134,7 @@ def twenty_four_hours_event(**args):
 
 def vi_event(**args):
     try:
-        logging.info("sending vi_submitted to RIDE")
-        logging.debug(args)
+        logging.verbose(f"sending vi_submitted to RIDE with args: {args}")
         if len(args.keys())==0:
             return True, args
 
@@ -182,26 +179,26 @@ def vi_event(**args):
         if response.status_code != 200:
             args['error'] = {
                         'error_code': ErrorCode.R01,
-                        'error_details': f'Error in sending vi_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
+                        'error_details': f'Error in sending vi_submitted event to RIDE, Response code: {response.status_code} response text: {response.text}',
                         'event_type': 'VI',
                         'func': vi_event,
                         'ticket_no': args['form_data']['VI_number'],
                         'event_id': args['message']['event_id']
                     }
+            logging.error(f'error code: {response.status_code} error message: {response.text}')
             logging.error('error in sending vi_submitted event to RIDE')
-            logging.error(f'error code: {response.status_code} error message: {response.json()}')
             return False, args
         else:
-            logging.debug(response.json())
+            logging.debug(response.text)
     except Exception as e:
         logging.error('error in sending vi_submitted event to RIDE')
-        logging.error(e)
+        logging.exception(e)
         args['error'] = {
                         'error_code': ErrorCode.R01,
                         'error_details': e,
                         'event_type': 'VI',
                         'func': vi_event,
-                        'ticket_no': args['form_data']['VI_number'],
+                        'ticket_no': args['form_data']['VI_number'] if 'VI_number' in args['form_data'] else None,
                         'event_id': args['message']['event_id']
                     }
         return False, args
@@ -245,22 +242,8 @@ def fill_common_payload_record(args, payloadRecord):
     payloadRecord["offenceCity"] = form_middleware.get_city_name(args['event_data']['offence_city'], args)
     payloadRecord["officerDisplayName"] = args['user_data']['display_name']
     payloadRecord["officerBadgeNumber"] = args['user_data']['badge_number']
-    payloadRecord["enforcementAgencyName"] = args['user_data']['agency']
-    payloadRecord["vjurCde"] = get_VJur_Code(args, payloadRecord)
-
-
-def get_VJur_Code(args, payloadRecord) -> str:
-    application = args.get('app')
-    db = args.get('db')
-    with application.app_context():
-        agency_data = db.session.query(Agency) \
-                        .filter(Agency.agency_name == payloadRecord["enforcementAgencyName"]) \
-                        .all()
-        if len(agency_data) == 0:
-            logging.error("VJUR code not found")
-            return 'not found'
-        else:
-            return agency_data[0].vjur
+    payloadRecord["enforcementAgencyName"] = args['user_data']['agency_ref']['agency_name']
+    payloadRecord["vjurCde"] = args['user_data']['agency_ref']['vjur']
 
 
 def get_Province(args) -> str:

@@ -1,16 +1,16 @@
+from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.config import Config
 import python.prohibition_web_svc.middleware.splunk_middleware as splunk_middleware
 import python.common.splunk as splunk
 from flask import request, Blueprint, make_response, jsonify
 import python.common.helper as helper
 from flask_cors import CORS
-import logging.config
 from functools import wraps
 import python.prohibition_web_svc.middleware.form_middleware as form_middleware
 import python.prohibition_web_svc.http_responses as http_responses
 
-logging.config.dictConfig(Config.LOGGING)
-logging.info('*** admin/forms blueprint loaded ***')
+logger = get_logger(__name__)
+logger.info('*** admin/forms blueprint loaded ***')
 
 bp = Blueprint('admin_forms', __name__, url_prefix=Config.URL_PREFIX + '/api/v1')
 CORS(bp, resources={Config.URL_PREFIX + "/api/v1/admin/forms*": {"origins": Config.ACCESS_CONTROL_ALLOW_ORIGIN}})
@@ -29,7 +29,7 @@ def basic_auth_required(f):
                     {"try": splunk_middleware.basic_authentication_failed, "fail": []},
                     {"try": splunk.log_to_splunk, "fail": []},
                 ], config=Config, request=request)
-            logging.warning("Request denied - unauthorized - IP Address: {}".format(request.remote_addr))
+            logger.warning("Request denied - unauthorized - IP Address: {}".format(request.remote_addr))
             message = {'error': 'Unauthorized'}
             resp = jsonify(message)
             resp.status_code = 401

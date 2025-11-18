@@ -4,8 +4,13 @@ import pytz
 import logging
 import logging.config
 import datetime
+from typing import Optional
 from python.common.config import Config
+from python.common.logging_utils import get_logger
+from python.common.verbose_logging import VERBOSE_LEVEL_NUM, verbose
 
+logging.addLevelName(VERBOSE_LEVEL_NUM, 'VERBOSE')
+logging.verbose = verbose
 logging.config.dictConfig(Config.LOGGING)
 
 local_tz = pytz.timezone('America/Vancouver')
@@ -104,15 +109,16 @@ def middle_logic(functions: list, **args):
 
     The middleware is called like this: middle_logic(example['rules'])
     """
+    logger = get_logger(__name__)
     if functions:
         try_fail_node = functions.pop(0)
-        logging.debug('calling try function: ' + try_fail_node['try'].__name__)
+        logger.verbose('calling try function: ' + try_fail_node['try'].__name__)
         flag, args = try_fail_node['try'](**args)
-        logging.debug("result from {} is {}".format(try_fail_node['try'].__name__, flag))
+        logger.verbose("result from {} is {}".format(try_fail_node['try'].__name__, flag))
         if flag:
             args = middle_logic(functions, **args)
         else:
-            logging.debug('calling try function: ' + try_fail_node['try'].__name__)
+            logger.verbose('calling try function: ' + try_fail_node['try'].__name__)
             args = middle_logic(try_fail_node['fail'], **args)
     return args
 
@@ -130,12 +136,12 @@ def get_listeners(listeners: dict, key: str) -> list:
 
 def localize_timezone(date_time: datetime) -> datetime:
     localized = local_tz.localize(date_time)
-    logging.debug("localized datetime: {}".format(localized))
+    get_logger(__name__).verbose("localized datetime: {}".format(localized))
     return localized
 
 
 def check_credentials(username, password, username_submitted, password_submitted) -> bool:
-    logging.debug('credentials: {}:{}'.format(username, password))
+    get_logger(__name__).verbose('credentials: {}:{}'.format(username, password))
     if username_submitted == username and password_submitted == password:
         return True
     return False
@@ -159,3 +165,26 @@ def yes_no_string_to_bool(value):
     if value is None or value == '':
         return None
     return value.upper() == 'YES'
+
+def str_to_integer(value: str) -> int:
+    if value is None or value == '':
+        return None
+    try:
+        return int(value)
+    except ValueError:
+        return None
+
+def format_date_iso(date_str: str, output_format: str = "%B %d, %Y") -> Optional[str]:
+    """
+    Convert an ISO 8601 date string to the desired output format.
+    Returns None if input is None or empty.
+    """
+    if not date_str:
+        return None
+
+    try:
+        dt = datetime.datetime.fromisoformat(date_str)
+        return dt.strftime(output_format)
+    except ValueError:
+        # fallback: return original string if parsing fails
+        return date_str

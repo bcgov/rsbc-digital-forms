@@ -1,11 +1,13 @@
 from flask import jsonify, make_response
 from cerberus import Validator
 from cerberus import errors
-import logging
 import json
 from datetime import datetime
 import pytz
+from python.common.logging_utils import get_logger
 from python.common.models import db, User, UserRole
+
+logger = get_logger(__name__)
 
 class CustomErrorHandler(errors.BasicErrorHandler):
     messages = errors.BasicErrorHandler.messages.copy()
@@ -16,11 +18,11 @@ def user_has_not_applied_previously(**kwargs) -> tuple:
         user_count = db.session.query(User) \
             .filter(User.user_guid == kwargs.get('payload')['user_guid']) \
             .count()
-        logging.debug("inside user_has_not_applied_previously(): " + str(user_count))
+        logger.debug("inside user_has_not_applied_previously(): " + str(user_count))
         if user_count:
-            logging.warning('user already exists: ' + str(user_count))
+            logger.warning('user already exists: ' + str(user_count))
     except Exception as e:
-        logging.warning(str(e))
+        logger.warning(str(e))
         return False, kwargs
     return user_count == 0, kwargs
 
@@ -30,9 +32,9 @@ def does_role_already_exist(**kwargs) -> tuple:
         user_role_count = db.session.query(UserRole) \
             .filter(UserRole.user_guid == kwargs.get('payload')['user_guid']) \
             .count()
-        logging.debug("inside does_role_already_exist(): " + str(user_role_count))
+        logger.debug("inside does_role_already_exist(): " + str(user_role_count))
     except Exception as e:
-        logging.warning(str(e))
+        logger.warning(str(e))
         return False, kwargs
     return user_role_count != 0, kwargs
 
@@ -47,12 +49,12 @@ def update_the_user(**kwargs) -> tuple:
         user.display_name = kwargs.get('payload')['display_name']
         user.login = kwargs.get('payload')['login']
         user.badge_number = kwargs.get('payload')['badge_number']
-        user.agency = kwargs.get('payload')['agency']
+        user.agency_id = kwargs.get('payload')['agency']['id']
         user.first_name = kwargs.get('payload')['first_name']
         user.last_name = kwargs.get('payload')['last_name']
         db.session.commit()
     except Exception as e:
-        logging.warning(str(e))
+        logger.warning(str(e))
         return False, kwargs
     return True, kwargs
 
@@ -66,14 +68,14 @@ def admin_create_a_user(**kwargs) -> tuple:
             display_name=kwargs.get('payload')['display_name'],
             login=kwargs.get('payload')['login'],
             badge_number=kwargs.get('payload')['badge_number'],
-            agency=kwargs.get('payload')['agency'],
+            agency_id=kwargs.get('payload')['agency']['id'],
             first_name=kwargs.get('payload')['first_name'],
             last_name=kwargs.get('payload')['last_name']
         )
         db.session.add(user)
         db.session.commit()
     except Exception as e:
-        logging.warning(str(e))
+        logger.warning(str(e))
         return False, kwargs
     return True, kwargs
 
@@ -92,7 +94,7 @@ def create_user_role(**kwargs) -> tuple:
         db.session.commit()
         kwargs['response'] = make_response(jsonify(UserRole.serialize(requested_role)), 201)
     except Exception as e:
-        logging.warning(str(e))
+        logger.warning(str(e))
         return False, kwargs
     return True, kwargs
 
@@ -101,11 +103,21 @@ def request_contains_a_payload(**kwargs) -> tuple:
     request = kwargs.get('request')
     try:
         payload = request.get_json()
+        agency = payload.get('agency')
+        if isinstance(agency, str):
+            try:
+                agency = json.loads(agency)
+                payload['agency'] = agency
+            except json.JSONDecodeError:
+                logger.debug(f"Failed to parse agency string as JSON: {agency}")
+
+        if isinstance(agency, dict):
+            payload['agency'] = agency
     except Exception as e:
-        logging.warning(str(e))
+        logger.warning(str(e))
         return False, kwargs
     kwargs['payload'] = payload
-    logging.warning("payload: " + json.dumps(payload))
+    logger.warning("payload: " + json.dumps(payload))
     return payload is not None, kwargs
 
 
@@ -117,7 +129,7 @@ def get_user(**kwargs) -> tuple:
         db.session.commit()
         kwargs['response'] = make_response(jsonify(User.serialize(user)), 200)
     except Exception as e:
-        logging.warning(str(e))
+        logger.warning(str(e))
         return False, kwargs
     return True, kwargs
 
@@ -167,9 +179,7 @@ def validate_admin_create_user_payload(**kwargs) -> tuple:
             "required": True
         },
          "agency": {
-            "type": "string",
-            'minlength': 5,
-            'maxlength': 30,
+            "type": "dict",
             "required": True
         },
         "badge_number": {
@@ -206,6 +216,6 @@ def validate_admin_create_user_payload(**kwargs) -> tuple:
     cerberus.allow_unknown = False
     if cerberus.validate(kwargs.get('payload')):
         return True, kwargs
-    logging.warning("validation error: " + json.dumps(cerberus.errors))
+    logger.warning("validation error: " + json.dumps(cerberus.errors))
     kwargs['validation_errors'] = cerberus.errors
     return False, kwargs    

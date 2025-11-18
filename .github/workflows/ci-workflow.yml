@@ -35,7 +35,7 @@ jobs:
     permissions: write-all
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js 20.x
         uses: actions/setup-node@v3
@@ -59,12 +59,34 @@ jobs:
         run: |
           cd roadside-forms-frontend/frontend_web_app
           npm run test
+
+  run-python-unit-tests:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+      - name: Install dependencies and run tests
+        run: |
+          cd python/prohibition_web_svc
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+          pytest tests/
+          cd ../common
+          pytest tests/
+
   trivy-scan:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup
         uses: docker/setup-buildx-action@v2
@@ -72,14 +94,14 @@ jobs:
           install: true
 
       - name: Login
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ${{ secrets.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v6
         with:
           context: ${{ inputs.DOCKER_CONTEXT }}
           file: ${{ inputs.DOCKER_FILE }}
@@ -133,16 +155,16 @@ jobs:
           allow-repeats: true
           message-path: |
             trivy_updated.html
-      - name: Post SARIF findings in the issue
-        uses: sett-and-hive/sarif-to-issue-action@v1
-        if: failure()
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          branch: ${{ github.head_ref }}
-          sarif-file: trivy.sarif
-          title: "Critical vulnerabilities found in ${{ inputs.DOCKER_IMAGE_NAME }} on PR ${{ github.event.number }}"
-          odc-sarif: false
+      # - name: Post SARIF findings in the issue
+      #   uses: sett-and-hive/sarif-to-issue-action@v1
+      #   if: failure()
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     repository: ${{ github.repository }}
+      #     branch: ${{ github.head_ref }}
+      #     sarif-file: trivy.sarif
+      #     title: "Critical vulnerabilities found in ${{ inputs.DOCKER_IMAGE_NAME }} on PR ${{ github.event.number }}"
+      #     odc-sarif: false
       
       
 
@@ -160,7 +182,7 @@ jobs:
       id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup
         uses: docker/setup-buildx-action@v2

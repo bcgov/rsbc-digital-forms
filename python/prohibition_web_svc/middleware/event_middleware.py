@@ -1,41 +1,63 @@
-import logging
+import copy
 import json
-import pytz
-import iso8601
 import os
 from dataclasses import asdict
-from PIL import Image
-from io import BytesIO
 from minio import Minio
 from datetime import datetime
-from cerberus import Validator
 from base64 import b64decode
 from flask import jsonify, make_response
-from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, IRPForm, FormStorageRefs
+from python.common.logging_utils import get_logger
+from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, IRPForm, FormStorageRefs, Submission
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_method1
-import img2pdf
 import uuid
 from split_image import split_image
 from python.common.enums import ErrorCode, EventType
-from python.common.error_middleware import record_error
+from python.prohibition_web_svc.helpers.pdf_helpers import create_pdf_with_images
+from python.prohibition_web_svc.middleware.common_middleware import safe_get_value
 
+logger = get_logger(__name__)
 
 def validate_update(**kwargs) -> tuple:
     return True, kwargs
 
+def _mask_sensitive_data(data: dict) -> dict:
+    """
+    Mask sensitive data in the payload before logging to Splunk.
+    """
+    masked_data = copy.deepcopy(data)
+    sensitive_fields = [
+        'driver_licence_no', 'driver_last_name', 'driver_given_name',
+        'regist_owner_last_name', 'regist_owner_first_name',
+        'TwelveHour_form_png', 'TwentyFourHour_form_png', 'VI_form_png',
+    ]
+    for field in sensitive_fields:
+        if field in masked_data:
+            masked_data[field] = '[REDACTED]'
+    return masked_data
 
 def log_payload_to_splunk(**kwargs) -> tuple:
-    request = kwargs.get('request')
-    # TODO - log to Splunk
-    logging.debug("payload: | {}".format(request.get_data()))
+    try:
+        payload = kwargs.get('payload')
+        payload_masked = _mask_sensitive_data(payload)
+        kwargs['splunk_data'] = {
+            'event': "create VI/24h/12h event",
+            'request_id': kwargs.get('request_id', ''),
+            'user_guid': kwargs.get('user_guid', ''),
+            'username': kwargs.get('username'),
+            'form_type': get_event_type(payload).code,
+            'ticket_no': get_ticket_no(payload),
+            'payload': payload_masked
+        }
+    except Exception as e:
+        logger.error(e)
     return True, kwargs
 
 def check_if_application_id_exists(**kwargs) -> tuple:
     """
     Check if the application id exists in the database.
     """
-    logging.debug('inside check_if_application_id_exists()')
+    logger.verbose('inside check_if_application_id_exists()')
     data = kwargs.get('payload')
     application_id = data.get('ff_application_id')
     if application_id is None:
@@ -54,12 +76,12 @@ def check_if_application_id_exists(**kwargs) -> tuple:
             }
             return False, kwargs
     except Exception as e:
-        logging.error(e)
+        logger.error(e)
         return False, kwargs
     return True, kwargs
 
 def save_event_data(**kwargs) -> tuple:
-    logging.debug('inside save_event_data()')
+    logger.verbose('inside save_event_data()')
     data = kwargs.get('payload')
     if kwargs.get('identity_provider') == 'service_account':
        user_guid = data.get('submitted_user_guid', kwargs.get('username'))
@@ -67,9 +89,8 @@ def save_event_data(**kwargs) -> tuple:
        user_guid = kwargs.get('user_guid')
 
     try:
-        logging.debug('Creating Event')
         date_created = datetime.now()
-        # logging.debug(f'heres your data {data}')
+        # logger.debug(f'heres your data {data}')
         event = Event(
             icbc_sent_status='pending',
             vi_sent_status='pending',
@@ -260,16 +281,27 @@ def save_event_data(**kwargs) -> tuple:
             event.twelve_hour_form = twelve_hour_form
         if data.get('IRP'):
             return
-        logging.debug('Saving Event')
 
+        if (data.get('ff_application_id') is not None):
+            submission = Submission(
+                ff_application_id=data.get('ff_application_id'),
+                submitted_offline=data.get('submitted_offline', False),
+                created_dt=date_created,
+                updated_dt=date_created,
+                created_by=user_guid,
+                updated_by=user_guid,
+            )
+            db.session.add(submission)
+
+        logger.verbose('Saving Event')
         db.session.add(event)
         db.session.commit()
     except Exception as e:
-        logging.error(e, stack_info=True)
+        logger.error(e)
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
             'error_code': ErrorCode.E01,
-            'error_details': e,
+            'error_details': str(e),
             'event_id': None,
             'event_type': get_event_type(data),
             'ticket_no': get_ticket_no(data),
@@ -283,7 +315,7 @@ def save_event_data(**kwargs) -> tuple:
 
 def save_event_pdf(**kwargs) -> tuple:
     date_created = datetime.now()
-    logging.debug('save event pdf')
+    logger.verbose('save event pdf')
     try:
         data = kwargs.get('payload')
         event = kwargs.get('event')
@@ -301,29 +333,30 @@ def save_event_pdf(**kwargs) -> tuple:
             pdf_filename = f"/tmp/{filename}.pdf"
             encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
             b64encoded = data.get("VI_form_png").split(",")[1]
-            # extra_page_flag=data.get('incident_details_extra_page',False)
             extra_page_flag=len_of_incident_details>500
             page_num=3 if extra_page_flag else 2
             with open(f"/tmp/{filename}.png", "wb") as fh:
                 fh.write(b64decode(b64encoded))
             split_image(f"/tmp/{filename}.png", page_num, 1, False, True,output_dir="/tmp")
-            # pdf_bytes = img2pdf.convert(f"/tmp/{filename}.png")
-            pdf_bytes=None
+            
             if extra_page_flag:
-                pdf_bytes = img2pdf.convert(f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png", f"/tmp/{filename}_2.png")
+                list_of_images=[f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png", f"/tmp/{filename}_2.png"]
             else:
-                pdf_bytes = img2pdf.convert(f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png")
+                list_of_images=[f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png"]
+
+            pdf_bytes=None
+            pdf_bytes = create_pdf_with_images(*list_of_images)
             with open(pdf_filename, "wb") as file:
                 file.write(pdf_bytes)
             encryptPdf_method1(
                 pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-            logging.debug('File encrypted')
+            logger.verbose('File encrypted')
             encoded_file_name = f"{filename}_encrypted.pdf"
             encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
             with open(encoded_pdf_filepath, 'rb') as file_data:
                 client.fput_object(Config.STORAGE_BUCKET_NAME,
                                    encoded_file_name, encoded_pdf_filepath)
-            logging.debug('File uploaded')
+            logger.verbose('File uploaded')
 
             form_storage = FormStorageRefs(
                 form_id_vi=event.vi_form.form_id,
@@ -342,18 +375,18 @@ def save_event_pdf(**kwargs) -> tuple:
             b64encoded = data.get("TwentyFourHour_form_png").split(",")[1]
             with open(f"/tmp/{filename}.png", "wb") as fh:
                 fh.write(b64decode(b64encoded))
-            pdf_bytes = img2pdf.convert(f"/tmp/{filename}.png")
+            pdf_bytes = create_pdf_with_images(f"/tmp/{filename}.png", is_landscape=True)
             with open(pdf_filename, "wb") as file:
                 file.write(pdf_bytes)
             encryptPdf_method1(
                 pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-            logging.debug('File encrypted')
+            logger.verbose('File encrypted')
             encoded_file_name = f"{filename}_encrypted.pdf"
             encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
             with open(encoded_pdf_filepath, 'rb') as file_data:
                 client.fput_object(Config.STORAGE_BUCKET_NAME,
                                    encoded_file_name, encoded_pdf_filepath)
-            logging.debug('File uploaded')
+            logger.verbose('File uploaded')
 
             form_storage = FormStorageRefs(
                 form_id_24h=event.twenty_four_hour_form.form_id,
@@ -373,18 +406,18 @@ def save_event_pdf(**kwargs) -> tuple:
             b64encoded = data.get("TwelveHour_form_png").split(",")[1]
             with open(f"/tmp/{filename}.png", "wb") as fh:
                 fh.write(b64decode(b64encoded))
-            pdf_bytes = img2pdf.convert(f"/tmp/{filename}.png")
+            pdf_bytes = create_pdf_with_images(f"/tmp/{filename}.png", is_landscape=True)
             with open(pdf_filename, "wb") as file:
                 file.write(pdf_bytes)
             encryptPdf_method1(
                 pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-            logging.debug('File encrypted')
+            logger.verbose('File encrypted')
             encoded_file_name = f"{filename}_encrypted.pdf"
             encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
             with open(encoded_pdf_filepath, 'rb') as file_data:
                 client.fput_object(Config.STORAGE_BUCKET_NAME,
                                    encoded_file_name, encoded_pdf_filepath)
-            logging.debug('File uploaded')
+            logger.verbose('File uploaded')
             
 
             form_storage = FormStorageRefs(
@@ -399,7 +432,7 @@ def save_event_pdf(**kwargs) -> tuple:
             db.session.commit()
 
     except Exception as e:
-        logging.warning(str(e))
+        logger.error(e)
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
                 'error_code': ErrorCode.E02,
@@ -432,6 +465,7 @@ def get_events_for_user(**kwargs) -> tuple:
             event_dict.append(event_obj)
         kwargs['response'] = make_response(jsonify(event_dict), 200)
     except Exception as e:
+        logger.error(e)
         return False, kwargs
     return True, kwargs
 
@@ -441,55 +475,30 @@ def request_contains_a_payload(**kwargs) -> tuple:
     try:
         payload = request.get_json()
         kwargs['payload'] = payload
-        # logging.debug("payload: " + json.dumps(payload))
+        logger.verbose("payload: " + json.dumps(payload))
     except Exception as e:
         return False, kwargs
     return payload is not None, kwargs
 
 
 def get_json_payload(**kwargs) -> tuple:
-    logging.debug("inside get_json_payload()")
+    logger.verbose("inside get_json_payload()")
     try:
         request = kwargs.get('request')
         kwargs['payload'] = request.json
     except Exception as e:
-        logging.warning(str(e))
+        logger.warning(str(e))
         return False, kwargs
     return True, kwargs
 
 
 def validate_form_payload(**kwargs) -> tuple:
-    logging.debug("inside validate_form_payload()")
+    logger.verbose("inside validate_form_payload()")
 
     if(kwargs.get('payload')):
         return True, kwargs
-    logging.warning("validation error: " + json.dumps(''))
+    logger.warning("validation error: " + json.dumps(''))
     return False, kwargs
-
-def record_event_error(**kwargs):
-    """
-    Record an error that occurred during event processing.
-    
-    Args:
-        **kwargs: Additional keyword arguments, including event_id and event_type.
-    """
-    
-
-    try:
-        error = kwargs.get('error')
-
-        if error is None:
-            logging.warning("Error object is None")
-            return
-        record_error(**error)
-
-
-    except Exception as e:
-        # If recording the error itself fails, log it
-        logging.error(f"Failed to record error: {str(e)}")
-        return True, kwargs
-    
-    return True, kwargs
 
 def get_event_type(data):
     event_type = None
@@ -516,25 +525,3 @@ def get_ticket_no(data):
         return data.get('VI_number')
     else:
         return None
-    
-def safe_get_value(data, default=None):
-    """
-    Safely extract the 'value' from a dictionary or handle other input types.
-    
-    Args:
-        data (dict or str or None): Input data to extract value from
-        default (Any, optional): Default value to return if no value found
-    
-    Returns:
-        The extracted value or default
-    """
-    # If data is a dictionary, try to get the 'value' key
-    if isinstance(data, dict):
-        return data.get('value', default)
-    
-    # If data is an empty string, return default
-    if data == "":
-        return default
-    
-    # For None or other types, return default
-    return data if data is not None else default    

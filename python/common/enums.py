@@ -60,6 +60,8 @@ class ErrorCode(BaseEnum):
     # General error
     G00 = ErrorCodeDetails("G00", "General error", ErrorCategory.OTHER, ErrorSeverity.LOW, 
                            "Contact DF application support for further investigation", False)
+    G01 = ErrorCodeDetails("G01", "Error sending email", ErrorCategory.SYSTEM, ErrorSeverity.MEDIUM, 
+                           "Retry the operation. If the issue persists, contact DF application support", False)
     
     # Events related error
     
@@ -76,7 +78,7 @@ class ErrorCode(BaseEnum):
                            "Contact DF application support for further investigation", False)
     E06 = ErrorCodeDetails("E06", "Form handler: Event On Hold", ErrorCategory.DATA, ErrorSeverity.CRITICAL, 
                            "Contact DF application support for further investigation", False)
-    E07 = ErrorCodeDetails("E07", "Form handlerr: Event process error", ErrorCategory.DATA, ErrorSeverity.CRITICAL, 
+    E07 = ErrorCodeDetails("E07", "Form handler: Event process error", ErrorCategory.DATA, ErrorSeverity.CRITICAL, 
                            "Contact DF application support for further investigation", False)
     E08 = ErrorCodeDetails("E08", "General Event process error", ErrorCategory.SYSTEM, ErrorSeverity.CRITICAL, 
                            "Contact DF application support for further investigation", False)
@@ -110,7 +112,35 @@ class ErrorCode(BaseEnum):
     L01 = ErrorCodeDetails("L01", "Error in getting coordinates", ErrorCategory.CONNECTION, ErrorSeverity.MEDIUM,
                             "Contact DF application support for further investigation", False)
 
+    # Collision related error
+
+    C01 = ErrorCodeDetails("C01", "Missing required fields in collision payload", ErrorCategory.VALIDATION, ErrorSeverity.LOW,
+                           "Ensure all required fields are provided in the collision payload", True)
     
+    C02 = ErrorCodeDetails("C02", "Error getting collision data", ErrorCategory.CONNECTION, ErrorSeverity.LOW, \
+                           "Contact DF application support for further investigation", False)
+    
+    C03 = ErrorCodeDetails("C03", "Collision not found", ErrorCategory.DATA, ErrorSeverity.LOW, \
+                           "Ensure that the provided collision case number is valid", True)
+    
+    C04 = ErrorCodeDetails("C04", "Collision PDF saving error", ErrorCategory.DATA, ErrorSeverity.HIGH, 
+                           "Contact DF application support for further investigation", False)
+    
+    
+    # Collision related error
+
+    P01 = ErrorCodeDetails("P01", "Missing required fields in print payload", ErrorCategory.VALIDATION, ErrorSeverity.LOW,
+                           "Ensure all required fields are provided in the print payload", True)
+    P02 = ErrorCodeDetails("P02", "Print Service Error", ErrorCategory.SYSTEM, ErrorSeverity.HIGH,
+                           "Ensure all required fields are provided in the print payload", True)
+    
+    # Collision related error
+
+    N01 = ErrorCodeDetails("N01", "Missing required fields in email payload", ErrorCategory.VALIDATION, ErrorSeverity.LOW,
+                           "Ensure all required fields are provided in the email payload", True)
+    N02 = ErrorCodeDetails("N02", "Notification Service Error", ErrorCategory.SYSTEM, ErrorSeverity.HIGH,
+                           "Ensure all required fields are provided in the email payload", True)
+
     # Add more error codes as needed...
 
     @property
