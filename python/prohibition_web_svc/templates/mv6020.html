@@ -307,6 +307,15 @@
             min-height: 30px;
             resize: vertical;
             overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        @media print {
+            .auto-resize {
+                overflow: visible;
+                resize: none;
+            }
         }
 
         /* Radio Button Groups */
@@ -804,7 +813,7 @@
                     <div class="grid-cell">
                         <label class="grid-label">City, Municipality, Town, District or Village Status</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ 'Organized Territory' if
-                            data.city_status==" organizedTerritory"
+                            data.city_status=="organizedTerritory"
                             else 'Unorganized Territory' }}</div>
                     </div>
                     <div class="grid-cell">
@@ -1055,9 +1064,7 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Sex</label><br>
-                            <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{% if
-                                entity.sex == 'M' %}Male{% elif entity.sex == 'F' %}Female{% elif entity.sex == 'U'
-                                %}Unknown{% else %}{{ entity.sex }}{% endif %}</div>
+                            <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{{ entity.sex.label }}</div>
                         </div>
                          {% endif %}
                         <div class="grid-cell">
@@ -1332,8 +1339,7 @@
 
                     </div>
                     <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold;">
-                        Involved Person No. {{ loop.index }} associated to Entity No. {{ entity_index }} (Vehicle {{
-                        entity.entity_num }})
+                        Involved Person No. {{ loop.index }} associated to Entity No. {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})
                     </h5>
 
                     <!-- Status and Names -->
@@ -1461,6 +1467,11 @@
                                 data.has_other_prop_damage }}{% endif %}</div>
 
                         </div>
+                        {% if data.has_other_prop_damage != 'Y' %}
+                        <div class="grid-cell">
+                            <!-- Empty Cell -->
+                        </div>
+                        {% endif %}
                         {% if data.has_other_prop_damage == 'Y' %}
                         <div class="grid-cell">
                             <label class="grid-label">Estimated Value:</label><br>
@@ -1469,9 +1480,6 @@
                         </div>
                         {% endif %}
                         {% if data.has_other_prop_damage == 'Y' or data.has_other_prop_damage == 'U' %}
-                        <div class="grid-cell">
-                            <!-- Empty Cell -->
-                        </div>
                         <div class="grid-cell grid-cell-full">
                             <label class="grid-label">Other Property Damage - list property damaged</label><br>
                             <textarea class="grid-input auto-resize">{{ data.other_prop_damage_desc }}</textarea>
@@ -1515,7 +1523,7 @@
                         </div>
                         {% endif %}
                          {% if not (data.print_options and data.print_options.type == "entity") %}
-                        <div class="grid-cell">
+                        <div class="grid-cell grid-cell-full">
                             <label class="grid-label">Box 99 Police Comments</label><br>
                             <textarea class="grid-input auto-resize">{{ data.police_comments }}</textarea>
                         </div>
@@ -1543,6 +1551,32 @@
                         <div class="grid-cell">
                             <label class="grid-label">Total Vehicles</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.total_vehicles }}</div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Officer's Name</label><br>
+                            <div class="grid-input grid-display" contenteditable="false">{{ data.completed_by_name }}</div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Officer's ID No.</label><br>
+                            <div class="grid-input grid-display" contenteditable="false">{{ data.officer_badge_no }}</div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Agency </label><br>
+                            <div class="grid-input grid-display" contenteditable="false">{{ data.agency }}</div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Date Submitted to ICBC </label><br>
+                            <div class="grid-input grid-display" contenteditable="false">{{ data.icbc_submission_date[:10] }}</div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Reviewed by </label><br>
+                            <div class="grid-input grid-display" contenteditable="false">{{ data.reviewed_by }}</div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Investigated by Traffic Analyst? </label><br>
+                            <div class="grid-input grid-display" contenteditable="false">{% if
+                                data.investigated_by_traffic_analyst == 'Y' %}Yes{% elif data.investigated_by_traffic_analyst == 'N' %}No{% else %}{{
+                                data.investigated_by_traffic_analyst }}{% endif %}</div></div>
                         </div>
                     </div>
                 </div>
@@ -1586,8 +1620,7 @@
                             </div>
                             <div class="grid-cell">
                                 <label class="grid-label">Hit and Run</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{% if data.hit_and_run
-                                    == 'Y' %}6{% else %}0{% endif %}</div>
+                                <div class="grid-input grid-display" contenteditable="false">{{data.hit_and_run}}</div>
                             </div>
                             <div class="grid-cell">
                                 <label class="grid-label">Diagram</label><br>
@@ -1596,8 +1629,7 @@
                             </div>
                             <div class="grid-cell">
                                 <label class="grid-label">Police Attended</label><br>
-                                <div class="grid-input grid-display" contenteditable="false" style="width: 50px;">{%
-                                    if data.police_attended == 'Y' %}1{% else %}2{% endif %}</div>
+                                <div class="grid-input grid-display" contenteditable="false" style="width: 50px;">{{data.police_attended}}</div>
                             </div>
                             <div class="grid-cell">
                                 <label class="grid-label">Police Code</label><br>
@@ -1809,8 +1841,7 @@
                 <div class="section-divider">
                     {% for entity in data.entities %}
                     {% set entity_index = loop.index %}
-                    <h4 class="subsection-header" style="margin-top: 10px;">Entity {{ entity_index }} (Vehicle {{
-                        entity.entity_num }})</h4>
+                    <h4 class="subsection-header" style="margin-top: 10px;">Entity {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})</h4>
 
                     <!-- Main Entity Grid - 2 columns like ICBC boxes -->
                     <div class="grid-table grid-table-4col">
@@ -1887,7 +1918,7 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Sex</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{ entity.sex }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">{{ entity.sex.value }}</div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Vehicle Towed By</label><br>
@@ -1943,7 +1974,8 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Breath</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">TBD</div>
+                            <div class="grid-input grid-display" contenteditable="false">{{
+                                [entity.result_1, entity.result_2] | select | max if entity.result_1 or entity.result_2 else '' }}</div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Box 31/34</label><br>
@@ -2007,8 +2039,8 @@
                             <div class="grid-cell">
                                 <label class="grid-label">Box 10</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.vehicle_occupied.value if
-                                    person.vehicle_occupied else '01' }}</div>
+                                    person.vehicle_occupied if
+                                    person.vehicle_occupied else '' }}</div>
                             </div>
                             <div class="grid-cell">
                                 <label class="grid-label">Box 11</label><br>
@@ -2103,7 +2135,27 @@
     </div>
     {% endif %}
 
+    <script>
+        // Auto-resize textareas before PDF generation
+        document.addEventListener('DOMContentLoaded', function() {
+            function resizeTextarea(textarea) {
+                // Reset height to auto to get the correct scrollHeight
+                textarea.style.height = 'auto';
+                // Set height to scrollHeight to fit content
+                textarea.style.height = textarea.scrollHeight + 'px';
+            }
 
+            // Resize all textareas with auto-resize class
+            const textareas = document.querySelectorAll('textarea.auto-resize');
+            textareas.forEach(function(textarea) {
+                resizeTextarea(textarea);
+                // Also add input listener for dynamic content
+                textarea.addEventListener('input', function() {
+                    resizeTextarea(textarea);
+                });
+            });
+        });
+    </script>
 
 </body>
 
