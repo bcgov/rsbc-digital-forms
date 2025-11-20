@@ -164,6 +164,22 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
                 page = await browser.new_page()
                 await page.set_content(html_str, wait_until="networkidle")
                 
+                # Wait for auto-resize script to execute
+                await page.evaluate("""
+                    () => {
+                        return new Promise((resolve) => {
+                            if (document.readyState === 'complete') {
+                                // Give extra time for auto-resize to complete
+                                setTimeout(resolve, 100);
+                            } else {
+                                window.addEventListener('load', () => {
+                                    setTimeout(resolve, 100);
+                                });
+                            }
+                        });
+                    }
+                """)
+                
                 if output_type.lower() == "html":
                     final_html = await page.content()
                     return final_html
