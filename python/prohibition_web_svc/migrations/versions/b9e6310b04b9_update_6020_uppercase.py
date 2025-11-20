@@ -48,26 +48,6 @@ def upgrade():
         UPDATE "TAR"."speed_zone" SET description = UPPER(description);
         ''')
 
-    # traffic_flow
-    op.execute('''
-        UPDATE "TAR"."traffic_flow" SET description = UPPER(description);
-    ''')
-
-    # collision_location
-    op.execute('''
-        UPDATE "TAR"."collision_location" SET description = UPPER(description);
-    ''')
-
-    # speed_zone
-    op.execute('''
-        UPDATE "TAR"."speed_zone" SET description = UPPER(description);
-    ''')
-
-    # traffic_flow
-    op.execute('''
-        UPDATE "TAR"."traffic_flow" SET description = UPPER(description);
-    ''')
-
     # land_usage
     op.execute('''
         UPDATE "TAR"."land_usage" SET description = UPPER(description);
