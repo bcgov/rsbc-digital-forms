@@ -374,13 +374,9 @@
         /* 2 Column Layout */
         .grid-table-2col .grid-cell {
             flex: 0 0 50%;
-            border-right: 1px solid #000;
+            border-right: none;
             border-bottom: 1px solid #000;
             box-sizing: border-box;
-        }
-
-        .grid-table-2col .grid-cell:nth-child(2n) {
-            border-right: none;
         }
 
         .grid-table-2col .grid-cell:nth-last-child(-n+2) {
@@ -606,10 +602,67 @@
         .border-right-enabled {
             border-right: 1px solid #000 !important;
         }
+        
+        .border-right-disabled {
+            border-right: none !important;
+        }
     </style>
+    
+    <script>
+        // Fix 2-column grid borders after full-width cells
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.grid-table-2col').forEach(function(table) {
+                var cells = Array.from(table.querySelectorAll('.grid-cell'));
+                var visualColumn = 0; // Track visual column position (0 = left, 1 = right)
+                
+                cells.forEach(function(cell, index) {
+                    // Check if this is a full-width cell - check multiple ways
+                    var computedStyle = window.getComputedStyle(cell);
+                    var flexBasis = computedStyle.flexBasis;
+                    var isFullWidth = false;
+                    
+                    // Check inline style
+                    if (cell.style.flex && (cell.style.flex.includes('100%') || cell.style.flex.includes('100'))) {
+                        isFullWidth = true;
+                    }
+                    // Check computed flex-basis
+                    if (flexBasis && (flexBasis.includes('100%') || parseFloat(flexBasis) > computedStyle.width * 0.9)) {
+                        isFullWidth = true;
+                    }
+                    // Check if width is close to container width
+                    var cellWidth = cell.offsetWidth;
+                    var containerWidth = table.offsetWidth;
+                    if (cellWidth > containerWidth * 0.9) {
+                        isFullWidth = true;
+                    }
+                    
+                    console.log('Cell', index, '- Full width:', isFullWidth, '- Visual column:', visualColumn, '- Text:', cell.textContent.substring(0, 30));
+                    
+                    if (isFullWidth) {
+                        // Full-width cells never have right border
+                        cell.classList.add('border-right-disabled');
+                        cell.classList.remove('border-right-enabled');
+                        visualColumn = 0; // Reset to left column for next cell
+                    } else {
+                        // Regular 50% width cell
+                        if (visualColumn === 0) {
+                            // Left column - should have right border
+                            cell.classList.add('border-right-enabled');
+                            cell.classList.remove('border-right-disabled');
+                        } else {
+                            // Right column - should not have right border
+                            cell.classList.add('border-right-disabled');
+                            cell.classList.remove('border-right-enabled');
+                        }
+                        visualColumn = (visualColumn + 1) % 2; // Toggle between 0 and 1
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 
-<body>
+<body></body>
 
     {% if data.print_options.is_draft %}
     <div class="draft-watermark">DRAFT COPY</div>
@@ -1576,8 +1629,13 @@
                             <label class="grid-label">Investigated by Traffic Analyst? </label><br>
                             <div class="grid-input grid-display" contenteditable="false">{% if
                                 data.investigated_by_traffic_analyst == 'Y' %}Yes{% elif data.investigated_by_traffic_analyst == 'N' %}No{% else %}{{
-                                data.investigated_by_traffic_analyst }}{% endif %}</div></div>
+                                data.investigated_by_traffic_analyst }}{% endif %}</div>
                         </div>
+                        <div class="grid-cell">
+                            <!-- empty cell -->
+                         </div>
+                        </div>
+                         
                     </div>
                 </div>
             </div>
