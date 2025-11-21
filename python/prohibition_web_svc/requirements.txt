@@ -36,7 +36,7 @@ PyJWT==2.10.1
 PyMeeus==0.5.12
 pyparsing==3.0.6
 pytest==8.4.1
-python-dateutil==2.8.2
+python-dateutil==2.9.0.post0
 python-jose==3.4.0
 python-json-logger==4.0.0
 python-keycloak==5.5.0
