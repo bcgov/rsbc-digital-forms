@@ -252,8 +252,6 @@ def _validate_entity_required_fields(collision: CollisionRequestPayload, kwargs:
         "contributing_factor_2",
         "contributing_factor_3",
         "contributing_factor_4",
-        "damage_location_code",
-        "severety_code",
     ]
     if not collision.get('entities') or len(collision.get('entities')) == 0:
         logger.debug("Collision has no entities provided.")
