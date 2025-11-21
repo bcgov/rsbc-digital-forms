@@ -121,7 +121,7 @@ class CollisionMapper:
         return result
     
     @staticmethod
-    def map_to_tar_involved_person(person_data: dict) -> TarInvolvedPerson:
+    def map_to_tar_involved_person(person_data: dict, entity_type: str) -> TarInvolvedPerson:
         """
         Maps a person dictionary to a TarInvolvedPerson object field by field.
         """
@@ -141,7 +141,8 @@ class CollisionMapper:
             injured_taken_to=person_data['injured_taken_to']['value'] if person_data.get('injured_taken_to') else None,
             injured_taken_by=person_data['injured_taken_by']['value'] if person_data.get('injured_taken_by') else None,
             injury_classification=person_data['injury_classification']['value'] if person_data.get('injury_classification') else None,
-            date_of_death=person_data.get('date_of_death')
+            date_of_death=person_data.get('date_of_death'),
+            entity_type=entity_type
         )
     
     @staticmethod
@@ -239,7 +240,7 @@ class CollisionMapper:
             for person in entity_dict.get('involved_persons', []):
                 person_dict = person if isinstance(person, dict) else person.__dict__
                 involved_persons.append(
-                    CollisionMapper.map_to_tar_involved_person(person_dict)
+                    CollisionMapper.map_to_tar_involved_person(person_dict, entity_dict['entity_type']['value'])
                 )
             
             # Map charges
