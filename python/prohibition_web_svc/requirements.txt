@@ -19,7 +19,7 @@ Flask-Caching
 flask-swagger-ui
 gunicorn==20.1.0
 holidays==0.55
-idna==2.10
+idna==3.11
 iniconfig==1.1.1
 iso8601==2.1.0
 itsdangerous==2.0.1
