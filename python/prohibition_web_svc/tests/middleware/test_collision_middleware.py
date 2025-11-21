@@ -86,7 +86,7 @@ def test_validate_collision_payload_failure_missing_entity_fields():
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
     assert 'error' in out_kwargs
-    assert out_kwargs['error']['error_details'] == "Missing required fields in entity: ['entity_type', 'entity_num', 'possible_offender', 'contributing_factor_1', 'contributing_factor_2', 'contributing_factor_3', 'contributing_factor_4', 'damage_location_code', 'severety_code']"
+    assert out_kwargs['error']['error_details'] == "Missing required fields in entity: ['entity_type', 'entity_num', 'possible_offender', 'contributing_factor_1', 'contributing_factor_2', 'contributing_factor_3', 'contributing_factor_4']"
     assert out_kwargs['response_dict'] == {
         'error_details': out_kwargs['error']['error_details']
     }
