@@ -237,6 +237,33 @@ class TestFormMiddleware:
         assert mock_form.printed_timestamp == '2024-01-15T10:30:00Z'
         mock_db.session.commit.assert_called_once()
 
+
+    @patch('python.prohibition_web_svc.middleware.form_middleware.db')
+    def test_mark_form_as_printed_success_with_existing_timestamp(self, mock_db):
+        """Test successfully marking forms as printed."""
+        # Setup
+        printed_date = datetime(2024, 1, 10, 9, 0, 0)
+        mock_form = MockForm("123456", "24Hour", "test_user", printed_timestamp=printed_date)
+        mock_db.session.query().filter().first.return_value = mock_form
+        
+        payload = {
+            'forms': {'twenty_four_hour_number': '123456'},
+            'printed_timestamp': '2024-01-15T10:30:00Z'
+        }
+        kwargs = {
+            'payload': payload,
+            'user_guid': 'test_user'
+        }
+        
+        # Execute
+        result, returned_kwargs = form_middleware.mark_form_as_printed_or_spoiled(**kwargs)
+        
+        # Assert
+        assert result is True
+        assert 'response_dict' in returned_kwargs
+        assert mock_form.printed_timestamp == printed_date  # Should not be updated
+        mock_db.session.commit.assert_called_once()        
+
     @patch('python.prohibition_web_svc.middleware.form_middleware.db')
     def test_mark_form_as_spoiled_success(self, mock_db):
         """Test successfully marking forms as spoiled."""
@@ -260,6 +287,32 @@ class TestFormMiddleware:
         assert result is True
         assert 'response_dict' in returned_kwargs
         assert mock_form.spoiled_timestamp == '2024-01-15T10:30:00Z'
+        mock_db.session.commit.assert_called_once()
+
+    @patch('python.prohibition_web_svc.middleware.form_middleware.db')
+    def test_mark_form_as_spoiled_success_with_existing_timestamp(self, mock_db):
+        """Test successfully marking forms as spoiled."""
+        # Setup
+        spoiled_date = datetime(2024, 1, 10, 9, 0, 0)
+        mock_form = MockForm("123456", "VI", "test_user", spoiled_timestamp=spoiled_date)
+        mock_db.session.query().filter().first.return_value = mock_form
+        
+        payload = {
+            'forms': {'VI_number': '1234567'},  # VI numbers have extra digit removed
+            'spoiled_timestamp': '2024-01-15T10:30:00Z'
+        }
+        kwargs = {
+            'payload': payload,
+            'user_guid': 'test_user'
+        }
+        
+        # Execute
+        result, returned_kwargs = form_middleware.mark_form_as_printed_or_spoiled(**kwargs)
+        
+        # Assert
+        assert result is True
+        assert 'response_dict' in returned_kwargs
+        assert mock_form.spoiled_timestamp == spoiled_date  # Should not be updated
         mock_db.session.commit.assert_called_once()
 
     @patch('python.prohibition_web_svc.middleware.form_middleware.db')

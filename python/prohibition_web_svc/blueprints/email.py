@@ -6,7 +6,7 @@ from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.keycloak_logic import get_authorized_keycloak_user
 import python.prohibition_web_svc.http_responses as http_responses
-from python.prohibition_web_svc.middleware import notification_middleware, common_middleware
+from python.prohibition_web_svc.middleware import notification_middleware, common_middleware, print_middleware
 
 logger = get_logger(__name__)
 logger.info('*** email blueprint loaded ***')
@@ -32,6 +32,10 @@ def send_entity_copy():
             {"try": notification_middleware.validate_email_payload, "fail": [
                 {"try": common_middleware.record_event_error, "fail": []},
                 {"try": http_responses.bad_request_response, "fail": []}
+            ]},
+            {"try": print_middleware.update_form_printed_status, "fail": [
+                {"try": common_middleware.record_event_error, "fail": []},
+                {"try": http_responses.server_error_response, "fail": []}
             ]},
             {"try": notification_middleware.send_email, "fail": [
                 {"try": common_middleware.record_event_error, "fail": []},
