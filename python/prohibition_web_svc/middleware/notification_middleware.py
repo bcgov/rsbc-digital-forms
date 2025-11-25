@@ -41,7 +41,7 @@ def log_payload_to_splunk(**kwargs) -> tuple:
             'payload': splunk_payload
         }
     except Exception as e:
-        logger.exception(e)
+        logger.error(e)
     return True, kwargs
 
 

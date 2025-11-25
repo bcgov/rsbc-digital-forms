@@ -128,18 +128,19 @@ def renew_form_id_lease(**kwargs) -> tuple:
 def update_form_status(form_type, form_number, user_guid, spoiled_timestamp=None, printed_timestamp=None):
     if form_type == "VI_number" or form_type == "IRP_number":
         form_number = str(form_number)[:-1]
-    logger.debug(f'Form Number: {form_number}')
+    logger.info(f'Update Form Number: {form_number} as printed or spoiled')
     form_obj = db.session.query(Form) \
         .filter(Form.id == form_number and Form.form_type == form_type) \
         .first()
     if form_obj is None:
         logger.warning(f'{user_guid}, cannot update {form_number} as printed or spoiled - record not found')
         return False
-    form_obj.user_guid = user_guid
-    if spoiled_timestamp:
+    if spoiled_timestamp and form_obj.spoiled_timestamp is None:
         form_obj.spoiled_timestamp = spoiled_timestamp
-    if printed_timestamp:
+        form_obj.user_guid = user_guid
+    if printed_timestamp and form_obj.printed_timestamp is None:
         form_obj.printed_timestamp = printed_timestamp
+        form_obj.user_guid = user_guid
     return True
 
 def mark_form_as_printed_or_spoiled(**kwargs) -> tuple:
