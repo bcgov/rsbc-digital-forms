@@ -125,6 +125,23 @@ def renew_form_id_lease(**kwargs) -> tuple:
     return True, kwargs
 
 
+def update_form_status(form_type, form_number, user_guid, spoiled_timestamp=None, printed_timestamp=None):
+    if form_type == "VI_number" or form_type == "IRP_number":
+        form_number = str(form_number)[:-1]
+    logger.debug(f'Form Number: {form_number}')
+    form_obj = db.session.query(Form) \
+        .filter(Form.id == form_number and Form.form_type == form_type) \
+        .first()
+    if form_obj is None:
+        logger.warning(f'{user_guid}, cannot update {form_number} as printed or spoiled - record not found')
+        return False
+    form_obj.user_guid = user_guid
+    if spoiled_timestamp:
+        form_obj.spoiled_timestamp = spoiled_timestamp
+    if printed_timestamp:
+        form_obj.printed_timestamp = printed_timestamp
+    return True
+
 def mark_form_as_printed_or_spoiled(**kwargs) -> tuple:
     logger.verbose('inside mark_form_as_printed_or_spoiled()')
     payload = kwargs.get('payload')
@@ -134,19 +151,8 @@ def mark_form_as_printed_or_spoiled(**kwargs) -> tuple:
     user_guid = kwargs.get('user_guid')
     for form in forms:
         number = forms.get(form)
-        if form == "VI_number" or form == "IRP_number":
-            number = str(number)[:-1]
-        logger.debug(f'Form Number: {number}')
-        form = db.session.query(Form) \
-            .filter(Form.id == number) \
-            .first()
-        if form is None:
-            logger.warning(f'{user_guid}, cannot update {payload.get(form)} as printed or spoiled - record not found') 
+        if not update_form_status(form, number, user_guid, spoiled_timestamp, printed_timestamp):
             return False, kwargs
-        if(spoiled_timestamp):
-            form.spoiled_timestamp = payload.get('spoiled_timestamp')
-        if(printed_timestamp):
-            form.printed_timestamp = payload.get('printed_timestamp')
     try:
         db.session.commit()
     except Exception as e:
