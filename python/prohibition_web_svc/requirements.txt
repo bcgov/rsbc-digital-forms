@@ -9,7 +9,7 @@ convertdate==2.4.0
 cryptography==3.4.8
 dataclasses-json==0.5.7
 dparse==0.6.2
-ecdsa==0.17.0
+ecdsa==0.19.1
 Flask>=2.2
 Flask-API>=3.0.post1
 Flask-Cors>=3.0.10
