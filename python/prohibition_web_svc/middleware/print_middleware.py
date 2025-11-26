@@ -356,17 +356,8 @@ def update_form_printed_status(**kwargs) -> tuple:
             printed_timestamp=printed_timestamp
         )
         
-        if not success:
-            kwargs['error'] = {
-                'error_code': ErrorCode.P02,
-                'error_details': f"Failed to update printed status for form {form_number}",
-                'event_type': EVENT_TYPE,
-                'func': update_form_printed_status,
-            }
-            return False, kwargs
-
-        db.session.commit()        
-        return True, kwargs
+        if success:
+            db.session.commit()
         
     except Exception as e:
         logger.error(e)
@@ -376,4 +367,5 @@ def update_form_printed_status(**kwargs) -> tuple:
             'event_type': EVENT_TYPE,
             'func': update_form_printed_status,
         }
-        return False, kwargs
+    finally:
+        return True, kwargs

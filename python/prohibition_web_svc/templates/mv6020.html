@@ -951,8 +951,9 @@
                     </div>
                     <div class="grid-cell">
                         <label class="grid-label">Box 2B Secondary (Advisory) Speed Zone</label><br>
-                        <div class="grid-input grid-display" contenteditable="false">{{ data.secondary_speed_zone.label
-                            }}</div>
+                        <div class="grid-input grid-display" contenteditable="false">
+                            {% if data.secondary_speed_zone %}{{ data.secondary_speed_zone.label }}{% endif %}
+                        </div>
                     </div>
                     <div class="grid-cell">
                         <label class="grid-label">Box 3 Land Usage in Collision Area</label><br>
@@ -1117,7 +1118,8 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Sex</label><br>
-                            <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{{ entity.sex.label }}</div>
+                            <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">
+                                {% if entity.sex %}{{ entity.sex.label }}{% endif %}</div>
                         </div>
                          {% endif %}
                         <div class="grid-cell">
@@ -1201,13 +1203,13 @@
                     <div class="grid-table grid-table-3col">
                         <div class="grid-cell">
                             <label class="grid-label">Damage Location on Entity</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{
-                                entity.damage_location_code.label }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {% if entity.damage_location_code %}{{ entity.damage_location_code.label }}{% endif %}</div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Severity of Damage</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{ entity.severety_code.label
-                                }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {% if entity.severety_code %}{{ entity.severety_code.label }}{% endif %}</div>
 
                         </div>
                         <div class="grid-cell">
@@ -1271,8 +1273,9 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Box 22 Second Contact/Event</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{ entity.second_contact.label
-                                }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {%if entity.second_contact %}{{ entity.second_contact.label }}{% endif %}
+                            </div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Box 25 Pre-Collision Vehicle Action First Event</label><br>
@@ -1476,18 +1479,21 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Box 19 Injured Taken To</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{
-                                person.injured_taken_to.label }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {% if person.injured_taken_to %}{{ person.injured_taken_to.label }}{% endif %}
+                            </div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Box 20 Injured Taken By</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{
-                                person.injured_taken_by.label }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {% if person.injured_taken_by %}{{ person.injured_taken_by.label }}{% endif %}
+                            </div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Box 20A Injury Classification</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{
-                                person.injury_classification.label }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {% if person.injury_classification %}{{ person.injury_classification.label }}{% endif %}
+                            </div>
                         </div>
                         <div class="grid-cell"></div>
                         <div class="grid-cell"></div>
@@ -1619,7 +1625,8 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Date Submitted to ICBC </label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{ data.icbc_submission_date[:10] }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {%if data.icbc_submission_date %}{{ data.icbc_submission_date[:10] }}{% endif %}</div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Reviewed by </label><br>
