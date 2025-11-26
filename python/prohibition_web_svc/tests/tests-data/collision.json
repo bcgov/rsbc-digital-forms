@@ -184,7 +184,10 @@
       "date_of_birth": "1990-01-01",
       "age_at_collision": 35,
       "contact_phone_num": "604-555-1234",
-      "sex": "F",
+      "sex": {
+        "label": "Female",
+        "value": "F"
+      },
       "charges_blood_alc_tests_taken": "N",
       "blood_alc_test": "BCA",
       "result_1": "0.00",
