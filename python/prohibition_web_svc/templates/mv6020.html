@@ -119,8 +119,8 @@
         .header {
             display: flex !important;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
+            align-items: center;
+            margin-bottom: 20px;
             position: relative;
             visibility: visible !important;
             opacity: 1 !important;
@@ -132,10 +132,11 @@
             gap: 20px;
         }
 
-        .header-right {
+        .header-center {
+            flex: 1;
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 20px;
         }
 
         .header-text {
@@ -613,47 +614,22 @@
             <div class="header-left">
                 <img src="images/icbclogo.png" style="width: 70px;">
             </div>
-            <div class="header-right">
-
-                <div class="protected-label">
-                    Protected A
-                </div>
+            <div class="header-center">
+                <h1 class="form-title" style="margin: 0;">Electronic MV6020 Traffic Accident Report</h1>
             </div>
         </div>
-
-        <h1 class="form-title">Electronic MV6020 Traffic Accident Report</h1>
 
         {% if data.print_options and data.print_options.type == "police"%}
 
         <div class="grid-table grid-table-1col">
             <div class="grid-cell">
-                <label class="grid-label">Do any of these scenarios apply?</label><br>
+                <label class="grid-label">MV6020 Report</label><br>
                 <input type="checkbox" id="scenarios" name="scenarios" {% if data.collision_scenario %}checked{% endif
                     %}>
                 <label for="scenarios" style="font-weight: normal;">{{ data.collision_scenario.value }} - {{
                     data.collision_scenario.label }}</label>
             </div>
-            <!-- Warning message based on collision scenario -->
-            {% if data.collision_scenario and data.collision_scenario.value %}
-            {% if data.collision_scenario.value == '08' %}
-            <div class="grid-cell">
-                <div
-                    style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; margin: 10px 0; border-radius: 4px; color: #856404;">
-                    <strong>⚠️ Warning</strong> This is a reportable incident and must be submitted to ICBC within ten
-                    days of the collision. Fatal incidents must be reported within 48 hours.
-                </div>
-            </div>
-            {% elif data.collision_scenario.value != '' %}
-            <div class="grid-cell">
-                <div
-                    style="background-color: #d1ecf1; border: 1px solid #bee5eb; padding: 10px; margin: 10px 0; border-radius: 4px; color: #0c5460;">
-                    <strong>ℹ️ Information</strong> This is not a reportable incident because it occurred on a private
-                    road or land (includes private driveways, private land, forest service roads, etc). This form may
-                    still be used to document the collision for your file but should not be submitted to ICBC.
-                </div>
-            </div>
-            {% endif %}
-            {% endif %}
+           
             <div class="grid-cell">
                 <label class="grid-label">Does this collision contain a Countable Fatal?</label><br>
                 <div class="radio-group">
@@ -1055,9 +1031,8 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Sex</label><br>
-                            <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{% if
-                                entity.sex == 'M' %}Male{% elif entity.sex == 'F' %}Female{% elif entity.sex == 'U'
-                                %}Unknown{% else %}{{ entity.sex }}{% endif %}</div>
+                            <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">"{{
+                                entity.sex.label if entity.sex else '' }}</div>
                         </div>
                          {% endif %}
                         <div class="grid-cell">
