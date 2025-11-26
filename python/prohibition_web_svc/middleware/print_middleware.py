@@ -334,13 +334,12 @@ def update_form_printed_status(**kwargs) -> tuple:
     
     try:
         payload: PrintRequestPayload = kwargs.get('payload')
-        user_guid = payload['data'].get('completed_by_id', kwargs.get('user_guid', ''))
         form_type = map_template_to_form_type.get(payload['template'])
-
         if not form_type:
             logger.warning(f"Template {payload['template']} not mapped to a form type")
             return True, kwargs  # Nothing to update
 
+        user_guid = payload['data'].get('completed_by_id', kwargs.get('user_guid', ''))
         form_number = payload['data'].get('collision_case_num') or payload['data'].get('form_number')
         printed_timestamp = datetime.now()
         
