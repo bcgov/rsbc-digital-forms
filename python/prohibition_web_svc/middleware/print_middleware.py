@@ -173,10 +173,11 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
                     await page.set_viewport_size({"width": 816, "height": 1056})  # 8.5in x 11in at 96 DPI
                     
                     # Build dynamic header configuration
+                    form_details = template_data.get('form_details')
                     header = {
-                        'form_no': template_data.get('collision_case_num', ''),
-                        'form_title': 'Electronic MV6020 Traffic Accident Report',
-                        'subtext': 'Protected A'
+                        'form_no': form_details.get('form_no', ''),
+                        'form_title': form_details.get('form_title', ''),
+                        'subtext': form_details.get('subtext', '')
                     }
                     
                     # Create dynamic header template
@@ -187,9 +188,9 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
                         </div>
                     """
                     
-                    # Build dynamic footer configuration
+                    # Build dynamic footer configuration MV6020E (122025)
                     footer = {
-                        'form_version': 'MV6020E (122025)'
+                        'form_version': form_details.get('form_version', '')
                     }
                     
                     # Create dynamic footer template
