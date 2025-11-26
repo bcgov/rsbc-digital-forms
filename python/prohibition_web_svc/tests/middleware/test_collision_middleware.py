@@ -86,7 +86,7 @@ def test_validate_collision_payload_failure_missing_entity_fields():
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
     assert 'error' in out_kwargs
-    assert out_kwargs['error']['error_details'] == "Missing required fields in entity: ['entity_type', 'entity_num', 'possible_offender', 'contributing_factor_1', 'contributing_factor_2', 'contributing_factor_3', 'contributing_factor_4', 'damage_location_code', 'severety_code']"
+    assert out_kwargs['error']['error_details'] == "Missing required fields in entity: ['entity_type', 'entity_num', 'possible_offender', 'contributing_factor_1', 'contributing_factor_2', 'contributing_factor_3', 'contributing_factor_4']"
     assert out_kwargs['response_dict'] == {
         'error_details': out_kwargs['error']['error_details']
     }
@@ -246,6 +246,7 @@ def test_save_collision_data_success(monkeypatch):
     monkeypatch.setattr(collision_middleware, 'db', mock_db)
     monkeypatch.setattr(collision_middleware, 'Submission', MagicMock(return_value=mock_submission))
     monkeypatch.setattr(collision_middleware.common_middleware, 'get_user_guid', lambda **kwargs: 'user-guid')
+    monkeypatch.setattr(collision_middleware, 'update_form_status', MagicMock(return_value=True))
     with open(collision_json_path) as f:
         payload = json.load(f)
     kwargs = {'payload': payload}
@@ -262,9 +263,28 @@ def test_save_offline_collision_data_success(monkeypatch):
     monkeypatch.setattr(collision_middleware, 'db', mock_db)
     monkeypatch.setattr(collision_middleware, 'Submission', MagicMock(return_value=mock_submission))
     monkeypatch.setattr(collision_middleware.common_middleware, 'get_user_guid', lambda **kwargs: 'user-guid')
+    monkeypatch.setattr(collision_middleware, 'update_form_status', MagicMock(return_value=True))
     with open(collision_json_path) as f:
         payload = json.load(f)
     payload['submitted_offline'] = True
+    kwargs = {'payload': payload}
+    result, out_kwargs = collision_middleware.save_collision_data(**kwargs)
+    assert result is True
+    assert out_kwargs['response_dict']['submission_id'] == 42
+    assert out_kwargs['submission_id'] == 42
+
+
+def test_save_collision_data_success_with_update_form_status_warning(monkeypatch):
+    mock_db = MagicMock()
+    mock_session = MagicMock()
+    mock_db.session = mock_session
+    mock_submission = MagicMock(submission_id=42)
+    monkeypatch.setattr(collision_middleware, 'db', mock_db)
+    monkeypatch.setattr(collision_middleware, 'Submission', MagicMock(return_value=mock_submission))
+    monkeypatch.setattr(collision_middleware.common_middleware, 'get_user_guid', lambda **kwargs: 'user-guid')
+    monkeypatch.setattr(collision_middleware, 'update_form_status', MagicMock(return_value=False))
+    with open(collision_json_path) as f:
+        payload = json.load(f)
     kwargs = {'payload': payload}
     result, out_kwargs = collision_middleware.save_collision_data(**kwargs)
     assert result is True
