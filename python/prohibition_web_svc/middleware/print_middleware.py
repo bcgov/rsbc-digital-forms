@@ -189,24 +189,42 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
                     # This gives a content area of 7.5in x 9.5in
                     await page.set_viewport_size({"width": 816, "height": 1056})  # 8.5in x 11in at 96 DPI
                     
+                    # Build dynamic header configuration
+                    form_details = template_data.get('form_details')
+                    header = {
+                        'form_no': form_details.get('form_no', ''),
+                        'form_title': form_details.get('form_title', ''),
+                        'subtext': form_details.get('subtext', '')
+                    }
+                    
+                    # Create dynamic header template
+                    header_template = f"""
+                        <div style="display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; font-family: Arial, sans-serif;">
+                            <span style="font-size: 11pt; font-weight: bold;">{header['form_title']}{' - ' + header['form_no'] if header['form_no'] else ''}</span>
+                            <span style="font-size: 9pt; font-weight: bold;">{header['subtext']}</span>
+                        </div>
+                    """
+                    
+                    # Build dynamic footer configuration MV6020E (122025)
+                    footer = {
+                        'form_version': form_details.get('form_version', '')
+                    }
+                    
+                    # Create dynamic footer template
+                    footer_template = f"""
+                        <div style="display: flex; justify-content: space-between; width: 100%; padding: 5px 20px; font-family: Arial, sans-serif; font-size: 8pt;">
+                            <span>{footer['form_version']}</span>
+                            <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+                        </div>
+                    """
+                    
                     pdf_bytes = await page.pdf(
                         width="8.5in",
                         height="11in",
                         print_background=True,
                         display_header_footer=True,
-                        #TODO: Remove this once the header and footer are dynamic
-                        header_template="""
-                            <div style="display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; font-family: Arial, sans-serif;">
-                                <span style="font-size: 11pt; font-weight: bold;">Electronic MV6020 Traffic Accident Report</span>
-                                <span style="font-size: 9pt; font-weight: bold;">Protected A</span>
-                            </div>
-                        """,
-                        footer_template="""
-                            <div style="font-size: 8pt; width: 100%; text-align: center; border-top: 1px solid #000; padding-top: 5px;">
-                                RCMP GRC ED6190 (eMV6020 2024-07 v1.97 PILOT USE ONLY) &nbsp;&nbsp;&nbsp;&nbsp; 
-                                Page <span class="pageNumber"></span> of <span class="totalPages"></span>
-                            </div>
-                        """,
+                        header_template=header_template,
+                        footer_template=footer_template,
                         prefer_css_page_size=False,
                     )
                     return True, pdf_bytes
