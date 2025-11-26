@@ -65,7 +65,6 @@
         "countable_fatal_total": {"type": "integer"},
         "completed_by_name": {"type": "string"},
         "completed_by_id": {"type": "string"},
-        "detachment_unit": {"type": "string"},
         "icbc_submission_date": {"type": "string", "format": "date-time"},
         "reviewed_by": {"type": "string"},
         "investigated_by_traffic_analyst": {"type": "string"},
@@ -146,7 +145,6 @@
         "countable_fatal_total",
         "completed_by_name",
         "completed_by_id",
-        "detachment_unit",
         "investigated_by_traffic_analyst"
       ]
     },

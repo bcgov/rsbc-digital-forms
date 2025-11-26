@@ -31,7 +31,6 @@ class CollisionMapper:
             countable_fatal_total=str_to_integer(collision_request_payload['countable_fatal_total']),
             completed_by_name=collision_request_payload['completed_by_name'],
             completed_by_id=collision_request_payload['completed_by_id'],
-            detachment_unit=collision_request_payload['detachment_unit'],
             icbc_submission_date=collision_request_payload.get('icbc_submission_date'),
             reviewed_by=collision_request_payload.get('reviewed_by'),
             investigated_by_traffic_analyst=collision_request_payload['investigated_by_traffic_analyst'],
