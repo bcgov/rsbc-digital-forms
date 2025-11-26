@@ -1587,6 +1587,13 @@
                             <label class="grid-label">Total Vehicles</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.total_vehicles }}</div>
                         </div>
+                        
+                        <div class="grid-cell">
+                            <!-- empty cell -->
+                         </div>
+                        </div>
+                    
+                    <div class="grid-table grid-table-3col">
                         <div class="grid-cell">
                             <label class="grid-label">Officer's Name</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.completed_by_name }}</div>
@@ -1605,20 +1612,17 @@
                                 {%if data.icbc_submission_date %}{{ data.icbc_submission_date[:10] }}{% endif %}</div>
                         </div>
                         <div class="grid-cell">
-                            <label class="grid-label">Reviewed by </label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{ data.reviewed_by }}</div>
-                        </div>
-                        <div class="grid-cell">
                             <label class="grid-label">Investigated by Traffic Analyst? </label><br>
                             <div class="grid-input grid-display" contenteditable="false">{% if
                                 data.investigated_by_traffic_analyst == 'Y' %}Yes{% elif data.investigated_by_traffic_analyst == 'N' %}No{% else %}{{
                                 data.investigated_by_traffic_analyst }}{% endif %}</div>
                         </div>
                         <div class="grid-cell">
-                            <!-- empty cell -->
-                         </div>
+                            <label class="grid-label">Reviewed by </label><br>
+                            <div class="grid-input grid-display" contenteditable="false">{{ data.reviewed_by }}</div>
                         </div>
-                         
+                    </div>
+                    
                     </div>
                 </div>
             </div>
