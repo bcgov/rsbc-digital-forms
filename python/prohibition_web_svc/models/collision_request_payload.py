@@ -30,7 +30,6 @@ class CollisionRequestPayload(TypedDict):
     countable_fatal_total: int
     completed_by_name: str
     completed_by_id: str
-    detachment_unit: str
     icbc_submission_date: str
     reviewed_by: str
     investigated_by_traffic_analyst: str
