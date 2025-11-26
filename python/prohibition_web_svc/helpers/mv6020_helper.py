@@ -122,6 +122,7 @@ def send_mv6020_copy(**kwargs):
         kwargs['response_dict'] = {
             'message': f'Failed to send email to {full_name} at {email_address}'
         }
+        kwargs["error"] = print_result.get("error", {})
         return False, kwargs
     except Exception as e:
         logger.error(f"Exception in send_mv6020_copy: {e}")

@@ -158,6 +158,12 @@ def send_email(**kwargs):
     else:
         result = False
         kwargs["response_dict"] = {"message": "Unknown form type"}
+        kwargs["error"] = {
+            'error_code': ErrorCode.N02,
+            'error_details': 'Unknown form type for email notification',
+            'ticket_no': collision_case_no,
+            'func': send_email,
+        }
 
     return result, kwargs
 
