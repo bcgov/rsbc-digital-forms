@@ -207,7 +207,6 @@ def _validate_collision_required_fields(collision: CollisionRequestPayload, kwar
         "countable_fatal_total",
         "completed_by_name",
         "completed_by_id",
-        "detachment_unit",
         "investigated_by_traffic_analyst",
         # Location required fields (from location.py)
         "hwy_code",
