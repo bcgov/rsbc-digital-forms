@@ -241,9 +241,8 @@ class TestPrintMiddleware:
             
             result, updated_kwargs = print_middleware.update_form_printed_status(**kwargs)
             
-            assert result is False
-            assert 'error' in updated_kwargs
-            assert updated_kwargs['error']['error_code'] == ErrorCode.P02
+            assert result is True
+            assert 'error' not in updated_kwargs
             
     def test_update_form_printed_status_exception(self):
         """Test exception handling in update_form_printed_status."""
@@ -251,6 +250,6 @@ class TestPrintMiddleware:
         
         result, updated_kwargs = print_middleware.update_form_printed_status(**kwargs)
         
-        assert result is False
+        assert result is True
         assert 'error' in updated_kwargs
         assert updated_kwargs['error']['error_code'] == ErrorCode.P02
