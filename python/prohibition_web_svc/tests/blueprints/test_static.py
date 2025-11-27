@@ -170,7 +170,7 @@ def test_resource_map():
         'impound_lot_operators', 'jurisdictions', 'permissions',
         'provinces', 'vehicle_styles', 'vehicle_types', 'vehicle_colours',
         'vehicles', 'nsc_puj', 'jurisdiction_country', 'lki_highway',
-        'lki_segment', 'charge_types'
+        'lki_segment'
     ]
 
     for resource in expected_resources:
@@ -276,7 +276,7 @@ class TestGetResourceCached:
         mock_make_response.return_value = mock_response
 
         # Test different resource names
-        test_cases = ["agencies", "cities", "charge_types", "vehicle_types"]
+        test_cases = ["agencies", "cities", "vehicle_types"]
 
         for resource in test_cases:
             mock_cache.get.reset_mock()
@@ -349,31 +349,32 @@ class TestGetResource:
     @patch('python.prohibition_web_svc.blueprints.static.jsonify')
     @patch('python.prohibition_web_svc.blueprints.static.logger')
     def test_get_resource_function_success(self, mock_logger, mock_jsonify, mock_make_response):
-        """Test _get_resource with function resource (like charge_types)"""
+        """Test _get_resource with function resource"""
         # Setup mocks
         mock_function_result = [{'id': 1, 'code': 'TEST', 'description': 'Test Charge'}]
+        mock_function = MagicMock(return_value=mock_function_result)
         
-        # Mock the get_charge_types function directly
-        with patch('python.prohibition_web_svc.blueprints.static.get_charge_types', return_value=mock_function_result):
-            mock_jsonified_data = MagicMock()
-            mock_jsonify.return_value = mock_jsonified_data
-            
-            mock_response = MagicMock()
-            mock_make_response.return_value = mock_response
+        # Mock the get_test function directly
+        static_blueprint.resource_map["test"] = lambda: mock_function()
+        mock_jsonified_data = MagicMock()
+        mock_jsonify.return_value = mock_jsonified_data
+        
+        mock_response = MagicMock()
+        mock_make_response.return_value = mock_response
 
-            # Call function
-            result, kwargs = static_blueprint._get_resource(resource="charge_types", request_id="test-456")
+        # Call function
+        result, kwargs = static_blueprint._get_resource(resource="test", request_id="test-456")
 
-            # Assertions
-            assert result is True
-            assert kwargs['response'] == mock_response
-            assert kwargs['resource'] == "charge_types"
-            assert kwargs['request_id'] == "test-456"
-            
-            # Verify function was called and response created
-            mock_jsonify.assert_called_once_with(mock_function_result)
-            mock_make_response.assert_called_once_with(mock_jsonified_data, 200)
-            mock_logger.verbose.assert_called_once_with("test-456 inside _get_resource() for resource: charge_types")
+        # Assertions
+        assert result is True
+        assert kwargs['response'] == mock_response
+        assert kwargs['resource'] == "test"
+        assert kwargs['request_id'] == "test-456"
+        
+        # Verify function was called and response created
+        mock_jsonify.assert_called_once_with(mock_function_result)
+        mock_make_response.assert_called_once_with(mock_jsonified_data, 200)
+        mock_logger.verbose.assert_called_once_with("test-456 inside _get_resource() for resource: test")
 
     @patch('python.prohibition_web_svc.blueprints.static.db')
     @patch('python.prohibition_web_svc.blueprints.static.logger')
@@ -401,23 +402,26 @@ class TestGetResource:
     @patch('python.prohibition_web_svc.blueprints.static.logger')
     def test_get_resource_function_exception(self, mock_logger):
         """Test _get_resource handles function call exceptions properly"""
-        # Mock the get_charge_types function to raise exception
-        with patch('python.prohibition_web_svc.blueprints.static.get_charge_types', side_effect=Exception("API call failed")):
-            # Call function
-            result, kwargs = static_blueprint._get_resource(resource="charge_types", request_id="test-999")
+        # Mock the test function to raise exception
+        mock_function = MagicMock(side_effect=Exception("API call failed"))
+        
+        # Mock the test function directly
+        static_blueprint.resource_map["tests"] = lambda: mock_function()
+        # Call function
+        result, kwargs = static_blueprint._get_resource(resource="tests", request_id="test-999")
 
-            # Assertions
-            assert result is False
-            assert kwargs['resource'] == "charge_types"
-            assert kwargs['request_id'] == "test-999"
-            assert 'response' not in kwargs  # No response should be set on error
-            
-            # Verify logging
-            mock_logger.verbose.assert_called_once_with("test-999 inside _get_resource() for resource: charge_types")
-            mock_logger.warning.assert_called_once()
-            warning_call_args = mock_logger.warning.call_args[0][0]
-            assert "test-999 error getting charge_types data" in warning_call_args
-            assert "API call failed" in warning_call_args
+        # Assertions
+        assert result is False
+        assert kwargs['resource'] == "tests"
+        assert kwargs['request_id'] == "test-999"
+        assert 'response' not in kwargs  # No response should be set on error
+        
+        # Verify logging
+        mock_logger.verbose.assert_called_once_with("test-999 inside _get_resource() for resource: tests")
+        mock_logger.warning.assert_called_once()
+        warning_call_args = mock_logger.warning.call_args[0][0]
+        assert "test-999 error getting tests data" in warning_call_args
+        assert "API call failed" in warning_call_args
 
     @patch('python.prohibition_web_svc.blueprints.static.db')
     @patch('python.prohibition_web_svc.blueprints.static.make_response')
