@@ -40,7 +40,7 @@ class CollisionRequestPayload(TypedDict):
     has_other_prop_damage: bool
     other_prop_damage_desc: str
     prop_damage_est_value: float
-    has_witnesses: bool
+    has_witnesses: str
     police_comments: str
     collision_type: str
     total_est_damage: float

@@ -1521,8 +1521,10 @@
                         </div>
                         {% endif %}
                         <div class="grid-cell grid-cell-full">
-                            <input type="checkbox" {% if data.has_witnesses %}checked{% endif %}>
-                            <label style="font-weight: normal; margin-left: 5px;">Are there witnesses?</label>
+                            <label class="grid-label">Are there witnesses?</label><br>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {% if data.has_witnesses == 'Y' %}Yes{% elif data.has_witnesses == 'N' %}No
+                                {% else %}{{data.has_witnesses }}{% endif %}</div>
                         </div>
                         <!-- Witness Table -->
                         {% if data.witnesses %}

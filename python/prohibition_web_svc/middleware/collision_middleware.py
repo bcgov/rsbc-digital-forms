@@ -291,7 +291,7 @@ def _validate_witness_required_fields(collision: CollisionRequestPayload, kwargs
         "contact_phn_num"
     ]
 
-    if collision.get("has_witnesses") and (not collision.get('witnesses') or len(collision.get('witnesses')) == 0):
+    if collision.get("has_witnesses") and collision.get("has_witnesses").upper() == 'Y' and (not collision.get('witnesses') or len(collision.get('witnesses')) == 0):
         logger.debug("Collision has witnesses but no witness data provided.")
         kwargs['error'] = {
             'error_code': ErrorCode.C01,

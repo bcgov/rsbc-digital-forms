@@ -37,7 +37,7 @@ def test_map_to_tar_additional_details():
     result = CollisionMapper.map_to_tar_additional_details(payload)
     assert isinstance(result, TarAdditionalCollisionDetails)
     assert result.has_other_prop_damage == 'Y'
-    assert result.has_witnesses is True
+    assert result.has_witnesses == 'Y'
     assert result.collision_type == '01'
     assert result.total_vehicles == 1
 

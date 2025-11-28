@@ -95,7 +95,7 @@ def test_validate_collision_payload_failure_missing_witness_data():
     # Missing required witness data when has_witnesses is True
     with open(collision_json_path) as f:
         payload = json.load(f)
-    payload['has_witnesses'] = True  # Indicating there are witnesses
+    payload['has_witnesses'] = "Y"  # Indicating there are witnesses
     payload['witnesses'] = []  # Empty witness list
     kwargs = {'payload': payload}
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
@@ -127,6 +127,18 @@ def test_validate_collision_payload_failure_missing_witness_fields():
     assert out_kwargs['response_dict'] == {
         'error_details': out_kwargs['error']['error_details']
     }
+
+
+def test_validate_collision_payload_success_without_witnesses():
+    # Missing required witness data when has_witnesses is True
+    with open(collision_json_path) as f:
+        payload = json.load(f)
+    payload['has_witnesses'] = "N"  # Indicating there are no witnesses
+    payload['witnesses'] = []  # Empty witness list
+    kwargs = {'payload': payload}
+    result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
+    assert result is True
+    assert 'error' not in out_kwargs
 
 def test_validate_lki_fields_success_hwy_code_1_with_route_and_segment():
     """Test _validate_lki_fields when hwy_code is 1 and both hwy_route_num and segment_num are present"""
