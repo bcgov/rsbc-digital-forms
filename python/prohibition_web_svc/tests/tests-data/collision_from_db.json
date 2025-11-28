@@ -3,7 +3,7 @@
         "collision_case_num": "MV-005",
         "collision_type": "01",
         "has_other_prop_damage": "Y",
-        "has_witnesses": true,
+        "has_witnesses": "Y",
         "other_prop_damage_desc": "Property damage description",
         "pedestrian_action": "01",
         "pedestrian_location": "01",

@@ -73,7 +73,7 @@
         "has_other_prop_damage": {"type": "boolean"},
         "other_prop_damage_desc": {"type": "string"},
         "prop_damage_est_value": {"type": "number"},
-        "has_witnesses": {"type": "boolean"},
+        "has_witnesses": {"type": "string"},
         "police_comments": {"type": "string"},
         "collision_type": {"type": "string"},
         "total_est_damage": {"type": "number"},

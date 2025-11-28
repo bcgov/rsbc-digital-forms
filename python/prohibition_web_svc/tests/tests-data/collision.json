@@ -126,7 +126,7 @@
   "long_degree": -123,
   "long_min": 7,
   "long_sec": 24.44,
-  "has_witnesses": true,
+  "has_witnesses": "Y",
   "collision_type": "01",
   "total_est_damage": 0,
   "total_injured": 0,
