@@ -23,7 +23,7 @@ idna==2.10
 iniconfig==1.1.1
 iso8601==2.1.0
 itsdangerous==2.0.1
-Jinja2==3.0.3
+Jinja2==3.1.6
 korean-lunar-calendar==0.3.1
 MarkupSafe
 packaging==21.3
