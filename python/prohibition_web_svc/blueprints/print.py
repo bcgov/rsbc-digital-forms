@@ -32,6 +32,10 @@ def render_document():
                 {"try": common_middleware.record_event_error, "fail": []},
                 {"try": http_responses.bad_request_response, "fail": []}
             ]},
+            {"try": print_middleware.update_form_printed_status, "fail": [
+                {"try": common_middleware.record_event_error, "fail": []},
+                {"try": http_responses.server_error_response, "fail": []}
+            ]},
             {"try": print_middleware.render_document_with_playwright, "fail": [
                 {"try": common_middleware.record_event_error, "fail": []},
                 {"try": http_responses.server_error_response, "fail": []}

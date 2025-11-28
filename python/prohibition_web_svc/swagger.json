@@ -65,7 +65,6 @@
         "countable_fatal_total": {"type": "integer"},
         "completed_by_name": {"type": "string"},
         "completed_by_id": {"type": "string"},
-        "detachment_unit": {"type": "string"},
         "icbc_submission_date": {"type": "string", "format": "date-time"},
         "reviewed_by": {"type": "string"},
         "investigated_by_traffic_analyst": {"type": "string"},
@@ -74,7 +73,7 @@
         "has_other_prop_damage": {"type": "boolean"},
         "other_prop_damage_desc": {"type": "string"},
         "prop_damage_est_value": {"type": "number"},
-        "has_witnesses": {"type": "boolean"},
+        "has_witnesses": {"type": "string"},
         "police_comments": {"type": "string"},
         "collision_type": {"type": "string"},
         "total_est_damage": {"type": "number"},
@@ -146,7 +145,6 @@
         "countable_fatal_total",
         "completed_by_name",
         "completed_by_id",
-        "detachment_unit",
         "investigated_by_traffic_analyst"
       ]
     },

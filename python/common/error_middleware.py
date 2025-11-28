@@ -98,7 +98,6 @@ def record_error(error_code: ErrorCode, error_details, event_id: int = None, sub
     except SQLAlchemyError as e:
         db.session.rollback()
         logger.error(f"Failed to record error: {error_code} - {error_code.description} - Event ID: {event_id} - Event Type: {event_type} - Function: {function_path} - {error_details}")
-        logger.exception(e)
 
 def error_handler(func):
     """

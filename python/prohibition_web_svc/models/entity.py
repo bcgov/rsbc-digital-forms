@@ -26,7 +26,7 @@ class Entity(TypedDict):
     date_of_birth: date
     age_at_collision: int
     contact_phone_num: str
-    sex: str
+    sex: DropdownOption
     contributing_factor_1: DropdownOption
     contributing_factor_2: DropdownOption
     contributing_factor_3: DropdownOption

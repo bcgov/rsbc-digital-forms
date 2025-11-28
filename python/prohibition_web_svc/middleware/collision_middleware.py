@@ -5,6 +5,7 @@ from python.common.models import db, Submission, SubmissionFormRef, SubmissionEv
 from python.common.enums import ErrorCode
 from python.prohibition_web_svc.mappers.collision_mapper import CollisionMapper
 from python.prohibition_web_svc.middleware import common_middleware
+from python.prohibition_web_svc.middleware.form_middleware import update_form_status
 from python.prohibition_web_svc.models.collision_request_payload import CollisionRequestPayload
 import copy
 
@@ -107,6 +108,13 @@ def save_collision_data(**kwargs) -> tuple:
         collision: CollisionRequestPayload = kwargs['payload']
         # Add Collision Data to submission
         submission.collision = CollisionMapper.map_to_tar_collision(collision)
+        if not update_form_status(
+            form_type=MV6020_FORM_TYPE,
+            form_number=data.get('collision_case_num'),
+            printed_timestamp=datetime.now(),
+            user_guid=user_guid
+        ):
+            logger.error(f"Failed to update form status for form {data.get('collision_case_num')}")
 
         db.session.add(submission)
         db.session.commit()
@@ -199,7 +207,6 @@ def _validate_collision_required_fields(collision: CollisionRequestPayload, kwar
         "countable_fatal_total",
         "completed_by_name",
         "completed_by_id",
-        "detachment_unit",
         "investigated_by_traffic_analyst",
         # Location required fields (from location.py)
         "hwy_code",
@@ -252,8 +259,6 @@ def _validate_entity_required_fields(collision: CollisionRequestPayload, kwargs:
         "contributing_factor_2",
         "contributing_factor_3",
         "contributing_factor_4",
-        "damage_location_code",
-        "severety_code",
     ]
     if not collision.get('entities') or len(collision.get('entities')) == 0:
         logger.debug("Collision has no entities provided.")
@@ -286,7 +291,7 @@ def _validate_witness_required_fields(collision: CollisionRequestPayload, kwargs
         "contact_phn_num"
     ]
 
-    if collision.get("has_witnesses") and (not collision.get('witnesses') or len(collision.get('witnesses')) == 0):
+    if collision.get("has_witnesses") and collision.get("has_witnesses").upper() == 'Y' and (not collision.get('witnesses') or len(collision.get('witnesses')) == 0):
         logger.debug("Collision has witnesses but no witness data provided.")
         kwargs['error'] = {
             'error_code': ErrorCode.C01,
