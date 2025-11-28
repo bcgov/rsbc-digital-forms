@@ -54,7 +54,7 @@ urllib3==1.26.7
 Werkzeug==2.3.7
 xmltodict==0.13.0
 pytest-cov==4.1.0
-minio==7.2.8
+minio==7.2.20
 Pillow==11.3.0
 PyMuPDF==1.23.3
 pyaes==1.6.1
