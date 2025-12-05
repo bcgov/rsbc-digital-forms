@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock, patch
 from python.common.models import Event
 from python.common.enums import ErrorCode, EventType
-from python.prohibition_web_svc.middleware.event_middleware import _mask_sensitive_data, check_if_application_id_exists, log_payload_to_splunk, save_event_data
+from python.prohibition_web_svc.middleware.event_middleware import check_if_application_id_exists, log_payload_to_splunk, save_event_data
 
 @pytest.fixture
 def mock_db_session():

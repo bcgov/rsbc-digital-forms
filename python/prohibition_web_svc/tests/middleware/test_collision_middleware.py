@@ -319,9 +319,16 @@ def test_save_collision_data_exception(monkeypatch):
 
 def test_save_event_pdf_success():
     kwargs = {'payload': DUMMY_PAYLOAD, 'submission_id': 42}
-    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.render_with_playwright') as mock_render, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.Minio') as mock_minio, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.encryptPdf_method1') as mock_encrypt, \
+         patch('builtins.open', new_callable=MagicMock) as mock_open:
+        mock_render.return_value = (True, b'%PDF-1.4...')
         mock_session = MagicMock()
         mock_db.session = mock_session
+        mock_minio_instance = MagicMock()
+        mock_minio.return_value = mock_minio_instance
         
         result, out_kwargs = collision_middleware.save_event_pdf(**kwargs)
         assert result is True
@@ -330,15 +337,28 @@ def test_save_event_pdf_success():
         mock_session.add.assert_called_once()
         mock_session.commit.assert_called_once()
 
-def test_save_event_pdf_exception():
+
+def test_save_event_pdf_render_failed():
     kwargs = {'payload': DUMMY_PAYLOAD, 'submission_id': 42}
-    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
-        mock_session = MagicMock()
-        mock_db.session = mock_session
-        mock_session.add.side_effect = Exception('pdf error')
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.render_with_playwright') as mock_render:
+        mock_render.return_value = (False, {'error': 'pdf error'})
         
         result, out_kwargs = collision_middleware.save_event_pdf(**kwargs)
-        assert result is False
+        assert result is True
+        assert 'error' in out_kwargs
+        assert out_kwargs['error']['error_code'] == ErrorCode.C04
+        assert 'pdf error' in str(out_kwargs['error']['error_details'])
+
+def test_save_event_pdf_exception():
+    kwargs = {'payload': DUMMY_PAYLOAD, 'submission_id': 42}
+    with patch('python.prohibition_web_svc.middleware.collision_middleware._save_file_to_minio') as mock_minio, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.render_with_playwright') as mock_render, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.common_middleware.record_event_error') as mock_record_error:
+        mock_minio.side_effect = Exception('pdf error')
+        mock_render.return_value = (True, b'%PDF-1.4...')
+    
+        result, out_kwargs = collision_middleware.save_event_pdf(**kwargs)
+        assert result is True
         assert 'error' in out_kwargs
         assert out_kwargs['error']['error_code'] == ErrorCode.C04
         assert 'pdf error' in str(out_kwargs['error']['error_details'])

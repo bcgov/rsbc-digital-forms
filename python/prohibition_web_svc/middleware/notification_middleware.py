@@ -7,7 +7,7 @@ from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.config import Config
 import python.common.rsi_email as rsi_email
 from python.prohibition_web_svc.helpers import mv6020_helper
-from python.prohibition_web_svc.middleware import collision_middleware, print_middleware
+from python.prohibition_web_svc.middleware import print_middleware
 
 logger = get_logger(__name__)
 
@@ -28,7 +28,7 @@ def log_payload_to_splunk(**kwargs) -> tuple:
         # do form specific masking if needed.
         if template_name == mv6020_helper.EMAIL_TEMPLATE:
             form_type = mv6020_helper.FORM_TYPE # add form_id to request payload
-            splunk_payload['data'] = mv6020_helper._mask_sensitive_data(splunk_payload['data'])  
+            splunk_payload['data'] = mv6020_helper.mask_collision_sensitive_data(splunk_payload['data'])  
         else:
             # generic notifications will have form_id field set.
             form_type = splunk_payload.get('form_id', template_name)
