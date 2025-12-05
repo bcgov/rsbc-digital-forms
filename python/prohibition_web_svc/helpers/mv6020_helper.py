@@ -156,7 +156,7 @@ def get_entity_data(data: dict) -> Tuple[str, Dict[str, Any]]:
 
     return "", ""  
 
-def _mask_sensitive_data(data):
+def mask_collision_sensitive_data(data):
     sensitive_fields = [
         'driver_license_num',
         'surname',
@@ -176,14 +176,16 @@ def _mask_sensitive_data(data):
             data[field] = "[REDACTED]"
         if 'entities' in data:
             data['entities'] = [
-                _mask_sensitive_data(entity) for entity in data['entities']
+                mask_collision_sensitive_data(entity) for entity in data['entities']
             ]
         if 'involved_persons' in data:
             data['involved_persons'] = [
-                _mask_sensitive_data(person) for person in data['involved_persons']
+                mask_collision_sensitive_data(person) for person in data['involved_persons']
             ]
         if 'witnesses' in data:
             data['witnesses'] = [
-                _mask_sensitive_data(witness) for witness in data['witnesses']
+                mask_collision_sensitive_data(witness) for witness in data['witnesses']
             ]
+        if 'data' in data and isinstance(data['data'], dict):
+            data['data'] = mask_collision_sensitive_data(data['data'])            
     return data

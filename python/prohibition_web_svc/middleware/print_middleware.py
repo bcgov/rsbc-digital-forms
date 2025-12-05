@@ -10,7 +10,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from playwright.async_api import async_playwright
 from python.common.enums import ErrorCode
 from python.common.logging_utils import get_logger
-from python.prohibition_web_svc.middleware import collision_middleware
+from python.prohibition_web_svc.helpers import mv6020_helper
 from python.prohibition_web_svc.models.print_request_payload import PrintRequestPayload
 from python.common.models.base import db
 
@@ -233,7 +233,7 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
                 await browser.close()
                     
     except Exception as e:
-        error_html = f"<h1>Error rendering template with Playwright</h1><p>{str(e)}</p>"
+        error_html = f"<h1>Error rendering template with Playwright</h1><p>{e}</p>"
         return False, error_html
 
 def render_with_playwright(template_path: str, data: dict, output_type: str = "pdf"):
@@ -330,7 +330,7 @@ def log_payload_to_splunk(**kwargs) -> tuple:
         request = kwargs.get('request')
         payload = request.get_json()
         payload = copy.deepcopy(payload)
-        payload_masked = collision_middleware.mask_sensitive_data(payload)
+        payload_masked = mv6020_helper.mask_collision_sensitive_data(payload)
         kwargs['splunk_data'] = {
             'event': 'print request received',
             'request_id': kwargs.get('request_id', ''),
