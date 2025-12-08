@@ -339,9 +339,7 @@ def _validate_entity_required_fields(collision: CollisionRequestPayload, kwargs:
 
 def _validate_witness_required_fields(collision: CollisionRequestPayload, kwargs: dict) -> bool:
     required_witness_fields = [
-        "witness_name",
-        "address",
-        "contact_phn_num"
+        "witness_name"
     ]
 
     if collision.get("has_witnesses") and collision.get("has_witnesses").upper() == 'Y' and (not collision.get('witnesses') or len(collision.get('witnesses')) == 0):

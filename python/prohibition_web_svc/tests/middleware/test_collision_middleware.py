@@ -123,7 +123,7 @@ def test_validate_collision_payload_failure_missing_witness_fields():
     kwargs = {'payload': payload}
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
-    assert out_kwargs['error']['error_details'] == "Missing required fields in witness: ['witness_name', 'address', 'contact_phn_num']"
+    assert out_kwargs['error']['error_details'] == "Missing required fields in witness: ['witness_name']"
     assert out_kwargs['response_dict'] == {
         'error_details': out_kwargs['error']['error_details']
     }
