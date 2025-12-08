@@ -14,6 +14,8 @@ def send_email(to: list, subject: str, config, template, eventid, attachments=No
     Send email to the rsiops
     """
     bcc_value=config.BCC_EMAIL_ADDRESSES.split(',')
+    env = str(config.ENVIRONMENT).upper()
+    subject = f'[{env}] - {subject}' if 'PROD' not in env else subject
     if len(bcc_value) > 0 and bcc_value[0] != '':
         payload = {
             "bodyType": "html",

@@ -12,6 +12,8 @@ def send_email(to: list, subject: str, config, template, ticket_no, attachments=
     """
     Send email to the applicant and bcc Appeals Registry
     """
+    env = str(config.ENVIRONMENT).upper()
+    subject = f'[{env}] - {subject}' if 'PROD' not in env else subject
     payload = {
         "bodyType": "html",
         "body": template,
