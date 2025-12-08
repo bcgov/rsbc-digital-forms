@@ -314,6 +314,9 @@
       "witness_name": "John Doe",
       "address": "300 Main St, City",
       "contact_phn_num": "555-1234"
+    },
+    {
+      "witness_name": "Mary Doe"
     }
   ]
 }

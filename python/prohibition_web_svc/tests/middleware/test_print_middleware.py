@@ -25,7 +25,7 @@ class TestPrintMiddleware:
             "options": {"type": "pdf"}
         }
         
-        with patch('python.prohibition_web_svc.middleware.collision_middleware.mask_sensitive_data') as mock_mask:
+        with patch('python.prohibition_web_svc.middleware.print_middleware.mv6020_helper.mask_collision_sensitive_data') as mock_mask:
             mock_mask.return_value = masked_payload
             
             kwargs = {
@@ -45,7 +45,7 @@ class TestPrintMiddleware:
             assert updated_kwargs['splunk_data']['username'] == 'testuser'
             assert updated_kwargs['splunk_data']['payload'] == masked_payload
             
-            # Verify mask_sensitive_data was called with the original payload
+            # Verify mask_collision_sensitive_data was called with the original payload
             mock_mask.assert_called_once()
             called_payload = mock_mask.call_args[0][0]
             assert called_payload['data']['ssn'] == '123-45-6789'
@@ -71,7 +71,7 @@ class TestPrintMiddleware:
             mock_logger.error.assert_called_once()
 
     def test_log_payload_to_splunk_mask_exception(self):
-        """Test exception handling when mask_sensitive_data fails."""
+        """Test exception handling when mask_collision_sensitive_data fails."""
         # Mock request with valid payload
         mock_request = MagicMock()
         mock_request.get_json.return_value = {"template": "test.html", "data": {"name": "John"}}
@@ -81,7 +81,7 @@ class TestPrintMiddleware:
             'request_id': 'test-request-123'
         }
         
-        with patch('python.prohibition_web_svc.middleware.collision_middleware.mask_sensitive_data') as mock_mask:
+        with patch('python.prohibition_web_svc.middleware.print_middleware.mv6020_helper.mask_collision_sensitive_data') as mock_mask:
             mock_mask.side_effect = Exception("Masking failed")
             
             with patch('python.prohibition_web_svc.middleware.print_middleware.logger') as mock_logger:
@@ -138,7 +138,7 @@ class TestPrintMiddleware:
             payload['data']['nested']['value'] = 999
             return payload
         
-        with patch('python.prohibition_web_svc.middleware.collision_middleware.mask_sensitive_data', side_effect=mock_mask_func):
+        with patch('python.prohibition_web_svc.middleware.print_middleware.mv6020_helper.mask_collision_sensitive_data', side_effect=mock_mask_func):
             kwargs = {'request': mock_request}
             
             result, updated_kwargs = print_middleware.log_payload_to_splunk(**kwargs)
@@ -154,7 +154,7 @@ class TestPrintMiddleware:
         mock_request = MagicMock()
         mock_request.get_json.return_value = {"template": "test.html", "data": {"name": "John"}}
         
-        with patch('python.prohibition_web_svc.middleware.collision_middleware.mask_sensitive_data') as mock_mask:
+        with patch('python.prohibition_web_svc.middleware.print_middleware.mv6020_helper.mask_collision_sensitive_data') as mock_mask:
             mock_mask.return_value = {"template": "test.html", "data": {"name": "John"}}
             
             # Test with missing optional fields
