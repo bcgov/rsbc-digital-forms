@@ -234,8 +234,7 @@ def _save_file_to_minio(pdf_bytes) -> str:
 def _validate_required_fields(collision: CollisionRequestPayload, kwargs: dict) -> bool:
     is_valid = _validate_collision_required_fields(collision, kwargs) and \
         _validate_entity_required_fields(collision, kwargs) and \
-        _validate_witness_required_fields(collision, kwargs) and \
-        _validate_lki_fields(collision, kwargs)
+        _validate_witness_required_fields(collision, kwargs)
     return is_valid
 
 def _validate_collision_required_fields(collision: CollisionRequestPayload, kwargs: dict) -> bool:
@@ -365,20 +364,6 @@ def _validate_witness_required_fields(collision: CollisionRequestPayload, kwargs
                 'func': _validate_witness_required_fields,
             }
             return False
-    return True
-
-def _validate_lki_fields(collision: CollisionRequestPayload, kwargs: dict) -> bool:
-    if (collision.get('hwy_code') and str(collision['hwy_code']) == '1' and
-        (not collision.get('hwy_route_num') or not collision.get('segment_num'))):
-        logger.debug("For Hwy Code '1', both hwy_route_num and segment_num are required.")
-        kwargs['error'] = {
-            'error_code': ErrorCode.C01,
-            'error_details': "For Hwy Code '1', both hwy_route_num and segment_num are required.",
-            'event_type': EVENT_TYPE,
-            'ticket_no': collision.get("collision_case_num"),
-            'func': _validate_lki_fields,
-        }
-        return False
     return True
 
 def get_collision_data(**kwargs) -> tuple:
