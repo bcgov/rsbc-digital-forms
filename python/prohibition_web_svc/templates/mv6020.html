@@ -1809,12 +1809,18 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">LKI Route</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{ data.hwy_route_num.code }}
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {%if data.hwy_route_num %}
+                                {{ data.hwy_route_num.code }}
+                                {% endif %}
                             </div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">LKI Segment</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{ data.segment_num.code }}
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {%if data.segment_num %}
+                                {{ data.segment_num.code }}
+                                {% endif %}
                             </div>
                         </div>
                         <div class="grid-cell">
