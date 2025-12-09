@@ -357,6 +357,11 @@
             width: 100%;
         }
 
+        /* Remove double borders between consecutive grid tables */
+        .grid-table + .grid-table {
+            margin-top: -1px;
+        }
+
         /* 1 Column Layout */
         .grid-table-1col .grid-cell {
             flex: 0 0 100%;
@@ -375,13 +380,23 @@
         /* 2 Column Layout */
         .grid-table-2col .grid-cell {
             flex: 0 0 50%;
-            border-right: none;
+            border-right: 1px solid #000;
             border-bottom: 1px solid #000;
             box-sizing: border-box;
         }
 
+        .grid-table-2col .grid-cell:nth-child(2n) {
+            border-right: none;
+        }
+
         .grid-table-2col .grid-cell:nth-last-child(-n+2) {
             border-bottom: none;
+        }
+        
+        /* Full width cells in 2-col grid */
+        .grid-table-2col .grid-cell-full {
+            flex: 0 0 100%;
+            border-right: none;
         }
 
         /* 3 Column Layout */
@@ -469,27 +484,7 @@
         /* Full Width Cell - overrides column-specific widths */
         .grid-cell-full {
             flex: 0 0 100% !important;
-            /* Force full width regardless of parent grid type */
             border-right: none !important;
-            /* Remove right border since it spans full width */
-        }
-
-        /* Ensure full-width cells break to new row if needed */
-        .grid-cell-full {
-            flex-basis: 100%;
-            width: 100%;
-            border-right: none;
-        }
-
-        /* Optional: Add top border to full-width cells for visual separation */
-        .grid-cell-full+.grid-cell {
-            /* border-top: 1px solid #000; */
-        }
-
-        /* Remove top border from first cell or cells immediately after full-width */
-        .grid-cell:first-child,
-        .grid-cell-full+.grid-cell:first-of-type {
-            border-top: none;
         }
 
         .grid-display {
@@ -600,64 +595,48 @@
             justify-content: center;
         }
 
-        .border-right-enabled {
-            border-right: 1px solid #000 !important;
-        }
-        
-        .border-right-disabled {
-            border-right: none !important;
-        }
+
     </style>
     
     <script>
-        // Fix 2-column grid borders after full-width cells
+        // Fix grid borders after full-width cells
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.grid-table-2col').forEach(function(table) {
-                var cells = Array.from(table.querySelectorAll('.grid-cell'));
-                var visualColumn = 0; // Track visual column position (0 = left, 1 = right)
+            function fixGridBorders(table, numColumns) {
+                var cells = Array.from(table.querySelectorAll(':scope > .grid-cell'));
+                var visualColumn = 0;
                 
                 cells.forEach(function(cell, index) {
-                    // Check if this is a full-width cell - check multiple ways
-                    var computedStyle = window.getComputedStyle(cell);
-                    var flexBasis = computedStyle.flexBasis;
-                    var isFullWidth = false;
-                    
-                    // Check inline style
-                    if (cell.style.flex && (cell.style.flex.includes('100%') || cell.style.flex.includes('100'))) {
-                        isFullWidth = true;
-                    }
-                    // Check computed flex-basis
-                    if (flexBasis && (flexBasis.includes('100%') || parseFloat(flexBasis) > computedStyle.width * 0.9)) {
-                        isFullWidth = true;
-                    }
-                    // Check if width is close to container width
-                    var cellWidth = cell.offsetWidth;
-                    var containerWidth = table.offsetWidth;
-                    if (cellWidth > containerWidth * 0.9) {
-                        isFullWidth = true;
-                    }
-                    
-                    console.log('Cell', index, '- Full width:', isFullWidth, '- Visual column:', visualColumn, '- Text:', cell.textContent.substring(0, 30));
+                    var isFullWidth = cell.classList.contains('grid-cell-full');
+                    var isLastCell = index === cells.length - 1;
                     
                     if (isFullWidth) {
-                        // Full-width cells never have right border
-                        cell.classList.add('border-right-disabled');
-                        cell.classList.remove('border-right-enabled');
-                        visualColumn = 0; // Reset to left column for next cell
+                        cell.style.borderRight = 'none';
+                        visualColumn = 0;
                     } else {
-                        // Regular 50% width cell
-                        if (visualColumn === 0) {
-                            // Left column - should have right border
-                            cell.classList.add('border-right-enabled');
-                            cell.classList.remove('border-right-disabled');
+                        // Last column of row or last cell overall should not have right border
+                        if (visualColumn === numColumns - 1 || isLastCell) {
+                            cell.style.borderRight = 'none';
                         } else {
-                            // Right column - should not have right border
-                            cell.classList.add('border-right-disabled');
-                            cell.classList.remove('border-right-enabled');
+                            cell.style.borderRight = '1px solid #000';
                         }
-                        visualColumn = (visualColumn + 1) % 2; // Toggle between 0 and 1
+                        visualColumn = (visualColumn + 1) % numColumns;
                     }
                 });
+            }
+            
+            // Fix 2-column grids
+            document.querySelectorAll('.grid-table-2col').forEach(function(table) {
+                fixGridBorders(table, 2);
+            });
+            
+            // Fix 3-column grids
+            document.querySelectorAll('.grid-table-3col').forEach(function(table) {
+                fixGridBorders(table, 3);
+            });
+            
+            // Fix 4-column grids
+            document.querySelectorAll('.grid-table-4col').forEach(function(table) {
+                fixGridBorders(table, 4);
             });
         });
     </script>
@@ -1094,7 +1073,7 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Sex</label><br>
-                            <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">"{{
+                            <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{{
                                 entity.sex.label if entity.sex else '' }}</div>
                         </div>
                          {% endif %}
@@ -1157,6 +1136,9 @@
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_owner_address
                                 }}</div>
                         </div>
+                        <div class="grid-cell">
+                            <!-- Empty cell to complete row -->
+                        </div>
                         {% endif %}
                         <div class="grid-cell">
                             <label class="grid-label">National Safety Code (NSC) Number</label><br>
@@ -1169,10 +1151,6 @@
                         <div class="grid-cell">
                             <!-- Empty -->
                         </div>
-                        <div class="grid-cell">
-                            <!-- Empty -->
-                        </div>
-
                     </div>
 
                     <!-- Damage and Incident Details -->
@@ -1595,6 +1573,12 @@
                          </div>
                         </div>
                     
+                    
+                    
+                    </div>
+
+<div class="section-divider">
+                    <h4 class="subsection-header">Completed By</h4>
                     <div class="grid-table grid-table-3col">
                         <div class="grid-cell">
                             <label class="grid-label">Officer's Name</label><br>
@@ -1624,8 +1608,8 @@
                             <div class="grid-input grid-display" contenteditable="false">{{ data.reviewed_by }}</div>
                         </div>
                     </div>
-                    
-                    </div>
+</div>
+
                 </div>
             </div>
 
