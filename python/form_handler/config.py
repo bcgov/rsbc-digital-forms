@@ -82,6 +82,8 @@ class Config():
     SPLUNK_PORT                         = int(os.getenv('SPLUNK_PORT', '8088'))
     SPLUNK_TOKEN                        = os.getenv('SPLUNK_TOKEN', 'aaaa-bbbb-cccc')
 
+    ENVIRONMENT                         = os.getenv('ENVIRONMENT', 'dev')
+
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,

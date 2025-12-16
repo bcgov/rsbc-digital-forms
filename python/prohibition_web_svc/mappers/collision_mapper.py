@@ -31,7 +31,6 @@ class CollisionMapper:
             countable_fatal_total=str_to_integer(collision_request_payload['countable_fatal_total']),
             completed_by_name=collision_request_payload['completed_by_name'],
             completed_by_id=collision_request_payload['completed_by_id'],
-            detachment_unit=collision_request_payload['detachment_unit'],
             icbc_submission_date=collision_request_payload.get('icbc_submission_date'),
             reviewed_by=collision_request_payload.get('reviewed_by'),
             investigated_by_traffic_analyst=collision_request_payload['investigated_by_traffic_analyst'],
@@ -52,7 +51,7 @@ class CollisionMapper:
             hwy_code=collision_request_payload['hwy_code'],
             hwy_route_num=collision_request_payload['hwy_route_num']['code'] if collision_request_payload.get('hwy_route_num') else None,
             segment_num=collision_request_payload['segment_num']['code'] if collision_request_payload.get('segment_num') else None,
-            loc_code_km=collision_request_payload.get('loc_code_km'),
+            loc_code_km=collision_request_payload.get('loc_code_km') if collision_request_payload.get('loc_code_km') is not None and collision_request_payload.get('loc_code_km') != '' else None,
             city_name=collision_request_payload['city_name'],
             city_status=collision_request_payload.get('city_status'),
             street_on=collision_request_payload.get('street_on'),
@@ -121,7 +120,7 @@ class CollisionMapper:
         return result
     
     @staticmethod
-    def map_to_tar_involved_person(person_data: dict) -> TarInvolvedPerson:
+    def map_to_tar_involved_person(person_data: dict, entity_type: str) -> TarInvolvedPerson:
         """
         Maps a person dictionary to a TarInvolvedPerson object field by field.
         """
@@ -133,7 +132,7 @@ class CollisionMapper:
             position_of_person=person_data['position_of_person']['value'] if person_data.get('position_of_person') else None,
             safety_equipment_used=person_data['safety_equipment_used']['value'] if person_data.get('safety_equipment_used') else None,
             ejection_from_vehicle=person_data['ejection_from_vehicle']['value'] if person_data.get('ejection_from_vehicle') else None,
-            age=person_data.get('age'),
+            age=person_data.get('age') if person_data.get('age') is not None and person_data.get('age') != "" else None,
             sex=person_data['sex']['value'] if person_data.get('sex') else None,
             severe_injury_location=person_data['severe_injury_location']['value'] if person_data.get('severe_injury_location') else None,
             injury_type=person_data['injury_type']['value'] if person_data.get('injury_type') else None,
@@ -141,7 +140,8 @@ class CollisionMapper:
             injured_taken_to=person_data['injured_taken_to']['value'] if person_data.get('injured_taken_to') else None,
             injured_taken_by=person_data['injured_taken_by']['value'] if person_data.get('injured_taken_by') else None,
             injury_classification=person_data['injury_classification']['value'] if person_data.get('injury_classification') else None,
-            date_of_death=person_data.get('date_of_death')
+            date_of_death=person_data.get('date_of_death'),
+            entity_type=entity_type
         )
     
     @staticmethod
@@ -180,7 +180,7 @@ class CollisionMapper:
             date_of_birth=entity_data.get('date_of_birth'),
             age_at_collision=str_to_integer(entity_data.get('age_at_collision')),
             contact_phone_num=entity_data.get('contact_phone_num'),
-            sex=entity_data.get('sex'),
+            sex=entity_data['sex']['value'] if entity_data.get('sex') else None,
             contributing_factor_1=entity_data['contributing_factor_1']['value'] if entity_data.get('contributing_factor_1') else None,
             contributing_factor_2=entity_data['contributing_factor_2']['value'] if entity_data.get('contributing_factor_2') else None,
             contributing_factor_3=entity_data['contributing_factor_3']['value'] if entity_data.get('contributing_factor_3') else None,
@@ -239,7 +239,7 @@ class CollisionMapper:
             for person in entity_dict.get('involved_persons', []):
                 person_dict = person if isinstance(person, dict) else person.__dict__
                 involved_persons.append(
-                    CollisionMapper.map_to_tar_involved_person(person_dict)
+                    CollisionMapper.map_to_tar_involved_person(person_dict, entity_dict['entity_type']['value'])
                 )
             
             # Map charges

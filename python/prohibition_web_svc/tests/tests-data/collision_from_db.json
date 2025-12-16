@@ -3,7 +3,7 @@
         "collision_case_num": "MV-005",
         "collision_type": "01",
         "has_other_prop_damage": "Y",
-        "has_witnesses": true,
+        "has_witnesses": "Y",
         "other_prop_damage_desc": "Property damage description",
         "pedestrian_action": "01",
         "pedestrian_location": "01",
@@ -22,7 +22,6 @@
     "countable_fatal_total": 0,
     "date_collision": "2025-07-16",
     "date_reported": "2025-07-16",
-    "detachment_unit": "Unit",
     "entities": [
         {
             "age_at_collision": 35,

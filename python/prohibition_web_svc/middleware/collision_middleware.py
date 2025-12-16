@@ -1,10 +1,21 @@
 from dataclasses import asdict
 from datetime import datetime
+import json
+import os
+import uuid
+
+from anyio import Path
+from minio import Minio
 from python.common.logging_utils import get_logger
 from python.common.models import db, Submission, SubmissionFormRef, SubmissionEvent, TarCollision
 from python.common.enums import ErrorCode
+from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_method1
+from python.prohibition_web_svc.config import Config
+from python.prohibition_web_svc.helpers import mv6020_helper
 from python.prohibition_web_svc.mappers.collision_mapper import CollisionMapper
 from python.prohibition_web_svc.middleware import common_middleware
+from python.prohibition_web_svc.middleware.form_middleware import update_form_status
+from python.prohibition_web_svc.middleware.print_middleware import render_with_playwright
 from python.prohibition_web_svc.models.collision_request_payload import CollisionRequestPayload
 import copy
 
@@ -92,7 +103,7 @@ def validate_collision_payload(**kwargs) -> tuple:
 def save_collision_data(**kwargs) -> tuple:
     logger.verbose('inside save_collision_data()')
     date_created = datetime.now()
-    data = kwargs.get('payload')
+    data = copy.deepcopy(kwargs.get('payload'))
     user_guid = common_middleware.get_user_guid(**kwargs)
 
     try:
@@ -104,9 +115,16 @@ def save_collision_data(**kwargs) -> tuple:
             created_by=user_guid,
             updated_by=user_guid,
         )
-        collision: CollisionRequestPayload = kwargs['payload']
+        collision: CollisionRequestPayload = data
         # Add Collision Data to submission
         submission.collision = CollisionMapper.map_to_tar_collision(collision)
+        if not update_form_status(
+            form_type=MV6020_FORM_TYPE,
+            form_number=data.get('collision_case_num'),
+            printed_timestamp=datetime.now(),
+            user_guid=user_guid
+        ):
+            logger.error(f"Failed to update form status for form {data.get('collision_case_num')}")
 
         db.session.add(submission)
         db.session.commit()
@@ -134,13 +152,30 @@ def save_collision_data(**kwargs) -> tuple:
 
 
 def save_event_pdf(**kwargs) -> tuple:
-    logger.verbose('inside save_event_pdf()')    
-    data = kwargs.get('payload')
+    logger.verbose('inside save_event_pdf()')
+    payload = kwargs.get('payload')
+    data = {}
+    data = copy.deepcopy(payload)
+    data["print_options"] = {
+        "type": "icbc",
+        "is_draft": False
+    }
     submission_id = kwargs.get('submission_id')
-    collision_case_num = data.get("collision_case_num")
+    collision_case_num = payload.get("collision_case_num")
     try:
-        #TODO: generate the PDF and save it to Minio
-        storage_key = f'collision/{collision_case_num}.pdf' #TODO: update with Minio path
+        pdf_bytes=None
+        current_dir = Path(__file__).parent.parent  # Go up to prohibition_web_svc directory
+        template_path = current_dir / "templates" / "mv6020.html"        
+        rendered_success, pdf_bytes = render_with_playwright(
+            template_path=str(template_path),
+            data=data,
+        )
+        if not rendered_success or pdf_bytes is None:
+            raise Exception(f"Failed to render PDF with Playwright for collision case number {collision_case_num} error: {pdf_bytes}")
+        
+        encoded_file_name = _save_file_to_minio(pdf_bytes)
+        
+        storage_key = f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}'
         form_ref = SubmissionFormRef(
             submission_id=submission_id,
             form_type=MV6020_FORM_TYPE,
@@ -166,15 +201,40 @@ def save_event_pdf(**kwargs) -> tuple:
                 'ticket_no': collision_case_num,
                 'func': save_event_pdf,
             }
-        return False, kwargs
+        common_middleware.record_event_error(**kwargs)
+
     return True, kwargs
 
+
+def _save_file_to_minio(pdf_bytes) -> str:
+    cert_path = Config.MINIO_CERT_FILE
+    os.environ['SSL_CERT_FILE'] = cert_path
+    client = Minio(
+        Config.MINIO_BUCKET_URL,
+        access_key=Config.MINIO_AK,
+        secret_key=Config.MINIO_SK,
+        secure=Config.MINIO_SECURE,
+    )
+    filename = str(uuid.uuid4().hex)
+    encoded_file_name = f"{filename}_encrypted.pdf"
+    pdf_filename = f"/tmp/{filename}.pdf"
+    encrypted_pdf_filename = f"/tmp/{encoded_file_name}"
+    with open(pdf_filename, "wb") as file:
+        file.write(pdf_bytes)
+    encryptPdf_method1(
+        pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
+    logger.verbose('File encrypted')
+    with open(encrypted_pdf_filename, 'rb') as file_data:
+        client.fput_object(Config.STORAGE_BUCKET_NAME,
+                        encoded_file_name, encrypted_pdf_filename)
+    logger.verbose('File uploaded to Minio')
+
+    return encoded_file_name
 
 def _validate_required_fields(collision: CollisionRequestPayload, kwargs: dict) -> bool:
     is_valid = _validate_collision_required_fields(collision, kwargs) and \
         _validate_entity_required_fields(collision, kwargs) and \
-        _validate_witness_required_fields(collision, kwargs) and \
-        _validate_lki_fields(collision, kwargs)
+        _validate_witness_required_fields(collision, kwargs)
     return is_valid
 
 def _validate_collision_required_fields(collision: CollisionRequestPayload, kwargs: dict) -> bool:
@@ -199,7 +259,6 @@ def _validate_collision_required_fields(collision: CollisionRequestPayload, kwar
         "countable_fatal_total",
         "completed_by_name",
         "completed_by_id",
-        "detachment_unit",
         "investigated_by_traffic_analyst",
         # Location required fields (from location.py)
         "hwy_code",
@@ -252,8 +311,6 @@ def _validate_entity_required_fields(collision: CollisionRequestPayload, kwargs:
         "contributing_factor_2",
         "contributing_factor_3",
         "contributing_factor_4",
-        "damage_location_code",
-        "severety_code",
     ]
     if not collision.get('entities') or len(collision.get('entities')) == 0:
         logger.debug("Collision has no entities provided.")
@@ -281,12 +338,10 @@ def _validate_entity_required_fields(collision: CollisionRequestPayload, kwargs:
 
 def _validate_witness_required_fields(collision: CollisionRequestPayload, kwargs: dict) -> bool:
     required_witness_fields = [
-        "witness_name",
-        "address",
-        "contact_phn_num"
+        "witness_name"
     ]
 
-    if collision.get("has_witnesses") and (not collision.get('witnesses') or len(collision.get('witnesses')) == 0):
+    if collision.get("has_witnesses") and collision.get("has_witnesses").upper() == 'Y' and (not collision.get('witnesses') or len(collision.get('witnesses')) == 0):
         logger.debug("Collision has witnesses but no witness data provided.")
         kwargs['error'] = {
             'error_code': ErrorCode.C01,
@@ -309,20 +364,6 @@ def _validate_witness_required_fields(collision: CollisionRequestPayload, kwargs
                 'func': _validate_witness_required_fields,
             }
             return False
-    return True
-
-def _validate_lki_fields(collision: CollisionRequestPayload, kwargs: dict) -> bool:
-    if (collision.get('hwy_code') and str(collision['hwy_code']) == '1' and
-        (not collision.get('hwy_route_num') or not collision.get('segment_num'))):
-        logger.debug("For Hwy Code '1', both hwy_route_num and segment_num are required.")
-        kwargs['error'] = {
-            'error_code': ErrorCode.C01,
-            'error_details': "For Hwy Code '1', both hwy_route_num and segment_num are required.",
-            'event_type': EVENT_TYPE,
-            'ticket_no': collision.get("collision_case_num"),
-            'func': _validate_lki_fields,
-        }
-        return False
     return True
 
 def get_collision_data(**kwargs) -> tuple:
@@ -371,46 +412,12 @@ def _load_entity(entity):
     entity_dict['involved_persons'] = [asdict(person) for person in involved_persons]
     return entity_dict
 
-def mask_sensitive_data(payload):
-    sensitive_fields = [
-        'driver_license_num',
-        'surname',
-        'given_name',
-        'contact_phone_num',
-        'vehicle_plate_num',
-        'vehicle_owner_name',
-        'vehicle_owner_address',
-        'nsc_num',
-        'other_insurance_policy_num',
-        'witness_name',
-        'address',
-        'contact_phn_num'
-    ]
-    for field in sensitive_fields:
-        if field in payload:
-            payload[field] = "[REDACTED]"
-        if 'entities' in payload:
-            payload['entities'] = [
-                mask_sensitive_data(entity) for entity in payload['entities']
-            ]
-        if 'involved_persons' in payload:
-            payload['involved_persons'] = [
-                mask_sensitive_data(person) for person in payload['involved_persons']
-            ]
-        if 'witnesses' in payload:
-            payload['witnesses'] = [
-                mask_sensitive_data(witness) for witness in payload['witnesses']
-            ]
-        if 'data' in payload and isinstance(payload['data'], dict):
-            payload['data'] = mask_sensitive_data(payload['data'])
-    return payload
-
 def log_payload_to_splunk(**kwargs) -> tuple:
     try:
         request = kwargs.get('request')
         payload = request.get_json()
         payload = copy.deepcopy(payload)
-        payload_masked = mask_sensitive_data(payload)
+        payload_masked = mv6020_helper.mask_collision_sensitive_data(payload)
         kwargs['splunk_data'] = {
             'event': "create collision",
             'request_id': kwargs.get('request_id', ''),

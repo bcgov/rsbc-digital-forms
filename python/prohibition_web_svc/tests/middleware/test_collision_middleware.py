@@ -58,7 +58,7 @@ def test_validate_collision_payload_failure_missing_fields():
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
     assert 'error' in out_kwargs
-    assert out_kwargs['error']['error_details'] == "Missing required fields: ['collision_scenario', 'police_file_num', 'prime_file_vjur', 'date_collision', 'time_collision', 'reported_same_day', 'time_collision_unknown', 'date_reported', 'hit_and_run', 'police_attended', 'police_agency_code', 'primary_collision_occ_code', 'first_contact_event', 'first_contact_loc', 'has_countable_fatal', 'countable_fatal_total', 'completed_by_name', 'completed_by_id', 'detachment_unit', 'investigated_by_traffic_analyst', 'hwy_code', 'city_name', 'lat_decim_degrees', 'long_decim_degrees', 'road_class', 'traffic_flow', 'collision_loc', 'primary_speed_zone', 'land_usage', 'road_type', 'roadway_character', 'roadway_surface_cond', 'weather_cond', 'lighting_cond', 'has_other_prop_damage', 'has_witnesses', 'collision_type', 'total_est_damage', 'total_injured', 'total_killed', 'total_vehicles', 'summary_was_verified', 'entities', 'form_version']"
+    assert out_kwargs['error']['error_details'] == "Missing required fields: ['collision_scenario', 'police_file_num', 'prime_file_vjur', 'date_collision', 'time_collision', 'reported_same_day', 'time_collision_unknown', 'date_reported', 'hit_and_run', 'police_attended', 'police_agency_code', 'primary_collision_occ_code', 'first_contact_event', 'first_contact_loc', 'has_countable_fatal', 'countable_fatal_total', 'completed_by_name', 'completed_by_id', 'investigated_by_traffic_analyst', 'hwy_code', 'city_name', 'lat_decim_degrees', 'long_decim_degrees', 'road_class', 'traffic_flow', 'collision_loc', 'primary_speed_zone', 'land_usage', 'road_type', 'roadway_character', 'roadway_surface_cond', 'weather_cond', 'lighting_cond', 'has_other_prop_damage', 'has_witnesses', 'collision_type', 'total_est_damage', 'total_injured', 'total_killed', 'total_vehicles', 'summary_was_verified', 'entities', 'form_version']"
     assert out_kwargs['response_dict'] == {
         'error_details': out_kwargs['error']['error_details']
     }
@@ -86,7 +86,7 @@ def test_validate_collision_payload_failure_missing_entity_fields():
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
     assert 'error' in out_kwargs
-    assert out_kwargs['error']['error_details'] == "Missing required fields in entity: ['entity_type', 'entity_num', 'possible_offender', 'contributing_factor_1', 'contributing_factor_2', 'contributing_factor_3', 'contributing_factor_4', 'damage_location_code', 'severety_code']"
+    assert out_kwargs['error']['error_details'] == "Missing required fields in entity: ['entity_type', 'entity_num', 'possible_offender', 'contributing_factor_1', 'contributing_factor_2', 'contributing_factor_3', 'contributing_factor_4']"
     assert out_kwargs['response_dict'] == {
         'error_details': out_kwargs['error']['error_details']
     }
@@ -95,7 +95,7 @@ def test_validate_collision_payload_failure_missing_witness_data():
     # Missing required witness data when has_witnesses is True
     with open(collision_json_path) as f:
         payload = json.load(f)
-    payload['has_witnesses'] = True  # Indicating there are witnesses
+    payload['has_witnesses'] = "Y"  # Indicating there are witnesses
     payload['witnesses'] = []  # Empty witness list
     kwargs = {'payload': payload}
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
@@ -123,120 +123,22 @@ def test_validate_collision_payload_failure_missing_witness_fields():
     kwargs = {'payload': payload}
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
-    assert out_kwargs['error']['error_details'] == "Missing required fields in witness: ['witness_name', 'address', 'contact_phn_num']"
+    assert out_kwargs['error']['error_details'] == "Missing required fields in witness: ['witness_name']"
     assert out_kwargs['response_dict'] == {
         'error_details': out_kwargs['error']['error_details']
     }
 
-def test_validate_lki_fields_success_hwy_code_1_with_route_and_segment():
-    """Test _validate_lki_fields when hwy_code is 1 and both hwy_route_num and segment_num are present"""
-    collision = {
-        'hwy_code': 1,
-        'hwy_route_num': '001',
-        'segment_num': '0203',
-        'collision_case_num': 'MV-001'
-    }
-    kwargs = {}
-    result = collision_middleware._validate_lki_fields(collision, kwargs)
+
+def test_validate_collision_payload_success_without_witnesses():
+    # Missing required witness data when has_witnesses is True
+    with open(collision_json_path) as f:
+        payload = json.load(f)
+    payload['has_witnesses'] = "N"  # Indicating there are no witnesses
+    payload['witnesses'] = []  # Empty witness list
+    kwargs = {'payload': payload}
+    result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is True
-    assert 'error' not in kwargs
-
-def test_validate_lki_fields_failure_hwy_code_1_missing_hwy_route_num():
-    """Test _validate_lki_fields when hwy_code is 1 but hwy_route_num is missing"""
-    collision = {
-        'hwy_code': 1,
-        'segment_num': '0203',
-        'collision_case_num': 'MV-001'
-    }
-    kwargs = {}
-    result = collision_middleware._validate_lki_fields(collision, kwargs)
-    assert result is False
-    assert 'error' in kwargs
-    assert kwargs['error']['error_code'] == ErrorCode.C01
-    assert "For Hwy Code '1', both hwy_route_num and segment_num are required" in kwargs['error']['error_details']
-    assert kwargs['error']['ticket_no'] == 'MV-001'
-    assert kwargs['error']['event_type'] == collision_middleware.EVENT_TYPE
-    assert kwargs['error']['func'] == collision_middleware._validate_lki_fields
-
-def test_validate_lki_fields_failure_hwy_code_1_missing_segment_num():
-    """Test _validate_lki_fields when hwy_code is 1 but segment_num is missing"""
-    collision = {
-        'hwy_code': 1,
-        'hwy_route_num': '001',
-        'collision_case_num': 'MV-001'
-    }
-    kwargs = {}
-    result = collision_middleware._validate_lki_fields(collision, kwargs)
-    assert result is False
-    assert 'error' in kwargs
-    assert kwargs['error']['error_code'] == ErrorCode.C01
-    assert "For Hwy Code '1', both hwy_route_num and segment_num are required" in kwargs['error']['error_details']
-    assert kwargs['error']['ticket_no'] == 'MV-001'
-    assert kwargs['error']['event_type'] == collision_middleware.EVENT_TYPE
-    assert kwargs['error']['func'] == collision_middleware._validate_lki_fields
-
-def test_validate_lki_fields_failure_hwy_code_1_missing_both_route_and_segment():
-    """Test _validate_lki_fields when hwy_code is 1 but both hwy_route_num and segment_num are missing"""
-    collision = {
-        'hwy_code': 1,
-        'collision_case_num': 'MV-001'
-    }
-    kwargs = {}
-    result = collision_middleware._validate_lki_fields(collision, kwargs)
-    assert result is False
-    assert 'error' in kwargs
-    assert kwargs['error']['error_code'] == ErrorCode.C01
-    assert "For Hwy Code '1', both hwy_route_num and segment_num are required" in kwargs['error']['error_details']
-    assert kwargs['error']['ticket_no'] == 'MV-001'
-    assert kwargs['error']['event_type'] == collision_middleware.EVENT_TYPE
-    assert kwargs['error']['func'] == collision_middleware._validate_lki_fields
-
-def test_validate_lki_fields_success_hwy_code_not_1():
-    """Test _validate_lki_fields when hwy_code is not 1 (should pass regardless of route/segment nums)"""
-    collision = {
-        'hwy_code': 97,
-        'collision_case_num': 'MV-001'
-        # No hwy_route_num or segment_num provided
-    }
-    kwargs = {}
-    result = collision_middleware._validate_lki_fields(collision, kwargs)
-    assert result is True
-    assert 'error' not in kwargs
-
-def test_validate_lki_fields_success_hwy_code_not_1_with_route_and_segment():
-    """Test _validate_lki_fields when hwy_code is not 1 but route and segment are provided"""
-    collision = {
-        'hwy_code': 97,
-        'hwy_route_num': '097',
-        'segment_num': '0356',
-        'collision_case_num': 'MV-001'
-    }
-    kwargs = {}
-    result = collision_middleware._validate_lki_fields(collision, kwargs)
-    assert result is True
-    assert 'error' not in kwargs
-
-def test_validate_lki_fields_success_no_hwy_code():
-    """Test _validate_lki_fields when hwy_code is not present (should pass)"""
-    collision = {
-        'collision_case_num': 'MV-001'
-        # No hwy_code provided
-    }
-    kwargs = {}
-    result = collision_middleware._validate_lki_fields(collision, kwargs)
-    assert result is True
-    assert 'error' not in kwargs
-
-def test_validate_lki_fields_success_hwy_code_none():
-    """Test _validate_lki_fields when hwy_code is None (should pass)"""
-    collision = {
-        'hwy_code': None,
-        'collision_case_num': 'MV-001'
-    }
-    kwargs = {}
-    result = collision_middleware._validate_lki_fields(collision, kwargs)
-    assert result is True
-    assert 'error' not in kwargs
+    assert 'error' not in out_kwargs
 
 def test_save_collision_data_success(monkeypatch):
     mock_db = MagicMock()
@@ -246,6 +148,7 @@ def test_save_collision_data_success(monkeypatch):
     monkeypatch.setattr(collision_middleware, 'db', mock_db)
     monkeypatch.setattr(collision_middleware, 'Submission', MagicMock(return_value=mock_submission))
     monkeypatch.setattr(collision_middleware.common_middleware, 'get_user_guid', lambda **kwargs: 'user-guid')
+    monkeypatch.setattr(collision_middleware, 'update_form_status', MagicMock(return_value=True))
     with open(collision_json_path) as f:
         payload = json.load(f)
     kwargs = {'payload': payload}
@@ -262,9 +165,28 @@ def test_save_offline_collision_data_success(monkeypatch):
     monkeypatch.setattr(collision_middleware, 'db', mock_db)
     monkeypatch.setattr(collision_middleware, 'Submission', MagicMock(return_value=mock_submission))
     monkeypatch.setattr(collision_middleware.common_middleware, 'get_user_guid', lambda **kwargs: 'user-guid')
+    monkeypatch.setattr(collision_middleware, 'update_form_status', MagicMock(return_value=True))
     with open(collision_json_path) as f:
         payload = json.load(f)
     payload['submitted_offline'] = True
+    kwargs = {'payload': payload}
+    result, out_kwargs = collision_middleware.save_collision_data(**kwargs)
+    assert result is True
+    assert out_kwargs['response_dict']['submission_id'] == 42
+    assert out_kwargs['submission_id'] == 42
+
+
+def test_save_collision_data_success_with_update_form_status_warning(monkeypatch):
+    mock_db = MagicMock()
+    mock_session = MagicMock()
+    mock_db.session = mock_session
+    mock_submission = MagicMock(submission_id=42)
+    monkeypatch.setattr(collision_middleware, 'db', mock_db)
+    monkeypatch.setattr(collision_middleware, 'Submission', MagicMock(return_value=mock_submission))
+    monkeypatch.setattr(collision_middleware.common_middleware, 'get_user_guid', lambda **kwargs: 'user-guid')
+    monkeypatch.setattr(collision_middleware, 'update_form_status', MagicMock(return_value=False))
+    with open(collision_json_path) as f:
+        payload = json.load(f)
     kwargs = {'payload': payload}
     result, out_kwargs = collision_middleware.save_collision_data(**kwargs)
     assert result is True
@@ -287,9 +209,16 @@ def test_save_collision_data_exception(monkeypatch):
 
 def test_save_event_pdf_success():
     kwargs = {'payload': DUMMY_PAYLOAD, 'submission_id': 42}
-    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.render_with_playwright') as mock_render, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.Minio') as mock_minio, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.encryptPdf_method1') as mock_encrypt, \
+         patch('builtins.open', new_callable=MagicMock) as mock_open:
+        mock_render.return_value = (True, b'%PDF-1.4...')
         mock_session = MagicMock()
         mock_db.session = mock_session
+        mock_minio_instance = MagicMock()
+        mock_minio.return_value = mock_minio_instance
         
         result, out_kwargs = collision_middleware.save_event_pdf(**kwargs)
         assert result is True
@@ -298,15 +227,28 @@ def test_save_event_pdf_success():
         mock_session.add.assert_called_once()
         mock_session.commit.assert_called_once()
 
-def test_save_event_pdf_exception():
+
+def test_save_event_pdf_render_failed():
     kwargs = {'payload': DUMMY_PAYLOAD, 'submission_id': 42}
-    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
-        mock_session = MagicMock()
-        mock_db.session = mock_session
-        mock_session.add.side_effect = Exception('pdf error')
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.render_with_playwright') as mock_render:
+        mock_render.return_value = (False, {'error': 'pdf error'})
         
         result, out_kwargs = collision_middleware.save_event_pdf(**kwargs)
-        assert result is False
+        assert result is True
+        assert 'error' in out_kwargs
+        assert out_kwargs['error']['error_code'] == ErrorCode.C04
+        assert 'pdf error' in str(out_kwargs['error']['error_details'])
+
+def test_save_event_pdf_exception():
+    kwargs = {'payload': DUMMY_PAYLOAD, 'submission_id': 42}
+    with patch('python.prohibition_web_svc.middleware.collision_middleware._save_file_to_minio') as mock_minio, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.render_with_playwright') as mock_render, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.common_middleware.record_event_error') as mock_record_error:
+        mock_minio.side_effect = Exception('pdf error')
+        mock_render.return_value = (True, b'%PDF-1.4...')
+    
+        result, out_kwargs = collision_middleware.save_event_pdf(**kwargs)
+        assert result is True
         assert 'error' in out_kwargs
         assert out_kwargs['error']['error_code'] == ErrorCode.C04
         assert 'pdf error' in str(out_kwargs['error']['error_details'])

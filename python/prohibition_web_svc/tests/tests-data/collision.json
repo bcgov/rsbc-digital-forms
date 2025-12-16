@@ -42,7 +42,6 @@
   "countable_fatal_total": 0,
   "completed_by_name": "Officer",
   "completed_by_id": "31A21CA7406E4AA9A3037E416DE241B6",
-  "detachment_unit": "Unit",
   "icbc_submission_date": "2025-07-16T12:00:00Z",
   "reviewed_by": "Reviewer",
   "investigated_by_traffic_analyst": "N",
@@ -127,7 +126,7 @@
   "long_degree": -123,
   "long_min": 7,
   "long_sec": 24.44,
-  "has_witnesses": true,
+  "has_witnesses": "Y",
   "collision_type": "01",
   "total_est_damage": 0,
   "total_injured": 0,
@@ -184,7 +183,10 @@
       "date_of_birth": "1990-01-01",
       "age_at_collision": 35,
       "contact_phone_num": "604-555-1234",
-      "sex": "F",
+      "sex": {
+        "label": "Female",
+        "value": "F"
+      },
       "charges_blood_alc_tests_taken": "N",
       "blood_alc_test": "BCA",
       "result_1": "0.00",
@@ -312,6 +314,9 @@
       "witness_name": "John Doe",
       "address": "300 Main St, City",
       "contact_phn_num": "555-1234"
+    },
+    {
+      "witness_name": "Mary Doe"
     }
   ]
 }

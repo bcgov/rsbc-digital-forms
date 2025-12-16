@@ -1,6 +1,7 @@
 import asyncio
 import base64
 import copy
+from datetime import datetime
 import json
 import re
 from pathlib import Path
@@ -9,9 +10,9 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from playwright.async_api import async_playwright
 from python.common.enums import ErrorCode
 from python.common.logging_utils import get_logger
-from python.prohibition_web_svc.middleware import common_middleware
-from python.prohibition_web_svc.middleware import collision_middleware
+from python.prohibition_web_svc.helpers import mv6020_helper
 from python.prohibition_web_svc.models.print_request_payload import PrintRequestPayload
+from python.common.models.base import db
 
 logger = get_logger(__name__)
 
@@ -164,45 +165,76 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
                 page = await browser.new_page()
                 await page.set_content(html_str, wait_until="networkidle")
                 
+                # Wait for auto-resize script to execute
+                await page.evaluate("""
+                    () => {
+                        return new Promise((resolve) => {
+                            if (document.readyState === 'complete') {
+                                // Give extra time for auto-resize to complete
+                                setTimeout(resolve, 100);
+                            } else {
+                                window.addEventListener('load', () => {
+                                    setTimeout(resolve, 100);
+                                });
+                            }
+                        });
+                    }
+                """)
+                
                 if output_type.lower() == "html":
                     final_html = await page.content()
-                    return final_html
+                    return True, final_html
                 else:
                     # Set explicit page dimensions to US Letter (8.5in x 11in) with 0.5in margins on sides, 0.75in top/bottom
                     # This gives a content area of 7.5in x 9.5in
                     await page.set_viewport_size({"width": 816, "height": 1056})  # 8.5in x 11in at 96 DPI
+                    
+                    # Build dynamic header configuration
+                    form_details = template_data.get('form_details')
+                    header = {
+                        'form_no': form_details.get('form_no', ''),
+                        'form_title': form_details.get('form_title', ''),
+                        'subtext': form_details.get('subtext', '')
+                    }
+                    
+                    # Create dynamic header template
+                    header_template = f"""
+                        <div style="display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; font-family: Arial, sans-serif;">
+                            <span style="font-size: 11pt; font-weight: bold;">{header['form_title']}{' - ' + header['form_no'] if header['form_no'] else ''}</span>
+                            <span style="font-size: 9pt; font-weight: bold;">{header['subtext']}</span>
+                        </div>
+                    """
+                    
+                    # Build dynamic footer configuration MV6020E (122025)
+                    footer = {
+                        'form_version': form_details.get('form_version', '')
+                    }
+                    
+                    # Create dynamic footer template
+                    footer_template = f"""
+                        <div style="display: flex; justify-content: space-between; width: 100%; padding: 5px 20px; font-family: Arial, sans-serif; font-size: 8pt;">
+                            <span>{footer['form_version']}</span>
+                            <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+                        </div>
+                    """
                     
                     pdf_bytes = await page.pdf(
                         width="8.5in",
                         height="11in",
                         print_background=True,
                         display_header_footer=True,
-                        #TODO: Remove this once the header and footer are dynamic
-                        header_template="""
-                            <div style="display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; font-family: Arial, sans-serif;">
-                                <span style="font-size: 11pt; font-weight: bold;">Electronic MV6020 Traffic Accident Report</span>
-                                <span style="font-size: 9pt; font-weight: bold;">Protected A</span>
-                            </div>
-                        """,
-                        footer_template="""
-                            <div style="font-size: 8pt; width: 100%; text-align: center; border-top: 1px solid #000; padding-top: 5px;">
-                                RCMP GRC ED6190 (eMV6020 2024-07 v1.97 PILOT USE ONLY) &nbsp;&nbsp;&nbsp;&nbsp; 
-                                Page <span class="pageNumber"></span> of <span class="totalPages"></span>
-                            </div>
-                        """,
+                        header_template=header_template,
+                        footer_template=footer_template,
                         prefer_css_page_size=False,
                     )
-                    return pdf_bytes
+                    return True, pdf_bytes
                 
             finally:
                 await browser.close()
                     
     except Exception as e:
-        error_html = f"<h1>Error rendering template with Playwright</h1><p>{str(e)}</p>"
-        if output_type.lower() == "html":
-            return error_html
-        else:
-            return error_html.encode('utf-8')
+        error_html = f"<h1>Error rendering template with Playwright</h1><p>{e}</p>"
+        return False, error_html
 
 def render_with_playwright(template_path: str, data: dict, output_type: str = "pdf"):
     """Synchronous wrapper for the async Playwright render function."""
@@ -233,14 +265,23 @@ def render_document_with_playwright(**kwargs) -> tuple:
             return False, kwargs
         
         # Render the document
-        content = render_with_playwright(str(template_path), data, output_type)
+        success, content = render_with_playwright(str(template_path), data, output_type)
         
-        kwargs['rendered_content'] = content
-        kwargs['content_type'] = 'text/html' if output_type == 'html' else 'application/pdf'
-        kwargs['filename'] = options.get('filename', 
-            template_name.replace('.html', '.pdf' if output_type == 'pdf' else '.html'))
+        if success:
+            kwargs['rendered_content'] = content
+            kwargs['content_type'] = 'text/html' if output_type == 'html' else 'application/pdf'
+            kwargs['filename'] = options.get('filename', 
+                template_name.replace('.html', '.pdf' if output_type == 'pdf' else '.html'))
         
-        return True, kwargs
+            return True, kwargs
+        else:
+            kwargs['error'] = {
+                'error_code': ErrorCode.P02,
+                'error_details': f"Rendering failed: {content.decode('utf-8') if isinstance(content, bytes) else content}",
+                'event_type': EVENT_TYPE,
+                'func': render_document_with_playwright,
+            }
+            return False, kwargs
         
     except Exception as e:
         logger.error(e)
@@ -289,7 +330,7 @@ def log_payload_to_splunk(**kwargs) -> tuple:
         request = kwargs.get('request')
         payload = request.get_json()
         payload = copy.deepcopy(payload)
-        payload_masked = collision_middleware.mask_sensitive_data(payload)
+        payload_masked = mv6020_helper.mask_collision_sensitive_data(payload)
         kwargs['splunk_data'] = {
             'event': 'print request received',
             'request_id': kwargs.get('request_id', ''),
@@ -300,3 +341,49 @@ def log_payload_to_splunk(**kwargs) -> tuple:
     except Exception as e:
         logger.error(e)
     return True, kwargs
+
+map_template_to_form_type = {
+    'mv6020.html': 'MV6020',
+    # Add more mappings as needed
+}
+def update_form_printed_status(**kwargs) -> tuple:
+    """Update the form's printed and status in the database."""
+    logger.verbose('inside update_form_printed_status()')
+    
+    try:
+        payload: PrintRequestPayload = kwargs.get('payload')
+        form_type = map_template_to_form_type.get(payload['template'])
+        if not form_type:
+            logger.warning(f"Template {payload['template']} not mapped to a form type")
+            return True, kwargs  # Nothing to update
+
+        user_guid = payload['data'].get('completed_by_id', kwargs.get('user_guid', ''))
+        form_number = payload['data'].get('collision_case_num') or payload['data'].get('form_number')
+        printed_timestamp = datetime.now()
+        
+        if not form_number:
+            logger.warning("No form_number provided in payload data")
+            return True, kwargs  # Nothing to update
+        
+        from python.prohibition_web_svc.middleware import form_middleware
+        
+        success = form_middleware.update_form_status(
+            form_type=form_type,
+            form_number=form_number,
+            user_guid=user_guid,
+            printed_timestamp=printed_timestamp
+        )
+        
+        if success:
+            db.session.commit()
+        
+    except Exception as e:
+        logger.error(e)
+        kwargs['error'] = {
+            'error_code': ErrorCode.P02,
+            'error_details': str(e),
+            'event_type': EVENT_TYPE,
+            'func': update_form_printed_status,
+        }
+    finally:
+        return True, kwargs
