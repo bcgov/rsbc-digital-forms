@@ -177,7 +177,7 @@ def test_log_payload_to_splunk_mv6020():
     payload = {"template": "mv6020.html", "data": {"vehicle_owner_name": "John Doe"}}
     request = MockRequest(json_data=payload)
 
-    with patch("python.prohibition_web_svc.middleware.notification_middleware.mv6020_helper._mask_sensitive_data",
+    with patch("python.prohibition_web_svc.middleware.notification_middleware.mv6020_helper.mask_collision_sensitive_data",
                return_value={"vehicle_owner_name": "[REDACTED]"}):
         result, kwargs = notification_middleware.log_payload_to_splunk(
             request=request, user_guid="guid123", username="tester"

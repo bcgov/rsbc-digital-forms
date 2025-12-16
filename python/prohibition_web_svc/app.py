@@ -93,7 +93,8 @@ def create_app():
 
 def initialize_app(app):
     # Create tables if they do not exist already
-    @app.before_first_request
+    # Removed because of 'FlaskAPI' object has no attribute 'before_first_request'
+    # @app.before_first_request
     def create_tables_and_seed():
         engine = db.get_engine()
         tables = db.inspect(engine).get_table_names()

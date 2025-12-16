@@ -83,46 +83,47 @@ def send_mv6020_copy(**kwargs):
         # do the print orchestration here.
         success, print_result  = print_middleware.render_document_with_playwright(**kwargs)
 
-        pdf_bytes = print_result.get("rendered_content")
-        filename = print_result.get("filename") or "MV6020-{}.pdf".format(collision_case_no)
-        content_type = print_result.get("content_type")
-
-        #Attach PDF if provided
-        if pdf_bytes and content_type == "application/pdf":
-            if isinstance(pdf_bytes, str):
-                pdf_bytes = pdf_bytes.encode("utf-8")
-
-            pdf_b64 = base64.b64encode(pdf_bytes).decode("utf-8")  
-            attachments = [
-                {
-                    "content": pdf_b64,
-                    "contentType": "application/pdf",
-                    "encoding": "base64",
-                    "filename": filename or "MV6020.pdf",
-                }
-            ]  
-
-
-        success = rsi_email.send_mv6020_copy(
-            config=Config,
-            subject=subject,
-            email_address=email_address,
-            full_name=full_name,
-            message=message,
-            attachments=attachments,
-            email_type=ptype
-        )
-
         if success:
-            kwargs['response_dict'] = {
-                'message': f'Successfully sent email to {full_name} at {email_address}'
-            }
-            return True, kwargs
-        else:
-            kwargs['response_dict'] = {
-                'message': f'Failed to send email to {full_name} at {email_address}'
-            }
-            return False, kwargs
+            pdf_bytes = print_result.get("rendered_content")
+            filename = print_result.get("filename") or "MV6020-{}.pdf".format(collision_case_no)
+            content_type = print_result.get("content_type")
+
+            #Attach PDF if provided
+            if pdf_bytes and content_type == "application/pdf":
+                if isinstance(pdf_bytes, str):
+                    pdf_bytes = pdf_bytes.encode("utf-8")
+
+                pdf_b64 = base64.b64encode(pdf_bytes).decode("utf-8")  
+                attachments = [
+                    {
+                        "content": pdf_b64,
+                        "contentType": "application/pdf",
+                        "encoding": "base64",
+                        "filename": filename or "MV6020.pdf",
+                    }
+                ]  
+
+                success = rsi_email.send_mv6020_copy(
+                    config=Config,
+                    subject=subject,
+                    email_address=email_address,
+                    full_name=full_name,
+                    message=message,
+                    attachments=attachments,
+                    email_type=ptype
+                )
+
+                if success:
+                    kwargs['response_dict'] = {
+                        'message': f'Successfully sent email to {full_name} at {email_address}'
+                    }
+                    return True, kwargs
+        
+        kwargs['response_dict'] = {
+            'message': f'Failed to send email to {full_name} at {email_address}'
+        }
+        kwargs["error"] = print_result.get("error", {})
+        return False, kwargs
     except Exception as e:
         logger.error(f"Exception in send_mv6020_copy: {e}")
         kwargs['error'] = {
@@ -155,7 +156,7 @@ def get_entity_data(data: dict) -> Tuple[str, Dict[str, Any]]:
 
     return "", ""  
 
-def _mask_sensitive_data(data):
+def mask_collision_sensitive_data(data):
     sensitive_fields = [
         'driver_license_num',
         'surname',
@@ -175,14 +176,16 @@ def _mask_sensitive_data(data):
             data[field] = "[REDACTED]"
         if 'entities' in data:
             data['entities'] = [
-                _mask_sensitive_data(entity) for entity in data['entities']
+                mask_collision_sensitive_data(entity) for entity in data['entities']
             ]
         if 'involved_persons' in data:
             data['involved_persons'] = [
-                _mask_sensitive_data(person) for person in data['involved_persons']
+                mask_collision_sensitive_data(person) for person in data['involved_persons']
             ]
         if 'witnesses' in data:
             data['witnesses'] = [
-                _mask_sensitive_data(witness) for witness in data['witnesses']
+                mask_collision_sensitive_data(witness) for witness in data['witnesses']
             ]
+        if 'data' in data and isinstance(data['data'], dict):
+            data['data'] = mask_collision_sensitive_data(data['data'])            
     return data

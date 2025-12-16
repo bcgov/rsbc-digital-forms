@@ -119,8 +119,8 @@
         .header {
             display: flex !important;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
+            align-items: center;
+            margin-bottom: 20px;
             position: relative;
             visibility: visible !important;
             opacity: 1 !important;
@@ -132,10 +132,11 @@
             gap: 20px;
         }
 
-        .header-right {
+        .header-center {
+            flex: 1;
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 20px;
         }
 
         .header-text {
@@ -307,6 +308,15 @@
             min-height: 30px;
             resize: vertical;
             overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        @media print {
+            .auto-resize {
+                overflow: visible;
+                resize: none;
+            }
         }
 
         /* Radio Button Groups */
@@ -347,6 +357,11 @@
             width: 100%;
         }
 
+        /* Remove double borders between consecutive grid tables */
+        .grid-table + .grid-table {
+            margin-top: -1px;
+        }
+
         /* 1 Column Layout */
         .grid-table-1col .grid-cell {
             flex: 0 0 100%;
@@ -376,6 +391,12 @@
 
         .grid-table-2col .grid-cell:nth-last-child(-n+2) {
             border-bottom: none;
+        }
+        
+        /* Full width cells in 2-col grid */
+        .grid-table-2col .grid-cell-full {
+            flex: 0 0 100%;
+            border-right: none;
         }
 
         /* 3 Column Layout */
@@ -463,27 +484,7 @@
         /* Full Width Cell - overrides column-specific widths */
         .grid-cell-full {
             flex: 0 0 100% !important;
-            /* Force full width regardless of parent grid type */
             border-right: none !important;
-            /* Remove right border since it spans full width */
-        }
-
-        /* Ensure full-width cells break to new row if needed */
-        .grid-cell-full {
-            flex-basis: 100%;
-            width: 100%;
-            border-right: none;
-        }
-
-        /* Optional: Add top border to full-width cells for visual separation */
-        .grid-cell-full+.grid-cell {
-            /* border-top: 1px solid #000; */
-        }
-
-        /* Remove top border from first cell or cells immediately after full-width */
-        .grid-cell:first-child,
-        .grid-cell-full+.grid-cell:first-of-type {
-            border-top: none;
         }
 
         .grid-display {
@@ -594,13 +595,54 @@
             justify-content: center;
         }
 
-        .border-right-enabled {
-            border-right: 1px solid #000 !important;
-        }
+
     </style>
+    
+    <script>
+        // Fix grid borders after full-width cells
+        document.addEventListener('DOMContentLoaded', function() {
+            function fixGridBorders(table, numColumns) {
+                var cells = Array.from(table.querySelectorAll(':scope > .grid-cell'));
+                var visualColumn = 0;
+                
+                cells.forEach(function(cell, index) {
+                    var isFullWidth = cell.classList.contains('grid-cell-full');
+                    var isLastCell = index === cells.length - 1;
+                    
+                    if (isFullWidth) {
+                        cell.style.borderRight = 'none';
+                        visualColumn = 0;
+                    } else {
+                        // Last column of row or last cell overall should not have right border
+                        if (visualColumn === numColumns - 1 || isLastCell) {
+                            cell.style.borderRight = 'none';
+                        } else {
+                            cell.style.borderRight = '1px solid #000';
+                        }
+                        visualColumn = (visualColumn + 1) % numColumns;
+                    }
+                });
+            }
+            
+            // Fix 2-column grids
+            document.querySelectorAll('.grid-table-2col').forEach(function(table) {
+                fixGridBorders(table, 2);
+            });
+            
+            // Fix 3-column grids
+            document.querySelectorAll('.grid-table-3col').forEach(function(table) {
+                fixGridBorders(table, 3);
+            });
+            
+            // Fix 4-column grids
+            document.querySelectorAll('.grid-table-4col').forEach(function(table) {
+                fixGridBorders(table, 4);
+            });
+        });
+    </script>
 </head>
 
-<body>
+<body></body>
 
     {% if data.print_options.is_draft %}
     <div class="draft-watermark">DRAFT COPY</div>
@@ -613,47 +655,22 @@
             <div class="header-left">
                 <img src="images/icbclogo.png" style="width: 70px;">
             </div>
-            <div class="header-right">
-
-                <div class="protected-label">
-                    Protected A
-                </div>
+            <div class="header-center">
+                <h1 class="form-title" style="margin: 0;">{{ data.form_details.form_title }}</h1>
             </div>
         </div>
-
-        <h1 class="form-title">Electronic MV6020 Traffic Accident Report</h1>
 
         {% if data.print_options and data.print_options.type == "police"%}
 
         <div class="grid-table grid-table-1col">
             <div class="grid-cell">
-                <label class="grid-label">Do any of these scenarios apply?</label><br>
+                <label class="grid-label">MV6020 Report</label><br>
                 <input type="checkbox" id="scenarios" name="scenarios" {% if data.collision_scenario %}checked{% endif
                     %}>
                 <label for="scenarios" style="font-weight: normal;">{{ data.collision_scenario.value }} - {{
                     data.collision_scenario.label }}</label>
             </div>
-            <!-- Warning message based on collision scenario -->
-            {% if data.collision_scenario and data.collision_scenario.value %}
-            {% if data.collision_scenario.value == '08' %}
-            <div class="grid-cell">
-                <div
-                    style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; margin: 10px 0; border-radius: 4px; color: #856404;">
-                    <strong>⚠️ Warning</strong> This is a reportable incident and must be submitted to ICBC within ten
-                    days of the collision. Fatal incidents must be reported within 48 hours.
-                </div>
-            </div>
-            {% elif data.collision_scenario.value != '' %}
-            <div class="grid-cell">
-                <div
-                    style="background-color: #d1ecf1; border: 1px solid #bee5eb; padding: 10px; margin: 10px 0; border-radius: 4px; color: #0c5460;">
-                    <strong>ℹ️ Information</strong> This is not a reportable incident because it occurred on a private
-                    road or land (includes private driveways, private land, forest service roads, etc). This form may
-                    still be used to document the collision for your file but should not be submitted to ICBC.
-                </div>
-            </div>
-            {% endif %}
-            {% endif %}
+           
             <div class="grid-cell">
                 <label class="grid-label">Does this collision contain a Countable Fatal?</label><br>
                 <div class="radio-group">
@@ -804,7 +821,7 @@
                     <div class="grid-cell">
                         <label class="grid-label">City, Municipality, Town, District or Village Status</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ 'Organized Territory' if
-                            data.city_status==" organizedTerritory"
+                            data.city_status=="organizedTerritory"
                             else 'Unorganized Territory' }}</div>
                     </div>
                     <div class="grid-cell">
@@ -889,8 +906,9 @@
                     </div>
                     <div class="grid-cell">
                         <label class="grid-label">Box 2B Secondary (Advisory) Speed Zone</label><br>
-                        <div class="grid-input grid-display" contenteditable="false">{{ data.secondary_speed_zone.label
-                            }}</div>
+                        <div class="grid-input grid-display" contenteditable="false">
+                            {% if data.secondary_speed_zone %}{{ data.secondary_speed_zone.label }}{% endif %}
+                        </div>
                     </div>
                     <div class="grid-cell">
                         <label class="grid-label">Box 3 Land Usage in Collision Area</label><br>
@@ -1055,9 +1073,8 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Sex</label><br>
-                            <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{% if
-                                entity.sex == 'M' %}Male{% elif entity.sex == 'F' %}Female{% elif entity.sex == 'U'
-                                %}Unknown{% else %}{{ entity.sex }}{% endif %}</div>
+                            <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{{
+                                entity.sex.label if entity.sex else '' }}</div>
                         </div>
                          {% endif %}
                         <div class="grid-cell">
@@ -1119,6 +1136,9 @@
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_owner_address
                                 }}</div>
                         </div>
+                        <div class="grid-cell">
+                            <!-- Empty cell to complete row -->
+                        </div>
                         {% endif %}
                         <div class="grid-cell">
                             <label class="grid-label">National Safety Code (NSC) Number</label><br>
@@ -1131,23 +1151,19 @@
                         <div class="grid-cell">
                             <!-- Empty -->
                         </div>
-                        <div class="grid-cell">
-                            <!-- Empty -->
-                        </div>
-
                     </div>
 
                     <!-- Damage and Incident Details -->
                     <div class="grid-table grid-table-3col">
                         <div class="grid-cell">
                             <label class="grid-label">Damage Location on Entity</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{
-                                entity.damage_location_code.label }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {% if entity.damage_location_code %}{{ entity.damage_location_code.label }}{% endif %}</div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Severity of Damage</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{ entity.severety_code.label
-                                }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {% if entity.severety_code %}{{ entity.severety_code.label }}{% endif %}</div>
 
                         </div>
                         <div class="grid-cell">
@@ -1211,8 +1227,9 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Box 22 Second Contact/Event</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{ entity.second_contact.label
-                                }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {%if entity.second_contact %}{{ entity.second_contact.label }}{% endif %}
+                            </div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Box 25 Pre-Collision Vehicle Action First Event</label><br>
@@ -1332,8 +1349,7 @@
 
                     </div>
                     <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold;">
-                        Involved Person No. {{ loop.index }} associated to Entity No. {{ entity_index }} (Vehicle {{
-                        entity.entity_num }})
+                        Involved Person No. {{ loop.index }} associated to Entity No. {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})
                     </h5>
 
                     <!-- Status and Names -->
@@ -1417,18 +1433,21 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Box 19 Injured Taken To</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{
-                                person.injured_taken_to.label }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {% if person.injured_taken_to %}{{ person.injured_taken_to.label }}{% endif %}
+                            </div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Box 20 Injured Taken By</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{
-                                person.injured_taken_by.label }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {% if person.injured_taken_by %}{{ person.injured_taken_by.label }}{% endif %}
+                            </div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Box 20A Injury Classification</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{
-                                person.injury_classification.label }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {% if person.injury_classification %}{{ person.injury_classification.label }}{% endif %}
+                            </div>
                         </div>
                         <div class="grid-cell"></div>
                         <div class="grid-cell"></div>
@@ -1461,6 +1480,11 @@
                                 data.has_other_prop_damage }}{% endif %}</div>
 
                         </div>
+                        {% if data.has_other_prop_damage != 'Y' %}
+                        <div class="grid-cell">
+                            <!-- Empty Cell -->
+                        </div>
+                        {% endif %}
                         {% if data.has_other_prop_damage == 'Y' %}
                         <div class="grid-cell">
                             <label class="grid-label">Estimated Value:</label><br>
@@ -1469,17 +1493,16 @@
                         </div>
                         {% endif %}
                         {% if data.has_other_prop_damage == 'Y' or data.has_other_prop_damage == 'U' %}
-                        <div class="grid-cell">
-                            <!-- Empty Cell -->
-                        </div>
                         <div class="grid-cell grid-cell-full">
                             <label class="grid-label">Other Property Damage - list property damaged</label><br>
                             <textarea class="grid-input auto-resize">{{ data.other_prop_damage_desc }}</textarea>
                         </div>
                         {% endif %}
                         <div class="grid-cell grid-cell-full">
-                            <input type="checkbox" {% if data.has_witnesses %}checked{% endif %}>
-                            <label style="font-weight: normal; margin-left: 5px;">Are there witnesses?</label>
+                            <label class="grid-label">Are there witnesses?</label><br>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {% if data.has_witnesses == 'Y' %}Yes{% elif data.has_witnesses == 'N' %}No
+                                {% else %}{{data.has_witnesses }}{% endif %}</div>
                         </div>
                         <!-- Witness Table -->
                         {% if data.witnesses %}
@@ -1515,7 +1538,7 @@
                         </div>
                         {% endif %}
                          {% if not (data.print_options and data.print_options.type == "entity") %}
-                        <div class="grid-cell">
+                        <div class="grid-cell grid-cell-full">
                             <label class="grid-label">Box 99 Police Comments</label><br>
                             <textarea class="grid-input auto-resize">{{ data.police_comments }}</textarea>
                         </div>
@@ -1544,7 +1567,49 @@
                             <label class="grid-label">Total Vehicles</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.total_vehicles }}</div>
                         </div>
+                        
+                        <div class="grid-cell">
+                            <!-- empty cell -->
+                         </div>
+                        </div>
+                    
+                    
+                    
                     </div>
+
+<div class="section-divider">
+                    <h4 class="subsection-header">Completed By</h4>
+                    <div class="grid-table grid-table-3col">
+                        <div class="grid-cell">
+                            <label class="grid-label">Officer's Name</label><br>
+                            <div class="grid-input grid-display" contenteditable="false">{{ data.completed_by_name }}</div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Officer's ID No.</label><br>
+                            <div class="grid-input grid-display" contenteditable="false">{{ data.officer_badge_no }}</div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Agency </label><br>
+                            <div class="grid-input grid-display" contenteditable="false">{{ data.agency }}</div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Date Submitted to ICBC </label><br>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {%if data.icbc_submission_date %}{{ data.icbc_submission_date[:10] }}{% endif %}</div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Investigated by Traffic Analyst? </label><br>
+                            <div class="grid-input grid-display" contenteditable="false">{% if
+                                data.investigated_by_traffic_analyst == 'Y' %}Yes{% elif data.investigated_by_traffic_analyst == 'N' %}No{% else %}{{
+                                data.investigated_by_traffic_analyst }}{% endif %}</div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Reviewed by </label><br>
+                            <div class="grid-input grid-display" contenteditable="false">{{ data.reviewed_by }}</div>
+                        </div>
+                    </div>
+</div>
+
                 </div>
             </div>
 
@@ -1586,8 +1651,7 @@
                             </div>
                             <div class="grid-cell">
                                 <label class="grid-label">Hit and Run</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{% if data.hit_and_run
-                                    == 'Y' %}6{% else %}0{% endif %}</div>
+                                <div class="grid-input grid-display" contenteditable="false">{{data.hit_and_run}}</div>
                             </div>
                             <div class="grid-cell">
                                 <label class="grid-label">Diagram</label><br>
@@ -1596,8 +1660,7 @@
                             </div>
                             <div class="grid-cell">
                                 <label class="grid-label">Police Attended</label><br>
-                                <div class="grid-input grid-display" contenteditable="false" style="width: 50px;">{%
-                                    if data.police_attended == 'Y' %}1{% else %}2{% endif %}</div>
+                                <div class="grid-input grid-display" contenteditable="false" style="width: 50px;">{{data.police_attended}}</div>
                             </div>
                             <div class="grid-cell">
                                 <label class="grid-label">Police Code</label><br>
@@ -1730,12 +1793,18 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">LKI Route</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{ data.hwy_route_num.code }}
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {%if data.hwy_route_num %}
+                                {{ data.hwy_route_num.code }}
+                                {% endif %}
                             </div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">LKI Segment</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{ data.segment_num.code }}
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {%if data.segment_num %}
+                                {{ data.segment_num.code }}
+                                {% endif %}
                             </div>
                         </div>
                         <div class="grid-cell">
@@ -1809,8 +1878,7 @@
                 <div class="section-divider">
                     {% for entity in data.entities %}
                     {% set entity_index = loop.index %}
-                    <h4 class="subsection-header" style="margin-top: 10px;">Entity {{ entity_index }} (Vehicle {{
-                        entity.entity_num }})</h4>
+                    <h4 class="subsection-header" style="margin-top: 10px;">Entity {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})</h4>
 
                     <!-- Main Entity Grid - 2 columns like ICBC boxes -->
                     <div class="grid-table grid-table-4col">
@@ -1887,7 +1955,7 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Sex</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{ entity.sex }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">{{ entity.sex.value }}</div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Vehicle Towed By</label><br>
@@ -1943,7 +2011,8 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Breath</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">TBD</div>
+                            <div class="grid-input grid-display" contenteditable="false">{{
+                                [entity.result_1, entity.result_2] | select | max if entity.result_1 or entity.result_2 else '' }}</div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Box 31/34</label><br>
@@ -2007,8 +2076,8 @@
                             <div class="grid-cell">
                                 <label class="grid-label">Box 10</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.vehicle_occupied.value if
-                                    person.vehicle_occupied else '01' }}</div>
+                                    person.vehicle_occupied if
+                                    person.vehicle_occupied else '' }}</div>
                             </div>
                             <div class="grid-cell">
                                 <label class="grid-label">Box 11</label><br>
@@ -2103,7 +2172,27 @@
     </div>
     {% endif %}
 
+    <script>
+        // Auto-resize textareas before PDF generation
+        document.addEventListener('DOMContentLoaded', function() {
+            function resizeTextarea(textarea) {
+                // Reset height to auto to get the correct scrollHeight
+                textarea.style.height = 'auto';
+                // Set height to scrollHeight to fit content
+                textarea.style.height = textarea.scrollHeight + 'px';
+            }
 
+            // Resize all textareas with auto-resize class
+            const textareas = document.querySelectorAll('textarea.auto-resize');
+            textareas.forEach(function(textarea) {
+                resizeTextarea(textarea);
+                // Also add input listener for dynamic content
+                textarea.addEventListener('input', function() {
+                    resizeTextarea(textarea);
+                });
+            });
+        });
+    </script>
 
 </body>
 

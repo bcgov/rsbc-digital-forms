@@ -10,7 +10,6 @@ from python.prohibition_web_svc.middleware import common_middleware
 import python.prohibition_web_svc.middleware.splunk_middleware as splunk_middleware
 from flask import request, make_response, Blueprint
 from python.common.splunk import log_to_splunk
-from python.common.charge_types_service import get_charge_types
 from flask_cors import CORS
 from python.common.models import db, Agency, City, Country, ImpoundLotOperator, Jurisdiction, Permission, Province, Vehicle, VehicleStyle, VehicleType, VehicleColour, NSCPuj, JurisdictionCountry
 from python.common.models.TAR.police_agency import TarPoliceAgency
@@ -37,7 +36,6 @@ resource_map = {
     "jurisdiction_country": JurisdictionCountry,
     "lki_highway": TarLkiHighway,
     "lki_segment": TarLkiSegment,
-    "charge_types": lambda: get_charge_types(Config),  # function to get charge types from ETK issuance service
 }
 
 logger.info('*** static blueprint loaded ***')

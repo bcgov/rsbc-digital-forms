@@ -134,7 +134,7 @@ def test_send_mv6020_copy_unknown_type(monkeypatch):
     assert result is False
     assert "Failed to send email" in kwargs["response_dict"]["message"]
 
-def test_mask_sensitive_data_top_level():
+def test_mask_collision_sensitive_data_top_level():
     data = {
         "driver_license_num": "D1234567",
         "surname": "Smith",
@@ -143,7 +143,7 @@ def test_mask_sensitive_data_top_level():
         "non_sensitive_field": "keep_me"
     }
 
-    masked = mv6020_helper._mask_sensitive_data(data)
+    masked = mv6020_helper.mask_collision_sensitive_data(data)
 
     assert masked["driver_license_num"] == "[REDACTED]"
     assert masked["surname"] == "[REDACTED]"
@@ -151,7 +151,7 @@ def test_mask_sensitive_data_top_level():
     assert masked["contact_phone_num"] == "[REDACTED]"
     assert masked["non_sensitive_field"] == "keep_me"
 
-def test_mask_sensitive_data_entities():
+def test_mask_collision_sensitive_data_entities():
     data = {
         "entities": [
             {"vehicle_plate_num": "ABC123", "vehicle_owner_name": "Alice"},
@@ -159,26 +159,26 @@ def test_mask_sensitive_data_entities():
         ]
     }
 
-    masked = mv6020_helper._mask_sensitive_data(data)
+    masked = mv6020_helper.mask_collision_sensitive_data(data)
 
     assert masked["entities"][0]["vehicle_plate_num"] == "[REDACTED]"
     assert masked["entities"][0]["vehicle_owner_name"] == "[REDACTED]"
     assert masked["entities"][1]["vehicle_owner_address"] == "[REDACTED]"
 
-def test_mask_sensitive_data_involved_persons():
+def test_mask_collision_sensitive_data_involved_persons():
     data = {
         "involved_persons": [
             {"surname": "Brown", "given_name": "Charlie"}
         ]
     }
 
-    masked = mv6020_helper._mask_sensitive_data(data)
+    masked = mv6020_helper.mask_collision_sensitive_data(data)
 
     assert masked["involved_persons"][0]["surname"] == "[REDACTED]"
     assert masked["involved_persons"][0]["given_name"] == "[REDACTED]"
 
 
-def test_mask_sensitive_data_witnesses():
+def test_mask_collision_sensitive_data_witnesses():
     data = {
         "witnesses": [
             {"witness_name": "Tom"}, 
@@ -186,15 +186,15 @@ def test_mask_sensitive_data_witnesses():
         ]
     }
 
-    masked = mv6020_helper._mask_sensitive_data(data)
+    masked = mv6020_helper.mask_collision_sensitive_data(data)
 
     assert masked["witnesses"][0]["witness_name"] == "[REDACTED]"
     assert masked["witnesses"][1]["contact_phn_num"] == "[REDACTED]"
 
-def test_mask_sensitive_data_no_sensitive_fields():
+def test_mask_collision_sensitive_data_no_sensitive_fields():
     data = {"some_field": "value", "other_field": 123}
 
-    masked = mv6020_helper._mask_sensitive_data(data)
+    masked = mv6020_helper.mask_collision_sensitive_data(data)
 
     assert masked == data
 

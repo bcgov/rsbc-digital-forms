@@ -29,7 +29,6 @@ class TarCollision(db.Model):
     countable_fatal_total: int
     completed_by_name: str
     completed_by_id: str
-    detachment_unit: str
     icbc_submission_date: datetime
     reviewed_by: str
     investigated_by_traffic_analyst: str
@@ -56,7 +55,6 @@ class TarCollision(db.Model):
     countable_fatal_total = db.Column(db.Integer, nullable=False, default=0)
     completed_by_name = db.Column(db.String(35), nullable=False)
     completed_by_id = db.Column(db.String(40), db.ForeignKey('user.user_guid'), nullable=False)
-    detachment_unit = db.Column(db.String(30), nullable=False)
     icbc_submission_date = db.Column(db.DateTime, nullable=True)
     reviewed_by = db.Column(db.String(40))
     investigated_by_traffic_analyst = db.Column(db.String(1), nullable=False)
