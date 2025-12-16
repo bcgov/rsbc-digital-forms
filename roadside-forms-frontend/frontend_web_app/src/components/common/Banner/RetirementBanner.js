@@ -28,7 +28,7 @@ export const RetirementBanner = () => {
         </div>
         <div className="retirement-banner-actions">
           <a 
-            href="https://jag.gov.bc.ca/digital-forms/" 
+            href="https://jag.gov.bc.ca/digital-forms-v3/" 
             target="_blank" 
             rel="noopener noreferrer"
             className="retirement-banner-button"
