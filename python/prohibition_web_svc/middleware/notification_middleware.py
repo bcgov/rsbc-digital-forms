@@ -147,6 +147,31 @@ def validate_email_payload(**kwargs) -> tuple:
             if not success:
                 return False, kwargs
             
+            # After validate_print_payload succeeded
+            payload = kwargs.get("payload", {})
+            data = payload.get("data", {})
+            print_options = data.get("print_options", {})
+
+            ptype = print_options.get("type", "").lower()
+            allowed_types = {"icbc", "entity", "police"}
+
+            if ptype not in allowed_types:
+                api_error = f"Invalid or missing print_options.type '{ptype}'"
+
+                kwargs["response_dict"] = {
+                    "error_details": api_error
+                }
+
+                kwargs["error"] = {
+                    "error_code": ErrorCode.N01,
+                    "error_details": f"{api_error}. Allowed types: {list(allowed_types)}",
+                    'event_type': EVENT_TYPE,
+                    "func": "validate_email_payload(MV6020)",
+                }
+
+                return False, kwargs
+
+            
     except Exception as e:
         logger.warning(f"validation error: {str(e)}")
         kwargs['error'] = {
