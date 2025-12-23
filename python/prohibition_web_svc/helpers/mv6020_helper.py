@@ -55,7 +55,7 @@ def send_mv6020_copy(**kwargs):
             if ptype == 'icbc':
                 full_name = "ICBC"
             else:
-                full_name = "Officer" #TODO replace with Completed by Name ?
+                full_name = full_name = data.get('completed_by_name') or "Officer"
 
         elif ptype == 'entity':
             subject = f"Traffic Accident Report Driver Copy - Collision Case Number {collision_case_no}"
