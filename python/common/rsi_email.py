@@ -65,10 +65,25 @@ def send_mv6020_copy(**args) -> tuple:
     message = args.get('message')
     attachments = args.get('attachments')
     email_type = args.get('email_type')
-    if email_type == 'entity' :
-        t = 'MV6020_send_entity_copy.html'
-    else:    
-        t = 'MV6020_send_police_icbc_copy.html'
+
+    # Valid email_type → template mapping
+    template_map = {
+        'entity': 'MV6020_send_entity_copy.html',
+        'police': 'MV6020_send_police_copy.html',
+        'icbc':   'MV6020_send_icbc_copy.html',
+    }
+
+    t = template_map.get(email_type)
+
+    if not t:
+        # API-safe message
+        api_error = f"Unknown MV6020 email type '{email_type}'"
+
+        args["response_dict"] = {
+            "error_details": api_error
+        }
+
+        return False, args
     
     args['email_template'] = t
     template = get_jinja2_env().get_template(t)
