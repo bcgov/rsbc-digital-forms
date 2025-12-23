@@ -55,7 +55,7 @@ def send_mv6020_copy(**kwargs):
             if ptype == 'icbc':
                 full_name = "ICBC"
             else:
-                full_name = full_name = data.get('completed_by_name') or "Officer"
+                full_name = proper_case(data.get("completed_by_name"))  # defaults to "Officer"
 
         elif ptype == 'entity':
             subject = f"Traffic Accident Report Driver Copy - Collision Case Number {collision_case_no}"
@@ -191,3 +191,14 @@ def mask_collision_sensitive_data(data):
         if 'data' in data and isinstance(data['data'], dict):
             data['data'] = mask_collision_sensitive_data(data['data'])            
     return data
+
+def proper_case(name: str, default="Officer") -> str:
+    """
+    Converts ALL CAPS or mixed-case names to Proper Case.
+    Example: 'JOHN DOE' → 'John Doe'
+    """
+    if not name or not name.strip():
+        return default
+
+    return name.strip().title()
+
