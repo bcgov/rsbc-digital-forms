@@ -3,3 +3,5 @@
 {% block primary_text_1 %}
     Attached is the Copy of the Traffic Accident Report for Collision Case Number <strong>{{ message.collision_case_number }}</strong> which occurred on {{ message.collision_date }}.
 {% endblock %}
+
+{% block email_not_monitored %}{% include 'partials/contact_rsi_support.html' %}{% endblock %}
