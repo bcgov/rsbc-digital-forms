@@ -29,7 +29,7 @@ def send_mv6020_copy(**kwargs):
 
         print_options = data.get('print_options', {})
         ptype = print_options.get('type', '').lower()
-        if ptype == 'icbc':
+        if ptype == 'icbc' or ptype == 'police':
 
             # Map collision_type codes to labels
             COLLISION_TYPE_MAP = {
@@ -49,18 +49,20 @@ def send_mv6020_copy(**kwargs):
                 f"{prime_file_vjur} - {police_file_number}"
             )
 
-            full_name = "Officer"
+            
             email_address = print_options.get('email', '')
+
+            if ptype == 'icbc':
+                full_name = "ICBC"
+            else:
+                full_name = "Officer" #TODO replace with Completed by Name ?
+
         elif ptype == 'entity':
             subject = f"Traffic Accident Report Driver Copy - Collision Case Number {collision_case_no}"
             full_name, email_address = get_entity_data(data)
             # Fallback: use email from print_options if entity email is missing or empty
             if not email_address:
                 email_address = print_options.get('email', '')
-        elif ptype == 'police':
-            subject = f"Traffic Accident Report - Collision Case Number {collision_case_no}"
-            full_name = "Officer"
-            email_address = print_options.get('email', '')
         else:
             kwargs['error'] = {
                 'error_code': ErrorCode.G01,
