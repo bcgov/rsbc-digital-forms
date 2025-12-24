@@ -1,5 +1,6 @@
 from typing import Tuple, Dict, Any
 from datetime import datetime
+import zoneinfo
 import base64
 from python.common.enums import ErrorCode
 import python.common.helper as helper
@@ -13,6 +14,7 @@ logger = get_logger(__name__)
 # constants for mv6020. move to enums.
 FORM_TYPE = 'MV6020'
 EMAIL_TEMPLATE = 'mv6020.html'
+PACIFIC = zoneinfo.ZoneInfo("America/Vancouver")
 
 def send_mv6020_copy(**kwargs):
     logger.verbose('inside send_mv6020_copy')
@@ -25,11 +27,15 @@ def send_mv6020_copy(**kwargs):
         payload = kwargs.get('payload', {}) or {}
         data = payload.get('data', {}) or {}
         collision_case_no = data.get('collision_case_num')
-        collision_date = helper.format_date_iso(data.get('date_collision'))
+        #collision_date = helper.format_date_iso(data.get('date_collision'))
+        raw_date = data.get("date_collision")  # ISO string
+        raw_time = data.get("time_collision")  # "HH:MM"
+        is_unknown = data.get("time_collision_unknown", False)
+        formatted_date, formatted_time = format_collision_datetime(raw_date,raw_time,is_unknown)
 
         print_options = data.get('print_options', {})
         ptype = print_options.get('type', '').lower()
-        if ptype == 'icbc':
+        if ptype == 'icbc' or ptype == 'police':
 
             # Map collision_type codes to labels
             COLLISION_TYPE_MAP = {
@@ -49,18 +55,20 @@ def send_mv6020_copy(**kwargs):
                 f"{prime_file_vjur} - {police_file_number}"
             )
 
-            full_name = "Officer"
+            
             email_address = print_options.get('email', '')
+
+            if ptype == 'icbc':
+                full_name = "ICBC"
+            else:
+                full_name = proper_case(data.get("completed_by_name"))  # defaults to "Officer"
+
         elif ptype == 'entity':
             subject = f"Traffic Accident Report Driver Copy - Collision Case Number {collision_case_no}"
             full_name, email_address = get_entity_data(data)
             # Fallback: use email from print_options if entity email is missing or empty
             if not email_address:
                 email_address = print_options.get('email', '')
-        elif ptype == 'police':
-            subject = f"Traffic Accident Report - Collision Case Number {collision_case_no}"
-            full_name = "Officer"
-            email_address = print_options.get('email', '')
         else:
             kwargs['error'] = {
                 'error_code': ErrorCode.G01,
@@ -77,7 +85,8 @@ def send_mv6020_copy(**kwargs):
         
         message = {
             "collision_case_number": collision_case_no,
-            "collision_date": collision_date
+            "collision_date": formatted_date,
+            "collision_time": formatted_time,
         }
 
         # do the print orchestration here.
@@ -189,3 +198,48 @@ def mask_collision_sensitive_data(data):
         if 'data' in data and isinstance(data['data'], dict):
             data['data'] = mask_collision_sensitive_data(data['data'])            
     return data
+
+def proper_case(name: str, default="Officer") -> str:
+    """
+    Converts ALL CAPS or mixed-case names to Proper Case.
+    Example: 'JOHN DOE' → 'John Doe'
+    """
+    if not name or not name.strip():
+        return default
+
+    return name.strip().title()
+
+
+
+def format_collision_datetime(date_str: str, time_str: str, is_unknown: bool):
+    """
+    Safely reconstructs collision datetime in BC local time (PST/PDT).
+    Handles:
+      - Split date/time inputs
+      - Unknown time (27:00)
+      - Avoids UTC rollover bugs
+      - Works on Windows + Linux/OSX
+    """
+    # Extract date portion only → "YYYY-MM-DD"
+    date_only = date_str[:10]
+
+    # Parse as date, then assign Pacific timezone
+    date_obj = datetime.strptime(date_only, "%Y-%m-%d").replace(tzinfo=PACIFIC)
+
+    # Format date safely (“November 19, 2025”)
+    date_fmt = date_obj.strftime("%B %d, %Y").replace(" 0", " ")
+
+    # If time is unknown, stop here
+    if is_unknown:
+        return date_fmt, "(Time Unknown)"
+
+    try:
+        hour, minute = map(int, time_str.split(":"))
+        dt = date_obj.replace(hour=hour, minute=minute)
+
+        time_fmt = dt.strftime("%I:%M %p").lstrip("0")
+        return date_fmt, time_fmt
+
+    except Exception:
+        # If something is malformed
+        return date_fmt, time_str

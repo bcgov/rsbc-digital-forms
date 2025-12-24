@@ -1,10 +1,22 @@
 {% extends "email_alert_base.html" %}
 
 {% block primary_text_1 %}
-    Attached is your Driver Copy of the Traffic Accident Report for Collision Case Number <strong>{{ message.collision_case_number }}</strong> which occurred on {{ message.collision_date }}. Personal details of other individuals have been removed to protect their privacy.
+    Attached is your Driver Copy of the Traffic Accident Report for Collision Case Number 
+    <strong>{{ message.collision_case_number }}</strong>, which occurred 
+    {% if message.collision_time == "(Time Unknown)" %}
+        on {{ message.collision_date }} (Time Unknown).
+    {% elif message.collision_time %}
+        on {{ message.collision_date }} at {{ message.collision_time }}.
+    {% else %}
+        on {{ message.collision_date }}.
+    {% endif %}
+    Personal details of other individuals have been removed to protect their privacy.
 {% endblock %}
 
 {% block primary_text_2 %}
-    Are they required to take any action?
-    If assistance is needed, please visit <a href="https://www.icbc.com/claims">ICBC Claims</a> online or contact ICBC at 604-520-8222 (Vancouver) 1-800-910-4222 or 1-800-910-4222 (Toll-free).
+    If you need assistance with insurance claims or next steps following this collision, please visit
+    <a href="https://www.icbc.com/claims">ICBC Claims</a> online or contact ICBC:
+    <br><br>
+    • Vancouver: 604-520-8222<br>
+    • Toll-free: 1-800-910-4222
 {% endblock %}

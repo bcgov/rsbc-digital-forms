@@ -114,11 +114,63 @@ def validate_email_payload(**kwargs) -> tuple:
         # Set validate payload in kwargs
         kwargs['payload'] = payload
         template_name = payload['template']
+        # Add all allowed templates here
+        allowed_templates = {
+            mv6020_helper.EMAIL_TEMPLATE,
+            "admin_notice_submission_failure.html"
+        }
+
+        if template_name not in allowed_templates:
+            error_msg = f"Unknown template '{template_name}'."
+
+            # Detailed message for logs only
+            log_error_msg = (
+                f"{error_msg}. Allowed templates: {allowed_templates}"
+            )
+            logger.error(log_error_msg)
+
+            kwargs["response_dict"] = {
+                "error_details": error_msg
+            }
+            kwargs["error"] = {                     # ⭐ REQUIRED
+                "error_code": ErrorCode.N02,
+                "error_details": error_msg,
+                "event_type": EVENT_TYPE,
+                "func": validate_email_payload.__name__,
+            }
+            return False, kwargs   # triggers bad_request_response
+        
+        
         if template_name == mv6020_helper.EMAIL_TEMPLATE:
             #Reuse the validation logic in print middleware for now. Change later if needed.
             success, kwargs =  print_middleware.validate_print_payload(**kwargs)
             if not success:
                 return False, kwargs
+            
+            # After validate_print_payload succeeded
+            payload = kwargs.get("payload", {})
+            data = payload.get("data", {})
+            print_options = data.get("print_options", {})
+
+            ptype = print_options.get("type", "").lower()
+            allowed_types = {"icbc", "entity", "police"}
+
+            if ptype not in allowed_types:
+                api_error = f"Invalid or missing print_options.type '{ptype}'"
+
+                kwargs["response_dict"] = {
+                    "error_details": api_error
+                }
+
+                kwargs["error"] = {
+                    "error_code": ErrorCode.N01,
+                    "error_details": f"{api_error}. Allowed types: {list(allowed_types)}",
+                    'event_type': EVENT_TYPE,
+                    "func": "validate_email_payload(MV6020)",
+                }
+
+                return False, kwargs
+
             
     except Exception as e:
         logger.warning(f"validation error: {str(e)}")
@@ -137,9 +189,10 @@ def send_email(**kwargs):
     payload = kwargs.get('payload', {})
     template_name = payload.get('template')
     data = payload.get('data', {}) or {}
-    collision_case_no = data.get('collision_case_num')
 
     if template_name == mv6020_helper.EMAIL_TEMPLATE:
+
+        collision_case_no = data.get('collision_case_num')
         try:
             result, kwargs = mv6020_helper.send_mv6020_copy(**kwargs)
         except Exception as e:
@@ -157,13 +210,16 @@ def send_email(**kwargs):
         result, kwargs = send_admin_submission_failure_notification(**kwargs)   
     else:
         result = False
-        kwargs["response_dict"] = {"message": "Unknown form type"}
+        kwargs["bad_data"] = True            # important flag
+        kwargs["response_dict"] = {          # expected structure for bad_request_response
+            "error_details": "Unknown form type for email notification"
+        }
         kwargs["error"] = {
             'error_code': ErrorCode.N02,
             'error_details': 'Unknown form type for email notification',
-            'ticket_no': collision_case_no,
             'func': send_email,
         }
+
 
     return result, kwargs
 

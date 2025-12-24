@@ -51,17 +51,28 @@ def test_send_new_user_admin_notification_calls_rsi_email():
 
 
 def test_validate_mv6020_email_payload_success():
-    request = MockRequest(json_data={"template": "mv6020.html","data": {}})
-    patched_kwargs = {"request": request} 
-    with patch("python.prohibition_web_svc.middleware.notification_middleware.print_middleware.validate_print_payload", return_value=(True, patched_kwargs)):
+    request = MockRequest(json_data={
+        "template": "mv6020.html",
+        "data": {
+            "print_options": {
+                "type": "entity"
+            }
+        }
+    })
+
+    patched_kwargs = {"request": request,"payload": request.get_json() }
+
+    with patch(
+        "python.prohibition_web_svc.middleware.notification_middleware.print_middleware.validate_print_payload",
+        return_value=(True, patched_kwargs)
+    ):
         result, kwargs = notification_middleware.validate_email_payload(request=request)
-    assert result is True
-    assert kwargs['request'] == request
+        assert result is True
 
 
 def test_validate_email_payload_failure():
     request = MockRequest(json_data={})
-    patched_kwargs = {"request": request} 
+    patched_kwargs = {"request": request,"payload": request.get_json() }
     with patch("python.prohibition_web_svc.middleware.notification_middleware.print_middleware.validate_print_payload", return_value=(False, patched_kwargs)):
         result, kwargs  = notification_middleware.validate_email_payload(request=request)
     assert result is False
@@ -169,8 +180,9 @@ def test_send_email_with_mv6020_template():
 def test_send_email_with_unknown_template():
     kwargs = {"payload": {"template": "unknown.html"}}
     result, updated_kwargs = notification_middleware.send_email(**kwargs)
+
     assert result is False
-    assert "Unknown form type" in updated_kwargs["response_dict"]["message"]
+    assert "Unknown form type" in updated_kwargs["response_dict"]["error_details"]
 
 def test_log_payload_to_splunk_mv6020():
     # Arrange

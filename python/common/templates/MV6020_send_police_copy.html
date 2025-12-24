@@ -1,0 +1,15 @@
+{% extends "email_alert_base.html" %}
+
+{% block primary_text_1 %}
+    Attached is the MV6020 Traffic Accident Report for Collision Case Number 
+    <strong>{{ message.collision_case_number }}</strong>, which occurred 
+    {% if message.collision_time == "(Time Unknown)" %}
+        on {{ message.collision_date }} (Time Unknown).
+    {% elif message.collision_time %}
+        on {{ message.collision_date }} at {{ message.collision_time }}.
+    {% else %}
+        on {{ message.collision_date }}.
+    {% endif %}
+{% endblock %}
+
+{% block email_not_monitored %}{% include 'partials/contact_rsi_support.html' %}{% endblock %}
