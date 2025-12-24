@@ -60,7 +60,7 @@ def test_validate_mv6020_email_payload_success():
         }
     })
 
-    patched_kwargs = {"request": request}
+    patched_kwargs = {"request": request,"payload": request.get_json() }
 
     with patch(
         "python.prohibition_web_svc.middleware.notification_middleware.print_middleware.validate_print_payload",
@@ -72,7 +72,7 @@ def test_validate_mv6020_email_payload_success():
 
 def test_validate_email_payload_failure():
     request = MockRequest(json_data={})
-    patched_kwargs = {"request": request} 
+    patched_kwargs = {"request": request,"payload": request.get_json() }
     with patch("python.prohibition_web_svc.middleware.notification_middleware.print_middleware.validate_print_payload", return_value=(False, patched_kwargs)):
         result, kwargs  = notification_middleware.validate_email_payload(request=request)
     assert result is False
