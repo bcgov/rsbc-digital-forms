@@ -1,0 +1,7 @@
+Jinja2
+python-json-logger
+python-keycloak
+psycopg2-binary
+pytz
+requests
+responses
