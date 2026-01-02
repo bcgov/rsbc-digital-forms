@@ -1,0 +1,22 @@
+name: submission_report-cd
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches:
+      - master
+      - main
+    paths:
+      - python/common/**
+      - python/submission_report_job/**
+      - .github/workflows/submission_report-cd.yml
+      - trigger.txt
+
+jobs:
+  CD:
+    uses: ./.github/workflows/cd-workflow.yml
+    with:
+      DOCKER_CONTEXT: python
+      DOCKER_FILE: python/submission_report_job/dockerfile
+      DOCKER_IMAGE_NAME: rsbc-df-submission-report
+    secrets: inherit
