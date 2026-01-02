@@ -1,0 +1,12 @@
+FROM python:3.12-alpine
+
+COPY submission_report_job/requirements.txt ${APP_ROOT}/src/
+RUN pip install -U pip setuptools && \
+    sha256sum "${APP_ROOT}/src/requirements.txt" > ${APP_ROOT}/requirements.sha256  && \
+    cd ${APP_ROOT}/src && pip install -r requirements.txt
+
+ENV PYTHONPATH ${APP_ROOT}/src
+
+COPY __init__.py ${APP_ROOT}/src/python/
+COPY common ${APP_ROOT}/src/python/common
+COPY submission_report_job ${APP_ROOT}/src/python/submission_report_job

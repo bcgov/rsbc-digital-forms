@@ -144,3 +144,19 @@ def content_data() -> dict:
             "title": "Send MV6020 Entity Copy",
         }
     })
+
+
+def send_submission_report_by_status(**args) -> tuple:
+    subject = args.get('subject')
+    config = args.get('config')
+    message = args.get('message')
+    template = get_jinja2_env().get_template('submission_report_by_status.html')
+    return common_email_services.send_email(
+        [config.RSIOPS_EMAIL_ADDRESS],
+        subject,
+        config,
+        template.render(
+            subject=subject,
+            message=message,
+            full_name="RSI Operations Team",
+        )), args

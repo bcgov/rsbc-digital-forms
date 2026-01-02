@@ -8,7 +8,7 @@ from python.common.logging_utils import get_logger
 logger = get_logger(__name__)
 
 
-def send_email(to: list, subject: str, config, template, ticket_no, attachments=None) -> bool:
+def send_email(to: list, subject: str, config, template, ticket_no=None, attachments=None) -> bool:
     """
     Send email to the applicant and bcc Appeals Registry
     """
