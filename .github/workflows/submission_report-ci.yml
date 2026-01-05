@@ -1,0 +1,25 @@
+name: submission_report-ci
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches-ignore:
+      - master
+      - main
+    paths:
+      - python/common/**
+      - python/submission_report_job/**
+      - .github/workflows/submission_report-ci.yml
+
+jobs:
+  CI:
+    uses: ./.github/workflows/ci-workflow.yml
+    with:
+      DOCKER_CONTEXT: python
+      DOCKER_FILE: python/submission_report_job/dockerfile
+      DOCKER_IMAGE_NAME: rsbc-df-submission-report
+    secrets: inherit
