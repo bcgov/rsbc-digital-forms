@@ -17,7 +17,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: write
     environment: stage
     env:
       checkout_branch: ${{ inputs.checkout_branch }}

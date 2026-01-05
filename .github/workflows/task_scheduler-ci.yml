@@ -26,6 +26,9 @@ on:
 
 jobs:
   CI:
+    permissions:
+      contents: read
+      issues: write
     uses: ./.github/workflows/ci-workflow.yml
     with:
       DOCKER_CONTEXT: python
