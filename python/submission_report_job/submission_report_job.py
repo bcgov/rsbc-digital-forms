@@ -18,32 +18,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def _parse_iso_date_or_datetime(value: str, *, is_final: bool) -> datetime:
-    """Parse an ISO 8601 date or datetime.
-
-    Accepts:
-      - YYYY-MM-DD
-      - YYYY-MM-DDTHH:MM[:SS[.ffffff]][+HH:MM]
-
-    If a date-only value is provided:
-      - initial becomes start-of-day
-      - final becomes end-of-day
-    """
-    try:
-        dt = datetime.fromisoformat(value)
-    except ValueError as exc:
-        raise argparse.ArgumentTypeError(
-            "Invalid date/datetime. Use ISO format like '2025-12-30' or '2025-12-30T13:45:00'."
-        ) from exc
-
-    # datetime.fromisoformat('YYYY-MM-DD') returns midnight; treat date-only specially.
-    if "T" not in value and " " not in value:
-        if is_final:
-            return dt.replace(hour=23, minute=59, second=59, microsecond=999999)
-        return dt.replace(hour=0, minute=0, second=0, microsecond=0)
-
-    return dt
-
 def _print_env_variables():
     logger.debug("Environment Variables:")
     logger.info(f"LOG_LEVEL: {Config.LOG_LEVEL}")
@@ -63,17 +37,13 @@ def _print_env_variables():
     logger.info(f"BCC_EMAIL_ADDRESSES: {Config.BCC_EMAIL_ADDRESSES}")
 
 
-def execute_submission_report_job(initial: datetime = None, final: datetime = None) -> None:
-    logger.info("Starting submission report job")
+def execute_submission_report_job(number_of_days: int) -> None:
+    logger.info("Starting submission report job, generating report for the last %d days.", number_of_days)
     try:
         _print_env_variables()
-        if initial is None:
-            final_default = datetime.now()
-            initial = final_default - timedelta(days=7)
-        if final is None:
-            final = datetime.now()
-        if initial > final:
-            raise ValueError(f"initial must be <= final (got {initial.isoformat()} > {final.isoformat()})")
+        final = datetime.now().date()
+        initial = final - timedelta(days=number_of_days)
+
         generate_report_by_status(initial, final)
         logger.info("Submission reports processed successfully.")
     except Exception as e:
@@ -83,18 +53,10 @@ def execute_submission_report_job(initial: datetime = None, final: datetime = No
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate and send submission report by status.")
     parser.add_argument(
-        "--initial",
-        help="Initial date/datetime (ISO). Examples: 2025-12-01 or 2025-12-01T00:00:00",
-    )
-    parser.add_argument(
-        "--final",
-        help="Final date/datetime (ISO). Examples: 2025-12-31 or 2025-12-31T23:59:59",
+        "--number-of-days",
+        help="Number of days back from today to generate the report for (default: 7).",
     )
     args = parser.parse_args()
 
-    if (args.initial is None) ^ (args.final is None):
-        parser.error("--initial and --final must be provided together")
-
-    initial = _parse_iso_date_or_datetime(args.initial, is_final=False) if args.initial else None
-    final = _parse_iso_date_or_datetime(args.final, is_final=True) if args.final else None
-    execute_submission_report_job(initial=initial, final=final)
+    number_of_days = int(args.number_of_days) if args.number_of_days else 7
+    execute_submission_report_job(number_of_days=number_of_days)
