@@ -39,7 +39,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: read
     # if: ${{ !(
     #     github.event.pull_request.head.ref =~ '^hotfixrelease/' ||
     #     github.event.pull_request.head.ref =~ '^hotfix/' ||
@@ -93,7 +94,6 @@ jobs:
           file: ${{ inputs.DOCKER_FILE }}
           push: true
           build-args: |
-            VERSION=${{ steps.tag.outputs.new_version }}
             REACT_APP_KEYCLOAK_URL=${{ secrets.REACT_APP_KEYCLOAK_URL }}
             REACT_APP_KEYCLOAK_REALM=${{ secrets.REACT_APP_KEYCLOAK_REALM }}
             REACT_APP_KEYCLOAK_CLIENT_ID=${{ secrets.REACT_APP_KEYCLOAK_CLIENT_ID }}

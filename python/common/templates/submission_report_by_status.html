@@ -1,0 +1,65 @@
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    .details th, .details td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        font-family: Arial, sans-serif;
+    }
+    .details th {
+        background-color: #f2f2f2;
+        text-align: left;
+        color: #2c3e50;
+    }
+    .details .count th {
+        text-align: right;
+        width: 50px;
+    }
+    .count {
+        text-align: right !important;
+        width: 100px;
+    }
+</style>
+{% extends "email_alert_base.html" %}
+
+{% block primary_text_1 %}
+    Please find below the report of form submissions by status for the period of <strong>{{ message.period }}</strong>.
+{% endblock %}
+
+{% block primary_text_2 %}
+    {% if message.report_data|length == 0 %}
+        <p>No submissions found for the specified date.</p>
+    {% endif %}
+    {% for report in message.report_data %}
+        <h3>{{ report.form_name }}</h3>
+        <table class="details">
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th class="count">Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in report.items %}
+                    <tr>
+                        <td>{{ item.application_status }} {% if item.offline %}(Offline){% endif %}</td>
+                        <td class="count">{{ item.count }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Total</th>
+                    <th class="count">{{ report.total_count }}</th>
+                </tr>
+            </tfoot>
+        </table>
+    {% endfor %}
+{% endblock %}
+
+{% block thank_you_road_safety %}{% endblock %}
+
+{% block email_not_monitored %}{% endblock %}
