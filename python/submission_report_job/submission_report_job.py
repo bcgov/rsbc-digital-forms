@@ -41,6 +41,8 @@ def execute_submission_report_job(number_of_days: int) -> None:
     logger.info("Starting submission report job, generating report for the last %d days.", number_of_days)
     try:
         _print_env_variables()
+        if number_of_days < 0:
+            raise ValueError("number_of_days must be a non-negative integer")
         final = datetime.now().date()
         initial = final - timedelta(days=number_of_days)
 
@@ -59,4 +61,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     number_of_days = int(args.number_of_days) if args.number_of_days else 7
+    if number_of_days < 0:
+        logger.error("number-of-days must be a non-negative integer.")
+        sys.exit(1)
     execute_submission_report_job(number_of_days=number_of_days)
