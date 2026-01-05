@@ -46,3 +46,20 @@ class TestExecuteSubmissionReportJob:
         with pytest.raises(SystemExit) as excinfo:
             job.execute_submission_report_job(number_of_days=7)
         assert excinfo.value.code == 1
+
+    def test_exits_with_code_1_when_number_of_days_is_negative(self, monkeypatch):
+        monkeypatch.setattr(job, "_print_env_variables", lambda: None)
+
+        generate_mock = MagicMock()
+        monkeypatch.setattr(job, "generate_report_by_status", generate_mock)
+
+        def _raise_system_exit(code: int):
+            raise SystemExit(code)
+
+        monkeypatch.setattr(job.sys, "exit", _raise_system_exit)
+
+        with pytest.raises(SystemExit) as excinfo:
+            job.execute_submission_report_job(number_of_days=-1)
+
+        assert excinfo.value.code == 1
+        generate_mock.assert_not_called()
