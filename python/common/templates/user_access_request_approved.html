@@ -1,0 +1,22 @@
+{% extends "email_alert_base.html" %}
+
+{% block primary_text_1 %}
+Your request for <strong>Digital Forms</strong> has been approved.
+{% endblock %}
+
+{% block primary_text_2 %}
+You may now login to the portal at:
+<a href="{{ message.digital_forms_link }}">Digital Forms</a>
+{% endblock %}
+
+{% block primary_text_3 %}
+If you are currently logged in, please <strong>log out</strong> and then <strong>log back in</strong> to ensure your full access is activated.
+{% endblock %}
+
+{% block callout %}
+Effective Date &amp; Time: {{ message.approval_datetime }}
+{% endblock %}
+
+{% block timeline_image %}{% endblock %}
+
+{% block email_not_monitored %}{% include 'partials/contact_rsi_support.html' %}{% endblock %}
