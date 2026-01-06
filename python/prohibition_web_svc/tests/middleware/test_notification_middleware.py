@@ -310,4 +310,89 @@ def test_send_admin_submission_failure_notification_failure():
 
     # Assertions
     assert result is False
-    assert "response_dict" not in returned_kwargs      
+    assert "response_dict" not in returned_kwargs     
+
+
+def test_send_df_access_request_approved_success():
+    kwargs = {
+        "payload": {
+            "email": "doe.joe@example.com",
+            "first_name": " Doe ",
+            "last_name": " Joe ",
+            "approval_datetime": "2025-08-22T00:00:00-07:00",
+            "digital_forms_url": "https://example.gov.bc.ca/roadside-forms/form",
+        }
+    }
+
+    # Mock formatter to make the test stable and not dependent on timezone libs/behaviour
+    with patch(
+        "python.prohibition_web_svc.middleware.notification_middleware.format_approval_datetime",
+        return_value="22 Aug 2025, 12:00 AM (PT)"
+    ) as mock_fmt, patch(
+        "python.prohibition_web_svc.middleware.notification_middleware.rsi_email.send_df_access_request_approved",
+        return_value=True
+    ) as mock_send:
+        result, returned_kwargs = notification_middleware.send_df_access_request_approved(**kwargs)
+
+    assert result is True
+    assert "response_dict" in returned_kwargs
+    assert returned_kwargs["response_dict"]["message"] == "Approval email sent"
+    assert returned_kwargs["response_dict"]["to"] == "doe.joe@example.com"
+    assert returned_kwargs["response_dict"]["template"] == notification_middleware.EMAIL_USER_ON_ACCESS_REQ_APPROVAL
+
+    mock_fmt.assert_called_once_with("2025-08-22T00:00:00-07:00")
+    mock_send.assert_called_once()
+
+    _, called = mock_send.call_args
+    assert called["subject"] == "Your Digital Forms Access Has Been Approved"
+    assert called["email_address"] == "doe.joe@example.com"
+    assert called["full_name"] == "Doe Joe"   # trims + joins
+    assert called["message"]["digital_forms_link"] == "https://example.gov.bc.ca/roadside-forms/form"
+    assert called["message"]["approval_datetime"] == "22 Aug 2025, 12:00 AM (PT)"
+
+
+
+def test_send_df_access_request_approved_failure():
+    kwargs = {
+        "payload": {
+            "email": "doe.joe@example.com",
+            "first_name": " Doe ",
+            "last_name": " Joe ",
+            "approval_datetime": "2025-08-22T00:00:00-07:00",
+            "digital_forms_url": "https://example.gov.bc.ca/roadside-forms/form",
+        }
+    }
+
+    with patch(
+        "python.prohibition_web_svc.middleware.notification_middleware.format_approval_datetime",
+        return_value="22 Aug 2025, 12:00 AM (PT)"
+    ), patch(
+        "python.prohibition_web_svc.middleware.notification_middleware.rsi_email.send_df_access_request_approved",
+        return_value=False
+    ):
+        result, returned_kwargs = notification_middleware.send_df_access_request_approved(**kwargs)
+
+    assert result is False
+    assert "response_dict" not in returned_kwargs
+
+
+def test_send_email_routes_to_access_request_approved():
+    kwargs = {
+        "payload": {
+            "template": notification_middleware.EMAIL_USER_ON_ACCESS_REQ_APPROVAL,
+            "data": {},
+        }
+    }
+
+    with patch(
+        "python.prohibition_web_svc.middleware.notification_middleware.send_df_access_request_approved",
+        return_value=(True, {"payload": kwargs["payload"], "response_dict": {"message": "ok"}})
+    ) as mock_func:
+        result, returned_kwargs = notification_middleware.send_email(**kwargs)
+
+    assert result is True
+    assert returned_kwargs["response_dict"]["message"] == "ok"
+    mock_func.assert_called_once_with(**kwargs)
+
+
+

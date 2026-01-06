@@ -108,6 +108,21 @@ def send_admin_failure_notification(**args):
         template.render(subject=subject, message=message), 'admin'), args
 
 
+def send_df_access_request_approved(**args):
+    subject = args.get('subject')
+    config = args.get('config')
+    email_address = args.get('email_address')
+    full_name = args.get('full_name')
+    message = args.get('message')
+    template = get_jinja2_env().get_template('user_access_request_approved.html')
+    return common_email_services.send_email(
+        [email_address],
+        subject,
+        config,
+        template.render(subject=subject, full_name=full_name, message=message), 'admin'), args
+
+
+
 
 def get_jinja2_env(path="./python/common/templates"):
     template_loader = FileSystemLoader(searchpath=path)
