@@ -2,6 +2,8 @@
 import copy
 from typing import Tuple, Dict, Any
 import copy
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from python.common.enums import ErrorCode
 from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.config import Config
@@ -12,6 +14,9 @@ from python.prohibition_web_svc.middleware import print_middleware
 logger = get_logger(__name__)
 
 EVENT_TYPE = 'Notification Email'
+
+EMAIL_ADMIN_ON_SUBMISSION_FAILURE="admin_notice_submission_failure.html"
+EMAIL_USER_ON_ACCESS_REQ_APPROVAL="user_access_request_approved.html"
 
 def set_event_type(**kwargs) -> tuple:
     """Set the event type for the print event."""
@@ -80,6 +85,40 @@ def send_admin_submission_failure_notification(**kwargs):
 
     return False, kwargs
 
+def send_df_access_request_approved(**kwargs):
+    subject = "Your Digital Forms Access Has Been Approved"
+    payload = kwargs.get("payload") or {}
+
+    email_address = payload.get("email")
+    first_name = payload.get("first_name").strip()
+    last_name = payload.get("last_name").strip()
+    full_name = f"{first_name} {last_name}".strip()
+    approval_date = payload.get("approval_datetime")
+    
+    message = {
+        "first_name": payload.get("first_name"),
+        "last_name": payload.get("last_name"),
+        "digital_forms_link": payload.get("digital_forms_url"),
+        "approval_datetime": format_approval_datetime(approval_date)
+    }
+
+    email_sent = rsi_email.send_df_access_request_approved(
+        config=Config, 
+        subject=subject, 
+        email_address=email_address, 
+        full_name=full_name,
+        message=message)
+    
+    if email_sent:
+        kwargs["response_dict"] = {
+            "message": "Approval email sent",
+            "to": email_address,
+            "template": EMAIL_USER_ON_ACCESS_REQ_APPROVAL
+        }
+        return True, kwargs
+
+    return False, kwargs
+
 def validate_email_payload(**kwargs) -> tuple:
     logger.verbose("inside validate_email_payload()")
     request = kwargs.get('request')
@@ -117,7 +156,9 @@ def validate_email_payload(**kwargs) -> tuple:
         # Add all allowed templates here
         allowed_templates = {
             mv6020_helper.EMAIL_TEMPLATE,
-            "admin_notice_submission_failure.html"
+            EMAIL_ADMIN_ON_SUBMISSION_FAILURE,
+            EMAIL_USER_ON_ACCESS_REQ_APPROVAL
+
         }
 
         if template_name not in allowed_templates:
@@ -206,8 +247,10 @@ def send_email(**kwargs):
             }
             kwargs["response_dict"] = {"message": "Error sending MV6020 email"}
 
-    elif template_name == "admin_notice_submission_failure.html":
-        result, kwargs = send_admin_submission_failure_notification(**kwargs)   
+    elif template_name == EMAIL_ADMIN_ON_SUBMISSION_FAILURE:
+        result, kwargs = send_admin_submission_failure_notification(**kwargs)  
+    elif template_name == EMAIL_USER_ON_ACCESS_REQ_APPROVAL:
+        result, kwargs = send_df_access_request_approved(**kwargs)      
     else:
         result = False
         kwargs["bad_data"] = True            # important flag
@@ -222,4 +265,14 @@ def send_email(**kwargs):
 
 
     return result, kwargs
+
+
+def format_approval_datetime(iso_dt: str) -> str:
+    dt = datetime.fromisoformat(iso_dt)
+
+    # Convert to Pacific Time explicitly (safe for DST)
+    dt_pt = dt.astimezone(ZoneInfo("America/Vancouver"))
+
+    return dt_pt.strftime("%d %b %Y, %I:%M %p (PT)")
+
 
