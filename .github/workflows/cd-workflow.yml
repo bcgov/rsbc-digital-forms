@@ -16,6 +16,10 @@ on:
         required: false
         type: string
         default: latest
+      IMPORT_IMAGE_TO_OPENSHIFT:
+        required: false
+        type: boolean
+        default: true
     secrets:
       DOCKER_REGISTRY:
         required: true
@@ -104,16 +108,19 @@ jobs:
             REACT_APP_GIT_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
           tags: ${{ secrets.DOCKER_REGISTRY }}/dbe7-images/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_IMAGE_TAG }}
       - name: Install OpenShift CLI tools
+        if: ${{ inputs.IMPORT_IMAGE_TO_OPENSHIFT }}
         uses: redhat-actions/openshift-tools-installer@v1
         with:
           oc: "4.14"      
       - name: Authenticate and set context for tools namespace
+        if: ${{ inputs.IMPORT_IMAGE_TO_OPENSHIFT }}
         uses: redhat-actions/oc-login@v1.1.2
         with:
           openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_URL_SILVER }}
           openshift_token: ${{ secrets.OPENSHIFT_SA_PIPELINE_TOKEN_SILVER }}
           namespace: "${{ secrets.OPENSHIFT_LICENSE_PLATE_SILVER }}-tools"
       - name: Trigger Image import
+        if: ${{ inputs.IMPORT_IMAGE_TO_OPENSHIFT }}
         env:
           IMAGE_NAME: ${{ inputs.DOCKER_IMAGE_NAME }}
         run: |

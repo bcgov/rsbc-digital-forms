@@ -21,4 +21,5 @@ jobs:
       DOCKER_CONTEXT: python
       DOCKER_FILE: python/submission_report_job/dockerfile
       DOCKER_IMAGE_NAME: rsbc-df-submission-report
+      IMPORT_IMAGE_TO_OPENSHIFT: false
     secrets: inherit
