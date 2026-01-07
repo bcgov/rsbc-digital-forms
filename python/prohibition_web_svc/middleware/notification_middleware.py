@@ -2,6 +2,8 @@
 import copy
 from typing import Tuple, Dict, Any
 import copy
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from python.common.enums import ErrorCode
 from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.config import Config
@@ -12,6 +14,9 @@ from python.prohibition_web_svc.middleware import print_middleware
 logger = get_logger(__name__)
 
 EVENT_TYPE = 'Notification Email'
+
+EMAIL_ADMIN_ON_SUBMISSION_FAILURE="admin_notice_submission_failure.html"
+EMAIL_USER_ON_ACCESS_REQ_APPROVAL="user_access_request_approved.html"
 
 def set_event_type(**kwargs) -> tuple:
     """Set the event type for the print event."""
@@ -80,6 +85,40 @@ def send_admin_submission_failure_notification(**kwargs):
 
     return False, kwargs
 
+def send_df_access_request_approved(**kwargs):
+    subject = "Your Digital Forms Access Has Been Approved"
+    payload = kwargs.get("payload") or {}
+
+    email_address = payload.get("email")
+    first_name = payload.get("first_name").strip()
+    last_name = payload.get("last_name").strip()
+    full_name = f"{first_name} {last_name}".strip()
+    approval_date = payload.get("approval_datetime")
+    
+    message = {
+        "first_name": payload.get("first_name"),
+        "last_name": payload.get("last_name"),
+        "digital_forms_link": payload.get("digital_forms_url"),
+        "approval_datetime": format_approval_datetime(approval_date)
+    }
+
+    email_sent = rsi_email.send_df_access_request_approved(
+        config=Config, 
+        subject=subject, 
+        email_address=email_address, 
+        full_name=full_name,
+        message=message)
+    
+    if email_sent:
+        kwargs["response_dict"] = {
+            "message": "Approval email sent",
+            "to": email_address,
+            "template": EMAIL_USER_ON_ACCESS_REQ_APPROVAL
+        }
+        return True, kwargs
+
+    return False, kwargs
+
 def validate_email_payload(**kwargs) -> tuple:
     logger.verbose("inside validate_email_payload()")
     request = kwargs.get('request')
@@ -114,11 +153,65 @@ def validate_email_payload(**kwargs) -> tuple:
         # Set validate payload in kwargs
         kwargs['payload'] = payload
         template_name = payload['template']
+        # Add all allowed templates here
+        allowed_templates = {
+            mv6020_helper.EMAIL_TEMPLATE,
+            EMAIL_ADMIN_ON_SUBMISSION_FAILURE,
+            EMAIL_USER_ON_ACCESS_REQ_APPROVAL
+
+        }
+
+        if template_name not in allowed_templates:
+            error_msg = f"Unknown template '{template_name}'."
+
+            # Detailed message for logs only
+            log_error_msg = (
+                f"{error_msg}. Allowed templates: {allowed_templates}"
+            )
+            logger.error(log_error_msg)
+
+            kwargs["response_dict"] = {
+                "error_details": error_msg
+            }
+            kwargs["error"] = {                     # ⭐ REQUIRED
+                "error_code": ErrorCode.N02,
+                "error_details": error_msg,
+                "event_type": EVENT_TYPE,
+                "func": validate_email_payload.__name__,
+            }
+            return False, kwargs   # triggers bad_request_response
+        
+        
         if template_name == mv6020_helper.EMAIL_TEMPLATE:
             #Reuse the validation logic in print middleware for now. Change later if needed.
             success, kwargs =  print_middleware.validate_print_payload(**kwargs)
             if not success:
                 return False, kwargs
+            
+            # After validate_print_payload succeeded
+            payload = kwargs.get("payload", {})
+            data = payload.get("data", {})
+            print_options = data.get("print_options", {})
+
+            ptype = print_options.get("type", "").lower()
+            allowed_types = {"icbc", "entity", "police"}
+
+            if ptype not in allowed_types:
+                api_error = f"Invalid or missing print_options.type '{ptype}'"
+
+                kwargs["response_dict"] = {
+                    "error_details": api_error
+                }
+
+                kwargs["error"] = {
+                    "error_code": ErrorCode.N01,
+                    "error_details": f"{api_error}. Allowed types: {list(allowed_types)}",
+                    'event_type': EVENT_TYPE,
+                    "func": "validate_email_payload(MV6020)",
+                }
+
+                return False, kwargs
+
             
     except Exception as e:
         logger.warning(f"validation error: {str(e)}")
@@ -137,9 +230,10 @@ def send_email(**kwargs):
     payload = kwargs.get('payload', {})
     template_name = payload.get('template')
     data = payload.get('data', {}) or {}
-    collision_case_no = data.get('collision_case_num')
 
     if template_name == mv6020_helper.EMAIL_TEMPLATE:
+
+        collision_case_no = data.get('collision_case_num')
         try:
             result, kwargs = mv6020_helper.send_mv6020_copy(**kwargs)
         except Exception as e:
@@ -153,17 +247,32 @@ def send_email(**kwargs):
             }
             kwargs["response_dict"] = {"message": "Error sending MV6020 email"}
 
-    elif template_name == "admin_notice_submission_failure.html":
-        result, kwargs = send_admin_submission_failure_notification(**kwargs)   
+    elif template_name == EMAIL_ADMIN_ON_SUBMISSION_FAILURE:
+        result, kwargs = send_admin_submission_failure_notification(**kwargs)  
+    elif template_name == EMAIL_USER_ON_ACCESS_REQ_APPROVAL:
+        result, kwargs = send_df_access_request_approved(**kwargs)      
     else:
         result = False
-        kwargs["response_dict"] = {"message": "Unknown form type"}
+        kwargs["bad_data"] = True            # important flag
+        kwargs["response_dict"] = {          # expected structure for bad_request_response
+            "error_details": "Unknown form type for email notification"
+        }
         kwargs["error"] = {
             'error_code': ErrorCode.N02,
             'error_details': 'Unknown form type for email notification',
-            'ticket_no': collision_case_no,
             'func': send_email,
         }
 
+
     return result, kwargs
+
+
+def format_approval_datetime(iso_dt: str) -> str:
+    dt = datetime.fromisoformat(iso_dt)
+
+    # Convert to Pacific Time explicitly (safe for DST)
+    dt_pt = dt.astimezone(ZoneInfo("America/Vancouver"))
+
+    return dt_pt.strftime("%d %b %Y, %I:%M %p (PT)")
+
 

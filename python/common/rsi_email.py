@@ -65,10 +65,25 @@ def send_mv6020_copy(**args) -> tuple:
     message = args.get('message')
     attachments = args.get('attachments')
     email_type = args.get('email_type')
-    if email_type == 'entity' :
-        t = 'MV6020_send_entity_copy.html'
-    else:    
-        t = 'MV6020_send_police_icbc_copy.html'
+
+    # Valid email_type → template mapping
+    template_map = {
+        'entity': 'MV6020_send_entity_copy.html',
+        'police': 'MV6020_send_police_copy.html',
+        'icbc':   'MV6020_send_icbc_copy.html',
+    }
+
+    t = template_map.get(email_type)
+
+    if not t:
+        # API-safe message
+        api_error = f"Unknown MV6020 email type '{email_type}'"
+
+        args["response_dict"] = {
+            "error_details": api_error
+        }
+
+        return False, args
     
     args['email_template'] = t
     template = get_jinja2_env().get_template(t)
@@ -91,6 +106,21 @@ def send_admin_failure_notification(**args):
         subject,
         config,
         template.render(subject=subject, message=message), 'admin'), args
+
+
+def send_df_access_request_approved(**args):
+    subject = args.get('subject')
+    config = args.get('config')
+    email_address = args.get('email_address')
+    full_name = args.get('full_name')
+    message = args.get('message')
+    template = get_jinja2_env().get_template('user_access_request_approved.html')
+    return common_email_services.send_email(
+        [email_address],
+        subject,
+        config,
+        template.render(subject=subject, full_name=full_name, message=message), 'admin'), args
+
 
 
 
