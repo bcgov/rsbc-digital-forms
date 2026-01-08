@@ -18,6 +18,8 @@ on:
 
 jobs:
   CD:
+    permissions:
+      contents: read
     uses: ./.github/workflows/cd-workflow.yml
     with:
       DOCKER_CONTEXT: python

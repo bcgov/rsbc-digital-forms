@@ -126,6 +126,7 @@ def send_df_access_request_approved(**args):
 
 def get_jinja2_env(path="./python/common/templates"):
     template_loader = FileSystemLoader(searchpath=path)
+    logging.debug(f"Loading email templates from path: {os.path.abspath(path)}")
     return Environment(
         loader=template_loader,
         autoescape=select_autoescape(['html', 'xml'])
@@ -159,3 +160,20 @@ def content_data() -> dict:
             "title": "Send MV6020 Entity Copy",
         }
     })
+
+
+def send_submission_report_by_status(**args) -> tuple:
+    subject = args.get('subject')
+    config = args.get('config')
+    message = args.get('message')
+    templates_path = args.get('templates_path', './python/common/templates')
+    template = get_jinja2_env(path=templates_path).get_template('submission_report_by_status.html')
+    return common_email_services.send_email(
+        [config.RSIOPS_EMAIL_ADDRESS],
+        subject,
+        config,
+        template.render(
+            subject=subject,
+            message=message,
+            full_name="RSI Operations Team",
+        )), args

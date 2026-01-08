@@ -13,6 +13,10 @@ on:
 
 jobs:
   CI:
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     uses: ./.github/workflows/ci-workflow.yml
     with:
       DOCKER_CONTEXT: roadside-forms-frontend/frontend_web_app
