@@ -27,3 +27,5 @@ class Config():
     SPLUNK_HOST                         = os.getenv('SPLUNK_HOST', 'http://localhost')
     SPLUNK_PORT                         = int(os.getenv('SPLUNK_PORT', '8088'))
     SPLUNK_TOKEN                        = os.getenv('SPLUNK_TOKEN', 'aaaa-bbbb-cccc')
+
+    JINJA2_TEMPLATE_PATH = os.getenv('JINJA2_TEMPLATE_PATH', '/src/python/common/templates')

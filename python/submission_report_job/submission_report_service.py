@@ -59,4 +59,5 @@ def _send_report(report_data: list['SubmissionReportByStatus'], initial: datetim
     }
     send_submission_report_by_status(message=template_data,
                                      subject=f"Submission Report by Status for period of {initial.strftime('%Y-%m-%d')} to {final.strftime('%Y-%m-%d')}",
-                                     config=Config)
+                                     config=Config,
+                                     templates_path=Config.JINJA2_TEMPLATE_PATH)
