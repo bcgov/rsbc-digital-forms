@@ -24,7 +24,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: write
     environment: ${{ inputs.environment }}
     env:
       checkout_branch: ${{ inputs.checkout_branch }}
