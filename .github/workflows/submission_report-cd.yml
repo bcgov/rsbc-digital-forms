@@ -1,19 +1,15 @@
-name: form_handler-cd
+name: submission_report-cd
 
 on:
-  # push:
-  #   branches:
-  #     - master
   pull_request:
     types: [opened, reopened, edited, synchronize]
     branches:
       - master
       - main
     paths:
-      - python/*.py
       - python/common/**
-      - python/form_handler/**
-      - .github/workflows/form_handler-cd.yml
+      - python/submission_report_job/**
+      - .github/workflows/submission_report-cd.yml
       - trigger.txt
 
 jobs:
@@ -23,6 +19,7 @@ jobs:
     uses: ./.github/workflows/cd-workflow.yml
     with:
       DOCKER_CONTEXT: python
-      DOCKER_FILE: python/form_handler/Dockerfile
-      DOCKER_IMAGE_NAME: rsbc-roadside-forms-form-handler
+      DOCKER_FILE: python/submission_report_job/dockerfile
+      DOCKER_IMAGE_NAME: rsbc-df-submission-report
+      IMPORT_IMAGE_TO_OPENSHIFT: false
     secrets: inherit
