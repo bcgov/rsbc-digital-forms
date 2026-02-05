@@ -1,7 +1,7 @@
 import requests
 from flask import make_response
 from python.common.logging_utils import get_logger
-from python.form_handler.icbc_service import get_oauth_token
+from python.common.icbc_common_service import get_oauth_token
 from python.prohibition_web_svc.config import Config
 import time
 from threading import Lock
@@ -30,8 +30,10 @@ def _get_drivers_oauth_token() -> str:
         
         # Fetch new token
         token_response = get_oauth_token(
+            Config.ICBC_OAUTH_TOKEN_URL,
             Config.ICBC_OAUTH_DRIVERS_CLIENT_ID,
-            Config.ICBC_OAUTH_DRIVERS_CLIENT_SECRET
+            Config.ICBC_OAUTH_DRIVERS_CLIENT_SECRET,
+            Config.ICBC_OAUTH_SCOPE 
         )
         _drivers_token_cache["access_token"] = token_response["access_token"]
         _drivers_token_cache["expires_at"] = time.time() + token_response.get("expires_in", 3600)
@@ -49,8 +51,10 @@ def _get_vehicles_oauth_token() -> str:
         
         # Fetch new token
         token_response = get_oauth_token(
+            Config.ICBC_OAUTH_TOKEN_URL,
             Config.ICBC_OAUTH_VEHICLES_CLIENT_ID,
-            Config.ICBC_OAUTH_VEHICLES_CLIENT_SECRET
+            Config.ICBC_OAUTH_VEHICLES_CLIENT_SECRET,
+            Config.ICBC_OAUTH_SCOPE
         )
         _vehicles_token_cache["access_token"] = token_response["access_token"]
         _vehicles_token_cache["expires_at"] = time.time() + token_response.get("expires_in", 3600)

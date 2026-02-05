@@ -1,5 +1,5 @@
 import requests
-from requests.auth import HTTPBasicAuth
+from python.common.icbc_common_service import get_oauth_token
 from python.form_handler.config import Config
 import time
 from threading import Lock
@@ -22,38 +22,15 @@ def _get_contravention_oauth_token() -> str:
         
         # Fetch new token
         token_response = get_oauth_token(
+            Config.ICBC_OAUTH_TOKEN_URL,
             Config.ICBC_OAUTH_CONTRAVENTION_CLIENT_ID,
-            Config.ICBC_OAUTH_CONTRAVENTION_CLIENT_SECRET
+            Config.ICBC_OAUTH_CONTRAVENTION_CLIENT_SECRET,
+            Config.ICBC_OAUTH_SCOPE
         )
         _contravention_token_cache["access_token"] = token_response["access_token"]
         _contravention_token_cache["expires_at"] = time.time() + token_response.get("expires_in", 3600)
         
         return _contravention_token_cache["access_token"]
-
-def get_oauth_token(client_id, client_secret) -> str:     
-    # Fetch new token
-    token_data = {
-        "grant_type": "client_credentials",
-        "client_id": client_id,
-        "client_secret": client_secret,
-    }
-        
-    if Config.ICBC_OAUTH_SCOPE:
-        token_data["scope"] = Config.ICBC_OAUTH_SCOPE
-    
-    response = requests.post(
-        Config.ICBC_OAUTH_TOKEN_URL,
-        data=token_data,
-        timeout=30
-    )
-    response.raise_for_status()
-    
-    token_response = response.json()
-    token = {}
-    token["access_token"] = token_response["access_token"]
-    token["expires_at"] = time.time() + token_response.get("expires_in", 3600)
-    
-    return token
 
 def submit_to_icbc(payload,logging) -> tuple:
     url=f'{Config.ICBC_API_SUBMIT_ROOT}/driverlicensing/dfft/v1/contravention'
