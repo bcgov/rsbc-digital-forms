@@ -139,6 +139,27 @@ def test_update_static_resource_not_implemented(client):
     assert b'method not implemented' in response.data
 
 
+def test_ping(client, app, monkeypatch):
+    """Test GET /ping endpoint returns cached cities data"""
+    # Mock _get_resource_cached to return a successful response
+    with app.app_context():
+        mock_response = make_response(jsonify([{"id": 1, "name": "Vancouver"}]), 200)
+    
+    def mock_get_resource_cached(**kwargs):
+        assert kwargs.get('resource') == 'cities'
+        return True, {'response': mock_response}
+    
+    monkeypatch.setattr(static_blueprint, '_get_resource_cached', mock_get_resource_cached)
+    
+    response = client.get('/api/v1/ping')
+    
+    assert response.status_code == 200
+    data = response.get_json()
+    assert isinstance(data, list)
+    assert len(data) == 1
+    assert data[0]['name'] == 'Vancouver'
+
+
 def test_helper_functions():
     """Test helper functions directly"""
     # Test _is_known_resource
