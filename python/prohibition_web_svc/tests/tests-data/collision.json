@@ -188,6 +188,8 @@
         "value": "F"
       },
       "charges_blood_alc_tests_taken": "N",
+      "has_charges": "Y",
+      "blood_alc_tests_taken": "Y",
       "blood_alc_test": "BCA",
       "result_1": "0.00",
       "result_2": "0.00",
