@@ -1,7 +1,14 @@
 {
   "form_version": "v1.0",
   "ff_application_id": 35,
-  "collision_case_num": "MV-001",
+  "collision_case_num": "RZ100001",
+  "form_number": "Z100001",
+  "form_details": {
+      "form_no": "RZ100001",
+      "form_title": "Electronic MV6020 Traffic Accident Report",
+      "subtext": "Protected A",
+      "form_version": "MV6020E (122025)"
+  },  
   "collision_scenario": {
     "label": "Collision on Forest Service or Logging Road",
     "value": "01"

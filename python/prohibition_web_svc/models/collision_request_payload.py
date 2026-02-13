@@ -2,6 +2,7 @@
 from typing import TypedDict
 from python.prohibition_web_svc.models.dropdown_option import DropdownOption
 from python.prohibition_web_svc.models.entity import Entity
+from python.prohibition_web_svc.models.form_details import FormDetails
 from python.prohibition_web_svc.models.lki_highway import LkiHighway
 from python.prohibition_web_svc.models.lki_segment import LkiSegment
 from python.prohibition_web_svc.models.police_agency import PoliceAgency
@@ -10,6 +11,7 @@ from python.prohibition_web_svc.models.witness import Witness
 
 class CollisionRequestPayload(TypedDict):
     collision_case_num: str
+    form_number: str
     collision_scenario: DropdownOption
     police_file_num: str
     prime_file_vjur: DropdownOption
@@ -86,3 +88,4 @@ class CollisionRequestPayload(TypedDict):
 
     entities: list[Entity]
     witnesses: list[Witness]
+    form_details: FormDetails
