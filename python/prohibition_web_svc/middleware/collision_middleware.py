@@ -271,6 +271,7 @@ def _validate_collision_required_fields(collision: CollisionRequestPayload, kwar
         "primary_speed_zone",
         "land_usage",
         "road_type",
+        "traffic_control",
         "roadway_character",
         "roadway_surface_cond",
         "weather_cond",
