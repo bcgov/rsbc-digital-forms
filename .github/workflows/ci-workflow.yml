@@ -117,7 +117,7 @@ jobs:
           load: true
           tags:  ${{ inputs.DOCKER_IMAGE_NAME }}:latest
       - name: Run Trivy vulnerability scanner- stdout
-        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        uses: aquasecurity/trivy-action@0.34.0
         if: always()
         with:
           scan-type: image
@@ -127,7 +127,7 @@ jobs:
           ignore-unfixed: true
           severity: CRITICAL
       - name: Run Trivy vulnerability scanner- save to file
-        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        uses: aquasecurity/trivy-action@0.34.0
         if: always()
         with:
           scan-type: image
@@ -138,7 +138,7 @@ jobs:
           output: trivy.html
           severity: CRITICAL
       - name: Run Trivy vulnerability scanner- save to sarif file
-        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        uses: aquasecurity/trivy-action@0.34.0
         if: always()
         with:
           scan-type: image
