@@ -117,7 +117,7 @@ jobs:
           load: true
           tags:  ${{ inputs.DOCKER_IMAGE_NAME }}:latest
       - name: Run Trivy vulnerability scanner- stdout
-        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        uses: aquasecurity/trivy-action@0.34.0
         if: always()
         with:
           scan-type: image
@@ -127,25 +127,29 @@ jobs:
           ignore-unfixed: true
           severity: CRITICAL
       - name: Run Trivy vulnerability scanner- save to file
-        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        uses: aquasecurity/trivy-action@0.34.0
         if: always()
         with:
           scan-type: image
           image-ref: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
-          format: 'template'
+          format: 'json'
           ignore-unfixed: true
-          template: "@/contrib/html.tpl"
-          output: trivy.html
+          output: trivy.json
           severity: CRITICAL
+      - name: Convert JSON to HTML
+        if: always()
+        run: |
+          echo "<html><body><h1>Trivy Scan Results</h1><pre>" > trivy.html
+          cat trivy.json | jq -r '.Results[] | .Vulnerabilities[] | "<p><b>\(.VulnerabilityID)</b> - \(.Severity)<br>Package: \(.PkgName) \(.InstalledVersion)<br>\(.Title)</p>"' >> trivy.html || echo "<p>No critical vulnerabilities found</p>" >> trivy.html
+          echo "</pre></body></html>" >> trivy.html
       - name: Run Trivy vulnerability scanner- save to sarif file
-        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        uses: aquasecurity/trivy-action@0.34.0
         if: always()
         with:
           scan-type: image
           image-ref: ${{ inputs.DOCKER_IMAGE_NAME }}:latest
-          format: 'template'
+          format: 'sarif'
           ignore-unfixed: true
-          template: "@/contrib/sarif.tpl"
           output: trivy.sarif
           severity: CRITICAL
       - name: Edit html file to clean headers

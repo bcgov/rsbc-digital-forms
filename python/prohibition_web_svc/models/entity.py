@@ -32,6 +32,8 @@ class Entity(TypedDict):
     contributing_factor_3: DropdownOption
     contributing_factor_4: DropdownOption
     charges_blood_alc_tests_taken: str
+    has_charges: str
+    blood_alc_tests_taken: str
     blood_alc_test: str
     result_1: str
     result_2: str
