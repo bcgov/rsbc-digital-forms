@@ -55,7 +55,7 @@ jobs:
           load: true
           tags:  ${{matrix.image_names}}:latest
       - name: Run Trivy vulnerability scanner- Alert for Critical
-        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        uses: aquasecurity/trivy-action@0.34.0
         if: always()
         with:
           scan-type: image
@@ -65,7 +65,7 @@ jobs:
           ignore-unfixed: true
           severity: CRITICAL
       - name: Run Trivy vulnerability scanner- save to sarif file
-        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        uses: aquasecurity/trivy-action@0.34.0
         if: always()
         with:
           scan-type: image
