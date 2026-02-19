@@ -682,10 +682,10 @@
             </div>
         </div>
 
-        {% if data.print_options and data.print_options.type == "police"%}
+        {% if data.print_options and (data.print_options.type == "police" or data.print_options.type == "icbc") %}
 
-        <div class="grid-table grid-table-1col">
-            <div class="grid-cell">
+        <div class="grid-table grid-table-2col">
+            <div class="grid-cell grid-cell-full">
                 <label class="grid-label">MV6020 Report</label><br>
                 <input type="checkbox" id="scenarios" name="scenarios" {% if data.collision_scenario %}checked{% endif
                     %}>
@@ -693,7 +693,7 @@
                     data.collision_scenario.label }}</label>
             </div>
            
-            <div class="grid-cell">
+            <div class="grid-cell grid-cell-full">
                 <label class="grid-label">Does this collision contain a Countable Fatal?</label><br>
                 <div class="radio-group">
                     <div class="radio-option">
@@ -716,6 +716,11 @@
             <div class="grid-cell">
                 <label class="grid-label">Total Countable Fatals</label><br>
                 <div class="grid-input grid-display calculated" contenteditable="false">{{ data.countable_fatal_total }}
+                </div>
+            </div>
+            <div class="grid-cell">
+                <label class="grid-label">Total Estimated Damage</label><br>
+                <div class="grid-input grid-display calculated" contenteditable="false">{{ data.total_est_damage }}
                 </div>
             </div>
         </div>
@@ -2106,8 +2111,7 @@
                         {% for person in entity.involved_persons %}
                         <div>
                             <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold; border-top: 1px solid #000;">
-                                Involved Person {{ loop.index }} 
-                                <!-- associated to Entity {{ entity_index }} -->
+                                Involved Person {{ loop.index }} associated to Entity {{ entity_index }}
                             </h5>
                             <!-- Person Header Row with Boxes -->
                             <div class="grid-table" style="border: 0px; border-bottom: 1px solid #000; border-top: 1px solid #000;">
