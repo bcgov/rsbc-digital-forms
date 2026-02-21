@@ -14,7 +14,7 @@ def test_map_to_tar_collision():
     payload = get_payload()
     result = CollisionMapper.map_to_tar_collision(payload)
     assert isinstance(result, TarCollision)
-    assert result.collision_case_num == 'MV-001'
+    assert result.collision_case_num == 'RZ100001'
     assert result.location is not None
     assert result.additional_details is not None
     assert isinstance(result.entities[0], TarEntity)
@@ -26,7 +26,7 @@ def test_map_to_tar_location():
     payload = get_payload()
     result = CollisionMapper.map_to_tar_location(payload)
     assert isinstance(result, TarLocation)
-    assert result.collision_case_num == 'MV-001'
+    assert result.collision_case_num == 'RZ100001'
     assert result.hwy_code == 'HWY'
     assert result.city_name == 'City'
     assert result.lat_decim_degrees == 49.123456

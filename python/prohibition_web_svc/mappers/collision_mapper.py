@@ -186,6 +186,8 @@ class CollisionMapper:
             contributing_factor_3=entity_data['contributing_factor_3']['value'] if entity_data.get('contributing_factor_3') else None,
             contributing_factor_4=entity_data['contributing_factor_4']['value'] if entity_data.get('contributing_factor_4') else None,
             charges_blood_alc_tests_taken=entity_data.get('charges_blood_alc_tests_taken'),
+            has_charges=entity_data.get('has_charges'),
+            blood_alc_tests_taken=entity_data.get('blood_alc_tests_taken'),
             blood_alc_test=entity_data.get('blood_alc_test'),
             result_1=entity_data.get('result_1'),
             result_2=entity_data.get('result_2'),
