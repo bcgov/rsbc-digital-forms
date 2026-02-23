@@ -28,7 +28,7 @@
   "police_agency_type_district": "Type",
   "police_agency_code": {
     "agency_name": "Enderby Prov",
-    "code": 102,
+    "code": "0102",
     "district_id": 1,
     "vjur_agency": null
   },
