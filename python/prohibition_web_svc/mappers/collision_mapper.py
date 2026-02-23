@@ -180,6 +180,7 @@ class CollisionMapper:
             date_of_birth=entity_data.get('date_of_birth'),
             age_at_collision=str_to_integer(entity_data.get('age_at_collision')),
             contact_phone_num=entity_data.get('contact_phone_num'),
+            contact_email=entity_data.get('contact_email'),
             sex=entity_data['sex']['value'] if entity_data.get('sex') else None,
             contributing_factor_1=entity_data['contributing_factor_1']['value'] if entity_data.get('contributing_factor_1') else None,
             contributing_factor_2=entity_data['contributing_factor_2']['value'] if entity_data.get('contributing_factor_2') else None,
