@@ -443,6 +443,28 @@
             border-right: none;
         }
 
+        /* Row-based Layout */
+        .grid-row {
+            display: flex;
+            width: 100%;
+            border-bottom: 1px solid #000;
+        }
+
+        .grid-table .grid-row:last-child {
+            border-bottom: none;
+        }
+                
+        .grid-row .grid-cell {
+            flex: 1;
+            border-right: 1px solid #000;
+            border-bottom: none;
+            box-sizing: border-box;
+        }
+
+        .grid-row .grid-cell:last-child {
+            border-right: none;
+        }
+
         /* Base Grid Cell Styles */
         .grid-cell {
             padding: 4px;
@@ -660,10 +682,10 @@
             </div>
         </div>
 
-        {% if data.print_options and data.print_options.type == "police"%}
+        {% if data.print_options and (data.print_options.type == "police" or data.print_options.type == "icbc") %}
 
-        <div class="grid-table grid-table-1col">
-            <div class="grid-cell">
+        <div class="grid-table grid-table-2col">
+            <div class="grid-cell grid-cell-full">
                 <label class="grid-label">MV6020 Report</label><br>
                 <input type="checkbox" id="scenarios" name="scenarios" {% if data.collision_scenario %}checked{% endif
                     %}>
@@ -671,7 +693,7 @@
                     data.collision_scenario.label }}</label>
             </div>
            
-            <div class="grid-cell">
+            <div class="grid-cell grid-cell-full">
                 <label class="grid-label">Does this collision contain a Countable Fatal?</label><br>
                 <div class="radio-group">
                     <div class="radio-option">
@@ -693,7 +715,12 @@
             </div>
             <div class="grid-cell">
                 <label class="grid-label">Total Countable Fatals</label><br>
-                <div class="grid-input grid-display calculated" contenteditable="false">{{ data.countable_fatal_total }}
+                <div class="grid-input grid-display" contenteditable="false">{{ data.countable_fatal_total }}
+                </div>
+            </div>
+            <div class="grid-cell">
+                <label class="grid-label">Total Estimated Damage</label><br>
+                <div class="grid-input grid-display" contenteditable="false">${{ data.total_est_damage }}
                 </div>
             </div>
         </div>
@@ -1072,6 +1099,11 @@
                             </div>
                         </div>
                         <div class="grid-cell">
+                            <label class="grid-label">Contact Email</label><br>
+                            <div class="grid-input grid-display" contenteditable="false">{{ entity.contact_email }}
+                            </div>
+                        </div>
+                        <div class="grid-cell">
                             <label class="grid-label">Sex</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{{
                                 entity.sex.label if entity.sex else '' }}</div>
@@ -1277,7 +1309,7 @@
                     {% if not (data.print_options and data.print_options.type == "entity" and
                         data.print_options.entity_num != entity.entity_num) %}
 
-                    {% if entity.charges_blood_alc_tests_taken == 'Y' %}
+                    {% if entity.has_charges == 'Y' or entity.blood_alc_tests_taken == 'Y' %}
 
                     <!-- Charges and Blood Alcohol Tests for Entity Driver -->
                     <div class="section-divider" style="margin-top: 15px;">
@@ -1288,29 +1320,32 @@
                         Charges and Blood Alcohol Tests for Entity No. {{ loop.index }} Driver
                     </h5>
                     <div class="grid-table grid-table-2col">
-                        <div class="grid-cell grid-cell-full">
-                            <label class="grid-label">Blood Alcohol Tests</label><br>
-                            <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{% if
-                                entity.blood_alc_test == 'BAC' %}BAC{% elif entity.blood_alc_test == 'BTA' %}BTA{% elif
-                                entity.blood_alc_test == 'NOT' %}Not Taken{% else %}{{ entity.blood_alc_test }}{% endif
-                                %}</div>
+                        {% if entity.blood_alc_tests_taken == 'Y' %}
+                            <div class="grid-cell grid-cell-full" style="border-bottom: none;">
+                                <label class="grid-label">Blood Alcohol Tests</label><br>
+                                <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{% if
+                                    entity.blood_alc_test == 'BAC' %}BAC{% elif entity.blood_alc_test == 'BTA' %}BTA{% elif
+                                    entity.blood_alc_test == 'NOT' %}Not Taken{% else %}{{ entity.blood_alc_test }}{% endif
+                                    %}</div>
 
-                        </div>
-                        {% if entity.blood_alc_test != 'NOT' %}
-                        <div class="grid-cell grid-cell-full">
-                            <label style="font-weight: normal;">If taken, result 1</label>
-                            <div class="grid-input grid-display" contenteditable="false"
-                                style="width: 100px; margin-left: 5px;">{{ entity.result_1 }}</div>
-                            <label style="font-weight: normal;">If taken, result 2</label>
-                            <div class="grid-input grid-display" contenteditable="false"
-                                style="width: 100px; margin-left: 5px;">{{ entity.result_2 }}</div>
-                        </div>
+                            </div>
+                            {% if entity.blood_alc_test != 'NOT' %}
+                            <div class="grid-cell grid-cell-full" style="border-bottom: 1px solid #000;">
+                                <label style="font-weight: normal;">Result 1</label>
+                                <div class="grid-input grid-display" contenteditable="false"
+                                    style="width: 100px; margin-left: 5px;">{{ entity.result_1 }}</div>
+                                <label style="font-weight: normal;">Result 2</label>
+                                <div class="grid-input grid-display" contenteditable="false"
+                                    style="width: 100px; margin-left: 5px;">{{ entity.result_2 }}</div>
+                            </div>
 
+                            {% endif %}
                         {% endif %}
                         <!-- Charges Table -->
-                        {% if entity.charges and entity.charges|length > 0 %}
+                        {% if entity.has_charges == 'Y' and entity.charges and entity.charges|length > 0 %}
                         <div class="grid-cell grid-cell-full">
-                            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+                            <label class="grid-label">Charges</label><br>
+                            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-top: 5px;">
                                 <thead>
                                     <tr style="background-color: #f0f0f0;">
                                         <th
@@ -1355,7 +1390,7 @@
                     <!-- Status and Names -->
                     <div class="grid-table grid-table-3col">
                         <div class="grid-cell">
-                            <label class="grid-label">Status (required)</label><br>
+                            <label class="grid-label">Status</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{% if
                                 person.status == 'notInjured' %}Not Injured{% elif person.status == 'injured'
                                 %}Injured{% elif person.status == 'deceased' %}Deceased{% else %}{{ person.status }}{%
@@ -1703,7 +1738,7 @@
                                 <div class="grid-cell">
                                     <div class="icbc-box">
                                         <div class="icbc-box-label">Box 2B</div>
-                                        <div class="icbc-box-value">{{ data.secondary_speed_zone.value }}</div>
+                                        <div class="icbc-box-value">{% if data.secondary_speed_zone %}{{ data.secondary_speed_zone.value }}{% endif %}</div>
                                     </div>
                                 </div>
                                 <div class="grid-cell">
@@ -2065,101 +2100,117 @@
                                 entity.charges and entity.charges|length > 2 else '' }}</div>
                         </div>
                     </div>
-
-                    {% for person in entity.involved_persons %}
-                    <div style="margin-bottom: 20px;">
-                        <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold;">
-                            Involved Person {{ loop.index }} associated to Entity {{ entity_index }}
-                        </h5>
-                        <!-- Person Header Row with Boxes -->
-                        <div class="grid-table grid-table-auto single-row">
-                            <div class="grid-cell">
-                                <label class="grid-label">Box 10</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.vehicle_occupied if
-                                    person.vehicle_occupied else '' }}</div>
-                            </div>
-                            <div class="grid-cell">
-                                <label class="grid-label">Box 11</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.position_of_person.value if
-                                    person.position_of_person else '' }}</div>
-                            </div>
-                            <div class="grid-cell">
-                                <label class="grid-label">Box 12</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.safety_equipment_used.value if
-                                    person.safety_equipment_used else '' }}</div>
-                            </div>
-                            <div class="grid-cell">
-                                <label class="grid-label">Box 13</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.ejection_from_vehicle.value if
-                                    person.ejection_from_vehicle else '1' }}</div>
-                            </div>
-                            <div class="grid-cell">
-                                <label class="grid-label">Box 14</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.age if person.age else '' }}</div>
-                            </div>
-                            <div class="grid-cell">
-                                <label class="grid-label">Box 15</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.sex.value if person.sex else '' }}</div>
-                            </div>
-                            <div class="grid-cell">
-                                <label class="grid-label">Box 16</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.severe_injury_location.value if
-                                    person.severe_injury_location else '' }}</div>
-                            </div>
-                        </div>
-                        <div class="grid-table grid-table-auto single-row" style="margin-top: 5px;">
-                            <div class="grid-cell">
-                                <label class="grid-label">Box 17</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.injury_type.value if person.injury_type else
-                                    '' }}</div>
-                            </div>
-                            <div class="grid-cell">
-                                <label class="grid-label">Box 18</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.consciousness_state.value if
-                                    person.consciousness_state else '' }}</div>
-                            </div>
-                            <div class="grid-cell">
-                                <label class="grid-label">Box19</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.injured_taken_to.value if
-                                    person.injured_taken_to else '' }}</div>
-                            </div>
-                            <div class="grid-cell">
-                                <label class="grid-label">Box 20</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.injured_taken_by.value if
-                                    person.injured_taken_by else '' }}</div>
-                            </div>
-                            <div class="grid-cell">
-                                <label class="grid-label">Box 20A</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.injury_classification.value if
-                                    person.injury_classification else '' }}</div>
-                            </div>
-                            <div class="grid-cell">
-                                <label class="grid-label">Date of Death</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.date_of_death[:10] if person.date_of_death else '' }}</div>
-                            </div>
-                        </div>
-                        <div class="grid-table">
-                            <div class="grid-cell grid-cell-full">
-                                <label class="grid-label">Name</label><br>
-                                <div class="grid-input grid-display" contenteditable="false">{{
-                                    person.surname }} , {{ person.given_name }}</div>
-                            </div>
-                        </div>
-                    </div>
                     {% endfor %}
+
+
+                </div>
+
+                <!-- Involved Person Section -->
+                <div class="section-divider">
+                    <h4 class="subsection-header" style="margin-top: 10px;">All involved</h4>
+                    {% for entity in data.entities %}
+                    {% set entity_index = loop.index %}
+                    <div style="margin-bottom: 20px; border: 1px solid #000;">
+                        <h4 class="subsection-header" style="border: 0px;">Entity {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})</h4>
+
+                        {% for person in entity.involved_persons %}
+                        <div>
+                            <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold; border-top: 1px solid #000;">
+                                Involved Person {{ loop.index }} associated to Entity {{ entity_index }}
+                            </h5>
+                            <!-- Person Header Row with Boxes -->
+                            <div class="grid-table" style="border: 0px; border-bottom: 1px solid #000; border-top: 1px solid #000;">
+                                <div class="grid-row">
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 10</label><br>
+                                        <div class="grid-input grid-display" contenteditable="false">{{
+                                            person.vehicle_occupied if
+                                            person.vehicle_occupied else '' }}</div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 11</label><br>
+                                        <div class="grid-input grid-display" contenteditable="false">{{
+                                            person.position_of_person.value if
+                                            person.position_of_person else '' }}</div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 12</label><br>
+                                        <div class="grid-input grid-display" contenteditable="false">{{
+                                            person.safety_equipment_used.value if
+                                            person.safety_equipment_used else '' }}</div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 13</label><br>
+                                        <div class="grid-input grid-display" contenteditable="false">{{
+                                            person.ejection_from_vehicle.value if
+                                            person.ejection_from_vehicle else '1' }}</div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 14</label><br>
+                                        <div class="grid-input grid-display" contenteditable="false">{{
+                                            person.age if person.age else '' }}</div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 15</label><br>
+                                        <div class="grid-input grid-display" contenteditable="false">{{
+                                            person.sex.value if person.sex else '' }}</div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 16</label><br>
+                                        <div class="grid-input grid-display" contenteditable="false">{{
+                                            person.severe_injury_location.value if
+                                            person.severe_injury_location else '' }}</div>
+                                    </div>
+                                </div>
+
+                                <div class="grid-row">
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 17</label><br>
+                                        <div class="grid-input grid-display" contenteditable="false">{{
+                                            person.injury_type.value if person.injury_type else
+                                            '' }}</div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 18</label><br>
+                                        <div class="grid-input grid-display" contenteditable="false">{{
+                                            person.consciousness_state.value if
+                                            person.consciousness_state else '' }}</div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box19</label><br>
+                                        <div class="grid-input grid-display" contenteditable="false">{{
+                                            person.injured_taken_to.value if
+                                            person.injured_taken_to else '' }}</div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 20</label><br>
+                                        <div class="grid-input grid-display" contenteditable="false">{{
+                                            person.injured_taken_by.value if
+                                            person.injured_taken_by else '' }}</div>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <label class="grid-label">Box 20A</label><br>
+                                        <div class="grid-input grid-display" contenteditable="false">{{
+                                            person.injury_classification.value if
+                                            person.injury_classification else '' }}</div>
+                                    </div>
+                                    <div class="grid-cell" style="flex-grow: 2.1;">
+                                        <label class="grid-label">Date of Death</label><br>
+                                        <div class="grid-input grid-display" contenteditable="false">{{
+                                            person.date_of_death[:10] if person.date_of_death else '' }}</div>
+                                    </div>
+                                </div>
+                                <div class="grid-row">
+                                    <div class="grid-cell grid-cell-full">
+                                        <label class="grid-label">Name</label><br>
+                                        <div class="grid-input grid-display" contenteditable="false">{{
+                                            person.surname }} , {{ person.given_name }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
                     {% endfor %}
 
 
