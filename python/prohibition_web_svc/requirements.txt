@@ -52,7 +52,7 @@ SQLAlchemy==2.0.36
 toml==0.10.2
 urllib3==2.6.1
 Werkzeug==2.3.7
-xmltodict==1.0.2
+xmltodict==1.0.4
 pytest-cov==7.0.0
 minio==7.2.20
 Pillow==11.3.0
