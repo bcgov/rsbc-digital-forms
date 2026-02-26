@@ -18,7 +18,7 @@ Flask-Migrate
 Flask-Caching
 flask-swagger-ui
 gunicorn==23.0.0
-holidays==0.55
+holidays==0.91
 idna==3.11
 iniconfig==1.1.1
 iso8601==2.1.0
