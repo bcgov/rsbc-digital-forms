@@ -1019,9 +1019,9 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Possible Offender?</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{ 'Yes' if
-                                entity.possible_offender == 'Y' else 'No' }}</div>
-
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {% if entity.possible_offender %}Yes{% else %}No{% endif %}
+                            </div>
                         </div>
                         <div class="grid-cell">
                             <input type="checkbox" {% if entity.vehicle_parked %}checked{% endif %}>
@@ -1933,8 +1933,7 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Possible Offender</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{ entity.possible_offender }}
-                            </div>
+                            <div class="grid-input grid-display" contenteditable="false">{% if entity.possible_offender %}Y{% else %}N{% endif %}</div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Driver's Licence No.</label><br>
