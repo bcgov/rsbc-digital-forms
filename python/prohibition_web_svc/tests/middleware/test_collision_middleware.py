@@ -94,7 +94,35 @@ def test_validate_collision_payload_failure_missing_entity_fields():
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
     assert 'error' in out_kwargs
-    assert out_kwargs['error']['error_details'] == "Missing required fields in entity: ['entity_type', 'entity_num', 'possible_offender', 'contributing_factor_1', 'contributing_factor_2', 'contributing_factor_3', 'contributing_factor_4']"
+    assert out_kwargs['error']['error_details'] == "Missing required fields in entity: ['entity_type', 'entity_num', 'contributing_factor_1', 'contributing_factor_2', 'contributing_factor_3', 'contributing_factor_4']"
+    assert out_kwargs['response_dict'] == {
+        'error_details': out_kwargs['error']['error_details']
+    }
+
+def test_validate_collision_payload_failure_missing_possible_offender_field():
+    # Missing required entity fields
+    with open(collision_json_path) as f:
+        payload = json.load(f)
+    payload['entities'][0].pop('possible_offender', None)  # Remove possible_offender field
+    kwargs = {'payload': payload}
+    result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
+    assert result is False
+    assert 'error' in out_kwargs
+    assert out_kwargs['error']['error_details'] == "Missing required field 'possible_offender' in entity"
+    assert out_kwargs['response_dict'] == {
+        'error_details': out_kwargs['error']['error_details']
+    }
+
+def test_validate_collision_payload_failure_invalid_possible_offender_field():
+    # Missing required entity fields
+    with open(collision_json_path) as f:
+        payload = json.load(f)
+    payload['entities'][0]["possible_offender"] = "Y"
+    kwargs = {'payload': payload}
+    result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
+    assert result is False
+    assert 'error' in out_kwargs
+    assert out_kwargs['error']['error_details'] == "Invalid value for 'possible_offender' in entity. Must be a boolean."
     assert out_kwargs['response_dict'] == {
         'error_details': out_kwargs['error']['error_details']
     }

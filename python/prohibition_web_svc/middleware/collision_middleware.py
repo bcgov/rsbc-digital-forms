@@ -309,7 +309,6 @@ def _validate_entity_required_fields(collision: CollisionRequestPayload, kwargs:
     required_entity_fields = [
         "entity_type",
         "entity_num",
-        "possible_offender",
         "contributing_factor_1",
         "contributing_factor_2",
         "contributing_factor_3",
@@ -332,6 +331,28 @@ def _validate_entity_required_fields(collision: CollisionRequestPayload, kwargs:
             kwargs['error'] = {
                 'error_code': ErrorCode.C01,
                 'error_details': f"Missing required fields in entity: {missing_fields}",
+                'event_type': EVENT_TYPE,
+                'ticket_no': collision.get("collision_case_num"),
+                'func': _validate_entity_required_fields,
+            }
+            return False
+        
+        if entity.get('possible_offender') is None:
+            logger.debug("Missing required field 'possible_offender' in entity")
+            kwargs['error'] = {
+                'error_code': ErrorCode.C01,
+                'error_details': "Missing required field 'possible_offender' in entity",
+                'event_type': EVENT_TYPE,
+                'ticket_no': collision.get("collision_case_num"),
+                'func': _validate_entity_required_fields,
+            }
+            return False
+        
+        if entity.get('possible_offender') not in [True, False]:
+            logger.debug("Invalid value for 'possible_offender' in entity. Must be a boolean.")
+            kwargs['error'] = {
+                'error_code': ErrorCode.C01,
+                'error_details': "Invalid value for 'possible_offender' in entity. Must be a boolean.",
                 'event_type': EVENT_TYPE,
                 'ticket_no': collision.get("collision_case_num"),
                 'func': _validate_entity_required_fields,

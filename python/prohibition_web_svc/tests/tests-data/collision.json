@@ -151,7 +151,7 @@
         "label": "Vehicle"
       },
       "entity_num": "01",
-      "possible_offender": "N",
+      "possible_offender": true,
       "contributing_factor_1": {
         "label": "00 Unknown",
         "value": "00"

@@ -164,7 +164,7 @@ class CollisionMapper:
         return TarEntity(
             entity_type=entity_data['entity_type']['value'] if entity_data.get('entity_type') else None,
             entity_num=entity_data.get('entity_num'),
-            possible_offender=entity_data.get('possible_offender'),
+            possible_offender='Y' if entity_data.get('possible_offender') else 'N',
             vehicle_parked=entity_data.get('vehicle_parked'),
             unknown_entity=entity_data.get('unknown_entity'),
             driver_license_num=entity_data.get('driver_license_num'),
