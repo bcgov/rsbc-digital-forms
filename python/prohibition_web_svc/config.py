@@ -60,6 +60,7 @@ class Config(BaseConfig):
     ICBC_OAUTH_DRIVERS_CLIENT_SECRET = os.environ.get('ICBC_OAUTH_DRIVERS_CLIENT_SECRET')
     ICBC_OAUTH_VEHICLES_CLIENT_ID = os.environ.get('ICBC_OAUTH_VEHICLES_CLIENT_ID')
     ICBC_OAUTH_VEHICLES_CLIENT_SECRET = os.environ.get('ICBC_OAUTH_VEHICLES_CLIENT_SECRET')
+    ICBC_USE_OAUTH = os.getenv('ICBC_USE_OAUTH', 'false').lower() == 'true'
 
     REACT_APP_BASE_URL = os.environ.get('REACT_APP_BASE_URL', 'http://localhost:3000/roadside-forms')
 
