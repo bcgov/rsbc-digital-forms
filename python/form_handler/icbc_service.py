@@ -1,3 +1,4 @@
+import base64
 import requests
 from python.common.icbc_common_service import get_oauth_token
 from python.form_handler.config import Config
@@ -32,13 +33,25 @@ def _get_contravention_oauth_token() -> str:
         
         return _contravention_token_cache["access_token"]
 
+def _get_headers() -> dict:
+    if Config.ICBC_USE_OAUTH:
+        return {
+            "Authorization": f"Bearer {_get_contravention_oauth_token()}",
+            "Accept": "application/json",
+            "loginUserId": "DF-Form-Handler"
+        }
+    else:
+        auth_header = base64.b64encode("{}:{}".format(Config.ICBC_API_USERNAME, Config.ICBC_API_PASSWORD).encode('utf-8'))
+        return {
+            "Authorization": 'Basic {}'.format(str(auth_header, "utf-8")),
+            "Accept": "application/json",
+            "loginUserId": "DF-Form-Handler"
+        }
+
 def submit_to_icbc(payload,logging) -> tuple:
-    url=f'{Config.ICBC_API_SUBMIT_ROOT}/driverlicensing/dfft/v1/contravention'
-    headers = {
-        "Authorization": f"Bearer {_get_contravention_oauth_token()}",
-        "Accept": "application/json",
-        "loginUserId": "DF-Form-Handler"
-    }
+    contravention_endpoint = '/driverlicensing/dfft/v1/contravention' if Config.ICBC_USE_OAUTH else '/dfft/v1/contravention'
+    url=f'{Config.ICBC_API_SUBMIT_ROOT}{contravention_endpoint}'
+    headers = _get_headers()
     logging.debug(f"ICBC URL: {url}")
     logging.verbose(f"ICBC payload: {payload}")
     logging.verbose(f"ICBC headers: {headers}")

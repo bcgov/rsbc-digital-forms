@@ -50,6 +50,7 @@ class Config():
     ICBC_API_SUBMIT_USERNAME = os.getenv('ICBC_API_SUBMIT_USERNAME', 'user')
     ICBC_API_SUBMIT_PASSWORD = os.getenv('ICBC_API_SUBMIT_PASSWORD', 'password')
 
+    ICBC_USE_OAUTH = os.getenv('ICBC_USE_OAUTH', 'false').lower() == 'true'
     ICBC_OAUTH_TOKEN_URL = os.environ.get('ICBC_OAUTH_TOKEN_URL')
     ICBC_OAUTH_SCOPE = os.environ.get('ICBC_OAUTH_SCOPE', 'app')
     ICBC_OAUTH_CONTRAVENTION_CLIENT_ID = os.environ.get('ICBC_OAUTH_CONTRAVENTION_CLIENT_ID')
