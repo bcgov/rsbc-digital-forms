@@ -27,13 +27,13 @@ def send_mv6020_copy(**kwargs):
         payload = kwargs.get('payload', {}) or {}
         data = payload.get('data', {}) or {}
         collision_case_no = data.get('collision_case_num')
-        #collision_date = helper.format_date_iso(data.get('date_collision'))
         raw_date = data.get("date_collision")  # ISO string
         raw_time = data.get("time_collision")  # "HH:MM"
         is_unknown = data.get("time_collision_unknown", False)
         formatted_date, formatted_time = format_collision_datetime(raw_date,raw_time,is_unknown)
 
         print_options = data.get('print_options', {})
+        email_address = print_options.get('email', '')
         ptype = print_options.get('type', '').lower()
         if ptype == 'icbc' or ptype == 'police':
 
@@ -55,9 +55,6 @@ def send_mv6020_copy(**kwargs):
                 f"{prime_file_vjur} - {police_file_number}"
             )
 
-            
-            email_address = print_options.get('email', '')
-
             if ptype == 'icbc':
                 full_name = "ICBC"
             else:
@@ -65,10 +62,7 @@ def send_mv6020_copy(**kwargs):
 
         elif ptype == 'entity':
             subject = f"Traffic Accident Report Driver Copy - Collision Case Number {collision_case_no}"
-            full_name, email_address = get_entity_data(data)
-            # Fallback: use email from print_options if entity email is missing or empty
-            if not email_address:
-                email_address = print_options.get('email', '')
+            full_name = get_entity_data(data)
         else:
             kwargs['error'] = {
                 'error_code': ErrorCode.G01,
@@ -160,10 +154,9 @@ def get_entity_data(data: dict) -> Tuple[str, Dict[str, Any]]:
     if recipient:
         given = recipient.get("given_name", "").strip()
         surname = recipient.get("surname", "").strip()
-        email_address = recipient.get("email_address", "").strip()
-        return f"{given} {surname}".strip(), email_address
+        return f"{given} {surname}".strip()
 
-    return "", ""  
+    return ""
 
 def mask_collision_sensitive_data(data):
     sensitive_fields = [

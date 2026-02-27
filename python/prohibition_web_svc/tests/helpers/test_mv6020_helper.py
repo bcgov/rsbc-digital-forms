@@ -80,13 +80,12 @@ def test_format_collision_datetime_bad_time():
 def test_get_entity_data_found():
     data = {
         "entities": [
-            {"entity_num": 1, "given_name": "John", "surname": "Doe", "email_address": "john@example.com"}
+            {"entity_num": 1, "given_name": "John", "surname": "Doe", "contact_email": "john@example.com"}
         ],
         "print_options": {"entity_num": 1},
     }
-    name, email = helper.get_entity_data(data)
+    name = helper.get_entity_data(data)
     assert name == "John Doe"
-    assert email == "john@example.com"
 
 
 def test_get_entity_data_not_found():
@@ -94,9 +93,8 @@ def test_get_entity_data_not_found():
         "entities": [{"entity_num": 2, "given_name": "Jane"}],
         "print_options": {"entity_num": 1},
     }
-    name, email = helper.get_entity_data(data)
+    name = helper.get_entity_data(data) #wrong entity number supplied in print options
     assert name == ""
-    assert email == ""
 
 
 
