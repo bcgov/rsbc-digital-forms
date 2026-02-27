@@ -1,3 +1,5 @@
+import base64
+
 import requests
 from flask import make_response
 from python.common.logging_utils import get_logger
@@ -66,12 +68,20 @@ def get_icbc_drivers_api_authorization_header(**kwargs) -> tuple:
     """Build OAuth2 authorization header."""
     username = kwargs.get('username')
     try:
-        access_token = _get_drivers_oauth_token()
-        kwargs['icbc_header'] = {
-            "Authorization": f"Bearer {access_token}",
-            "loginUserId": username,
-            "Accept": "*/*"
-        }
+        if Config.ICBC_USE_OAUTH:
+            access_token = _get_drivers_oauth_token()
+            kwargs['icbc_header'] = {
+                "Authorization": f"Bearer {access_token}",
+                "loginUserId": username,
+                "Accept": "*/*"
+            }
+        else:
+            auth_header = base64.b64encode("{}:{}".format(Config.ICBC_API_USERNAME, Config.ICBC_API_PASSWORD).encode('utf-8'))
+            kwargs['icbc_header'] = {
+                "Authorization": 'Basic {}'.format(str(auth_header, "utf-8")),
+                "Accept": "application/json",
+                "loginUserId": username
+            }
     except Exception as e:
         logger.error(f"Error obtaining ICBC OAuth token: {e}")
         return False, kwargs
@@ -82,11 +92,19 @@ def get_icbc_vehicles_api_authorization_header(**kwargs) -> tuple:
     """Build OAuth2 authorization header."""
     username = kwargs.get('username')
     try:
-        access_token = _get_vehicles_oauth_token()
-        kwargs['icbc_header'] = {
-            "Authorization": f"Bearer {access_token}",
-            "loginUserId": username
-        }
+        if Config.ICBC_USE_OAUTH:
+            access_token = _get_vehicles_oauth_token()
+            kwargs['icbc_header'] = {
+                "Authorization": f"Bearer {access_token}",
+                "loginUserId": username
+            }
+        else:
+            auth_header = base64.b64encode("{}:{}".format(Config.ICBC_API_USERNAME, Config.ICBC_API_PASSWORD).encode('utf-8'))
+            kwargs['icbc_header'] = {
+                "Authorization": 'Basic {}'.format(str(auth_header, "utf-8")),
+                "Accept": "application/json",
+                "loginUserId": username
+            }
     except Exception as e:
         logger.error(f"Error obtaining ICBC OAuth token: {e}")
         return False, kwargs
@@ -94,7 +112,8 @@ def get_icbc_vehicles_api_authorization_header(**kwargs) -> tuple:
 
 
 def get_icbc_driver(**kwargs) -> tuple:
-    url = "{}/integration/rsbc-driver-api/v1/drivers/{}".format(Config.ICBC_API_ROOT, kwargs.get('dl_number'))
+    drivers_endpoint = '/integration/rsbc-driver-api/v1/drivers/' if Config.ICBC_USE_OAUTH else '/drivers/'
+    url = "{}{}{}".format(Config.ICBC_API_ROOT, drivers_endpoint, kwargs.get('dl_number'))
     try:
         logger.debug("ICBC url:" + url)
         logger.verbose("ICBC header:" + str(kwargs.get('icbc_header')))
@@ -113,7 +132,8 @@ def get_icbc_driver(**kwargs) -> tuple:
 
 
 def get_icbc_vehicle(**kwargs) -> tuple:
-    url = "{}/integration/vips-vehicle-api/v1/vehicles".format(Config.ICBC_API_ROOT)
+    vehicles_endpoint = '/integration/vips-vehicle-api/v1/vehicles' if Config.ICBC_USE_OAUTH else '/vehicles'
+    url = "{}{}".format(Config.ICBC_API_ROOT, vehicles_endpoint)
     url_parameters = {
         "plateNumber": kwargs.get('plate_number'),
         # TODO - removed effectiveDate for debugging purposes
