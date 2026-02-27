@@ -156,7 +156,7 @@ def get_entity_data(data: dict) -> Tuple[str, Dict[str, Any]]:
         surname = recipient.get("surname", "").strip()
         return f"{given} {surname}".strip()
 
-    return "", ""  
+    return ""
 
 def mask_collision_sensitive_data(data):
     sensitive_fields = [
