@@ -8,9 +8,9 @@ RUN ls -a
 RUN ls /opt/app-root/etc/
 RUN source /opt/app-root/etc/scl_enable && \
     set -x && \
-    pip install -U pip setuptools && \
+    pip3 install -U pip "setuptools<70.0.0" wheel && \
     sha256sum "${APP_ROOT}/src/requirements.txt" > ${APP_ROOT}/requirements.sha256  && \
-    cd ${APP_ROOT}/src && pip install -r requirements.txt
+    cd ${APP_ROOT}/src && pip3 install -r requirements.txt
 
 
 COPY __init__.py ${APP_ROOT}/src/python/

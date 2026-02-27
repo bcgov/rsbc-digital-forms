@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, patch
 from python.common.enums import ErrorCode
+from python.common.models.submission_form_refs import SubmissionFormRef
 from python.prohibition_web_svc.middleware import collision_middleware
 import json
 import os
@@ -11,7 +12,14 @@ collision_json_path = os.path.join(test_dir, '..', 'tests-data', 'collision.json
 # Dummy payload for tests
 DUMMY_PAYLOAD = {
     'ff_application_id': 'abc123',
-    'collision_case_num': 'MV-001',
+    'collision_case_num': 'RZ100001',
+    'form_number': 'Z100001',
+    'form_details': {
+        'form_no': 'RZ100001',
+        'form_title': 'Test Collision Form',
+        'subtext': 'Test Subtext',
+        'form_version': 'MV6020 V1'
+    },
 }
 
 def test_set_event_type():
@@ -58,7 +66,7 @@ def test_validate_collision_payload_failure_missing_fields():
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
     assert 'error' in out_kwargs
-    assert out_kwargs['error']['error_details'] == "Missing required fields: ['collision_scenario', 'police_file_num', 'prime_file_vjur', 'date_collision', 'time_collision', 'reported_same_day', 'time_collision_unknown', 'date_reported', 'hit_and_run', 'police_attended', 'police_agency_code', 'primary_collision_occ_code', 'first_contact_event', 'first_contact_loc', 'has_countable_fatal', 'countable_fatal_total', 'completed_by_name', 'completed_by_id', 'investigated_by_traffic_analyst', 'hwy_code', 'city_name', 'lat_decim_degrees', 'long_decim_degrees', 'road_class', 'traffic_flow', 'collision_loc', 'primary_speed_zone', 'land_usage', 'road_type', 'roadway_character', 'roadway_surface_cond', 'weather_cond', 'lighting_cond', 'has_other_prop_damage', 'has_witnesses', 'collision_type', 'total_est_damage', 'total_injured', 'total_killed', 'total_vehicles', 'summary_was_verified', 'entities', 'form_version']"
+    assert out_kwargs['error']['error_details'] == "Missing required fields: ['collision_scenario', 'police_file_num', 'prime_file_vjur', 'date_collision', 'time_collision', 'reported_same_day', 'time_collision_unknown', 'date_reported', 'hit_and_run', 'police_attended', 'police_agency_code', 'primary_collision_occ_code', 'first_contact_event', 'first_contact_loc', 'has_countable_fatal', 'countable_fatal_total', 'completed_by_name', 'completed_by_id', 'investigated_by_traffic_analyst', 'hwy_code', 'city_name', 'lat_decim_degrees', 'long_decim_degrees', 'road_class', 'traffic_flow', 'collision_loc', 'primary_speed_zone', 'land_usage', 'road_type', 'traffic_control', 'roadway_character', 'roadway_surface_cond', 'weather_cond', 'lighting_cond', 'has_other_prop_damage', 'has_witnesses', 'collision_type', 'total_est_damage', 'total_injured', 'total_killed', 'total_vehicles', 'summary_was_verified', 'entities', 'form_version', 'form_details', 'form_number']"
     assert out_kwargs['response_dict'] == {
         'error_details': out_kwargs['error']['error_details']
     }
@@ -86,7 +94,35 @@ def test_validate_collision_payload_failure_missing_entity_fields():
     result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
     assert result is False
     assert 'error' in out_kwargs
-    assert out_kwargs['error']['error_details'] == "Missing required fields in entity: ['entity_type', 'entity_num', 'possible_offender', 'contributing_factor_1', 'contributing_factor_2', 'contributing_factor_3', 'contributing_factor_4']"
+    assert out_kwargs['error']['error_details'] == "Missing required fields in entity: ['entity_type', 'entity_num', 'contributing_factor_1', 'contributing_factor_2', 'contributing_factor_3', 'contributing_factor_4']"
+    assert out_kwargs['response_dict'] == {
+        'error_details': out_kwargs['error']['error_details']
+    }
+
+def test_validate_collision_payload_failure_missing_possible_offender_field():
+    # Missing required entity fields
+    with open(collision_json_path) as f:
+        payload = json.load(f)
+    payload['entities'][0].pop('possible_offender', None)  # Remove possible_offender field
+    kwargs = {'payload': payload}
+    result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
+    assert result is False
+    assert 'error' in out_kwargs
+    assert out_kwargs['error']['error_details'] == "Missing required field 'possible_offender' in entity"
+    assert out_kwargs['response_dict'] == {
+        'error_details': out_kwargs['error']['error_details']
+    }
+
+def test_validate_collision_payload_failure_invalid_possible_offender_field():
+    # Missing required entity fields
+    with open(collision_json_path) as f:
+        payload = json.load(f)
+    payload['entities'][0]["possible_offender"] = "Y"
+    kwargs = {'payload': payload}
+    result, out_kwargs = collision_middleware.validate_collision_payload(**kwargs)
+    assert result is False
+    assert 'error' in out_kwargs
+    assert out_kwargs['error']['error_details'] == "Invalid value for 'possible_offender' in entity. Must be a boolean."
     assert out_kwargs['response_dict'] == {
         'error_details': out_kwargs['error']['error_details']
     }
@@ -213,18 +249,29 @@ def test_save_event_pdf_success():
          patch('python.prohibition_web_svc.middleware.collision_middleware.render_with_playwright') as mock_render, \
          patch('python.prohibition_web_svc.middleware.collision_middleware.Minio') as mock_minio, \
          patch('python.prohibition_web_svc.middleware.collision_middleware.encryptPdf_method1') as mock_encrypt, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.uuid') as mock_uuid, \
          patch('builtins.open', new_callable=MagicMock) as mock_open:
         mock_render.return_value = (True, b'%PDF-1.4...')
         mock_session = MagicMock()
         mock_db.session = mock_session
         mock_minio_instance = MagicMock()
         mock_minio.return_value = mock_minio_instance
+        mock_uuid_obj = MagicMock()
+        mock_uuid_obj.hex = 'unique-id'
+        mock_uuid.uuid4.return_value = mock_uuid_obj
         
         result, out_kwargs = collision_middleware.save_event_pdf(**kwargs)
         assert result is True
         assert out_kwargs == kwargs
         # Verify that db operations were called
         mock_session.add.assert_called_once()
+        mock_session.add.assert_called_with(SubmissionFormRef(
+            submission_id=42,
+            form_type='MV6020',
+            form_id='RZ100001',
+            form_version='MV6020 V1',
+            storage_key='test/unique-id_encrypted.pdf'
+        ))
         mock_session.commit.assert_called_once()
 
 

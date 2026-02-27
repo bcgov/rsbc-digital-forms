@@ -52,7 +52,15 @@ class Config(BaseConfig):
 
     ENCRYPT_KEY = os.environ.get('ENCRYPT_KEY')
     ENCRYPT_KEY_SALT = os.environ.get('ENCRYPT_KEY_SALT')
-    
+
+    # Add these OAuth2 settings
+    ICBC_OAUTH_TOKEN_URL = os.environ.get('ICBC_OAUTH_TOKEN_URL')
+    ICBC_OAUTH_SCOPE = os.environ.get('ICBC_OAUTH_SCOPE', 'app')    
+    ICBC_OAUTH_DRIVERS_CLIENT_ID = os.environ.get('ICBC_OAUTH_DRIVERS_CLIENT_ID')
+    ICBC_OAUTH_DRIVERS_CLIENT_SECRET = os.environ.get('ICBC_OAUTH_DRIVERS_CLIENT_SECRET')
+    ICBC_OAUTH_VEHICLES_CLIENT_ID = os.environ.get('ICBC_OAUTH_VEHICLES_CLIENT_ID')
+    ICBC_OAUTH_VEHICLES_CLIENT_SECRET = os.environ.get('ICBC_OAUTH_VEHICLES_CLIENT_SECRET')
+
     REACT_APP_BASE_URL = os.environ.get('REACT_APP_BASE_URL', 'http://localhost:3000/roadside-forms')
 
     CACHE_TIMEOUT = int(os.getenv('CACHE_TIMEOUT', 300))  # in seconds

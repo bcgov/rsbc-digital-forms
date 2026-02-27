@@ -35,7 +35,7 @@ resource_map = {
     "nsc_puj": NSCPuj,
     "jurisdiction_country": JurisdictionCountry,
     "lki_highway": TarLkiHighway,
-    "lki_segment": TarLkiSegment,
+    "lki_segment": TarLkiSegment
 }
 
 logger.info('*** static blueprint loaded ***')
@@ -103,6 +103,12 @@ def update(resource, static_id):
     if request.method == 'PATCH':
         return make_response({"error": "method not implemented"}, 405)
 
+@bp.route('/ping', methods=['GET'])
+def ping():
+    if request.method == 'GET':
+        logger.debug('Ping request received')
+        _, response = _get_resource_cached(resource='cities')
+        return response.get('response')
 
 def _get_resource_cached(**kwargs) -> tuple:
     """Get resource data with caching"""

@@ -28,12 +28,15 @@ class TarEntity(db.Model):
     date_of_birth: date
     age_at_collision: int
     contact_phone_num: str
+    contact_email: str
     sex: str
     contributing_factor_1: str
     contributing_factor_2: str
     contributing_factor_3: str
     contributing_factor_4: str
     charges_blood_alc_tests_taken: str
+    has_charges: str
+    blood_alc_tests_taken: str
     blood_alc_test: str
     result_1: str
     result_2: str
@@ -87,12 +90,15 @@ class TarEntity(db.Model):
     date_of_birth = db.Column(db.Date)
     age_at_collision = db.Column(db.Integer)
     contact_phone_num = db.Column(db.String(25))
+    contact_email = db.Column(db.String(100))
     sex = db.Column(db.String(1))
     contributing_factor_1 = db.Column(db.String(2), db.ForeignKey('TAR.contributing_factors.code'), nullable=False)
     contributing_factor_2 = db.Column(db.String(2), db.ForeignKey('TAR.contributing_factors.code'), nullable=False)
     contributing_factor_3 = db.Column(db.String(2), db.ForeignKey('TAR.contributing_factors.code'), nullable=False)
     contributing_factor_4 = db.Column(db.String(2), db.ForeignKey('TAR.contributing_factors.code'), nullable=False)
     charges_blood_alc_tests_taken = db.Column(db.String(1))
+    has_charges = db.Column(db.String(1))
+    blood_alc_tests_taken = db.Column(db.String(1))
     blood_alc_test = db.Column(db.String(3))
     result_1 = db.Column(db.String(8))
     result_2 = db.Column(db.String(8))
