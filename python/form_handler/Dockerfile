@@ -1,15 +1,10 @@
-# FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python36-1:1.0
-FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python39:1-196.1725368453
+FROM python:3.12-slim
 ARG VERSION
 ENV VERSION=$VERSION
 
 COPY form_handler/requirements.txt ${APP_ROOT}/src/
-RUN ls -a
 
-RUN ls /opt/app-root/etc/
-RUN source /opt/app-root/etc/scl_enable && \
-    set -x && \
-    pip install -U pip setuptools && \
+RUN pip install -U pip setuptools && \
     sha256sum "${APP_ROOT}/src/requirements.txt" > ${APP_ROOT}/requirements.sha256  && \
     cd ${APP_ROOT}/src && pip install -r requirements.txt
 

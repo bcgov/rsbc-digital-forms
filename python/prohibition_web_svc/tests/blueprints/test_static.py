@@ -199,308 +199,291 @@ def test_resource_map():
 
 
 class TestGetResourceCached:
-    """Test the _get_resource_cached function directly"""
+	"""Test the _get_resource_cached function directly"""
 
-    @patch('python.prohibition_web_svc.blueprints.static.cache')
-    @patch('python.prohibition_web_svc.blueprints.static.make_response')
-    def test_get_resource_cached_hit(self, mock_make_response, mock_cache):
-        """Test _get_resource_cached when data is in cache"""
-        # Setup mocks
-        cached_data = {"test": "cached_data"}
-        mock_cache.get.return_value = cached_data
-        mock_response = MagicMock()
-        mock_make_response.return_value = mock_response
+	def test_get_resource_cached_hit(self, monkeypatch):
+		"""Test _get_resource_cached when data is in cache"""
+		cached_data = {"test": "cached_data"}
+		mock_cache = MagicMock()
+		mock_cache.get.return_value = cached_data
+		monkeypatch.setattr(static_blueprint, 'cache', mock_cache)
 
-        # Call function
-        result, kwargs = static_blueprint._get_resource_cached(resource="agencies")
+		mock_response = MagicMock()
+		mock_make_response = MagicMock(return_value=mock_response)
+		monkeypatch.setattr(static_blueprint, 'make_response', mock_make_response)
 
-        # Assertions
-        assert result is True
-        assert kwargs['response'] == mock_response
-        mock_cache.get.assert_called_once_with('static_resource::agencies')
-        mock_make_response.assert_called_once_with(cached_data, 200)
-        mock_cache.set.assert_not_called()  # Should not set cache on hit
+		result, kwargs = static_blueprint._get_resource_cached(resource="agencies")
 
-    @patch('python.prohibition_web_svc.blueprints.static.cache')
-    @patch('python.prohibition_web_svc.blueprints.static._get_resource')
-    @patch('python.prohibition_web_svc.blueprints.static.make_response')
-    def test_get_resource_cached_miss_success(self, mock_make_response, mock_get_resource, mock_cache):
-        """Test _get_resource_cached when data is not in cache and _get_resource succeeds"""
-        # Setup mocks
-        mock_cache.get.return_value = None  # Cache miss
-        fresh_response = MagicMock()
-        fresh_response.get_json.return_value = {"test": "fresh_data"}
-        mock_get_resource.return_value = (True, {'response': fresh_response})
-        mock_response = MagicMock()
-        mock_make_response.return_value = mock_response
+		assert result is True
+		assert kwargs['response'] == mock_response
+		mock_cache.get.assert_called_once_with('static_resource::agencies')
+		mock_make_response.assert_called_once_with(cached_data, 200)
+		mock_cache.set.assert_not_called()
 
-        # Call function
-        result, kwargs = static_blueprint._get_resource_cached(resource="agencies")
+	def test_get_resource_cached_miss_success(self, monkeypatch):
+		"""Test _get_resource_cached when data is not in cache and _get_resource succeeds"""
+		mock_cache = MagicMock()
+		mock_cache.get.return_value = None
+		monkeypatch.setattr(static_blueprint, 'cache', mock_cache)
 
-        # Assertions
-        assert result is True
-        assert kwargs == {'response': fresh_response}
-        mock_cache.get.assert_called_once_with('static_resource::agencies')
-        mock_get_resource.assert_called_once_with(resource="agencies")
-        mock_cache.set.assert_called_once_with('static_resource::agencies', {"test": "fresh_data"})
-        mock_make_response.assert_not_called()  # Should not create new response on success
+		fresh_response = MagicMock()
+		fresh_response.get_json.return_value = {"test": "fresh_data"}
+		mock_get_resource = MagicMock(return_value=(True, {'response': fresh_response}))
+		monkeypatch.setattr(static_blueprint, '_get_resource', mock_get_resource)
 
-    @patch('python.prohibition_web_svc.blueprints.static.cache')
-    @patch('python.prohibition_web_svc.blueprints.static._get_resource')
-    def test_get_resource_cached_miss_failure(self, mock_get_resource, mock_cache):
-        """Test _get_resource_cached when data is not in cache and _get_resource fails"""
-        # Setup mocks
-        mock_cache.get.return_value = None  # Cache miss
-        mock_get_resource.return_value = (False, {'error': 'failed'})
+		mock_make_response = MagicMock()
+		monkeypatch.setattr(static_blueprint, 'make_response', mock_make_response)
 
-        # Call function
-        result, kwargs = static_blueprint._get_resource_cached(resource="agencies")
+		result, kwargs = static_blueprint._get_resource_cached(resource="agencies")
 
-        # Assertions
-        assert result is False
-        assert kwargs == {'error': 'failed'}
-        mock_cache.get.assert_called_once_with('static_resource::agencies')
-        mock_get_resource.assert_called_once_with(resource="agencies")
-        mock_cache.set.assert_not_called()  # Should not cache on failure
+		assert result is True
+		assert kwargs == {'response': fresh_response}
+		mock_cache.get.assert_called_once_with('static_resource::agencies')
+		mock_get_resource.assert_called_once_with(resource="agencies")
+		mock_cache.set.assert_called_once_with('static_resource::agencies', {"test": "fresh_data"})
+		mock_make_response.assert_not_called()
 
-    @patch('python.prohibition_web_svc.blueprints.static.cache')
-    @patch('python.prohibition_web_svc.blueprints.static._get_resource')
-    @patch('python.prohibition_web_svc.blueprints.static.logger')
-    def test_get_resource_cached_exception_handling(self, mock_logger, mock_get_resource, mock_cache):
-        """Test _get_resource_cached handles exceptions properly"""
-        # Setup mocks
-        mock_cache.get.return_value = None  # Cache miss
-        mock_get_resource.side_effect = Exception("Test exception")
+	def test_get_resource_cached_miss_failure(self, monkeypatch):
+		"""Test _get_resource_cached when data is not in cache and _get_resource fails"""
+		mock_cache = MagicMock()
+		mock_cache.get.return_value = None
+		monkeypatch.setattr(static_blueprint, 'cache', mock_cache)
 
-        # Call function
-        result, kwargs = static_blueprint._get_resource_cached(resource="agencies")
+		mock_get_resource = MagicMock(return_value=(False, {'error': 'failed'}))
+		monkeypatch.setattr(static_blueprint, '_get_resource', mock_get_resource)
 
-        # Assertions
-        assert result is False
-        assert 'resource' in kwargs  # Should preserve original kwargs
-        mock_cache.get.assert_called_once_with('static_resource::agencies')
-        mock_get_resource.assert_called_once_with(resource="agencies")
-        mock_logger.warning.assert_called_once()
-        warning_call_args = mock_logger.warning.call_args[0][0]
-        assert "error getting cached agencies data" in warning_call_args
-        assert "Test exception" in warning_call_args
-        mock_cache.set.assert_not_called()  # Should not cache on exception
+		result, kwargs = static_blueprint._get_resource_cached(resource="agencies")
 
-    @patch('python.prohibition_web_svc.blueprints.static.cache')
-    @patch('python.prohibition_web_svc.blueprints.static.make_response')
-    def test_get_resource_cached_cache_key_format(self, mock_make_response, mock_cache):
-        """Test _get_resource_cached uses correct cache key format"""
-        # Setup mocks
-        cached_data = {"test": "data"}
-        mock_cache.get.return_value = cached_data
-        mock_response = MagicMock()
-        mock_make_response.return_value = mock_response
+		assert result is False
+		assert kwargs == {'error': 'failed'}
+		mock_cache.get.assert_called_once_with('static_resource::agencies')
+		mock_get_resource.assert_called_once_with(resource="agencies")
+		mock_cache.set.assert_not_called()
 
-        # Test different resource names
-        test_cases = ["agencies", "cities", "vehicle_types"]
+	def test_get_resource_cached_exception_handling(self, monkeypatch):
+		"""Test _get_resource_cached handles exceptions properly"""
+		mock_cache = MagicMock()
+		mock_cache.get.return_value = None
+		monkeypatch.setattr(static_blueprint, 'cache', mock_cache)
 
-        for resource in test_cases:
-            mock_cache.get.reset_mock()
-            mock_make_response.reset_mock()
+		mock_get_resource = MagicMock(side_effect=Exception("Test exception"))
+		monkeypatch.setattr(static_blueprint, '_get_resource', mock_get_resource)
 
-            static_blueprint._get_resource_cached(resource=resource)
+		mock_logger = MagicMock()
+		monkeypatch.setattr(static_blueprint, 'logger', mock_logger)
 
-            expected_key = f'static_resource::{resource}'
-            mock_cache.get.assert_called_once_with(expected_key)
+		result, kwargs = static_blueprint._get_resource_cached(resource="agencies")
 
-    @patch('python.prohibition_web_svc.blueprints.static.cache')
-    @patch('python.prohibition_web_svc.blueprints.static._get_resource')
-    @patch('python.prohibition_web_svc.blueprints.static.make_response')
-    def test_get_resource_cached_preserves_kwargs(self, mock_make_response, mock_get_resource, mock_cache):
-        """Test _get_resource_cached preserves additional kwargs on cache hit"""
-        # Setup mocks for cache hit scenario
-        cached_data = {"test": "cached_data"}
-        mock_cache.get.return_value = cached_data
-        mock_response = MagicMock()
-        mock_make_response.return_value = mock_response
+		assert result is False
+		assert 'resource' in kwargs
+		mock_cache.get.assert_called_once_with('static_resource::agencies')
+		mock_get_resource.assert_called_once_with(resource="agencies")
+		mock_logger.warning.assert_called_once()
+		warning_call_args = mock_logger.warning.call_args[0][0]
+		assert "error getting cached agencies data" in warning_call_args
+		assert "Test exception" in warning_call_args
+		mock_cache.set.assert_not_called()
 
-        # Call function with additional kwargs
-        result, kwargs = static_blueprint._get_resource_cached(resource="agencies", extra_param="test")
+	def test_get_resource_cached_cache_key_format(self, monkeypatch):
+		"""Test _get_resource_cached uses correct cache key format"""
+		cached_data = {"test": "data"}
+		mock_cache = MagicMock()
+		mock_cache.get.return_value = cached_data
+		monkeypatch.setattr(static_blueprint, 'cache', mock_cache)
 
-        # Assertions - on cache hit, original kwargs are preserved and response is added
-        assert result is True
-        assert kwargs['response'] == mock_response
-        assert kwargs['resource'] == "agencies"
-        assert kwargs['extra_param'] == "test"  # Should preserve original kwargs
-        mock_get_resource.assert_not_called()  # Should not call _get_resource on cache hit
+		mock_response = MagicMock()
+		mock_make_response = MagicMock(return_value=mock_response)
+		monkeypatch.setattr(static_blueprint, 'make_response', mock_make_response)
+
+		for resource in ["agencies", "cities", "vehicle_types"]:
+			mock_cache.get.reset_mock()
+			mock_make_response.reset_mock()
+			static_blueprint._get_resource_cached(resource=resource)
+
+			expected_key = f'static_resource::{resource}'
+			mock_cache.get.assert_called_once_with(expected_key)
+
+	def test_get_resource_cached_preserves_kwargs(self, monkeypatch):
+		"""Test _get_resource_cached preserves additional kwargs on cache hit"""
+		cached_data = {"test": "cached_data"}
+		mock_cache = MagicMock()
+		mock_cache.get.return_value = cached_data
+		monkeypatch.setattr(static_blueprint, 'cache', mock_cache)
+
+		mock_response = MagicMock()
+		mock_make_response = MagicMock(return_value=mock_response)
+		monkeypatch.setattr(static_blueprint, 'make_response', mock_make_response)
+
+		mock_get_resource = MagicMock()
+		monkeypatch.setattr(static_blueprint, '_get_resource', mock_get_resource)
+
+		result, kwargs = static_blueprint._get_resource_cached(resource="agencies", extra_param="test")
+
+		assert result is True
+		assert kwargs['response'] == mock_response
+		assert kwargs['resource'] == "agencies"
+		assert kwargs['extra_param'] == "test"
+		mock_get_resource.assert_not_called()
 
 
 class TestGetResource:
-    """Test the _get_resource function directly"""
+	"""Test the _get_resource function directly"""
 
-    @patch('python.prohibition_web_svc.blueprints.static.db')
-    @patch('python.prohibition_web_svc.blueprints.static.make_response')
-    @patch('python.prohibition_web_svc.blueprints.static.jsonify')
-    @patch('python.prohibition_web_svc.blueprints.static.logger')
-    def test_get_resource_dataclass_success(self, mock_logger, mock_jsonify, mock_make_response, mock_db):
-        """Test _get_resource with dataclass resource (database model)"""
-        # Setup mocks
-        mock_query = MagicMock()
-        mock_db.session.query.return_value = mock_query
-        mock_query.all.return_value = [{'id': 1, 'name': 'Test Agency'}]
-        
-        mock_jsonified_data = MagicMock()
-        mock_jsonify.return_value = mock_jsonified_data
-        
-        mock_response = MagicMock()
-        mock_make_response.return_value = mock_response
+	def test_get_resource_dataclass_success(self, monkeypatch):
+		"""Test _get_resource with dataclass resource (database model)"""
+		mock_query = MagicMock()
+		mock_query.all.return_value = [{'id': 1, 'name': 'Test Agency'}]
+		mock_db = MagicMock()
+		mock_db.session.query.return_value = mock_query
+		monkeypatch.setattr(static_blueprint, 'db', mock_db)
 
-        # Call function
-        result, kwargs = static_blueprint._get_resource(resource="agencies", request_id="test-123")
+		mock_jsonified_data = MagicMock()
+		mock_jsonify = MagicMock(return_value=mock_jsonified_data)
+		monkeypatch.setattr(static_blueprint, 'jsonify', mock_jsonify)
 
-        # Assertions
-        assert result is True
-        assert kwargs['response'] == mock_response
-        assert kwargs['resource'] == "agencies"
-        assert kwargs['request_id'] == "test-123"
-        
-        # Verify database query was made correctly
-        mock_db.session.query.assert_called_once_with(static_blueprint.resource_map["agencies"])
-        mock_query.all.assert_called_once()
-        mock_jsonify.assert_called_once_with([{'id': 1, 'name': 'Test Agency'}])
-        mock_make_response.assert_called_once_with(mock_jsonified_data, 200)
-        mock_logger.verbose.assert_called_once_with("test-123 inside _get_resource() for resource: agencies")
+		mock_response = MagicMock()
+		mock_make_response = MagicMock(return_value=mock_response)
+		monkeypatch.setattr(static_blueprint, 'make_response', mock_make_response)
 
-    @patch('python.prohibition_web_svc.blueprints.static.make_response')
-    @patch('python.prohibition_web_svc.blueprints.static.jsonify')
-    @patch('python.prohibition_web_svc.blueprints.static.logger')
-    def test_get_resource_function_success(self, mock_logger, mock_jsonify, mock_make_response):
-        """Test _get_resource with function resource"""
-        # Setup mocks
-        mock_function_result = [{'id': 1, 'code': 'TEST', 'description': 'Test Charge'}]
-        mock_function = MagicMock(return_value=mock_function_result)
-        
-        # Mock the get_test function directly
-        static_blueprint.resource_map["test"] = lambda: mock_function()
-        mock_jsonified_data = MagicMock()
-        mock_jsonify.return_value = mock_jsonified_data
-        
-        mock_response = MagicMock()
-        mock_make_response.return_value = mock_response
+		mock_logger = MagicMock()
+		monkeypatch.setattr(static_blueprint, 'logger', mock_logger)
 
-        # Call function
-        result, kwargs = static_blueprint._get_resource(resource="test", request_id="test-456")
+		result, kwargs = static_blueprint._get_resource(resource="agencies", request_id="test-123")
 
-        # Assertions
-        assert result is True
-        assert kwargs['response'] == mock_response
-        assert kwargs['resource'] == "test"
-        assert kwargs['request_id'] == "test-456"
-        
-        # Verify function was called and response created
-        mock_jsonify.assert_called_once_with(mock_function_result)
-        mock_make_response.assert_called_once_with(mock_jsonified_data, 200)
-        mock_logger.verbose.assert_called_once_with("test-456 inside _get_resource() for resource: test")
+		assert result is True
+		assert kwargs['response'] == mock_response
+		assert kwargs['resource'] == "agencies"
+		assert kwargs['request_id'] == "test-123"
+		mock_db.session.query.assert_called_once_with(static_blueprint.resource_map["agencies"])
+		mock_query.all.assert_called_once()
+		mock_jsonify.assert_called_once_with([{'id': 1, 'name': 'Test Agency'}])
+		mock_make_response.assert_called_once_with(mock_jsonified_data, 200)
+		mock_logger.verbose.assert_called_once_with("test-123 inside _get_resource() for resource: agencies")
 
-    @patch('python.prohibition_web_svc.blueprints.static.db')
-    @patch('python.prohibition_web_svc.blueprints.static.logger')
-    def test_get_resource_dataclass_exception(self, mock_logger, mock_db):
-        """Test _get_resource handles database exceptions properly"""
-        # Setup mock to raise exception
-        mock_db.session.query.side_effect = Exception("Database connection failed")
+	def test_get_resource_function_success(self, monkeypatch):
+		"""Test _get_resource with function resource"""
+		mock_function_result = [{'id': 1, 'code': 'TEST', 'description': 'Test Charge'}]
+		mock_function = MagicMock(return_value=mock_function_result)
+		static_blueprint.resource_map["test"] = lambda: mock_function()
 
-        # Call function
-        result, kwargs = static_blueprint._get_resource(resource="agencies", request_id="test-789")
+		mock_jsonified_data = MagicMock()
+		mock_jsonify = MagicMock(return_value=mock_jsonified_data)
+		monkeypatch.setattr(static_blueprint, 'jsonify', mock_jsonify)
 
-        # Assertions
-        assert result is False
-        assert kwargs['resource'] == "agencies"
-        assert kwargs['request_id'] == "test-789"
-        assert 'response' not in kwargs  # No response should be set on error
-        
-        # Verify logging
-        mock_logger.verbose.assert_called_once_with("test-789 inside _get_resource() for resource: agencies")
-        mock_logger.warning.assert_called_once()
-        warning_call_args = mock_logger.warning.call_args[0][0]
-        assert "test-789 error getting agencies data" in warning_call_args
-        assert "Database connection failed" in warning_call_args
+		mock_response = MagicMock()
+		mock_make_response = MagicMock(return_value=mock_response)
+		monkeypatch.setattr(static_blueprint, 'make_response', mock_make_response)
 
-    @patch('python.prohibition_web_svc.blueprints.static.logger')
-    def test_get_resource_function_exception(self, mock_logger):
-        """Test _get_resource handles function call exceptions properly"""
-        # Mock the test function to raise exception
-        mock_function = MagicMock(side_effect=Exception("API call failed"))
-        
-        # Mock the test function directly
-        static_blueprint.resource_map["tests"] = lambda: mock_function()
-        # Call function
-        result, kwargs = static_blueprint._get_resource(resource="tests", request_id="test-999")
+		mock_logger = MagicMock()
+		monkeypatch.setattr(static_blueprint, 'logger', mock_logger)
 
-        # Assertions
-        assert result is False
-        assert kwargs['resource'] == "tests"
-        assert kwargs['request_id'] == "test-999"
-        assert 'response' not in kwargs  # No response should be set on error
-        
-        # Verify logging
-        mock_logger.verbose.assert_called_once_with("test-999 inside _get_resource() for resource: tests")
-        mock_logger.warning.assert_called_once()
-        warning_call_args = mock_logger.warning.call_args[0][0]
-        assert "test-999 error getting tests data" in warning_call_args
-        assert "API call failed" in warning_call_args
+		result, kwargs = static_blueprint._get_resource(resource="test", request_id="test-456")
 
-    @patch('python.prohibition_web_svc.blueprints.static.db')
-    @patch('python.prohibition_web_svc.blueprints.static.make_response')
-    @patch('python.prohibition_web_svc.blueprints.static.jsonify')
-    @patch('python.prohibition_web_svc.blueprints.static.logger')
-    def test_get_resource_preserves_kwargs(self, mock_logger, mock_jsonify, mock_make_response, mock_db):
-        """Test _get_resource preserves additional kwargs"""
-        # Setup mocks
-        mock_query = MagicMock()
-        mock_db.session.query.return_value = mock_query
-        mock_query.all.return_value = [{'id': 1}]
-        
-        mock_jsonified_data = MagicMock()
-        mock_jsonify.return_value = mock_jsonified_data
-        
-        mock_response = MagicMock()
-        mock_make_response.return_value = mock_response
+		assert result is True
+		assert kwargs['response'] == mock_response
+		assert kwargs['resource'] == "test"
+		assert kwargs['request_id'] == "test-456"
+		mock_jsonify.assert_called_once_with(mock_function_result)
+		mock_make_response.assert_called_once_with(mock_jsonified_data, 200)
+		mock_logger.verbose.assert_called_once_with("test-456 inside _get_resource() for resource: test")
 
-        # Call function with additional kwargs
-        result, kwargs = static_blueprint._get_resource(
-            resource="agencies", 
-            request_id="test-123", 
-            extra_param="test_value",
-            another_param=42
-        )
+	def test_get_resource_dataclass_exception(self, monkeypatch):
+		"""Test _get_resource handles database exceptions properly"""
+		mock_db = MagicMock()
+		mock_db.session.query.side_effect = Exception("Database connection failed")
+		monkeypatch.setattr(static_blueprint, 'db', mock_db)
 
-        # Assertions
-        assert result is True
-        assert kwargs['response'] == mock_response
-        assert kwargs['resource'] == "agencies"
-        assert kwargs['request_id'] == "test-123"
-        assert kwargs['extra_param'] == "test_value"
-        assert kwargs['another_param'] == 42
+		mock_logger = MagicMock()
+		monkeypatch.setattr(static_blueprint, 'logger', mock_logger)
 
-    @patch('python.prohibition_web_svc.blueprints.static.db')
-    @patch('python.prohibition_web_svc.blueprints.static.make_response')
-    @patch('python.prohibition_web_svc.blueprints.static.jsonify')
-    @patch('python.prohibition_web_svc.blueprints.static.logger')
-    def test_get_resource_empty_database_result(self, mock_logger, mock_jsonify, mock_make_response, mock_db):
-        """Test _get_resource handles empty database results"""
-        # Setup mocks for empty result
-        mock_query = MagicMock()
-        mock_db.session.query.return_value = mock_query
-        mock_query.all.return_value = []  # Empty list
-        
-        mock_jsonified_data = MagicMock()
-        mock_jsonify.return_value = mock_jsonified_data
-        
-        mock_response = MagicMock()
-        mock_make_response.return_value = mock_response
+		result, kwargs = static_blueprint._get_resource(resource="agencies", request_id="test-789")
 
-        # Call function
-        result, kwargs = static_blueprint._get_resource(resource="agencies", request_id="test-123")
+		assert result is False
+		assert kwargs['resource'] == "agencies"
+		assert kwargs['request_id'] == "test-789"
+		assert 'response' not in kwargs
+		mock_logger.verbose.assert_called_once_with("test-789 inside _get_resource() for resource: agencies")
+		mock_logger.warning.assert_called_once()
+		warning_call_args = mock_logger.warning.call_args[0][0]
+		assert "test-789 error getting agencies data" in warning_call_args
+		assert "Database connection failed" in warning_call_args
 
-        # Assertions
-        assert result is True
-        assert kwargs['response'] == mock_response
-        
-        # Verify empty list was processed
-        mock_jsonify.assert_called_once_with([])
-        mock_make_response.assert_called_once_with(mock_jsonified_data, 200)
+	def test_get_resource_function_exception(self, monkeypatch):
+		"""Test _get_resource handles function call exceptions properly"""
+		mock_function = MagicMock(side_effect=Exception("API call failed"))
+		static_blueprint.resource_map["tests"] = lambda: mock_function()
+
+		mock_logger = MagicMock()
+		monkeypatch.setattr(static_blueprint, 'logger', mock_logger)
+
+		result, kwargs = static_blueprint._get_resource(resource="tests", request_id="test-999")
+
+		assert result is False
+		assert kwargs['resource'] == "tests"
+		assert kwargs['request_id'] == "test-999"
+		assert 'response' not in kwargs
+		mock_logger.verbose.assert_called_once_with("test-999 inside _get_resource() for resource: tests")
+		mock_logger.warning.assert_called_once()
+		warning_call_args = mock_logger.warning.call_args[0][0]
+		assert "test-999 error getting tests data" in warning_call_args
+		assert "API call failed" in warning_call_args
+
+	def test_get_resource_preserves_kwargs(self, monkeypatch):
+		"""Test _get_resource preserves additional kwargs"""
+		mock_query = MagicMock()
+		mock_query.all.return_value = [{'id': 1}]
+		mock_db = MagicMock()
+		mock_db.session.query.return_value = mock_query
+		monkeypatch.setattr(static_blueprint, 'db', mock_db)
+
+		mock_jsonified_data = MagicMock()
+		mock_jsonify = MagicMock(return_value=mock_jsonified_data)
+		monkeypatch.setattr(static_blueprint, 'jsonify', mock_jsonify)
+
+		mock_response = MagicMock()
+		mock_make_response = MagicMock(return_value=mock_response)
+		monkeypatch.setattr(static_blueprint, 'make_response', mock_make_response)
+
+		mock_logger = MagicMock()
+		monkeypatch.setattr(static_blueprint, 'logger', mock_logger)
+
+		result, kwargs = static_blueprint._get_resource(
+			resource="agencies",
+			request_id="test-123",
+			extra_param="test_value",
+			another_param=42
+		)
+
+		assert result is True
+		assert kwargs['response'] == mock_response
+		assert kwargs['resource'] == "agencies"
+		assert kwargs['request_id'] == "test-123"
+		assert kwargs['extra_param'] == "test_value"
+		assert kwargs['another_param'] == 42
+
+	def test_get_resource_empty_database_result(self, monkeypatch):
+		"""Test _get_resource handles empty database results"""
+		mock_query = MagicMock()
+		mock_query.all.return_value = []
+		mock_db = MagicMock()
+		mock_db.session.query.return_value = mock_query
+		monkeypatch.setattr(static_blueprint, 'db', mock_db)
+
+		mock_jsonified_data = MagicMock()
+		mock_jsonify = MagicMock(return_value=mock_jsonified_data)
+		monkeypatch.setattr(static_blueprint, 'jsonify', mock_jsonify)
+
+		mock_response = MagicMock()
+		mock_make_response = MagicMock(return_value=mock_response)
+		monkeypatch.setattr(static_blueprint, 'make_response', mock_make_response)
+
+		mock_logger = MagicMock()
+		monkeypatch.setattr(static_blueprint, 'logger', mock_logger)
+
+		result, kwargs = static_blueprint._get_resource(resource="agencies", request_id="test-123")
+
+		assert result is True
+		assert kwargs['response'] == mock_response
+		mock_jsonify.assert_called_once_with([])
+		mock_make_response.assert_called_once_with(mock_jsonified_data, 200)
+
