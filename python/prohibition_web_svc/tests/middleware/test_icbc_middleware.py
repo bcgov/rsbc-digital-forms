@@ -62,8 +62,9 @@ class TestOAuthTokenCaching:
 
 
 class TestAuthorizationHeaders:
-	def test_get_icbc_drivers_api_authorization_header_success(self):
-		with patch("python.prohibition_web_svc.middleware.icbc_middleware._get_drivers_oauth_token", return_value="token"):
+	def test_get_icbc_drivers_api_authorization_header_oauth_success(self):
+		with patch("python.prohibition_web_svc.middleware.icbc_middleware._get_drivers_oauth_token", return_value="token"), \
+				patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_USE_OAUTH", True):
 			result, kwargs = icbc_middleware.get_icbc_drivers_api_authorization_header(username="user1")
 
 		assert result is True
@@ -71,36 +72,78 @@ class TestAuthorizationHeaders:
 		assert kwargs["icbc_header"]["loginUserId"] == "user1"
 		assert kwargs["icbc_header"]["Accept"] == "*/*"
 
+	def test_get_icbc_drivers_api_authorization_header_basic_auth(self):
+		with patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_USE_OAUTH", False), \
+				patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_USERNAME", "user"), \
+				patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_PASSWORD", "pass"):
+			result, kwargs = icbc_middleware.get_icbc_drivers_api_authorization_header(username="user1")
+
+		assert result is True
+		assert kwargs["icbc_header"]["Authorization"].startswith("Basic ")
+		assert kwargs["icbc_header"]["loginUserId"] == "user1"
+		assert kwargs["icbc_header"]["Accept"] == "application/json"
+
 	def test_get_icbc_drivers_api_authorization_header_failure(self):
-		with patch("python.prohibition_web_svc.middleware.icbc_middleware._get_drivers_oauth_token", side_effect=Exception("fail")):
+		with patch("python.prohibition_web_svc.middleware.icbc_middleware._get_drivers_oauth_token", side_effect=Exception("fail")), \
+				patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_USE_OAUTH", True):
 			result, kwargs = icbc_middleware.get_icbc_drivers_api_authorization_header(username="user1")
 
 		assert result is False
 		assert "icbc_header" not in kwargs
 
-	def test_get_icbc_vehicles_api_authorization_header_success(self):
-		with patch("python.prohibition_web_svc.middleware.icbc_middleware._get_vehicles_oauth_token", return_value="token"):
+	def test_get_icbc_vehicles_api_authorization_header_oauth_success(self):
+		with patch("python.prohibition_web_svc.middleware.icbc_middleware._get_vehicles_oauth_token", return_value="token"), \
+				patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_USE_OAUTH", True):
 			result, kwargs = icbc_middleware.get_icbc_vehicles_api_authorization_header(username="user2")
 
 		assert result is True
 		assert kwargs["icbc_header"]["Authorization"] == "Bearer token"
 		assert kwargs["icbc_header"]["loginUserId"] == "user2"
 
+	def test_get_icbc_vehicles_api_authorization_header_basic_auth(self):
+		with patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_USE_OAUTH", False), \
+				patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_USERNAME", "user"), \
+				patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_PASSWORD", "pass"):
+			result, kwargs = icbc_middleware.get_icbc_vehicles_api_authorization_header(username="user2")
+
+		assert result is True
+		assert kwargs["icbc_header"]["Authorization"].startswith("Basic ")
+		assert kwargs["icbc_header"]["loginUserId"] == "user2"
+		assert kwargs["icbc_header"]["Accept"] == "application/json"
+
 
 class TestIcbcApiCalls:
-	def test_get_icbc_driver_success(self, app):
+	def test_get_icbc_driver_success_oauth(self, app):
 		mock_response = MagicMock()
 		mock_response.status_code = 200
 		mock_response.json.return_value = {"ok": True}
 
 		with app.app_context(), \
-			patch("python.prohibition_web_svc.middleware.icbc_middleware.requests.get", return_value=mock_response), \
-			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_ROOT", "https://example"):
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.requests.get", return_value=mock_response) as mock_get, \
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_ROOT", "https://example"), \
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_USE_OAUTH", True):
 			result, kwargs = icbc_middleware.get_icbc_driver(icbc_header={"Authorization": "Bearer t"}, dl_number="123")
 
 		assert result is True
 		assert kwargs["response"].status_code == 200
 		assert kwargs["response"].get_json() == {"ok": True}
+		assert "/integration/rsbc-driver-api/v1/drivers/123" in mock_get.call_args.args[0]
+
+	def test_get_icbc_driver_success_basic(self, app):
+		mock_response = MagicMock()
+		mock_response.status_code = 200
+		mock_response.json.return_value = {"ok": True}
+
+		with app.app_context(), \
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.requests.get", return_value=mock_response) as mock_get, \
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_ROOT", "https://example"), \
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_USE_OAUTH", False):
+			result, kwargs = icbc_middleware.get_icbc_driver(icbc_header={"Authorization": "Basic xyz"}, dl_number="123")
+
+		assert result is True
+		assert kwargs["response"].status_code == 200
+		assert "/drivers/123" in mock_get.call_args.args[0]
+		assert "/integration/" not in mock_get.call_args.args[0]
 
 	def test_get_icbc_driver_maps_400_to_200(self, app):
 		mock_response = MagicMock()
@@ -109,7 +152,8 @@ class TestIcbcApiCalls:
 
 		with app.app_context(), \
 			patch("python.prohibition_web_svc.middleware.icbc_middleware.requests.get", return_value=mock_response), \
-			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_ROOT", "https://example"):
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_ROOT", "https://example"), \
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_USE_OAUTH", True):
 			result, kwargs = icbc_middleware.get_icbc_driver(icbc_header={"Authorization": "Bearer t"}, dl_number="123")
 
 		assert result is True
@@ -118,20 +162,22 @@ class TestIcbcApiCalls:
 
 	def test_get_icbc_driver_exception(self):
 		with patch("python.prohibition_web_svc.middleware.icbc_middleware.requests.get", side_effect=Exception("boom")), \
-			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_ROOT", "https://example"):
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_ROOT", "https://example"), \
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_USE_OAUTH", True):
 			result, kwargs = icbc_middleware.get_icbc_driver(icbc_header={"Authorization": "Bearer t"}, dl_number="123")
 
 		assert result is False
 		assert kwargs["icbc_header"]["Authorization"] == "Bearer t"
 
-	def test_get_icbc_vehicle_success(self, app):
+	def test_get_icbc_vehicle_success_oauth(self, app):
 		mock_response = MagicMock()
 		mock_response.status_code = 200
 		mock_response.json.return_value = {"vehicle": "ok"}
 
 		with app.app_context(), \
 			patch("python.prohibition_web_svc.middleware.icbc_middleware.requests.get", return_value=mock_response) as mock_get, \
-			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_ROOT", "https://example"):
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_ROOT", "https://example"), \
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_USE_OAUTH", True):
 			result, kwargs = icbc_middleware.get_icbc_vehicle(icbc_header={"Authorization": "Bearer t"}, plate_number="ABC123")
 
 		assert result is True
@@ -139,10 +185,30 @@ class TestIcbcApiCalls:
 		assert kwargs["response"].get_json() == {"vehicle": "ok"}
 		mock_get.assert_called_once()
 		assert mock_get.call_args.kwargs["params"] == {"plateNumber": "ABC123"}
+		assert "/integration/vips-vehicle-api/v1/vehicles" in mock_get.call_args.args[0]
+
+	def test_get_icbc_vehicle_success_basic(self, app):
+		mock_response = MagicMock()
+		mock_response.status_code = 200
+		mock_response.json.return_value = {"vehicle": "ok"}
+
+		with app.app_context(), \
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.requests.get", return_value=mock_response) as mock_get, \
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_ROOT", "https://example"), \
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_USE_OAUTH", False):
+			result, kwargs = icbc_middleware.get_icbc_vehicle(icbc_header={"Authorization": "Basic xyz"}, plate_number="ABC123")
+
+		assert result is True
+		assert kwargs["response"].status_code == 200
+		mock_get.assert_called_once()
+		assert mock_get.call_args.kwargs["params"] == {"plateNumber": "ABC123"}
+		assert "/vehicles" in mock_get.call_args.args[0]
+		assert "/integration/" not in mock_get.call_args.args[0]
 
 	def test_get_icbc_vehicle_exception(self):
 		with patch("python.prohibition_web_svc.middleware.icbc_middleware.requests.get", side_effect=Exception("boom")), \
-			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_ROOT", "https://example"):
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_API_ROOT", "https://example"), \
+			patch("python.prohibition_web_svc.middleware.icbc_middleware.Config.ICBC_USE_OAUTH", True):
 			result, kwargs = icbc_middleware.get_icbc_vehicle(icbc_header={"Authorization": "Bearer t"}, plate_number="ABC123")
 
 		assert result is False

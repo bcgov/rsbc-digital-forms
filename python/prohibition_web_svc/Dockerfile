@@ -1,13 +1,10 @@
-FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python39:1-196.1725368453
+FROM artifacts.developer.gov.bc.ca/redhat-docker-virtual/ubi9/python-312
 ARG VERSION
 ENV VERSION=$VERSION
 
 COPY prohibition_web_svc/requirements.txt ${APP_ROOT}/src/
 
-RUN pip install --upgrade pip
-RUN source /opt/app-root/etc/scl_enable && \
-    set -x && \
-    pip3 install -U pip setuptools wheel && \
+RUN pip3 install -U pip setuptools wheel && \
     sha256sum "${APP_ROOT}/src/requirements.txt" > ${APP_ROOT}/requirements.sha256  && \
     cd ${APP_ROOT}/src && pip3 install -r requirements.txt
 
@@ -32,19 +29,19 @@ RUN yum update -y && \
     libXScrnSaver \
     alsa-lib \
     liberation-fonts-common \
-    dejavu-fonts-common \
+    dejavu-sans-fonts \
+    dejavu-serif-fonts \
+    dejavu-sans-mono-fonts \
     && yum clean all
 
 # Switch back to the default user
 USER 1001
 
 # Install Playwright browsers
-RUN source /opt/app-root/etc/scl_enable && \
-    playwright install chromium
+RUN playwright install chromium
 
 # Install Playwright system dependencies (skip problematic fonts)
-RUN source /opt/app-root/etc/scl_enable && \
-    playwright install-deps chromium || true
+RUN playwright install-deps chromium || true
 
 COPY __init__.py ${APP_ROOT}/src/python/
 COPY common ${APP_ROOT}/src/python/common

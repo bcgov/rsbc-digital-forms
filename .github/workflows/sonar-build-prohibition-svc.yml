@@ -27,9 +27,9 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: 3.9
+          python-version: 3.12
       - name: Install dependencies and run tests
         run: |
           cd python/prohibition_web_svc
