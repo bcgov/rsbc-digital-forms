@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM artifacts.developer.gov.bc.ca/redhat-docker-virtual/ubi9/python-312
 ARG VERSION
 ENV VERSION=$VERSION
 
