@@ -69,10 +69,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v5
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
         with:
-          python-version: 3.9
+          python-version: 3.12
       - name: Install dependencies and run tests
         run: |
           cd python/prohibition_web_svc
