@@ -229,8 +229,7 @@ def save_event_data(**kwargs) -> tuple:
                     'reason_for_not_using_prescribed_test'),
                 resonable_test_used_alcohol=data.get(
                     'resonable_test_used_alcohol'),
-                reasonable_asd_expiry_date=datetime.strptime(
-                    data.get('reasonable_asd_expiry_date'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('reasonable_asd_expiry_date') else None,
+                reasonable_asd_expiry_date=_get_asd_expiry_date(data, 'resonable_test_used_alcohol', 'reasonable_asd_expiry_date', 'reasonable_asd_expiry_date_alco_6000'),
                 reasonable_result_alcohol=data.get(
                     'reasonable_result_alcohol'),
                 reasonable_bac_result_mg=data.get('reasonable_bac_result_mg'),
@@ -250,8 +249,7 @@ def save_event_data(**kwargs) -> tuple:
                 requested_BAC_result=data.get('requested_BAC_result'),
                 requested_alcohol_test_result=data.get(
                     'requested_alcohol_test_result'),
-                requested_ASD_expiry_date=datetime.strptime(
-                    data.get('requested_ASD_expiry_date'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('requested_ASD_expiry_date') else None,
+                requested_ASD_expiry_date=_get_asd_expiry_date(data, 'requested_test_used_alcohol', 'requested_ASD_expiry_date', 'requested_ASD_expiry_date_alco_6000'),
                 time_of_requested_test=data.get('time_of_requested_test'),
                 requested_test_used_alcohol=data.get(
                     'requested_test_used_alcohol'),
@@ -312,6 +310,23 @@ def save_event_data(**kwargs) -> tuple:
     kwargs['event'] = event
     return True, kwargs
 
+def _get_asd_expiry_date(data, \
+            test_used_key:str, \
+            alco_sensor_asd_expiry_date_key:str, \
+            alcotest_6000_asd_expiry_date_key:str):
+    asd_expiry_date = None
+    try:
+        if data.get(test_used_key) == 'alco-sensor' and \
+           data.get(alco_sensor_asd_expiry_date_key):
+                asd_expiry_date = datetime.strptime(
+                    data.get(alco_sensor_asd_expiry_date_key), "%Y-%m-%dT%H:%M:%S.%f%z")
+        elif data.get(test_used_key) == 'alcotest-6000' and \
+            data.get(alcotest_6000_asd_expiry_date_key):
+                asd_expiry_date = datetime.strptime(
+                    data.get(alcotest_6000_asd_expiry_date_key), "%Y-%m-%dT%H:%M:%S.%f%z")
+    except Exception as e:
+        logger.warning(f"Unable to parse {test_used_key} asd_expiry_date: {e}")
+    return asd_expiry_date
 
 def save_event_pdf(**kwargs) -> tuple:
     date_created = datetime.now()
