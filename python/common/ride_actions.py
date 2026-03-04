@@ -41,17 +41,17 @@ def twelve_hours_event(**args):
         if response.status_code != 200:
             args['error'] = {
                         'error_code': ErrorCode.R01,
-                        'error_details': f'Error in sending 12hr_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
+                        'error_details': f'Error in sending 12hr_submitted event to RIDE, Response code: {response.status_code} response text: {response.text}',
                         'event_type': '12hr',
                         'func': twelve_hours_event,
                         'ticket_no': args['form_data']['twelve_hour_number'] if 'twelve_hour_number' in args['form_data'] else None,
                         'event_id': args['message']['event_id']
                     }
             logging.error('error in sending 12hr_submitted event to RIDE')
-            logging.error(f'error code: {response.status_code} error message: {response.json()}')
+            logging.error(f'error code: {response.status_code} error message: {response.text}')
             return False, args
         else:
-            logging.debug(response.json())
+            logging.debug(response.text)
     except Exception as e:
         logging.error('error in sending 12hr_submitted event to RIDE')
         logging.exception(e)
@@ -105,17 +105,17 @@ def twenty_four_hours_event(**args):
         if response.status_code != 200:
             args['error'] = {
                         'error_code': ErrorCode.R01,
-                        'error_details': f'Error in sending 24hr_submitted event to RIDE, Response code: {response.status_code} response text: {response.json()}',
+                        'error_details': f'Error in sending 24hr_submitted event to RIDE, Response code: {response.status_code} response text: {response.text}',
                         'event_type': '24hr',
                         'func': twenty_four_hours_event,
                         'ticket_no': args['form_data']['twenty_four_hour_number'] if 'twenty_four_hour_number' in args['form_data'] else None,
                         'event_id': args['message']['event_id']
                     }
             logging.error('error in sending 24hr_submitted event to RIDE')
-            logging.error(f'error code: {response.status_code} error message: {response.json()}')
+            logging.error(f'error code: {response.status_code} error message: {response.text}')
             return False, args
         else:
-            logging.debug(response.json())
+            logging.debug(response.text)
     except Exception as e:
         logging.error('error in sending 24hr_submitted event to RIDE')
         logging.exception(e)

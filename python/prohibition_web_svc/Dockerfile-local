@@ -1,9 +1,11 @@
-FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python39:1-196.1725368453
+# FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python39:1-196.1725368453
+FROM artifacts.developer.gov.bc.ca/redhat-docker-virtual/ubi9/python-312
 
-COPY prohibition_web_svc/requirements.txt /tmp/
+COPY prohibition_web_svc/requirements.txt ${APP_ROOT}/src/
 
-RUN pip3 install -U pip
-RUN pip3 install -r /tmp/requirements.txt
+RUN pip install -U pip setuptools wheel && \
+    sha256sum "${APP_ROOT}/src/requirements.txt" > ${APP_ROOT}/requirements.sha256  && \
+    cd ${APP_ROOT}/src && pip install -r requirements.txt
 
 # Switch to root user for system package installation
 USER root
@@ -26,16 +28,16 @@ RUN yum update -y && \
     libXScrnSaver \
     alsa-lib \
     liberation-fonts-common \
-    dejavu-fonts-common \
+    dejavu-sans-fonts \
+    dejavu-serif-fonts \
+    dejavu-sans-mono-fonts \
     && yum clean all
 
 # Install Playwright browsers
-RUN source /opt/app-root/etc/scl_enable && \
-    playwright install chromium
+RUN playwright install chromium
 
 # Install Playwright system dependencies (skip problematic fonts)
-RUN source /opt/app-root/etc/scl_enable && \
-    playwright install-deps chromium || true
+RUN playwright install-deps chromium || true
 
 # RUN useradd --create-home appuser
 # WORKDIR /home/appuser

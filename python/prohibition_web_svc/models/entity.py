@@ -26,12 +26,15 @@ class Entity(TypedDict):
     date_of_birth: date
     age_at_collision: int
     contact_phone_num: str
+    contact_email: str
     sex: DropdownOption
     contributing_factor_1: DropdownOption
     contributing_factor_2: DropdownOption
     contributing_factor_3: DropdownOption
     contributing_factor_4: DropdownOption
     charges_blood_alc_tests_taken: str
+    has_charges: str
+    blood_alc_tests_taken: str
     blood_alc_test: str
     result_1: str
     result_2: str

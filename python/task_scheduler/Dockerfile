@@ -1,17 +1,12 @@
-FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python39:1-196.1725368453
+FROM artifacts.developer.gov.bc.ca/redhat-docker-virtual/ubi9/python-312
 ARG VERSION
 ENV VERSION=$VERSION
 
 COPY task_scheduler/requirements.txt ${APP_ROOT}/src/
-RUN ls -a
 
-RUN ls /opt/app-root/etc/
-RUN source /opt/app-root/etc/scl_enable && \
-    set -x && \
-    pip install -U pip setuptools && \
+RUN pip3 install -U pip "setuptools<70.0.0" wheel && \
     sha256sum "${APP_ROOT}/src/requirements.txt" > ${APP_ROOT}/requirements.sha256  && \
-    cd ${APP_ROOT}/src && pip install -r requirements.txt
-
+    cd ${APP_ROOT}/src && pip3 install -r requirements.txt
 
 COPY __init__.py ${APP_ROOT}/src/python/
 COPY common ${APP_ROOT}/src/python/common

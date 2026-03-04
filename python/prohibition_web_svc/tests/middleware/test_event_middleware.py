@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock, patch
 from python.common.models import Event
 from python.common.enums import ErrorCode, EventType
-from python.prohibition_web_svc.middleware.event_middleware import check_if_application_id_exists, log_payload_to_splunk, save_event_data
+from python.prohibition_web_svc.middleware.event_middleware import check_if_application_id_exists, log_payload_to_splunk, save_event_data, _get_asd_expiry_date
 
 @pytest.fixture
 def mock_db_session():
@@ -424,3 +424,74 @@ def test_save_event_data_database_exception_handling(mock_db_session):
         assert 'Database connection failed' in updated_kwargs['error']['error_details']
         assert updated_kwargs['error']['event_type'] == EventType.VI
         assert updated_kwargs['error']['ticket_no'] == 'VI000'
+
+
+# Tests for _get_asd_expiry_date
+
+def test_get_asd_expiry_date_alco_sensor_returns_parsed_datetime():
+    """Returns a parsed datetime when test_used is 'alco-sensor' and date is present"""
+    data = {
+        'test_used': 'alco-sensor',
+        'asd_expiry': '2024-06-15T08:30:00.000000+00:00',
+    }
+    result = _get_asd_expiry_date(data, 'test_used', 'asd_expiry', 'asd_expiry_6000')
+    assert result is not None
+    assert result.year == 2024
+    assert result.month == 6
+    assert result.day == 15
+
+
+def test_get_asd_expiry_date_alcotest_6000_returns_parsed_datetime():
+    """Returns a parsed datetime when test_used is 'alcotest-6000' and date is present"""
+    data = {
+        'test_used': 'alcotest-6000',
+        'asd_expiry_6000': '2025-12-31T23:59:59.999999+00:00',
+    }
+    result = _get_asd_expiry_date(data, 'test_used', 'asd_expiry', 'asd_expiry_6000')
+    assert result is not None
+    assert result.year == 2025
+    assert result.month == 12
+    assert result.day == 31
+
+
+def test_get_asd_expiry_date_alco_sensor_missing_date_returns_none():
+    """Returns None when test_used is 'alco-sensor' but the date key is absent"""
+    data = {'test_used': 'alco-sensor'}
+    result = _get_asd_expiry_date(data, 'test_used', 'asd_expiry', 'asd_expiry_6000')
+    assert result is None
+
+
+def test_get_asd_expiry_date_alcotest_6000_missing_date_returns_none():
+    """Returns None when test_used is 'alcotest-6000' but the date key is absent"""
+    data = {'test_used': 'alcotest-6000'}
+    result = _get_asd_expiry_date(data, 'test_used', 'asd_expiry', 'asd_expiry_6000')
+    assert result is None
+
+
+def test_get_asd_expiry_date_unknown_test_type_returns_none():
+    """Returns None when test_used is neither 'alco-sensor' nor 'alcotest-6000'"""
+    data = {
+        'test_used': 'breathalyzer',
+        'asd_expiry': '2024-06-15T08:30:00.000000+00:00',
+        'asd_expiry_6000': '2024-06-15T08:30:00.000000+00:00',
+    }
+    result = _get_asd_expiry_date(data, 'test_used', 'asd_expiry', 'asd_expiry_6000')
+    assert result is None
+
+
+def test_get_asd_expiry_date_empty_data_returns_none():
+    """Returns None when data dict is empty"""
+    result = _get_asd_expiry_date({}, 'test_used', 'asd_expiry', 'asd_expiry_6000')
+    assert result is None
+
+
+def test_get_asd_expiry_date_invalid_date_format_returns_none():
+    """Returns None and logs a warning when the date string cannot be parsed"""
+    data = {
+        'test_used': 'alco-sensor',
+        'asd_expiry': 'not-a-date',
+    }
+    with patch('python.prohibition_web_svc.middleware.event_middleware.logger') as mock_logger:
+        result = _get_asd_expiry_date(data, 'test_used', 'asd_expiry', 'asd_expiry_6000')
+    assert result is None
+    mock_logger.warning.assert_called_once()

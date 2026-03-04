@@ -22,7 +22,7 @@ def get_driver(dl_number):
         logger.verbose('GET /icbc/drivers/{}'.format(dl_number))
         kwargs = middle_logic(
             get_authorized_keycloak_user() + [
-                {"try": icbc_middleware.get_icbc_api_authorization_header, "fail": [
+                {"try": icbc_middleware.get_icbc_drivers_api_authorization_header, "fail": [
                     {"try": http_responses.server_error_response, "fail": []},
                 ]},
                 {"try": icbc_middleware.get_icbc_driver, "fail": [
@@ -45,7 +45,7 @@ def get_vehicle(plate_number):
         logger.verbose('GET /icbc/vehicles/{}'.format(plate_number))
         kwargs = middle_logic(
             get_authorized_keycloak_user() + [
-                {"try": icbc_middleware.get_icbc_api_authorization_header, "fail": [
+                {"try": icbc_middleware.get_icbc_vehicles_api_authorization_header, "fail": [
                     {"try": http_responses.server_error_response, "fail": []},
                 ]},
                 {"try": icbc_middleware.get_icbc_vehicle, "fail": [
