@@ -60,7 +60,7 @@ PyMuPDF==1.26.5
 pyaes==1.6.1
 pbkdf2==1.3
 img2pdf
-split-image
+split-image==2.0.1 # Versions above 2.0.1 have a breaking change that causes the image splitting to fail
 playwright>=1.58.0
 reportLab
 nltk>=3.9.3
