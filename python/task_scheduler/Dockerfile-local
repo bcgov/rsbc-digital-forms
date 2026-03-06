@@ -1,5 +1,5 @@
 # FROM python:3.9-slim
-FROM rhel8-python39:1-196.1725368453
+FROM artifacts.developer.gov.bc.ca/redhat-docker-virtual/ubi9/python-312
 ARG VERSION
 ENV VERSION=$VERSION
 

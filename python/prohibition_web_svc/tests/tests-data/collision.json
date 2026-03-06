@@ -1,7 +1,14 @@
 {
   "form_version": "v1.0",
   "ff_application_id": 35,
-  "collision_case_num": "MV-001",
+  "collision_case_num": "RZ100001",
+  "form_number": "Z100001",
+  "form_details": {
+      "form_no": "RZ100001",
+      "form_title": "Electronic MV6020 Traffic Accident Report",
+      "subtext": "Protected A",
+      "form_version": "MV6020E (122025)"
+  },  
   "collision_scenario": {
     "label": "Collision on Forest Service or Logging Road",
     "value": "01"
@@ -21,7 +28,7 @@
   "police_agency_type_district": "Type",
   "police_agency_code": {
     "agency_name": "Enderby Prov",
-    "code": 102,
+    "code": "0102",
     "district_id": 1,
     "vjur_agency": null
   },
@@ -96,6 +103,10 @@
     "label": "02 Gravel",
     "value": "02"
   },
+  "traffic_control": {
+    "label": "00 Unknown",
+    "value": "00"
+  },
   "roadway_character": {
     "label": "11 Straight / Flat",
     "value": "11"
@@ -140,7 +151,7 @@
         "label": "Vehicle"
       },
       "entity_num": "01",
-      "possible_offender": "N",
+      "possible_offender": true,
       "contributing_factor_1": {
         "label": "00 Unknown",
         "value": "00"
@@ -183,14 +194,17 @@
       "date_of_birth": "1990-01-01",
       "age_at_collision": 35,
       "contact_phone_num": "604-555-1234",
+      "contact_email": "alice.smith@example.com",
       "sex": {
         "label": "Female",
         "value": "F"
       },
       "charges_blood_alc_tests_taken": "N",
+      "has_charges": "Y",
+      "blood_alc_tests_taken": "Y",
       "blood_alc_test": "BCA",
-      "result_1": "0.00",
-      "result_2": "0.00",
+      "result_1": "10.00",
+      "result_2": "11.00",
       "vehicle_plate_num": "ABC123",
       "vehicle_plate_prov_state": {
         "value": "BC",
