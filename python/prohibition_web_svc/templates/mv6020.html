@@ -1205,16 +1205,25 @@
                                 entity.vehicle_towed == 'Y' %}Yes{% elif entity.vehicle_towed == 'N' %}No{% else %}{{
                                 entity.vehicle_towed }}{% endif %}</div>
                         </div>
-                        {% if entity.vehicle_towed == 'Y' and entity.vehicle_towed_by %}
+                        {% if entity.vehicle_towed == 'Y' %}
                         <div class="grid-cell">
                             <!-- Empty Cell -->
                         </div>
-                        <div class="grid-cell grid-cell-full">
-                            <label class="grid-label">Vehicle Towed By</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">
-                                {{ entity.vehicle_towed_by.label }}
+                            {% if entity.ilo_name and entity.ilo_name|length > 0 %}
+                            <div class="grid-cell grid-cell-full">
+                                <label class="grid-label">Vehicle Towed By</label><br>
+                                <div class="grid-input grid-display" contenteditable="false">
+                                    {{ entity.ilo_name }}, {{ entity.ilo_address }}, {{ entity.ilo_city }}, {{ entity.ilo_phone }}
+                                </div>
                             </div>
-                        </div>
+                            {% else %}
+                            <div class="grid-cell grid-cell-full">
+                                <label class="grid-label">Vehicle Towed By</label><br>
+                                <div class="grid-input grid-display" contenteditable="false">
+                                    {{ entity.vehicle_towed_by.label }}
+                                </div>
+                            </div>
+                            {% endif %}
                         {% endif %}
                         <div class="grid-cell">
                             <label class="grid-label">Direction of Travel</label><br>
@@ -1983,8 +1992,13 @@
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Vehicle Towed By</label><br>
-                            <div class="grid-input grid-display" contenteditable="false">{{
-                                entity.vehicle_towed_by.name if entity.vehicle_towed_by else '' }}</div>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {%if entity.ilo_name and entity.ilo_name|length > 0 %}
+                                    {{entity.ilo_name}}
+                                {% elif entity.vehicle_towed_by %}
+                                    {{entity.vehicle_towed_by.name}}
+                                {% endif %}
+                            </div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Vehicle Year</label><br>
