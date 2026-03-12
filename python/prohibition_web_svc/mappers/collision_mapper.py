@@ -221,7 +221,11 @@ class CollisionMapper:
             vehicle_type=entity_data['vehicle_type']['value'] if entity_data.get('vehicle_type') else None,
             vehicle_use=entity_data['vehicle_use']['value'] if entity_data.get('vehicle_use') else None,
             involved_persons=entity_data.get('involved_persons', []),
-            charges=entity_data.get('charges', [])
+            charges=entity_data.get('charges', []),
+            ilo_name=entity_data.get('ilo_name'),
+            ilo_address=entity_data.get('ilo_address'),
+            ilo_city=entity_data.get('ilo_city'),
+            ilo_phone_num=entity_data.get('ilo_phone')
         )
     
     @staticmethod

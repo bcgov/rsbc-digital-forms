@@ -70,7 +70,6 @@ export const Dashboard = () => {
     useRecoilState(staticResources["jurisdictionCountry"]);
   const [lastUpdatedDate, setLastUpdatedDate] = useState(null);
   const [sortMode, setSortMode] = useState("DATE_DESC");
-  const [formIDsLoaded, setFormIDsLoaded] = useState(false);
 
   useEffect(() => {
     async function sortRows() {
@@ -255,62 +254,6 @@ export const Dashboard = () => {
     isConnected,
   ]);
 
-  useEffect(() => {
-    const seedLeasedValues = async (idArray) => {
-      if (idArray) {
-        if (idArray.length > 0) {
-          for (let i = 0; i < idArray.length; i++) {
-            // Check if idArray[i] exists in indexedDB
-            // If it does, check for leased property on that id
-            // If it has a value, set the value = that value
-            // Otherwise, set leased = false
-            const existingId = await db.formID.get(idArray[i].id);
-            if (existingId) {
-              if (existingId.leased) {
-                idArray[i].leased = existingId.leased;
-              } else {
-                idArray[i].leased = 0;
-              }
-            } else {
-              idArray[i].leased = 0;
-            }
-          }
-          return idArray;
-        }
-      }
-      return [];
-    };
-
-    const fetchNeededIDs = async () => {
-      const neededFormID = await getAllFormIDs();
-      if (neededFormID["12Hour"] > 0 || neededFormID["24Hour"] > 0 || neededFormID["VI"] > 0) {
-        const newIDs = await FormIDApi.post(neededFormID);
-        if (newIDs) { 
-          const seededIDs = await seedLeasedValues(newIDs.forms);
-          await db.formID.bulkPut(seededIDs);
-        }
-      }
-      setFormIDsLoaded(true);
-    };
-
-    const fetchCurrentIDs = async () => {
-      const currentIDs = await FormIDApi.get();
-      const seededIDs = await seedLeasedValues(currentIDs);
-      await db.formID.bulkPut(seededIDs);
-    };
-
-    if (staticDataLoaded) {
-      if (isConnected) {
-        fetchNeededIDs();
-        // fetchCurrentIDs().then(() => );
-      }
-    }
-  }, [staticDataLoaded, isConnected]);
-
-  const handleClick = () => {
-    navigate("/createEvent");
-  };
-
   //TODO: add in pull for incomplete events.
 
   return (
@@ -321,14 +264,6 @@ export const Dashboard = () => {
             <EditIcon />
             Events in Progress
           </h3>
-          <Button
-            primary
-            disabled={!formIDsLoaded}
-            size="large"
-            onClick={handleClick}
-            label="New Event"
-            icon={<AddIcon />}
-          />
         </div>
         <hr className="hr" />
         <Table>

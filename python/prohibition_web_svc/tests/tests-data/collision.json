@@ -240,6 +240,10 @@
         "name": "TowCo",
         "value": 3
       },
+      "ilo_name": "ILO Name",
+      "ilo_address": "ILO Address",
+      "ilo_city": "ILO City",
+      "ilo_phone": "604-555-0000",
       "dir_of_travel": "N",
       "entity_street": "Main St",
       "insurance_coverage": "I",
