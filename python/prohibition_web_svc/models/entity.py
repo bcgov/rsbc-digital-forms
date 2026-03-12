@@ -68,6 +68,10 @@ class Entity(TypedDict):
     pre_collision_vehicle_action_first_event: DropdownOption
     vehicle_type: DropdownOption
     vehicle_use: DropdownOption
+    ilo_name: str
+    ilo_address: str
+    ilo_city: str
+    ilo_phone: str
 
     involved_persons: list[InvolvedPerson]
     charges: list[Charges]
