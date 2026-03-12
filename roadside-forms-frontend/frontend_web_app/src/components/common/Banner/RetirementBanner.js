@@ -18,17 +18,18 @@ export const RetirementBanner = () => {
       <div className="retirement-banner-content">
         <div className="retirement-banner-text">
           <div className="retirement-banner-title">
-            <strong>Important Notice:</strong> The new Digital Forms website is available right now.
+            <strong>Important Notice:</strong> The new Digital Forms website is available now.
           </div>
           <div className="retirement-banner-message">
-            This legacy version of Roadside Forms will be retired on <strong>18 December 2025</strong>. 
-            Please complete and submit all forms before this date. Copies of a submitted form can be 
-            requested from ICBC (12h/24h) or RSBC (VI).
+            This legacy version of Roadside Forms is no longer available for submissions. 
+            Please proceed to the new Digital Forms website to submit a Digital Form. 
+            Submission history will be available in the legacy system until <strong>March 31, 2026</strong>. 
+            Copies of submitted forms can be requested from ICBC (12h/24h) or RSBC (VI).
           </div>
         </div>
         <div className="retirement-banner-actions">
           <a 
-            href="https://jag.gov.bc.ca/digital-forms-v3/" 
+            href="https://jag.gov.bc.ca/digital-forms/" 
             target="_blank" 
             rel="noopener noreferrer"
             className="retirement-banner-button"
