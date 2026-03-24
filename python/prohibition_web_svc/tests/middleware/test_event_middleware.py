@@ -329,8 +329,8 @@ def test_save_event_data_twelve_hour_form_success(mock_db_session):
         mock_db_session.commit.assert_called()
 
 
-def test_save_event_data_irp_form_returns_early(mock_db_session):
-    """Test save_event_data with IRP form (returns early without saving)"""
+def test_save_event_data_irp_form_success(mock_db_session):
+    """Test successful save_event_data with IRP form"""
     payload = {
         'IRP': True,
         'IRP_number': 'IRP999',
@@ -343,14 +343,31 @@ def test_save_event_data_irp_form_returns_early(mock_db_session):
         'identity_provider': 'idir'
     }
 
-    # IRP forms return early without any return value (None)
-    result = save_event_data(**kwargs)
+    mock_event = MagicMock()
+    mock_event.event_id = 4
+    mock_irp_form = MagicMock()
+    mock_irp_form.form_id = 4
+    mock_event.irp_form = mock_irp_form
 
-    # Should return None (not a tuple) for IRP forms
-    assert result is None
-    # No database operations should have been performed
-    mock_db_session.add.assert_not_called()
-    mock_db_session.commit.assert_not_called()
+    with patch('python.prohibition_web_svc.middleware.event_middleware.Event', return_value=mock_event), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.IRPMapper') as mock_irp_mapper, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Submission'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.datetime') as mock_datetime, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.jsonify') as mock_jsonify:
+
+        mock_irp_mapper.map_to_irp_form.return_value = mock_irp_form
+        mock_datetime.now.return_value = '2023-01-01T00:00:00'
+        mock_jsonify.return_value = {'event': 'data'}
+
+        result, updated_kwargs = save_event_data(**kwargs)
+
+        assert result is True
+        assert 'response_dict' in updated_kwargs
+        assert 'event' in updated_kwargs
+        assert updated_kwargs['event'] == mock_event
+        mock_irp_mapper.map_to_irp_form.assert_called_once()
+        mock_db_session.add.assert_any_call(mock_event)
+        mock_db_session.commit.assert_called()
 
 
 def test_save_event_data_service_account_identity_provider(mock_db_session):
