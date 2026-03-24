@@ -1,6 +1,9 @@
 FROM python:3.12-alpine
 ARG APP_ROOT
 
+RUN apk add --no-cache zlib-dev && \
+    apk add --no-cache zlib
+
 COPY submission_report_job/requirements.txt ${APP_ROOT}/src/
 RUN pip install -U pip setuptools && \
     sha256sum "${APP_ROOT}/src/requirements.txt" > ${APP_ROOT}/requirements.sha256  && \

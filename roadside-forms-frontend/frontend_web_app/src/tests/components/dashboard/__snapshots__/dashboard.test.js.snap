@@ -22,25 +22,6 @@ exports[`Dashboard renders dashboard component correctly 1`] = `
         </svg>
         Events in Progress
       </h3>
-      <button
-        class="storybook-button storybook-button--large storybook-button--primary"
-        disabled=""
-        style="background-color: steelblue;"
-        type="button"
-      >
-        <svg
-          aria-hidden="true"
-          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
-          data-testid="AddIcon"
-          focusable="false"
-          viewBox="0 0 24 24"
-        >
-          <path
-            d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"
-          />
-        </svg>
-        New Event
-      </button>
     </div>
     <hr
       class="hr"

@@ -69,6 +69,10 @@ class TarEntity(db.Model):
     pre_collision_vehicle_action_first_event: str
     vehicle_type: str
     vehicle_use: str
+    ilo_name: str
+    ilo_address: str
+    ilo_city: str
+    ilo_phone_num: str
 
     entity_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     collision_case_num = db.Column(db.String(10), db.ForeignKey('TAR.collision.collision_case_num'), nullable=False)
@@ -131,6 +135,10 @@ class TarEntity(db.Model):
     pre_collision_vehicle_action_first_event = db.Column(db.String(2), db.ForeignKey('TAR.pre_collision_action.code'))
     vehicle_type = db.Column(db.String(2), db.ForeignKey('TAR.vehicle_type.code'))
     vehicle_use = db.Column(db.String(2), db.ForeignKey('TAR.vehicle_use.code'))
+    ilo_name = db.Column(db.String(50))
+    ilo_address = db.Column(db.String(40))
+    ilo_city = db.Column(db.String(30))
+    ilo_phone_num = db.Column(db.String(20))
     
 
     involved_persons = db.relationship('TarInvolvedPerson', backref='entity', uselist=True, lazy='joined')
