@@ -7,13 +7,14 @@ from datetime import datetime
 from base64 import b64decode
 from flask import jsonify, make_response
 from python.common.logging_utils import get_logger
-from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, IRPForm, FormStorageRefs, Submission
+from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, FormStorageRefs, Submission
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_method1
 import uuid
 from split_image import split_image
 from python.common.enums import ErrorCode, EventType
 from python.prohibition_web_svc.helpers.pdf_helpers import create_pdf_with_images
+from python.prohibition_web_svc.mappers.irp_mapper import IRPMapper
 from python.prohibition_web_svc.middleware.common_middleware import safe_get_value
 
 logger = get_logger(__name__)
@@ -278,7 +279,8 @@ def save_event_data(**kwargs) -> tuple:
             )
             event.twelve_hour_form = twelve_hour_form
         if data.get('IRP'):
-            return
+            irp_form = IRPMapper.map_to_irp_form(data, date_created)
+            event.irp_form = irp_form
 
         if (data.get('ff_application_id') is not None):
             submission = Submission(
