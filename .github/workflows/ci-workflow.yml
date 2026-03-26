@@ -117,7 +117,7 @@ jobs:
           load: true
           tags:  ${{ inputs.DOCKER_IMAGE_NAME }}:latest
       - name: Run Trivy vulnerability scanner- stdout
-        uses: aquasecurity/trivy-action@0.34.0
+        uses: aquasecurity/trivy-action@v0.35.0
         if: always()
         with:
           scan-type: image
@@ -127,7 +127,7 @@ jobs:
           ignore-unfixed: true
           severity: CRITICAL
       - name: Run Trivy vulnerability scanner- save to file
-        uses: aquasecurity/trivy-action@0.34.0
+        uses: aquasecurity/trivy-action@v0.35.0
         if: always()
         with:
           scan-type: image
@@ -143,7 +143,7 @@ jobs:
           cat trivy.json | jq -r '.Results[] | .Vulnerabilities[] | "<p><b>\(.VulnerabilityID)</b> - \(.Severity)<br>Package: \(.PkgName) \(.InstalledVersion)<br>\(.Title)</p>"' >> trivy.html || echo "<p>No critical vulnerabilities found</p>" >> trivy.html
           echo "</pre></body></html>" >> trivy.html
       - name: Run Trivy vulnerability scanner- save to sarif file
-        uses: aquasecurity/trivy-action@0.34.0
+        uses: aquasecurity/trivy-action@v0.35.0
         if: always()
         with:
           scan-type: image
