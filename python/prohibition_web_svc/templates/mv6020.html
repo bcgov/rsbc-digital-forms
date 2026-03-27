@@ -362,6 +362,10 @@
             margin-top: -1px;
         }
 
+        .border-bottom {
+            border-bottom: 1px solid #000 !important;
+        }
+
         /* 1 Column Layout */
         .grid-table-1col .grid-cell {
             flex: 0 0 100%;
@@ -1627,11 +1631,15 @@
                             <div class="grid-input grid-display" contenteditable="false">{{ data.agency }}</div>
                         </div>
                         <div class="grid-cell">
+                            <label class="grid-label">Officer's Email </label><br>
+                            <div class="grid-input grid-display" contenteditable="false">{{ data.officer_email }}</div>
+                        </div>
+                        <div class="grid-cell border-bottom">
                             <label class="grid-label">Date Submitted to ICBC </label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {%if data.icbc_submission_date %}{{ data.icbc_submission_date[:10] }}{% endif %}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell border-bottom">
                             <label class="grid-label">Investigated by Traffic Analyst? </label><br>
                             <div class="grid-input grid-display" contenteditable="false">{% if
                                 data.investigated_by_traffic_analyst == 'Y' %}Yes{% elif data.investigated_by_traffic_analyst == 'N' %}No{% else %}{{
@@ -1656,6 +1664,46 @@
 
     {% if data.print_options and data.print_options.type == "icbc" %}
     <div class="page icbc-copy">
+        <div class="grid-table grid-table-2col">
+            <div class="grid-cell grid-cell-full">
+                <label class="grid-label">MV6020 Report</label><br>
+                <input type="checkbox" id="scenarios" name="scenarios" {% if data.collision_scenario %}checked{% endif
+                    %}>
+                <label for="scenarios" style="font-weight: normal;">{{ data.collision_scenario.value }} - {{
+                    data.collision_scenario.label }}</label>
+            </div>
+           
+            <div class="grid-cell grid-cell-full">
+                <label class="grid-label">Does this collision contain a Countable Fatal?</label><br>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" name="fatal" value="yes" {% if data.has_countable_fatal=="Y" %}checked{%
+                            endif %}>
+                        <label>Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" name="fatal" value="no" {% if data.has_countable_fatal=="N" %}checked{%
+                            endif %}>
+                        <label>No</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" name="fatal" value="na" {% if data.has_countable_fatal=="NA" %}checked{%
+                            endif %}>
+                        <label>Not Applicable - No Fatality Entered</label>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-cell">
+                <label class="grid-label">Total Countable Fatals</label><br>
+                <div class="grid-input grid-display" contenteditable="false">{{ data.countable_fatal_total }}
+                </div>
+            </div>
+            <div class="grid-cell">
+                <label class="grid-label">Total Estimated Damage</label><br>
+                <div class="grid-input grid-display" contenteditable="false">${{ data.total_est_damage }}
+                </div>
+            </div>
+        </div>        
         <div class="section-wrapper">
             <div class="section-header">ICBC Copy</div>
             <div class="section-content">
