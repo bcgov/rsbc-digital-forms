@@ -1630,10 +1630,12 @@
                             <label class="grid-label">Agency </label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.agency }}</div>
                         </div>
+                        {% if not (data.print_options and data.print_options.type == "entity") %}
                         <div class="grid-cell">
                             <label class="grid-label">Officer's Email </label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.officer_email }}</div>
                         </div>
+                        {% endif %}
                         <div class="grid-cell border-bottom">
                             <label class="grid-label">Date Submitted to ICBC </label><br>
                             <div class="grid-input grid-display" contenteditable="false">
