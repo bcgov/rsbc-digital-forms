@@ -145,8 +145,8 @@ def save_event_data(**kwargs) -> tuple:
             location_of_keys=data.get('location_of_keys'),
             submitted=True,
             confirmation_of_service=data.get('confirmation_of_service'),
-            confirmation_of_service_date=data.get(
-                'confirmation_of_service_date'),
+            confirmation_of_service_date=datetime.strptime(
+                data.get('confirmation_of_service_date'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('confirmation_of_service_date') else None,
             agency_file_no=data.get('agency_file_no'),
             created_dt=date_created,
             updated_dt=date_created,
