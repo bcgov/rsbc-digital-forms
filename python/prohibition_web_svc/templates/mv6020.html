@@ -1394,10 +1394,9 @@
                     <div class="grid-table grid-table-3col">
                         <div class="grid-cell">
                             <label class="grid-label">Status</label><br>
-                            <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{% if
-                                person.status == 'notInjured' %}Not Injured{% elif person.status == 'injured'
-                                %}Injured{% elif person.status == 'deceased' %}Deceased{% else %}{{ person.status }}{%
-                                endif %}</div>
+                            <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">
+                                {{ person.status_option.label if person.status_option else person.status }}</div>
+                            </div>
                         </div>
                         <div class="grid-cell">
                             <label class="grid-label">Surname</label><br>
