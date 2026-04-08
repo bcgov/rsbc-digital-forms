@@ -1,0 +1,25 @@
+name: data_cleanup_job-ci
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches-ignore:
+      - master
+      - main
+    paths:
+      - python/common/**
+      - python/data_cleanup_job/**
+      - .github/workflows/data_cleanup_job-ci.yml
+
+jobs:
+  CI:
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    uses: ./.github/workflows/ci-workflow.yml
+    with:
+      DOCKER_CONTEXT: python
+      DOCKER_FILE: python/data_cleanup_job/dockerfile
+      DOCKER_IMAGE_NAME: rsbc-df-data-cleanup
+    secrets: inherit
