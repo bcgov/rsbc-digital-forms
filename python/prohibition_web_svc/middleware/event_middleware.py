@@ -99,15 +99,15 @@ def check_if_form_number_was_used(**kwargs) -> tuple:
         twelve_hour_form_number = data.get('twelve_hour_number')
         if data.get('VI') and vi_form_number:
             vi_form_number_already_exists = db.session.query(
-                exists().where(VIForm.VI_number == vi_form_number)
+                exists().where(VIForm.VI_number == str(vi_form_number))
             ).scalar()
         if data.get('TwentyFourHour') and twenty_four_hour_form_number:
             twenty_four_hour_form_number_already_exists = db.session.query(
-                exists().where(TwentyFourHourForm.twenty_four_hour_number == twenty_four_hour_form_number)
+                exists().where(TwentyFourHourForm.twenty_four_hour_number == str(twenty_four_hour_form_number))
             ).scalar()
         if data.get('TwelveHour') and twelve_hour_form_number:
             twelve_hour_form_number_already_exists = db.session.query(
-                exists().where(TwelveHourForm.twelve_hour_number == twelve_hour_form_number)
+                exists().where(TwelveHourForm.twelve_hour_number == str(twelve_hour_form_number))
             ).scalar()
         
         if vi_form_number_already_exists or \
