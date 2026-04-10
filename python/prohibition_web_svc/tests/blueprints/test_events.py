@@ -147,6 +147,24 @@ class TestEventsBlueprint:
         assert response.status_code == 409
         assert b'Application already exists' in response.data
 
+    def test_create_form_number_already_exists(self, client, monkeypatch):
+        """Test POST /event request returns 409 when a form number is already used."""
+        def mock_middle_logic(*args, **kwargs):
+            from flask import make_response
+            mock_response = make_response('{"error": "VI form number already exists: V00001"}', 409)
+            mock_response.headers['Content-Type'] = 'application/json'
+            return {'response': mock_response}
+
+        monkeypatch.setattr('python.common.helper.middle_logic', mock_middle_logic)
+        monkeypatch.setattr('python.prohibition_web_svc.business.keycloak_logic.get_authorized_keycloak_user', lambda: [])
+
+        test_payload = {'VI': True, 'VI_number': 'V00001', 'ff_application_id': 'app-001'}
+        response = client.post('/api/v1/event',
+                               data=json.dumps(test_payload),
+                               content_type='application/json')
+        assert response.status_code == 409
+        assert b'form number already exists' in response.data
+
     def test_create_save_event_error(self, client, monkeypatch):
         """Test POST /event request with event save error."""
         def mock_middle_logic(*args, **kwargs):
@@ -310,6 +328,10 @@ class TestEventsBlueprint:
         assert response.status_code == 201
         # Verify that key middleware functions would be called (order may vary based on implementation)
         assert len(call_order) > 0
+        assert 'check_if_form_number_was_used' in call_order
+        assert 'check_if_application_id_exists' in call_order
+        # check_if_application_id_exists must run before check_if_form_number_was_used
+        assert call_order.index('check_if_application_id_exists') < call_order.index('check_if_form_number_was_used')
 
     def test_create_with_empty_payload(self, client, monkeypatch):
         """Test POST /event with empty payload."""
