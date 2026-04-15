@@ -83,8 +83,14 @@ def user_already_exists(**kwargs) -> tuple:
     return True, kwargs
 
 def application_already_exists(**kwargs) -> tuple:
-    logger.warning("application id {} already exists".format(kwargs.get('payload')['ff_application_id']))
+    logger.warning("application id {} already exists".format(kwargs.get('payload').get('ff_application_id')))
     kwargs['response'] = make_response({'error': 'application already exists'}, 409)
+    return True, kwargs
+
+def form_number_already_exists(**kwargs) -> tuple:
+    error_message = kwargs.get('error').get('error_details', 'form number already exists')
+    logger.warning(error_message)
+    kwargs['response'] = make_response({'error': error_message}, 409)
     return True, kwargs
 
 def payload_missing(**kwargs) -> tuple:

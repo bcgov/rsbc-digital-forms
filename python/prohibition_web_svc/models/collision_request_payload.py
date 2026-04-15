@@ -85,6 +85,7 @@ class CollisionRequestPayload(TypedDict):
     ff_application_id: str
     submitted_user_guid: str
     submitted_offline: bool
+    officer_email: str
 
     entities: list[Entity]
     witnesses: list[Witness]

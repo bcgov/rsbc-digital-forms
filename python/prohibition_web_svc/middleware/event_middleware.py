@@ -6,6 +6,7 @@ from minio import Minio
 from datetime import datetime
 from base64 import b64decode
 from flask import jsonify, make_response
+from sqlalchemy import exists
 from python.common.logging_utils import get_logger
 from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, IRPForm, FormStorageRefs, Submission
 from python.prohibition_web_svc.config import Config
@@ -80,6 +81,60 @@ def check_if_application_id_exists(**kwargs) -> tuple:
         return False, kwargs
     return True, kwargs
 
+
+def check_if_form_number_was_used(**kwargs) -> tuple:
+    """
+    Check if the form number was used in the database.
+    """
+    logger.verbose('inside check_if_form_number_was_used()')
+    data = kwargs.get('payload')
+    if (data.get('VI') is None) and (data.get('TwentyFourHour') is None) and (data.get('TwelveHour') is None):
+        return True, kwargs
+    try:
+        vi_form_number_already_exists = False
+        twenty_four_hour_form_number_already_exists = False
+        twelve_hour_form_number_already_exists = False
+        vi_form_number = data.get('VI_number')
+        twenty_four_hour_form_number = data.get('twenty_four_hour_number')
+        twelve_hour_form_number = data.get('twelve_hour_number')
+        if data.get('VI') and vi_form_number:
+            vi_form_number_already_exists = db.session.query(
+                exists().where(VIForm.VI_number == str(vi_form_number))
+            ).scalar()
+        if data.get('TwentyFourHour') and twenty_four_hour_form_number:
+            twenty_four_hour_form_number_already_exists = db.session.query(
+                exists().where(TwentyFourHourForm.twenty_four_hour_number == str(twenty_four_hour_form_number))
+            ).scalar()
+        if data.get('TwelveHour') and twelve_hour_form_number:
+            twelve_hour_form_number_already_exists = db.session.query(
+                exists().where(TwelveHourForm.twelve_hour_number == str(twelve_hour_form_number))
+            ).scalar()
+        
+        if vi_form_number_already_exists or \
+            twenty_four_hour_form_number_already_exists or \
+            twelve_hour_form_number_already_exists:
+            error_details = []
+            if vi_form_number_already_exists:
+                error_details.append(f'VI form number already exists: {vi_form_number}')
+            if twenty_four_hour_form_number_already_exists:
+                error_details.append(f'24 Hour form number already exists: {twenty_four_hour_form_number}')
+            if twelve_hour_form_number_already_exists:
+                error_details.append(f'12 Hour form number already exists: {twelve_hour_form_number}')
+
+            kwargs['error'] = {
+                'error_code': ErrorCode.E09,
+                'error_details': ', '.join(error_details),
+                'event_id': data.get('ff_application_id', None),
+                'event_type': get_event_type(data),
+                'ticket_no': get_ticket_no(data),
+                'func': check_if_form_number_was_used,
+            }
+            return False, kwargs
+    except Exception as e:
+        logger.error(e)
+        return False, kwargs
+    return True, kwargs    
+
 def save_event_data(**kwargs) -> tuple:
     logger.verbose('inside save_event_data()')
     data = kwargs.get('payload')
@@ -145,8 +200,8 @@ def save_event_data(**kwargs) -> tuple:
             location_of_keys=data.get('location_of_keys'),
             submitted=True,
             confirmation_of_service=data.get('confirmation_of_service'),
-            confirmation_of_service_date=data.get(
-                'confirmation_of_service_date'),
+            confirmation_of_service_date=datetime.strptime(
+                data.get('confirmation_of_service_date'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('confirmation_of_service_date') else None,
             agency_file_no=data.get('agency_file_no'),
             created_dt=date_created,
             updated_dt=date_created,
