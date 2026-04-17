@@ -68,6 +68,10 @@ def create():
                     {"try": common_middleware.record_event_error, "fail": []},
                     {"try": http_responses.application_already_exists, "fail": []},
                 ]},
+                {"try": event_middleware.check_if_form_number_was_used, "fail": [
+                    {"try": common_middleware.record_event_error, "fail": []},
+                    {"try": http_responses.form_number_already_exists, "fail": []},
+                ]},
                 {"try": event_middleware.save_event_data, "fail": [
                     {"try": common_middleware.record_event_error, "fail": []},
                     {"try": http_responses.bad_request_response, "fail": []}

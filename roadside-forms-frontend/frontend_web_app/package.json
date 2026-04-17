@@ -1,6 +1,6 @@
 {
   "name": "frontend_web_app",
-  "version": "2.3.6",
+  "version": "2.3.7",
   "homepage": "/roadside-forms",
   "private": true,
   "dependencies": {

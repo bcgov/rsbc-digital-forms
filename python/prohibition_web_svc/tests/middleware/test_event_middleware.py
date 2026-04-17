@@ -2,7 +2,21 @@ import pytest
 from unittest.mock import MagicMock, patch
 from python.common.models import Event
 from python.common.enums import ErrorCode, EventType
-from python.prohibition_web_svc.middleware.event_middleware import check_if_application_id_exists, log_payload_to_splunk, save_event_data, _get_asd_expiry_date
+from python.prohibition_web_svc.middleware.event_middleware import check_if_application_id_exists, log_payload_to_splunk, save_event_data, _get_asd_expiry_date, check_if_form_number_was_used
+
+
+# ── helpers ──────────────────────────────────────────────────────────────────
+
+def _make_scalar(value):
+    """Return a mock chain that ends with .scalar() == value."""
+    mock = MagicMock()
+    mock.query.return_value.scalar.return_value = value
+    return mock
+
+@pytest.fixture
+def mock_db_session():
+    with patch('python.common.models.db.session') as mock_session:
+        yield mock_session
 
 @pytest.fixture
 def mock_db_session():
@@ -14,6 +28,8 @@ def mock_event():
   event = MagicMock(spec=Event)
   event.event_id = 1
   return event
+
+# ── tests ──────────────────────────────────────────────────────────────────
 
 def test_check_if_application_id_exists_no_application_id(mock_db_session):
   kwargs = {'payload': {}}
@@ -512,3 +528,139 @@ def test_get_asd_expiry_date_invalid_date_format_returns_none():
         result = _get_asd_expiry_date(data, 'test_used', 'asd_expiry', 'asd_expiry_6000')
     assert result is None
     mock_logger.warning.assert_called_once()
+
+
+# ── no form type present ──────────────────────────────────────────────────────
+
+def test_check_if_form_number_was_used_no_form_type(mock_db_session):
+    """Returns True without hitting the DB when no form type is set."""
+    kwargs = {'payload': {}}
+    result, out = check_if_form_number_was_used(**kwargs)
+    assert result is True
+    assert 'error' not in out
+    mock_db_session.query.assert_not_called()
+
+
+# ── VI form ───────────────────────────────────────────────────────────────────
+
+def test_check_if_form_number_was_used_vi_not_found(mock_db_session):
+    """Returns True when VI number does not exist in the DB."""
+    mock_db_session.query.return_value.scalar.return_value = False
+    kwargs = {'payload': {'VI': True, 'VI_number': 'V00001'}}
+    result, out = check_if_form_number_was_used(**kwargs)
+    assert result is True
+    assert 'error' not in out
+
+
+def test_check_if_form_number_was_used_vi_duplicate(mock_db_session):
+    """Returns False with E09 error when VI number already exists."""
+    mock_db_session.query.return_value.scalar.return_value = True
+    kwargs = {'payload': {'VI': True, 'VI_number': 'V00001'}}
+    with patch('python.prohibition_web_svc.middleware.event_middleware.get_event_type'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.get_ticket_no'):
+        result, out = check_if_form_number_was_used(**kwargs)
+    assert result is False
+    assert out['error']['error_code'] == ErrorCode.E09
+    assert 'V00001' in out['error']['error_details']
+
+
+def test_check_if_form_number_was_used_vi_number_is_none(mock_db_session):
+    """Skips DB check and returns True when VI_number is None."""
+    kwargs = {'payload': {'VI': True, 'VI_number': None}}
+    result, out = check_if_form_number_was_used(**kwargs)
+    assert result is True
+    assert 'error' not in out
+    mock_db_session.query.assert_not_called()
+
+
+# ── TwentyFourHour form ───────────────────────────────────────────────────────
+
+def test_check_if_form_number_was_used_24h_not_found(mock_db_session):
+    """Returns True when 24h number does not exist in the DB."""
+    mock_db_session.query.return_value.scalar.return_value = False
+    kwargs = {'payload': {'TwentyFourHour': True, 'twenty_four_hour_number': '24H001'}}
+    result, out = check_if_form_number_was_used(**kwargs)
+    assert result is True
+    assert 'error' not in out
+
+
+def test_check_if_form_number_was_used_24h_duplicate(mock_db_session):
+    """Returns False with E09 error when 24h number already exists."""
+    mock_db_session.query.return_value.scalar.return_value = True
+    kwargs = {'payload': {'TwentyFourHour': True, 'twenty_four_hour_number': '24H001'}}
+    with patch('python.prohibition_web_svc.middleware.event_middleware.get_event_type'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.get_ticket_no'):
+        result, out = check_if_form_number_was_used(**kwargs)
+    assert result is False
+    assert out['error']['error_code'] == ErrorCode.E09
+    assert '24H001' in out['error']['error_details']
+
+
+def test_check_if_form_number_was_used_24h_number_is_none(mock_db_session):
+    """Skips DB check and returns True when twenty_four_hour_number is None."""
+    kwargs = {'payload': {'TwentyFourHour': True, 'twenty_four_hour_number': None}}
+    result, out = check_if_form_number_was_used(**kwargs)
+    assert result is True
+    assert 'error' not in out
+    mock_db_session.query.assert_not_called()
+
+
+# ── TwelveHour form ───────────────────────────────────────────────────────────
+
+def test_check_if_form_number_was_used_12h_not_found(mock_db_session):
+    """Returns True when 12h number does not exist in the DB."""
+    mock_db_session.query.return_value.scalar.return_value = False
+    kwargs = {'payload': {'TwelveHour': True, 'twelve_hour_number': '12H001'}}
+    result, out = check_if_form_number_was_used(**kwargs)
+    assert result is True
+    assert 'error' not in out
+
+
+def test_check_if_form_number_was_used_12h_duplicate(mock_db_session):
+    """Returns False with E09 error when 12h number already exists."""
+    mock_db_session.query.return_value.scalar.return_value = True
+    kwargs = {'payload': {'TwelveHour': True, 'twelve_hour_number': '12H001'}}
+    with patch('python.prohibition_web_svc.middleware.event_middleware.get_event_type'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.get_ticket_no'):
+        result, out = check_if_form_number_was_used(**kwargs)
+    assert result is False
+    assert out['error']['error_code'] == ErrorCode.E09
+    assert '12H001' in out['error']['error_details']
+
+
+def test_check_if_form_number_was_used_12h_number_is_none(mock_db_session):
+    """Skips DB check and returns True when twelve_hour_number is None."""
+    kwargs = {'payload': {'TwelveHour': True, 'twelve_hour_number': None}}
+    result, out = check_if_form_number_was_used(**kwargs)
+    assert result is True
+    assert 'error' not in out
+    mock_db_session.query.assert_not_called()
+
+
+# ── multiple duplicates ───────────────────────────────────────────────────────
+
+def test_check_if_form_number_was_used_multiple_duplicates(mock_db_session):
+    """Error details lists all duplicate form numbers when multiple forms are present."""
+    mock_db_session.query.return_value.scalar.return_value = True
+    kwargs = {'payload': {
+        'VI': True, 'VI_number': 'V00001',
+        'TwentyFourHour': True, 'twenty_four_hour_number': '24H001',
+    }}
+    with patch('python.prohibition_web_svc.middleware.event_middleware.get_event_type'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.get_ticket_no'):
+        result, out = check_if_form_number_was_used(**kwargs)
+    assert result is False
+    assert 'V00001' in out['error']['error_details']
+    assert '24H001' in out['error']['error_details']
+
+
+# ── DB exception ──────────────────────────────────────────────────────────────
+
+def test_check_if_form_number_was_used_db_exception(mock_db_session):
+    """Returns False and logs error when a DB exception is raised."""
+    mock_db_session.query.side_effect = Exception("DB connection error")
+    kwargs = {'payload': {'VI': True, 'VI_number': 'V00001'}}
+    with patch('python.prohibition_web_svc.middleware.event_middleware.logger') as mock_logger:
+        result, out = check_if_form_number_was_used(**kwargs)
+    assert result is False
+    mock_logger.error.assert_called_once()

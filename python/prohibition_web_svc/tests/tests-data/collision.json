@@ -144,6 +144,7 @@
   "total_killed": 0,
   "total_vehicles": 1,
   "summary_was_verified": true,
+  "email": "test@gov.bc.ca",
   "entities": [
     {
       "entity_type": {

@@ -99,7 +99,8 @@ class CollisionMapper:
             total_injured=collision_request_payload['total_injured'],
             total_killed=collision_request_payload['total_killed'],
             total_vehicles=collision_request_payload['total_vehicles'],
-            summary_was_verified=collision_request_payload['summary_was_verified']
+            summary_was_verified=collision_request_payload['summary_was_verified'],
+            officer_email=collision_request_payload.get('officer_email')
         )
 
     @staticmethod

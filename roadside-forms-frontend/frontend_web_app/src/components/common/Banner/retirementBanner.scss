@@ -48,6 +48,7 @@ $link-hover: #002244;
       display: flex;
       align-items: center;
       gap: 1rem;
+      margin-bottom: 1rem;
       
       .retirement-banner-button {
         display: inline-block;
@@ -121,6 +122,7 @@ $link-hover: #002244;
         align-self: stretch;
         flex-direction: column;
         gap: 0.75rem;
+        margin-bottom: 1rem;
         
         .retirement-banner-button {
           font-size: 0.9rem;
