@@ -38,7 +38,7 @@ pyparsing==3.3.2
 pytest==8.4.1
 python-dateutil==2.9.0.post0
 python-jose==3.5.0
-python-json-logger==4.0.0
+python-json-logger==4.1.0
 python-keycloak==5.5.0
 psycopg2-binary==2.9.11
 pytz==2019.3
