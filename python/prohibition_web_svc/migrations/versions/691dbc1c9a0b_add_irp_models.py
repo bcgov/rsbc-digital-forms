@@ -1,7 +1,7 @@
 """add_irp_models
 
 Revision ID: 691dbc1c9a0b
-Revises: a3ea854753c0
+Revises: e19fe700a553
 Create Date: 2026-03-24 08:32:57.577809
 
 """
@@ -11,7 +11,7 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = '691dbc1c9a0b'
-down_revision = 'a3ea854753c0'
+down_revision = 'e19fe700a553'
 branch_labels = None
 depends_on = None
 
@@ -55,9 +55,9 @@ def upgrade():
         batch_op.add_column(sa.Column('admission_by_driver', sa.Boolean(), nullable=False))
         batch_op.add_column(sa.Column('independent_witness', sa.Boolean(), nullable=False))
         batch_op.add_column(sa.Column('reasonable_ground_other', sa.Boolean(), nullable=False))
-        batch_op.add_column(sa.Column('time_of_suspicion', sa.String(length=5), nullable=False))
-        batch_op.add_column(sa.Column('time_of_asd', sa.String(length=5), nullable=False))
-        batch_op.add_column(sa.Column('refused_or_fail', sa.String(length=5), nullable=False))
+        batch_op.add_column(sa.Column('time_of_suspicion', sa.String(length=5), nullable=True))
+        batch_op.add_column(sa.Column('time_of_asd', sa.String(length=5), nullable=True))
+        batch_op.add_column(sa.Column('refused_or_fail', sa.String(length=5), nullable=True))
         batch_op.add_column(sa.Column('time_of_refusal', sa.String(length=5), nullable=True))
         batch_op.add_column(sa.Column('right_to_second_test', sa.String(length=5), nullable=True))
         batch_op.add_column(sa.Column('lower_asd_prevail', sa.String(length=5), nullable=True))
@@ -68,7 +68,7 @@ def upgrade():
         batch_op.add_column(sa.Column('reasonable_suspicion_witnessed', sa.Boolean(), nullable=True))
         batch_op.add_column(sa.Column('reasonable_suspicion_other', sa.Boolean(), nullable=True))
         batch_op.add_column(sa.Column('last_drink', sa.String(length=100), nullable=True))
-        batch_op.add_column(sa.Column('continuous_observation', sa.String(length=5), nullable=False))
+        batch_op.add_column(sa.Column('continuous_observation', sa.String(length=5), nullable=True))
         batch_op.alter_column('event_id',
                existing_type=sa.INTEGER(),
                nullable=False)

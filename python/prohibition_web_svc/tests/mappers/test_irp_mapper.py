@@ -201,6 +201,20 @@ class TestMapToIrpAsdTest:
         result = IRPMapper.map_to_irp_asd_test(get_payload())
         assert result[1].result_shown_to_driver == "YES"
 
+    def test_first_test_not_mapped_when_required_field_missing(self):
+        payload = get_payload()
+        payload['irp_result_1st_test'] = None
+        result = IRPMapper.map_to_irp_asd_test(payload)
+        assert len(result) == 1
+        assert result[0].test_number == 2
+
+    def test_second_test_not_mapped_when_required_field_missing(self):
+        payload = get_payload()
+        payload['irp_asd_identification_2nd_test'] = None
+        result = IRPMapper.map_to_irp_asd_test(payload)
+        assert len(result) == 1
+        assert result[0].test_number == 1
+
 
 class TestMapToIrpFormEdgeCases:
 
@@ -247,3 +261,31 @@ class TestMapToIrpFormEdgeCases:
         result = IRPMapper.map_to_irp_asd_test(payload)
         assert len(result) == 1
         assert result[0].test_number == 1
+
+    def test_empty_optional_fields_are_mapped_to_none(self):
+        payload = get_payload()
+        payload['driver_licence_class'] = ''
+        payload['time_suspicion_formed'] = ''
+        payload['time_ASD_demand'] = ''
+        payload['driver_refuse_breath_sample'] = ''
+        payload['time_breath_sample_refusal'] = ''
+        payload['irp_right_2nd_test'] = ''
+        payload['irp_lower_test_prevail'] = ''
+        payload['irp_right_different_asd'] = ''
+        payload['irp_driver_request_2nd_test'] = ''
+        payload['last_drink'] = ''
+        payload['driver_continuously_observed'] = ''
+
+        result = IRPMapper.map_to_irp_form(payload, DATE_CREATED)
+
+        assert result.driver_licence_class is None
+        assert result.time_of_suspicion is None
+        assert result.time_of_asd is None
+        assert result.refused_or_fail is None
+        assert result.time_of_refusal is None
+        assert result.right_to_second_test is None
+        assert result.lower_asd_prevail is None
+        assert result.right_to_test_different_asd is None
+        assert result.driver_requested_second_asd is None
+        assert result.last_drink is None
+        assert result.continuous_observation is None
