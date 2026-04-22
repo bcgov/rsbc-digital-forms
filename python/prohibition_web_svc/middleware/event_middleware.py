@@ -8,13 +8,14 @@ from base64 import b64decode
 from flask import jsonify, make_response
 from sqlalchemy import exists
 from python.common.logging_utils import get_logger
-from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, IRPForm, FormStorageRefs, Submission
+from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, FormStorageRefs, Submission
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_method1
 import uuid
 from split_image import split_image
 from python.common.enums import ErrorCode, EventType
 from python.prohibition_web_svc.helpers.pdf_helpers import create_pdf_with_images
+from python.prohibition_web_svc.mappers.irp_mapper import IRPMapper
 from python.prohibition_web_svc.middleware.common_middleware import safe_get_value
 
 logger = get_logger(__name__)
@@ -333,7 +334,8 @@ def save_event_data(**kwargs) -> tuple:
             )
             event.twelve_hour_form = twelve_hour_form
         if data.get('IRP'):
-            return
+            irp_form = IRPMapper.map_to_irp_form(data, date_created)
+            event.irp_form = irp_form
 
         if (data.get('ff_application_id') is not None):
             submission = Submission(
@@ -500,6 +502,38 @@ def save_event_pdf(**kwargs) -> tuple:
             )
             db.session.add(form_storage)
             db.session.commit()
+
+        if(data.get('IRP')):
+            filename = str(uuid.uuid4().hex)
+            pdf_filename = f"/tmp/{filename}.pdf"
+            encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
+            b64encoded = data.get("IRP_form_png").split(",")[1]
+            with open(f"/tmp/{filename}.png", "wb") as fh:
+                fh.write(b64decode(b64encoded))
+            pdf_bytes = create_pdf_with_images(f"/tmp/{filename}.png")
+            with open(pdf_filename, "wb") as file:
+                file.write(pdf_bytes)
+            encryptPdf_method1(
+                pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
+            logger.verbose('File encrypted')
+            encoded_file_name = f"{filename}_encrypted.pdf"
+            encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
+            with open(encoded_pdf_filepath, 'rb') as file_data:
+                client.fput_object(Config.STORAGE_BUCKET_NAME,
+                                   encoded_file_name, encoded_pdf_filepath)
+            logger.verbose('IRP File uploaded')
+            
+
+            form_storage = FormStorageRefs(
+                form_id_irp=event.irp_form.form_id,
+                event_id=event.event_id,
+                form_type='IRP',
+                storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
+                created_dt=date_created,
+                updated_dt=date_created,
+            )
+            db.session.add(form_storage)
+            db.session.commit()            
 
     except Exception as e:
         logger.error(e)
