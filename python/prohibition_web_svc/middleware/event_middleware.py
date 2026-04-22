@@ -503,6 +503,38 @@ def save_event_pdf(**kwargs) -> tuple:
             db.session.add(form_storage)
             db.session.commit()
 
+        if(data.get('IRP')):
+            filename = str(uuid.uuid4().hex)
+            pdf_filename = f"/tmp/{filename}.pdf"
+            encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
+            b64encoded = data.get("IRP_form_png").split(",")[1]
+            with open(f"/tmp/{filename}.png", "wb") as fh:
+                fh.write(b64decode(b64encoded))
+            pdf_bytes = create_pdf_with_images(f"/tmp/{filename}.png")
+            with open(pdf_filename, "wb") as file:
+                file.write(pdf_bytes)
+            encryptPdf_method1(
+                pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
+            logger.verbose('File encrypted')
+            encoded_file_name = f"{filename}_encrypted.pdf"
+            encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
+            with open(encoded_pdf_filepath, 'rb') as file_data:
+                client.fput_object(Config.STORAGE_BUCKET_NAME,
+                                   encoded_file_name, encoded_pdf_filepath)
+            logger.verbose('IRP File uploaded')
+            
+
+            form_storage = FormStorageRefs(
+                form_id_irp=event.irp_form.form_id,
+                event_id=event.event_id,
+                form_type='IRP',
+                storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
+                created_dt=date_created,
+                updated_dt=date_created,
+            )
+            db.session.add(form_storage)
+            db.session.commit()            
+
     except Exception as e:
         logger.error(e)
         # Set error in kwargs to get consumed by the record_event_error function
