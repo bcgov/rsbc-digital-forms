@@ -701,17 +701,17 @@
                 <label class="grid-label">Does this collision contain a Countable Fatal?</label><br>
                 <div class="radio-group">
                     <div class="radio-option">
-                        <input type="radio" name="fatal" value="yes" {% if data.has_countable_fatal=="Y" %}checked{%
+                        <input type="radio" name="fatal-icbc" value="yes" {% if data.has_countable_fatal=="Y" %}checked{%
                             endif %}>
                         <label>Yes</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="fatal" value="no" {% if data.has_countable_fatal=="N" %}checked{%
+                        <input type="radio" name="fatal-icbc" value="no" {% if data.has_countable_fatal=="N" %}checked{%
                             endif %}>
                         <label>No</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="fatal" value="na" {% if data.has_countable_fatal=="NA" %}checked{%
+                        <input type="radio" name="fatal-icbc" value="na" {% if data.has_countable_fatal=="NA" %}checked{%
                             endif %}>
                         <label>Not Applicable - No Fatality Entered</label>
                     </div>
