@@ -232,7 +232,7 @@ def save_event_data(**kwargs) -> tuple:
                 # 'value': None, 'label': None}).get('value'),                
                 date_of_impound=datetime.strptime(
                     data.get('date_of_impound'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('date_of_impound') else None,
-                irp_impound=data.get('irp_impound'),
+                irp_impound='YES' if data.get('IRP') else data.get('irp_impound'),
                 irp_impound_duration=data.get('irp_impound_duration'),
                 IRP_number=data.get('IRP_number'),
                 VI_number=data.get('VI_number'),
@@ -503,7 +503,7 @@ def save_event_pdf(**kwargs) -> tuple:
             db.session.add(form_storage)
             db.session.commit()
 
-        if(data.get('IRP')):
+        if(data.get('IRP') and data.get("IRP_form_png")):
             filename = str(uuid.uuid4().hex)
             pdf_filename = f"/tmp/{filename}.pdf"
             encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
