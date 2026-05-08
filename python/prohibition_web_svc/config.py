@@ -63,5 +63,6 @@ class Config(BaseConfig):
     ICBC_USE_OAUTH = os.getenv('ICBC_USE_OAUTH', 'false').lower() == 'true'
 
     REACT_APP_BASE_URL = os.environ.get('REACT_APP_BASE_URL', 'http://localhost:3000/roadside-forms')
+    REACT_APP_USER_MANAGEMENT_URL = os.environ.get('REACT_APP_USER_MANAGEMENT_URL', REACT_APP_BASE_URL + '/task')
 
     CACHE_TIMEOUT = int(os.getenv('CACHE_TIMEOUT', 300))  # in seconds
