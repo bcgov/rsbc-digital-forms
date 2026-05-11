@@ -67,8 +67,8 @@
             }
 
             .section-content {
-                border-bottom: 1px solid #000;
-                border-top: 1px solid #000;
+                border-bottom: 1.5pt solid #000;
+                border-top: 1.5pt solid #000;
             }
 
             .draft-watermark {
@@ -212,7 +212,7 @@
         }
 
         .section-content {
-            border: 2px solid #000;
+            border: 1.5pt solid #000;
             border-top: none;
             padding: 10px;
             margin-bottom: 15px;
@@ -224,14 +224,14 @@
             font-weight: bold;
             background-color: #e0e0e0;
             padding: 5px;
-            border: 1px solid #000;
+            border: 1.5pt solid #000;
             border-bottom: none;
             /* page-break-after: avoid; */
         }
 
         .section-divider {
             margin-top: 20px;
-            border-top: 1px solid #ccc;
+            border-top: 1.5pt solid #ccc;
             padding-top: 15px;
         }
 
@@ -359,8 +359,8 @@
             background: #fff;
             margin-bottom: 10px;
             width: 100%;
-            border-top: 1px solid #000;
-            border-left: 1px solid #000;
+            border-top: 1.5pt solid black;
+            border-left: 1.5pt solid black;
         }
 
         .grid-last-cell {
@@ -368,7 +368,7 @@
         }
 
         .border-bottom {
-            border-bottom: 1px solid #000 !important;
+            border-bottom: 1.5pt solid #000 !important;
         }
 
         /* 1 Column Layout */
@@ -414,8 +414,8 @@
             overflow: hidden;
             word-wrap: break-word;
             box-sizing: border-box;
-            border-right: 1px solid #000;
-            border-bottom: 1px solid #000;
+            border-right: 1.5pt solid black;
+            border-bottom: 1.5pt solid black;
         }
 
         /* Spanning Classes */
@@ -467,7 +467,7 @@
         table,
         th,
         td {
-            border: 1px solid #000;
+            border: 1.5pt solid #000;
         }
 
         th,
@@ -524,7 +524,7 @@
 
         /* ICBC Boxes */
         .icbc-boxes-container {
-            border: 1px solid #ccc;
+            border: 1.5pt solid #ccc;
             padding: 10px;
             background-color: #f9f9f9;
         }
@@ -1226,7 +1226,7 @@
 
                             </div>
                             {% if entity.blood_alc_test != 'NOT' %}
-                            <div class="grid-cell grid-cell-full" style="border-bottom: 1px solid #000;">
+                            <div class="grid-cell grid-cell-full" style="border-bottom: 1.5pt solid #000;">
                                 <label style="font-weight: normal;">Result 1</label>
                                 <div class="grid-input grid-display" contenteditable="false"
                                     style="width: 100px; margin-left: 5px;">{{ entity.result_1 }}</div>
@@ -2065,11 +2065,11 @@
                     {% for entity in data.entities %}
                     {% set entity_index = loop.index %}
                     <div class="icbc-involved-person">
-                        <h4 class="subsection-header" style="border: 1px solid #000;">Entity {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})</h4>
+                        <h4 class="subsection-header" style="border: 1.5pt solid #000;">Entity {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})</h4>
 
                         {% for person in entity.involved_persons %}
                         <div>
-                            <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold; border-right: 1px solid #000;  border-left: 1px solid #000;">
+                            <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold; border-right: 1.5pt solid #000;  border-left: 1px solid #000;">
                                 Involved Person {{ loop.index }} associated to Entity {{ entity_index }}
                             </h5>
                             <!-- Person Header Row with Boxes -->
