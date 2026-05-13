@@ -12,6 +12,13 @@ POSTGRES_DF_TARGETS = [
     {"table": "df_errors", "date_column": "received_dt"},
 ]
 
+POSTGRES_FF_TARGETS = [
+    {"table": "draft", "date_column": "created", "parent_table": "application", "parent_join_column": "application_id"},
+    {"table": "application_audit", "date_column": "created", "parent_table": "application", "parent_join_column": "application_id"},
+    {"table": "application_data", "date_column": "created", "parent_table": "application", "parent_join_column": "application_id"},
+    {"table": "application", "date_column": "created"},
+]
+
 MONGO_COLLECTION = "submissions"
 
 
@@ -20,6 +27,7 @@ def run_cleanup(cutoff_date: datetime, dry_run: bool) -> None:
     logger.info("Running data cleanup in %s mode. Cutoff date: %s", mode_label, cutoff_date)
 
     cleanup_postgres_DF(cutoff_date, dry_run)
+    cleanup_postgres_FF(cutoff_date, dry_run)
     cleanup_mongo(cutoff_date, dry_run)
 
     logger.info("Data cleanup completed.")
@@ -39,16 +47,43 @@ def cleanup_postgres_DF(cutoff_date: datetime, dry_run: bool) -> dict:
     ) as conn:
         for target in POSTGRES_DF_TARGETS:
             table = target["table"]
-            date_column = target["date_column"]
-            count = _count_postgres_records(conn, table, date_column, cutoff_date)
+            count = _count_postgres_records(conn, target, cutoff_date)
             results[table] = count
             logger.info("Postgres table '%s': %d record(s) older than %s", table, count, cutoff_date)
 
             if not dry_run and count > 0:
-                deleted = _delete_postgres_records(conn, table, date_column, cutoff_date)
+                deleted = _delete_postgres_records(conn, target, cutoff_date)
                 logger.info("Postgres table '%s': deleted %d record(s).", table, deleted)
 
     return results
+
+
+def cleanup_postgres_FF(cutoff_date: datetime, dry_run: bool) -> dict:
+    logger.info("Connecting to Postgres database: %s@%s:%s/%s",
+                Config.DB_USER, Config.DB_HOST, Config.DB_PORT, Config.DB_NAME_FF)
+
+    results = {}
+    with psycopg2.connect(
+        database=Config.DB_NAME_FF,
+        user=Config.DB_USER,
+        password=Config.DB_PASS,
+        host=Config.DB_HOST,
+        port=Config.DB_PORT
+    ) as conn:
+        for target in POSTGRES_FF_TARGETS:
+            _execute_db_cleanup(cutoff_date, dry_run, results, conn, target)
+
+    return results
+
+def _execute_db_cleanup(cutoff_date, dry_run, results, conn, target):
+    table = target["table"]
+    count = _count_postgres_records(conn, target, cutoff_date)
+    results[table] = count
+    logger.info("Postgres table '%s': %d record(s) older than %s", table, count, cutoff_date)
+
+    if not dry_run and count > 0:
+        deleted = _delete_postgres_records(conn, target, cutoff_date)
+        logger.info("Postgres table '%s': deleted %d record(s).", table, deleted)
 
 
 def cleanup_mongo(cutoff_date: datetime, dry_run: bool) -> int:
@@ -79,15 +114,36 @@ def cleanup_mongo(cutoff_date: datetime, dry_run: bool) -> int:
         client.close()
 
 
-def _count_postgres_records(conn, table: str, date_column: str, cutoff_date: datetime) -> int:
-    query = f"SELECT COUNT(*) FROM {table} WHERE {date_column} < %s"
+def _count_postgres_records(conn, target: dict, cutoff_date: datetime) -> int:
+    if ("parent_table" in target) and ("parent_join_column" in target):
+        query = f"""
+            SELECT COUNT(*)
+            FROM {target["table"]} t
+            JOIN {target["parent_table"]} p ON t.{target["parent_join_column"]} = p.id
+            WHERE p.{target["date_column"]} < %s
+        """
+    else:
+        query = f"SELECT COUNT(*) FROM {target["table"]} WHERE {target["date_column"]} < %s"
+
+    logger.debug("Executing count query for table '%s': %s", target["table"], query.replace("%s", str(cutoff_date)))    
     with conn.cursor() as cursor:
         cursor.execute(query, (cutoff_date,))
         return cursor.fetchone()[0]
 
 
-def _delete_postgres_records(conn, table: str, date_column: str, cutoff_date: datetime) -> int:
-    query = f"DELETE FROM {table} WHERE {date_column} < %s"
+def _delete_postgres_records(conn, target: dict, cutoff_date: datetime) -> int:
+    if ("parent_table" in target) and ("parent_join_column" in target):
+        query = f"""
+            DELETE FROM {target["table"]} t
+            WHERE t.{target["parent_join_column"]} in (
+             SELECT id FROM {target["parent_table"]} p 
+             WHERE p.{target["date_column"]} < %s
+            )
+        """
+    else:
+        query = f"DELETE FROM {target["table"]} WHERE {target["date_column"]} < %s"
+
+    logger.debug("Executing delete query for table '%s': %s", target["table"], query.replace("%s", str(cutoff_date)))
     with conn.cursor() as cursor:
         cursor.execute(query, (cutoff_date,))
         conn.commit()

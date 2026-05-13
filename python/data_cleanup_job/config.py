@@ -15,6 +15,7 @@ class Config():
     DB_PASS = os.environ.get('DB_PASS', 'pass')
     DB_PORT = os.environ.get('DB_PORT', 5432)
     DB_NAME_DF = os.environ.get('DB_NAME_DF', 'test')
+    DB_NAME_FF = os.environ.get('DB_NAME_FF', 'formsflow_api')
 
     # MongoDB settings
     MONGO_HOST = os.environ.get('MONGO_HOST', 'localhost')
