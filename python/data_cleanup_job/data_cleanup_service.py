@@ -38,7 +38,7 @@ def run_cleanup(cutoff_date: datetime, dry_run: bool) -> None:
         "mongo": results_mongo
     }
 
-    _write_cleanup_report_to_splunk(all_results)
+    _write_cleanup_report_to_splunk(cutoff_date, dry_run, all_results)
 
     logger.info("Data cleanup completed.")
 
@@ -159,11 +159,16 @@ def _delete_postgres_records(conn, target: dict, cutoff_date: datetime) -> int:
         conn.commit()
         return cursor.rowcount
 
-def _write_cleanup_report_to_splunk(results: dict) -> None:
+def _write_cleanup_report_to_splunk(cutoff_date, dry_run, results: dict) -> None:
     # Placeholder for writing results to Splunk
     logger.info("Cleanup report: %s", results)
     args = {}
-    args["splunk_data"] = {"event": "data_cleanup_report", "results": results}
+    args["splunk_data"] = {
+        "event": "data_cleanup_report",
+        "cutoff_date": cutoff_date,
+        "dry_run": dry_run,
+        "results": results
+    }
     args["config"] = Config
     try:
         splunk.log_to_splunk(**args)
