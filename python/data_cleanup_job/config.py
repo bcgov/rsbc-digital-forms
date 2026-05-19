@@ -23,3 +23,9 @@ class Config():
     MONGO_USER = os.environ.get('MONGO_USER', '')
     MONGO_PASS = os.environ.get('MONGO_PASS', '')
     MONGO_DB_NAME = os.environ.get('MONGO_DB_NAME', 'formio')
+
+    # Splunk settings
+    SPLUNK_HOST = os.environ.get('SPLUNK_HOST', 'localhost')
+    SPLUNK_PORT = int(os.environ.get('SPLUNK_PORT', 8088))
+    SPLUNK_TOKEN = os.environ.get('SPLUNK_TOKEN', 'your-splunk-token')
+    OPENSHIFT_PLATE = os.environ.get('OPENSHIFT_PLATE', 'data_cleanup_job')

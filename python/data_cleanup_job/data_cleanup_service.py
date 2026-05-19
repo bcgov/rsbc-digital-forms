@@ -4,6 +4,7 @@ import logging
 import psycopg2
 from pymongo import MongoClient
 
+from python.common import splunk
 from python.data_cleanup_job.config import Config
 
 logger = logging.getLogger(__name__)
@@ -26,9 +27,18 @@ def run_cleanup(cutoff_date: datetime, dry_run: bool) -> None:
     mode_label = "DRY RUN" if dry_run else "LIVE"
     logger.info("Running data cleanup in %s mode. Cutoff date: %s", mode_label, cutoff_date)
 
-    cleanup_postgres_DF(cutoff_date, dry_run)
-    cleanup_postgres_FF(cutoff_date, dry_run)
-    cleanup_mongo(cutoff_date, dry_run)
+    results_df = cleanup_postgres_DF(cutoff_date, dry_run)
+    results_ff = cleanup_postgres_FF(cutoff_date, dry_run)
+    results_mongo = cleanup_mongo(cutoff_date, dry_run)
+
+    # Combine all results
+    all_results = {
+        "postgres_df": results_df,
+        "postgres_ff": results_ff,
+        "mongo": results_mongo
+    }
+
+    _write_cleanup_report_to_splunk(all_results)
 
     logger.info("Data cleanup completed.")
 
@@ -99,7 +109,7 @@ def cleanup_mongo(cutoff_date: datetime, dry_run: bool) -> int:
     try:
         db = client[Config.MONGO_DB_NAME]
         collection = db[MONGO_COLLECTION]
-        query = {"created": {"$lt": cutoff_date}}
+        query = {"$and":[{"created": {"$lt": cutoff_date}}, {"metadata":{"$exists":"true"}},{"metadata":{"$ne":None}},{"metadata":{"$ne":{}}}]}
 
         count = collection.count_documents(query)
         logger.info("MongoDB collection '%s.%s': %d document(s) older than %s",
@@ -148,3 +158,14 @@ def _delete_postgres_records(conn, target: dict, cutoff_date: datetime) -> int:
         cursor.execute(query, (cutoff_date,))
         conn.commit()
         return cursor.rowcount
+
+def _write_cleanup_report_to_splunk(results: dict) -> None:
+    # Placeholder for writing results to Splunk
+    logger.info("Cleanup report: %s", results)
+    args = {}
+    args["splunk_data"] = results
+    args["config"] = Config
+    try:
+        splunk.log_to_splunk(**args)
+    except Exception as e:
+        logger.error("Failed to write cleanup report to Splunk: %s", e)

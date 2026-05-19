@@ -242,10 +242,11 @@ class TestCleanupMongo:
         monkeypatch.setattr(service, "MongoClient", mongo_client_mock)
 
         cutoff = datetime(2025, 12, 1)
+        expected_query = {"$and": [{"created": {"$lt": cutoff}}, {"metadata": {"$exists": "true"}}, {"metadata": {"$ne": None}}, {"metadata": {"$ne": {}}}]}
         count = service.cleanup_mongo(cutoff, dry_run=True)
 
         assert count == 15
-        collection.count_documents.assert_called_once_with({"created": {"$lt": cutoff}})
+        collection.count_documents.assert_called_once_with(expected_query)
         collection.delete_many.assert_not_called()
         client.close.assert_called_once()
 
@@ -267,10 +268,11 @@ class TestCleanupMongo:
         monkeypatch.setattr(service, "MongoClient", mongo_client_mock)
 
         cutoff = datetime(2025, 12, 1)
+        expected_query = {"$and": [{"created": {"$lt": cutoff}}, {"metadata": {"$exists": "true"}}, {"metadata": {"$ne": None}}, {"metadata": {"$ne": {}}}]}
         count = service.cleanup_mongo(cutoff, dry_run=False)
 
         assert count == 15
-        collection.delete_many.assert_called_once_with({"created": {"$lt": cutoff}})
+        collection.delete_many.assert_called_once_with(expected_query)
         client.close.assert_called_once()
 
     def test_live_mode_skips_delete_when_count_is_zero(self, monkeypatch):
