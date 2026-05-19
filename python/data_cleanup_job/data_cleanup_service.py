@@ -163,7 +163,7 @@ def _write_cleanup_report_to_splunk(results: dict) -> None:
     # Placeholder for writing results to Splunk
     logger.info("Cleanup report: %s", results)
     args = {}
-    args["splunk_data"] = results
+    args["splunk_data"] = {"event": "data_cleanup_report", "results": results}
     args["config"] = Config
     try:
         splunk.log_to_splunk(**args)
