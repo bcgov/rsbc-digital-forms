@@ -165,7 +165,7 @@ def _write_cleanup_report_to_splunk(cutoff_date, dry_run, results: dict) -> None
     args = {}
     args["splunk_data"] = {
         "event": "data_cleanup_report",
-        "cutoff_date": cutoff_date,
+        "cutoff_date": cutoff_date.isoformat(),
         "dry_run": dry_run,
         "results": results
     }
