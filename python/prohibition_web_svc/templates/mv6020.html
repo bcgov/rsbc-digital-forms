@@ -558,6 +558,10 @@
         .icbc-involved-person {
             margin-bottom: 20px;
         }
+
+        .uppercase {
+            text-transform: uppercase;
+        }
     </style>
 </head>
 
@@ -686,7 +690,8 @@
                         <label class="grid-label">Collision Type</label><br>
                         <div class="grid-input grid-display" contenteditable="false" style="width: 200px;">{% if
                             data.collision_type == 5 %}Fatality{% elif data.collision_type == 3 %}Personal
-                            Injury{% elif data.collision_type == 2 %}Property Damage over $10000{% else %}{{
+                            Injury{% elif data.collision_type == 2 %}Property Damage over $10000
+                            {% elif data.collision_type == 0 %}Non-reportable{% else %}{{
                             data.collision_type }}{% endif %}</div>
                     </div>
                     <div class="grid-cell">
@@ -1431,7 +1436,7 @@
                         {% if data.has_other_prop_damage == 'Y' or data.has_other_prop_damage == 'U' %}
                         <div class="grid-cell grid-cell-full">
                             <label class="grid-label">Other Property Damage - list property damaged</label><br>
-                            <textarea class="grid-input auto-resize">{{ data.other_prop_damage_desc }}</textarea>
+                            <textarea class="grid-input auto-resize uppercase">{{ data.other_prop_damage_desc }}</textarea>
                         </div>
                         {% endif %}
                         <div class="grid-cell grid-cell-full">
@@ -1476,14 +1481,15 @@
                          {% if not (data.print_options and data.print_options.type == "entity") %}
                         <div class="grid-cell grid-cell-full">
                             <label class="grid-label">Box 99 Police Comments</label><br>
-                            <textarea class="grid-input auto-resize">{{ data.police_comments }}</textarea>
+                            <textarea class="grid-input auto-resize uppercase">{{ data.police_comments }}</textarea>
                         </div>
                         {% endif %}
                         <div class="grid-cell">
                             <label class="grid-label">Collision Type</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 200px;">{% if
                                 data.collision_type == 5 %}Fatality{% elif data.collision_type == 3 %}Personal
-                                Injury{% elif data.collision_type == 2 %}Property Damage over $10000{% else %}{{
+                                Injury{% elif data.collision_type == 2 %}Property Damage over $10000
+                                {% elif data.collision_type == 0 %}Non-reportable{% else %}{{
                                 data.collision_type }}{% endif %}</div>
                         </div>
                         <div class="grid-cell">
