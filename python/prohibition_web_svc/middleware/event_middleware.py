@@ -9,6 +9,7 @@ from flask import jsonify, make_response
 from sqlalchemy import exists
 from python.common.logging_utils import get_logger
 from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, FormStorageRefs, Submission
+from python.common.models.irp_form import IRPForm
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_method1
 import uuid
@@ -95,9 +96,11 @@ def check_if_form_number_was_used(**kwargs) -> tuple:
         vi_form_number_already_exists = False
         twenty_four_hour_form_number_already_exists = False
         twelve_hour_form_number_already_exists = False
+        irp_form_number_already_exists = False
         vi_form_number = data.get('VI_number')
         twenty_four_hour_form_number = data.get('twenty_four_hour_number')
         twelve_hour_form_number = data.get('twelve_hour_number')
+        irp_form_number = data.get('IRP_number')
         if data.get('VI') and vi_form_number:
             vi_form_number_already_exists = db.session.query(
                 exists().where(VIForm.VI_number == str(vi_form_number))
@@ -110,10 +113,15 @@ def check_if_form_number_was_used(**kwargs) -> tuple:
             twelve_hour_form_number_already_exists = db.session.query(
                 exists().where(TwelveHourForm.twelve_hour_number == str(twelve_hour_form_number))
             ).scalar()
-        
+        if data.get('IRP') and irp_form_number:
+            irp_form_number_already_exists = db.session.query(
+                exists().where(IRPForm.irp_number == str(irp_form_number))
+            ).scalar()
+
         if vi_form_number_already_exists or \
             twenty_four_hour_form_number_already_exists or \
-            twelve_hour_form_number_already_exists:
+            twelve_hour_form_number_already_exists or \
+            irp_form_number_already_exists:
             error_details = []
             if vi_form_number_already_exists:
                 error_details.append(f'VI form number already exists: {vi_form_number}')
@@ -121,6 +129,8 @@ def check_if_form_number_was_used(**kwargs) -> tuple:
                 error_details.append(f'24 Hour form number already exists: {twenty_four_hour_form_number}')
             if twelve_hour_form_number_already_exists:
                 error_details.append(f'12 Hour form number already exists: {twelve_hour_form_number}')
+            if irp_form_number_already_exists:
+                error_details.append(f'IRP form number already exists: {irp_form_number}')
 
             kwargs['error'] = {
                 'error_code': ErrorCode.E09,
@@ -133,6 +143,14 @@ def check_if_form_number_was_used(**kwargs) -> tuple:
             return False, kwargs
     except Exception as e:
         logger.error(e)
+        kwargs['error'] = {
+                'error_code': ErrorCode.G00,
+                'error_details': str(e),
+                'event_id': data.get('ff_application_id', None),
+                'event_type': get_event_type(data),
+                'ticket_no': get_ticket_no(data),
+                'func': check_if_form_number_was_used,
+            }
         return False, kwargs
     return True, kwargs    
 
