@@ -350,9 +350,10 @@ def save_event_data(**kwargs) -> tuple:
 
         logger.verbose('Saving Event')
         db.session.add(event)
-        db.session.commit()
+        db.session.flush()
     except Exception as e:
         logger.error(e)
+        db.session.rollback()
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
             'error_code': ErrorCode.E01,
@@ -439,7 +440,6 @@ def save_event_pdf(**kwargs) -> tuple:
                 updated_dt=date_created,
             )
             db.session.add(form_storage)
-            db.session.commit()
         if(data.get('TwentyFourHour')):
             filename = str(uuid.uuid4().hex)
             pdf_filename = f"/tmp/{filename}.pdf"
@@ -469,7 +469,6 @@ def save_event_pdf(**kwargs) -> tuple:
                 updated_dt=date_created,
             )
             db.session.add(form_storage)
-            db.session.commit()
 
         if(data.get('TwelveHour')):
             filename = str(uuid.uuid4().hex)
@@ -501,7 +500,6 @@ def save_event_pdf(**kwargs) -> tuple:
                 updated_dt=date_created,
             )
             db.session.add(form_storage)
-            db.session.commit()
 
         if(data.get('IRP') and data.get("IRP_form_png")):
             filename = str(uuid.uuid4().hex)
@@ -533,19 +531,39 @@ def save_event_pdf(**kwargs) -> tuple:
                 updated_dt=date_created,
             )
             db.session.add(form_storage)
-            db.session.commit()            
 
     except Exception as e:
         logger.error(e)
+        db.session.rollback()
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
                 'error_code': ErrorCode.E02,
                 'error_details': e,
-                'event_id': event.event_id,
+                'event_id': event.event_id if event else None,
                 'event_type': get_event_type(data),
                 'ticket_no': get_ticket_no(data),
                 'func': save_event_pdf,
             }
+        return False, kwargs
+    return True, kwargs
+
+
+def commit_transaction(**kwargs) -> tuple:
+    """Commit the shared DB transaction that spans save_event_data and save_event_pdf."""
+    try:
+        db.session.commit()
+    except Exception as e:
+        logger.error(e)
+        db.session.rollback()
+        data = kwargs.get('payload', {})
+        kwargs['error'] = {
+            'error_code': ErrorCode.E01,
+            'error_details': str(e),
+            'event_id': None,
+            'event_type': get_event_type(data),
+            'ticket_no': get_ticket_no(data),
+            'func': commit_transaction,
+        }
         return False, kwargs
     return True, kwargs
 
