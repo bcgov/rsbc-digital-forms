@@ -25,6 +25,8 @@ VI_FORM_TYPE = 'VI'
 TWENTY_FOUR_HOUR_FORM_TYPE = '24h'
 TWELVE_HOUR_FORM_TYPE = '12h'
 IRP_FORM_TYPE = 'IRP'
+VI_EXTRA_PAGE_THRESHOLD = 500
+
 
 def validate_update(**kwargs) -> tuple:
     return True, kwargs
@@ -415,6 +417,13 @@ def save_event_pdf(**kwargs) -> tuple:
         data = kwargs.get('payload')
         event = kwargs.get('event')
         submission_id = kwargs.get('submission_id')
+        form_version = data.get("form_details", {}).get("form_version")
+        form_keys = ['VI', 'TwentyFourHour', 'TwelveHour', 'IRP']
+
+        if not any(data.get(k) for k in form_keys): # If no forms are included in the payload, skip PDF processing
+            logger.verbose('No forms included in payload, skipping PDF processing')
+            return True, kwargs
+
         cert_path = Config.MINIO_CERT_FILE
         os.environ['SSL_CERT_FILE'] = cert_path
         client = Minio(
@@ -423,38 +432,13 @@ def save_event_pdf(**kwargs) -> tuple:
             secret_key=Config.MINIO_SK,
             secure=Config.MINIO_SECURE,
         )
-        if(data.get('VI')):
-            len_of_incident_details=len(data.get('incident_details', '')) if (data.get('incident_details')) else 0
-            filename = str(uuid.uuid4().hex)
-            pdf_filename = f"/tmp/{filename}.pdf"
-            encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
+        if data.get('VI') and data.get("VI_form_png"):
+            len_of_incident_details=len(data.get('incident_details') or '')
             b64encoded = data.get("VI_form_png").split(",")[1]
-            extra_page_flag=len_of_incident_details>500
-            page_num=3 if extra_page_flag else 2
-            with open(f"/tmp/{filename}.png", "wb") as fh:
-                fh.write(b64decode(b64encoded))
-            split_image(f"/tmp/{filename}.png", page_num, 1, False, True,output_dir="/tmp")
-            
-            if extra_page_flag:
-                list_of_images=[f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png", f"/tmp/{filename}_2.png"]
-            else:
-                list_of_images=[f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png"]
+            storage_key = _process_and_upload_pdf(client, 
+                                    b64encoded, 
+                                    num_pages=3 if len_of_incident_details > VI_EXTRA_PAGE_THRESHOLD else 2)
 
-            pdf_bytes=None
-            pdf_bytes = create_pdf_with_images(*list_of_images)
-            with open(pdf_filename, "wb") as file:
-                file.write(pdf_bytes)
-            encryptPdf_method1(
-                pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-            logger.verbose('File encrypted')
-            encoded_file_name = f"{filename}_encrypted.pdf"
-            encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
-            with open(encoded_pdf_filepath, 'rb') as file_data:
-                client.fput_object(Config.STORAGE_BUCKET_NAME,
-                                   encoded_file_name, encoded_pdf_filepath)
-            logger.verbose('File uploaded')
-
-            storage_key = f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}'
             form_storage = FormStorageRefs(
                 form_id_vi=event.vi_form.form_id,
                 event_id=event.event_id,
@@ -465,41 +449,20 @@ def save_event_pdf(**kwargs) -> tuple:
             )
             db.session.add(form_storage)
 
-            form_ref = SubmissionFormRef(
-                submission_id=submission_id,
-                form_type=VI_FORM_TYPE,
-                form_id=data.get('VI_number'),
-                form_version=data.get("form_details", {}).get("form_version", "unknown"),
-                storage_key=storage_key,
-            )
-            form_ref.events = []  # Initialize events as an empty list
-            vips_event = SubmissionEvent(
-                destination='VIPS',
-            )
-            form_ref.events.append(vips_event)
-            db.session.add(form_ref)
+            _add_submission_events(
+                data.get('VI_number'), 
+                VI_FORM_TYPE,
+                form_version, 
+                submission_id, 
+                storage_key,
+                list_of_events=['VIPS'])
 
-        if(data.get('TwentyFourHour')):
-            filename = str(uuid.uuid4().hex)
-            pdf_filename = f"/tmp/{filename}.pdf"
-            encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
+        if data.get('TwentyFourHour') and data.get("TwentyFourHour_form_png"):
             b64encoded = data.get("TwentyFourHour_form_png").split(",")[1]
-            with open(f"/tmp/{filename}.png", "wb") as fh:
-                fh.write(b64decode(b64encoded))
-            pdf_bytes = create_pdf_with_images(f"/tmp/{filename}.png", is_landscape=True)
-            with open(pdf_filename, "wb") as file:
-                file.write(pdf_bytes)
-            encryptPdf_method1(
-                pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-            logger.verbose('File encrypted')
-            encoded_file_name = f"{filename}_encrypted.pdf"
-            encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
-            with open(encoded_pdf_filepath, 'rb') as file_data:
-                client.fput_object(Config.STORAGE_BUCKET_NAME,
-                                   encoded_file_name, encoded_pdf_filepath)
-            logger.verbose('File uploaded')
+            storage_key = _process_and_upload_pdf(client, 
+                                    b64encoded,
+                                    is_landscape=True)
 
-            storage_key = f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}'
             form_storage = FormStorageRefs(
                 form_id_24h=event.twenty_four_hour_form.form_id,
                 event_id=event.event_id,
@@ -510,42 +473,20 @@ def save_event_pdf(**kwargs) -> tuple:
             )
             db.session.add(form_storage)
 
-            form_ref = SubmissionFormRef(
-                submission_id=submission_id,
-                form_type=TWENTY_FOUR_HOUR_FORM_TYPE,
-                form_id=data.get('twenty_four_hour_number'),
-                form_version=data.get("form_details", {}).get("form_version", "unknown"),
-                storage_key=storage_key,
-            )
-            form_ref.events = []  # Initialize events as an empty list
-            icbc_event = SubmissionEvent(
-                destination='ICBC',
-            )
-            form_ref.events.append(icbc_event)
-            db.session.add(form_ref)
+            _add_submission_events(
+                data.get('twenty_four_hour_number'), 
+                TWENTY_FOUR_HOUR_FORM_TYPE,
+                form_version, 
+                submission_id, 
+                storage_key,
+                list_of_events=['ICBC'])            
 
-        if(data.get('TwelveHour')):
-            filename = str(uuid.uuid4().hex)
-            pdf_filename = f"/tmp/{filename}.pdf"
-            encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
+        if data.get('TwelveHour') and data.get("TwelveHour_form_png"):
             b64encoded = data.get("TwelveHour_form_png").split(",")[1]
-            with open(f"/tmp/{filename}.png", "wb") as fh:
-                fh.write(b64decode(b64encoded))
-            pdf_bytes = create_pdf_with_images(f"/tmp/{filename}.png", is_landscape=True)
-            with open(pdf_filename, "wb") as file:
-                file.write(pdf_bytes)
-            encryptPdf_method1(
-                pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-            logger.verbose('File encrypted')
-            encoded_file_name = f"{filename}_encrypted.pdf"
-            encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
-            with open(encoded_pdf_filepath, 'rb') as file_data:
-                client.fput_object(Config.STORAGE_BUCKET_NAME,
-                                   encoded_file_name, encoded_pdf_filepath)
-            logger.verbose('File uploaded')
-            
+            storage_key = _process_and_upload_pdf(client, 
+                                    b64encoded,
+                                    is_landscape=True)
 
-            storage_key = f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}'
             form_storage = FormStorageRefs(
                 form_id_12h=event.twelve_hour_form.form_id,
                 event_id=event.event_id,
@@ -556,41 +497,19 @@ def save_event_pdf(**kwargs) -> tuple:
             )
             db.session.add(form_storage)
 
-            form_ref = SubmissionFormRef(
-                submission_id=submission_id,
-                form_type=TWELVE_HOUR_FORM_TYPE,
-                form_id=data.get('twelve_hour_number'),
-                form_version=data.get("form_details", {}).get("form_version", "unknown"),
-                storage_key=storage_key,
-            )
-            form_ref.events = []  # Initialize events as an empty list
-            icbc_event = SubmissionEvent(
-                destination='ICBC',
-            )
-            form_ref.events.append(icbc_event)
-            db.session.add(form_ref)
+            _add_submission_events(
+                data.get('twelve_hour_number'), 
+                TWELVE_HOUR_FORM_TYPE,
+                form_version, 
+                submission_id, 
+                storage_key,
+                list_of_events=['ICBC'])
 
-        if(data.get('IRP') and data.get("IRP_form_png")):
-            filename = str(uuid.uuid4().hex)
-            pdf_filename = f"/tmp/{filename}.pdf"
-            encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
+
+        if data.get('IRP') and data.get("IRP_form_png"):
             b64encoded = data.get("IRP_form_png").split(",")[1]
-            with open(f"/tmp/{filename}.png", "wb") as fh:
-                fh.write(b64decode(b64encoded))
-            pdf_bytes = create_pdf_with_images(f"/tmp/{filename}.png")
-            with open(pdf_filename, "wb") as file:
-                file.write(pdf_bytes)
-            encryptPdf_method1(
-                pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-            logger.verbose('File encrypted')
-            encoded_file_name = f"{filename}_encrypted.pdf"
-            encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
-            with open(encoded_pdf_filepath, 'rb') as file_data:
-                client.fput_object(Config.STORAGE_BUCKET_NAME,
-                                   encoded_file_name, encoded_pdf_filepath)
-            logger.verbose('IRP File uploaded')
-            
-            storage_key = f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}'
+            storage_key = _process_and_upload_pdf(client, b64encoded)
+
             form_storage = FormStorageRefs(
                 form_id_irp=event.irp_form.form_id,
                 event_id=event.event_id,
@@ -601,23 +520,13 @@ def save_event_pdf(**kwargs) -> tuple:
             )
             db.session.add(form_storage)
 
-            form_ref = SubmissionFormRef(
-                submission_id=submission_id,
-                form_type=IRP_FORM_TYPE,
-                form_id=data.get('IRP_number'),
-                form_version=data.get("form_details", {}).get("form_version", "unknown"),
-                storage_key=storage_key,
-            )
-            form_ref.events = []  # Initialize events as an empty list
-            vips_event = SubmissionEvent(
-                destination='VIPS',
-            )
-            form_ref.events.append(vips_event)
-            rts_event = SubmissionEvent(
-                destination='RTS',
-            )
-            form_ref.events.append(rts_event)
-            db.session.add(form_ref)
+            _add_submission_events(
+                data.get('IRP_number'), 
+                IRP_FORM_TYPE,
+                form_version, 
+                submission_id, 
+                storage_key,
+                list_of_events=['VIPS', 'RTS'])
 
     except Exception as e:
         logger.error(e)
@@ -633,6 +542,18 @@ def save_event_pdf(**kwargs) -> tuple:
             }
         return False, kwargs
     return True, kwargs
+
+def _add_submission_events(form_number, form_type, form_version, submission_id, storage_key, list_of_events=None):
+    list_of_events = list_of_events or []
+    form_ref = SubmissionFormRef(
+                submission_id=submission_id,
+                form_type=form_type,
+                form_id=form_number,
+                form_version=form_version if form_version else "unknown",
+                storage_key=storage_key,
+            )
+    form_ref.events = [SubmissionEvent(destination=d) for d in list_of_events]
+    db.session.add(form_ref)
 
 
 def commit_transaction(**kwargs) -> tuple:
@@ -784,3 +705,40 @@ def get_ticket_no(data):
         return data.get('VI_number')
     else:
         return None
+
+def _process_and_upload_pdf(client, b64encoded, num_pages=1, is_landscape=False) -> str:
+    """Process the base64 encoded image, convert to PDF, encrypt and upload to MinIO. Returns the storage key of the uploaded file."""
+
+    filename = uuid.uuid4().hex
+    pdf_path = f"/tmp/{filename}.pdf"
+    png_path = f"/tmp/{filename}.png"
+    encrypted_pdf = f"{filename}_encrypted.pdf"
+    encrypted_pdf_path = f'/tmp/{encrypted_pdf}'
+
+    try:        
+        with open(png_path, "wb") as fh:
+            fh.write(b64decode(b64encoded))
+
+        if num_pages > 1:            
+            split_image(png_path, num_pages, 1, False, True, output_dir="/tmp")
+
+            list_of_images = [f"/tmp/{filename}_{i}.png" for i in range(num_pages)]            
+        else:
+            list_of_images=[png_path]
+
+        pdf_bytes = create_pdf_with_images(*list_of_images, is_landscape=is_landscape)
+        with open(pdf_path, "wb") as file:
+            file.write(pdf_bytes)
+        encryptPdf_method1(
+            pdf_path, Config.ENCRYPT_KEY, encrypted_pdf_path)
+        logger.verbose('File encrypted')
+        
+        client.fput_object(Config.STORAGE_BUCKET_NAME,
+            encrypted_pdf, encrypted_pdf_path)
+        logger.verbose('File uploaded')
+
+        return f"{Config.STORAGE_BUCKET_NAME}/{encrypted_pdf}"
+    finally:
+        for path in [*list_of_images, pdf_path, encrypted_pdf_path]:  # cleanup temp files
+            if os.path.exists(path):
+                os.remove(path)

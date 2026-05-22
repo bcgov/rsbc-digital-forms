@@ -461,13 +461,17 @@ def test_save_event_data_database_exception_handling(mock_db_session):
 def test_save_event_pdf_vi_form_with_extra_page_success(mock_db_session):
     payload = {
         'VI': True,
+        'VI_number': 'VI123',
         'VI_form_png': 'data:image/png;base64,aGVsbG8=',
         'incident_details': 'x' * 600,
+        'form_details': {
+            'form_version': '1.0',
+        }
     }
     event = MagicMock()
     event.event_id = 10
     event.vi_form.form_id = 101
-    kwargs = {'payload': payload, 'event': event}
+    kwargs = {'payload': payload, 'event': event, 'submission_id': 11}
 
     mock_uuid = MagicMock()
     mock_uuid.hex = 'abc123'
@@ -485,6 +489,8 @@ def test_save_event_pdf_vi_form_with_extra_page_success(mock_db_session):
          patch('python.prohibition_web_svc.middleware.event_middleware.create_pdf_with_images', return_value=b'%PDF') as mock_create_pdf, \
          patch('python.prohibition_web_svc.middleware.event_middleware.encryptPdf_method1') as mock_encrypt, \
          patch('python.prohibition_web_svc.middleware.event_middleware.FormStorageRefs') as mock_storage_ref, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.SubmissionFormRef') as mock_submission_ref, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.SubmissionEvent') as mock_submission_event, \
          patch('builtins.open', mock_open()):
 
         mock_client = MagicMock()
@@ -495,7 +501,7 @@ def test_save_event_pdf_vi_form_with_extra_page_success(mock_db_session):
         assert result is True
         assert out == kwargs
         mock_split_image.assert_called_once_with('/tmp/abc123.png', 3, 1, False, True, output_dir='/tmp')
-        mock_create_pdf.assert_called_once_with('/tmp/abc123_0.png', '/tmp/abc123_1.png', '/tmp/abc123_2.png')
+        mock_create_pdf.assert_called_once_with('/tmp/abc123_0.png', '/tmp/abc123_1.png', '/tmp/abc123_2.png', is_landscape=False)
         mock_encrypt.assert_called_once_with('/tmp/abc123.pdf', 'enc-key', '/tmp/abc123_encrypted.pdf')
         mock_client.fput_object.assert_called_once_with('forms-bucket', 'abc123_encrypted.pdf', '/tmp/abc123_encrypted.pdf')
         mock_storage_ref.assert_called_once_with(
@@ -506,6 +512,14 @@ def test_save_event_pdf_vi_form_with_extra_page_success(mock_db_session):
             created_dt=mock_storage_ref.call_args.kwargs['created_dt'],
             updated_dt=mock_storage_ref.call_args.kwargs['updated_dt'],
         )
+        mock_submission_ref.assert_called_once_with(
+            submission_id=11,
+            form_type='VI',
+            form_id='VI123',
+            form_version='1.0',
+            storage_key='forms-bucket/abc123_encrypted.pdf',
+        )
+        mock_submission_event.assert_called_once_with(destination='VIPS')
         mock_db_session.add.assert_called()
         assert mock_db_session.add.call_count == 2  # FormStorageRefs + SubmissionFormRef
         mock_db_session.commit.assert_not_called()
@@ -514,12 +528,16 @@ def test_save_event_pdf_vi_form_with_extra_page_success(mock_db_session):
 def test_save_event_pdf_irp_form_success(mock_db_session):
     payload = {
         'IRP': True,
+        'IRP_number': 'IRP123',
         'IRP_form_png': 'data:image/png;base64,aGVsbG8=',
+        'form_details': {
+            'form_version': '1.0',
+        }
     }
     event = MagicMock()
     event.event_id = 11
     event.irp_form.form_id = 202
-    kwargs = {'payload': payload, 'event': event}
+    kwargs = {'payload': payload, 'event': event, 'submission_id': 11}
 
     mock_uuid = MagicMock()
     mock_uuid.hex = 'irp123'
@@ -537,6 +555,8 @@ def test_save_event_pdf_irp_form_success(mock_db_session):
          patch('python.prohibition_web_svc.middleware.event_middleware.create_pdf_with_images', return_value=b'%PDF') as mock_create_pdf, \
          patch('python.prohibition_web_svc.middleware.event_middleware.encryptPdf_method1') as mock_encrypt, \
          patch('python.prohibition_web_svc.middleware.event_middleware.FormStorageRefs') as mock_storage_ref, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.SubmissionFormRef') as mock_submission_ref, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.SubmissionEvent') as mock_submission_event, \
          patch('builtins.open', mock_open()):
 
         mock_client = MagicMock()
@@ -546,7 +566,7 @@ def test_save_event_pdf_irp_form_success(mock_db_session):
 
         assert result is True
         mock_split_image.assert_not_called()
-        mock_create_pdf.assert_called_once_with('/tmp/irp123.png')
+        mock_create_pdf.assert_called_once_with('/tmp/irp123.png', is_landscape=False)
         mock_encrypt.assert_called_once_with('/tmp/irp123.pdf', 'enc-key', '/tmp/irp123_encrypted.pdf')
         mock_client.fput_object.assert_called_once_with('forms-bucket', 'irp123_encrypted.pdf', '/tmp/irp123_encrypted.pdf')
         mock_storage_ref.assert_called_once_with(
@@ -557,6 +577,15 @@ def test_save_event_pdf_irp_form_success(mock_db_session):
             created_dt=mock_storage_ref.call_args.kwargs['created_dt'],
             updated_dt=mock_storage_ref.call_args.kwargs['updated_dt'],
         )
+        mock_submission_ref.assert_called_once_with(
+            submission_id=11,
+            form_type='IRP',
+            form_id='IRP123',
+            form_version='1.0',
+            storage_key='forms-bucket/irp123_encrypted.pdf',
+        )
+        mock_submission_event.assert_any_call(destination='VIPS')
+        mock_submission_event.assert_any_call(destination='RTS')
         mock_db_session.add.assert_called()
         assert mock_db_session.add.call_count == 2  # FormStorageRefs + SubmissionFormRef
         mock_db_session.commit.assert_not_called()
@@ -587,6 +616,138 @@ def test_save_event_pdf_returns_error_when_upload_fails(mock_db_session):
         assert out['error']['event_type'] == EventType.VI
         assert out['error']['ticket_no'] == 'VI-1000'
         mock_db_session.rollback.assert_called_once()
+
+
+def test_save_event_pdf_twenty_four_hour_form_success(mock_db_session):
+    payload = {
+        'TwentyFourHour': True,
+        'twenty_four_hour_number': '24H123',
+        'TwentyFourHour_form_png': 'data:image/png;base64,aGVsbG8=',
+        'form_details': {
+            'form_version': '2.0',
+        }
+    }
+    event = MagicMock()
+    event.event_id = 20
+    event.twenty_four_hour_form.form_id = 301
+    kwargs = {'payload': payload, 'event': event, 'submission_id': 20}
+
+    mock_uuid = MagicMock()
+    mock_uuid.hex = '24h123'
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_CERT_FILE', '/tmp/cert.pem'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_BUCKET_URL', 'minio.local'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_AK', 'ak'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_SK', 'sk'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_SECURE', False), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.STORAGE_BUCKET_NAME', 'forms-bucket'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.ENCRYPT_KEY', 'enc-key'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.uuid.uuid4', return_value=mock_uuid), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Minio') as mock_minio_cls, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.split_image') as mock_split_image, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.create_pdf_with_images', return_value=b'%PDF') as mock_create_pdf, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.encryptPdf_method1') as mock_encrypt, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.os.path.exists', return_value=False), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.FormStorageRefs') as mock_storage_ref, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.SubmissionFormRef') as mock_submission_ref, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.SubmissionEvent') as mock_submission_event, \
+         patch('builtins.open', mock_open()):
+
+        mock_client = MagicMock()
+        mock_minio_cls.return_value = mock_client
+
+        result, _ = save_event_pdf(**kwargs)
+
+        assert result is True
+        mock_split_image.assert_not_called()
+        mock_create_pdf.assert_called_once_with('/tmp/24h123.png', is_landscape=True)
+        mock_encrypt.assert_called_once_with('/tmp/24h123.pdf', 'enc-key', '/tmp/24h123_encrypted.pdf')
+        mock_client.fput_object.assert_called_once_with('forms-bucket', '24h123_encrypted.pdf', '/tmp/24h123_encrypted.pdf')
+        mock_storage_ref.assert_called_once_with(
+            form_id_24h=301,
+            event_id=20,
+            form_type='24h',
+            storage_key='forms-bucket/24h123_encrypted.pdf',
+            created_dt=mock_storage_ref.call_args.kwargs['created_dt'],
+            updated_dt=mock_storage_ref.call_args.kwargs['updated_dt'],
+        )
+        mock_submission_ref.assert_called_once_with(
+            submission_id=20,
+            form_type='24h',
+            form_id='24H123',
+            form_version='2.0',
+            storage_key='forms-bucket/24h123_encrypted.pdf',
+        )
+        mock_submission_event.assert_called_once_with(destination='ICBC')
+        mock_db_session.add.assert_called()
+        assert mock_db_session.add.call_count == 2  # FormStorageRefs + SubmissionFormRef
+        mock_db_session.commit.assert_not_called()
+
+
+def test_save_event_pdf_twelve_hour_form_success(mock_db_session):
+    payload = {
+        'TwelveHour': True,
+        'twelve_hour_number': '12H456',
+        'TwelveHour_form_png': 'data:image/png;base64,aGVsbG8=',
+        'form_details': {
+            'form_version': '3.0',
+        }
+    }
+    event = MagicMock()
+    event.event_id = 30
+    event.twelve_hour_form.form_id = 401
+    kwargs = {'payload': payload, 'event': event, 'submission_id': 30}
+
+    mock_uuid = MagicMock()
+    mock_uuid.hex = '12h456'
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_CERT_FILE', '/tmp/cert.pem'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_BUCKET_URL', 'minio.local'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_AK', 'ak'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_SK', 'sk'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_SECURE', False), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.STORAGE_BUCKET_NAME', 'forms-bucket'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.ENCRYPT_KEY', 'enc-key'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.uuid.uuid4', return_value=mock_uuid), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Minio') as mock_minio_cls, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.split_image') as mock_split_image, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.create_pdf_with_images', return_value=b'%PDF') as mock_create_pdf, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.encryptPdf_method1') as mock_encrypt, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.os.path.exists', return_value=False), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.FormStorageRefs') as mock_storage_ref, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.SubmissionFormRef') as mock_submission_ref, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.SubmissionEvent') as mock_submission_event, \
+         patch('builtins.open', mock_open()):
+
+        mock_client = MagicMock()
+        mock_minio_cls.return_value = mock_client
+
+        result, _ = save_event_pdf(**kwargs)
+
+        assert result is True
+        mock_split_image.assert_not_called()
+        mock_create_pdf.assert_called_once_with('/tmp/12h456.png', is_landscape=True)
+        mock_encrypt.assert_called_once_with('/tmp/12h456.pdf', 'enc-key', '/tmp/12h456_encrypted.pdf')
+        mock_client.fput_object.assert_called_once_with('forms-bucket', '12h456_encrypted.pdf', '/tmp/12h456_encrypted.pdf')
+        mock_storage_ref.assert_called_once_with(
+            form_id_12h=401,
+            event_id=30,
+            form_type='12h',
+            storage_key='forms-bucket/12h456_encrypted.pdf',
+            created_dt=mock_storage_ref.call_args.kwargs['created_dt'],
+            updated_dt=mock_storage_ref.call_args.kwargs['updated_dt'],
+        )
+        mock_submission_ref.assert_called_once_with(
+            submission_id=30,
+            form_type='12h',
+            form_id='12H456',
+            form_version='3.0',
+            storage_key='forms-bucket/12h456_encrypted.pdf',
+        )
+        mock_submission_event.assert_called_once_with(destination='ICBC')
+        mock_db_session.add.assert_called()
+        assert mock_db_session.add.call_count == 2  # FormStorageRefs + SubmissionFormRef
+        mock_db_session.commit.assert_not_called()
 
 
 # Tests for commit_transaction function
