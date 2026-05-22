@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock, patch, mock_open
 from python.common.models import Event
 from python.common.enums import ErrorCode, EventType
-from python.prohibition_web_svc.middleware.event_middleware import check_if_application_id_exists, log_payload_to_splunk, save_event_data, save_event_pdf, _get_asd_expiry_date, check_if_form_number_was_used
+from python.prohibition_web_svc.middleware.event_middleware import check_if_application_id_exists, log_payload_to_splunk, save_event_data, save_event_pdf, _get_asd_expiry_date, check_if_form_number_was_used, commit_transaction
 
 
 # ── helpers ──────────────────────────────────────────────────────────────────
@@ -87,7 +87,7 @@ def test_log_payload_to_splunk_success_with_all_fields():
         assert result is True
         assert 'splunk_data' in updated_kwargs
         splunk_data = updated_kwargs['splunk_data']
-        assert splunk_data['event'] == "create VI/24h/12h event"
+        assert splunk_data['event'] == "create VI/24h/12h/IRP event"
         assert splunk_data['request_id'] == 'req-123'
         assert splunk_data['user_guid'] == 'user-guid-456'
         assert splunk_data['username'] == 'testuser'
@@ -252,7 +252,7 @@ def test_save_event_data_vi_form_success(mock_db_session):
         assert 'event' in updated_kwargs
         assert updated_kwargs['event'] == mock_event
         mock_db_session.add.assert_any_call(mock_event)
-        mock_db_session.commit.assert_called()
+        mock_db_session.flush.assert_called()
 
 
 def test_save_event_data_twenty_four_hour_form_success(mock_db_session):
@@ -297,7 +297,7 @@ def test_save_event_data_twenty_four_hour_form_success(mock_db_session):
         assert 'event' in updated_kwargs
         assert updated_kwargs['event'] == mock_event
         mock_db_session.add.assert_any_call(mock_event)
-        mock_db_session.commit.assert_called()
+        mock_db_session.flush.assert_called()
 
 
 def test_save_event_data_twelve_hour_form_success(mock_db_session):
@@ -342,7 +342,7 @@ def test_save_event_data_twelve_hour_form_success(mock_db_session):
         assert 'event' in updated_kwargs
         assert updated_kwargs['event'] == mock_event
         mock_db_session.add.assert_any_call(mock_event)
-        mock_db_session.commit.assert_called()
+        mock_db_session.flush.assert_called()
 
 
 def test_save_event_data_irp_form_success(mock_db_session):
@@ -383,7 +383,7 @@ def test_save_event_data_irp_form_success(mock_db_session):
         assert updated_kwargs['event'] == mock_event
         mock_irp_mapper.map_to_irp_form.assert_called_once()
         mock_db_session.add.assert_any_call(mock_event)
-        mock_db_session.commit.assert_called()
+        mock_db_session.flush.assert_called()
 
 
 def test_save_event_data_service_account_identity_provider(mock_db_session):
@@ -439,8 +439,8 @@ def test_save_event_data_database_exception_handling(mock_db_session):
         'identity_provider': 'idir'
     }
 
-    # Make database commit raise an exception
-    mock_db_session.commit.side_effect = Exception("Database connection failed")
+    # Make database flush raise an exception
+    mock_db_session.flush.side_effect = Exception("Database connection failed")
 
     with patch('python.prohibition_web_svc.middleware.event_middleware.Event'), \
          patch('python.prohibition_web_svc.middleware.event_middleware.VIForm'), \
@@ -457,6 +457,7 @@ def test_save_event_data_database_exception_handling(mock_db_session):
         assert 'Database connection failed' in updated_kwargs['error']['error_details']
         assert updated_kwargs['error']['event_type'] == EventType.VI
         assert updated_kwargs['error']['ticket_no'] == 'VI000'
+        mock_db_session.rollback.assert_called_once()
 
 
 # Tests for save_event_pdf function
@@ -508,8 +509,9 @@ def test_save_event_pdf_vi_form_with_extra_page_success(mock_db_session):
             created_dt=mock_storage_ref.call_args.kwargs['created_dt'],
             updated_dt=mock_storage_ref.call_args.kwargs['updated_dt'],
         )
-        mock_db_session.add.assert_called_once()
-        mock_db_session.commit.assert_called_once()
+        mock_db_session.add.assert_called()
+        assert mock_db_session.add.call_count == 2  # FormStorageRefs + SubmissionFormRef
+        mock_db_session.commit.assert_not_called()
 
 
 def test_save_event_pdf_irp_form_success(mock_db_session):
@@ -558,8 +560,9 @@ def test_save_event_pdf_irp_form_success(mock_db_session):
             created_dt=mock_storage_ref.call_args.kwargs['created_dt'],
             updated_dt=mock_storage_ref.call_args.kwargs['updated_dt'],
         )
-        mock_db_session.add.assert_called_once()
-        mock_db_session.commit.assert_called_once()
+        mock_db_session.add.assert_called()
+        assert mock_db_session.add.call_count == 2  # FormStorageRefs + SubmissionFormRef
+        mock_db_session.commit.assert_not_called()
 
 
 def test_save_event_pdf_returns_error_when_upload_fails(mock_db_session):
@@ -586,6 +589,50 @@ def test_save_event_pdf_returns_error_when_upload_fails(mock_db_session):
         assert out['error']['event_id'] == 12
         assert out['error']['event_type'] == EventType.VI
         assert out['error']['ticket_no'] == 'VI-1000'
+        mock_db_session.rollback.assert_called_once()
+
+
+# Tests for commit_transaction function
+
+def test_commit_transaction_success(mock_db_session):
+    """commit_transaction commits the session and returns True."""
+    kwargs = {'payload': {'VI': True, 'VI_number': 'VI123'}}
+    result, out = commit_transaction(**kwargs)
+    assert result is True
+    assert out == kwargs
+    mock_db_session.commit.assert_called_once()
+    mock_db_session.rollback.assert_not_called()
+
+
+def test_commit_transaction_db_exception(mock_db_session):
+    """commit_transaction rolls back and returns False with error on DB failure."""
+    mock_db_session.commit.side_effect = Exception("commit failed")
+    payload = {'VI': True, 'VI_number': 'VI-ERR'}
+    kwargs = {'payload': payload}
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.get_event_type', return_value=EventType.VI), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.get_ticket_no', return_value='VI-ERR'):
+        result, out = commit_transaction(**kwargs)
+
+    assert result is False
+    assert 'error' in out
+    assert out['error']['error_code'] == ErrorCode.E01
+    assert 'commit failed' in out['error']['error_details']
+    mock_db_session.rollback.assert_called_once()
+
+
+def test_commit_transaction_no_payload(mock_db_session):
+    """commit_transaction handles missing payload gracefully on error."""
+    mock_db_session.commit.side_effect = Exception("oops")
+    kwargs = {}
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.get_event_type', return_value=None), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.get_ticket_no', return_value=None):
+        result, out = commit_transaction(**kwargs)
+
+    assert result is False
+    assert 'error' in out
+    mock_db_session.rollback.assert_called_once()
 
 
 # Tests for _get_asd_expiry_date

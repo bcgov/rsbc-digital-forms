@@ -8,7 +8,7 @@ from base64 import b64decode
 from flask import jsonify, make_response
 from sqlalchemy import exists
 from python.common.logging_utils import get_logger
-from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, FormStorageRefs, Submission
+from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, FormStorageRefs, Submission, SubmissionFormRef, SubmissionEvent
 from python.common.models.irp_form import IRPForm
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_method1
@@ -21,6 +21,11 @@ from python.prohibition_web_svc.middleware.common_middleware import safe_get_val
 
 logger = get_logger(__name__)
 
+VI_FORM_TYPE = 'VI'
+TWENTY_FOUR_HOUR_FORM_TYPE = '24h'
+TWELVE_HOUR_FORM_TYPE = '12h'
+IRP_FORM_TYPE = 'IRP'
+
 def validate_update(**kwargs) -> tuple:
     return True, kwargs
 
@@ -32,7 +37,7 @@ def _mask_sensitive_data(data: dict) -> dict:
     sensitive_fields = [
         'driver_licence_no', 'driver_last_name', 'driver_given_name',
         'regist_owner_last_name', 'regist_owner_first_name',
-        'TwelveHour_form_png', 'TwentyFourHour_form_png', 'VI_form_png',
+        'TwelveHour_form_png', 'TwentyFourHour_form_png', 'VI_form_png', 'IRP_form_png',
     ]
     for field in sensitive_fields:
         if field in masked_data:
@@ -44,7 +49,7 @@ def log_payload_to_splunk(**kwargs) -> tuple:
         payload = kwargs.get('payload')
         payload_masked = _mask_sensitive_data(payload)
         kwargs['splunk_data'] = {
-            'event': "create VI/24h/12h event",
+            'event': "create VI/24h/12h/IRP event",
             'request_id': kwargs.get('request_id', ''),
             'user_guid': kwargs.get('user_guid', ''),
             'username': kwargs.get('username'),
@@ -355,20 +360,20 @@ def save_event_data(**kwargs) -> tuple:
             irp_form = IRPMapper.map_to_irp_form(data, date_created)
             event.irp_form = irp_form
 
-        if (data.get('ff_application_id') is not None):
-            submission = Submission(
-                ff_application_id=data.get('ff_application_id'),
-                submitted_offline=data.get('submitted_offline', False),
-                created_dt=date_created,
-                updated_dt=date_created,
-                created_by=user_guid,
-                updated_by=user_guid,
-            )
-            db.session.add(submission)
+        submission = Submission(
+            ff_application_id=data.get('ff_application_id'),
+            submitted_offline=data.get('submitted_offline', False),
+            created_dt=date_created,
+            updated_dt=date_created,
+            created_by=user_guid,
+            updated_by=user_guid,
+        )
+        db.session.add(submission)
 
         logger.verbose('Saving Event')
         db.session.add(event)
         db.session.flush()
+        kwargs['submission_id'] = submission.submission_id
     except Exception as e:
         logger.error(e)
         db.session.rollback()
@@ -410,6 +415,7 @@ def save_event_pdf(**kwargs) -> tuple:
     try:
         data = kwargs.get('payload')
         event = kwargs.get('event')
+        submission_id = kwargs.get('submission_id')
         cert_path = Config.MINIO_CERT_FILE
         os.environ['SSL_CERT_FILE'] = cert_path
         client = Minio(
@@ -449,15 +455,31 @@ def save_event_pdf(**kwargs) -> tuple:
                                    encoded_file_name, encoded_pdf_filepath)
             logger.verbose('File uploaded')
 
+            storage_key = f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}'
             form_storage = FormStorageRefs(
                 form_id_vi=event.vi_form.form_id,
                 event_id=event.event_id,
-                form_type='VI',
-                storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
+                form_type=VI_FORM_TYPE,
+                storage_key=storage_key,
                 created_dt=date_created,
                 updated_dt=date_created,
             )
             db.session.add(form_storage)
+
+            form_ref = SubmissionFormRef(
+                submission_id=submission_id,
+                form_type=VI_FORM_TYPE,
+                form_id=data.get('VI_number'),
+                form_version=data.get("form_details", {}).get("form_version", "unknown"),
+                storage_key=storage_key,
+            )
+            form_ref.events = []  # Initialize events as an empty list
+            vips_event = SubmissionEvent(
+                destination='VIPS',
+            )
+            form_ref.events.append(vips_event)
+            db.session.add(form_ref)
+
         if(data.get('TwentyFourHour')):
             filename = str(uuid.uuid4().hex)
             pdf_filename = f"/tmp/{filename}.pdf"
@@ -478,15 +500,30 @@ def save_event_pdf(**kwargs) -> tuple:
                                    encoded_file_name, encoded_pdf_filepath)
             logger.verbose('File uploaded')
 
+            storage_key = f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}'
             form_storage = FormStorageRefs(
                 form_id_24h=event.twenty_four_hour_form.form_id,
                 event_id=event.event_id,
-                form_type='24h',
-                storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
+                form_type=TWENTY_FOUR_HOUR_FORM_TYPE,
+                storage_key=storage_key,
                 created_dt=date_created,
                 updated_dt=date_created,
             )
             db.session.add(form_storage)
+
+            form_ref = SubmissionFormRef(
+                submission_id=submission_id,
+                form_type=TWENTY_FOUR_HOUR_FORM_TYPE,
+                form_id=data.get('twenty_four_hour_number'),
+                form_version=data.get("form_details", {}).get("form_version", "unknown"),
+                storage_key=storage_key,
+            )
+            form_ref.events = []  # Initialize events as an empty list
+            icbc_event = SubmissionEvent(
+                destination='ICBC',
+            )
+            form_ref.events.append(icbc_event)
+            db.session.add(form_ref)
 
         if(data.get('TwelveHour')):
             filename = str(uuid.uuid4().hex)
@@ -509,15 +546,30 @@ def save_event_pdf(**kwargs) -> tuple:
             logger.verbose('File uploaded')
             
 
+            storage_key = f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}'
             form_storage = FormStorageRefs(
                 form_id_12h=event.twelve_hour_form.form_id,
                 event_id=event.event_id,
-                form_type='12h',
-                storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
+                form_type=TWELVE_HOUR_FORM_TYPE,
+                storage_key=storage_key,
                 created_dt=date_created,
                 updated_dt=date_created,
             )
             db.session.add(form_storage)
+
+            form_ref = SubmissionFormRef(
+                submission_id=submission_id,
+                form_type=TWELVE_HOUR_FORM_TYPE,
+                form_id=data.get('twelve_hour_number'),
+                form_version=data.get("form_details", {}).get("form_version", "unknown"),
+                storage_key=storage_key,
+            )
+            form_ref.events = []  # Initialize events as an empty list
+            icbc_event = SubmissionEvent(
+                destination='ICBC',
+            )
+            form_ref.events.append(icbc_event)
+            db.session.add(form_ref)
 
         if(data.get('IRP') and data.get("IRP_form_png")):
             filename = str(uuid.uuid4().hex)
@@ -539,16 +591,34 @@ def save_event_pdf(**kwargs) -> tuple:
                                    encoded_file_name, encoded_pdf_filepath)
             logger.verbose('IRP File uploaded')
             
-
+            storage_key = f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}'
             form_storage = FormStorageRefs(
                 form_id_irp=event.irp_form.form_id,
                 event_id=event.event_id,
-                form_type='IRP',
-                storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
+                form_type=IRP_FORM_TYPE,
+                storage_key=storage_key,
                 created_dt=date_created,
                 updated_dt=date_created,
             )
             db.session.add(form_storage)
+
+            form_ref = SubmissionFormRef(
+                submission_id=submission_id,
+                form_type=IRP_FORM_TYPE,
+                form_id=data.get('IRP_number'),
+                form_version=data.get("form_details", {}).get("form_version", "unknown"),
+                storage_key=storage_key,
+            )
+            form_ref.events = []  # Initialize events as an empty list
+            vips_event = SubmissionEvent(
+                destination='VIPS',
+            )
+            form_ref.events.append(vips_event)
+            rts_event = SubmissionEvent(
+                destination='RTS',
+            )
+            form_ref.events.append(rts_event)
+            db.session.add(form_ref)
 
     except Exception as e:
         logger.error(e)
