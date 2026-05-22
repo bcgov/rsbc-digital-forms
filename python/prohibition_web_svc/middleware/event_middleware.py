@@ -73,8 +73,8 @@ def check_if_application_id_exists(**kwargs) -> tuple:
     if application_id is None:
         return True, kwargs
     try:
-        event = db.session.query(Event).filter(
-            Event.ff_application_id == application_id).first()
+        event = db.session.query(Submission).filter(
+            Submission.ff_application_id == application_id).first()
         if event is not None:
             kwargs['error'] = {
                 'error_code': ErrorCode.E09,
