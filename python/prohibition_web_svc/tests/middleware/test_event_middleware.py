@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock, patch, mock_open
 from python.common.models import Event
 from python.common.enums import ErrorCode, EventType
-from python.prohibition_web_svc.middleware.event_middleware import check_if_application_id_exists, log_payload_to_splunk, save_event_data, save_event_pdf, _get_asd_expiry_date, check_if_form_number_was_used, commit_transaction
+from python.prohibition_web_svc.middleware.event_middleware import check_if_application_id_exists, log_payload_to_splunk, save_event_data, save_event_pdf, _get_asd_expiry_date, check_if_form_number_was_used, commit_transaction, validate_form_payload
 
 
 # ── helpers ──────────────────────────────────────────────────────────────────
@@ -17,11 +17,6 @@ def _make_scalar(value):
 def mock_db_session():
     with patch('python.common.models.db.session') as mock_session:
         yield mock_session
-
-@pytest.fixture
-def mock_db_session():
-  with patch('python.common.models.db.session') as mock_session:
-    yield mock_session
 
 @pytest.fixture
 def mock_event():
@@ -169,6 +164,7 @@ def test_log_payload_to_splunk_sensitive_data_masking():
         'TwelveHour_form_png': 'base64data',
         'TwentyFourHour_form_png': 'base64data2',
         'VI_form_png': 'base64data3',
+        'IRP_form_png': 'base64data4',
         'normal_field': 'normal_value'
     }
     kwargs = {'payload': payload}
@@ -190,6 +186,7 @@ def test_log_payload_to_splunk_sensitive_data_masking():
         assert splunk_payload['TwelveHour_form_png'] == '[REDACTED]'
         assert splunk_payload['TwentyFourHour_form_png'] == '[REDACTED]'
         assert splunk_payload['VI_form_png'] == '[REDACTED]'
+        assert splunk_payload['IRP_form_png'] == '[REDACTED]'
         
         # Normal fields should remain unchanged
         assert splunk_payload['normal_field'] == 'normal_value'
@@ -840,3 +837,140 @@ def test_check_if_form_number_was_used_db_exception(mock_db_session):
         result, out = check_if_form_number_was_used(**kwargs)
     assert result is False
     mock_logger.error.assert_called_once()
+
+
+# ── IRP form ──────────────────────────────────────────────────────────────────
+
+def test_check_if_form_number_was_used_irp_not_found(mock_db_session):
+    """Returns True when IRP number does not exist in the DB ."""
+    mock_db_session.query.return_value.scalar.return_value = False
+    kwargs = {'payload': {'IRP': True, 'IRP_number': 'IRP001'}}
+    result, out = check_if_form_number_was_used(**kwargs)
+    assert result is True
+    assert 'error' not in out
+
+
+def test_check_if_form_number_was_used_irp_duplicate(mock_db_session):
+    """Returns False with E09 error when IRP number already exists."""
+    mock_db_session.query.return_value.scalar.return_value = True
+    kwargs = {'payload': {'IRP': True, 'IRP_number': 'IRP001'}}
+    with patch('python.prohibition_web_svc.middleware.event_middleware.get_event_type'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.get_ticket_no'):
+        result, out = check_if_form_number_was_used(**kwargs)
+    assert result is False
+    assert out['error']['error_code'] == ErrorCode.E09
+    assert 'IRP001' in out['error']['error_details']
+
+
+def test_check_if_form_number_was_used_irp_number_is_none(mock_db_session):
+    """Skips IRP DB check and returns True when IRP_number is None (combined with VI to bypass early return)."""
+    mock_db_session.query.return_value.scalar.return_value = False
+    kwargs = {'payload': {'IRP': True, 'IRP_number': None}}
+    result, out = check_if_form_number_was_used(**kwargs)
+    assert result is True
+    assert 'error' not in out
+
+
+# ── validate_form_payload ─────────────────────────────────────────────────────
+
+def test_validate_form_payload_valid_vi_payload():
+    """Returns True for a valid VI payload with all required fields."""
+    kwargs = {'payload': {'VI': True, 'VI_number': 'V00001', 'ff_application_id': 'app-001'}}
+    result, out = validate_form_payload(**kwargs)
+    assert result is True
+    assert 'error' not in out
+
+
+def test_validate_form_payload_valid_twenty_four_hour_payload():
+    """Returns True for a valid TwentyFourHour payload."""
+    kwargs = {'payload': {'TwentyFourHour': True, 'twenty_four_hour_number': '24H001', 'ff_application_id': 'app-002'}}
+    result, out = validate_form_payload(**kwargs)
+    assert result is True
+    assert 'error' not in out
+
+
+def test_validate_form_payload_valid_twelve_hour_payload():
+    """Returns True for a valid TwelveHour payload."""
+    kwargs = {'payload': {'TwelveHour': True, 'twelve_hour_number': '12H001', 'ff_application_id': 'app-003'}}
+    result, out = validate_form_payload(**kwargs)
+    assert result is True
+    assert 'error' not in out
+
+
+def test_validate_form_payload_valid_irp_payload():
+    """Returns True for a valid IRP payload."""
+    kwargs = {'payload': {'IRP': True, 'IRP_number': 'IRP001', 'ff_application_id': 'app-004'}}
+    result, out = validate_form_payload(**kwargs)
+    assert result is True
+    assert 'error' not in out
+
+
+def test_validate_form_payload_no_payload():
+    """Returns False with E10 error when no payload is provided."""
+    kwargs = {'payload': None}
+    result, out = validate_form_payload(**kwargs)
+    assert result is False
+    assert out['error']['error_code'] == ErrorCode.E10
+    assert out['error']['error_details'] == 'No payload provided'
+
+
+def test_validate_form_payload_empty_payload():
+    """Returns False with E10 error when payload is an empty dict."""
+    kwargs = {'payload': {}}
+    result, out = validate_form_payload(**kwargs)
+    assert result is False
+    assert out['error']['error_code'] == ErrorCode.E10
+
+
+def test_validate_form_payload_vi_missing_form_number():
+    """Returns False with E10 error when VI is True but VI_number is absent."""
+    kwargs = {'payload': {'VI': True, 'ff_application_id': 'app-001'}}
+    result, out = validate_form_payload(**kwargs)
+    assert result is False
+    assert out['error']['error_code'] == ErrorCode.E10
+    assert 'missing form number' in out['error']['error_details']
+
+
+def test_validate_form_payload_twenty_four_hour_missing_form_number():
+    """Returns False with E10 error when TwentyFourHour is True but number is absent."""
+    kwargs = {'payload': {'TwentyFourHour': True, 'ff_application_id': 'app-002'}}
+    result, out = validate_form_payload(**kwargs)
+    assert result is False
+    assert out['error']['error_code'] == ErrorCode.E10
+    assert 'missing form number' in out['error']['error_details']
+
+
+def test_validate_form_payload_twelve_hour_missing_form_number():
+    """Returns False with E10 error when TwelveHour is True but number is absent."""
+    kwargs = {'payload': {'TwelveHour': True, 'ff_application_id': 'app-003'}}
+    result, out = validate_form_payload(**kwargs)
+    assert result is False
+    assert out['error']['error_code'] == ErrorCode.E10
+    assert 'missing form number' in out['error']['error_details']
+
+
+def test_validate_form_payload_irp_missing_form_number():
+    """Returns False with E10 error when IRP is True but IRP_number is absent."""
+    kwargs = {'payload': {'IRP': True, 'ff_application_id': 'app-004'}}
+    result, out = validate_form_payload(**kwargs)
+    assert result is False
+    assert out['error']['error_code'] == ErrorCode.E10
+    assert 'missing form number' in out['error']['error_details']
+
+
+def test_validate_form_payload_no_form_type_indicated():
+    """Returns False with E10 error when payload has no recognized form type."""
+    kwargs = {'payload': {'ff_application_id': 'app-005', 'driver_licence_no': 'DL123'}}
+    result, out = validate_form_payload(**kwargs)
+    assert result is False
+    assert out['error']['error_code'] == ErrorCode.E10
+    assert 'no form type indicated' in out['error']['error_details']
+
+
+def test_validate_form_payload_missing_ff_application_id():
+    """Returns False with E10 error when ff_application_id is absent."""
+    kwargs = {'payload': {'VI': True, 'VI_number': 'V00001'}}
+    result, out = validate_form_payload(**kwargs)
+    assert result is False
+    assert out['error']['error_code'] == ErrorCode.E10
+    assert 'ff_application_id' in out['error']['error_details']

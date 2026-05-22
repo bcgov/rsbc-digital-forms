@@ -95,8 +95,7 @@ def check_if_form_number_was_used(**kwargs) -> tuple:
     """
     logger.verbose('inside check_if_form_number_was_used()')
     data = kwargs.get('payload')
-    if (data.get('VI') is None) and (data.get('TwentyFourHour') is None) and (data.get('TwelveHour') is None):
-        return True, kwargs
+
     try:
         vi_form_number_already_exists = False
         twenty_four_hour_form_number_already_exists = False
@@ -705,10 +704,60 @@ def get_json_payload(**kwargs) -> tuple:
 def validate_form_payload(**kwargs) -> tuple:
     logger.verbose("inside validate_form_payload()")
 
-    if(kwargs.get('payload')):
-        return True, kwargs
-    logger.warning("validation error: " + json.dumps(''))
-    return False, kwargs
+    if (not kwargs.get('payload')):
+        error_message = 'No payload provided'
+        logger.warning(error_message)
+        kwargs['error'] = {
+            'error_code': ErrorCode.E10,
+            'error_details': error_message,
+            'func': validate_form_payload,
+        }
+        return False, kwargs
+    
+    payload = kwargs.get('payload')
+    if (payload.get('TwelveHour') and not payload.get('twelve_hour_number')) or \
+       (payload.get('TwentyFourHour') and not payload.get('twenty_four_hour_number')) or \
+         (payload.get('IRP') and not payload.get('IRP_number')) or \
+           (payload.get('VI') and not payload.get('VI_number')):
+        error_message = "Invalid payload provided: missing form number for the indicated form type"
+        logger.warning(error_message)
+        kwargs['error'] = {
+            'error_code': ErrorCode.E10,
+            'error_details': error_message,
+            'func': validate_form_payload,
+        }
+        kwargs['response_dict'] = {
+            'error_details': error_message
+        }
+        return False, kwargs
+    
+    if (not payload.get('TwelveHour')) and (not payload.get('TwentyFourHour')) and (not payload.get('IRP')) and (not payload.get('VI')):
+        error_message = "Invalid payload provided: no form type indicated"
+        logger.warning(error_message)
+        kwargs['error'] = {
+            'error_code': ErrorCode.E10,
+            'error_details': error_message,
+            'func': validate_form_payload,
+        }
+        kwargs['response_dict'] = {
+            'error_details': error_message
+        }
+        return False, kwargs
+    
+    if (not payload.get('ff_application_id')):
+        error_message = 'Invalid payload provided: missing ff_application_id'
+        logger.warning(error_message)
+        kwargs['error'] = {
+            'error_code': ErrorCode.E10,
+            'error_details': error_message,
+            'func': validate_form_payload,
+        }
+        kwargs['response_dict'] = {
+            'error_details': error_message
+        }
+        return False, kwargs
+
+    return True, kwargs
 
 def get_event_type(data):
     event_type = None

@@ -62,6 +62,10 @@ def create():
                     {"try": splunk.log_to_splunk, "fail": []},
                     {"try": http_responses.server_error_response, "fail": []},
                 ]},
+                {"try": event_middleware.validate_form_payload, "fail": [
+                    {"try": common_middleware.record_event_error, "fail": []},
+                    {"try": http_responses.bad_request_response, "fail": []},
+                ]},
                 {"try": event_middleware.log_payload_to_splunk, "fail": []},
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": event_middleware.check_if_application_id_exists, "fail": [
