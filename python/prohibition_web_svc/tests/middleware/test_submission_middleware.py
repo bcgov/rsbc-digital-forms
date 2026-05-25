@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, patch
 from python.prohibition_web_svc.middleware.submission_middleware import (
+    log_status_update_payload_to_splunk,
     request_contains_a_payload,
     validate_update_event_status_payload,
     update_submission_event_status,
@@ -33,6 +34,36 @@ def test_request_contains_a_payload_exception():
     mock_request.get_json.side_effect = Exception("bad json")
     result, out = request_contains_a_payload(request=mock_request)
     assert result is False
+
+
+# ── log_status_update_payload_to_splunk ──────────────────────────────────────
+
+def test_log_status_update_payload_to_splunk_sets_splunk_data():
+    """Returns True and stores a structured splunk payload."""
+    payload = {
+        'ff_application_id': 'app-001',
+        'form_id': 'VI123',
+        'destination': 'VIPS',
+        'status': 'sent',
+    }
+    result, out = log_status_update_payload_to_splunk(payload=payload)
+
+    assert result is True
+    assert out['splunk_data'] == {
+        'event': 'update_submission_event_status',
+        'payload': payload,
+    }
+
+
+def test_log_status_update_payload_to_splunk_handles_missing_payload():
+    """Returns True and includes payload=None when not provided."""
+    result, out = log_status_update_payload_to_splunk()
+
+    assert result is True
+    assert out['splunk_data'] == {
+        'event': 'update_submission_event_status',
+        'payload': None,
+    }
 
 
 # ── validate_update_event_status_payload ─────────────────────────────────────

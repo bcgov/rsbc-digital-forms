@@ -16,6 +16,17 @@ def request_contains_a_payload(**kwargs) -> tuple:
     return payload is not None, kwargs
 
 
+def log_status_update_payload_to_splunk(**kwargs) -> tuple:
+    try:
+        payload = kwargs.get('payload')
+        kwargs['splunk_data'] = {
+            'event': "update_submission_event_status",
+            'payload': payload
+        }
+    except Exception as e:
+        logger.error(e)
+    return True, kwargs
+
 def validate_update_event_status_payload(**kwargs) -> tuple:
     """Validate that the payload contains ff_application_id, destination, and status."""
     logger.verbose("inside validate_update_event_status_payload()")

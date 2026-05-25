@@ -1,3 +1,4 @@
+from python.common import splunk
 from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.config import Config
 from python.common.helper import middle_logic
@@ -5,7 +6,6 @@ from flask import request, Blueprint
 from flask_cors import CORS
 from python.prohibition_web_svc.business.keycloak_logic import get_authorized_keycloak_user
 import python.prohibition_web_svc.middleware.submission_middleware as submission_middleware
-import python.prohibition_web_svc.middleware.event_middleware as event_middleware
 import python.prohibition_web_svc.http_responses as http_responses
 
 
@@ -32,6 +32,8 @@ def update_event_status():
                 {"try": submission_middleware.validate_update_event_status_payload, "fail": [
                     {"try": http_responses.bad_request_response, "fail": []},
                 ]},
+                {"try": submission_middleware.log_status_update_payload_to_splunk, "fail": []},
+                {"try": splunk.log_to_splunk, "fail": []},                
                 {"try": submission_middleware.update_submission_event_status, "fail": [
                     {"try": http_responses.record_not_found, "fail": []},
                 ]},
