@@ -8,7 +8,7 @@ from base64 import b64decode
 from flask import jsonify, make_response
 from sqlalchemy import exists
 from python.common.logging_utils import get_logger
-from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, FormStorageRefs, Submission, SubmissionFormRef, SubmissionEvent
+from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, FormStorageRefs, Submission, SubmissionFormRef, SubmissionEvent, IRPASDTest
 from python.common.models.irp_form import IRPForm
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_method1
@@ -742,3 +742,59 @@ def _process_and_upload_pdf(client, b64encoded, num_pages=1, is_landscape=False)
         for path in [*list_of_images, pdf_path, encrypted_pdf_path]:  # cleanup temp files
             if os.path.exists(path):
                 os.remove(path)
+
+
+def get_irp_form_by_event_id(**kwargs) -> tuple:
+    """Fetch an IRPForm by its parent event_id; stores it in kwargs['irp_form']."""
+    logger.verbose('inside get_irp_form_by_event_id()')
+    event_id = kwargs.get('event_id')
+    try:
+        irp_form = db.session.query(IRPForm).filter(IRPForm.event_id == event_id).first()
+        if irp_form is None:
+            logger.warning(f'IRP form for event {event_id} not found')
+            return False, kwargs
+        kwargs['irp_form'] = irp_form
+    except Exception as e:
+        logger.error(e)
+        return False, kwargs
+    return True, kwargs
+
+
+def log_irp_update_to_splunk(**kwargs) -> tuple:
+    try:
+        payload = kwargs.get('payload')
+        irp_form = kwargs.get('irp_form')
+        payload_masked = _mask_sensitive_data(payload)
+        kwargs['splunk_data'] = {
+            'event': 'update IRP RTS event',
+            'event_id': irp_form.event_id if irp_form else None,
+            'irp_number': irp_form.irp_number if irp_form else None,
+            'payload': payload_masked,
+        }
+    except Exception as e:
+        logger.error(e)
+    return True, kwargs
+
+def update_irp_form_data(**kwargs) -> tuple:
+    """Apply patch fields from the request payload onto the fetched IRPForm, including ASD tests."""
+    logger.verbose('inside update_irp_form_data()')
+    irp_form = kwargs.get('irp_form')
+    original_payload = kwargs.get('payload')
+    try:
+        IRPMapper.map_update_irp_form(irp_form, original_payload)
+
+        kwargs['response_dict'] = {'event_id': irp_form.event_id}
+    except Exception as e:
+        logger.error(e)
+        db.session.rollback()
+        kwargs['response_dict'] = {'error_details': str(e)}
+        kwargs['error'] = {
+            'error_code': ErrorCode.E01,
+            'error_details': str(e),
+            'event_id': irp_form.event_id if irp_form else None,
+            'event_type': EventType.IRP,
+            'ticket_no': irp_form.irp_number if irp_form else None,
+            'func': update_irp_form_data,
+        }
+        return False, kwargs
+    return True, kwargs
