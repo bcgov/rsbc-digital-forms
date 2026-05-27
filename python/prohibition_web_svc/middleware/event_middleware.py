@@ -362,6 +362,7 @@ def save_event_data(**kwargs) -> tuple:
             event.irp_form = irp_form
 
         submission = Submission(
+            event=event,
             ff_application_id=data.get('ff_application_id'),
             submitted_offline=data.get('submitted_offline', False),
             created_dt=date_created,
@@ -372,7 +373,6 @@ def save_event_data(**kwargs) -> tuple:
         db.session.add(submission)
 
         logger.verbose('Saving Event')
-        db.session.add(event)
         db.session.flush()
         kwargs['submission_id'] = submission.submission_id
     except Exception as e:
@@ -439,6 +439,7 @@ def save_event_pdf(**kwargs) -> tuple:
                                     b64encoded, 
                                     num_pages=3 if len_of_incident_details > VI_EXTRA_PAGE_THRESHOLD else 2)
 
+            #TODO: this is now being stored in the SubmissionFormRef, once the dependency on this table is removed, delete this
             form_storage = FormStorageRefs(
                 form_id_vi=event.vi_form.form_id,
                 event_id=event.event_id,
@@ -463,6 +464,7 @@ def save_event_pdf(**kwargs) -> tuple:
                                     b64encoded,
                                     is_landscape=True)
 
+            #TODO: this is now being stored in the SubmissionFormRef, once the dependency on this table is removed, delete this
             form_storage = FormStorageRefs(
                 form_id_24h=event.twenty_four_hour_form.form_id,
                 event_id=event.event_id,
@@ -487,6 +489,7 @@ def save_event_pdf(**kwargs) -> tuple:
                                     b64encoded,
                                     is_landscape=True)
 
+            #TODO: this is now being stored in the SubmissionFormRef, once the dependency on this table is removed, delete this
             form_storage = FormStorageRefs(
                 form_id_12h=event.twelve_hour_form.form_id,
                 event_id=event.event_id,
@@ -510,6 +513,7 @@ def save_event_pdf(**kwargs) -> tuple:
             b64encoded = data.get("IRP_form_png").split(",")[1]
             storage_key = _process_and_upload_pdf(client, b64encoded)
 
+            #TODO: this is now being stored in the SubmissionFormRef, once the dependency on this table is removed, delete this
             form_storage = FormStorageRefs(
                 form_id_irp=event.irp_form.form_id,
                 event_id=event.event_id,

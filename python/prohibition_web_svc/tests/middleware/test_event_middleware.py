@@ -251,7 +251,7 @@ def test_save_event_data_vi_form_success(mock_db_session):
         assert 'response_dict' in updated_kwargs
         assert 'event' in updated_kwargs
         assert updated_kwargs['event'] == mock_event
-        mock_db_session.add.assert_any_call(mock_event)
+        mock_db_session.add.assert_called_once()
         mock_db_session.flush.assert_called()
 
 
@@ -296,7 +296,7 @@ def test_save_event_data_twenty_four_hour_form_success(mock_db_session):
         assert 'response_dict' in updated_kwargs
         assert 'event' in updated_kwargs
         assert updated_kwargs['event'] == mock_event
-        mock_db_session.add.assert_any_call(mock_event)
+        mock_db_session.add.assert_called_once()
         mock_db_session.flush.assert_called()
 
 
@@ -341,7 +341,7 @@ def test_save_event_data_twelve_hour_form_success(mock_db_session):
         assert 'response_dict' in updated_kwargs
         assert 'event' in updated_kwargs
         assert updated_kwargs['event'] == mock_event
-        mock_db_session.add.assert_any_call(mock_event)
+        mock_db_session.add.assert_called_once()
         mock_db_session.flush.assert_called()
 
 
@@ -382,7 +382,7 @@ def test_save_event_data_irp_form_success(mock_db_session):
         assert 'event' in updated_kwargs
         assert updated_kwargs['event'] == mock_event
         mock_irp_mapper.map_to_irp_form.assert_called_once()
-        mock_db_session.add.assert_any_call(mock_event)
+        mock_db_session.add.assert_called_once()
         mock_db_session.flush.assert_called()
 
 
