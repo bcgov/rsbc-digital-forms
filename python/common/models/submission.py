@@ -25,3 +25,4 @@ class Submission(db.Model):
     submitted_offline = db.Column(db.Boolean, default=False, nullable=False)
 
     collision = db.relationship('TarCollision', back_populates='submission', uselist=False)
+    event = db.relationship('Event', back_populates='submission', uselist=False)

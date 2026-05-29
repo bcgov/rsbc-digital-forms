@@ -1204,7 +1204,9 @@
                                 entity.contributing_factor_4.label }}</div>
                         </div>
                         <div class="grid-cell"></div>
-                        <div class="grid-cell"></div>
+                        {% if entity.vehicle_towed != 'Y' %}
+                            <div class="grid-cell"></div>
+                        {% endif %}
                     </div>
 
                     {% if not (data.print_options and data.print_options.type == "entity" and
