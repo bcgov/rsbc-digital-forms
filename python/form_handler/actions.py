@@ -7,7 +7,7 @@ from python.form_handler.config import Config
 import logging
 import json
 from minio import Minio
-from python.common.models import Event,FormStorageRefs,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef,ImpoundReasonCodes,IloIdCrossRef,ImpoundLotOperator
+from python.common.models import Event,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef,ImpoundReasonCodes,IloIdCrossRef,ImpoundLotOperator,SubmissionFormRef,SubmissionEvent
 from python.form_handler.geocoding_service import get_coordinates
 from python.form_handler.icbc_service import submit_to_icbc
 from python.form_handler.rsi_email import send_email_to_rsiops, send_error_to_rsiops
@@ -39,27 +39,20 @@ def get_storage_ref_event_type(**args) -> tuple:
         tmp_key=message.get('Key',None)
         if tmp_key is None:
             return event_type    
-        # storage_key=tmp_key.split('/')[1]
+
         storage_key = tmp_key
-        # print(storage_key)
         with application.app_context():            
-            form = db.session.query(FormStorageRefs) \
-                .filter(FormStorageRefs.storage_key == storage_key) \
-                .all()
-            # db.session.commit()
-            # print(form)
-            if len(form) == 0 or len(form) > 1:
-                logging.info(f"form storage ref not found for storage key: {storage_key}")
-                return False,args
-            for f in form:
-                event_type=f.form_type.lower()
-                args['event_type']=event_type
-                form_dict=f.__dict__
-                form_dict.pop('_sa_instance_state',None)
-                args['storage_ref']=form_dict
-        # args['event_type']=storage_key
+            form = db.session.query(SubmissionFormRef) \
+                .filter(SubmissionFormRef.storage_key == storage_key) \
+                .one()
+
+            event_type=form.form_type.lower()
+            args['event_type']=event_type
+            form_dict=form.__dict__
+            form_dict.pop('_sa_instance_state',None)
+            args['storage_ref']=form_dict
     except Exception as e:
-        logging.exception(e)
+        logging.exception(f"form storage ref not found for storage key: {storage_key}", e)
         return False,args
     return True, args
 
@@ -71,9 +64,7 @@ def get_event_form_data(**args) ->tuple:
         db = args.get('db')
         message = args.get('message')
         event_type = args.get('event_type')
-        storage_ref = args.get('storage_ref')
-        event_id = storage_ref.get('event_id')
-        form_id=''        
+        event_id = message.get('event_id')
         with application.app_context():
             # get event data
             event_data = db.session.query(Event) \
@@ -87,56 +78,48 @@ def get_event_form_data(**args) ->tuple:
                 event_dict.pop('_sa_instance_state', None)
                 args['event_data'] = event_dict
             if event_type=='vi':
-                form_id=storage_ref.get('form_id_vi')
-                args['form_id'] = form_id
                 # get form data
                 form_data = db.session.query(VIForm) \
-                    .filter(VIForm.form_id == form_id) \
+                    .filter(VIForm.event_id == event_id) \
                     .all()
                 if len(form_data) == 0 or len(form_data) > 1:
-                    logging.info(f"VI form data not found for form id: {form_id}")
+                    logging.info(f"VI form data not found for event id: {event_id}")
                     return False, args
                 for f in form_data:
                     form_dict = f.__dict__
                     form_dict.pop('_sa_instance_state', None)
                     args['form_data'] = form_dict
             elif event_type=='irp':
-                form_id=storage_ref.get('form_id_irp')
-                args['form_id'] = form_id
                 # get form data
                 form_data = db.session.query(IRPForm) \
-                    .filter(IRPForm.form_id == form_id) \
+                    .filter(IRPForm.event_id == event_id) \
                     .all()
                 if len(form_data) == 0 or len(form_data) > 1:
-                    logging.info(f"IRP form data not found for form id: {form_id}")
+                    logging.info(f"IRP form data not found for event id: {event_id}")
                     return False, args
                 for f in form_data:
                     form_dict = f.__dict__
                     form_dict.pop('_sa_instance_state', None)
                     args['form_data'] = form_dict
             elif event_type=='24h':
-                form_id=storage_ref.get('form_id_24h')
-                args['form_id'] = form_id
                 # get form data
                 form_data = db.session.query(TwentyFourHourForm) \
-                    .filter(TwentyFourHourForm.form_id == form_id) \
+                    .filter(TwentyFourHourForm.event_id == event_id) \
                     .all()
                 if len(form_data) == 0 or len(form_data) > 1:
-                    logging.info(f"24h form data not found for form id: {form_id}")
+                    logging.info(f"24h form data not found for event id: {event_id}")
                     return False, args
                 for f in form_data:
                     form_dict = f.__dict__
                     form_dict.pop('_sa_instance_state', None)
                     args['form_data'] = form_dict
             elif event_type=='12h':
-                form_id=storage_ref.get('form_id_12h')
-                args['form_id'] = form_id
                 # get form data
                 form_data = db.session.query(TwelveHourForm) \
-                    .filter(TwelveHourForm.form_id == form_id) \
+                    .filter(TwelveHourForm.event_id == event_id) \
                     .all()
                 if len(form_data) == 0 or len(form_data) > 1:
-                    logging.info(f"12h form data not found for form id: {form_id}")
+                    logging.info(f"12h form data not found for event id: {event_id}")
                     return False, args
                 for f in form_data:
                     form_dict = f.__dict__
@@ -238,6 +221,26 @@ def validate_event_data(**args)->tuple:
     # TODO: validate vips payload
     return True,args
 
+def get_submission_event_id(**args)->tuple:
+    logging.verbose(f"inside get_submission_event_id() with args: {args}")
+    try:
+        application = args.get('app')
+        db = args.get('db')
+        event_type = args.get('event_type')
+        storage_ref = args.get('storage_ref')
+        form_ref_id=storage_ref.get('form_ref_id')
+        destination='VIPS' if event_type=='vi' or event_type=='irp' else 'ICBC'
+        with application.app_context():
+            # get submission event data
+            submission_event_data = db.session.query(SubmissionEvent) \
+                .filter(SubmissionEvent.form_ref_id == form_ref_id, SubmissionEvent.destination == destination) \
+                .one()
+
+            args['submission_event_id'] = submission_event_data.submission_event_id
+    except Exception as e:
+        logging.exception(e)
+        return False, args
+    return True,args
 
 def update_event_status_processing(**args)->tuple:
     logging.verbose(f"inside update_event_status_processing() with args: {args}")
@@ -246,26 +249,36 @@ def update_event_status_processing(**args)->tuple:
         db=args.get('db')
         event_id=args.get('event_data').get('event_id')
         event_type=args.get('event_type')
-        logging.info(f"updating event status to processing for event id: {event_id}, event type: {event_type}")
+        submission_event_id=args.get('submission_event_id')
+        new_status='processing'
+        logging.info(f"updating event status to processing for event id: {event_id}, event type: {event_type}, submission_event_id: {submission_event_id}")
         with application.app_context():
             if event_type=='vi':
                 event = db.session.query(Event) \
                     .filter(Event.event_id == event_id) \
                     .one()
-                event.vi_sent_status = 'processing'
-                db.session.commit()
+                event.vi_sent_status = new_status
             elif event_type=='irp':
                 pass
             elif event_type=='24h' or event_type=='12h':
                 event = db.session.query(Event) \
                     .filter(Event.event_id == event_id) \
                     .one()
-                event.icbc_sent_status = 'processing'
-                db.session.commit()
+                event.icbc_sent_status = new_status
+            
+            _update_submission_event_status(db, submission_event_id, new_status)
+            db.session.commit()
+            
     except Exception as e:
         logging.exception(e)
         return False,args
     return True,args
+
+def _update_submission_event_status(db, submission_event_id, status):
+    sub_event=db.session.query(SubmissionEvent) \
+                    .filter(SubmissionEvent.submission_event_id == submission_event_id) \
+                    .one()
+    sub_event.status = status
 
 
 def get_storage_file(**args)->tuple:
@@ -327,7 +340,6 @@ def prep_icbc_payload(**args)->tuple:
         event_data=args.get('event_data')
         form_data=args.get('form_data')
         user_data=args.get('user_data')
-        form_id=args.get('form_id')
         event_type=args.get('event_type')
         tmp_payload= {
         "dlNumber":"",
@@ -477,11 +489,11 @@ def prep_icbc_payload(**args)->tuple:
         # TODO: get agency from user table for the event
         if "agency" in user_data and user_data["agency"] is not None: 
             logging.debug(user_data["agency"])
-            agency_name=user_data["agency"]
+            agency_id=user_data["agency_id"]
             detachment_city=''
             with application.app_context():
                 agency_data = db.session.query(AgencyCrossref) \
-                    .filter(AgencyCrossref.agency_name == agency_name) \
+                    .filter(AgencyCrossref.agency_id == agency_id) \
                     .all()
                 if len(agency_data) == 0:
                     logging.error("agency not found")
@@ -596,10 +608,6 @@ def prep_vips_document_payload(**args)->tuple:
 
     try:
         pdf_data=args.get('file_data')
-        event_data=args.get('event_data')
-        form_data=args.get('form_data')
-        user_data=args.get('user_data')
-        form_id=args.get('form_id')
         tmp_payload=vips_document_payload.copy()
 
         subject_cd="VEHI"
@@ -656,7 +664,6 @@ def prep_vips_payload(**args)->tuple:
         event_data=args.get('event_data')
         form_data=args.get('form_data')
         user_data=args.get('user_data')
-        form_id=args.get('form_id')
         # copy a dict
         tmp_payload=vips_payload.copy()
 
@@ -1017,13 +1024,13 @@ def update_event_status(**args)->tuple:
         db=args.get('db')
         event_id=args.get('event_data').get('event_id')
         event_type=args.get('event_type')
+        submission_event_id=args.get('submission_event_id')
         with application.app_context():
             if event_type=='vi':
                 event = db.session.query(Event) \
                     .filter(Event.event_id == event_id) \
                     .one()
                 event.vi_sent_status = 'sent'
-                db.session.commit()
             elif event_type=='irp':
                 pass
             elif event_type=='24h' or event_type=='12h':
@@ -1031,7 +1038,9 @@ def update_event_status(**args)->tuple:
                     .filter(Event.event_id == event_id) \
                     .one()
                 event.icbc_sent_status = 'sent'
-                db.session.commit()
+
+            _update_submission_event_status(db, submission_event_id, 'sent')
+            db.session.commit()
     except Exception as e:
         logging.exception(e)
         return False,args
@@ -1045,13 +1054,13 @@ def update_event_status_hold(**args)->tuple:
         message=args.get('message')
         event_id=message.get('event_id') if message else args.get('event_id')
         event_type=message.get('event_type') if message else args.get('event_type')
+        submission_event_id=args.get('submission_event_id')
         with application.app_context():
             if event_type=='vi':
                 event = db.session.query(Event) \
                     .filter(Event.event_id == event_id) \
                     .one()
                 event.vi_sent_status = 'retrying'
-                db.session.commit()
             elif event_type=='irp':
                 pass
             elif event_type=='24h' or event_type=='12h':
@@ -1059,8 +1068,11 @@ def update_event_status_hold(**args)->tuple:
                     .filter(Event.event_id == event_id) \
                     .one()
                 event.icbc_sent_status = 'retrying'
-                db.session.commit()
             # Directly call record_event_error
+
+            _update_submission_event_status(db, submission_event_id, 'retrying')
+            db.session.commit()
+
             error_args = {
                 'error': {
                     'error_code': ErrorCode.E06,
@@ -1104,7 +1116,6 @@ def update_event_status_error(**args)->tuple:
                     .filter(Event.event_id == event_id) \
                     .one()
                 event.vi_sent_status = 'error'
-                db.session.commit()
             elif event_type=='irp':
                 pass
             elif event_type=='24h' or event_type=='12h':
@@ -1112,8 +1123,10 @@ def update_event_status_error(**args)->tuple:
                     .filter(Event.event_id == event_id) \
                     .one()
                 event.icbc_sent_status = 'error'
-                db.session.commit()
                 
+            _update_submission_event_status(db, event_id, 'error')
+            db.session.commit()
+
             # Directly call record_event_error
             error_args = {
                 'error': {
@@ -1164,7 +1177,6 @@ def update_event_status_error_retry(**args)->tuple:
                     event.vi_sent_status = 'error'
                 else:
                     event.vi_sent_status = 'retrying'
-                db.session.commit()
             elif event_type=='irp':
                 pass
             elif event_type=='24h' or event_type=='12h':
@@ -1175,7 +1187,9 @@ def update_event_status_error_retry(**args)->tuple:
                     event.icbc_sent_status = 'error'
                 else:
                     event.icbc_sent_status = 'retrying'
-                db.session.commit()
+
+            _update_submission_event_status(db, event_id, 'retrying')
+            db.session.commit()
     except Exception as e:
         logging.exception(e)
         return False,args

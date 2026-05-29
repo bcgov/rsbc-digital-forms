@@ -18,7 +18,7 @@ def send_email(to: list, subject: str, config, template, ticket_no=None, attachm
         "bodyType": "html",
         "body": template,
         "from": config.REPLY_EMAIL_ADDRESS,
-        "bcc": config.BCC_EMAIL_ADDRESSES.split(','),
+        "bcc": config.BCC_EMAIL_ADDRESSES.split(',') if config.BCC_EMAIL_ADDRESSES else None,
         "encoding": "utf-8",
         "subject": subject,
         "to": to

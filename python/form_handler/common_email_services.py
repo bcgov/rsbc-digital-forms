@@ -13,7 +13,7 @@ def send_email(to: list, subject: str, config, template, eventid, attachments=No
     """
     Send email to the rsiops
     """
-    bcc_value=config.BCC_EMAIL_ADDRESSES.split(',')
+    bcc_value=config.BCC_EMAIL_ADDRESSES.split(',') if config.BCC_EMAIL_ADDRESSES else []
     env = str(config.ENVIRONMENT).upper()
     subject = f'[{env}] - {subject}' if 'PROD' not in env else subject
     if len(bcc_value) > 0 and bcc_value[0] != '':
@@ -21,7 +21,7 @@ def send_email(to: list, subject: str, config, template, eventid, attachments=No
             "bodyType": "html",
             "body": template,
             "from": config.REPLY_EMAIL_ADDRESS,
-            "bcc": config.BCC_EMAIL_ADDRESSES.split(','),
+            "bcc": bcc_value,
             "encoding": "utf-8",
             "subject": subject,
             "to": to
