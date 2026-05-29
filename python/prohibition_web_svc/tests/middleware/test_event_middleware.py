@@ -25,6 +25,7 @@ def mock_db_session():
 def mock_event():
   event = MagicMock(spec=Event)
   event.event_id = 1
+  event.submission_id = 42
   return event
 
 # ── tests ──────────────────────────────────────────────────────────────────
@@ -52,7 +53,7 @@ def test_check_if_application_id_exists_application_id_exists(mock_db_session, m
   assert 'error' in updated_kwargs
   assert updated_kwargs['error']['error_code'] == ErrorCode.E09
   assert updated_kwargs['error']['error_details'] == 'Application ID already exists'
-  assert updated_kwargs['error']['event_id'] == mock_event.event_id
+  assert updated_kwargs['error']['submission_id'] == mock_event.submission_id
 
 def test_check_if_application_id_exists_exception_handling(mock_db_session):
   mock_db_session.query.side_effect = Exception("Database error")
