@@ -5,6 +5,10 @@ from python.common.enums import ErrorCode, EventType
 from python.prohibition_web_svc.middleware.event_middleware import (
     check_if_application_id_exists, log_payload_to_splunk, save_event_data, save_event_pdf,
     _get_asd_expiry_date, check_if_form_number_was_used, commit_transaction, validate_form_payload,
+    validate_update, get_event_type, get_ticket_no,
+    request_contains_a_payload, get_json_payload,
+    get_events_for_user,
+    get_irp_form_by_event_id, log_irp_update_to_splunk, update_irp_form_data,
 )
 
 
@@ -1139,3 +1143,296 @@ def test_validate_form_payload_missing_ff_application_id():
     assert result is False
     assert out['error']['error_code'] == ErrorCode.E10
     assert 'ff_application_id' in out['error']['error_details']
+
+
+# ── validate_update ───────────────────────────────────────────────────────────
+
+def test_validate_update_always_returns_true():
+    """validate_update is a no-op that always returns (True, kwargs)."""
+    kwargs = {'payload': {'VI': True}, 'user_guid': 'uid-1'}
+    result, out = validate_update(**kwargs)
+    assert result is True
+    assert out == kwargs
+
+
+# ── get_event_type ────────────────────────────────────────────────────────────
+
+def test_get_event_type_twelve_hour():
+    assert get_event_type({'TwelveHour': True}) == EventType.TWELVE_HOUR
+
+
+def test_get_event_type_twenty_four_hour():
+    assert get_event_type({'TwentyFourHour': True}) == EventType.TWENTY_FOUR_HOUR
+
+
+def test_get_event_type_irp():
+    assert get_event_type({'IRP': True}) == EventType.IRP
+
+
+def test_get_event_type_vi():
+    assert get_event_type({'VI': True}) == EventType.VI
+
+
+def test_get_event_type_twelve_hour_takes_priority():
+    """TwelveHour is checked first; mixed payload resolves to TWELVE_HOUR."""
+    assert get_event_type({'TwelveHour': True, 'VI': True}) == EventType.TWELVE_HOUR
+
+
+def test_get_event_type_no_form_type_returns_none():
+    assert get_event_type({}) is None
+
+
+def test_get_event_type_all_false_returns_none():
+    assert get_event_type({'TwelveHour': False, 'TwentyFourHour': False, 'IRP': False, 'VI': False}) is None
+
+
+# ── get_ticket_no ─────────────────────────────────────────────────────────────
+
+def test_get_ticket_no_twelve_hour():
+    assert get_ticket_no({'TwelveHour': True, 'twelve_hour_number': '12H001'}) == '12H001'
+
+
+def test_get_ticket_no_twenty_four_hour():
+    assert get_ticket_no({'TwentyFourHour': True, 'twenty_four_hour_number': '24H001'}) == '24H001'
+
+
+def test_get_ticket_no_irp():
+    assert get_ticket_no({'IRP': True, 'IRP_number': 'IRP001'}) == 'IRP001'
+
+
+def test_get_ticket_no_vi():
+    assert get_ticket_no({'VI': True, 'VI_number': 'V00001'}) == 'V00001'
+
+
+def test_get_ticket_no_twelve_hour_takes_priority():
+    assert get_ticket_no({'TwelveHour': True, 'twelve_hour_number': '12H001', 'VI': True, 'VI_number': 'V00001'}) == '12H001'
+
+
+def test_get_ticket_no_no_form_type_returns_none():
+    assert get_ticket_no({}) is None
+
+
+# ── request_contains_a_payload ────────────────────────────────────────────────
+
+def test_request_contains_a_payload_success():
+    mock_request = MagicMock()
+    mock_request.get_json.return_value = {'VI': True}
+    kwargs = {'request': mock_request}
+    result, out = request_contains_a_payload(**kwargs)
+    assert result is True
+    assert out['payload'] == {'VI': True}
+
+
+def test_request_contains_a_payload_returns_false_when_json_is_none():
+    mock_request = MagicMock()
+    mock_request.get_json.return_value = None
+    kwargs = {'request': mock_request}
+    result, out = request_contains_a_payload(**kwargs)
+    assert result is False
+
+
+def test_request_contains_a_payload_returns_false_on_exception():
+    mock_request = MagicMock()
+    mock_request.get_json.side_effect = Exception("parse error")
+    kwargs = {'request': mock_request}
+    result, out = request_contains_a_payload(**kwargs)
+    assert result is False
+
+
+# ── get_json_payload ──────────────────────────────────────────────────────────
+
+def test_get_json_payload_success():
+    mock_request = MagicMock()
+    mock_request.json = {'IRP': True, 'IRP_number': 'IRP999'}
+    kwargs = {'request': mock_request}
+    result, out = get_json_payload(**kwargs)
+    assert result is True
+    assert out['payload'] == {'IRP': True, 'IRP_number': 'IRP999'}
+
+
+def test_get_json_payload_returns_false_on_exception():
+    mock_request = MagicMock()
+    type(mock_request).json = property(lambda self: (_ for _ in ()).throw(Exception("bad json")))
+    kwargs = {'request': mock_request}
+    result, out = get_json_payload(**kwargs)
+    assert result is False
+
+
+# ── get_events_for_user ───────────────────────────────────────────────────────
+
+def test_get_events_for_user_success(mock_db_session):
+    mock_event = MagicMock()
+    mock_event.vi_form = None
+    mock_event.twelve_hour_form = None
+    mock_event.irp_form = None
+    mock_event.twenty_four_hour_form = None
+    mock_db_session.query.return_value.filter.return_value.all.return_value = [mock_event]
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.asdict', return_value={'event_id': 1}) as mock_asdict, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.jsonify', return_value='<response>'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.make_response', return_value='<response>') as mock_make_response:
+        kwargs = {'user_guid': 'uid-123'}
+        result, out = get_events_for_user(**kwargs)
+
+    assert result is True
+    assert 'response' in out
+    mock_make_response.assert_called_once()
+
+
+def test_get_events_for_user_returns_empty_list(mock_db_session):
+    mock_db_session.query.return_value.filter.return_value.all.return_value = []
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.jsonify', return_value='[]'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.make_response', return_value='<response>'):
+        kwargs = {'user_guid': 'uid-000'}
+        result, out = get_events_for_user(**kwargs)
+
+    assert result is True
+    assert 'response' in out
+
+
+def test_get_events_for_user_returns_false_on_db_exception(mock_db_session):
+    mock_db_session.query.side_effect = Exception("DB error")
+    kwargs = {'user_guid': 'uid-err'}
+    result, out = get_events_for_user(**kwargs)
+    assert result is False
+
+
+def test_get_events_for_user_includes_sub_forms(mock_db_session):
+    """asdict is called for each sub-form when present."""
+    mock_event = MagicMock()
+    mock_event.vi_form = MagicMock()
+    mock_event.twelve_hour_form = MagicMock()
+    mock_event.irp_form = MagicMock()
+    mock_event.twenty_four_hour_form = MagicMock()
+    mock_db_session.query.return_value.filter.return_value.all.return_value = [mock_event]
+
+    call_count = {'n': 0}
+    def fake_asdict(obj):
+        call_count['n'] += 1
+        return {}
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.asdict', side_effect=fake_asdict), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.jsonify', return_value='[]'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.make_response', return_value='<r>'):
+        result, _ = get_events_for_user(user_guid='uid-x')
+
+    # asdict called once for event + once each for vi_form, twelve_hour_form, irp_form, twenty_four_hour_form
+    assert call_count['n'] == 5
+
+
+# ── save_event_pdf – no form in payload ──────────────────────────────────────
+
+def test_save_event_pdf_returns_true_when_no_form_type(mock_db_session):
+    """When payload contains no recognized form type, PDF processing is skipped."""
+    payload = {'driver_licence_no': 'DL123'}  # no VI/TwentyFourHour/TwelveHour/IRP
+    kwargs = {'payload': payload, 'event': MagicMock(), 'submission_id': 1}
+    with patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_CERT_FILE', ''):
+        result, out = save_event_pdf(**kwargs)
+    assert result is True
+
+
+# ── get_irp_form_by_event_id ──────────────────────────────────────────────────
+
+def test_get_irp_form_by_event_id_found(mock_db_session):
+    mock_irp_form = MagicMock()
+    mock_db_session.query.return_value.filter.return_value.first.return_value = mock_irp_form
+    kwargs = {'event_id': 42}
+    result, out = get_irp_form_by_event_id(**kwargs)
+    assert result is True
+    assert out['irp_form'] is mock_irp_form
+
+
+def test_get_irp_form_by_event_id_not_found_returns_false(mock_db_session):
+    mock_db_session.query.return_value.filter.return_value.first.return_value = None
+    kwargs = {'event_id': 99}
+    result, out = get_irp_form_by_event_id(**kwargs)
+    assert result is False
+    assert 'irp_form' not in out
+
+
+def test_get_irp_form_by_event_id_db_exception_returns_false(mock_db_session):
+    mock_db_session.query.side_effect = Exception("DB error")
+    kwargs = {'event_id': 1}
+    result, out = get_irp_form_by_event_id(**kwargs)
+    assert result is False
+
+
+# ── log_irp_update_to_splunk ──────────────────────────────────────────────────
+
+def test_log_irp_update_to_splunk_sets_splunk_data():
+    mock_irp_form = MagicMock()
+    mock_irp_form.event_id = 7
+    mock_irp_form.irp_number = 'IRP-007'
+    payload = {'driver_licence_no': 'DL123', 'IRP': True}
+    kwargs = {'payload': payload, 'irp_form': mock_irp_form}
+    result, out = log_irp_update_to_splunk(**kwargs)
+    assert result is True
+    assert out['splunk_data']['event'] == 'update IRP RTS event'
+    assert out['splunk_data']['event_id'] == 7
+    assert out['splunk_data']['irp_number'] == 'IRP-007'
+    assert out['splunk_data']['payload']['driver_licence_no'] == '[REDACTED]'
+
+
+def test_log_irp_update_to_splunk_returns_true_when_no_irp_form():
+    kwargs = {'payload': {}, 'irp_form': None}
+    result, out = log_irp_update_to_splunk(**kwargs)
+    assert result is True
+    assert out['splunk_data']['event_id'] is None
+    assert out['splunk_data']['irp_number'] is None
+
+
+def test_log_irp_update_to_splunk_returns_true_on_exception():
+    """Even when an exception occurs the function still returns True."""
+    kwargs = {}  # missing 'payload' key will trigger AttributeError in _mask_sensitive_data
+    with patch('python.prohibition_web_svc.middleware.event_middleware.logger'):
+        result, out = log_irp_update_to_splunk(**kwargs)
+    assert result is True
+
+
+# ── update_irp_form_data ──────────────────────────────────────────────────────
+
+def test_update_irp_form_data_success():
+    mock_irp_form = MagicMock()
+    mock_irp_form.event_id = 5
+    payload = {'IRP_number': 'IRP-005'}
+    kwargs = {'irp_form': mock_irp_form, 'payload': payload}
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.IRPMapper') as mock_mapper:
+        result, out = update_irp_form_data(**kwargs)
+
+    assert result is True
+    mock_mapper.map_update_irp_form.assert_called_once_with(mock_irp_form, payload)
+    assert out['response_dict'] == {'event_id': 5}
+
+
+def test_update_irp_form_data_returns_false_on_mapper_exception(mock_db_session):
+    mock_irp_form = MagicMock()
+    mock_irp_form.event_id = 6
+    mock_irp_form.irp_number = 'IRP-006'
+    payload = {}
+    kwargs = {'irp_form': mock_irp_form, 'payload': payload}
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.IRPMapper') as mock_mapper:
+        mock_mapper.map_update_irp_form.side_effect = Exception("mapper error")
+        result, out = update_irp_form_data(**kwargs)
+
+    assert result is False
+    assert 'error' in out
+    assert out['error']['error_code'] == ErrorCode.E01
+    assert 'mapper error' in out['error']['error_details']
+    assert out['error']['event_type'] == EventType.IRP
+    assert out['error']['ticket_no'] == 'IRP-006'
+    mock_db_session.rollback.assert_called_once()
+
+
+def test_update_irp_form_data_error_includes_event_id(mock_db_session):
+    mock_irp_form = MagicMock()
+    mock_irp_form.event_id = 9
+    kwargs = {'irp_form': mock_irp_form, 'payload': {}}
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.IRPMapper') as mock_mapper:
+        mock_mapper.map_update_irp_form.side_effect = Exception("fail")
+        result, out = update_irp_form_data(**kwargs)
+
+    assert out['error']['event_id'] == 9
