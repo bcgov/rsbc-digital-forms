@@ -67,13 +67,17 @@
             }
 
             .section-content {
-                border-bottom: 1px solid #000;
-                border-top: 1px solid #000;
+                border-bottom: 1.5pt solid #000;
+                border-top: 1.5pt solid #000;
             }
 
             .draft-watermark {
                 position: absolute;
                 display: block !important;
+            }
+
+            .icbc-involved-person {
+                page-break-inside: avoid;
             }
         }
 
@@ -208,7 +212,7 @@
         }
 
         .section-content {
-            border: 2px solid #000;
+            border: 1.5pt solid #000;
             border-top: none;
             padding: 10px;
             margin-bottom: 15px;
@@ -220,14 +224,14 @@
             font-weight: bold;
             background-color: #e0e0e0;
             padding: 5px;
-            border: 1px solid #000;
+            border: 1.5pt solid #000;
             border-bottom: none;
             /* page-break-after: avoid; */
         }
 
         .section-divider {
             margin-top: 20px;
-            border-top: 1px solid #ccc;
+            border-top: 1.5pt solid #ccc;
             padding-top: 15px;
         }
 
@@ -350,146 +354,82 @@
    GRID SYSTEM
    ========================================================================== */
         .grid-table {
-            border: 1px solid #000;
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            gap: 0;
+            background: #fff;
             margin-bottom: 10px;
             width: 100%;
+            border-top: 1.5pt solid black;
+            border-left: 1.5pt solid black;
         }
 
-        /* Remove double borders between consecutive grid tables */
-        .grid-table + .grid-table {
-            margin-top: -1px;
+        .grid-last-cell {
+            grid-column: 1 / -1;
         }
 
         .border-bottom {
-            border-bottom: 1px solid #000 !important;
+            border-bottom: 1.5pt solid #000 !important;
         }
 
         /* 1 Column Layout */
-        .grid-table-1col .grid-cell {
-            flex: 0 0 100%;
-            border-bottom: 1px solid #000;
-            box-sizing: border-box;
-        }
-
-        .grid-table-1col .grid-cell:nth-child(1n) {
-            border-right: none;
-        }
-
-        .grid-table-1col .grid-cell:nth-last-child(-n+1) {
-            border-bottom: none;
+        .grid-table-1col {
+            grid-template-columns: 1fr;
         }
 
         /* 2 Column Layout */
-        .grid-table-2col .grid-cell {
-            flex: 0 0 50%;
-            border-right: 1px solid #000;
-            border-bottom: 1px solid #000;
-            box-sizing: border-box;
+        .grid-table-2col {
+            grid-template-columns: 1fr 1fr;
         }
 
-        .grid-table-2col .grid-cell:nth-child(2n) {
-            border-right: none;
-        }
-
-        .grid-table-2col .grid-cell:nth-last-child(-n+2) {
-            border-bottom: none;
-        }
-        
         /* Full width cells in 2-col grid */
         .grid-table-2col .grid-cell-full {
-            flex: 0 0 100%;
-            border-right: none;
+            grid-column: 1 / -1;
         }
 
         /* 3 Column Layout */
-        .grid-table-3col .grid-cell {
-            flex: 0 0 33.333%;
-            border-right: 1px solid #000;
-            border-bottom: 1px solid #000;
-            box-sizing: border-box;
-        }
-
-        .grid-table-3col .grid-cell:nth-child(3n) {
-            border-right: none;
-        }
-
-        .grid-table-3col .grid-cell:nth-last-child(-n+3) {
-            border-bottom: none;
+        .grid-table-3col {
+            grid-template-columns: 1fr 1fr 1fr;
         }
 
         /* 4 Column Layout */
-        .grid-table-4col .grid-cell {
-            flex: 0 0 25%;
-            border-right: 1px solid #000;
-            border-bottom: 1px solid #000;
-            box-sizing: border-box;
-        }
-
-        .grid-table-4col .grid-cell:nth-child(4n) {
-            border-right: none;
-        }
-
-        .grid-table-4col .grid-cell:nth-last-child(-n+4) {
-            border-bottom: none;
+        .grid-table-4col {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
         }
 
         /* Auto Layout - Single Row */
-        .grid-table-auto .grid-cell {
-            flex: 1;
-            border-right: 1px solid #000;
-            border-bottom: none;
-            box-sizing: border-box;
-        }
-
-        .grid-table-auto .grid-cell:last-child {
-            border-right: none;
+        .grid-table-auto {
+            grid-auto-flow: column;
+            grid-auto-columns: 1fr;
         }
 
         /* Row-based Layout */
-        .grid-row {
-            display: flex;
-            width: 100%;
-            border-bottom: 1px solid #000;
-        }
-
-        .grid-table .grid-row:last-child {
-            border-bottom: none;
-        }
-                
-        .grid-row .grid-cell {
-            flex: 1;
-            border-right: 1px solid #000;
-            border-bottom: none;
-            box-sizing: border-box;
-        }
-
-        .grid-row .grid-cell:last-child {
-            border-right: none;
+        .grid-table-7col {
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         }
 
         /* Base Grid Cell Styles */
         .grid-cell {
             padding: 4px;
+            background: #fff;
             overflow: hidden;
             word-wrap: break-word;
+            box-sizing: border-box;
+            border-right: 1.5pt solid black;
+            border-bottom: 1.5pt solid black;
         }
 
         /* Spanning Classes */
         .grid-cell-span2 {
-            flex: 0 0 66.666%;
-            /* 2 columns in 3-col grid */
+            grid-column: span 2;
         }
 
         .grid-cell-span3 {
-            flex: 0 0 100%;
-            /* Full width */
+            grid-column: span 3;
         }
 
+        /* Full Width Cell */
         .grid-cell-full {
-            flex: 0 0 100%;
-            border-right: none;
+            grid-column: 1 / -1;
         }
 
         /* Grid Content */
@@ -505,12 +445,6 @@
 
         .grid-label {
             font-weight: bold;
-        }
-
-        /* Full Width Cell - overrides column-specific widths */
-        .grid-cell-full {
-            flex: 0 0 100% !important;
-            border-right: none !important;
         }
 
         .grid-display {
@@ -533,7 +467,7 @@
         table,
         th,
         td {
-            border: 1px solid #000;
+            border: 1.5pt solid #000;
         }
 
         th,
@@ -590,7 +524,7 @@
 
         /* ICBC Boxes */
         .icbc-boxes-container {
-            border: 1px solid #ccc;
+            border: 1.5pt solid #ccc;
             padding: 10px;
             background-color: #f9f9f9;
         }
@@ -621,51 +555,14 @@
             justify-content: center;
         }
 
+        .icbc-involved-person {
+            margin-bottom: 20px;
+        }
 
+        .uppercase {
+            text-transform: uppercase;
+        }
     </style>
-    
-    <script>
-        // Fix grid borders after full-width cells
-        document.addEventListener('DOMContentLoaded', function() {
-            function fixGridBorders(table, numColumns) {
-                var cells = Array.from(table.querySelectorAll(':scope > .grid-cell'));
-                var visualColumn = 0;
-                
-                cells.forEach(function(cell, index) {
-                    var isFullWidth = cell.classList.contains('grid-cell-full');
-                    var isLastCell = index === cells.length - 1;
-                    
-                    if (isFullWidth) {
-                        cell.style.borderRight = 'none';
-                        visualColumn = 0;
-                    } else {
-                        // Last column of row or last cell overall should not have right border
-                        if (visualColumn === numColumns - 1 || isLastCell) {
-                            cell.style.borderRight = 'none';
-                        } else {
-                            cell.style.borderRight = '1px solid #000';
-                        }
-                        visualColumn = (visualColumn + 1) % numColumns;
-                    }
-                });
-            }
-            
-            // Fix 2-column grids
-            document.querySelectorAll('.grid-table-2col').forEach(function(table) {
-                fixGridBorders(table, 2);
-            });
-            
-            // Fix 3-column grids
-            document.querySelectorAll('.grid-table-3col').forEach(function(table) {
-                fixGridBorders(table, 3);
-            });
-            
-            // Fix 4-column grids
-            document.querySelectorAll('.grid-table-4col').forEach(function(table) {
-                fixGridBorders(table, 4);
-            });
-        });
-    </script>
 </head>
 
 <body></body>
@@ -701,17 +598,17 @@
                 <label class="grid-label">Does this collision contain a Countable Fatal?</label><br>
                 <div class="radio-group">
                     <div class="radio-option">
-                        <input type="radio" name="fatal" value="yes" {% if data.has_countable_fatal=="Y" %}checked{%
+                        <input type="radio" name="fatal-icbc" value="yes" {% if data.has_countable_fatal=="Y" %}checked{%
                             endif %}>
                         <label>Yes</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="fatal" value="no" {% if data.has_countable_fatal=="N" %}checked{%
+                        <input type="radio" name="fatal-icbc" value="no" {% if data.has_countable_fatal=="N" %}checked{%
                             endif %}>
                         <label>No</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="fatal" value="na" {% if data.has_countable_fatal=="NA" %}checked{%
+                        <input type="radio" name="fatal-icbc" value="na" {% if data.has_countable_fatal=="NA" %}checked{%
                             endif %}>
                         <label>Not Applicable - No Fatality Entered</label>
                     </div>
@@ -793,7 +690,8 @@
                         <label class="grid-label">Collision Type</label><br>
                         <div class="grid-input grid-display" contenteditable="false" style="width: 200px;">{% if
                             data.collision_type == 5 %}Fatality{% elif data.collision_type == 3 %}Personal
-                            Injury{% elif data.collision_type == 2 %}Property Damage over $10000{% else %}{{
+                            Injury{% elif data.collision_type == 2 %}Property Damage over $10000
+                            {% elif data.collision_type == 0 %}Non-reportable{% else %}{{
                             data.collision_type }}{% endif %}</div>
                     </div>
                     <div class="grid-cell">
@@ -1147,6 +1045,9 @@
                         </div>
                         {% if not (data.print_options and data.print_options.type == "entity" and
                         data.print_options.entity_num != entity.entity_num) %}
+                        <div class="grid-cell">
+                            <!-- Empty cell -->
+                        </div>
                         <div class="grid-cell grid-cell-full">
                             <input type="checkbox" {% if entity.is_registered_owner %}checked{% endif %}>
                             <label style="font-weight: normal;">Registered owner has the same name and residential
@@ -1162,9 +1063,6 @@
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_owner_address
                                 }}</div>
                         </div>
-                        <div class="grid-cell">
-                            <!-- Empty cell to complete row -->
-                        </div>
                         {% endif %}
                         <div class="grid-cell">
                             <label class="grid-label">National Safety Code (NSC) Number</label><br>
@@ -1175,7 +1073,7 @@
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.jur_code }}</div>
                         </div>
                         <div class="grid-cell">
-                            <!-- Empty -->
+                            <!-- Empty Cell -->
                         </div>
                     </div>
 
@@ -1306,7 +1204,9 @@
                                 entity.contributing_factor_4.label }}</div>
                         </div>
                         <div class="grid-cell"></div>
-                        <div class="grid-cell"></div>
+                        {% if entity.vehicle_towed != 'Y' %}
+                            <div class="grid-cell"></div>
+                        {% endif %}
                     </div>
 
                     {% if not (data.print_options and data.print_options.type == "entity" and
@@ -1333,7 +1233,7 @@
 
                             </div>
                             {% if entity.blood_alc_test != 'NOT' %}
-                            <div class="grid-cell grid-cell-full" style="border-bottom: 1px solid #000;">
+                            <div class="grid-cell grid-cell-full" style="border-bottom: 1.5pt solid #000;">
                                 <label style="font-weight: normal;">Result 1</label>
                                 <div class="grid-input grid-display" contenteditable="false"
                                     style="width: 100px; margin-left: 5px;">{{ entity.result_1 }}</div>
@@ -1538,7 +1438,7 @@
                         {% if data.has_other_prop_damage == 'Y' or data.has_other_prop_damage == 'U' %}
                         <div class="grid-cell grid-cell-full">
                             <label class="grid-label">Other Property Damage - list property damaged</label><br>
-                            <textarea class="grid-input auto-resize">{{ data.other_prop_damage_desc }}</textarea>
+                            <textarea class="grid-input auto-resize uppercase">{{ data.other_prop_damage_desc }}</textarea>
                         </div>
                         {% endif %}
                         <div class="grid-cell grid-cell-full">
@@ -1583,14 +1483,15 @@
                          {% if not (data.print_options and data.print_options.type == "entity") %}
                         <div class="grid-cell grid-cell-full">
                             <label class="grid-label">Box 99 Police Comments</label><br>
-                            <textarea class="grid-input auto-resize">{{ data.police_comments }}</textarea>
+                            <textarea class="grid-input auto-resize uppercase">{{ data.police_comments }}</textarea>
                         </div>
                         {% endif %}
                         <div class="grid-cell">
                             <label class="grid-label">Collision Type</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 200px;">{% if
                                 data.collision_type == 5 %}Fatality{% elif data.collision_type == 3 %}Personal
-                                Injury{% elif data.collision_type == 2 %}Property Damage over $10000{% else %}{{
+                                Injury{% elif data.collision_type == 2 %}Property Damage over $10000
+                                {% elif data.collision_type == 0 %}Non-reportable{% else %}{{
                                 data.collision_type }}{% endif %}</div>
                         </div>
                         <div class="grid-cell">
@@ -1641,18 +1542,18 @@
                             <div class="grid-input grid-display" contenteditable="false">{{ data.officer_email }}</div>
                         </div>
                         {% endif %}
-                        <div class="grid-cell border-bottom">
+                        <div class="grid-cell">
                             <label class="grid-label">Date Submitted to ICBC </label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {%if data.icbc_submission_date %}{{ data.icbc_submission_date[:10] }}{% endif %}</div>
                         </div>
-                        <div class="grid-cell border-bottom">
+                        <div class="grid-cell">
                             <label class="grid-label">Investigated by Traffic Analyst? </label><br>
                             <div class="grid-input grid-display" contenteditable="false">{% if
                                 data.investigated_by_traffic_analyst == 'Y' %}Yes{% elif data.investigated_by_traffic_analyst == 'N' %}No{% else %}{{
                                 data.investigated_by_traffic_analyst }}{% endif %}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell grid-cell-full">
                             <label class="grid-label">Reviewed by </label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.reviewed_by }}</div>
                         </div>
@@ -2171,102 +2072,97 @@
                     <h4 class="subsection-header" style="margin-top: 10px;">All involved</h4>
                     {% for entity in data.entities %}
                     {% set entity_index = loop.index %}
-                    <div style="margin-bottom: 20px; border: 1px solid #000;">
-                        <h4 class="subsection-header" style="border: 0px;">Entity {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})</h4>
+                    <div class="icbc-involved-person">
+                        <h4 class="subsection-header" style="border: 1.5pt solid #000;">Entity {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})</h4>
 
                         {% for person in entity.involved_persons %}
                         <div>
-                            <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold; border-top: 1px solid #000;">
+                            <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold; border-right: 1.5pt solid #000;  border-left: 1px solid #000;">
                                 Involved Person {{ loop.index }} associated to Entity {{ entity_index }}
                             </h5>
                             <!-- Person Header Row with Boxes -->
-                            <div class="grid-table" style="border: 0px; border-bottom: 1px solid #000; border-top: 1px solid #000;">
-                                <div class="grid-row">
-                                    <div class="grid-cell">
-                                        <label class="grid-label">Box 10</label><br>
-                                        <div class="grid-input grid-display" contenteditable="false">{{
-                                            person.vehicle_occupied if
-                                            person.vehicle_occupied else '' }}</div>
-                                    </div>
-                                    <div class="grid-cell">
-                                        <label class="grid-label">Box 11</label><br>
-                                        <div class="grid-input grid-display" contenteditable="false">{{
-                                            person.position_of_person.value if
-                                            person.position_of_person else '' }}</div>
-                                    </div>
-                                    <div class="grid-cell">
-                                        <label class="grid-label">Box 12</label><br>
-                                        <div class="grid-input grid-display" contenteditable="false">{{
-                                            person.safety_equipment_used.value if
-                                            person.safety_equipment_used else '' }}</div>
-                                    </div>
-                                    <div class="grid-cell">
-                                        <label class="grid-label">Box 13</label><br>
-                                        <div class="grid-input grid-display" contenteditable="false">{{
-                                            person.ejection_from_vehicle.value if
-                                            person.ejection_from_vehicle else '1' }}</div>
-                                    </div>
-                                    <div class="grid-cell">
-                                        <label class="grid-label">Box 14</label><br>
-                                        <div class="grid-input grid-display" contenteditable="false">{{
-                                            person.age if person.age else '' }}</div>
-                                    </div>
-                                    <div class="grid-cell">
-                                        <label class="grid-label">Box 15</label><br>
-                                        <div class="grid-input grid-display" contenteditable="false">{{
-                                            person.sex.value if person.sex else '' }}</div>
-                                    </div>
-                                    <div class="grid-cell">
-                                        <label class="grid-label">Box 16</label><br>
-                                        <div class="grid-input grid-display" contenteditable="false">{{
-                                            person.severe_injury_location.value if
-                                            person.severe_injury_location else '' }}</div>
-                                    </div>
+                            <div class="grid-table grid-table-7col" >
+                                <div class="grid-cell">
+                                    <label class="grid-label">Box 10</label><br>
+                                    <div class="grid-input grid-display" contenteditable="false">{{
+                                        person.vehicle_occupied if
+                                        person.vehicle_occupied else '' }}</div>
+                                </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Box 11</label><br>
+                                    <div class="grid-input grid-display" contenteditable="false">{{
+                                        person.position_of_person.value if
+                                        person.position_of_person else '' }}</div>
+                                </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Box 12</label><br>
+                                    <div class="grid-input grid-display" contenteditable="false">{{
+                                        person.safety_equipment_used.value if
+                                        person.safety_equipment_used else '' }}</div>
+                                </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Box 13</label><br>
+                                    <div class="grid-input grid-display" contenteditable="false">{{
+                                        person.ejection_from_vehicle.value if
+                                        person.ejection_from_vehicle else '1' }}</div>
+                                </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Box 14</label><br>
+                                    <div class="grid-input grid-display" contenteditable="false">{{
+                                        person.age if person.age else '' }}</div>
+                                </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Box 15</label><br>
+                                    <div class="grid-input grid-display" contenteditable="false">{{
+                                        person.sex.value if person.sex else '' }}</div>
+                                </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Box 16</label><br>
+                                    <div class="grid-input grid-display" contenteditable="false">{{
+                                        person.severe_injury_location.value if
+                                        person.severe_injury_location else '' }}</div>
                                 </div>
 
-                                <div class="grid-row">
-                                    <div class="grid-cell">
-                                        <label class="grid-label">Box 17</label><br>
-                                        <div class="grid-input grid-display" contenteditable="false">{{
-                                            person.injury_type.value if person.injury_type else
-                                            '' }}</div>
-                                    </div>
-                                    <div class="grid-cell">
-                                        <label class="grid-label">Box 18</label><br>
-                                        <div class="grid-input grid-display" contenteditable="false">{{
-                                            person.consciousness_state.value if
-                                            person.consciousness_state else '' }}</div>
-                                    </div>
-                                    <div class="grid-cell">
-                                        <label class="grid-label">Box19</label><br>
-                                        <div class="grid-input grid-display" contenteditable="false">{{
-                                            person.injured_taken_to.value if
-                                            person.injured_taken_to else '' }}</div>
-                                    </div>
-                                    <div class="grid-cell">
-                                        <label class="grid-label">Box 20</label><br>
-                                        <div class="grid-input grid-display" contenteditable="false">{{
-                                            person.injured_taken_by.value if
-                                            person.injured_taken_by else '' }}</div>
-                                    </div>
-                                    <div class="grid-cell">
-                                        <label class="grid-label">Box 20A</label><br>
-                                        <div class="grid-input grid-display" contenteditable="false">{{
-                                            person.injury_classification.value if
-                                            person.injury_classification else '' }}</div>
-                                    </div>
-                                    <div class="grid-cell" style="flex-grow: 2.1;">
-                                        <label class="grid-label">Date of Death</label><br>
-                                        <div class="grid-input grid-display" contenteditable="false">{{
-                                            person.date_of_death[:10] if person.date_of_death else '' }}</div>
-                                    </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Box 17</label><br>
+                                    <div class="grid-input grid-display" contenteditable="false">{{
+                                        person.injury_type.value if person.injury_type else
+                                        '' }}</div>
                                 </div>
-                                <div class="grid-row">
-                                    <div class="grid-cell grid-cell-full">
-                                        <label class="grid-label">Name</label><br>
-                                        <div class="grid-input grid-display" contenteditable="false">{{
-                                            person.surname }} , {{ person.given_name }}</div>
-                                    </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Box 18</label><br>
+                                    <div class="grid-input grid-display" contenteditable="false">{{
+                                        person.consciousness_state.value if
+                                        person.consciousness_state else '' }}</div>
+                                </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Box19</label><br>
+                                    <div class="grid-input grid-display" contenteditable="false">{{
+                                        person.injured_taken_to.value if
+                                        person.injured_taken_to else '' }}</div>
+                                </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Box 20</label><br>
+                                    <div class="grid-input grid-display" contenteditable="false">{{
+                                        person.injured_taken_by.value if
+                                        person.injured_taken_by else '' }}</div>
+                                </div>
+                                <div class="grid-cell">
+                                    <label class="grid-label">Box 20A</label><br>
+                                    <div class="grid-input grid-display" contenteditable="false">{{
+                                        person.injury_classification.value if
+                                        person.injury_classification else '' }}</div>
+                                </div>
+                                <div class="grid-cell" style="grid-column: span 2;">
+                                    <label class="grid-label">Date of Death</label><br>
+                                    <div class="grid-input grid-display" contenteditable="false">{{
+                                        person.date_of_death[:10] if person.date_of_death else '' }}</div>
+                                </div>
+
+                                <div class="grid-cell grid-cell-full">
+                                    <label class="grid-label">Name</label><br>
+                                    <div class="grid-input grid-display" contenteditable="false">{{
+                                        person.surname }} , {{ person.given_name }}</div>
                                 </div>
                             </div>
                         </div>
@@ -2301,6 +2197,35 @@
                 // Also add input listener for dynamic content
                 textarea.addEventListener('input', function() {
                     resizeTextarea(textarea);
+                });
+            });
+        });
+    </script>
+
+    <script>
+        // Add .grid-last-cell to the last cell when a grid table has an incomplete final row.
+        // .grid-cell-full cells are excluded from the column count.
+        document.addEventListener('DOMContentLoaded', function() {
+            var gridConfigs = [
+                { selector: '.grid-table-1col', columns: 1 },
+                { selector: '.grid-table-2col', columns: 2 },
+                { selector: '.grid-table-3col', columns: 3 },
+                { selector: '.grid-table-4col', columns: 4 },
+            ];
+
+            gridConfigs.forEach(function(config) {
+                document.querySelectorAll(config.selector).forEach(function(table) {
+                    var allCells = Array.from(table.querySelectorAll(':scope > .grid-cell'));
+                    var countableCells = allCells.filter(function(cell) {
+                        return !cell.classList.contains('grid-cell-full');
+                    });
+
+                    if (countableCells.length % config.columns !== 0) {
+                        var lastCell = countableCells[countableCells.length - 1];
+                        if (lastCell) {
+                            lastCell.style.gridColumnEnd = 'span ' + (config.columns - (countableCells.length % config.columns) + 1);
+                        }
+                    }
                 });
             });
         });

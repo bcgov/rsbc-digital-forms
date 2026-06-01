@@ -162,7 +162,11 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
             )
             
             try:
-                page = await browser.new_page()
+                context = await browser.new_context(
+                    viewport={"width": 816, "height": 1056},
+                    device_scale_factor=2  # High-DPI rendering helps thin lines survive
+                )
+                page = await context.new_page()
                 await page.set_content(html_str, wait_until="networkidle")
                 
                 # Wait for auto-resize script to execute
@@ -187,7 +191,7 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
                 else:
                     # Set explicit page dimensions to US Letter (8.5in x 11in) with 0.5in margins on sides, 0.75in top/bottom
                     # This gives a content area of 7.5in x 9.5in
-                    await page.set_viewport_size({"width": 816, "height": 1056})  # 8.5in x 11in at 96 DPI
+                    # await page.set_viewport_size({"width": 816, "height": 1056})  # 8.5in x 11in at 96 DPI
                     
                     # Build dynamic header configuration
                     form_details = template_data.get('form_details')
@@ -225,7 +229,7 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
                         display_header_footer=True,
                         header_template=header_template,
                         footer_template=footer_template,
-                        prefer_css_page_size=False,
+                        prefer_css_page_size=True,
                     )
                     return True, pdf_bytes
                 

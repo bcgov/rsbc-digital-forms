@@ -47,7 +47,7 @@ def test_send_new_user_admin_notification_calls_rsi_email():
     assert "Digital Forms: New User Application" in called_kwargs["subject"]
     assert "A new user has applied" in called_kwargs["body"]
     assert called_kwargs["message"]["first_name"] == "John"
-    assert "admin-console" in called_kwargs["message"]["admin_link"]
+    assert "task" in called_kwargs["message"]["admin_link"]
 
 
 def test_validate_mv6020_email_payload_success():

@@ -15,6 +15,7 @@ class Config():
     DB_PASS = os.environ.get('DB_PASS', 'pass')
     DB_PORT = os.environ.get('DB_PORT', 5432)
     DB_NAME_DF = os.environ.get('DB_NAME_DF', 'test')
+    DB_NAME_FF = os.environ.get('DB_NAME_FF', 'formsflow_api')
 
     # MongoDB settings
     MONGO_HOST = os.environ.get('MONGO_HOST', 'localhost')
@@ -22,3 +23,9 @@ class Config():
     MONGO_USER = os.environ.get('MONGO_USER', '')
     MONGO_PASS = os.environ.get('MONGO_PASS', '')
     MONGO_DB_NAME = os.environ.get('MONGO_DB_NAME', 'formio')
+
+    # Splunk settings
+    SPLUNK_HOST = os.environ.get('SPLUNK_HOST', 'localhost')
+    SPLUNK_PORT = int(os.environ.get('SPLUNK_PORT', 8088))
+    SPLUNK_TOKEN = os.environ.get('SPLUNK_TOKEN', 'your-splunk-token')
+    OPENSHIFT_PLATE = os.environ.get('OPENSHIFT_PLATE', 'data_cleanup_job')

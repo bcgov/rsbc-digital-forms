@@ -58,7 +58,7 @@ def send_new_user_admin_notification(**kwargs):
         "last_name": kwargs.get('payload')['last_name'],
         "badge_number": kwargs.get('payload')['badge_number'],
         "agency": kwargs.get('payload')['agency']['agency_name'],
-        "admin_link": Config.REACT_APP_BASE_URL + "/admin-console",
+        "admin_link": Config.REACT_APP_USER_MANAGEMENT_URL,
     }
 
     rsi_email.send_new_user_admin_notification(config=Config, subject=subject, body=body, message=message)

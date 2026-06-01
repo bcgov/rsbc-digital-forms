@@ -1,8 +1,8 @@
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, mock_open
 from python.common.models import Event
 from python.common.enums import ErrorCode, EventType
-from python.prohibition_web_svc.middleware.event_middleware import check_if_application_id_exists, log_payload_to_splunk, save_event_data, _get_asd_expiry_date, check_if_form_number_was_used
+from python.prohibition_web_svc.middleware.event_middleware import check_if_application_id_exists, log_payload_to_splunk, save_event_data, save_event_pdf, _get_asd_expiry_date, check_if_form_number_was_used
 
 
 # ── helpers ──────────────────────────────────────────────────────────────────
@@ -345,8 +345,8 @@ def test_save_event_data_twelve_hour_form_success(mock_db_session):
         mock_db_session.commit.assert_called()
 
 
-def test_save_event_data_irp_form_returns_early(mock_db_session):
-    """Test save_event_data with IRP form (returns early without saving)"""
+def test_save_event_data_irp_form_success(mock_db_session):
+    """Test successful save_event_data with IRP form"""
     payload = {
         'IRP': True,
         'IRP_number': 'IRP999',
@@ -359,14 +359,31 @@ def test_save_event_data_irp_form_returns_early(mock_db_session):
         'identity_provider': 'idir'
     }
 
-    # IRP forms return early without any return value (None)
-    result = save_event_data(**kwargs)
+    mock_event = MagicMock()
+    mock_event.event_id = 4
+    mock_irp_form = MagicMock()
+    mock_irp_form.form_id = 4
+    mock_event.irp_form = mock_irp_form
 
-    # Should return None (not a tuple) for IRP forms
-    assert result is None
-    # No database operations should have been performed
-    mock_db_session.add.assert_not_called()
-    mock_db_session.commit.assert_not_called()
+    with patch('python.prohibition_web_svc.middleware.event_middleware.Event', return_value=mock_event), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.IRPMapper') as mock_irp_mapper, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Submission'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.datetime') as mock_datetime, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.jsonify') as mock_jsonify:
+
+        mock_irp_mapper.map_to_irp_form.return_value = mock_irp_form
+        mock_datetime.now.return_value = '2023-01-01T00:00:00'
+        mock_jsonify.return_value = {'event': 'data'}
+
+        result, updated_kwargs = save_event_data(**kwargs)
+
+        assert result is True
+        assert 'response_dict' in updated_kwargs
+        assert 'event' in updated_kwargs
+        assert updated_kwargs['event'] == mock_event
+        mock_irp_mapper.map_to_irp_form.assert_called_once()
+        mock_db_session.add.assert_any_call(mock_event)
+        mock_db_session.commit.assert_called()
 
 
 def test_save_event_data_service_account_identity_provider(mock_db_session):
@@ -440,6 +457,135 @@ def test_save_event_data_database_exception_handling(mock_db_session):
         assert 'Database connection failed' in updated_kwargs['error']['error_details']
         assert updated_kwargs['error']['event_type'] == EventType.VI
         assert updated_kwargs['error']['ticket_no'] == 'VI000'
+
+
+# Tests for save_event_pdf function
+def test_save_event_pdf_vi_form_with_extra_page_success(mock_db_session):
+    payload = {
+        'VI': True,
+        'VI_form_png': 'data:image/png;base64,aGVsbG8=',
+        'incident_details': 'x' * 600,
+    }
+    event = MagicMock()
+    event.event_id = 10
+    event.vi_form.form_id = 101
+    kwargs = {'payload': payload, 'event': event}
+
+    mock_uuid = MagicMock()
+    mock_uuid.hex = 'abc123'
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_CERT_FILE', '/tmp/cert.pem'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_BUCKET_URL', 'minio.local'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_AK', 'ak'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_SK', 'sk'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_SECURE', False), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.STORAGE_BUCKET_NAME', 'forms-bucket'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.ENCRYPT_KEY', 'enc-key'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.uuid.uuid4', return_value=mock_uuid), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Minio') as mock_minio_cls, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.split_image') as mock_split_image, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.create_pdf_with_images', return_value=b'%PDF') as mock_create_pdf, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.encryptPdf_method1') as mock_encrypt, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.FormStorageRefs') as mock_storage_ref, \
+         patch('builtins.open', mock_open()):
+
+        mock_client = MagicMock()
+        mock_minio_cls.return_value = mock_client
+
+        result, out = save_event_pdf(**kwargs)
+
+        assert result is True
+        assert out == kwargs
+        mock_split_image.assert_called_once_with('/tmp/abc123.png', 3, 1, False, True, output_dir='/tmp')
+        mock_create_pdf.assert_called_once_with('/tmp/abc123_0.png', '/tmp/abc123_1.png', '/tmp/abc123_2.png')
+        mock_encrypt.assert_called_once_with('/tmp/abc123.pdf', 'enc-key', '/tmp/abc123_encrypted.pdf')
+        mock_client.fput_object.assert_called_once_with('forms-bucket', 'abc123_encrypted.pdf', '/tmp/abc123_encrypted.pdf')
+        mock_storage_ref.assert_called_once_with(
+            form_id_vi=101,
+            event_id=10,
+            form_type='VI',
+            storage_key='forms-bucket/abc123_encrypted.pdf',
+            created_dt=mock_storage_ref.call_args.kwargs['created_dt'],
+            updated_dt=mock_storage_ref.call_args.kwargs['updated_dt'],
+        )
+        mock_db_session.add.assert_called_once()
+        mock_db_session.commit.assert_called_once()
+
+
+def test_save_event_pdf_irp_form_success(mock_db_session):
+    payload = {
+        'IRP': True,
+        'IRP_form_png': 'data:image/png;base64,aGVsbG8=',
+    }
+    event = MagicMock()
+    event.event_id = 11
+    event.irp_form.form_id = 202
+    kwargs = {'payload': payload, 'event': event}
+
+    mock_uuid = MagicMock()
+    mock_uuid.hex = 'irp123'
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_CERT_FILE', '/tmp/cert.pem'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_BUCKET_URL', 'minio.local'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_AK', 'ak'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_SK', 'sk'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_SECURE', False), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.STORAGE_BUCKET_NAME', 'forms-bucket'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Config.ENCRYPT_KEY', 'enc-key'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.uuid.uuid4', return_value=mock_uuid), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Minio') as mock_minio_cls, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.split_image') as mock_split_image, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.create_pdf_with_images', return_value=b'%PDF') as mock_create_pdf, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.encryptPdf_method1') as mock_encrypt, \
+         patch('python.prohibition_web_svc.middleware.event_middleware.FormStorageRefs') as mock_storage_ref, \
+         patch('builtins.open', mock_open()):
+
+        mock_client = MagicMock()
+        mock_minio_cls.return_value = mock_client
+
+        result, _ = save_event_pdf(**kwargs)
+
+        assert result is True
+        mock_split_image.assert_not_called()
+        mock_create_pdf.assert_called_once_with('/tmp/irp123.png')
+        mock_encrypt.assert_called_once_with('/tmp/irp123.pdf', 'enc-key', '/tmp/irp123_encrypted.pdf')
+        mock_client.fput_object.assert_called_once_with('forms-bucket', 'irp123_encrypted.pdf', '/tmp/irp123_encrypted.pdf')
+        mock_storage_ref.assert_called_once_with(
+            form_id_irp=202,
+            event_id=11,
+            form_type='IRP',
+            storage_key='forms-bucket/irp123_encrypted.pdf',
+            created_dt=mock_storage_ref.call_args.kwargs['created_dt'],
+            updated_dt=mock_storage_ref.call_args.kwargs['updated_dt'],
+        )
+        mock_db_session.add.assert_called_once()
+        mock_db_session.commit.assert_called_once()
+
+
+def test_save_event_pdf_returns_error_when_upload_fails(mock_db_session):
+    payload = {
+        'VI': True,
+        'VI_number': 'VI-1000',
+        'VI_form_png': 'data:image/png;base64,aGVsbG8=',
+    }
+    event = MagicMock()
+    event.event_id = 12
+    kwargs = {'payload': payload, 'event': event}
+
+    with patch('python.prohibition_web_svc.middleware.event_middleware.Config.MINIO_CERT_FILE', '/tmp/cert.pem'), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.Minio', side_effect=Exception('minio unavailable')), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.get_event_type', return_value=EventType.VI), \
+         patch('python.prohibition_web_svc.middleware.event_middleware.get_ticket_no', return_value='VI-1000'):
+
+        result, out = save_event_pdf(**kwargs)
+
+        assert result is False
+        assert 'error' in out
+        assert out['error']['error_code'] == ErrorCode.E02
+        assert str(out['error']['error_details']) == 'minio unavailable'
+        assert out['error']['event_id'] == 12
+        assert out['error']['event_type'] == EventType.VI
+        assert out['error']['ticket_no'] == 'VI-1000'
 
 
 # Tests for _get_asd_expiry_date

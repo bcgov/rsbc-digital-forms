@@ -20,6 +20,8 @@ from .event import Event
 from .twenty_four_hour_form import TwentyFourHourForm
 from .twelve_hour_form import TwelveHourForm
 from .irp_form import IRPForm
+from .irp_asd_test import IRPASDTest
+from .irp_prohibition_type import IRPProhibitionType
 from .vi_form import VIForm
 from .form_storage_refs import FormStorageRefs
 from .agency_crossref import AgencyCrossref
