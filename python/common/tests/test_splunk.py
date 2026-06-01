@@ -27,8 +27,7 @@ def test_splunk_logs_paybc_lookup_event():
     log_to_splunk(**args)
 
     payload = json.loads(responses.calls[0].request.body.decode())
-    logging.warning(json.dumps(payload))
-    assert payload == {"event": {"event": "paybc_lookup", "prohibition_number": "40123456"}, "source": "be78d6"}
+    assert payload == {"event": {"event": "paybc_lookup", "prohibition_number": "40123456"}, "source": "be78d6", "request_id": None}
 
 
 @responses.activate
@@ -51,18 +50,19 @@ def test_splunk_logs_icbc_get_driver_event():
                                       config=Config,
                                       dl_number=dl_number,
                                       username=username,
-                                      user_guid='')
+                                      user_guid='',
+                                      request_id='test-request-id-123')
     log_to_splunk(**args)
 
     payload = json.loads(responses.calls[0].request.body.decode())
-    logging.warning(json.dumps(payload))
     assert payload == {"event": {
         "event": 'icbc_get_driver',
         "user_guid": '',
         "username": username,
-        'request_id': '',
+        'request_id': 'test-request-id-123',
         "queried_bcdl": dl_number},
-        "source": "be78d6"}
+        "source": "be78d6",
+        "request_id": 'test-request-id-123'}
 
 
 @responses.activate
@@ -85,15 +85,15 @@ def test_splunk_logs_icbc_get_vehicle_event():
                                        config=Config,
                                        plate_number=plate_number,
                                        username=username,
-                                       user_guid='')
+                                       user_guid='',
+                                       request_id='test-request-id-456')
     log_to_splunk(**args)
 
     payload = json.loads(responses.calls[0].request.body.decode())
-    logging.warning(json.dumps(payload))
     assert payload == {"event": {
         "event": 'icbc_get_vehicle',
         "user_guid": '',
-        'request_id': '',
+        'request_id': 'test-request-id-456',
         "username": "someuser@bceid",
         'queried_plate': plate_number
-    }, "source": "be78d6"}
+    }, "source": "be78d6", "request_id": 'test-request-id-456'}
