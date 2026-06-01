@@ -22,6 +22,7 @@ POSTGRES_FF_TARGETS = [
 
 MONGO_COLLECTION = "submissions"
 
+MONGO_LIMIT_BATCH_SIZE = 200
 
 def run_cleanup(cutoff_date: datetime, dry_run: bool) -> None:
     mode_label = "DRY RUN" if dry_run else "LIVE"
@@ -116,9 +117,17 @@ def cleanup_mongo(cutoff_date: datetime, dry_run: bool) -> int:
                      Config.MONGO_DB_NAME, MONGO_COLLECTION, count, cutoff_date)
 
         if not dry_run and count > 0:
+            if count > MONGO_LIMIT_BATCH_SIZE:
+                logger.warning("MongoDB collection '%s.%s': large number of documents to delete (%d). Deleting in batches.",
+                               Config.MONGO_DB_NAME, MONGO_COLLECTION, count)
+                results = collection.find(query).limit(MONGO_LIMIT_BATCH_SIZE)
+                ids_to_delete = [doc["_id"] for doc in results]
+                query = {"_id": {"$in": ids_to_delete}}
+
             result = collection.delete_many(query)
             logger.info("MongoDB collection '%s.%s': deleted %d document(s).",
                          Config.MONGO_DB_NAME, MONGO_COLLECTION, result.deleted_count)
+            count = result.deleted_count
         return count
     finally:
         client.close()
