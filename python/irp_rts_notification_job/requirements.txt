@@ -1,5 +1,6 @@
 Jinja2
 psycopg2-binary
+python-keycloak
 python-json-logger
 pytz
 requests
