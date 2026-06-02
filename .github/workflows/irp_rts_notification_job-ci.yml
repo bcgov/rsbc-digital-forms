@@ -1,0 +1,25 @@
+name: irp_rts_notification_job-ci
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches-ignore:
+      - master
+      - main
+    paths:
+      - python/common/**
+      - python/irp_rts_notification_job/**
+      - .github/workflows/irp_rts_notification_job-ci.yml
+
+jobs:
+  CI:
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    uses: ./.github/workflows/ci-workflow.yml
+    with:
+      DOCKER_CONTEXT: python
+      DOCKER_FILE: python/irp_rts_notification_job/dockerfile
+      DOCKER_IMAGE_NAME: rsbc-df-irp-rts-notification
+    secrets: inherit

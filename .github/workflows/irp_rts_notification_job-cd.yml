@@ -1,0 +1,25 @@
+name: irp_rts_notification_job-cd
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches:
+      - master
+      - main
+    paths:
+      - python/common/**
+      - python/irp_rts_notification_job/**
+      - .github/workflows/irp_rts_notification_job-cd.yml
+      - trigger.txt
+
+jobs:
+  CD:
+    permissions:
+      contents: read
+    uses: ./.github/workflows/cd-workflow.yml
+    with:
+      DOCKER_CONTEXT: python
+      DOCKER_FILE: python/irp_rts_notification_job/dockerfile
+      DOCKER_IMAGE_NAME: rsbc-df-irp-rts-notification
+      IMPORT_IMAGE_TO_OPENSHIFT: false
+    secrets: inherit

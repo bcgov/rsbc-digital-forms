@@ -36,7 +36,7 @@ def _send(payload, config, ticket_no) -> bool:
         response = requests.post(Config.COMM_SERV_API_ROOT_URL + '/api/v1/email', headers=auth_header, json=payload)
     except AssertionError as error:
         logger.error('No response from BC Common Services')
-        logger.error(json.dumps(error))
+        logger.error(str(error))
         return False
     if response.status_code == 201:
         data = response.json()
