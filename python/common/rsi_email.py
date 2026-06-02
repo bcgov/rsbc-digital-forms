@@ -177,3 +177,22 @@ def send_submission_report_by_status(**args) -> tuple:
             message=message,
             full_name="RSI Operations Team",
         )), args
+
+
+def send_irp_pending_rts(**args) -> tuple:
+    subject = args.get('subject')
+    config = args.get('config')
+    email_address = args.get('email_address')
+    officer_name = args.get('officer_name')
+    message = args.get('message')
+    templates_path = args.get('templates_path', './python/common/templates')
+    template = get_jinja2_env(path=templates_path).get_template('irp_pending_rts.html')
+    return common_email_services.send_email(
+        [email_address],
+        subject,
+        config,
+        template.render(
+            subject=subject,
+            message=message,
+            full_name=officer_name,
+        )), args

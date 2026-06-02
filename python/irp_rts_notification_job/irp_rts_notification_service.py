@@ -55,11 +55,31 @@ def _process_pending_rts_for_user(conn, username, rts_list):
         return
 
     logger.debug(f"Sending notification to {email} for {len(rts_list)} pending RTS.")
-    
-    #TODO: Implement email sending logic here using the email address and the list of pending RTS for the user
+    _send_notification_email(email, rts_list)
     _update_rts_status(conn, rts_list)
     _write_notification_report_to_splunk(email, rts_list)
 
+def _send_notification_email(email, rts_list) -> None:
+    subject = f"You have {len(rts_list)} pending Immediate Roadside Prohibitions (IRP) to complete"
+    args = {
+        "subject": subject,
+        "email_address": email,
+        "officer_name": rts_list[0][2] if rts_list else "Officer",
+        "message": {
+            "superintendent_email": Config.SUPERINTENDENT_EMAIL,
+            "pending_rts_count": len(rts_list),
+            "pending_rts": rts_list
+        },
+        "templates_path": Config.JINJA2_TEMPLATE_PATH,
+        "config": Config
+    }
+    try:
+        from python.common.rsi_email import send_irp_pending_rts
+        send_irp_pending_rts(**args)
+        logger.info(f"Notification email sent to {email} for {len(rts_list)} pending RTS.")
+    except Exception as e:
+        logger.error(f"An error occurred while sending notification email to {email}: {e}", exc_info=True)
+        raise
 
 def _fetch_pending_RTS(conn) -> list:
     query = """select 
@@ -70,13 +90,14 @@ def _fetch_pending_RTS(conn) -> list:
                 sfr.form_type, 
                 sfr.form_id as form_number,
                 e.driver_last_name,
-                e.date_of_driving
+                e.date_of_driving::DATE
                 from submission_events se 
                 inner join submission_form_refs sfr on sfr.form_ref_id = se.form_ref_id 
                 inner join  submission s on s.submission_id = sfr.submission_id
                 inner join "user" u on s.created_by = u.user_guid 
                 inner join "event" e on s.submission_id = e.submission_id
-                where se.destination = 'RTS' and se.status = 'pending';"""
+                where se.destination = 'RTS' and se.status = 'pending'
+                order by date_of_driving;"""
     with conn.cursor() as cursor:
         cursor.execute(query)
         return cursor.fetchall()

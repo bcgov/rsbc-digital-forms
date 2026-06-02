@@ -36,6 +36,9 @@ def _post_to_splunk(splunk_payload: dict, **args) -> bool:
     except requests.ConnectionError as error:
         logger.warning(f"No response from the Splunk API: {error}")
         return False
+    except Exception as e:
+        logger.warning(f"An error occurred while sending data to Splunk: {e}")
+        return False
     logger.debug(f"response from Splunk: {response.status_code}")
     if response.status_code != 200:
         logger.warning(f"response from Splunk was not successful: {response.status_code}: {response.text}")

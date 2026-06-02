@@ -23,3 +23,16 @@ class Config():
     SPLUNK_PORT = int(os.environ.get('SPLUNK_PORT', 8088))
     SPLUNK_TOKEN = os.environ.get('SPLUNK_TOKEN', 'your-splunk-token')
     OPENSHIFT_PLATE = os.environ.get('OPENSHIFT_PLATE', 'irp_rts_notification_job')
+
+    # Email settings
+    COMM_SERV_AUTH_URL = os.getenv('COMM_SERV_AUTH_URL', 'http://localhost')
+    COMM_SERV_API_ROOT_URL = os.getenv('COMM_SERV_API_ROOT_URL', 'http://localhost')
+    COMM_SERV_REALM = os.getenv('COMM_SERV_REALM', 'realm')
+    COMM_SERV_CLIENT_ID = os.getenv('COMM_SERV_CLIENT_ID', '')
+    COMM_SERV_CLIENT_SECRET = os.getenv('COMM_SERV_CLIENT_SECRET', '')
+
+    REPLY_EMAIL_ADDRESS = os.getenv('REPLY_EMAIL_ADDRESS', 'do-not-reply-rsi@gov.bc.ca')
+    BCC_EMAIL_ADDRESSES = os.getenv('BCC_EMAIL_ADDRESSES')
+    SUPERINTENDENT_EMAIL = os.getenv('SUPERINTENDENT_EMAIL', 'VIPSFAXP@gov.bc.ca')
+
+    JINJA2_TEMPLATE_PATH = os.getenv('JINJA2_TEMPLATE_PATH', '/src/python/common/templates')

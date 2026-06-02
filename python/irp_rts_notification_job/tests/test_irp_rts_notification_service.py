@@ -160,20 +160,95 @@ class TestProcessPendingRtsForUser:
         mock_update.assert_not_called()
         mock_splunk.assert_not_called()
 
-    def test_calls_update_and_splunk_when_email_is_present(self, monkeypatch):
+    def test_calls_send_email_update_and_splunk_when_email_is_present(self, monkeypatch):
         monkeypatch.setattr(
             service, "_get_user_email_from_keycloak", lambda u: "user_a@example.com"
         )
+        mock_send = MagicMock()
         mock_update = MagicMock()
         mock_splunk = MagicMock()
+        monkeypatch.setattr(service, "_send_notification_email", mock_send)
         monkeypatch.setattr(service, "_update_rts_status", mock_update)
         monkeypatch.setattr(service, "_write_notification_report_to_splunk", mock_splunk)
         conn = MagicMock()
 
         service._process_pending_rts_for_user(conn, "user_a@idir", [ROW_USER_A_1, ROW_USER_A_2])
 
+        mock_send.assert_called_once_with("user_a@example.com", [ROW_USER_A_1, ROW_USER_A_2])
         mock_update.assert_called_once_with(conn, [ROW_USER_A_1, ROW_USER_A_2])
         mock_splunk.assert_called_once_with("user_a@example.com", [ROW_USER_A_1, ROW_USER_A_2])
+
+    def test_does_not_call_send_email_when_email_is_none(self, monkeypatch):
+        monkeypatch.setattr(service, "_get_user_email_from_keycloak", lambda u: None)
+        mock_send = MagicMock()
+        monkeypatch.setattr(service, "_send_notification_email", mock_send)
+        conn = MagicMock()
+
+        service._process_pending_rts_for_user(conn, "user_a@idir", [ROW_USER_A_1])
+
+        mock_send.assert_not_called()
+
+
+class TestSendNotificationEmail:
+    _PATCH_TARGET = "python.common.rsi_email.send_irp_pending_rts"
+
+    def test_calls_send_irp_pending_rts_with_correct_args(self, monkeypatch):
+        mock_send = MagicMock()
+        monkeypatch.setattr("python.common.rsi_email.send_irp_pending_rts", mock_send)
+
+        service._send_notification_email("user@example.com", [ROW_USER_A_1, ROW_USER_A_2])
+
+        mock_send.assert_called_once()
+        _, kwargs = mock_send.call_args
+        assert kwargs["email_address"] == "user@example.com"
+        assert kwargs["officer_name"] == ROW_USER_A_1[2]
+        assert kwargs["message"]["pending_rts_count"] == 2
+
+    def test_subject_contains_pending_count(self, monkeypatch):
+        mock_send = MagicMock()
+        monkeypatch.setattr("python.common.rsi_email.send_irp_pending_rts", mock_send)
+
+        service._send_notification_email("user@example.com", [ROW_USER_A_1, ROW_USER_A_2])
+
+        _, kwargs = mock_send.call_args
+        assert "2" in kwargs["subject"]
+
+    def test_officer_name_defaults_to_officer_when_list_empty(self, monkeypatch):
+        mock_send = MagicMock()
+        monkeypatch.setattr("python.common.rsi_email.send_irp_pending_rts", mock_send)
+
+        service._send_notification_email("user@example.com", [])
+
+        _, kwargs = mock_send.call_args
+        assert kwargs["officer_name"] == "Officer"
+
+    def test_raises_when_send_irp_pending_rts_raises(self, monkeypatch):
+        monkeypatch.setattr(
+            "python.common.rsi_email.send_irp_pending_rts",
+            MagicMock(side_effect=RuntimeError("SMTP failure")),
+        )
+
+        with pytest.raises(RuntimeError, match="SMTP failure"):
+            service._send_notification_email("user@example.com", [ROW_USER_A_1])
+
+    def test_message_contains_superintendent_email(self, monkeypatch):
+        mock_send = MagicMock()
+        monkeypatch.setattr("python.common.rsi_email.send_irp_pending_rts", mock_send)
+
+        service._send_notification_email("user@example.com", [ROW_USER_A_1])
+
+        _, kwargs = mock_send.call_args
+        from python.irp_rts_notification_job.config import Config
+        assert kwargs["message"]["superintendent_email"] == Config.SUPERINTENDENT_EMAIL
+
+    def test_message_includes_rts_list(self, monkeypatch):
+        mock_send = MagicMock()
+        monkeypatch.setattr("python.common.rsi_email.send_irp_pending_rts", mock_send)
+
+        service._send_notification_email("user@example.com", [ROW_USER_A_1, ROW_USER_A_2])
+
+        _, kwargs = mock_send.call_args
+        assert kwargs["message"]["pending_rts"] == [ROW_USER_A_1, ROW_USER_A_2]
 
 
 class TestUpdateRtsStatus:
