@@ -9,6 +9,7 @@ from flask import request, Blueprint, make_response, jsonify
 from flask_cors import CORS
 import python.prohibition_web_svc.middleware.user_middleware as user_middleware
 import python.prohibition_web_svc.middleware.notification_middleware as notification_middleware
+import python.prohibition_web_svc.middleware.detachment_middleware as detachment_middleware
 
 logger = get_logger(__name__)
 
@@ -94,6 +95,22 @@ def get(user_guid):
                 ]}
             ],
             user_guid=user_guid,
+            request=request,
+            config=Config)
+        return kwargs.get('response')
+
+
+@bp.route('/users/<string:user_guid>/detachment', methods=['GET'])
+def get_detachment(user_guid):
+    if request.method == 'GET':
+        kwargs = middle_logic(
+            keycloak_logic.get_authorized_keycloak_user() + [
+                {"try": detachment_middleware.get_officer_current_detachment, "fail": [
+                    {"try": http_responses.officer_not_found, "fail": []}
+                ]},
+            ],
+            required_permission='forms-get',
+            officer_id=user_guid,
             request=request,
             config=Config)
         return kwargs.get('response')
