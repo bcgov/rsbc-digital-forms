@@ -12,12 +12,12 @@ def log_to_splunk(**kwargs) -> tuple:
     """
     splunk_data = kwargs.get('splunk_data')
     if splunk_data is not None:
+        splunk_data['request_id'] = kwargs.get('request_id')
         config = kwargs.get('config')
         splunk_payload = dict({})
         # From DF-2908: Need to ensure that splunk_data is not None
         splunk_payload['event'] = splunk_data if splunk_data is not None else {}
         splunk_payload['source'] = config.OPENSHIFT_PLATE
-        splunk_payload['request_id'] = kwargs.get('request_id')
         _post_to_splunk(splunk_payload, **kwargs)
         kwargs['splunk_data'] = None
     return True, kwargs
