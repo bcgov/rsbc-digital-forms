@@ -51,6 +51,10 @@ def create_collision():
                   {"try": common_middleware.record_event_error, "fail": []},
                   {"try": http_responses.server_error_response, "fail": []},
             ]},
+            {"try": collision_middleware.commit_transaction, "fail": [
+                  {"try": common_middleware.record_event_error, "fail": []},
+                  {"try": http_responses.server_error_response, "fail": []},
+            ]},
             {"try": splunk.log_to_splunk, "fail": []},
             {"try": http_responses.successful_create_response, "fail": []}
         ],
