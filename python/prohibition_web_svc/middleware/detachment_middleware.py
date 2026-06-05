@@ -64,7 +64,11 @@ def validate_detachment_change_request_payload(**kwargs) -> tuple:
 
 
 def validate_officer_is_self(**kwargs) -> tuple:
-    """Enforce that officers can only change their own detachment."""
+    """Enforce self-service: officers can only change their own detachment.
+    Service accounts (Camunda) are exempt — they act on behalf of the officer.
+    """
+    if kwargs.get('identity_provider') == 'service_account':
+        return True, kwargs
     requesting_user_guid = kwargs.get('user_guid')
     target_officer_id = kwargs.get('payload', {}).get('officer_id')
     if requesting_user_guid != target_officer_id:
