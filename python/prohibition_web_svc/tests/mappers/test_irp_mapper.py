@@ -30,6 +30,20 @@ class TestMapToIrpForm:
         result = IRPMapper.map_to_irp_form(get_payload(), DATE_CREATED)
         assert result.vi_number == 221110893
 
+    def test_vi_number_is_none_when_vi_is_false(self):
+        payload = get_payload()
+        payload['VI'] = False
+        payload['VI_number'] = 221110893
+        result = IRPMapper.map_to_irp_form(payload, DATE_CREATED)
+        assert result.vi_number is None
+
+    def test_vi_number_is_none_when_vi_is_missing(self):
+        payload = get_payload()
+        del payload['VI']
+        payload['VI_number'] = 221110893
+        result = IRPMapper.map_to_irp_form(payload, DATE_CREATED)
+        assert result.vi_number is None
+
     def test_created_and_updated_dt(self):
         result = IRPMapper.map_to_irp_form(get_payload(), DATE_CREATED)
         assert result.created_dt == DATE_CREATED
@@ -318,6 +332,22 @@ class TestMapUpdateIrpForm:
         data['VI_number'] = 999888777
         IRPMapper.map_update_irp_form(form, data)
         assert form.vi_number == 999888777
+
+    def test_updates_vi_number_to_none_when_vi_is_false(self):
+        form = self._base_form()
+        data = get_payload()
+        data['VI'] = False
+        data['VI_number'] = 999888777
+        IRPMapper.map_update_irp_form(form, data)
+        assert form.vi_number is None
+
+    def test_updates_vi_number_to_none_when_vi_is_missing(self):
+        form = self._base_form()
+        data = get_payload()
+        del data['VI']
+        data['VI_number'] = 999888777
+        IRPMapper.map_update_irp_form(form, data)
+        assert form.vi_number is None
 
     def test_updates_driver_licence_expiry_is_parsed(self):
         form = self._base_form()
