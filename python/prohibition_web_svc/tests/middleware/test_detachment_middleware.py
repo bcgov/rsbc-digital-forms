@@ -171,6 +171,14 @@ class TestValidateOfficerIsSelf:
         )
         assert result is False
 
+    def test_service_account_bypasses_self_check(self):
+        result, _ = detachment_middleware.validate_officer_is_self(
+            user_guid='service-account-roadsafety-digital-forms-backend',
+            identity_provider='service_account',
+            payload={'officer_id': 'BFFFBC7834574BAD83FEF90D06F8866C'}
+        )
+        assert result is True
+
 
 # ---------------------------------------------------------------------------
 # get_officer_for_change_request
