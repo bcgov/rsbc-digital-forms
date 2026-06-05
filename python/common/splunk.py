@@ -12,7 +12,8 @@ def log_to_splunk(**kwargs) -> tuple:
     """
     splunk_data = kwargs.get('splunk_data')
     if splunk_data is not None:
-        splunk_data['request_id'] = kwargs.get('request_id')
+        if type(splunk_data) is dict and kwargs.get('request_id') is not None:
+            splunk_data['request_id'] = kwargs.get('request_id')
         config = kwargs.get('config')
         splunk_payload = dict({})
         # From DF-2908: Need to ensure that splunk_data is not None

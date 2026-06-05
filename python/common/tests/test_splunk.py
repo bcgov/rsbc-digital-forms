@@ -27,7 +27,7 @@ def test_splunk_logs_paybc_lookup_event():
     log_to_splunk(**args)
 
     payload = json.loads(responses.calls[0].request.body.decode())
-    assert payload == {"event": {"event": "paybc_lookup", "prohibition_number": "40123456"}, "source": "be78d6", "request_id": None}
+    assert payload == {"event": {"event": "paybc_lookup", "prohibition_number": "40123456"}, "source": "be78d6"}
 
 
 @responses.activate
@@ -59,10 +59,11 @@ def test_splunk_logs_icbc_get_driver_event():
         "event": 'icbc_get_driver',
         "user_guid": '',
         "username": username,
-        'request_id': 'test-request-id-123',
-        "queried_bcdl": dl_number},
-        "source": "be78d6",
-        "request_id": 'test-request-id-123'}
+        "queried_bcdl": dl_number,
+        "request_id": 'test-request-id-123'
+        },
+        "source": "be78d6"
+        }
 
 
 @responses.activate
@@ -93,7 +94,7 @@ def test_splunk_logs_icbc_get_vehicle_event():
     assert payload == {"event": {
         "event": 'icbc_get_vehicle',
         "user_guid": '',
-        'request_id': 'test-request-id-456',
         "username": "someuser@bceid",
-        'queried_plate': plate_number
-    }, "source": "be78d6", "request_id": 'test-request-id-456'}
+        'queried_plate': plate_number,
+        "request_id": 'test-request-id-456'
+    }, "source": "be78d6"}

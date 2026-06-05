@@ -59,14 +59,14 @@ def get_common_services_access_token(config):
 
 def _log_sent_email_response(ticket_no, payload, response, config) -> None:
     logger.verbose('response from common services successful')
-    email_info = json.dumps(dict({
+    email_info = {
         "event": "email sent success",
         "to": payload.get('to'),
         "bcc": payload.get('bcc'),
         "ticket_no": ticket_no,
         "subject": payload.get('subject'),
         "response": response
-    }))
+    }
     logger.info(email_info)
     args = {}
     args["splunk_data"] = email_info

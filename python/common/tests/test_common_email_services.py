@@ -350,8 +350,7 @@ class TestLogSentEmailResponse:
 
         ces._log_sent_email_response("ticket-1", payload, {}, cfg)
 
-        import json
-        data = json.loads(captured["splunk_data"])
+        data = captured["splunk_data"]
         assert data["event"] == "email sent success"
 
     def test_splunk_payload_includes_ticket_no(self, monkeypatch):
@@ -366,8 +365,7 @@ class TestLogSentEmailResponse:
 
         ces._log_sent_email_response("ticket-42", payload, {}, cfg)
 
-        import json
-        data = json.loads(captured["splunk_data"])
+        data = captured["splunk_data"]
         assert data["ticket_no"] == "ticket-42"
 
     def test_splunk_payload_includes_to_and_subject(self, monkeypatch):
@@ -382,8 +380,7 @@ class TestLogSentEmailResponse:
 
         ces._log_sent_email_response("t-1", payload, {}, cfg)
 
-        import json
-        data = json.loads(captured["splunk_data"])
+        data = captured["splunk_data"]
         assert data["to"] == ["to@example.com"]
         assert data["subject"] == "My Subject"
 
