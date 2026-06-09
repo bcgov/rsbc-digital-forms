@@ -451,7 +451,7 @@ def save_event_pdf(**kwargs) -> tuple:
             db.session.add(form_storage)
 
             _add_submission_events(
-                data.get('VI_number'), 
+                str(data.get('VI_number')), 
                 VI_FORM_TYPE,
                 form_version, 
                 submission_id, 
@@ -476,7 +476,7 @@ def save_event_pdf(**kwargs) -> tuple:
             db.session.add(form_storage)
 
             _add_submission_events(
-                data.get('twenty_four_hour_number'), 
+                str(data.get('twenty_four_hour_number')), 
                 TWENTY_FOUR_HOUR_FORM_TYPE,
                 form_version, 
                 submission_id, 
@@ -501,7 +501,7 @@ def save_event_pdf(**kwargs) -> tuple:
             db.session.add(form_storage)
 
             _add_submission_events(
-                data.get('twelve_hour_number'), 
+                str(data.get('twelve_hour_number')), 
                 TWELVE_HOUR_FORM_TYPE,
                 form_version, 
                 submission_id, 
@@ -525,7 +525,7 @@ def save_event_pdf(**kwargs) -> tuple:
             db.session.add(form_storage)
 
             _add_submission_events(
-                data.get('IRP_number'), 
+                str(data.get('IRP_number')), 
                 IRP_FORM_TYPE,
                 form_version, 
                 submission_id, 
@@ -547,7 +547,7 @@ def save_event_pdf(**kwargs) -> tuple:
         return False, kwargs
     return True, kwargs
 
-def _add_submission_events(form_number, form_type, form_version, submission_id, storage_key, list_of_events=None):
+def _add_submission_events(form_number:str, form_type:str, form_version:str, submission_id:int, storage_key:str, list_of_events:list=None):
     list_of_events = list_of_events or []
     form_ref = SubmissionFormRef(
                 submission_id=submission_id,
