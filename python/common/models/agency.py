@@ -12,3 +12,5 @@ class Agency(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     vjur = db.Column(db.String)
     agency_name = db.Column(db.String)
+
+    admins = db.relationship('AgencyAdmin', back_populates='agency', cascade='all, delete-orphan')
