@@ -226,10 +226,9 @@ def get_submission_event_id(**args)->tuple:
     try:
         application = args.get('app')
         db = args.get('db')
-        event_type = args.get('event_type')
+        destination=args.get('destination',None)
         storage_ref = args.get('storage_ref')
         form_ref_id=storage_ref.get('form_ref_id')
-        destination='VIPS' if event_type=='vi' or event_type=='irp' else 'ICBC'
         with application.app_context():
             # get submission event data
             submission_event_data = db.session.query(SubmissionEvent) \
@@ -245,6 +244,9 @@ def get_submission_event_id(**args)->tuple:
 def update_event_status_processing(**args)->tuple:
     logging.verbose(f"inside update_event_status_processing() with args: {args}")
     try:
+        if args.get('event_status') == 'sent':
+            logging.info("event already sent, skipping update_event_status_processing")
+            return True,args
         application=args.get('app')
         db=args.get('db')
         event_id=args.get('event_data').get('event_id')
@@ -279,6 +281,22 @@ def _update_submission_event_status(db, submission_event_id, status):
                     .filter(SubmissionEvent.submission_event_id == submission_event_id) \
                     .one()
     sub_event.status = status
+
+def get_event_status(**args)->tuple:
+    logging.verbose(f"inside get_event_status() with args: {args}")
+    try:
+        application=args.get('app')
+        db=args.get('db')
+        submission_event_id=args.get('submission_event_id')
+        with application.app_context():
+            submission_event_data = db.session.query(SubmissionEvent) \
+                .filter(SubmissionEvent.submission_event_id == submission_event_id) \
+                .one()
+            args['event_status']=submission_event_data.status
+            return True, args
+    except Exception as e:
+        logging.exception(e)
+        return False, args
 
 
 def get_storage_file(**args)->tuple:
@@ -334,6 +352,9 @@ def prep_icbc_payload(**args)->tuple:
     message=args.get('message')
 
     try:
+        if args.get('event_status') == 'sent':
+            logging.info("event already sent, skipping prep_icbc_payload")
+            return True,args
         application = args.get('app')
         db = args.get('db')
         pdf_data=args.get('file_data')
@@ -532,6 +553,9 @@ def send_to_icbc(**args)->tuple:
     logging.verbose(f"inside send_to_icbc() with args: {args}")
     message=args.get('message')
     try:
+        if args.get('event_status') == 'sent':
+            logging.info("event already sent, skipping send_to_icbc")
+            return True,args
         icbc_payload=args.get('icbc_payload')
         send_status, icbc_response_txt,icbc_resp_code = submit_to_icbc(icbc_payload,logging)
         args['icbc_response_txt']=icbc_response_txt
@@ -1018,8 +1042,13 @@ def create_vips_impoundment(**args)->tuple:
     return True,args
 
 def update_event_status(**args)->tuple:
+    """Update the event status to 'sent' after successfully sending to destination, and commit to DB. 
+    This will help to avoid duplicate sending in case of retries. """
     logging.verbose(f"inside update_event_status() with args: {args}")
     try:
+        if args.get('event_status') == 'sent':
+            logging.info("event already sent, skipping update_event_status")
+            return True,args
         application=args.get('app')
         db=args.get('db')
         event_id=args.get('event_data').get('event_id')

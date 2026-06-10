@@ -703,3 +703,775 @@ class TestGetEventCoordinates:
         }
         result, _ = actions.get_event_coordinates(**args)
         assert result is True
+
+
+# ---------------------------------------------------------------------------
+# get_event_user_data
+# ---------------------------------------------------------------------------
+
+class TestGetEventUserData:
+    """Tests for get_event_user_data()"""
+
+    def _make_user_row(self):
+        class _AgencyRef:
+            pass
+        class _UserRow:
+            pass
+        agency_ref = _AgencyRef()
+        agency_ref.agency_name = "RCMP"
+        agency_ref.agency_id = 1
+        row = _UserRow()
+        row.user_guid = "user1"
+        row.badge_number = "B001"
+        row.last_name = "Smith"
+        row.first_name = "John"
+        row.agency = "RCMP"
+        row._sa_instance_state = None
+        row.agency_ref = agency_ref
+        row.agency_ref._sa_instance_state = None
+        return row
+
+    def test_returns_true_and_sets_user_data(self):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        db.session.query.return_value.filter.return_value.all.return_value = [
+            self._make_user_row()
+        ]
+        args = {"app": app, "db": db, "event_data": {"created_by": "user1"}}
+        result, out_args = actions.get_event_user_data(**args)
+        assert result is True
+        assert "user_data" in out_args
+
+    def test_returns_false_when_no_user_found(self):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        db.session.query.return_value.filter.return_value.all.return_value = []
+        args = {"app": app, "db": db, "event_data": {"created_by": "ghost"}}
+        result, _ = actions.get_event_user_data(**args)
+        assert result is False
+
+    def test_returns_false_when_multiple_users_found(self):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        db.session.query.return_value.filter.return_value.all.return_value = [
+            self._make_user_row(),
+            self._make_user_row(),
+        ]
+        args = {"app": app, "db": db, "event_data": {"created_by": "user1"}}
+        result, _ = actions.get_event_user_data(**args)
+        assert result is False
+
+    def test_returns_false_when_db_raises(self):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        db.session.query.side_effect = Exception("DB error")
+        args = {"app": app, "db": db, "event_data": {"created_by": "user1"}}
+        result, _ = actions.get_event_user_data(**args)
+        assert result is False
+
+    def test_user_data_includes_agency_ref(self):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        db.session.query.return_value.filter.return_value.all.return_value = [
+            self._make_user_row()
+        ]
+        args = {"app": app, "db": db, "event_data": {"created_by": "user1"}}
+        _, out_args = actions.get_event_user_data(**args)
+        assert "agency_ref" in out_args["user_data"]
+
+
+# ---------------------------------------------------------------------------
+# get_event_status (actions version)
+# ---------------------------------------------------------------------------
+
+class TestGetEventStatusActions:
+    """Tests for actions.get_event_status() – queries SubmissionEvent directly."""
+
+    def test_returns_true_and_sets_event_status(self):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        sub_event = MagicMock()
+        sub_event.status = "processing"
+        db.session.query.return_value.filter.return_value.one.return_value = sub_event
+        args = {"app": app, "db": db, "submission_event_id": 5}
+        result, out_args = actions.get_event_status(**args)
+        assert result is True
+        assert out_args["event_status"] == "processing"
+
+    def test_event_status_reflects_db_value(self):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        sub_event = MagicMock()
+        sub_event.status = "sent"
+        db.session.query.return_value.filter.return_value.one.return_value = sub_event
+        args = {"app": app, "db": db, "submission_event_id": 7}
+        _, out_args = actions.get_event_status(**args)
+        assert out_args["event_status"] == "sent"
+
+    def test_returns_false_when_db_raises(self):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        db.session.query.side_effect = Exception("DB error")
+        args = {"app": app, "db": db, "submission_event_id": 5}
+        result, _ = actions.get_event_status(**args)
+        assert result is False
+
+
+# ---------------------------------------------------------------------------
+# update_event_status_processing
+# ---------------------------------------------------------------------------
+
+class TestUpdateEventStatusProcessing:
+    """Tests for update_event_status_processing()"""
+
+    def _args(self, event_type="vi", event_status=None):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        db.session.query.return_value.filter.return_value.one.return_value = MagicMock()
+        args = {
+            "app": app,
+            "db": db,
+            "event_data": {"event_id": 1},
+            "event_type": event_type,
+            "submission_event_id": 10,
+        }
+        if event_status is not None:
+            args["event_status"] = event_status
+        return args
+
+    def test_skips_when_event_status_is_sent(self):
+        args = self._args(event_status="sent")
+        args["db"].session.query.side_effect = AssertionError("should not query DB")
+        result, _ = actions.update_event_status_processing(**args)
+        assert result is True
+
+    def test_returns_true_for_vi_event(self):
+        result, _ = actions.update_event_status_processing(**self._args(event_type="vi"))
+        assert result is True
+
+    def test_returns_true_for_24h_event(self):
+        result, _ = actions.update_event_status_processing(**self._args(event_type="24h"))
+        assert result is True
+
+    def test_returns_true_for_12h_event(self):
+        result, _ = actions.update_event_status_processing(**self._args(event_type="12h"))
+        assert result is True
+
+    def test_returns_true_for_irp_event(self):
+        """IRP branch is a no-op but should still succeed."""
+        result, _ = actions.update_event_status_processing(**self._args(event_type="irp"))
+        assert result is True
+
+    def test_returns_false_when_db_raises(self):
+        args = self._args(event_type="vi")
+        args["db"].session.query.side_effect = Exception("DB error")
+        result, _ = actions.update_event_status_processing(**args)
+        assert result is False
+
+    def test_vi_event_sets_vi_sent_status_to_processing(self):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        mock_event = MagicMock()
+        db.session.query.return_value.filter.return_value.one.return_value = mock_event
+        args = {
+            "app": app, "db": db,
+            "event_data": {"event_id": 1},
+            "event_type": "vi",
+            "submission_event_id": 10,
+        }
+        actions.update_event_status_processing(**args)
+        assert mock_event.vi_sent_status == "processing"
+
+
+# ---------------------------------------------------------------------------
+# get_storage_file
+# ---------------------------------------------------------------------------
+
+class TestGetStorageFile:
+    """Tests for get_storage_file()"""
+
+    def _args(self, storage_key="bucket/file.pdf"):
+        return {"storage_ref": {"storage_key": storage_key}}
+
+    @patch("python.form_handler.actions.decryptPdf_method1", return_value=(True, "base64data"))
+    @patch("python.form_handler.actions.os.remove")
+    @patch("builtins.open", create=True)
+    @patch("python.form_handler.actions.Minio")
+    def test_returns_true_and_sets_file_data(
+        self, mock_minio_cls, mock_open, mock_remove, mock_decrypt
+    ):
+        mock_client = MagicMock()
+        mock_minio_cls.return_value = mock_client
+        mock_obj = MagicMock()
+        mock_obj.data = b"pdf bytes"
+        mock_client.get_object.return_value = mock_obj
+        mock_open.return_value.__enter__ = MagicMock(return_value=MagicMock())
+        mock_open.return_value.__exit__ = MagicMock(return_value=False)
+
+        result, out_args = actions.get_storage_file(**self._args())
+        assert result is True
+        assert out_args["file_data"] == "base64data"
+
+    @patch("python.form_handler.actions.decryptPdf_method1", return_value=(False, None))
+    @patch("python.form_handler.actions.os.remove")
+    @patch("builtins.open", create=True)
+    @patch("python.form_handler.actions.Minio")
+    def test_returns_false_when_decryption_fails(
+        self, mock_minio_cls, mock_open, mock_remove, mock_decrypt
+    ):
+        mock_client = MagicMock()
+        mock_minio_cls.return_value = mock_client
+        mock_obj = MagicMock()
+        mock_obj.data = b"pdf bytes"
+        mock_client.get_object.return_value = mock_obj
+        mock_open.return_value.__enter__ = MagicMock(return_value=MagicMock())
+        mock_open.return_value.__exit__ = MagicMock(return_value=False)
+
+        result, _ = actions.get_storage_file(**self._args())
+        assert result is False
+
+    @patch("python.form_handler.actions.Minio")
+    def test_returns_false_when_minio_raises(self, mock_minio_cls):
+        mock_minio_cls.side_effect = Exception("connection refused")
+        result, _ = actions.get_storage_file(**self._args())
+        assert result is False
+
+
+# ---------------------------------------------------------------------------
+# prep_icbc_payload
+# ---------------------------------------------------------------------------
+
+class TestPrepIcbcPayload:
+    """Tests for prep_icbc_payload()"""
+
+    def _base_args(self, event_type="24h", event_status=None):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        juris_row = MagicMock()
+        juris_row.__dict__ = {
+            "icbc_jurisdiction_code": "BC",
+            "vips_jurisdictions_objectCd": "BC",
+            "icbc_city_name_legacy": "VANCOUVER",
+            "icbc_city_name": "VANCOUVER",
+        }
+        db.session.query.return_value.filter.return_value.all.return_value = [juris_row]
+
+        driver_dob = MagicMock()
+        driver_dob.strftime.return_value = "19900101"
+        date_of_driving = MagicMock()
+
+        args = {
+            "app": app,
+            "db": db,
+            "message": {"event_id": "E10", "event_type": event_type},
+            "event_type": event_type,
+            "file_data": "base64pdf",
+            "event_data": {
+                "driver_licence_no": "1234567",
+                "driver_jurisdiction": "BC",
+                "driver_last_name": "Smith",
+                "driver_given_name": "John",
+                "driver_dob": driver_dob,
+                "vehicle_jurisdiction": "BC",
+                "vehicle_plate_no": "ABC123",
+                "nsc_prov_state": "BC",
+                "nsc_no": "NSC001",
+                "type_of_prohibition": "alcohol",
+                "offence_city": "VANC",
+                "date_of_driving": date_of_driving,
+                "time_of_driving": "1400",
+                "agency": "RCMP",
+                "agency_id": 1,
+            },
+            "form_data": {
+                "twenty_four_hour_number": "24H001",
+                "twelve_hour_number": "12H001",
+            },
+            "user_data": {
+                "last_name": "Officer",
+                "badge_number": "B001",
+                "agency": "RCMP",
+                "agency_id": 1,
+            },
+        }
+        if event_status is not None:
+            args["event_status"] = event_status
+        return args
+
+    @patch("python.form_handler.actions.date_time_to_local_tz_string", return_value="20240101")
+    def test_returns_true_and_sets_icbc_payload(self, _mock_dt):
+        args = self._base_args(event_type="24h")
+        result, out_args = actions.prep_icbc_payload(**args)
+        assert result is True
+        assert "icbc_payload" in out_args
+
+    @patch("python.form_handler.actions.date_time_to_local_tz_string", return_value="20240101")
+    def test_skips_when_event_status_is_sent(self, _mock_dt):
+        args = self._base_args(event_status="sent")
+        args["db"].session.query.side_effect = AssertionError("should not query DB")
+        result, _ = actions.prep_icbc_payload(**args)
+        assert result is True
+
+    def test_returns_false_when_user_data_missing(self):
+        args = self._base_args()
+        args.pop("user_data")
+        result, out_args = actions.prep_icbc_payload(**args)
+        assert result is False
+        assert "error" in out_args
+        assert out_args["error"]["error_code"] == ErrorCode.I02
+
+    @patch("python.form_handler.actions.date_time_to_local_tz_string", return_value="20240101")
+    def test_section_set_correctly_for_24h_alcohol(self, _mock_dt):
+        args = self._base_args(event_type="24h")
+        args["event_data"]["type_of_prohibition"] = "alcohol"
+        _, out_args = actions.prep_icbc_payload(**args)
+        assert out_args["icbc_payload"]["section"] == "215.2"
+
+    @patch("python.form_handler.actions.date_time_to_local_tz_string", return_value="20240101")
+    def test_section_set_correctly_for_12h_drugs(self, _mock_dt):
+        args = self._base_args(event_type="12h")
+        args["event_data"]["type_of_prohibition"] = "drugs"
+        _, out_args = actions.prep_icbc_payload(**args)
+        assert out_args["icbc_payload"]["section"] == "90.321"
+
+    @patch("python.form_handler.actions.date_time_to_local_tz_string", return_value="20240101")
+    def test_dl_number_zero_padded_to_8_chars(self, _mock_dt):
+        args = self._base_args(event_type="24h")
+        args["event_data"]["driver_licence_no"] = "12345"
+        _, out_args = actions.prep_icbc_payload(**args)
+        assert out_args["icbc_payload"]["dlNumber"] == "00012345"
+
+
+# ---------------------------------------------------------------------------
+# create_vips_document
+# ---------------------------------------------------------------------------
+
+class TestCreateVipsDocument:
+    """Tests for create_vips_document()"""
+
+    @patch("python.form_handler.actions.create_vips_doc")
+    def test_returns_true_and_sets_doc_id(self, mock_create):
+        mock_create.return_value = (True, '{"document_id": "DOC-1"}', 201)
+        args = {"vips_document_payload": {"file_object": "data"}}
+        result, out_args = actions.create_vips_document(**args)
+        assert result is True
+        assert out_args["vips_doc_id"] == "DOC-1"
+
+    @patch("python.form_handler.actions.create_vips_doc")
+    def test_sets_response_code(self, mock_create):
+        mock_create.return_value = (True, '{"document_id": "D99"}', 201)
+        args = {"vips_document_payload": {}}
+        _, out_args = actions.create_vips_document(**args)
+        assert out_args["vips_doc_resp_code"] == 201
+
+    @patch("python.form_handler.actions.create_vips_doc")
+    def test_returns_false_when_vips_fails(self, mock_create):
+        mock_create.return_value = (False, "error", 500)
+        args = {"vips_document_payload": {}}
+        result, _ = actions.create_vips_document(**args)
+        assert result is False
+
+    @patch("python.form_handler.actions.create_vips_doc")
+    def test_returns_false_when_exception_raised(self, mock_create):
+        mock_create.side_effect = Exception("connection error")
+        args = {"vips_document_payload": {}}
+        result, _ = actions.create_vips_document(**args)
+        assert result is False
+
+
+# ---------------------------------------------------------------------------
+# create_vips_impoundment
+# ---------------------------------------------------------------------------
+
+class TestCreateVipsImpoundment:
+    """Tests for create_vips_impoundment()"""
+
+    @patch("python.form_handler.actions.create_vips_imp")
+    def test_returns_true_on_success(self, mock_create):
+        mock_create.return_value = (True, "OK", 201)
+        args = {"vips_payload": {"vipsImpoundCreate": {}}}
+        result, out_args = actions.create_vips_impoundment(**args)
+        assert result is True
+        assert out_args["vips_resp_code"] == 201
+
+    @patch("python.form_handler.actions.create_vips_imp")
+    def test_sets_response_text(self, mock_create):
+        mock_create.return_value = (True, "Created", 201)
+        args = {"vips_payload": {}}
+        _, out_args = actions.create_vips_impoundment(**args)
+        assert out_args["vips_response_txt"] == "Created"
+
+    @patch("python.form_handler.actions.create_vips_imp")
+    def test_returns_false_when_vips_fails(self, mock_create):
+        mock_create.return_value = (False, "error", 500)
+        args = {"vips_payload": {}}
+        result, _ = actions.create_vips_impoundment(**args)
+        assert result is False
+
+    @patch("python.form_handler.actions.create_vips_imp")
+    def test_returns_false_when_exception_raised(self, mock_create):
+        mock_create.side_effect = Exception("network error")
+        args = {"vips_payload": {}}
+        result, _ = actions.create_vips_impoundment(**args)
+        assert result is False
+
+
+# ---------------------------------------------------------------------------
+# update_event_status
+# ---------------------------------------------------------------------------
+
+class TestUpdateEventStatus:
+    """Tests for update_event_status()"""
+
+    def _args(self, event_type="vi", event_status=None):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        db.session.query.return_value.filter.return_value.one.return_value = MagicMock()
+        args = {
+            "app": app,
+            "db": db,
+            "event_data": {"event_id": 1},
+            "event_type": event_type,
+            "submission_event_id": 10,
+        }
+        if event_status is not None:
+            args["event_status"] = event_status
+        return args
+
+    def test_skips_when_event_status_is_sent(self):
+        args = self._args(event_status="sent")
+        args["db"].session.query.side_effect = AssertionError("should not query DB")
+        result, _ = actions.update_event_status(**args)
+        assert result is True
+
+    def test_returns_true_for_vi_event(self):
+        result, _ = actions.update_event_status(**self._args(event_type="vi"))
+        assert result is True
+
+    def test_returns_true_for_24h_event(self):
+        result, _ = actions.update_event_status(**self._args(event_type="24h"))
+        assert result is True
+
+    def test_returns_true_for_irp_event(self):
+        result, _ = actions.update_event_status(**self._args(event_type="irp"))
+        assert result is True
+
+    def test_returns_false_when_db_raises(self):
+        args = self._args(event_type="vi")
+        args["db"].session.query.side_effect = Exception("DB error")
+        result, _ = actions.update_event_status(**args)
+        assert result is False
+
+    def test_vi_event_sets_vi_sent_status_to_sent(self):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        mock_event = MagicMock()
+        db.session.query.return_value.filter.return_value.one.return_value = mock_event
+        args = {
+            "app": app, "db": db,
+            "event_data": {"event_id": 1},
+            "event_type": "vi",
+            "submission_event_id": 10,
+        }
+        actions.update_event_status(**args)
+        assert mock_event.vi_sent_status == "sent"
+
+    def test_24h_event_sets_icbc_sent_status_to_sent(self):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        mock_event = MagicMock()
+        db.session.query.return_value.filter.return_value.one.return_value = mock_event
+        args = {
+            "app": app, "db": db,
+            "event_data": {"event_id": 1},
+            "event_type": "24h",
+            "submission_event_id": 10,
+        }
+        actions.update_event_status(**args)
+        assert mock_event.icbc_sent_status == "sent"
+
+
+# ---------------------------------------------------------------------------
+# update_event_status_hold
+# ---------------------------------------------------------------------------
+
+class TestUpdateEventStatusHold:
+    """Tests for update_event_status_hold()"""
+
+    def _args(self, event_type="vi"):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        db.session.query.return_value.filter.return_value.one.return_value = MagicMock()
+        return {
+            "app": app,
+            "db": db,
+            "message": {"event_id": 1, "event_type": event_type},
+            "submission_event_id": 10,
+        }
+
+    @patch("python.form_handler.actions.record_event_error")
+    def test_returns_true_for_vi_event(self, mock_record):
+        mock_record.return_value = (True, {})
+        result, _ = actions.update_event_status_hold(**self._args("vi"))
+        assert result is True
+
+    @patch("python.form_handler.actions.record_event_error")
+    def test_returns_true_for_24h_event(self, mock_record):
+        mock_record.return_value = (True, {})
+        result, _ = actions.update_event_status_hold(**self._args("24h"))
+        assert result is True
+
+    @patch("python.form_handler.actions.record_event_error")
+    def test_returns_true_for_irp_event(self, mock_record):
+        mock_record.return_value = (True, {})
+        result, _ = actions.update_event_status_hold(**self._args("irp"))
+        assert result is True
+
+    @patch("python.form_handler.actions.record_event_error")
+    def test_calls_record_event_error(self, mock_record):
+        mock_record.return_value = (True, {})
+        actions.update_event_status_hold(**self._args("vi"))
+        mock_record.assert_called()
+
+    @patch("python.form_handler.actions.record_event_error")
+    def test_returns_false_when_db_raises(self, mock_record):
+        mock_record.return_value = (True, {})
+        args = self._args("vi")
+        args["db"].session.query.side_effect = Exception("DB error")
+        result, _ = actions.update_event_status_hold(**args)
+        assert result is False
+
+    @patch("python.form_handler.actions.record_event_error")
+    def test_vi_event_sets_retrying_status(self, mock_record):
+        mock_record.return_value = (True, {})
+        app = _make_app_mock()
+        db = _make_db_mock()
+        mock_event = MagicMock()
+        db.session.query.return_value.filter.return_value.one.return_value = mock_event
+        args = {
+            "app": app, "db": db,
+            "message": {"event_id": 1, "event_type": "vi"},
+            "submission_event_id": 10,
+        }
+        actions.update_event_status_hold(**args)
+        assert mock_event.vi_sent_status == "retrying"
+
+
+# ---------------------------------------------------------------------------
+# update_event_status_error
+# ---------------------------------------------------------------------------
+
+class TestUpdateEventStatusError:
+    """Tests for update_event_status_error()"""
+
+    def _args(self, event_type="vi"):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        db.session.query.return_value.filter.return_value.one.return_value = MagicMock()
+        return {
+            "app": app,
+            "db": db,
+            "event_data": {"event_id": 1},
+            "event_type": event_type,
+            "message": {"event_id": 1, "event_type": event_type},
+        }
+
+    @patch("python.form_handler.actions.record_event_error")
+    def test_returns_true_for_vi_event(self, mock_record):
+        mock_record.return_value = (True, {})
+        result, _ = actions.update_event_status_error(**self._args("vi"))
+        assert result is True
+
+    @patch("python.form_handler.actions.record_event_error")
+    def test_returns_true_for_24h_event(self, mock_record):
+        mock_record.return_value = (True, {})
+        result, _ = actions.update_event_status_error(**self._args("24h"))
+        assert result is True
+
+    @patch("python.form_handler.actions.record_event_error")
+    def test_calls_record_event_error(self, mock_record):
+        mock_record.return_value = (True, {})
+        actions.update_event_status_error(**self._args("vi"))
+        mock_record.assert_called()
+
+    @patch("python.form_handler.actions.record_event_error")
+    def test_returns_false_when_db_raises(self, mock_record):
+        mock_record.return_value = (True, {})
+        args = self._args("vi")
+        args["db"].session.query.side_effect = Exception("DB error")
+        result, _ = actions.update_event_status_error(**args)
+        assert result is False
+
+    @patch("python.form_handler.actions.record_event_error")
+    def test_vi_event_sets_error_status(self, mock_record):
+        mock_record.return_value = (True, {})
+        app = _make_app_mock()
+        db = _make_db_mock()
+        mock_event = MagicMock()
+        db.session.query.return_value.filter.return_value.one.return_value = mock_event
+        args = {
+            "app": app, "db": db,
+            "event_data": {"event_id": 1},
+            "event_type": "vi",
+            "message": {},
+        }
+        actions.update_event_status_error(**args)
+        assert mock_event.vi_sent_status == "error"
+
+
+# ---------------------------------------------------------------------------
+# update_event_status_error_retry
+# ---------------------------------------------------------------------------
+
+class TestUpdateEventStatusErrorRetry:
+    """Tests for update_event_status_error_retry()"""
+
+    def _args(self, event_type="vi", stop_retry_flg=False):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        db.session.query.return_value.filter.return_value.one.return_value = MagicMock()
+        return {
+            "app": app,
+            "db": db,
+            "message": {"event_id": 1, "event_type": event_type},
+            "stop_retry_flg": stop_retry_flg,
+        }
+
+    def test_returns_true_for_vi_event(self):
+        result, _ = actions.update_event_status_error_retry(**self._args("vi"))
+        assert result is True
+
+    def test_returns_true_for_24h_event(self):
+        result, _ = actions.update_event_status_error_retry(**self._args("24h"))
+        assert result is True
+
+    def test_returns_true_for_irp_event(self):
+        result, _ = actions.update_event_status_error_retry(**self._args("irp"))
+        assert result is True
+
+    def test_sets_error_status_when_stop_retry_true_for_vi(self):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        mock_event = MagicMock()
+        db.session.query.return_value.filter.return_value.one.return_value = mock_event
+        args = {
+            "app": app, "db": db,
+            "message": {"event_id": 1, "event_type": "vi"},
+            "stop_retry_flg": True,
+        }
+        actions.update_event_status_error_retry(**args)
+        assert mock_event.vi_sent_status == "error"
+
+    def test_sets_retrying_status_when_stop_retry_false_for_vi(self):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        mock_event = MagicMock()
+        db.session.query.return_value.filter.return_value.one.return_value = mock_event
+        args = {
+            "app": app, "db": db,
+            "message": {"event_id": 1, "event_type": "vi"},
+            "stop_retry_flg": False,
+        }
+        actions.update_event_status_error_retry(**args)
+        assert mock_event.vi_sent_status == "retrying"
+
+    def test_sets_error_status_when_stop_retry_true_for_24h(self):
+        app = _make_app_mock()
+        db = _make_db_mock()
+        mock_event = MagicMock()
+        db.session.query.return_value.filter.return_value.one.return_value = mock_event
+        args = {
+            "app": app, "db": db,
+            "message": {"event_id": 1, "event_type": "24h"},
+            "stop_retry_flg": True,
+        }
+        actions.update_event_status_error_retry(**args)
+        assert mock_event.icbc_sent_status == "error"
+
+    def test_returns_false_when_db_raises(self):
+        args = self._args("vi")
+        args["db"].session.query.side_effect = Exception("DB error")
+        result, _ = actions.update_event_status_error_retry(**args)
+        assert result is False
+
+
+# ---------------------------------------------------------------------------
+# record_event_error
+# ---------------------------------------------------------------------------
+
+class TestRecordEventError:
+    """Tests for record_event_error()"""
+
+    def _make_error(self, error_code=ErrorCode.E07):
+        return {
+            "error_code": error_code,
+            "error_details": "something went wrong",
+            "event_id": "E1",
+            "event_type": "vi",
+            "func": lambda: None,
+        }
+
+    @patch("python.form_handler.actions.send_error_to_rsiops")
+    @patch("python.form_handler.actions.record_error")
+    def test_returns_true_on_success(self, mock_record, mock_send):
+        app = _make_app_mock()
+        args = {
+            "app": app,
+            "error": self._make_error(),
+            "message": {"event_id": "E1", "event_type": "vi"},
+        }
+        result, _ = actions.record_event_error(**args)
+        assert result is True
+
+    @patch("python.form_handler.actions.send_error_to_rsiops")
+    @patch("python.form_handler.actions.record_error")
+    def test_calls_record_error_with_error_code(self, mock_record, mock_send):
+        app = _make_app_mock()
+        args = {
+            "app": app,
+            "error": self._make_error(ErrorCode.E07),
+            "message": {"event_id": "E1", "event_type": "vi"},
+        }
+        actions.record_event_error(**args)
+        mock_record.assert_called_once()
+        called_kwargs = mock_record.call_args[1]
+        assert called_kwargs["error_code"] == ErrorCode.E07
+
+    @patch("python.form_handler.actions.send_error_to_rsiops")
+    @patch("python.form_handler.actions.record_error")
+    def test_uses_e08_when_no_error_object(self, mock_record, mock_send):
+        app = _make_app_mock()
+        args = {
+            "app": app,
+            "error": None,
+            "message": {"event_id": "E1", "event_type": "vi", "error_message": "something"},
+        }
+        actions.record_event_error(**args)
+        called_kwargs = mock_record.call_args[1]
+        assert called_kwargs["error_code"] == ErrorCode.E08
+
+    @patch("python.form_handler.actions.send_error_to_rsiops")
+    @patch("python.form_handler.actions.record_error")
+    def test_calls_send_error_to_rsiops(self, mock_record, mock_send):
+        app = _make_app_mock()
+        args = {
+            "app": app,
+            "error": self._make_error(),
+            "message": {"event_id": "E1", "event_type": "vi"},
+        }
+        actions.record_event_error(**args)
+        mock_send.assert_called_once()
+
+    @patch("python.form_handler.actions.send_error_to_rsiops")
+    @patch("python.form_handler.actions.record_error")
+    def test_returns_true_even_when_record_error_raises(self, mock_record, mock_send):
+        """Failure to record the error itself must not propagate."""
+        mock_record.side_effect = Exception("logging failed")
+        app = _make_app_mock()
+        args = {
+            "app": app,
+            "error": self._make_error(),
+            "message": {"event_id": "E1", "event_type": "vi"},
+        }
+        result, _ = actions.record_event_error(**args)
+        assert result is True
