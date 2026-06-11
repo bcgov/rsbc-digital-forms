@@ -243,25 +243,6 @@ def get_submission_event_id(**args)->tuple:
         return False, args
     return True,args
 
-def get_event_status(**args)->tuple:
-    """Get the current status of a submission event from the database."""
-    logging.verbose(f"inside get_event_status() with args: {args}")
-    try:
-        application = args.get('app')
-        db = args.get('db')
-        submission_event_id = args.get('submission_event_id')
-        with application.app_context():
-            # get submission event data
-            submission_event = db.session.query(SubmissionEvent) \
-                .filter(SubmissionEvent.submission_event_id == submission_event_id) \
-                .one()
-
-            args['event_status'] = submission_event.status
-    except Exception as e:
-        logging.exception(e)
-        return False, args
-    return True, args
-
 def update_event_status_processing(**args)->tuple:
     logging.verbose(f"inside update_event_status_processing() with args: {args}")
     # Skip if event is already sent

@@ -781,43 +781,6 @@ class TestGetEventUserData:
 
 
 # ---------------------------------------------------------------------------
-# get_event_status (actions version)
-# ---------------------------------------------------------------------------
-
-class TestGetEventStatusActions:
-    """Tests for actions.get_event_status() – queries SubmissionEvent directly."""
-
-    def test_returns_true_and_sets_event_status(self):
-        app = _make_app_mock()
-        db = _make_db_mock()
-        sub_event = MagicMock()
-        sub_event.status = "processing"
-        db.session.query.return_value.filter.return_value.one.return_value = sub_event
-        args = {"app": app, "db": db, "submission_event_id": 5}
-        result, out_args = actions.get_event_status(**args)
-        assert result is True
-        assert out_args["event_status"] == "processing"
-
-    def test_event_status_reflects_db_value(self):
-        app = _make_app_mock()
-        db = _make_db_mock()
-        sub_event = MagicMock()
-        sub_event.status = "sent"
-        db.session.query.return_value.filter.return_value.one.return_value = sub_event
-        args = {"app": app, "db": db, "submission_event_id": 7}
-        _, out_args = actions.get_event_status(**args)
-        assert out_args["event_status"] == "sent"
-
-    def test_returns_false_when_db_raises(self):
-        app = _make_app_mock()
-        db = _make_db_mock()
-        db.session.query.side_effect = Exception("DB error")
-        args = {"app": app, "db": db, "submission_event_id": 5}
-        result, _ = actions.get_event_status(**args)
-        assert result is False
-
-
-# ---------------------------------------------------------------------------
 # update_event_status_processing
 # ---------------------------------------------------------------------------
 
