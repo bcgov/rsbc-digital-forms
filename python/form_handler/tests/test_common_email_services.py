@@ -193,14 +193,14 @@ class TestSend:
         cfg = _make_config()
         patches, _ = self._patches(post_return=self._mock_response(201))
         with self._apply(patches)[0]:
-            result = _send({"to": ["a@b.com"]}, cfg, "evt-1")
+            result, _ = _send({"to": ["a@b.com"]}, cfg, "evt-1")
         assert result is True
 
     def test_returns_false_on_non_201(self):
         cfg = _make_config()
         patches, _ = self._patches(post_return=self._mock_response(500))
         with self._apply(patches)[0]:
-            result = _send({"to": ["a@b.com"]}, cfg, "evt-1")
+            result, _ = _send({"to": ["a@b.com"]}, cfg, "evt-1")
         assert result is False
 
     def test_returns_false_on_assertion_error(self):
@@ -209,7 +209,7 @@ class TestSend:
         # Also patch json to avoid json.dumps(AssertionError) failing in the except block
         patches.append(patch("python.form_handler.common_email_services.json"))
         with self._apply(patches)[0]:
-            result = _send({"to": ["a@b.com"]}, cfg)
+            result, _ = _send({"to": ["a@b.com"]}, cfg)
         assert result is False
 
     def test_uses_bearer_token_in_header(self):

@@ -456,7 +456,7 @@ def save_event_pdf(**kwargs) -> tuple:
                 form_version, 
                 submission_id, 
                 storage_key,
-                list_of_events=['VIPS'])
+                list_of_events=['VIPS', 'ADMIN', 'ODW'])
 
         if data.get('TwentyFourHour') and data.get("TwentyFourHour_form_png"):
             b64encoded = data.get("TwentyFourHour_form_png").split(",")[1]
@@ -481,7 +481,7 @@ def save_event_pdf(**kwargs) -> tuple:
                 form_version, 
                 submission_id, 
                 storage_key,
-                list_of_events=['ICBC'])            
+                list_of_events=['ICBC', 'ADMIN', 'ODW'])            
 
         if data.get('TwelveHour') and data.get("TwelveHour_form_png"):
             b64encoded = data.get("TwelveHour_form_png").split(",")[1]
@@ -506,7 +506,7 @@ def save_event_pdf(**kwargs) -> tuple:
                 form_version, 
                 submission_id, 
                 storage_key,
-                list_of_events=['ICBC'])
+                list_of_events=['ICBC', 'ADMIN', 'ODW'])
 
 
         if data.get('IRP') and data.get("IRP_form_png"):
@@ -530,7 +530,7 @@ def save_event_pdf(**kwargs) -> tuple:
                 form_version, 
                 submission_id, 
                 storage_key,
-                list_of_events=['VIPS', 'RTS'])
+                list_of_events=['VIPS', 'ADMIN', 'RTS'])
 
     except Exception as e:
         logger.error(e)

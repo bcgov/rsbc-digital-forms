@@ -527,7 +527,10 @@ def test_save_event_pdf_vi_form_with_extra_page_success(mock_db_session):
             form_version='1.0',
             storage_key='forms-bucket/abc123_encrypted.pdf',
         )
-        mock_submission_event.assert_called_once_with(destination='VIPS')
+        assert mock_submission_event.call_count == 3
+        mock_submission_event.assert_any_call(destination='VIPS')
+        mock_submission_event.assert_any_call(destination='ADMIN')
+        mock_submission_event.assert_any_call(destination='ODW')
         mock_db_session.add.assert_called()
         assert mock_db_session.add.call_count == 2  # FormStorageRefs + SubmissionFormRef
         mock_db_session.commit.assert_not_called()
@@ -686,7 +689,10 @@ def test_save_event_pdf_twenty_four_hour_form_success(mock_db_session):
             form_version='2.0',
             storage_key='forms-bucket/24h123_encrypted.pdf',
         )
-        mock_submission_event.assert_called_once_with(destination='ICBC')
+        assert mock_submission_event.call_count == 3
+        mock_submission_event.assert_any_call(destination='ICBC')
+        mock_submission_event.assert_any_call(destination='ADMIN')
+        mock_submission_event.assert_any_call(destination='ODW')
         mock_db_session.add.assert_called()
         assert mock_db_session.add.call_count == 2  # FormStorageRefs + SubmissionFormRef
         mock_db_session.commit.assert_not_called()
@@ -752,7 +758,10 @@ def test_save_event_pdf_twelve_hour_form_success(mock_db_session):
             form_version='3.0',
             storage_key='forms-bucket/12h456_encrypted.pdf',
         )
-        mock_submission_event.assert_called_once_with(destination='ICBC')
+        assert mock_submission_event.call_count == 3
+        mock_submission_event.assert_any_call(destination='ICBC')
+        mock_submission_event.assert_any_call(destination='ADMIN')
+        mock_submission_event.assert_any_call(destination='ODW')
         mock_db_session.add.assert_called()
         assert mock_db_session.add.call_count == 2  # FormStorageRefs + SubmissionFormRef
         mock_db_session.commit.assert_not_called()

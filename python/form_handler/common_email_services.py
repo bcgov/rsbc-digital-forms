@@ -9,11 +9,11 @@ import logging.config
 logging.config.dictConfig(Config.LOGGING)
 
 
-def send_email(to: list, subject: str, config, template, eventid, attachments=None) -> bool:
+def send_email(to: list, subject: str, config, template, eventid, attachments=None) -> tuple[bool, dict]:
     """
     Send email to the rsiops
     """
-    bcc_value=config.BCC_EMAIL_ADDRESSES.split(',') if config.BCC_EMAIL_ADDRESSES else []
+    bcc_value=(config.BCC_EMAIL_ADDRESSES.split(',') if config.BCC_EMAIL_ADDRESSES else [])
     env = str(config.ENVIRONMENT).upper()
     subject = f'[{env}] - {subject}' if 'PROD' not in env else subject
     if len(bcc_value) > 0 and bcc_value[0] != '':
@@ -44,25 +44,25 @@ def send_email(to: list, subject: str, config, template, eventid, attachments=No
 
 
 
-def _send(payload, config, eventid='') -> bool:
+def _send(payload, config, eventid='') -> tuple[bool, dict]:
     token = get_common_services_access_token(config)
     auth_header = {"Authorization": "Bearer {}".format(token)}
     try:
         url = Config.COMM_SERV_API_ROOT_URL + '/api/v1/email'
         logging.debug(f'Email service URL: {url}')
-        logging.debug(f'Email auth header: {auth_header}')
+        logging.verbose(f'Email auth header: {auth_header}')
         logging.verbose(f'Email payload: {payload}')
         response = requests.post(url, headers=auth_header, json=payload)
+        data = response.json()
     except AssertionError as error:
         logging.critical('No response from BC Common Services')
         logging.critical(json.dumps(error))
-        return False
+        return False, None
     if response.status_code == 201:
-        data = response.json()
         _log_sent_email_response(eventid, payload, data)
-        return True
+        return True, data
     logging.error('response from common services not successful: {}'.format(response.text))
-    return False
+    return False, data
 
 
 def get_common_services_access_token(config):
