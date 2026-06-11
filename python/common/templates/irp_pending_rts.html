@@ -1,0 +1,48 @@
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    .details th, .details td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        font-family: Arial, sans-serif;
+    }
+    .details th {
+        background-color: #f2f2f2;
+        text-align: left;
+        color: #2c3e50;
+    }
+</style>
+{% extends "email_alert_base.html" %}
+
+{% block primary_text_1 %}
+    The Immediate Roadside Prohibitions (IRP) listed below are still pending completion. 
+    Please complete the IRP package (MV2723, MV2724, supporting documents) and fax to the Superintendent <strong>{{message.superintendent_email}}</strong>.
+{% endblock %}
+
+{% block primary_text_2 %}
+    <table class="details">
+        <thead>
+            <tr>
+                <th>IRP Number</th>
+                <th>Driver</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in message.pending_rts %}
+                <tr>
+                    <td>{{ item[5] }}</td>
+                    <td>{{ item[6] }}</td>
+                    <td>{{ item[7] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block thank_you_road_safety %}{% endblock %}
+
+{% block email_not_monitored %}{% endblock %}

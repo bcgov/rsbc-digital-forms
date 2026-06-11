@@ -201,6 +201,24 @@ class TestEventsBlueprint:
         assert response.status_code == 500
         assert b'Failed to save PDF' in response.data
 
+    def test_create_commit_error(self, client, monkeypatch):
+        """Test POST /event request returns 500 when the DB commit fails."""
+        def mock_middle_logic(*args, **kwargs):
+            from flask import make_response
+            mock_response = make_response('{"error": "Failed to commit transaction"}', 500)
+            mock_response.headers['Content-Type'] = 'application/json'
+            return {'response': mock_response}
+
+        monkeypatch.setattr('python.common.helper.middle_logic', mock_middle_logic)
+        monkeypatch.setattr('python.prohibition_web_svc.business.keycloak_logic.get_authorized_keycloak_user', lambda: [])
+
+        test_payload = {"VI": True, "VI_number": "VI123"}
+        response = client.post('/api/v1/event',
+                               data=json.dumps(test_payload),
+                               content_type='application/json')
+        assert response.status_code == 500
+        assert b'Failed to commit transaction' in response.data
+
     def test_get_method_invalid_payload(self, client, monkeypatch):
         """Test POST /event request with missing payload."""
         def mock_middle_logic(*args, **kwargs):
@@ -330,8 +348,14 @@ class TestEventsBlueprint:
         assert len(call_order) > 0
         assert 'check_if_form_number_was_used' in call_order
         assert 'check_if_application_id_exists' in call_order
+        assert 'save_event_data' in call_order
+        assert 'save_event_pdf' in call_order
+        assert 'commit_transaction' in call_order
         # check_if_application_id_exists must run before check_if_form_number_was_used
         assert call_order.index('check_if_application_id_exists') < call_order.index('check_if_form_number_was_used')
+        # commit_transaction must run after both save steps
+        assert call_order.index('save_event_data') < call_order.index('commit_transaction')
+        assert call_order.index('save_event_pdf') < call_order.index('commit_transaction')
 
     def test_create_with_empty_payload(self, client, monkeypatch):
         """Test POST /event with empty payload."""

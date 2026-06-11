@@ -45,6 +45,27 @@ def test_create_collision_server_error(client, monkeypatch):
     assert response.status_code == 500
     assert b'server error' in response.data
 
+def test_create_collision_middleware_chain_execution_order(client, monkeypatch):
+    call_order = []
+
+    def fake_middle_logic(middleware_chain, **kwargs):
+        for item in middleware_chain:
+            if isinstance(item, dict) and 'try' in item:
+                call_order.append(item['try'].__name__ if hasattr(item['try'], '__name__') else str(item['try']))
+        return {'response': make_response('{"success": true}', 201)}
+
+    monkeypatch.setattr(collision_blueprint, 'middle_logic', fake_middle_logic)
+    monkeypatch.setattr(collision_blueprint, 'get_authorized_keycloak_user', lambda: [])
+
+    response = client.post('/api/v1/collision', json={"collision_case_num": "RZ100001"})
+
+    assert response.status_code == 201
+    assert 'save_collision_data' in call_order
+    assert 'save_event_pdf' in call_order
+    assert 'commit_transaction' in call_order
+    assert call_order.index('save_collision_data') < call_order.index('commit_transaction')
+    assert call_order.index('save_event_pdf') < call_order.index('commit_transaction')
+
 def test_get_collision_success(client, monkeypatch):
     # Patch middle_logic to simulate a successful retrieval
     def fake_middle_logic(*args, **kwargs):

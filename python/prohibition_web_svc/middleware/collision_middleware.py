@@ -127,7 +127,7 @@ def save_collision_data(**kwargs) -> tuple:
             logger.error(f"Failed to update form status for form {data.get('collision_case_num')}")
 
         db.session.add(submission)
-        db.session.commit()
+        db.session.flush()
 
         logger.info(f"Collision data saved with submission_id: {submission.submission_id}")
         kwargs['submission_id'] = submission.submission_id
@@ -137,6 +137,7 @@ def save_collision_data(**kwargs) -> tuple:
         }
     except Exception as e:
         logger.error(e)
+        db.session.rollback()
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
             'error_code': ErrorCode.E01,
@@ -189,10 +190,11 @@ def save_event_pdf(**kwargs) -> tuple:
         )
         form_ref.events.append(event)
         db.session.add(form_ref)
-        db.session.commit()
+        db.session.flush()
         logger.info(f"PDF saved for submission {submission_id} with storage key: {storage_key}")
     except Exception as e:
         logger.error(e)
+        db.session.rollback()
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
                 'error_code': ErrorCode.C04,
@@ -201,8 +203,27 @@ def save_event_pdf(**kwargs) -> tuple:
                 'ticket_no': collision_case_num,
                 'func': save_event_pdf,
             }
-        common_middleware.record_event_error(**kwargs)
+        return False, kwargs
 
+    return True, kwargs
+
+
+def commit_transaction(**kwargs) -> tuple:
+    """Commit the shared DB transaction that spans collision saves and PDF generation."""
+    try:
+        db.session.commit()
+    except Exception as e:
+        logger.error(e)
+        db.session.rollback()
+        data = kwargs.get('payload', {})
+        kwargs['error'] = {
+            'error_code': ErrorCode.E01,
+            'error_details': str(e),
+            'event_type': EVENT_TYPE,
+            'ticket_no': data.get('collision_case_num'),
+            'func': commit_transaction,
+        }
+        return False, kwargs
     return True, kwargs
 
 

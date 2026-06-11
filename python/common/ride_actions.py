@@ -83,7 +83,7 @@ def twenty_four_hours_event(**args):
         payloadRecord["typeOfProhibition"] = args['event_data']['type_of_prohibition']
         fill_common_payload_record(args, payloadRecord)
         payloadRecord["vehicleImpounded"] = yes_no_string_to_bool(args['form_data']['vehicle_impounded'])
-        payloadRecord["reasonableTestAlcohol"] = args['form_data']['resonable_test_used_alcohol']
+        payloadRecord["reasonableTestAlcohol"] = args['form_data']['resonable_test_used_alcohol'] if 'resonable_test_used_alcohol' in args['form_data'] and args['form_data']['resonable_test_used_alcohol'] is not None else ''
         payloadRecord["reasonForNotImpounding"] = args['form_data']['reason_for_not_impounding']
         payloadRecord["reasonableGroundOther"] = args['form_data']['reasonable_ground_other']
         payloadRecord["reasonableGroundOtherReason"] = args['form_data']['reasonable_ground_other_reason']
