@@ -1,6 +1,7 @@
 # import python.common.middleware as middleware
 from python.common import splunk
 import python.form_handler.actions as actions
+from python.form_handler.actions_admin import send_to_admin_actions
 from python.form_handler.actions_icbc import send_to_icbc_actions
 from python.form_handler.actions_load_event import load_event_actions
 from python.form_handler.actions_odw import send_to_odw_actions
@@ -31,6 +32,7 @@ def process_incoming_form() -> dict:
         ],
         "vi": load_event_actions()
             + send_to_vips_actions()
+            + send_to_admin_actions()
             + send_to_odw_actions(),
             # {"try": actions.prep_vips_document_payload, "fail": [
             #     {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
@@ -56,10 +58,13 @@ def process_incoming_form() -> dict:
             # ]},
         "24h": load_event_actions()
         + send_to_icbc_actions() 
+        + send_to_admin_actions()
         + send_to_odw_actions(),
         "12h": load_event_actions()
         + send_to_icbc_actions()
+        + send_to_admin_actions()
         + send_to_odw_actions(),
         "irp": load_event_actions()
             + send_to_vips_actions()
+           + send_to_admin_actions()
     }

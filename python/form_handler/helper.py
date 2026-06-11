@@ -63,8 +63,13 @@ def middle_logic(functions: list, **args):
         try_fail_node = functions.pop(0)
         logging.debug('calling try function: ' + try_fail_node['try'].__name__)
         # print(try_fail_node['try'](**args))
-        flag, args = try_fail_node['try'](**args)
-        logging.debug("result from {} is {}".format(try_fail_node['try'].__name__, flag))
+        if 'event' in try_fail_node and \
+            args.get(try_fail_node['event'], {}).get('status') == 'sent':
+            logging.info(f'Already sent to {try_fail_node["event"]}, skipping {try_fail_node["try"].__name__}')
+            flag, args = True, args
+        else:
+            flag, args = try_fail_node['try'](**args)
+            logging.debug("result from {} is {}".format(try_fail_node['try'].__name__, flag))
         if flag:
             args = middle_logic(functions, **args)
         else:

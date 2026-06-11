@@ -7,7 +7,7 @@ from python.form_handler.config import Config
 import logging
 import json
 from minio import Minio
-from python.common.models import Event,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef,ImpoundReasonCodes,IloIdCrossRef,ImpoundLotOperator,SubmissionFormRef,SubmissionEvent
+from python.common.models import Event,VIForm,TwentyFourHourForm,TwelveHourForm,IRPForm,User,AgencyCrossref,CityCrossRef,JurisdictionCrossRef,ImpoundReasonCodes,IloIdCrossRef,ImpoundLotOperator,SubmissionFormRef,SubmissionEvent,AgencyAdmin
 from python.form_handler.geocoding_service import get_coordinates
 from python.form_handler.icbc_service import submit_to_icbc
 from python.form_handler.rsi_email import send_email_to_rsiops, send_error_to_rsiops
@@ -236,17 +236,38 @@ def get_submission_event_id(**args)->tuple:
                 .one()
 
             args['submission_event_id'] = submission_event_data.submission_event_id
+            args[destination] = {}
+            args[destination]['status']=submission_event_data.status
     except Exception as e:
         logging.exception(e)
         return False, args
     return True,args
 
+def get_event_status(**args)->tuple:
+    """Get the current status of a submission event from the database."""
+    logging.verbose(f"inside get_event_status() with args: {args}")
+    try:
+        application = args.get('app')
+        db = args.get('db')
+        submission_event_id = args.get('submission_event_id')
+        with application.app_context():
+            # get submission event data
+            submission_event = db.session.query(SubmissionEvent) \
+                .filter(SubmissionEvent.submission_event_id == submission_event_id) \
+                .one()
+
+            args['event_status'] = submission_event.status
+    except Exception as e:
+        logging.exception(e)
+        return False, args
+    return True, args
+
 def update_event_status_processing(**args)->tuple:
     logging.verbose(f"inside update_event_status_processing() with args: {args}")
+    # Skip if event is already sent
+    if args.get('event_status') == 'sent':
+        return True, args
     try:
-        if args.get('event_status') == 'sent':
-            logging.info("event already sent, skipping update_event_status_processing")
-            return True,args
         application=args.get('app')
         db=args.get('db')
         event_id=args.get('event_data').get('event_id')
@@ -281,23 +302,6 @@ def _update_submission_event_status(db, submission_event_id, status):
                     .filter(SubmissionEvent.submission_event_id == submission_event_id) \
                     .one()
     sub_event.status = status
-
-def get_event_status(**args)->tuple:
-    logging.verbose(f"inside get_event_status() with args: {args}")
-    try:
-        application=args.get('app')
-        db=args.get('db')
-        submission_event_id=args.get('submission_event_id')
-        with application.app_context():
-            submission_event_data = db.session.query(SubmissionEvent) \
-                .filter(SubmissionEvent.submission_event_id == submission_event_id) \
-                .one()
-            args['event_status']=submission_event_data.status
-            return True, args
-    except Exception as e:
-        logging.exception(e)
-        return False, args
-
 
 def get_storage_file(**args)->tuple:
     logging.verbose(f"inside get_storage_file() with args: {args}")
@@ -350,11 +354,10 @@ def get_storage_file(**args)->tuple:
 def prep_icbc_payload(**args)->tuple:
     logging.verbose(f"inside prep_icbc_payload() with args: {args}")
     message=args.get('message')
-
+    # Skip if event is already sent
+    if args.get('event_status') == 'sent':
+        return True, args
     try:
-        if args.get('event_status') == 'sent':
-            logging.info("event already sent, skipping prep_icbc_payload")
-            return True,args
         application = args.get('app')
         db = args.get('db')
         pdf_data=args.get('file_data')
@@ -553,9 +556,6 @@ def send_to_icbc(**args)->tuple:
     logging.verbose(f"inside send_to_icbc() with args: {args}")
     message=args.get('message')
     try:
-        if args.get('event_status') == 'sent':
-            logging.info("event already sent, skipping send_to_icbc")
-            return True,args
         icbc_payload=args.get('icbc_payload')
         send_status, icbc_response_txt,icbc_resp_code = submit_to_icbc(icbc_payload,logging)
         args['icbc_response_txt']=icbc_response_txt
@@ -1045,10 +1045,10 @@ def update_event_status(**args)->tuple:
     """Update the event status to 'sent' after successfully sending to destination, and commit to DB. 
     This will help to avoid duplicate sending in case of retries. """
     logging.verbose(f"inside update_event_status() with args: {args}")
+    # Skip if event is already sent
+    if args.get('event_status') == 'sent':
+        return True, args
     try:
-        if args.get('event_status') == 'sent':
-            logging.info("event already sent, skipping update_event_status")
-            return True,args
         application=args.get('app')
         db=args.get('db')
         event_id=args.get('event_data').get('event_id')
