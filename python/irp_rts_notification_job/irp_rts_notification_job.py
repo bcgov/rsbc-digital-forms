@@ -44,6 +44,10 @@ def _print_env_variables():
     logger.info(f"REPLY_EMAIL_ADDRESS: {Config.REPLY_EMAIL_ADDRESS}")
     logger.info(f"BCC_EMAIL_ADDRESSES: {Config.BCC_EMAIL_ADDRESSES}")
     logger.info(f"SUPERINTENDENT_EMAIL: {Config.SUPERINTENDENT_EMAIL}")
+
+    logger.info(f"NUMBER_OF_DAYS_TO_COMPLETE_RTS: {Config.NUMBER_OF_DAYS_TO_COMPLETE_RTS}")
+    logger.info(f"NUMBER_OF_DAYS_TO_SEND_REMINDER: {Config.NUMBER_OF_DAYS_TO_SEND_REMINDER}")
+
     logger.info(f"JINJA2_TEMPLATE_PATH: {Config.JINJA2_TEMPLATE_PATH}")
 
 

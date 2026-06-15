@@ -82,30 +82,35 @@ def _send_notification_email(email, rts_list) -> None:
         raise
 
 def _fetch_pending_RTS(conn) -> list:
-    query = """select 
-                se.submission_event_id, 
-                u.username, 
-                u.display_name, 
-                s.ff_application_id, 
-                sfr.form_type, 
-                sfr.form_id as form_number,
-                e.driver_last_name,
-                e.date_of_driving::DATE
-                from submission_events se 
-                inner join submission_form_refs sfr on sfr.form_ref_id = se.form_ref_id 
-                inner join  submission s on s.submission_id = sfr.submission_id
-                inner join "user" u on s.created_by = u.user_guid 
-                inner join "event" e on s.submission_id = e.submission_id
-                where se.destination = 'RTS' and se.status = 'pending'
-                order by date_of_driving;"""
+    query = f"""select 
+        se.submission_event_id, 
+        u.username, 
+        u.display_name, 
+        s.ff_application_id, 
+        sfr.form_type, 
+        sfr.form_id as form_number,
+        e.agency_file_no,
+        e.driver_last_name,
+        (e.confirmation_of_service_date at time zone 'America/Vancouver')::DATE cos_date,
+        ((e.confirmation_of_service_date at TIME zone 'UTC' at time zone 'America/Vancouver')::DATE + {Config.NUMBER_OF_DAYS_TO_COMPLETE_RTS}) - 
+        (now() at time zone 'America/Vancouver')::DATE outstanding
+        from submission_events se 
+        inner join submission_form_refs sfr on sfr.form_ref_id = se.form_ref_id 
+        inner join  submission s on s.submission_id = sfr.submission_id
+        inner join "user" u on s.created_by = u.user_guid 
+        inner join "event" e on s.submission_id = e.submission_id
+        where se.destination = 'RTS' and se.status like 'pending%'
+        and (now() at TIME zone 'UTC' at time zone 'America/Vancouver')::DATE - (e.confirmation_of_service_date at TIME zone 'UTC' at time zone 'America/Vancouver')::DATE >= {Config.NUMBER_OF_DAYS_TO_SEND_REMINDER}
+        order by e.confirmation_of_service_date;
+    """
     with conn.cursor() as cursor:
         cursor.execute(query)
         return cursor.fetchall()
     
 def _update_rts_status(conn, rts_list):
     rts_ids = [str(row[0]) for row in rts_list]
-    logger.debug(f"Updating status to 'notified' for RTS IDs: {rts_ids}")
-    update_query = f"""update submission_events set status = 'notified', updated_at = now() where submission_event_id in ({','.join(rts_ids)})"""
+    logger.debug(f"Updating status to 'pending_notified' for RTS IDs: {rts_ids}")
+    update_query = f"""update submission_events set status = 'pending_notified', updated_at = now() where submission_event_id in ({','.join(rts_ids)})"""
     with conn.cursor() as cursor:
         cursor.execute(update_query)
         conn.commit()

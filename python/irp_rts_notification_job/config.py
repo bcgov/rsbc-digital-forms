@@ -35,4 +35,7 @@ class Config():
     BCC_EMAIL_ADDRESSES = os.getenv('BCC_EMAIL_ADDRESSES')
     SUPERINTENDENT_EMAIL = os.getenv('SUPERINTENDENT_EMAIL', 'VIPSFAXP@gov.bc.ca')
 
+    NUMBER_OF_DAYS_TO_COMPLETE_RTS = int(os.getenv('NUMBER_OF_DAYS_TO_COMPLETE_RTS', 8))
+    NUMBER_OF_DAYS_TO_SEND_REMINDER = int(os.getenv('NUMBER_OF_DAYS_TO_SEND_REMINDER', 3))
+
     JINJA2_TEMPLATE_PATH = os.getenv('JINJA2_TEMPLATE_PATH', '/src/python/common/templates')

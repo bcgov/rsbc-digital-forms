@@ -18,8 +18,20 @@
 {% extends "email_alert_base.html" %}
 
 {% block primary_text_1 %}
-    The Immediate Roadside Prohibitions (IRP) listed below are still pending completion. 
-    Please complete the IRP package (MV2723, MV2724, supporting documents) and fax to the Superintendent <strong>{{message.superintendent_email}}</strong>.
+    <p>The following IRP files require additional action before they can be considered complete.</p>
+
+    <p>Please complete the Report to Superintendent (MV2724), include all required supporting documents, 
+        and submit/fax the full IRP package to the Superintendent (<strong>{{message.superintendent_email}}</strong>) 
+        within seven (7) days of serving the notice to the driver.</p>
+
+    <p><b>Required IRP Package Documents</b></p>
+    <ul>
+        <li>Notice of Driving Prohibition (MV2723)</li>
+        <li>Report to Superintendent (MV2724)</li>
+        <li>ASD Documentation</li>
+        <li>Police Narrative</li>
+        <li>Vehicle Impoundment (VI)</li>
+    </ul>
 {% endblock %}
 
 {% block primary_text_2 %}
@@ -27,8 +39,10 @@
         <thead>
             <tr>
                 <th>IRP Number</th>
+                <th>Police File Number</th>
                 <th>Driver</th>
-                <th>Date</th>
+                <th>Issue Date</th>
+                <th>Days Outstanding</th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +51,8 @@
                     <td>{{ item[5] }}</td>
                     <td>{{ item[6] }}</td>
                     <td>{{ item[7] }}</td>
+                    <td>{{ item[8] }}</td>
+                    <td>{% if item[9] >= 0 %} {{ item[9] }} {% else %} Overdue {% endif %}</td>
                 </tr>
             {% endfor %}
         </tbody>

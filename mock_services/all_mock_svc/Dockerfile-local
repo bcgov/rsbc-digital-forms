@@ -1,18 +1,14 @@
-# FROM python:3.6
-FROM python:3.9.23-slim
-# FROM artifacts.developer.gov.bc.ca/dbe7-images/rhel8-python39:1-196.1725368453
+FROM python:3.12-alpine
 
 COPY all_mock_svc/requirements.txt /tmp/
 
-RUN pip install --upgrade pip
-RUN pip install -r /tmp/requirements.txt
+RUN pip install -U pip setuptools wheel && \
+    sha256sum /tmp/requirements.txt > /tmp/requirements.sha256  && \
+    cd /tmp && pip install -r requirements.txt
 
-RUN useradd --create-home appuser
-WORKDIR /home/appuser
-USER appuser
 
-COPY all_mock_svc /home/appuser/mock_services/all_mock_svc
-WORKDIR /home/appuser/mock_services/all_mock_svc
+COPY all_mock_svc /tmp/mock_services/all_mock_svc
+WORKDIR /tmp/mock_services/all_mock_svc
 
-# CMD [ "gunicorn", "--bind", "0.0.0.0:5000", "--pythonpath", "/home/appuser/mock_services/icbc_mock_svc", "wsgi" ]
+# CMD [ "gunicorn", "--bind", "0.0.0.0:5000", "--pythonpath", "/tmp/mock_services/icbc_mock_svc", "wsgi" ]
 CMD [ "gunicorn", "--bind", "0.0.0.0:5000",  "wsgi" ]
