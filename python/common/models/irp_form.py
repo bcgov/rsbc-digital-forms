@@ -12,7 +12,7 @@ class IRPForm(db.Model):
     updated_dt: datetime
     irp_number: str
     vi_number: str
-    driver_licence_expiry: datetime
+    driver_licence_expiry_year: int
     driver_licence_class: str
     gender: str
     driver_licence_seized: str
@@ -43,7 +43,7 @@ class IRPForm(db.Model):
     updated_dt = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     irp_number = db.Column(db.String(20), nullable=False)
     vi_number = db.Column(db.String(20))
-    driver_licence_expiry = db.Column(db.DateTime)
+    driver_licence_expiry_year = db.Column(db.Integer)
     driver_licence_class = db.Column(db.String(5))
     gender = db.Column(db.String(1))
     driver_licence_seized = db.Column(db.String(5), nullable=False)

@@ -13,6 +13,7 @@ class VIForm(db.Model):
     gender: str
     driver_is_regist_owner: bool
     driver_licence_expiry: datetime
+    driver_licence_expiry_year: int
     driver_licence_class: str
     unlicenced_prohibition_number: str
     belief_driver_bc_resident: str
@@ -52,6 +53,7 @@ class VIForm(db.Model):
     gender = db.Column(db.String)
     driver_is_regist_owner = db.Column(db.String)
     driver_licence_expiry = db.Column(db.DateTime)
+    driver_licence_expiry_year = db.Column(db.Integer)
     driver_licence_class = db.Column(db.String)
     unlicenced_prohibition_number = db.Column(db.String)
     belief_driver_bc_resident = db.Column(db.String)

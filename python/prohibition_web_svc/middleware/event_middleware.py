@@ -241,6 +241,7 @@ def save_event_data(**kwargs) -> tuple:
                 driver_is_regist_owner=data.get('driver_is_regist_owner'),
                 driver_licence_expiry=datetime.strptime(
                     data.get('driver_licence_expiry'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_licence_expiry') else None,
+                driver_licence_expiry_year=data.get('driver_licence_expiry_year'),
                 driver_licence_class=data.get('driver_licence_class'),
                 unlicenced_prohibition_number=data.get(
                     'unlicenced_prohibition_number'),

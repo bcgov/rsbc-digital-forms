@@ -49,12 +49,11 @@ class TestMapToIrpForm:
         assert result.created_dt == DATE_CREATED
         assert result.updated_dt == DATE_CREATED
 
-    def test_driver_licence_expiry_is_parsed(self):
-        result = IRPMapper.map_to_irp_form(get_payload(), DATE_CREATED)
-        assert result.driver_licence_expiry is not None
-        assert result.driver_licence_expiry.year == 2028
-        assert result.driver_licence_expiry.month == 4
-        assert result.driver_licence_expiry.day == 13
+    def test_driver_licence_expiry_year_is_mapped(self):
+        payload = get_payload()
+        payload['driver_licence_expiry_year'] = 2028
+        result = IRPMapper.map_to_irp_form(payload, DATE_CREATED)
+        assert result.driver_licence_expiry_year == 2028
 
     def test_driver_licence_class(self):
         result = IRPMapper.map_to_irp_form(get_payload(), DATE_CREATED)
@@ -256,11 +255,11 @@ class TestMapToIrpFormEdgeCases:
         assert result.reasonable_suspicion_witnessed is False
         assert result.reasonable_suspicion_other is False
 
-    def test_missing_driver_licence_expiry_returns_none(self):
+    def test_missing_driver_licence_expiry_year_returns_none(self):
         payload = get_payload()
-        payload['driver_licence_expiry'] = None
+        payload['driver_licence_expiry_year'] = None
         result = IRPMapper.map_to_irp_form(payload, DATE_CREATED)
-        assert result.driver_licence_expiry is None
+        assert result.driver_licence_expiry_year is None
 
     def test_no_asd_tests_when_times_absent(self):
         payload = get_payload()
@@ -349,22 +348,19 @@ class TestMapUpdateIrpForm:
         IRPMapper.map_update_irp_form(form, data)
         assert form.vi_number is None
 
-    def test_updates_driver_licence_expiry_is_parsed(self):
+    def test_updates_driver_licence_expiry_year(self):
         form = self._base_form()
         data = get_payload()
-        data['driver_licence_expiry'] = '2030-12-31T00:00:00.000+0000'
+        data['driver_licence_expiry_year'] = 2030
         IRPMapper.map_update_irp_form(form, data)
-        assert form.driver_licence_expiry is not None
-        assert form.driver_licence_expiry.year == 2030
-        assert form.driver_licence_expiry.month == 12
-        assert form.driver_licence_expiry.day == 31
+        assert form.driver_licence_expiry_year == 2030
 
-    def test_updates_driver_licence_expiry_to_none_when_absent(self):
+    def test_updates_driver_licence_expiry_year_to_none_when_absent(self):
         form = self._base_form()
         data = get_payload()
-        data['driver_licence_expiry'] = None
+        data['driver_licence_expiry_year'] = None
         IRPMapper.map_update_irp_form(form, data)
-        assert form.driver_licence_expiry is None
+        assert form.driver_licence_expiry_year is None
 
     def test_updates_driver_licence_class(self):
         form = self._base_form()

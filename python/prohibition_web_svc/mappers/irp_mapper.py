@@ -10,8 +10,7 @@ class IRPMapper:
                 updated_dt=date_created,
                 irp_number=data.get('IRP_number'),
                 vi_number=data.get('VI_number') if data.get('VI') == True else None,
-                driver_licence_expiry=datetime.strptime(
-                    data.get('driver_licence_expiry'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_licence_expiry') else None,
+                driver_licence_expiry_year=data.get('driver_licence_expiry_year') if data.get('driver_licence_expiry_year') else None,
                 driver_licence_class=data.get('driver_licence_class') if data.get('driver_licence_class') else None,
                 gender=data.get('gender').get('value') if data.get('gender') else None,
                 driver_licence_seized=data.get('seized_DL'),
@@ -75,8 +74,7 @@ class IRPMapper:
     def map_update_irp_form(irp_form: IRPForm, data: dict):
         irp_form.irp_number=data.get('IRP_number')
         irp_form.vi_number=data.get('VI_number') if data.get('VI') == True else None
-        irp_form.driver_licence_expiry=datetime.strptime(
-            data.get('driver_licence_expiry'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_licence_expiry') else None
+        irp_form.driver_licence_expiry_year=data.get('driver_licence_expiry_year') if data.get('driver_licence_expiry_year') else None
         irp_form.driver_licence_class=data.get('driver_licence_class') if data.get('driver_licence_class') else None
         irp_form.gender=data.get('gender').get('value') if data.get('gender') else None
         irp_form.driver_licence_seized=data.get('seized_DL')
