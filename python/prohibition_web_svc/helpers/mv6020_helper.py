@@ -5,7 +5,7 @@ import base64
 from python.common.enums import ErrorCode
 import python.common.helper as helper
 from python.common.logging_utils import get_logger
-from python.common.models import db, AgencyAdmin, User
+from python.common.models import db, Agency,AgencyAdmin, User
 from python.prohibition_web_svc.config import Config
 import python.common.rsi_email as rsi_email
 from python.prohibition_web_svc.middleware import print_middleware
@@ -187,6 +187,7 @@ def _send_admin_copy(**kwargs):
         "agency_file_number": data.get("police_file_num", ""),
         "officer_name": kwargs.get('user_data', {}).get('display_name', ''),
         "officer_badge": kwargs.get('user_data', {}).get('badge_number', ''),
+        "agency_name": kwargs.get('user_data', {}).get('agency_name', ''),
         "submission_date": helper.format_date_iso(submission_date, "%Y-%m-%d"),
         "collision_date": formatted_date,
         "collision_time": formatted_time,
@@ -270,11 +271,14 @@ def _get_user_data(**kwargs) -> tuple:
         payload = kwargs.get('payload', {})
         data = payload.get('data', {})
         user_guid = data.get('completed_by_id') or payload.get('submitted_user_guid') or kwargs.get('user_guid')
-        user_data = db.session.query(User).filter(User.user_guid == user_guid).one()
+        user_data = db.session.query(User) \
+            .join(Agency, User.agency_id == Agency.id) \
+            .filter(User.user_guid == user_guid).one()
         kwargs['user_data'] = {
             'user_guid': user_data.user_guid,
             'username': user_data.username,
             'agency_id': user_data.agency_id,
+            'agency_name': user_data.agency_ref.agency_name,
             'display_name': user_data.display_name,
             'badge_number': user_data.badge_number
         }
