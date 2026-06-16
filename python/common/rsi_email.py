@@ -71,6 +71,7 @@ def send_mv6020_copy(**args) -> tuple:
         'entity': 'MV6020_send_entity_copy.html',
         'police': 'MV6020_send_police_copy.html',
         'icbc':   'MV6020_send_icbc_copy.html',
+        'admin':  'MV6020_admin_notification.html'
     }
 
     t = template_map.get(email_type)
@@ -88,7 +89,7 @@ def send_mv6020_copy(**args) -> tuple:
     args['email_template'] = t
     template = get_jinja2_env().get_template(t)
     return common_email_services.send_email(
-        [email_address],
+        [email_address] if type(email_address) == str else email_address,
         subject,
         config,
         template.render(subject=subject, 

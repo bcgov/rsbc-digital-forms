@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock
+
 import pytest
 import python.prohibition_web_svc.helpers.mv6020_helper as helper
 
@@ -180,6 +182,115 @@ def test_send_mv6020_copy_success_entity(monkeypatch):
     success, result = helper.send_mv6020_copy(**payload)
     assert success is True
     assert "Successfully sent email to Alice Smith" in result["response_dict"]["message"]
+
+
+def test_send_mv6020_copy_success_admin(monkeypatch):
+    """Admin copy should collect attachments and send to configured admins."""
+    payload = {
+        "payload": {
+            "data": {
+                "collision_case_num": "AB123",
+                "collision_type": "0",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "time_collision": "08:00",
+                "time_collision_unknown": False,
+                "icbc_submission_date": "2025-11-19",
+                "police_file_num": "PF-77",
+                "prime_file_vjur": {"label": "VJ-9"},
+                "print_options": {"type": "admin", "email": ""},
+            }
+        }
+    }
+
+    monkeypatch.setattr(helper.print_middleware, "set_event_type", lambda **kw: (True, kw))
+    monkeypatch.setattr(
+        helper,
+        "_get_user_data",
+        lambda **kw: (
+            True,
+            {
+                **kw,
+                "user_data": {
+                    "display_name": "Officer Example",
+                    "badge_number": "42",
+                    "agency_id": 99,
+                },
+            },
+        ),
+    )
+    monkeypatch.setattr(
+        helper,
+        "_get_admin_emails",
+        lambda **kw: (True, {**kw, "email_address": ["admin1@example.com", "admin2@example.com"]}),
+    )
+    monkeypatch.setattr(
+        helper,
+        "generate_all_PDF_attachments",
+        lambda **kw: (
+            True,
+            {
+                **kw,
+                "attachments": [
+                    {
+                        "content": "cGRm",
+                        "contentType": "application/pdf",
+                        "encoding": "base64",
+                        "filename": "MV6020-AB123-police-copy.pdf",
+                    }
+                ],
+            },
+        ),
+    )
+
+    captured = {}
+
+    def fake_send_mv6020_copy(**kw):
+        captured.update(kw)
+        return True, kw
+
+    monkeypatch.setattr(helper.rsi_email, "send_mv6020_copy", fake_send_mv6020_copy)
+
+    success, result = helper.send_mv6020_copy(**payload)
+
+    assert success is True
+    assert result["response_dict"]["message"] == "Successfully sent admin copy email to ['admin1@example.com', 'admin2@example.com']"
+    assert captured["subject"] == "New MV6020 form submitted - AB123"
+    assert captured["email_address"] == ["admin1@example.com", "admin2@example.com"]
+    assert captured["email_type"] == "admin"
+    assert captured["message"]["collision_case_number"] == "AB123"
+    assert captured["message"]["submission_date"] == "2025-11-19"
+    assert captured["attachments"][0]["filename"] == "MV6020-AB123-police-copy.pdf"
+
+
+def test_send_mv6020_copy_admin_without_admin_emails(monkeypatch):
+    """Admin copy should succeed without sending when no admin emails exist."""
+    payload = {
+        "payload": {
+            "data": {
+                "collision_case_num": "AB123",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "time_collision": "08:00",
+                "time_collision_unknown": False,
+                "print_options": {"type": "admin", "email": ""},
+            }
+        }
+    }
+
+    monkeypatch.setattr(helper.print_middleware, "set_event_type", lambda **kw: (True, kw))
+    monkeypatch.setattr(helper, "_get_user_data", lambda **kw: (True, {**kw, "user_data": {"agency_id": 99}}))
+    monkeypatch.setattr(helper, "_get_admin_emails", lambda **kw: (True, {**kw, "email_address": None}))
+
+    generate_mock = MagicMock(return_value=(True, {}))
+    send_mock = MagicMock(return_value=(True, {}))
+    monkeypatch.setattr(helper, "generate_all_PDF_attachments", generate_mock)
+    monkeypatch.setattr(helper.rsi_email, "send_mv6020_copy", send_mock)
+
+    success, result = helper.send_mv6020_copy(**payload)
+
+    assert success is True
+    assert result["response_dict"]["message"] == "No admin email found, skipping admin copy email sending."
+    generate_mock.assert_not_called()
+    send_mock.assert_not_called()
 
 
 def test_send_mv6020_copy_unknown_type(monkeypatch):

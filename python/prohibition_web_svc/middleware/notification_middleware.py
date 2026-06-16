@@ -194,7 +194,7 @@ def validate_email_payload(**kwargs) -> tuple:
             print_options = data.get("print_options", {})
 
             ptype = print_options.get("type", "").lower()
-            allowed_types = {"icbc", "entity", "police"}
+            allowed_types = {"icbc", "entity", "police", "admin"}
 
             if ptype not in allowed_types:
                 api_error = f"Invalid or missing print_options.type '{ptype}'"
