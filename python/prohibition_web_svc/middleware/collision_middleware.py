@@ -230,27 +230,34 @@ def commit_transaction(**kwargs) -> tuple:
 def _save_file_to_minio(pdf_bytes) -> str:
     cert_path = Config.MINIO_CERT_FILE
     os.environ['SSL_CERT_FILE'] = cert_path
-    client = Minio(
-        Config.MINIO_BUCKET_URL,
-        access_key=Config.MINIO_AK,
-        secret_key=Config.MINIO_SK,
-        secure=Config.MINIO_SECURE,
-    )
-    filename = str(uuid.uuid4().hex)
-    encoded_file_name = f"{filename}_encrypted.pdf"
-    pdf_filename = f"/tmp/{filename}.pdf"
-    encrypted_pdf_filename = f"/tmp/{encoded_file_name}"
-    with open(pdf_filename, "wb") as file:
-        file.write(pdf_bytes)
-    encryptPdf_method1(
-        pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-    logger.verbose('File encrypted')
-    with open(encrypted_pdf_filename, 'rb') as file_data:
-        client.fput_object(Config.STORAGE_BUCKET_NAME,
-                        encoded_file_name, encrypted_pdf_filename)
-    logger.verbose('File uploaded to Minio')
 
-    return encoded_file_name
+    try:
+        client = Minio(
+            Config.MINIO_BUCKET_URL,
+            access_key=Config.MINIO_AK,
+            secret_key=Config.MINIO_SK,
+            secure=Config.MINIO_SECURE,
+        )
+        filename = str(uuid.uuid4().hex)
+        encoded_file_name = f"{filename}_encrypted.pdf"
+        pdf_filename = f"/tmp/{filename}.pdf"
+        encrypted_pdf_filename = f"/tmp/{encoded_file_name}"
+        with open(pdf_filename, "wb") as file:
+            file.write(pdf_bytes)
+        encryptPdf_method1(
+            pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
+        logger.verbose('File encrypted')
+        with open(encrypted_pdf_filename, 'rb') as file_data:
+            client.fput_object(Config.STORAGE_BUCKET_NAME,
+                            encoded_file_name, encrypted_pdf_filename)
+        logger.verbose('File uploaded to Minio')
+
+        return encoded_file_name
+    finally:
+        if os.path.exists(pdf_filename):
+            os.remove(pdf_filename)
+        if os.path.exists(encrypted_pdf_filename):
+            os.remove(encrypted_pdf_filename)
 
 def _validate_required_fields(collision: CollisionRequestPayload, kwargs: dict) -> bool:
     is_valid = _validate_collision_required_fields(collision, kwargs) and \
