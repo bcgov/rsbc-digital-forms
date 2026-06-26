@@ -275,6 +275,7 @@ class TestSetAdminEmailContent:
             "user_data": {
                 "badge_number": "B123",
                 "display_name": "Officer Smith",
+                "agency_ref": {"agency_name": "Vancouver Police Department"},
             },
             "message": {"event_id": "E1", "event_type": "admin"},
         }
@@ -343,6 +344,24 @@ class TestSetAdminEmailContent:
         args = self._base_args()
         _, out_args = actions_admin.set_admin_email_content(**args)
         assert out_args["body"]["officer_name"] == "Officer Smith"
+
+    @patch("python.form_handler.actions_admin.date_time_to_local_tz_string")
+    def test_body_contains_agency_name(self, mock_date_fn):
+        """Body should contain agency_name"""
+        mock_date_fn.return_value = "2024-01-15 10:30:00"
+        args = self._base_args()
+        _, out_args = actions_admin.set_admin_email_content(**args)
+        assert out_args["body"]["agency_name"] == "Vancouver Police Department"
+
+    @patch("python.form_handler.actions_admin.date_time_to_local_tz_string")
+    def test_body_contains_none_agency_name_when_missing(self, mock_date_fn):
+        """Body should set agency_name to None when agency_ref is missing"""
+        mock_date_fn.return_value = "2024-01-15 10:30:00"
+        args = self._base_args()
+        args["user_data"].pop("agency_ref")
+        _, out_args = actions_admin.set_admin_email_content(**args)
+        assert "agency_name" in out_args["body"]
+        assert out_args["body"]["agency_name"] is None
 
     @patch("python.form_handler.actions_admin.date_time_to_local_tz_string")
     def test_sets_title_in_output_args(self, mock_date_fn):

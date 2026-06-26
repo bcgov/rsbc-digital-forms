@@ -78,6 +78,7 @@ def set_admin_email_content(**args)->tuple:
             'submission_date': date_time_to_local_tz_string(submission_date),
             'officer_badge': args.get('user_data', {}).get('badge_number'),
             'officer_name': f"{args.get('user_data', {}).get('display_name')}",
+            'agency_name': args.get('user_data', {}).get('agency_ref', {}).get('agency_name'),
         }
         args['body'] = body
         args['title'] = f"New {body['form_type']} form submitted - {body['form_number']}"
