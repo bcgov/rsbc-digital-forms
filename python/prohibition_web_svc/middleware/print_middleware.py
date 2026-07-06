@@ -272,7 +272,7 @@ def render_document_with_playwright(**kwargs) -> tuple:
             return False, kwargs
         
         if data.get('print_options', {}).get('type') == 'all':
-            return _generate_all_PDFs(**kwargs)
+            return generate_all_PDFs(**kwargs)
         else:
             # Render the document
             success, content = render_with_playwright(str(template_path), data, output_type)
@@ -303,14 +303,14 @@ def render_document_with_playwright(**kwargs) -> tuple:
         }
         return False, kwargs
 
-def _generate_all_PDFs(**kwargs) -> tuple:
+def generate_all_PDFs(**kwargs) -> tuple:
     payload = kwargs.get('payload', {})
     if payload.get('options', {}).get('type') != 'pdf':
         kwargs['error'] = {
             'error_code': ErrorCode.P02,
             'error_details': 'Download all is only available for PDF format',
             'event_type': EVENT_TYPE,
-            'func': _generate_all_PDFs,
+            'func': generate_all_PDFs,
         }
         return False, kwargs
 
@@ -324,24 +324,7 @@ def _generate_all_PDFs(**kwargs) -> tuple:
         # Create zip file from attachments
         attachments = kwargs.get('attachments', [])
         if attachments:
-            zip_buffer = BytesIO()
-            with ZipFile(zip_buffer, 'w') as zip_file:
-                for attachment in attachments:
-                    filename = attachment.get('filename', 'document.pdf')
-                    file_content = attachment.get('content', b'')
-                    encoding = attachment.get('encoding')
-
-                    if isinstance(file_content, str):
-                        if encoding == 'base64':
-                            file_content = base64.b64decode(file_content)
-                        else:
-                            file_content = file_content.encode('utf-8')
-                    elif encoding == 'base64' and isinstance(file_content, (bytes, bytearray)):
-                        file_content = base64.b64decode(file_content)
-                    
-                    zip_file.writestr(filename, file_content)
-            
-            content = zip_buffer.getvalue()
+            content = generate_zip_file(attachments)
             kwargs['rendered_content'] = content
             kwargs['content_type'] = 'application/zip'
             kwargs['filename'] = f"MV6020_{collision_case_no}_{police_file_num}_{date_collision}_All_PDF.zip"
@@ -355,9 +338,30 @@ def _generate_all_PDFs(**kwargs) -> tuple:
         'error_code': ErrorCode.P02,
         'error_details': f"Rendering failed: {content.decode('utf-8') if isinstance(content, bytes) else content}",
         'event_type': EVENT_TYPE,
-        'func': _generate_all_PDFs,
+        'func': generate_all_PDFs,
     }
     return False, kwargs
+
+def generate_zip_file(attachments):
+    zip_buffer = BytesIO()
+    with ZipFile(zip_buffer, 'w') as zip_file:
+        for attachment in attachments:
+            filename = attachment.get('filename', 'document.pdf')
+            file_content = attachment.get('content', b'')
+            encoding = attachment.get('encoding')
+
+            if isinstance(file_content, str):
+                if encoding == 'base64':
+                    file_content = base64.b64decode(file_content)
+                else:
+                    file_content = file_content.encode('utf-8')
+            elif encoding == 'base64' and isinstance(file_content, (bytes, bytearray)):
+                file_content = base64.b64decode(file_content)
+                    
+            zip_file.writestr(filename, file_content)
+            
+    content = zip_buffer.getvalue()
+    return content
 
 def return_rendered_response(**kwargs) -> tuple:
     """Return the rendered content as Flask Response."""
