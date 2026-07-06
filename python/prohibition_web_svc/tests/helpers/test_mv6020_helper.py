@@ -1,3 +1,4 @@
+import base64
 from unittest.mock import MagicMock
 
 import pytest
@@ -429,6 +430,105 @@ def test_send_mv6020_copy_unknown_type(monkeypatch):
     success, result = helper.send_mv6020_copy(**payload)
     assert success is False
     assert result["response_dict"]["message"] == "Failed to send email"
+
+
+def test_generate_all_pdf_attachments_success(monkeypatch):
+    kwargs = {
+        "payload": {
+            "data": {
+                "collision_case_num": "AB123",
+                "police_file_num": "PF-77",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "print_options": {"type": "all", "email": "officer@example.com"},
+                "entities": [{"entity_num": 7}, {"entity_num": 8}],
+            }
+        }
+    }
+
+    def fake_render(**kw):
+        print_options = kw["payload"]["data"]["print_options"]
+        ptype = print_options.get("type")
+        entity_num = print_options.get("entity_num")
+
+        if ptype == "police":
+            return True, {"rendered_content": b"PDF-POLICE"}
+        if ptype == "entity" and entity_num == 7:
+            return True, {"rendered_content": b"PDF-ENTITY-7"}
+        if ptype == "entity" and entity_num == 8:
+            return True, {"rendered_content": "PDF-ENTITY-8"}
+        return False, {"error": {"error_details": "unexpected render path"}}
+
+    monkeypatch.setattr(helper.print_middleware, "render_document_with_playwright", fake_render)
+
+    success, result = helper.generate_all_PDF_attachments(**kwargs)
+
+    assert success is True
+    attachments = result["attachments"]
+    assert len(attachments) == 3
+
+    assert attachments[0]["filename"] == "MV6020_AB123_PF-77_20251120_police_Copy.pdf"
+    assert attachments[1]["filename"] == "MV6020_AB123_PF-77_20251120_entity_7_Copy.pdf"
+    assert attachments[2]["filename"] == "MV6020_AB123_PF-77_20251120_entity_8_Copy.pdf"
+
+    assert base64.b64decode(attachments[0]["content"]) == b"PDF-POLICE"
+    assert base64.b64decode(attachments[1]["content"]) == b"PDF-ENTITY-7"
+    assert base64.b64decode(attachments[2]["content"]) == b"PDF-ENTITY-8"
+
+
+def test_generate_all_pdf_attachments_failure_police_render(monkeypatch):
+    kwargs = {
+        "payload": {
+            "data": {
+                "collision_case_num": "AB123",
+                "police_file_num": "PF-77",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "print_options": {"type": "all", "email": "officer@example.com"},
+                "entities": [{"entity_num": 7}],
+            }
+        }
+    }
+
+    monkeypatch.setattr(
+        helper.print_middleware,
+        "render_document_with_playwright",
+        lambda **kw: (False, {"error": {"error_details": "police render failed"}}),
+    )
+
+    success, result = helper.generate_all_PDF_attachments(**kwargs)
+
+    assert success is False
+    assert result["response_dict"]["message"] == "Failed to render document for admin copy"
+    assert result["error"]["error_details"] == "police render failed"
+
+
+def test_generate_all_pdf_attachments_failure_entity_render(monkeypatch):
+    kwargs = {
+        "payload": {
+            "data": {
+                "collision_case_num": "AB123",
+                "police_file_num": "PF-77",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "print_options": {"type": "all", "email": "officer@example.com"},
+                "entities": [{"entity_num": 7}],
+            }
+        }
+    }
+
+    calls = {"count": 0}
+
+    def fake_render(**kw):
+        calls["count"] += 1
+        if calls["count"] == 1:
+            return True, {"rendered_content": b"PDF-POLICE"}
+        return False, {"error": {"error_details": "entity render failed"}}
+
+    monkeypatch.setattr(helper.print_middleware, "render_document_with_playwright", fake_render)
+
+    success, result = helper.generate_all_PDF_attachments(**kwargs)
+
+    assert success is False
+    assert result["response_dict"]["message"] == "Failed to render document for entity 7 in admin copy"
+    assert result["error"]["error_details"] == "entity render failed"
 
 
 
