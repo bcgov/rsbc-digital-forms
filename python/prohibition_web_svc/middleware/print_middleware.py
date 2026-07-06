@@ -1,10 +1,13 @@
 import asyncio
 import base64
 import copy
-from datetime import datetime
 import json
 import re
+import python.common.helper as helper
+from datetime import datetime
 from pathlib import Path
+from zipfile import ZipFile
+from io import BytesIO
 from flask import Response
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from playwright.async_api import async_playwright
@@ -268,8 +271,11 @@ def render_document_with_playwright(**kwargs) -> tuple:
             }
             return False, kwargs
         
-        # Render the document
-        success, content = render_with_playwright(str(template_path), data, output_type)
+        if data.get('print_options', {}).get('type') == 'all':
+            return _generate_all_PDFs(**kwargs)
+        else:
+            # Render the document
+            success, content = render_with_playwright(str(template_path), data, output_type)
         
         if success:
             kwargs['rendered_content'] = content
@@ -296,6 +302,62 @@ def render_document_with_playwright(**kwargs) -> tuple:
             'func': render_document_with_playwright,
         }
         return False, kwargs
+
+def _generate_all_PDFs(**kwargs) -> tuple:
+    payload = kwargs.get('payload', {})
+    if payload.get('options', {}).get('type') != 'pdf':
+        kwargs['error'] = {
+            'error_code': ErrorCode.P02,
+            'error_details': 'Download all is only available for PDF format',
+            'event_type': EVENT_TYPE,
+            'func': _generate_all_PDFs,
+        }
+        return False, kwargs
+
+    data = payload.get('data', {})
+    collision_case_no = data.get('collision_case_num')
+    police_file_num = data.get('police_file_num')
+    date_collision = helper.format_date_iso(data.get('date_collision'), '%Y%m%d')
+
+    result, kwargs = mv6020_helper.generate_all_PDF_attachments(**kwargs)
+    if result:
+        # Create zip file from attachments
+        attachments = kwargs.get('attachments', [])
+        if attachments:
+            zip_buffer = BytesIO()
+            with ZipFile(zip_buffer, 'w') as zip_file:
+                for attachment in attachments:
+                    filename = attachment.get('filename', 'document.pdf')
+                    file_content = attachment.get('content', b'')
+                    encoding = attachment.get('encoding')
+
+                    if isinstance(file_content, str):
+                        if encoding == 'base64':
+                            file_content = base64.b64decode(file_content)
+                        else:
+                            file_content = file_content.encode('utf-8')
+                    elif encoding == 'base64' and isinstance(file_content, (bytes, bytearray)):
+                        file_content = base64.b64decode(file_content)
+                    
+                    zip_file.writestr(filename, file_content)
+            
+            content = zip_buffer.getvalue()
+            kwargs['rendered_content'] = content
+            kwargs['content_type'] = 'application/zip'
+            kwargs['filename'] = f"MV6020_{collision_case_no}_{police_file_num}_{date_collision}_All_PDF.zip"
+            return True, kwargs
+        else:
+            content = "No attachments found"
+    else:
+        content = kwargs.get('error', {}).get('error_details', 'Failed to generate PDF attachments')    
+
+    kwargs['error'] = {
+        'error_code': ErrorCode.P02,
+        'error_details': f"Rendering failed: {content.decode('utf-8') if isinstance(content, bytes) else content}",
+        'event_type': EVENT_TYPE,
+        'func': _generate_all_PDFs,
+    }
+    return False, kwargs
 
 def return_rendered_response(**kwargs) -> tuple:
     """Return the rendered content as Flask Response."""

@@ -212,6 +212,8 @@ def generate_all_PDF_attachments(**kwargs):
     payload = kwargs.get('payload', {}) or {}
     data = payload.get('data', {}) or {}
     collision_case_no = data.get('collision_case_num')
+    police_file_num = data.get('police_file_num')
+    date_collision = helper.format_date_iso(data.get('date_collision'))
 
     kwargs.get('payload', {}).get('data', {}).get('print_options', {})['type'] = 'police'
     kwargs.get('payload', {}).get('data', {}).get('print_options', {})['is_draft'] = False
@@ -247,7 +249,7 @@ def generate_all_PDF_attachments(**kwargs):
     attachments = []
     for key, result in files.items():
         pdf_bytes = result.get("rendered_content")
-        filename = f"MV6020-{collision_case_no}-{key}-copy.pdf"
+        filename = f"MV6020_{collision_case_no}_{police_file_num}_{date_collision}_{key}_Copy.pdf"
 
         if isinstance(pdf_bytes, str):
             pdf_bytes = pdf_bytes.encode("utf-8")
