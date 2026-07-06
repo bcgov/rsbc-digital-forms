@@ -37,8 +37,8 @@ def send_mv6020_copy(**kwargs):
         print_options = data.get('print_options', {})
         email_address = print_options.get('email', '')
         ptype = print_options.get('type', '').lower()
-        if ptype == 'icbc' or ptype == 'police' or ptype == 'admin':
 
+        if ptype != 'entity':
             # Map collision_type codes to labels
             COLLISION_TYPE_MAP = {
                 "5": "Fatality",
@@ -63,30 +63,17 @@ def send_mv6020_copy(**kwargs):
             elif ptype == 'police':
                 full_name = proper_case(data.get("completed_by_name"))  # defaults to "Officer"
 
-        elif ptype == 'entity':
+        else:
             subject = f"Traffic Accident Report Driver Copy - Collision Case Number {collision_case_no}"
             full_name = get_entity_data(data)
-        else:
-            kwargs['error'] = {
-                'error_code': ErrorCode.G01,
-                'error_details': 'Unknown message type found in print options',
-                'ticket_no': collision_case_no,
-                'func': send_mv6020_copy,
-            }
-            kwargs['response_dict'] = {
-                'message': 'Failed to send email',
-                'description': 'Unknown message type found in print options' 
-            }
-            return False, kwargs
-    
+  
         
-        message = {
-            "collision_case_number": collision_case_no,
-            "collision_date": formatted_date,
-            "collision_time": formatted_time,
-        }
-
-        if ptype != 'admin':
+        if ptype != 'admin' and ptype != 'all':
+            message = {
+                "collision_case_number": collision_case_no,
+                "collision_date": formatted_date,
+                "collision_time": formatted_time,
+            }
             # do the print orchestration here.
             success, print_result  = print_middleware.render_document_with_playwright(**kwargs)
 
@@ -131,10 +118,13 @@ def send_mv6020_copy(**kwargs):
             }
             kwargs["error"] = print_result.get("error", {})
             return False, kwargs
-        else:
+        elif ptype == 'admin':
             # admin copy
             kwargs['subject'] = subject
             return _send_admin_copy(**kwargs)
+        elif ptype == 'all':
+            kwargs['subject'] = subject
+            return _send_all_copy(**kwargs)
 
     except Exception as e:
         logger.error(f"Exception in send_mv6020_copy: {e}")
@@ -207,11 +197,55 @@ def _send_admin_copy(**kwargs):
             'message': f'Successfully sent admin copy email to {email_address}'
         }
     return success, kwargs
+    
+def _send_all_copy(**kwargs):
+    logger.verbose('inside _send_all_copy')
+
+    success, kwargs = generate_all_PDF_attachments(**kwargs)
+    if not success:
+        return False, kwargs
+    
+    attachments = kwargs.get('attachments', [])
+    payload = kwargs.get('payload', {}) or {}
+    data = payload.get('data', {}) or {}
+    collision_case_no = data.get('collision_case_num')
+    raw_date = data.get("date_collision")  # ISO string
+    raw_time = data.get("time_collision")  # "HH:MM"
+    is_unknown = data.get("time_collision_unknown", False)
+    formatted_date, formatted_time = format_collision_datetime(raw_date,raw_time,is_unknown)
+    print_options = data.get('print_options', {})
+    email_address = print_options.get('email', '')
+    subject = kwargs.get('subject')
+
+    message = {
+        "collision_case_number": collision_case_no,
+        "collision_date": formatted_date,
+        "collision_time": formatted_time,
+    }
+
+    success = rsi_email.send_mv6020_copy(
+        config=Config,
+        subject=subject,
+        email_address=email_address,
+        full_name='',
+        message=message,
+        attachments=attachments,
+        email_type='police'
+    )
+
+    if success:
+        kwargs['response_dict'] = {
+            'message': f'Successfully sent email to {email_address}'
+        }
+        return True, kwargs
+    return success, kwargs
 
 def generate_all_PDF_attachments(**kwargs):
     payload = kwargs.get('payload', {}) or {}
     data = payload.get('data', {}) or {}
     collision_case_no = data.get('collision_case_num')
+    police_file_num = data.get('police_file_num')
+    date_collision = helper.format_date_iso(data.get('date_collision'), '%Y%m%d')
 
     kwargs.get('payload', {}).get('data', {}).get('print_options', {})['type'] = 'police'
     kwargs.get('payload', {}).get('data', {}).get('print_options', {})['is_draft'] = False
@@ -247,7 +281,7 @@ def generate_all_PDF_attachments(**kwargs):
     attachments = []
     for key, result in files.items():
         pdf_bytes = result.get("rendered_content")
-        filename = f"MV6020-{collision_case_no}-{key}-copy.pdf"
+        filename = f"MV6020_{collision_case_no}_{police_file_num}_{date_collision}_{key}_Copy.pdf"
 
         if isinstance(pdf_bytes, str):
             pdf_bytes = pdf_bytes.encode("utf-8")

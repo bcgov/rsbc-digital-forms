@@ -17,6 +17,7 @@ EVENT_TYPE = 'Notification Email'
 
 EMAIL_ADMIN_ON_SUBMISSION_FAILURE="admin_notice_submission_failure.html"
 EMAIL_USER_ON_ACCESS_REQ_APPROVAL="user_access_request_approved.html"
+ALLOWED_TYPES = {"icbc", "entity", "police", "admin", "all"}
 
 def set_event_type(**kwargs) -> tuple:
     """Set the event type for the print event."""
@@ -193,10 +194,27 @@ def validate_email_payload(**kwargs) -> tuple:
             data = payload.get("data", {})
             print_options = data.get("print_options", {})
 
-            ptype = print_options.get("type", "").lower()
-            allowed_types = {"icbc", "entity", "police", "admin"}
+            if not isinstance(print_options, dict) or \
+                    not print_options or "email" not in print_options or \
+                    "type" not in print_options or not print_options["email"] or \
+                    not print_options["type"]:
+                api_error = "Missing or invalid print_options in payload"
 
-            if ptype not in allowed_types:
+                kwargs["response_dict"] = {
+                    "error_details": api_error
+                }
+
+                kwargs["error"] = {
+                    "error_code": ErrorCode.N01,
+                    "error_details": api_error,
+                    'event_type': EVENT_TYPE,
+                    "func": "validate_email_payload(MV6020)",
+                }
+
+                return False, kwargs
+
+            ptype = print_options.get("type", "").lower()
+            if ptype not in ALLOWED_TYPES:
                 api_error = f"Invalid or missing print_options.type '{ptype}'"
 
                 kwargs["response_dict"] = {
@@ -205,7 +223,7 @@ def validate_email_payload(**kwargs) -> tuple:
 
                 kwargs["error"] = {
                     "error_code": ErrorCode.N01,
-                    "error_details": f"{api_error}. Allowed types: {list(allowed_types)}",
+                    "error_details": f"{api_error}. Allowed types: {list(ALLOWED_TYPES)}",
                     'event_type': EVENT_TYPE,
                     "func": "validate_email_payload(MV6020)",
                 }

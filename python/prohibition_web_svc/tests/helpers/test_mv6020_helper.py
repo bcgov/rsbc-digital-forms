@@ -1,3 +1,4 @@
+import base64
 from unittest.mock import MagicMock
 
 import pytest
@@ -293,6 +294,125 @@ def test_send_mv6020_copy_admin_without_admin_emails(monkeypatch):
     send_mock.assert_not_called()
 
 
+def test_send_all_copy_success(monkeypatch):
+    kwargs = {
+        "subject": "MV6020 - Non-reportable - AB123 - VJ-9 - PF-77",
+        "payload": {
+            "data": {
+                "collision_case_num": "AB123",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "time_collision": "08:00",
+                "time_collision_unknown": False,
+                "print_options": {"type": "all", "email": "officer@example.com"},
+            }
+        },
+    }
+
+    monkeypatch.setattr(
+        helper,
+        "generate_all_PDF_attachments",
+        lambda **kw: (
+            True,
+            {
+                **kw,
+                "attachments": [
+                    {
+                        "content": "cGRm",
+                        "contentType": "application/pdf",
+                        "encoding": "base64",
+                        "filename": "MV6020_AB123_PF-77_20251120_police_Copy.pdf",
+                    }
+                ],
+            },
+        ),
+    )
+
+    captured = {}
+
+    def fake_send_mv6020_copy(**kw):
+        captured.update(kw)
+        return True
+
+    monkeypatch.setattr(helper.rsi_email, "send_mv6020_copy", fake_send_mv6020_copy)
+
+    success, result = helper._send_all_copy(**kwargs)
+
+    assert success is True
+    assert result["response_dict"]["message"] == "Successfully sent email to officer@example.com"
+    assert captured["subject"] == "MV6020 - Non-reportable - AB123 - VJ-9 - PF-77"
+    assert captured["email_address"] == "officer@example.com"
+    assert captured["email_type"] == "police"
+    assert captured["message"]["collision_case_number"] == "AB123"
+    assert captured["attachments"][0]["filename"] == "MV6020_AB123_PF-77_20251120_police_Copy.pdf"
+
+
+def test_send_all_copy_generate_all_pdf_attachments_failure(monkeypatch):
+    kwargs = {
+        "subject": "MV6020 - Non-reportable - AB123 - VJ-9 - PF-77",
+        "payload": {
+            "data": {
+                "collision_case_num": "AB123",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "time_collision": "08:00",
+                "time_collision_unknown": False,
+                "print_options": {"type": "all", "email": "officer@example.com"},
+            }
+        },
+        "error": {"error_details": "render failed"},
+    }
+
+    monkeypatch.setattr(helper, "generate_all_PDF_attachments", lambda **kw: (False, kw))
+
+    send_mock = MagicMock(return_value=True)
+    monkeypatch.setattr(helper.rsi_email, "send_mv6020_copy", send_mock)
+
+    success, result = helper._send_all_copy(**kwargs)
+
+    assert success is False
+    assert result["error"]["error_details"] == "render failed"
+    send_mock.assert_not_called()
+
+
+def test_send_all_copy_email_send_failure(monkeypatch):
+    kwargs = {
+        "subject": "MV6020 - Non-reportable - AB123 - VJ-9 - PF-77",
+        "payload": {
+            "data": {
+                "collision_case_num": "AB123",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "time_collision": "08:00",
+                "time_collision_unknown": False,
+                "print_options": {"type": "all", "email": "officer@example.com"},
+            }
+        },
+    }
+
+    monkeypatch.setattr(
+        helper,
+        "generate_all_PDF_attachments",
+        lambda **kw: (
+            True,
+            {
+                **kw,
+                "attachments": [
+                    {
+                        "content": "cGRm",
+                        "contentType": "application/pdf",
+                        "encoding": "base64",
+                        "filename": "MV6020_AB123_PF-77_20251120_police_Copy.pdf",
+                    }
+                ],
+            },
+        ),
+    )
+    monkeypatch.setattr(helper.rsi_email, "send_mv6020_copy", lambda **kw: False)
+
+    success, result = helper._send_all_copy(**kwargs)
+
+    assert success is False
+    assert "response_dict" not in result
+
+
 def test_send_mv6020_copy_unknown_type(monkeypatch):
     """Unknown type → failure with correct message."""
     payload = {
@@ -310,6 +430,105 @@ def test_send_mv6020_copy_unknown_type(monkeypatch):
     success, result = helper.send_mv6020_copy(**payload)
     assert success is False
     assert result["response_dict"]["message"] == "Failed to send email"
+
+
+def test_generate_all_pdf_attachments_success(monkeypatch):
+    kwargs = {
+        "payload": {
+            "data": {
+                "collision_case_num": "AB123",
+                "police_file_num": "PF-77",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "print_options": {"type": "all", "email": "officer@example.com"},
+                "entities": [{"entity_num": 7}, {"entity_num": 8}],
+            }
+        }
+    }
+
+    def fake_render(**kw):
+        print_options = kw["payload"]["data"]["print_options"]
+        ptype = print_options.get("type")
+        entity_num = print_options.get("entity_num")
+
+        if ptype == "police":
+            return True, {"rendered_content": b"PDF-POLICE"}
+        if ptype == "entity" and entity_num == 7:
+            return True, {"rendered_content": b"PDF-ENTITY-7"}
+        if ptype == "entity" and entity_num == 8:
+            return True, {"rendered_content": "PDF-ENTITY-8"}
+        return False, {"error": {"error_details": "unexpected render path"}}
+
+    monkeypatch.setattr(helper.print_middleware, "render_document_with_playwright", fake_render)
+
+    success, result = helper.generate_all_PDF_attachments(**kwargs)
+
+    assert success is True
+    attachments = result["attachments"]
+    assert len(attachments) == 3
+
+    assert attachments[0]["filename"] == "MV6020_AB123_PF-77_20251120_police_Copy.pdf"
+    assert attachments[1]["filename"] == "MV6020_AB123_PF-77_20251120_entity_7_Copy.pdf"
+    assert attachments[2]["filename"] == "MV6020_AB123_PF-77_20251120_entity_8_Copy.pdf"
+
+    assert base64.b64decode(attachments[0]["content"]) == b"PDF-POLICE"
+    assert base64.b64decode(attachments[1]["content"]) == b"PDF-ENTITY-7"
+    assert base64.b64decode(attachments[2]["content"]) == b"PDF-ENTITY-8"
+
+
+def test_generate_all_pdf_attachments_failure_police_render(monkeypatch):
+    kwargs = {
+        "payload": {
+            "data": {
+                "collision_case_num": "AB123",
+                "police_file_num": "PF-77",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "print_options": {"type": "all", "email": "officer@example.com"},
+                "entities": [{"entity_num": 7}],
+            }
+        }
+    }
+
+    monkeypatch.setattr(
+        helper.print_middleware,
+        "render_document_with_playwright",
+        lambda **kw: (False, {"error": {"error_details": "police render failed"}}),
+    )
+
+    success, result = helper.generate_all_PDF_attachments(**kwargs)
+
+    assert success is False
+    assert result["response_dict"]["message"] == "Failed to render document for admin copy"
+    assert result["error"]["error_details"] == "police render failed"
+
+
+def test_generate_all_pdf_attachments_failure_entity_render(monkeypatch):
+    kwargs = {
+        "payload": {
+            "data": {
+                "collision_case_num": "AB123",
+                "police_file_num": "PF-77",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "print_options": {"type": "all", "email": "officer@example.com"},
+                "entities": [{"entity_num": 7}],
+            }
+        }
+    }
+
+    calls = {"count": 0}
+
+    def fake_render(**kw):
+        calls["count"] += 1
+        if calls["count"] == 1:
+            return True, {"rendered_content": b"PDF-POLICE"}
+        return False, {"error": {"error_details": "entity render failed"}}
+
+    monkeypatch.setattr(helper.print_middleware, "render_document_with_playwright", fake_render)
+
+    success, result = helper.generate_all_PDF_attachments(**kwargs)
+
+    assert success is False
+    assert result["response_dict"]["message"] == "Failed to render document for entity 7 in admin copy"
+    assert result["error"]["error_details"] == "entity render failed"
 
 
 
