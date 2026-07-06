@@ -55,7 +55,8 @@ def test_validate_mv6020_email_payload_success():
         "template": "mv6020.html",
         "data": {
             "print_options": {
-                "type": "entity"
+                "type": "entity",
+                "email": "test@example.com"
             }
         }
     })

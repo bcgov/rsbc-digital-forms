@@ -293,6 +293,125 @@ def test_send_mv6020_copy_admin_without_admin_emails(monkeypatch):
     send_mock.assert_not_called()
 
 
+def test_send_all_copy_success(monkeypatch):
+    kwargs = {
+        "subject": "MV6020 - Non-reportable - AB123 - VJ-9 - PF-77",
+        "payload": {
+            "data": {
+                "collision_case_num": "AB123",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "time_collision": "08:00",
+                "time_collision_unknown": False,
+                "print_options": {"type": "all", "email": "officer@example.com"},
+            }
+        },
+    }
+
+    monkeypatch.setattr(
+        helper,
+        "generate_all_PDF_attachments",
+        lambda **kw: (
+            True,
+            {
+                **kw,
+                "attachments": [
+                    {
+                        "content": "cGRm",
+                        "contentType": "application/pdf",
+                        "encoding": "base64",
+                        "filename": "MV6020_AB123_PF-77_20251120_police_Copy.pdf",
+                    }
+                ],
+            },
+        ),
+    )
+
+    captured = {}
+
+    def fake_send_mv6020_copy(**kw):
+        captured.update(kw)
+        return True
+
+    monkeypatch.setattr(helper.rsi_email, "send_mv6020_copy", fake_send_mv6020_copy)
+
+    success, result = helper._send_all_copy(**kwargs)
+
+    assert success is True
+    assert result["response_dict"]["message"] == "Successfully sent email to officer@example.com"
+    assert captured["subject"] == "MV6020 - Non-reportable - AB123 - VJ-9 - PF-77"
+    assert captured["email_address"] == "officer@example.com"
+    assert captured["email_type"] == "police"
+    assert captured["message"]["collision_case_number"] == "AB123"
+    assert captured["attachments"][0]["filename"] == "MV6020_AB123_PF-77_20251120_police_Copy.pdf"
+
+
+def test_send_all_copy_generate_all_pdf_attachments_failure(monkeypatch):
+    kwargs = {
+        "subject": "MV6020 - Non-reportable - AB123 - VJ-9 - PF-77",
+        "payload": {
+            "data": {
+                "collision_case_num": "AB123",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "time_collision": "08:00",
+                "time_collision_unknown": False,
+                "print_options": {"type": "all", "email": "officer@example.com"},
+            }
+        },
+        "error": {"error_details": "render failed"},
+    }
+
+    monkeypatch.setattr(helper, "generate_all_PDF_attachments", lambda **kw: (False, kw))
+
+    send_mock = MagicMock(return_value=True)
+    monkeypatch.setattr(helper.rsi_email, "send_mv6020_copy", send_mock)
+
+    success, result = helper._send_all_copy(**kwargs)
+
+    assert success is False
+    assert result["error"]["error_details"] == "render failed"
+    send_mock.assert_not_called()
+
+
+def test_send_all_copy_email_send_failure(monkeypatch):
+    kwargs = {
+        "subject": "MV6020 - Non-reportable - AB123 - VJ-9 - PF-77",
+        "payload": {
+            "data": {
+                "collision_case_num": "AB123",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "time_collision": "08:00",
+                "time_collision_unknown": False,
+                "print_options": {"type": "all", "email": "officer@example.com"},
+            }
+        },
+    }
+
+    monkeypatch.setattr(
+        helper,
+        "generate_all_PDF_attachments",
+        lambda **kw: (
+            True,
+            {
+                **kw,
+                "attachments": [
+                    {
+                        "content": "cGRm",
+                        "contentType": "application/pdf",
+                        "encoding": "base64",
+                        "filename": "MV6020_AB123_PF-77_20251120_police_Copy.pdf",
+                    }
+                ],
+            },
+        ),
+    )
+    monkeypatch.setattr(helper.rsi_email, "send_mv6020_copy", lambda **kw: False)
+
+    success, result = helper._send_all_copy(**kwargs)
+
+    assert success is False
+    assert "response_dict" not in result
+
+
 def test_send_mv6020_copy_unknown_type(monkeypatch):
     """Unknown type → failure with correct message."""
     payload = {
