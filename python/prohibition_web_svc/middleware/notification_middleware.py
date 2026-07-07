@@ -194,10 +194,11 @@ def validate_email_payload(**kwargs) -> tuple:
             data = payload.get("data", {})
             print_options = data.get("print_options", {})
 
-            if not isinstance(print_options, dict) or \
+            if  not isinstance(print_options, dict) or \
                     not print_options or "email" not in print_options or \
-                    "type" not in print_options or not print_options["email"] or \
-                    not print_options["type"]:
+                    "type" not in print_options or \
+                    not print_options["type"] or \
+                    (not print_options["email"] and print_options["type"] != "admin"):
                 api_error = "Missing or invalid print_options in payload"
 
                 kwargs["response_dict"] = {
