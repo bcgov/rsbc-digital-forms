@@ -182,7 +182,7 @@ def _send_admin_copy(**kwargs):
         "collision_date": formatted_date,
         "collision_time": formatted_time,
     }
-    subject = f"New {FORM_TYPE} form submitted - {collision_case_no}"
+    subject = f"{FORM_TYPE} - {collision_case_no} - {data.get('police_file_num', '')}"
 
     success, kwargs = rsi_email.send_mv6020_copy(
         config=Config,

@@ -255,7 +255,7 @@ def test_send_mv6020_copy_success_admin(monkeypatch):
 
     assert success is True
     assert result["response_dict"]["message"] == "Successfully sent admin copy email to ['admin1@example.com', 'admin2@example.com']"
-    assert captured["subject"] == "New MV6020 form submitted - AB123"
+    assert captured["subject"] == "MV6020 - AB123 - PF-77"
     assert captured["email_address"] == ["admin1@example.com", "admin2@example.com"]
     assert captured["email_type"] == "admin"
     assert captured["message"]["collision_case_number"] == "AB123"

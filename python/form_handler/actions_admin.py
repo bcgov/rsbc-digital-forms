@@ -81,7 +81,7 @@ def set_admin_email_content(**args)->tuple:
             'agency_name': args.get('user_data', {}).get('agency_ref', {}).get('agency_name'),
         }
         args['body'] = body
-        args['title'] = f"New {body['form_type']} form submitted - {body['form_number']}"
+        args['title'] = f"{body['form_type']} - {body['form_number']} - {body['agency_file_number']}"
     except Exception as e:
         logging.error(f'Error setting admin email content: {e}')
         args['error'] = {
