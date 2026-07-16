@@ -281,7 +281,7 @@ def generate_all_PDF_attachments(**kwargs):
     attachments = []
     for key, result in files.items():
         pdf_bytes = result.get("rendered_content")
-        filename = f"MV6020_{collision_case_no}_{police_file_num}_{date_collision}_{key}_Copy.pdf"
+        filename = f"MV6020_{collision_case_no}_{police_file_num}_{date_collision}_{key.capitalize()}_Copy.pdf"
 
         if isinstance(pdf_bytes, str):
             pdf_bytes = pdf_bytes.encode("utf-8")
