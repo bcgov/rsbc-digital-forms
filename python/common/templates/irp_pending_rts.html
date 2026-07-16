@@ -20,17 +20,18 @@
 {% block primary_text_1 %}
     <p>The following IRP files require additional action before they can be considered complete.</p>
 
-    <p>Please complete the Report to Superintendent (MV2724), include all required supporting documents, 
-        and submit/fax the full IRP package to the Superintendent (<strong>{{message.superintendent_email}}</strong>) 
+    <p>Please complete the Report to Superintendent (MV2724), ensure all required supporting documents 
+        are included, have it sworn/affirmed and signed before a Commissioner for Taking Affidavits, 
+        and submit/fax the full IRP package to the Superintendent ({{message.superintendent_email}} or {{message.superintendent_fax}}) 
         within seven (7) days of serving the notice to the driver.</p>
 
     <p><b>Required IRP Package Documents</b></p>
     <ul>
         <li>Notice of Driving Prohibition (MV2723)</li>
         <li>Report to Superintendent (MV2724)</li>
-        <li>ASD Documentation</li>
-        <li>Police Narrative</li>
-        <li>Vehicle Impoundment (VI)</li>
+        <li>ASD Certificate(s), if applicable</li>
+        <li>Narrative</li>
+        <li>Vehicle Impoundment (MV2721/2722), if applicable</li>
     </ul>
 {% endblock %}
 
@@ -52,7 +53,7 @@
                     <td>{{ item[6] }}</td>
                     <td>{{ item[7] }}</td>
                     <td>{{ item[8] }}</td>
-                    <td>{% if item[9] >= 0 %} {{ item[9] }} {% else %} Overdue {% endif %}</td>
+                    <td>{{ item[9] }}</td>
                 </tr>
             {% endfor %}
         </tbody>

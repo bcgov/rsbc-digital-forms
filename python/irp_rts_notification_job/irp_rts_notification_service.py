@@ -60,13 +60,14 @@ def _process_pending_rts_for_user(conn, username, rts_list):
     _write_notification_report_to_splunk(email, rts_list)
 
 def _send_notification_email(email, rts_list) -> None:
-    subject = f"You have {len(rts_list)} pending Immediate Roadside Prohibitions (IRP) to complete"
+    subject = "Action Required – Outstanding Immediate Roadside Prohibition (IRP) Files"
     args = {
         "subject": subject,
         "email_address": email,
         "officer_name": rts_list[0][2] if rts_list else "Officer",
         "message": {
             "superintendent_email": Config.SUPERINTENDENT_EMAIL,
+            "superintendent_fax": Config.SUPERINTENDENT_FAX,
             "pending_rts_count": len(rts_list),
             "pending_rts": rts_list
         },
@@ -92,8 +93,8 @@ def _fetch_pending_RTS(conn) -> list:
         e.agency_file_no,
         e.driver_last_name,
         (e.confirmation_of_service_date at time zone 'America/Vancouver')::DATE cos_date,
-        ((e.confirmation_of_service_date at TIME zone 'UTC' at time zone 'America/Vancouver')::DATE + {Config.NUMBER_OF_DAYS_TO_COMPLETE_RTS}) - 
-        (now() at time zone 'America/Vancouver')::DATE outstanding
+        ((now() at time zone 'America/Vancouver')::DATE - 
+        (e.confirmation_of_service_date at TIME zone 'UTC' at time zone 'America/Vancouver')::DATE) outstanding
         from submission_events se 
         inner join submission_form_refs sfr on sfr.form_ref_id = se.form_ref_id 
         inner join  submission s on s.submission_id = sfr.submission_id
