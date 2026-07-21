@@ -18,7 +18,7 @@ def send_email(to: list, subject: str, config, template, ticket_no=None, attachm
         "bodyType": "html",
         "body": template,
         "from": config.REPLY_EMAIL_ADDRESS,
-        "bcc": config.BCC_EMAIL_ADDRESSES.split(','),
+        "bcc": config.BCC_EMAIL_ADDRESSES.split(',') if config.BCC_EMAIL_ADDRESSES else None,
         "encoding": "utf-8",
         "subject": subject,
         "to": to
@@ -36,7 +36,7 @@ def _send(payload, config, ticket_no) -> bool:
         response = requests.post(Config.COMM_SERV_API_ROOT_URL + '/api/v1/email', headers=auth_header, json=payload)
     except AssertionError as error:
         logger.error('No response from BC Common Services')
-        logger.error(json.dumps(error))
+        logger.error(str(error))
         return False
     if response.status_code == 201:
         data = response.json()
@@ -59,14 +59,14 @@ def get_common_services_access_token(config):
 
 def _log_sent_email_response(ticket_no, payload, response, config) -> None:
     logger.verbose('response from common services successful')
-    email_info = json.dumps(dict({
+    email_info = {
         "event": "email sent success",
         "to": payload.get('to'),
         "bcc": payload.get('bcc'),
         "ticket_no": ticket_no,
         "subject": payload.get('subject'),
         "response": response
-    }))
+    }
     logger.info(email_info)
     args = {}
     args["splunk_data"] = email_info

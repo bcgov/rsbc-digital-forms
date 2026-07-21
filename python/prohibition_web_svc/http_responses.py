@@ -117,3 +117,28 @@ def successful_get_response(**kwargs) -> tuple:
 def not_found_response(**kwargs) -> tuple:
     kwargs['response'] = make_response({'error': 'not found'}, 404)
     return True, kwargs
+
+
+def officer_not_found(**kwargs) -> tuple:
+    kwargs['response'] = make_response({'error': 'officer not found'}, 404)
+    return True, kwargs
+
+
+def detachment_not_found(**kwargs) -> tuple:
+    kwargs['response'] = make_response({'error': 'detachment not found'}, 400)
+    return True, kwargs
+
+
+def duplicate_detachment_request(**kwargs) -> tuple:
+    kwargs['response'] = make_response({'error': 'new detachment is same as current detachment'}, 400)
+    return True, kwargs
+
+
+def forbidden_detachment(**kwargs) -> tuple:
+    kwargs['response'] = make_response({'error': 'not authorized to change this officer detachment'}, 403)
+    return True, kwargs
+
+
+def detachment_conflict(**kwargs) -> tuple:
+    kwargs['response'] = make_response({'error': 'detachment was changed by a concurrent request'}, 409)
+    return True, kwargs

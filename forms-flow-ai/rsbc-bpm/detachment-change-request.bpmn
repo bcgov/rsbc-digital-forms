@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1oubpmc" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.31.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
+  <bpmn:process id="digital_forms_events" name="Digital Forms Events" isExecutable="true" camunda:historyTimeToLive="P30D">
+    <bpmn:startEvent id="StartEvent_1" name="start" camunda:asyncAfter="true">
+      <bpmn:outgoing>Flow_11aa80b</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="submit_detachment_change_request" name="Submit Dtchmt Change Request">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="groovy">var system = java.lang.System;
+system.getenv('REACT_APP_RSBC_API_URL')+"/api/v1/detachment-change-request"</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">${detachmentChangeRequest}</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">Bearer ${token}</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="statusCode">#{statusCode}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', statusCode === 201 ? "Submitted" : "Failed"); execution.setVariable('detachmentChangeRequest',"");</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">if(statusCode != 201){
+    throw new Error("Error submitting Detachment Change Request form - Check Incidents, response Code: "+statusCode);
+}</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0syk3xs</bpmn:incoming>
+      <bpmn:outgoing>Flow_09bu4yq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_11aa80b" name="start listeners" sourceRef="StartEvent_1" targetRef="Activity_1xpaggf">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', 'New');</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
+          <camunda:field name="fields">
+            <camunda:string>["applicationId","applicationStatus"]</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_153941x" name="Get OAuth Token">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="groovy">var system = java.lang.System;
+system.getenv('KEYCLOAK_URL')+"/auth/realms/"+system.getenv('KEYCLOAK_URL_REALM')+"/protocol/openid-connect/token"</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">grant_type=client_credentials</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">${basicAuth64}</camunda:entry>
+                <camunda:entry key="Content-Type">application/x-www-form-urlencoded</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="statusCode">#{statusCode}</camunda:outputParameter>
+            <camunda:outputParameter name="response">#{response}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="JavaScript">if (statusCode != 200){
+  throw new Error("Error from OAuth token call, response Code: "+statusCode)
+}else{
+}</camunda:script>
+        </camunda:executionListener>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="basicAuth64">
+            <camunda:script scriptFormat="groovy">import java.util.Base64
+
+def clientId = System.getenv("KEYCLOAK_CLIENTID")
+def clientSecret = System.getenv("KEYCLOAK_CLIENTSECRET")
+
+def credentials = clientId + ":" + clientSecret
+def encoded = Base64.encoder.encodeToString(credentials.bytes)
+
+return "Basic " + encoded</camunda:script>
+          </camunda:inputParameter>
+          <camunda:outputParameter name="token">${S(response).prop("access_token").stringValue()}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1hrssc2</bpmn:incoming>
+      <bpmn:outgoing>Flow_0es6pgh</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0es6pgh" sourceRef="Activity_153941x" targetRef="Activity_1naxlit" />
+    <bpmn:sequenceFlow id="Flow_09bu4yq" sourceRef="submit_detachment_change_request" targetRef="Event_18715np" />
+    <bpmn:endEvent id="Event_18715np" name="end">
+      <bpmn:incoming>Flow_09bu4yq</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Activity_1xpaggf" name="Update Application Status - Processing" camunda:asyncAfter="true">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Processing");</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_11aa80b</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hrssc2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1hrssc2" sourceRef="Activity_1xpaggf" targetRef="Activity_153941x" />
+    <bpmn:scriptTask id="Activity_1naxlit" name="Map Change Request Data" scriptFormat="groovy">
+      <bpmn:incoming>Flow_0es6pgh</bpmn:incoming>
+      <bpmn:outgoing>Flow_0syk3xs</bpmn:outgoing>
+      <bpmn:script>import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+def detachmentChangeRequest = [:]
+
+detachmentChangeRequest.officer_id        = execution.getVariable("user_guid")
+detachmentChangeRequest.new_detachment_id = execution.getVariable("newAgencyId") as Integer
+detachmentChangeRequest.reason            = execution.getVariable("reason")
+detachmentChangeRequest.comments          = execution.getVariable("comments") ?: ""
+
+def detachmentChangeRequestJson = JsonOutput.toJson(detachmentChangeRequest)
+execution.setVariable("detachmentChangeRequest", detachmentChangeRequestJson)</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_0syk3xs" sourceRef="Activity_1naxlit" targetRef="submit_detachment_change_request" />
+    <bpmn:textAnnotation id="TextAnnotation_1w0m47l">
+      <bpmn:text>If there is any errors during http events, process will generate incident and send a email using a background java process. State changes that needs to be preserved should be marked async.</bpmn:text>
+    </bpmn:textAnnotation>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="digital_forms_events">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="142" y="312" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="150" y="355" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_06lqfa2" bpmnElement="Activity_153941x">
+        <dc:Bounds x="440" y="290" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_18715np_di" bpmnElement="Event_18715np">
+        <dc:Bounds x="1012" y="312" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1021" y="355" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0akhtud" bpmnElement="Activity_1xpaggf">
+        <dc:Bounds x="270" y="290" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_044loaz" bpmnElement="Activity_1naxlit">
+        <dc:Bounds x="640" y="290" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1j3xucw_di" bpmnElement="submit_detachment_change_request">
+        <dc:Bounds x="840" y="290" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1w0m47l_di" bpmnElement="TextAnnotation_1w0m47l">
+        <dc:Bounds x="850" y="80" width="250" height="84" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_11aa80b_di" bpmnElement="Flow_11aa80b">
+        <di:waypoint x="178" y="330" />
+        <di:waypoint x="270" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="191" y="312" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0es6pgh_di" bpmnElement="Flow_0es6pgh">
+        <di:waypoint x="540" y="330" />
+        <di:waypoint x="640" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09bu4yq_di" bpmnElement="Flow_09bu4yq">
+        <di:waypoint x="940" y="330" />
+        <di:waypoint x="1012" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hrssc2_di" bpmnElement="Flow_1hrssc2">
+        <di:waypoint x="370" y="330" />
+        <di:waypoint x="440" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0syk3xs_di" bpmnElement="Flow_0syk3xs">
+        <di:waypoint x="740" y="330" />
+        <di:waypoint x="840" y="330" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

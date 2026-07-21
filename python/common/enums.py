@@ -84,6 +84,8 @@ class ErrorCode(BaseEnum):
                            "Contact DF application support for further investigation", False)
     E09 = ErrorCodeDetails("E09", "Application ID already exists", ErrorCategory.DATA, ErrorSeverity.LOW, 
                            "Contact DF application support for further investigation", False)
+    E10 = ErrorCodeDetails("E10", "Invalid payload", ErrorCategory.DATA, ErrorSeverity.HIGH,
+                           "Ensure the payload is correctly formatted and contains all required fields", True)
     
     # Forms related error
     
@@ -91,7 +93,7 @@ class ErrorCode(BaseEnum):
                            "Contact DF application support for further investigation", False)
     F02 = ErrorCodeDetails("F02", "Renew form id lease error", ErrorCategory.DATA, ErrorSeverity.HIGH, 
                            "Contact DF application support for further investigation", False)
-    F03 = ErrorCodeDetails("F02", "Admin form create error", ErrorCategory.DATA, ErrorSeverity.HIGH, 
+    F03 = ErrorCodeDetails("F03", "Admin form create error", ErrorCategory.DATA, ErrorSeverity.HIGH, 
                            "Contact DF application support for further investigation", False)
     
     # Ride actions related error

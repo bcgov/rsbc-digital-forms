@@ -1,6 +1,9 @@
+import base64
+from io import BytesIO
 import pytest
 import json
 from unittest.mock import patch, MagicMock
+from zipfile import ZipFile
 from python.prohibition_web_svc.middleware import print_middleware
 from python.common.enums import ErrorCode
 
@@ -253,3 +256,52 @@ class TestPrintMiddleware:
         assert result is True
         assert 'error' in updated_kwargs
         assert updated_kwargs['error']['error_code'] == ErrorCode.P02
+
+    def test_render_document_with_playwright_all_zip_decodes_pdf_attachments(self, monkeypatch):
+        """Test that download-all zip output contains decoded PDF bytes, not base64 text."""
+        payload = {
+            "template": "mv6020.html",
+            "options": {"type": "pdf"},
+            "data": {
+                "collision_case_num": "AB123",
+                "police_file_num": "PF-77",
+                "date_collision": "2025-11-20T00:00:00-08:00",
+                "print_options": {"type": "all"},
+                "entities": [],
+            },
+        }
+
+        pdf_bytes = b"%PDF-1.4\n1 0 obj\n<< /Type /Catalog >>\nendobj\n"
+        encoded_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
+
+        monkeypatch.setattr(
+            print_middleware.mv6020_helper,
+            "generate_all_PDF_attachments",
+            lambda **kw: (
+                True,
+                {
+                    **kw,
+                    "attachments": [
+                        {
+                            "content": encoded_pdf,
+                            "contentType": "application/pdf",
+                            "encoding": "base64",
+                            "filename": "MV6020-AB123-police-copy.pdf",
+                        }
+                    ],
+                },
+            ),
+        )
+
+        success, result = print_middleware.render_document_with_playwright(payload=payload)
+
+        assert success is True
+        assert result["content_type"] == "application/zip"
+        assert result["filename"] == "MV6020_AB123_PF-77_20251120_All_PDF.zip"
+        zip_bytes = result["rendered_content"]
+        with ZipFile(BytesIO(zip_bytes), "r") as zip_file:
+            names = zip_file.namelist()
+            assert names == ["MV6020-AB123-police-copy.pdf"]
+            extracted = zip_file.read(names[0])
+
+        assert extracted == pdf_bytes

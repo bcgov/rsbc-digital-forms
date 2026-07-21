@@ -84,6 +84,7 @@ def event_to_vips_dps(**args) -> tuple:
                 "event": "email sent to vips",
                 "event_id": eventid,
                 "event_type": args.get('event_type'),
+                "email_response": respargs.get('email_response',{})
             }
         else:
             logging.debug("email not sent to vips")
@@ -104,7 +105,7 @@ def send_email_to_rsiops(**args):
     body = args.get('body')
     template = get_jinja2_env().get_template('admin_notice.html')
     to_emails=config.RSIOPS_EMAIL_ADDRESS.split(',')
-    return common_email_services.send_email(
+    email_sent, _ = common_email_services.send_email(
         to_emails,
         subject,
         config,
@@ -113,7 +114,8 @@ def send_email_to_rsiops(**args):
                 "contentType": "string",
                 # "encoding": "base64",
                 "filename": "event.json"
-            }]), args
+            }])
+    return email_sent, args
 
 
 def send_email_to_vips(**args):
@@ -129,7 +131,7 @@ def send_email_to_vips(**args):
     # logging.debug("file_data: {}".format(file_data))
     # config['BCC_EMAIL_ADDRESSES']=config['VIPS_BCC_EMAIL_ADDRESSES'].split(',')
     config.BCC_EMAIL_ADDRESSES=config.VIPS_BCC_EMAIL_ADDRESSES
-    return common_email_services.send_email(
+    email_sent, response = common_email_services.send_email(
         vips_email,
         subject,
         config,
@@ -138,7 +140,16 @@ def send_email_to_vips(**args):
                 "contentType": "string",
                 "encoding": "base64",
                 "filename": f"{eventid}.pdf"
-            }]), args
+            }])
+    
+    args['email_response'] = {
+        "email_title": subject,
+        "vips_email": vips_email,
+        "result": "success" if email_sent else "failure",
+        "response": response
+    }
+
+    return email_sent, args
 
 def get_jinja2_env(path="./python/form_handler/templates"):
     template_loader = FileSystemLoader(searchpath=path)
@@ -159,7 +170,7 @@ def send_error_to_rsiops(**args):
     body = args.get('body')
     template = get_jinja2_env().get_template('error_notification.html')
     to_emails=config.RSIOPS_EMAIL_ADDRESS.split(',')
-    return common_email_services.send_email(
+    email_sent, _ = common_email_services.send_email(
         to_emails,
         subject,
         config,
@@ -168,4 +179,44 @@ def send_error_to_rsiops(**args):
                 "contentType": "string",
                 # "encoding": "base64",
                 "filename": "event.json"
-            }]), args    
+            }])
+    return email_sent, args
+
+
+def send_email_to_agency_admins(**args):
+    admin_emails = args.get('agency_admin_emails')
+    if admin_emails is None or admin_emails == '':
+        logging.info("No agency admin emails found, skipping sending email to agency admins.")
+        return True, args
+
+    subject = args.get('title')
+    config = args.get('config')
+    event_id = args['message']['event_id']
+    file_data=args.get('file_data',None)
+    body = args.get('body')
+    template = get_jinja2_env().get_template('admin_notification.html')
+    
+    email_sent, response = common_email_services.send_email(
+        admin_emails,
+        subject,
+        config,
+        template.render(subject=subject, body=body, message=None), 
+        event_id,
+        [{
+            "content": file_data,
+            "contentType": "string",
+            "encoding": "base64",
+            "filename": f"{body['form_number']}.pdf"
+        }])
+    
+    args['splunk_data'] = {
+        "event": "send email to agency admins",
+        "result": "success" if email_sent else "failure",
+        "event_id": event_id,
+        "event_type": args.get('event_type'),
+        "email_title": subject,
+        "admin_emails": admin_emails,
+        "response": response
+    }
+
+    return email_sent, args

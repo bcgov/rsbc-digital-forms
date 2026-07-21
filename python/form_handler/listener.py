@@ -58,19 +58,16 @@ class Listener:
             # DONE: Get event type by querying db
             message_dict['event_type'],event_id_val = get_storage_ref_event_type(message_dict,application,db,Config.EVENT_TYPES)
             logging.info('event id: {} - type: {}'.format(event_id_val, message_dict['event_type']))
-            event_status_val = get_event_status(message_dict, application, db, Config.EVENT_TYPES,message_dict['event_type'],event_id_val)
+            event_status_val = get_event_status(application, db, message_dict['event_type'],event_id_val)
             logging.info('event status: {}'.format(event_status_val))
-            if event_status_val in Config.PENDING_EVENT_STATUSES:
-                # DONE: Pass event type and event to middle logic
-                logging.debug("callback() invoked: {}".format(json.dumps(message_dict)))
-                helper.middle_logic(helper.get_listeners(business.process_incoming_form(), message_dict['event_type']),
-                                message=message_dict,
-                                config=self.config,
-                                writer=self.writer,
-                                app=application,
-                                db=db)
-            else:
-                logging.info('skipping event processing. Possible duplicate event.')
+            # DONE: Pass event type and event to middle logic
+            logging.debug("callback() invoked: {}".format(json.dumps(message_dict)))
+            helper.middle_logic(helper.get_listeners(business.process_incoming_form(), message_dict['event_type']),
+                            message=message_dict,
+                            config=self.config,
+                            writer=self.writer,
+                            app=application,
+                            db=db)
 
             # Regardless of whether the process above follows the happy path or not,
             # we need to acknowledge receipt of the message to RabbitMQ below. This

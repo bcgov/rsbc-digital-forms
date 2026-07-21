@@ -78,15 +78,23 @@ jobs:
           cd python/prohibition_web_svc
           pip install --upgrade pip
           pip install -r requirements.txt
+          echo "Running tests for prohibition_web_svc"
           pip install pytest
           pytest tests/
           cd ../common
+          echo "Running tests for common"
           pytest tests/
           cd ../submission_report_job
           pip install -r requirements.txt
+          echo "Running tests for submission_report_job"
           pytest tests/
           cd ../data_cleanup_job
           pip install -r requirements.txt
+          echo "Running tests for data_cleanup_job"
+          pytest tests/
+          cd ../irp_rts_notification_job
+          pip install -r requirements.txt
+          echo "Running tests for irp_rts_notification_job"
           pytest tests/
 
   trivy-scan:
@@ -142,7 +150,7 @@ jobs:
       - name: Convert JSON to HTML
         if: always()
         run: |
-          echo "<html><body><h1>Trivy Scan Results</h1><pre>" > trivy.html
+          echo "<html><body><h1>Trivy Scan Results - ${{ inputs.DOCKER_IMAGE_NAME }}</h1><pre>" > trivy.html
           cat trivy.json | jq -r '.Results[] | .Vulnerabilities[] | "<p><b>\(.VulnerabilityID)</b> - \(.Severity)<br>Package: \(.PkgName) \(.InstalledVersion)<br>\(.Title)</p>"' >> trivy.html || echo "<p>No critical vulnerabilities found</p>" >> trivy.html
           echo "</pre></body></html>" >> trivy.html
       - name: Run Trivy vulnerability scanner- save to sarif file

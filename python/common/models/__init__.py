@@ -33,6 +33,9 @@ from .df_errors import DFErrors
 from .submission import Submission
 from .submission_form_refs import SubmissionFormRef
 from .submission_event import SubmissionEvent
+from .detachment_change_request import DetachmentChangeRequest
+from .agency_admin import AgencyAdmin
+# TAR Models
 from .TAR.collision import TarCollision
 from .TAR.additional_collision_details import TarAdditionalCollisionDetails
 from .TAR.location import TarLocation

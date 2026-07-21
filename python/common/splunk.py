@@ -12,6 +12,8 @@ def log_to_splunk(**kwargs) -> tuple:
     """
     splunk_data = kwargs.get('splunk_data')
     if splunk_data is not None:
+        if type(splunk_data) is dict and kwargs.get('request_id') is not None:
+            splunk_data['request_id'] = kwargs.get('request_id')
         config = kwargs.get('config')
         splunk_payload = dict({})
         # From DF-2908: Need to ensure that splunk_data is not None
@@ -34,6 +36,9 @@ def _post_to_splunk(splunk_payload: dict, **args) -> bool:
         response = requests.post(endpoint, headers=headers, json=splunk_payload, verify=False)
     except requests.ConnectionError as error:
         logger.warning(f"No response from the Splunk API: {error}")
+        return False
+    except Exception as e:
+        logger.warning(f"An error occurred while sending data to Splunk: {e}")
         return False
     logger.debug(f"response from Splunk: {response.status_code}")
     if response.status_code != 200:

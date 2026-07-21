@@ -8,7 +8,8 @@ from base64 import b64decode
 from flask import jsonify, make_response
 from sqlalchemy import exists
 from python.common.logging_utils import get_logger
-from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, FormStorageRefs, Submission
+from python.common.models import db, Event, TwelveHourForm, TwentyFourHourForm, VIForm, FormStorageRefs, Submission, SubmissionFormRef, SubmissionEvent, IRPASDTest
+from python.common.models.irp_form import IRPForm
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_method1
 import uuid
@@ -19,6 +20,13 @@ from python.prohibition_web_svc.mappers.irp_mapper import IRPMapper
 from python.prohibition_web_svc.middleware.common_middleware import safe_get_value
 
 logger = get_logger(__name__)
+
+VI_FORM_TYPE = 'VI'
+TWENTY_FOUR_HOUR_FORM_TYPE = '24h'
+TWELVE_HOUR_FORM_TYPE = '12h'
+IRP_FORM_TYPE = 'IRP'
+VI_EXTRA_PAGE_THRESHOLD = 500
+
 
 def validate_update(**kwargs) -> tuple:
     return True, kwargs
@@ -31,7 +39,7 @@ def _mask_sensitive_data(data: dict) -> dict:
     sensitive_fields = [
         'driver_licence_no', 'driver_last_name', 'driver_given_name',
         'regist_owner_last_name', 'regist_owner_first_name',
-        'TwelveHour_form_png', 'TwentyFourHour_form_png', 'VI_form_png',
+        'TwelveHour_form_png', 'TwentyFourHour_form_png', 'VI_form_png', 'IRP_form_png',
     ]
     for field in sensitive_fields:
         if field in masked_data:
@@ -43,7 +51,7 @@ def log_payload_to_splunk(**kwargs) -> tuple:
         payload = kwargs.get('payload')
         payload_masked = _mask_sensitive_data(payload)
         kwargs['splunk_data'] = {
-            'event': "create VI/24h/12h event",
+            'event': "create VI/24h/12h/IRP event",
             'request_id': kwargs.get('request_id', ''),
             'user_guid': kwargs.get('user_guid', ''),
             'username': kwargs.get('username'),
@@ -65,13 +73,13 @@ def check_if_application_id_exists(**kwargs) -> tuple:
     if application_id is None:
         return True, kwargs
     try:
-        event = db.session.query(Event).filter(
-            Event.ff_application_id == application_id).first()
-        if event is not None:
+        submission = db.session.query(Submission).filter(
+            Submission.ff_application_id == application_id).first()
+        if submission is not None:
             kwargs['error'] = {
                 'error_code': ErrorCode.E09,
                 'error_details': 'Application ID already exists',
-                'event_id': event.event_id,
+                'submission_id': submission.submission_id,
                 'event_type': get_event_type(data),
                 'ticket_no': get_ticket_no(data),
                 'func': check_if_application_id_exists,
@@ -89,15 +97,16 @@ def check_if_form_number_was_used(**kwargs) -> tuple:
     """
     logger.verbose('inside check_if_form_number_was_used()')
     data = kwargs.get('payload')
-    if (data.get('VI') is None) and (data.get('TwentyFourHour') is None) and (data.get('TwelveHour') is None):
-        return True, kwargs
+
     try:
         vi_form_number_already_exists = False
         twenty_four_hour_form_number_already_exists = False
         twelve_hour_form_number_already_exists = False
+        irp_form_number_already_exists = False
         vi_form_number = data.get('VI_number')
         twenty_four_hour_form_number = data.get('twenty_four_hour_number')
         twelve_hour_form_number = data.get('twelve_hour_number')
+        irp_form_number = data.get('IRP_number')
         if data.get('VI') and vi_form_number:
             vi_form_number_already_exists = db.session.query(
                 exists().where(VIForm.VI_number == str(vi_form_number))
@@ -110,10 +119,15 @@ def check_if_form_number_was_used(**kwargs) -> tuple:
             twelve_hour_form_number_already_exists = db.session.query(
                 exists().where(TwelveHourForm.twelve_hour_number == str(twelve_hour_form_number))
             ).scalar()
-        
+        if data.get('IRP') and irp_form_number:
+            irp_form_number_already_exists = db.session.query(
+                exists().where(IRPForm.irp_number == str(irp_form_number))
+            ).scalar()
+
         if vi_form_number_already_exists or \
             twenty_four_hour_form_number_already_exists or \
-            twelve_hour_form_number_already_exists:
+            twelve_hour_form_number_already_exists or \
+            irp_form_number_already_exists:
             error_details = []
             if vi_form_number_already_exists:
                 error_details.append(f'VI form number already exists: {vi_form_number}')
@@ -121,6 +135,8 @@ def check_if_form_number_was_used(**kwargs) -> tuple:
                 error_details.append(f'24 Hour form number already exists: {twenty_four_hour_form_number}')
             if twelve_hour_form_number_already_exists:
                 error_details.append(f'12 Hour form number already exists: {twelve_hour_form_number}')
+            if irp_form_number_already_exists:
+                error_details.append(f'IRP form number already exists: {irp_form_number}')
 
             kwargs['error'] = {
                 'error_code': ErrorCode.E09,
@@ -133,6 +149,14 @@ def check_if_form_number_was_used(**kwargs) -> tuple:
             return False, kwargs
     except Exception as e:
         logger.error(e)
+        kwargs['error'] = {
+                'error_code': ErrorCode.G00,
+                'error_details': str(e),
+                'event_id': data.get('ff_application_id', None),
+                'event_type': get_event_type(data),
+                'ticket_no': get_ticket_no(data),
+                'func': check_if_form_number_was_used,
+            }
         return False, kwargs
     return True, kwargs    
 
@@ -217,6 +241,7 @@ def save_event_data(**kwargs) -> tuple:
                 driver_is_regist_owner=data.get('driver_is_regist_owner'),
                 driver_licence_expiry=datetime.strptime(
                     data.get('driver_licence_expiry'), "%Y-%m-%dT%H:%M:%S.%f%z") if data.get('driver_licence_expiry') else None,
+                driver_licence_expiry_year=data.get('driver_licence_expiry_year'),
                 driver_licence_class=data.get('driver_licence_class'),
                 unlicenced_prohibition_number=data.get(
                     'unlicenced_prohibition_number'),
@@ -337,22 +362,23 @@ def save_event_data(**kwargs) -> tuple:
             irp_form = IRPMapper.map_to_irp_form(data, date_created)
             event.irp_form = irp_form
 
-        if (data.get('ff_application_id') is not None):
-            submission = Submission(
-                ff_application_id=data.get('ff_application_id'),
-                submitted_offline=data.get('submitted_offline', False),
-                created_dt=date_created,
-                updated_dt=date_created,
-                created_by=user_guid,
-                updated_by=user_guid,
-            )
-            db.session.add(submission)
+        submission = Submission(
+            event=event,
+            ff_application_id=data.get('ff_application_id'),
+            submitted_offline=data.get('submitted_offline', False),
+            created_dt=date_created,
+            updated_dt=date_created,
+            created_by=user_guid,
+            updated_by=user_guid,
+        )
+        db.session.add(submission)
 
         logger.verbose('Saving Event')
-        db.session.add(event)
-        db.session.commit()
+        db.session.flush()
+        kwargs['submission_id'] = submission.submission_id
     except Exception as e:
         logger.error(e)
+        db.session.rollback()
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
             'error_code': ErrorCode.E01,
@@ -391,6 +417,14 @@ def save_event_pdf(**kwargs) -> tuple:
     try:
         data = kwargs.get('payload')
         event = kwargs.get('event')
+        submission_id = kwargs.get('submission_id')
+        form_version = data.get("form_details", {}).get("form_version")
+        form_keys = ['VI', 'TwentyFourHour', 'TwelveHour', 'IRP']
+
+        if not any(data.get(k) for k in form_keys): # If no forms are included in the payload, skip PDF processing
+            logger.verbose('No forms included in payload, skipping PDF processing')
+            return True, kwargs
+
         cert_path = Config.MINIO_CERT_FILE
         os.environ['SSL_CERT_FILE'] = cert_path
         client = Minio(
@@ -399,153 +433,150 @@ def save_event_pdf(**kwargs) -> tuple:
             secret_key=Config.MINIO_SK,
             secure=Config.MINIO_SECURE,
         )
-        if(data.get('VI')):
-            len_of_incident_details=len(data.get('incident_details', '')) if (data.get('incident_details')) else 0
-            filename = str(uuid.uuid4().hex)
-            pdf_filename = f"/tmp/{filename}.pdf"
-            encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
+        if data.get('VI') and data.get("VI_form_png"):
+            len_of_incident_details=len(data.get('incident_details') or '')
             b64encoded = data.get("VI_form_png").split(",")[1]
-            extra_page_flag=len_of_incident_details>500
-            page_num=3 if extra_page_flag else 2
-            with open(f"/tmp/{filename}.png", "wb") as fh:
-                fh.write(b64decode(b64encoded))
-            split_image(f"/tmp/{filename}.png", page_num, 1, False, True,output_dir="/tmp")
-            
-            if extra_page_flag:
-                list_of_images=[f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png", f"/tmp/{filename}_2.png"]
-            else:
-                list_of_images=[f"/tmp/{filename}_0.png", f"/tmp/{filename}_1.png"]
+            storage_key = _process_and_upload_pdf(client, 
+                                    b64encoded, 
+                                    num_pages=3 if len_of_incident_details > VI_EXTRA_PAGE_THRESHOLD else 2)
 
-            pdf_bytes=None
-            pdf_bytes = create_pdf_with_images(*list_of_images)
-            with open(pdf_filename, "wb") as file:
-                file.write(pdf_bytes)
-            encryptPdf_method1(
-                pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-            logger.verbose('File encrypted')
-            encoded_file_name = f"{filename}_encrypted.pdf"
-            encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
-            with open(encoded_pdf_filepath, 'rb') as file_data:
-                client.fput_object(Config.STORAGE_BUCKET_NAME,
-                                   encoded_file_name, encoded_pdf_filepath)
-            logger.verbose('File uploaded')
-
+            #TODO: this is now being stored in the SubmissionFormRef, once the dependency on this table is removed, delete this
             form_storage = FormStorageRefs(
                 form_id_vi=event.vi_form.form_id,
                 event_id=event.event_id,
-                form_type='VI',
-                storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
+                form_type=VI_FORM_TYPE,
+                storage_key=storage_key,
                 created_dt=date_created,
                 updated_dt=date_created,
             )
             db.session.add(form_storage)
-            db.session.commit()
-        if(data.get('TwentyFourHour')):
-            filename = str(uuid.uuid4().hex)
-            pdf_filename = f"/tmp/{filename}.pdf"
-            encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
-            b64encoded = data.get("TwentyFourHour_form_png").split(",")[1]
-            with open(f"/tmp/{filename}.png", "wb") as fh:
-                fh.write(b64decode(b64encoded))
-            pdf_bytes = create_pdf_with_images(f"/tmp/{filename}.png", is_landscape=True)
-            with open(pdf_filename, "wb") as file:
-                file.write(pdf_bytes)
-            encryptPdf_method1(
-                pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-            logger.verbose('File encrypted')
-            encoded_file_name = f"{filename}_encrypted.pdf"
-            encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
-            with open(encoded_pdf_filepath, 'rb') as file_data:
-                client.fput_object(Config.STORAGE_BUCKET_NAME,
-                                   encoded_file_name, encoded_pdf_filepath)
-            logger.verbose('File uploaded')
 
+            _add_submission_events(
+                str(data.get('VI_number')), 
+                VI_FORM_TYPE,
+                form_version, 
+                submission_id, 
+                storage_key,
+                list_of_events=['VIPS', 'ADMIN', 'ODW'])
+
+        if data.get('TwentyFourHour') and data.get("TwentyFourHour_form_png"):
+            b64encoded = data.get("TwentyFourHour_form_png").split(",")[1]
+            storage_key = _process_and_upload_pdf(client, 
+                                    b64encoded,
+                                    is_landscape=True)
+
+            #TODO: this is now being stored in the SubmissionFormRef, once the dependency on this table is removed, delete this
             form_storage = FormStorageRefs(
                 form_id_24h=event.twenty_four_hour_form.form_id,
                 event_id=event.event_id,
-                form_type='24h',
-                storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
+                form_type=TWENTY_FOUR_HOUR_FORM_TYPE,
+                storage_key=storage_key,
                 created_dt=date_created,
                 updated_dt=date_created,
             )
             db.session.add(form_storage)
-            db.session.commit()
 
-        if(data.get('TwelveHour')):
-            filename = str(uuid.uuid4().hex)
-            pdf_filename = f"/tmp/{filename}.pdf"
-            encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
+            _add_submission_events(
+                str(data.get('twenty_four_hour_number')), 
+                TWENTY_FOUR_HOUR_FORM_TYPE,
+                form_version, 
+                submission_id, 
+                storage_key,
+                list_of_events=['ICBC', 'ADMIN', 'ODW'])            
+
+        if data.get('TwelveHour') and data.get("TwelveHour_form_png"):
             b64encoded = data.get("TwelveHour_form_png").split(",")[1]
-            with open(f"/tmp/{filename}.png", "wb") as fh:
-                fh.write(b64decode(b64encoded))
-            pdf_bytes = create_pdf_with_images(f"/tmp/{filename}.png", is_landscape=True)
-            with open(pdf_filename, "wb") as file:
-                file.write(pdf_bytes)
-            encryptPdf_method1(
-                pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-            logger.verbose('File encrypted')
-            encoded_file_name = f"{filename}_encrypted.pdf"
-            encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
-            with open(encoded_pdf_filepath, 'rb') as file_data:
-                client.fput_object(Config.STORAGE_BUCKET_NAME,
-                                   encoded_file_name, encoded_pdf_filepath)
-            logger.verbose('File uploaded')
-            
+            storage_key = _process_and_upload_pdf(client, 
+                                    b64encoded,
+                                    is_landscape=True)
 
+            #TODO: this is now being stored in the SubmissionFormRef, once the dependency on this table is removed, delete this
             form_storage = FormStorageRefs(
                 form_id_12h=event.twelve_hour_form.form_id,
                 event_id=event.event_id,
-                form_type='12h',
-                storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
+                form_type=TWELVE_HOUR_FORM_TYPE,
+                storage_key=storage_key,
                 created_dt=date_created,
                 updated_dt=date_created,
             )
             db.session.add(form_storage)
-            db.session.commit()
 
-        if(data.get('IRP') and data.get("IRP_form_png")):
-            filename = str(uuid.uuid4().hex)
-            pdf_filename = f"/tmp/{filename}.pdf"
-            encrypted_pdf_filename = f"/tmp/{filename}_encrypted.pdf"
+            _add_submission_events(
+                str(data.get('twelve_hour_number')), 
+                TWELVE_HOUR_FORM_TYPE,
+                form_version, 
+                submission_id, 
+                storage_key,
+                list_of_events=['ICBC', 'ADMIN', 'ODW'])
+
+
+        if data.get('IRP') and data.get("IRP_form_png"):
             b64encoded = data.get("IRP_form_png").split(",")[1]
-            with open(f"/tmp/{filename}.png", "wb") as fh:
-                fh.write(b64decode(b64encoded))
-            pdf_bytes = create_pdf_with_images(f"/tmp/{filename}.png")
-            with open(pdf_filename, "wb") as file:
-                file.write(pdf_bytes)
-            encryptPdf_method1(
-                pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-            logger.verbose('File encrypted')
-            encoded_file_name = f"{filename}_encrypted.pdf"
-            encoded_pdf_filepath = f'/tmp/{encoded_file_name}'
-            with open(encoded_pdf_filepath, 'rb') as file_data:
-                client.fput_object(Config.STORAGE_BUCKET_NAME,
-                                   encoded_file_name, encoded_pdf_filepath)
-            logger.verbose('IRP File uploaded')
-            
+            storage_key = _process_and_upload_pdf(client, b64encoded)
 
+            #TODO: this is now being stored in the SubmissionFormRef, once the dependency on this table is removed, delete this
             form_storage = FormStorageRefs(
                 form_id_irp=event.irp_form.form_id,
                 event_id=event.event_id,
-                form_type='IRP',
-                storage_key=f'{Config.STORAGE_BUCKET_NAME}/{encoded_file_name}',
+                form_type=IRP_FORM_TYPE,
+                storage_key=storage_key,
                 created_dt=date_created,
                 updated_dt=date_created,
             )
             db.session.add(form_storage)
-            db.session.commit()            
+
+            _add_submission_events(
+                str(data.get('IRP_number')), 
+                IRP_FORM_TYPE,
+                form_version, 
+                submission_id, 
+                storage_key,
+                list_of_events=['VIPS', 'ADMIN', 'RTS'])
 
     except Exception as e:
         logger.error(e)
+        db.session.rollback()
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
                 'error_code': ErrorCode.E02,
                 'error_details': e,
-                'event_id': event.event_id,
+                'event_id': event.event_id if event else None,
                 'event_type': get_event_type(data),
                 'ticket_no': get_ticket_no(data),
                 'func': save_event_pdf,
             }
+        return False, kwargs
+    return True, kwargs
+
+def _add_submission_events(form_number:str, form_type:str, form_version:str, submission_id:int, storage_key:str, list_of_events:list=None):
+    list_of_events = list_of_events or []
+    form_ref = SubmissionFormRef(
+                submission_id=submission_id,
+                form_type=form_type,
+                form_id=form_number,
+                form_version=form_version if form_version else "unknown",
+                storage_key=storage_key,
+            )
+    form_ref.events = [SubmissionEvent(destination=d) for d in list_of_events]
+    db.session.add(form_ref)
+
+
+def commit_transaction(**kwargs) -> tuple:
+    """Commit the shared DB transaction that spans save_event_data and save_event_pdf."""
+    try:
+        db.session.commit()
+    except Exception as e:
+        logger.error(e)
+        db.session.rollback()
+        data = kwargs.get('payload', {})
+        kwargs['error'] = {
+            'error_code': ErrorCode.E01,
+            'error_details': str(e),
+            'event_id': None,
+            'event_type': get_event_type(data),
+            'ticket_no': get_ticket_no(data),
+            'func': commit_transaction,
+        }
         return False, kwargs
     return True, kwargs
 
@@ -599,10 +630,60 @@ def get_json_payload(**kwargs) -> tuple:
 def validate_form_payload(**kwargs) -> tuple:
     logger.verbose("inside validate_form_payload()")
 
-    if(kwargs.get('payload')):
-        return True, kwargs
-    logger.warning("validation error: " + json.dumps(''))
-    return False, kwargs
+    if (not kwargs.get('payload')):
+        error_message = 'No payload provided'
+        logger.warning(error_message)
+        kwargs['error'] = {
+            'error_code': ErrorCode.E10,
+            'error_details': error_message,
+            'func': validate_form_payload,
+        }
+        return False, kwargs
+    
+    payload = kwargs.get('payload')
+    if (payload.get('TwelveHour') and not payload.get('twelve_hour_number')) or \
+       (payload.get('TwentyFourHour') and not payload.get('twenty_four_hour_number')) or \
+         (payload.get('IRP') and not payload.get('IRP_number')) or \
+           (payload.get('VI') and not payload.get('VI_number')):
+        error_message = "Invalid payload provided: missing form number for the indicated form type"
+        logger.warning(error_message)
+        kwargs['error'] = {
+            'error_code': ErrorCode.E10,
+            'error_details': error_message,
+            'func': validate_form_payload,
+        }
+        kwargs['response_dict'] = {
+            'error_details': error_message
+        }
+        return False, kwargs
+    
+    if (not payload.get('TwelveHour')) and (not payload.get('TwentyFourHour')) and (not payload.get('IRP')) and (not payload.get('VI')):
+        error_message = "Invalid payload provided: no form type indicated"
+        logger.warning(error_message)
+        kwargs['error'] = {
+            'error_code': ErrorCode.E10,
+            'error_details': error_message,
+            'func': validate_form_payload,
+        }
+        kwargs['response_dict'] = {
+            'error_details': error_message
+        }
+        return False, kwargs
+    
+    if (not payload.get('ff_application_id')):
+        error_message = 'Invalid payload provided: missing ff_application_id'
+        logger.warning(error_message)
+        kwargs['error'] = {
+            'error_code': ErrorCode.E10,
+            'error_details': error_message,
+            'func': validate_form_payload,
+        }
+        kwargs['response_dict'] = {
+            'error_details': error_message
+        }
+        return False, kwargs
+
+    return True, kwargs
 
 def get_event_type(data):
     event_type = None
@@ -629,3 +710,96 @@ def get_ticket_no(data):
         return data.get('VI_number')
     else:
         return None
+
+def _process_and_upload_pdf(client, b64encoded, num_pages=1, is_landscape=False) -> str:
+    """Process the base64 encoded image, convert to PDF, encrypt and upload to MinIO. Returns the storage key of the uploaded file."""
+
+    filename = uuid.uuid4().hex
+    pdf_path = f"/tmp/{filename}.pdf"
+    png_path = f"/tmp/{filename}.png"
+    encrypted_pdf = f"{filename}_encrypted.pdf"
+    encrypted_pdf_path = f'/tmp/{encrypted_pdf}'
+
+    try:        
+        with open(png_path, "wb") as fh:
+            fh.write(b64decode(b64encoded))
+
+        if num_pages > 1:            
+            split_image(png_path, num_pages, 1, False, True, output_dir="/tmp")
+
+            list_of_images = [f"/tmp/{filename}_{i}.png" for i in range(num_pages)]            
+        else:
+            list_of_images=[png_path]
+
+        pdf_bytes = create_pdf_with_images(*list_of_images, is_landscape=is_landscape)
+        with open(pdf_path, "wb") as file:
+            file.write(pdf_bytes)
+        encryptPdf_method1(
+            pdf_path, Config.ENCRYPT_KEY, encrypted_pdf_path)
+        logger.verbose('File encrypted')
+        
+        client.fput_object(Config.STORAGE_BUCKET_NAME,
+            encrypted_pdf, encrypted_pdf_path)
+        logger.verbose('File uploaded')
+
+        return f"{Config.STORAGE_BUCKET_NAME}/{encrypted_pdf}"
+    finally:
+        for path in [*list_of_images, pdf_path, encrypted_pdf_path]:  # cleanup temp files
+            if os.path.exists(path):
+                os.remove(path)
+
+
+def get_irp_form_by_event_id(**kwargs) -> tuple:
+    """Fetch an IRPForm by its parent event_id; stores it in kwargs['irp_form']."""
+    logger.verbose('inside get_irp_form_by_event_id()')
+    event_id = kwargs.get('event_id')
+    try:
+        irp_form = db.session.query(IRPForm).filter(IRPForm.event_id == event_id).first()
+        if irp_form is None:
+            logger.warning(f'IRP form for event {event_id} not found')
+            return False, kwargs
+        kwargs['irp_form'] = irp_form
+    except Exception as e:
+        logger.error(e)
+        return False, kwargs
+    return True, kwargs
+
+
+def log_irp_update_to_splunk(**kwargs) -> tuple:
+    try:
+        payload = kwargs.get('payload')
+        irp_form = kwargs.get('irp_form')
+        payload_masked = _mask_sensitive_data(payload)
+        kwargs['splunk_data'] = {
+            'event': 'update IRP RTS event',
+            'event_id': irp_form.event_id if irp_form else None,
+            'irp_number': irp_form.irp_number if irp_form else None,
+            'payload': payload_masked,
+        }
+    except Exception as e:
+        logger.error(e)
+    return True, kwargs
+
+def update_irp_form_data(**kwargs) -> tuple:
+    """Apply patch fields from the request payload onto the fetched IRPForm, including ASD tests."""
+    logger.verbose('inside update_irp_form_data()')
+    irp_form = kwargs.get('irp_form')
+    original_payload = kwargs.get('payload')
+    try:
+        IRPMapper.map_update_irp_form(irp_form, original_payload)
+
+        kwargs['response_dict'] = {'event_id': irp_form.event_id}
+    except Exception as e:
+        logger.error(e)
+        db.session.rollback()
+        kwargs['response_dict'] = {'error_details': str(e)}
+        kwargs['error'] = {
+            'error_code': ErrorCode.E01,
+            'error_details': str(e),
+            'event_id': irp_form.event_id if irp_form else None,
+            'event_type': EventType.IRP,
+            'ticket_no': irp_form.irp_number if irp_form else None,
+            'func': update_irp_form_data,
+        }
+        return False, kwargs
+    return True, kwargs

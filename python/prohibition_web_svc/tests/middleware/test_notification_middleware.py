@@ -55,7 +55,8 @@ def test_validate_mv6020_email_payload_success():
         "template": "mv6020.html",
         "data": {
             "print_options": {
-                "type": "entity"
+                "type": "entity",
+                "email": "test@example.com"
             }
         }
     })
@@ -166,6 +167,117 @@ def test_validate_email_payload_exception_handling():
     assert "forced exception for testing" in error["error_details"]
     assert error["func"] == "validate_email_payload"
     assert error["event_type"] == notification_middleware.EVENT_TYPE    
+
+
+def test_validate_email_payload_unknown_template():
+    request = MockRequest(json_data={"template": "unknown.html", "data": {}})
+
+    result, returned_kwargs = notification_middleware.validate_email_payload(request=request)
+
+    assert result is False
+    assert returned_kwargs["response_dict"]["error_details"] == "Unknown template 'unknown.html'."
+    assert returned_kwargs["error"]["error_code"] == notification_middleware.ErrorCode.N02
+    assert returned_kwargs["error"]["func"] == "validate_email_payload"
+
+
+def test_validate_email_payload_mv6020_print_validation_failure_passthrough():
+    request = MockRequest(
+        json_data={
+            "template": "mv6020.html",
+            "data": {"print_options": {"type": "icbc", "email": "x@example.com"}},
+        }
+    )
+    expected = {
+        "request": request,
+        "error": {
+            "error_code": notification_middleware.ErrorCode.P01,
+            "error_details": "upstream print validation failed",
+        },
+    }
+
+    with patch(
+        "python.prohibition_web_svc.middleware.notification_middleware.print_middleware.validate_print_payload",
+        return_value=(False, expected),
+    ):
+        result, returned_kwargs = notification_middleware.validate_email_payload(request=request)
+
+    assert result is False
+    assert returned_kwargs["error"]["error_details"] == "upstream print validation failed"
+
+
+def test_validate_email_payload_mv6020_missing_print_options_email():
+    request = MockRequest(
+        json_data={
+            "template": "mv6020.html",
+            "data": {"print_options": {"type": "icbc"}},
+        }
+    )
+
+    with patch(
+        "python.prohibition_web_svc.middleware.notification_middleware.print_middleware.validate_print_payload",
+        return_value=(True, {"request": request, "payload": request.get_json()}),
+    ):
+        result, returned_kwargs = notification_middleware.validate_email_payload(request=request)
+
+    assert result is False
+    assert returned_kwargs["response_dict"]["error_details"] == "Missing or invalid print_options in payload"
+    assert returned_kwargs["error"]["func"] == "validate_email_payload(MV6020)"
+
+
+def test_validate_email_payload_mv6020_invalid_print_type():
+    request = MockRequest(
+        json_data={
+            "template": "mv6020.html",
+            "data": {"print_options": {"type": "badtype", "email": "x@example.com"}},
+        }
+    )
+
+    with patch(
+        "python.prohibition_web_svc.middleware.notification_middleware.print_middleware.validate_print_payload",
+        return_value=(True, {"request": request, "payload": request.get_json()}),
+    ):
+        result, returned_kwargs = notification_middleware.validate_email_payload(request=request)
+
+    assert result is False
+    assert "Invalid or missing print_options.type 'badtype'" in returned_kwargs["response_dict"]["error_details"]
+    assert "Allowed types" in returned_kwargs["error"]["error_details"]
+
+
+def test_validate_email_payload_admin_submission_failure_template_success():
+    request = MockRequest(
+        json_data={
+            "template": notification_middleware.EMAIL_ADMIN_ON_SUBMISSION_FAILURE,
+            "application_id": "APP123",
+            "form_id": "FORM456",
+            "submitted_date": "2025-10-01",
+            "error_details": "Some error",
+            "application_url": "https://app.link",
+            "camunda_incident_url": "https://camunda.link",
+        }
+    )
+
+    result, returned_kwargs = notification_middleware.validate_email_payload(request=request)
+
+    assert result is True
+    assert returned_kwargs["payload"]["template"] == notification_middleware.EMAIL_ADMIN_ON_SUBMISSION_FAILURE
+
+
+def test_validate_email_payload_access_request_approved_template_success():
+    request = MockRequest(
+        json_data={
+            "template": notification_middleware.EMAIL_USER_ON_ACCESS_REQ_APPROVAL,
+            "email": "doe.joe@example.com",
+            "first_name": "Joe",
+            "last_name": "Doe",
+            "approval_datetime": "2025-08-22T00:00:00-07:00",
+            "digital_forms_url": "https://example.gov.bc.ca/roadside-forms/form",
+        }
+    )
+
+    result, returned_kwargs = notification_middleware.validate_email_payload(request=request)
+
+    assert result is True
+    assert returned_kwargs["payload"]["template"] == notification_middleware.EMAIL_USER_ON_ACCESS_REQ_APPROVAL
 
 def test_send_email_with_mv6020_template():
     kwargs = {"payload": {"template": "mv6020.html"}}
