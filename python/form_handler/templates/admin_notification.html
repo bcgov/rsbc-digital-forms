@@ -1,0 +1,25 @@
+{% extends "email_alert_base.html" %}
+
+{% block primary_text_1 %}
+<div>
+    <p><strong>{{body['agency_name']}},</strong></p>
+    <p>A new form was submitted using the Digital Forms system.</p>
+    <p>
+      Form type: {{body['form_type']}}</br>
+      Form number: {{body['form_number']}}</br>
+      Agency file number: {{body['agency_file_number']}}
+    </p>
+
+    <p>
+      Submission date: {{body['submission_date']}}</br>
+      Officer: {{body['officer_name']}}</br>
+      Badge number: {{body['officer_badge']}}
+    </p>
+</div>
+{% endblock %}
+
+{% block salutation_block %}{% endblock %}
+
+{% block callout_block %}{% endblock %}
+{% block sign_off %}{% endblock %}
+{% block email_not_monitored %}{% endblock %}

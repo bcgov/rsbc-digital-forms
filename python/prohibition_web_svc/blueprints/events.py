@@ -62,6 +62,10 @@ def create():
                     {"try": splunk.log_to_splunk, "fail": []},
                     {"try": http_responses.server_error_response, "fail": []},
                 ]},
+                {"try": event_middleware.validate_form_payload, "fail": [
+                    {"try": common_middleware.record_event_error, "fail": []},
+                    {"try": http_responses.bad_request_response, "fail": []},
+                ]},
                 {"try": event_middleware.log_payload_to_splunk, "fail": []},
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": event_middleware.check_if_application_id_exists, "fail": [
@@ -80,6 +84,10 @@ def create():
                      {"try": common_middleware.record_event_error, "fail": []},
                      {"try": http_responses.server_error_response, "fail": []},
                 ]},
+                {"try": event_middleware.commit_transaction, "fail": [
+                     {"try": common_middleware.record_event_error, "fail": []},
+                     {"try": http_responses.server_error_response, "fail": []},
+                ]},
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": http_responses.successful_create_response, "fail": []},
             ],
@@ -90,44 +98,39 @@ def create():
         return kwargs.get('response')
 
 
-@bp.route('', methods=['PATCH'])
-def update(form_type, form_id):
+@bp.route('/event/irp/<int:event_id>', methods=['PUT'])
+def update_irp(event_id):
     """
-    Update an existing form is used when either a) submitting a form using an previously
-    leased form_id; or, b) renewing the lease of a form_id.  If a patch request is
-    received without a payload, this endpoint assumes the form lease should be renewed;
-    otherwise, the payload is received as a form submission.
+    Update an existing IRP form in the database by event_id.
     """
-    # if request.method == 'PATCH':
-    #     kwargs = helper.middle_logic(
-    #         get_authorized_keycloak_user() + [
-    #             {"try": form_middleware.request_contains_a_payload, "fail": [
-    #                 # Request contains no payload - renew form lease
-    #                 {"try": form_middleware.renew_form_id_lease, "fail": [
-    #                     {"try": splunk_middleware.unable_to_renew_lease, "fail": []},
-    #                     {"try": splunk.log_to_splunk, "fail": []},
-    #                     {"try": http_responses.bad_request_response, "fail": []},
-    #                 ]},
-    #                 {"try": splunk_middleware.form_lease_renewed, "fail": []},
-    #                 {"try": splunk.log_to_splunk, "fail": []},
-    #                 {"try": http_responses.successful_update_response, "fail": []},
-    #             ]},
-    #             # Request contains a payload - process submitted form
-    #             {"try": splunk_middleware.form_submitted, "fail": []},
-    #             {"try": splunk.log_to_splunk, "fail": []},
-    #             {"try": form_middleware.mark_form_as_printed, "fail": [
-    #                 # TODO - Write to RabbitMQ fail queue
-    #                 {"try": http_responses.record_not_found, "fail": []},
-    #             ]},
-    #             # TODO - Write to RabbitMQ ingested queue
-    #             {"try": http_responses.successful_update_response, "fail": []}
-    #         ],
-    #         required_permission='forms-update',
-    #         form_type=form_type,
-    #         form_id=form_id,
-    #         request=request,
-    #         config=Config)
-    #     return kwargs.get('response')
+    if request.method == 'PUT':
+        logger.verbose(f"PUT /event/irp/{event_id} endpoint called")
+        kwargs = middle_logic(
+            get_authorized_keycloak_user() + [
+                {"try": event_middleware.request_contains_a_payload, "fail": [
+                    {"try": http_responses.bad_request_response, "fail": []},
+                ]},
+                {"try": event_middleware.get_irp_form_by_event_id, "fail": [
+                    {"try": http_responses.record_not_found, "fail": []},
+                ]},
+                {"try": event_middleware.log_irp_update_to_splunk, "fail": []},
+                {"try": splunk.log_to_splunk, "fail": []},
+                {"try": event_middleware.update_irp_form_data, "fail": [
+                    {"try": common_middleware.record_event_error, "fail": []},
+                    {"try": http_responses.bad_request_response, "fail": []},
+                ]},
+                {"try": event_middleware.commit_transaction, "fail": [
+                    {"try": common_middleware.record_event_error, "fail": []},
+                    {"try": http_responses.server_error_response, "fail": []},
+                ]},
+                {"try": http_responses.successful_update_response, "fail": []},
+            ],
+            required_permission='forms-update',
+            event_id=event_id,
+            request=request,
+            config=Config)
+        logger.verbose(f"PUT /event/irp/{event_id} endpoint response code: {kwargs.get('response').status_code}")
+        return kwargs.get('response')
 
 
 @bp.route("", methods=['DELETE'])

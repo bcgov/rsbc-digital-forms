@@ -192,6 +192,9 @@ def test_save_collision_data_success(monkeypatch):
     assert result is True
     assert out_kwargs['response_dict']['submission_id'] == 42
     assert out_kwargs['submission_id'] == 42
+    mock_session.add.assert_called_once()
+    mock_session.flush.assert_called_once()
+    mock_session.commit.assert_not_called()
 
 def test_save_offline_collision_data_success(monkeypatch):
     mock_db = MagicMock()
@@ -210,6 +213,9 @@ def test_save_offline_collision_data_success(monkeypatch):
     assert result is True
     assert out_kwargs['response_dict']['submission_id'] == 42
     assert out_kwargs['submission_id'] == 42
+    mock_session.add.assert_called_once()
+    mock_session.flush.assert_called_once()
+    mock_session.commit.assert_not_called()
 
 
 def test_save_collision_data_success_with_update_form_status_warning(monkeypatch):
@@ -228,6 +234,9 @@ def test_save_collision_data_success_with_update_form_status_warning(monkeypatch
     assert result is True
     assert out_kwargs['response_dict']['submission_id'] == 42
     assert out_kwargs['submission_id'] == 42
+    mock_session.add.assert_called_once()
+    mock_session.flush.assert_called_once()
+    mock_session.commit.assert_not_called()
 
 def test_save_collision_data_exception(monkeypatch):
     mock_db = MagicMock()
@@ -243,62 +252,91 @@ def test_save_collision_data_exception(monkeypatch):
     assert 'error' in out_kwargs
     assert out_kwargs['error']['error_code'] == ErrorCode.E01
 
+def test_commit_transaction_success(monkeypatch):
+    mock_db = MagicMock()
+    mock_session = MagicMock()
+    mock_db.session = mock_session
+    monkeypatch.setattr(collision_middleware, 'db', mock_db)
+
+    result, out_kwargs = collision_middleware.commit_transaction(payload={'collision_case_num': 'RZ100001'})
+    assert result is True
+    assert out_kwargs == {'payload': {'collision_case_num': 'RZ100001'}}
+    mock_session.commit.assert_called_once()
+    mock_session.rollback.assert_not_called()
+
+
+def test_commit_transaction_failure(monkeypatch):
+    mock_db = MagicMock()
+    mock_session = MagicMock()
+    mock_session.commit.side_effect = Exception('commit error')
+    mock_db.session = mock_session
+    monkeypatch.setattr(collision_middleware, 'db', mock_db)
+
+    result, out_kwargs = collision_middleware.commit_transaction(payload={'collision_case_num': 'RZ100001'})
+    assert result is False
+    assert out_kwargs['error']['error_code'] == ErrorCode.E01
+    assert out_kwargs['error']['ticket_no'] == 'RZ100001'
+    mock_session.commit.assert_called_once()
+    mock_session.rollback.assert_called_once()
+
 def test_save_event_pdf_success():
     kwargs = {'payload': DUMMY_PAYLOAD, 'submission_id': 42}
     with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db, \
          patch('python.prohibition_web_svc.middleware.collision_middleware.render_with_playwright') as mock_render, \
-         patch('python.prohibition_web_svc.middleware.collision_middleware.Minio') as mock_minio, \
-         patch('python.prohibition_web_svc.middleware.collision_middleware.encryptPdf_method1') as mock_encrypt, \
-         patch('python.prohibition_web_svc.middleware.collision_middleware.uuid') as mock_uuid, \
-         patch('builtins.open', new_callable=MagicMock) as mock_open:
+         patch('python.prohibition_web_svc.middleware.collision_middleware._save_file_to_minio') as mock_save_file_to_minio:
         mock_render.return_value = (True, b'%PDF-1.4...')
         mock_session = MagicMock()
         mock_db.session = mock_session
-        mock_minio_instance = MagicMock()
-        mock_minio.return_value = mock_minio_instance
-        mock_uuid_obj = MagicMock()
-        mock_uuid_obj.hex = 'unique-id'
-        mock_uuid.uuid4.return_value = mock_uuid_obj
+        mock_save_file_to_minio.return_value = 'unique-id_encrypted.pdf'
         
         result, out_kwargs = collision_middleware.save_event_pdf(**kwargs)
         assert result is True
         assert out_kwargs == kwargs
-        # Verify that db operations were called
         mock_session.add.assert_called_once()
-        mock_session.add.assert_called_with(SubmissionFormRef(
-            submission_id=42,
-            form_type='MV6020',
-            form_id='RZ100001',
-            form_version='MV6020 V1',
-            storage_key='test/unique-id_encrypted.pdf'
-        ))
-        mock_session.commit.assert_called_once()
+        added_form_ref = mock_session.add.call_args.args[0]
+        assert isinstance(added_form_ref, SubmissionFormRef)
+        assert added_form_ref.submission_id == 42
+        assert added_form_ref.form_type == 'MV6020'
+        assert added_form_ref.form_id == 'RZ100001'
+        assert added_form_ref.form_version == 'MV6020 V1'
+        assert added_form_ref.storage_key == 'test/unique-id_encrypted.pdf'
+        assert len(added_form_ref.events) == 1
+        assert added_form_ref.events[0].destination == 'ICBC'
+        mock_session.flush.assert_called_once()
+        mock_session.rollback.assert_not_called()
+        mock_session.commit.assert_not_called()
 
 
 def test_save_event_pdf_render_failed():
     kwargs = {'payload': DUMMY_PAYLOAD, 'submission_id': 42}
-    with patch('python.prohibition_web_svc.middleware.collision_middleware.render_with_playwright') as mock_render:
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware.render_with_playwright') as mock_render:
+        mock_db.session = MagicMock()
         mock_render.return_value = (False, {'error': 'pdf error'})
-        
+
         result, out_kwargs = collision_middleware.save_event_pdf(**kwargs)
-        assert result is True
+        assert result is False
         assert 'error' in out_kwargs
         assert out_kwargs['error']['error_code'] == ErrorCode.C04
         assert 'pdf error' in str(out_kwargs['error']['error_details'])
+        mock_db.session.rollback.assert_called_once()
 
 def test_save_event_pdf_exception():
     kwargs = {'payload': DUMMY_PAYLOAD, 'submission_id': 42}
-    with patch('python.prohibition_web_svc.middleware.collision_middleware._save_file_to_minio') as mock_minio, \
+    with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db, \
+         patch('python.prohibition_web_svc.middleware.collision_middleware._save_file_to_minio') as mock_minio, \
          patch('python.prohibition_web_svc.middleware.collision_middleware.render_with_playwright') as mock_render, \
          patch('python.prohibition_web_svc.middleware.collision_middleware.common_middleware.record_event_error') as mock_record_error:
+        mock_db.session = MagicMock()
         mock_minio.side_effect = Exception('pdf error')
         mock_render.return_value = (True, b'%PDF-1.4...')
     
         result, out_kwargs = collision_middleware.save_event_pdf(**kwargs)
-        assert result is True
+        assert result is False
         assert 'error' in out_kwargs
         assert out_kwargs['error']['error_code'] == ErrorCode.C04
         assert 'pdf error' in str(out_kwargs['error']['error_details'])
+        mock_db.session.rollback.assert_called_once()
 
 def test_get_collision_data_success():
     """Test successful retrieval of collision data"""

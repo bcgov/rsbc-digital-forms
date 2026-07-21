@@ -8,7 +8,7 @@ from python.common.models import db, migrate, Form, UserRole, User, Agency
 from python.prohibition_web_svc.cache import cache
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.commands import register_commands
-from python.prohibition_web_svc.blueprints import static, forms, admin_forms, icbc, user_roles, admin_user_roles, admin_users, users, events, collision, print, email, files
+from python.prohibition_web_svc.blueprints import static, forms, admin_forms, icbc, user_roles, admin_user_roles, admin_users, users, events, collision, print, email, files, submissions, detachments
 from python.prohibition_web_svc.custom_json_encoder import CustomJSONEncoder
 from python.common.logging_utils import RequestContext, get_logger
 
@@ -32,6 +32,8 @@ application.register_blueprint(collision.bp)
 application.register_blueprint(print.bp)
 application.register_blueprint(email.bp)
 application.register_blueprint(files.bp)
+application.register_blueprint(submissions.bp)
+application.register_blueprint(detachments.bp)
 
 cache.init_app(application)
 db.init_app(application)

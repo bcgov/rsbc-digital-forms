@@ -37,6 +37,11 @@ $link-hover: #002244;
     .retirement-banner-message {
       font-size: 0.95rem;
       line-height: 1.5;
+
+      .retirement-banner-redirect-notice {
+        margin: 0.75rem 0;
+        font-weight: 600;
+      }
       
       strong {
         font-weight: 600;

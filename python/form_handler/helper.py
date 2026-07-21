@@ -63,8 +63,13 @@ def middle_logic(functions: list, **args):
         try_fail_node = functions.pop(0)
         logging.debug('calling try function: ' + try_fail_node['try'].__name__)
         # print(try_fail_node['try'](**args))
-        flag, args = try_fail_node['try'](**args)
-        logging.debug("result from {} is {}".format(try_fail_node['try'].__name__, flag))
+        if 'event' in try_fail_node and \
+            args.get(try_fail_node['event'], {}).get('status') == 'sent':
+            logging.info(f'Already sent to {try_fail_node["event"]}, skipping {try_fail_node["try"].__name__}')
+            flag, args = True, args
+        else:
+            flag, args = try_fail_node['try'](**args)
+            logging.debug("result from {} is {}".format(try_fail_node['try'].__name__, flag))
         if flag:
             args = middle_logic(functions, **args)
         else:
@@ -82,42 +87,21 @@ def get_storage_ref_event_type(message,app,db,event_types) -> str:
         application=app
         db=db
         # message = args.get('message')
-        event_type="unknown_event"
-        event_id=None
-        tmp_key=message.get('Key',None)
-        if tmp_key is None:
-            logging.error("tmp_key is None")
-            return event_type
-        # storage_key=tmp_key.split('/')[1]
-        storage_key = tmp_key
-        logging.verbose("storage_key: {}".format(storage_key))
-        # print(storage_key)
-        with application.app_context():
-            form = db.session.query(FormStorageRefs) \
-                .filter(FormStorageRefs.storage_key == storage_key) \
-                .all()
-            # db.session.commit()
-            logging.verbose("Form returned from query: {}".format(form))
-            if len(form) == 0 or len(form) > 1:
-                logging.info("Unexpected number of records returned from db. Setting event_type to unknown_event. Number of Records: {}".format(len(form)))
-                return "unknown_event"
-            for f in form:
-                logging.verbose("Parsing event type and event ID from form: {}".format(f))
-                # read form_ype as lower
-                event_type=f.form_type.lower()
-                event_id=f.event_id
-                logging.debug("event_type: {}".format(event_type))
-                logging.debug("event_id: {}".format(event_id))
+        logging.verbose("message received in get_storage_ref_event_type: {}".format(message))
+        event_type=message.get('FormType',"unknown_event").lower()
+        event_id=message.get('event_id',None)
+
+        logging.debug("event_type: {}".format(event_type))
+        logging.debug("event_id: {}".format(event_id))
         if event_type not in event_types:
             logging.error("event type not found: {}".format(event_type))
             raise Exception("event type not found")
-        # args['event_type']=storage_key
     except Exception as e:
         logging.error(e, exc_info=True)
         return "unknown_event",event_id
     return event_type,event_id
 
-def get_event_status(message,app,db,event_types,event_type,event_id) -> str:
+def get_event_status(app,db,event_type,event_id) -> str:
     """
     Get the event status from the message
     """
@@ -126,14 +110,7 @@ def get_event_status(message,app,db,event_types,event_type,event_id) -> str:
         application=app
         db=db
         event_status = None
-        # message = args.get('message')
-        # event_type="unknown_event"
-        tmp_key=message.get('Key',None)
-        if tmp_key is None:
-            return event_type
-        # storage_key=tmp_key.split('/')[1]
-        storage_key = tmp_key
-        # print(storage_key)
+
         with application.app_context():
             form = db.session.query(Event) \
                 .filter(Event.event_id == event_id) \
@@ -142,15 +119,12 @@ def get_event_status(message,app,db,event_types,event_type,event_id) -> str:
             if len(form) == 0 or len(form) > 1:
                 return "pending"
             for f in form:
-                # event_type=f.form_type
-                # if event_type not in event_types:
-                #     raise Exception("event type not found")
                 if event_type == "unknown_event":
                     event_status='pending'
                 if event_type == "vi":
                     event_status=f.vi_sent_status
                 elif event_type == 'irp':
-                    pass
+                    event_status='pending'
                 elif event_type == '24h' or event_type == '12h':
                     event_status=f.icbc_sent_status
         # args['event_type']=storage_key

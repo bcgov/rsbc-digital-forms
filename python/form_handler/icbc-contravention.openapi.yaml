@@ -1,0 +1,323 @@
+openapi: 3.0.3
+info:
+  title: ICBC Contravention Submission API (Reverse Engineered)
+  version: 0.1.0
+  description: |
+    Reverse-engineered OpenAPI specification for the ICBC contravention submission endpoint used by
+    the form handler service.
+
+    Source of truth for this spec is implementation behavior observed in:
+    - python/form_handler/actions.py (payload construction)
+    - python/form_handler/icbc_service.py (request path/auth/headers/response handling)
+    - mock_services/all_mock_svc/routes.py (mock response/error shape)
+
+    Notes:
+    - Two path variants are used depending on the `ICBC_USE_OAUTH` flag.
+    - The service sends all request payload keys; values may be empty strings and `dlNumber` may be null.
+    - Non-200 responses are treated as failures by the caller.
+servers:
+  - url: '{icbcApiSubmitRoot}'
+    description: ICBC submit API root (maps to ICBC_API_SUBMIT_ROOT)
+    variables:
+      icbcApiSubmitRoot:
+        default: http://localhost:5003
+
+tags:
+  - name: Contravention
+    description: Submit an ICBC contravention payload
+
+paths:
+  /dfft/v1/contravention:
+    post:
+      tags: [Contravention]
+      operationId: submitContraventionBasicPath
+      summary: Submit contravention (basic path)
+      description: |
+        Contravention submission endpoint path used when `ICBC_USE_OAUTH` is false.
+
+        The caller includes:
+        - `Authorization: Basic <base64(username:password)>`
+        - `Accept: application/json`
+        - `loginUserId: DF-Form-Handler`
+      security:
+        - basicAuth: []
+      parameters:
+        - $ref: '#/components/parameters/LoginUserIdHeader'
+      requestBody:
+        $ref: '#/components/requestBodies/ContraventionRequestBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/ContraventionAccepted'
+        '400':
+          $ref: '#/components/responses/ContraventionError'
+        '401':
+          $ref: '#/components/responses/ContraventionError'
+        '403':
+          $ref: '#/components/responses/ContraventionError'
+        '404':
+          $ref: '#/components/responses/ContraventionError'
+        '500':
+          $ref: '#/components/responses/ContraventionError'
+
+  /driverlicensing/dfft/v1/contravention:
+    post:
+      tags: [Contravention]
+      operationId: submitContraventionOauthPath
+      summary: Submit contravention (OAuth path)
+      description: |
+        Contravention submission endpoint path used when `ICBC_USE_OAUTH` is true.
+
+        The caller includes:
+        - `Authorization: Bearer <access_token>`
+        - `Accept: application/json`
+        - `loginUserId: DF-Form-Handler`
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/LoginUserIdHeader'
+      requestBody:
+        $ref: '#/components/requestBodies/ContraventionRequestBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/ContraventionAccepted'
+        '400':
+          $ref: '#/components/responses/ContraventionError'
+        '401':
+          $ref: '#/components/responses/ContraventionError'
+        '403':
+          $ref: '#/components/responses/ContraventionError'
+        '404':
+          $ref: '#/components/responses/ContraventionError'
+        '500':
+          $ref: '#/components/responses/ContraventionError'
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Legacy/basic authentication mode (ICBC_USE_OAUTH=false)
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: OAuth bearer mode (ICBC_USE_OAUTH=true)
+
+  parameters:
+    LoginUserIdHeader:
+      name: loginUserId
+      in: header
+      required: true
+      description: Service identifier sent by the caller. Observed fixed value is `DF-Form-Handler`.
+      schema:
+        type: string
+        default: DF-Form-Handler
+
+  requestBodies:
+    ContraventionRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ContraventionRequest'
+          examples:
+            alcohol24h:
+              summary: 24-hour alcohol prohibition example
+              value:
+                dlNumber: '07279851'
+                dlJurisdiction: 'BC'
+                lastName: 'SMITH'
+                firstName: 'JOHN'
+                birthdate: '19900101'
+                plateJurisdiction: 'BC'
+                plateNumber: 'ABC123'
+                pujCode: 'BC'
+                nscNumber: 'NSC001'
+                section: '215.2'
+                violationLocation: 'MERRITT'
+                noticeNumber: 'VA167936'
+                violationDate: '20240514'
+                violationTime: '1400'
+                officerDetachment: 'KAMLOOPS'
+                officerNumber: 'B001'
+                officerName: 'DOE'
+                pdf: 'JVBERi0xLjQKJcTl8uXr...'
+            drugs12h:
+              summary: 12-hour drugs prohibition example
+              value:
+                dlNumber: '00012345'
+                dlJurisdiction: 'BC'
+                lastName: 'JONES'
+                firstName: 'ALY'
+                birthdate: '19890530'
+                plateJurisdiction: 'BC'
+                plateNumber: 'XYZ987'
+                pujCode: ''
+                nscNumber: ''
+                section: '90.321'
+                violationLocation: 'VANCOUVER'
+                noticeNumber: '12H001'
+                violationDate: '20240618'
+                violationTime: '09:30'
+                officerDetachment: 'VANCOUVER'
+                officerNumber: 'A1234'
+                officerName: 'LEE'
+                pdf: 'JVBERi0xLjQKJcTl8uXr...'
+
+  responses:
+    ContraventionAccepted:
+      description: Contravention accepted by ICBC
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ContraventionResponse'
+          examples:
+            success:
+              value:
+                contraventionId: '123'
+
+    ContraventionError:
+      description: Error response (shape may vary by upstream ICBC environment)
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/ContraventionErrorEnvelope'
+              - type: object
+                additionalProperties: true
+          examples:
+            mockError:
+              value:
+                error:
+                  code: 500
+                  message: error
+                  description: error
+                  request_uri: /contravention
+                  request_id: 8b1e3c93-b977-463a-b54f-e6e8776c5e15
+        text/plain:
+          schema:
+            type: string
+          examples:
+            plainText:
+              value: Internal Server Error
+
+  schemas:
+    ContraventionRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - dlNumber
+        - dlJurisdiction
+        - lastName
+        - firstName
+        - birthdate
+        - plateJurisdiction
+        - plateNumber
+        - pujCode
+        - nscNumber
+        - section
+        - violationLocation
+        - noticeNumber
+        - violationDate
+        - violationTime
+        - officerDetachment
+        - officerNumber
+        - officerName
+        - pdf
+      properties:
+        dlNumber:
+          type: string
+          nullable: true
+          description: |
+            Driver licence number; caller pads to 8 characters for some values.
+            Can be null if source driver licence is missing.
+        dlJurisdiction:
+          type: string
+          description: Jurisdiction code mapped from internal cross-reference table.
+        lastName:
+          type: string
+        firstName:
+          type: string
+        birthdate:
+          type: string
+          pattern: '^\d{8}$'
+          description: Driver birthdate formatted as YYYYMMDD.
+        plateJurisdiction:
+          type: string
+          description: Plate jurisdiction code mapped from internal cross-reference table.
+        plateNumber:
+          type: string
+          description: Plate number uppercased and spaces removed.
+        pujCode:
+          type: string
+          description: NSC jurisdiction code; empty string when NSC fields are not provided.
+        nscNumber:
+          type: string
+          description: NSC number; empty string when NSC fields are not provided.
+        section:
+          type: string
+          description: Legislative section code derived from prohibition type and event type.
+          enum:
+            - '90.32'
+            - '215.2'
+            - '90.321'
+            - '215.3'
+        violationLocation:
+          type: string
+          description: Location value mapped from offence city cross-reference.
+        noticeNumber:
+          type: string
+          description: 12h or 24h notice number depending on event type.
+        violationDate:
+          type: string
+          pattern: '^\d{8}$'
+          description: Violation date formatted as YYYYMMDD.
+        violationTime:
+          type: string
+          description: Violation time as supplied by caller (spaces removed).
+        officerDetachment:
+          type: string
+          description: Officer detachment/city in uppercase.
+        officerNumber:
+          type: string
+          description: Officer badge number.
+        officerName:
+          type: string
+          description: Officer last name in uppercase.
+        pdf:
+          type: string
+          description: Base64-encoded PDF payload.
+
+    ContraventionResponse:
+      type: object
+      additionalProperties: true
+      required:
+        - contraventionId
+      properties:
+        contraventionId:
+          type: string
+          description: Contravention identifier returned by ICBC.
+
+    ContraventionErrorEnvelope:
+      type: object
+      additionalProperties: true
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          additionalProperties: true
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: integer
+            message:
+              type: string
+            description:
+              type: string
+            request_uri:
+              type: string
+            request_id:
+              type: string

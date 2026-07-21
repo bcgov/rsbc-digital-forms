@@ -127,7 +127,7 @@ def save_collision_data(**kwargs) -> tuple:
             logger.error(f"Failed to update form status for form {data.get('collision_case_num')}")
 
         db.session.add(submission)
-        db.session.commit()
+        db.session.flush()
 
         logger.info(f"Collision data saved with submission_id: {submission.submission_id}")
         kwargs['submission_id'] = submission.submission_id
@@ -137,6 +137,7 @@ def save_collision_data(**kwargs) -> tuple:
         }
     except Exception as e:
         logger.error(e)
+        db.session.rollback()
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
             'error_code': ErrorCode.E01,
@@ -189,10 +190,11 @@ def save_event_pdf(**kwargs) -> tuple:
         )
         form_ref.events.append(event)
         db.session.add(form_ref)
-        db.session.commit()
+        db.session.flush()
         logger.info(f"PDF saved for submission {submission_id} with storage key: {storage_key}")
     except Exception as e:
         logger.error(e)
+        db.session.rollback()
         # Set error in kwargs to get consumed by the record_event_error function
         kwargs['error'] = {
                 'error_code': ErrorCode.C04,
@@ -201,35 +203,61 @@ def save_event_pdf(**kwargs) -> tuple:
                 'ticket_no': collision_case_num,
                 'func': save_event_pdf,
             }
-        common_middleware.record_event_error(**kwargs)
+        return False, kwargs
 
+    return True, kwargs
+
+
+def commit_transaction(**kwargs) -> tuple:
+    """Commit the shared DB transaction that spans collision saves and PDF generation."""
+    try:
+        db.session.commit()
+    except Exception as e:
+        logger.error(e)
+        db.session.rollback()
+        data = kwargs.get('payload', {})
+        kwargs['error'] = {
+            'error_code': ErrorCode.E01,
+            'error_details': str(e),
+            'event_type': EVENT_TYPE,
+            'ticket_no': data.get('collision_case_num'),
+            'func': commit_transaction,
+        }
+        return False, kwargs
     return True, kwargs
 
 
 def _save_file_to_minio(pdf_bytes) -> str:
     cert_path = Config.MINIO_CERT_FILE
     os.environ['SSL_CERT_FILE'] = cert_path
-    client = Minio(
-        Config.MINIO_BUCKET_URL,
-        access_key=Config.MINIO_AK,
-        secret_key=Config.MINIO_SK,
-        secure=Config.MINIO_SECURE,
-    )
-    filename = str(uuid.uuid4().hex)
-    encoded_file_name = f"{filename}_encrypted.pdf"
-    pdf_filename = f"/tmp/{filename}.pdf"
-    encrypted_pdf_filename = f"/tmp/{encoded_file_name}"
-    with open(pdf_filename, "wb") as file:
-        file.write(pdf_bytes)
-    encryptPdf_method1(
-        pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
-    logger.verbose('File encrypted')
-    with open(encrypted_pdf_filename, 'rb') as file_data:
-        client.fput_object(Config.STORAGE_BUCKET_NAME,
-                        encoded_file_name, encrypted_pdf_filename)
-    logger.verbose('File uploaded to Minio')
 
-    return encoded_file_name
+    try:
+        client = Minio(
+            Config.MINIO_BUCKET_URL,
+            access_key=Config.MINIO_AK,
+            secret_key=Config.MINIO_SK,
+            secure=Config.MINIO_SECURE,
+        )
+        filename = str(uuid.uuid4().hex)
+        encoded_file_name = f"{filename}_encrypted.pdf"
+        pdf_filename = f"/tmp/{filename}.pdf"
+        encrypted_pdf_filename = f"/tmp/{encoded_file_name}"
+        with open(pdf_filename, "wb") as file:
+            file.write(pdf_bytes)
+        encryptPdf_method1(
+            pdf_filename, Config.ENCRYPT_KEY, encrypted_pdf_filename)
+        logger.verbose('File encrypted')
+        with open(encrypted_pdf_filename, 'rb') as file_data:
+            client.fput_object(Config.STORAGE_BUCKET_NAME,
+                            encoded_file_name, encrypted_pdf_filename)
+        logger.verbose('File uploaded to Minio')
+
+        return encoded_file_name
+    finally:
+        if os.path.exists(pdf_filename):
+            os.remove(pdf_filename)
+        if os.path.exists(encrypted_pdf_filename):
+            os.remove(encrypted_pdf_filename)
 
 def _validate_required_fields(collision: CollisionRequestPayload, kwargs: dict) -> bool:
     is_valid = _validate_collision_required_fields(collision, kwargs) and \

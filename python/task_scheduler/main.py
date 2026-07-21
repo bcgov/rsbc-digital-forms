@@ -49,10 +49,10 @@ def process_pending_events():
                         logging.error(errmsg)
                         continue
                     else:
-                        logging.info(f"Updating processed event status for event_id: {event['event_id']}")
-                        update_status,update_err=update_event_status(app,db,event['event_id'],'processed')
+                        logging.info(f"Updating processed event status for submission_id: {event['submission_id']}, event_id: {event['event_id']}")
+                        update_status,update_err=update_event_status(app,db,event['submission_id'],event['event_id'],'processed')
                         if not update_status:
-                            logging.error(f"Error in updating event status for event_id: {event['event_id']}")
+                            logging.error(f"Error in updating event status for submission_id: {event['submission_id']}, event_id: {event['event_id']}")
                             raise Exception(update_err)
                 except Exception as e:
                     logging.error(e)
