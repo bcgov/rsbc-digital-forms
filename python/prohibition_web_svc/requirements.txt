@@ -53,7 +53,7 @@ toml==0.10.2
 urllib3==2.6.3
 Werkzeug==2.3.7
 xmltodict==1.0.4
-pytest-cov==7.0.0
+pytest-cov==7.1.0
 minio==7.2.20
 Pillow==12.1.1
 PyMuPDF==1.27.2.2
