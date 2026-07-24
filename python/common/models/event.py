@@ -64,6 +64,7 @@ class Event(db.Model):
     updated_by: str
     ff_application_id: int
     submission_id: int
+    agency_id: int
 
     event_id = db.Column(db.Integer, primary_key=True)
     icbc_sent_status = db.Column(db.String)
@@ -123,6 +124,7 @@ class Event(db.Model):
     updated_dt = db.Column(db.DateTime)
     ff_application_id = db.Column(db.Integer)
     submission_id = db.Column(db.Integer, db.ForeignKey('submission.submission_id'))
+    agency_id = db.Column(db.Integer, db.ForeignKey('agency.id'), nullable=True)
 
     twenty_four_hour_form = db.relationship('TwentyFourHourForm', backref='event', lazy='joined', uselist=False)
     twelve_hour_form = db.relationship('TwelveHourForm', backref='event', lazy='joined', uselist=False)
