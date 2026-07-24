@@ -20,6 +20,8 @@ class IRPMapper:
                 admission_by_driver=data.get('irp_reason_grounds').get('admissionByDriver') if data.get('irp_reason_grounds') else False,
                 independent_witness=data.get('irp_reason_grounds').get('independentWitness') if data.get('irp_reason_grounds') else False,
                 reasonable_ground_other=data.get('irp_reason_grounds').get('other') if data.get('irp_reason_grounds') else False,
+                reasonable_suspicion_formed=data.get('irp_basics_ASD').get('reasonableSuspicionFormed') if data.get('irp_basics_ASD') else False,
+                mandatory_alcohol_screening_demand=data.get('irp_basics_ASD').get('mandatoryAlcoholScreeningDemand') if data.get('irp_basics_ASD') else False,
                 time_of_suspicion=data.get('time_suspicion_formed') if data.get('time_suspicion_formed') else None,
                 time_of_asd=data.get('time_ASD_demand') if data.get('time_ASD_demand') else None,
                 refused_or_fail=data.get('driver_refuse_breath_sample') if data.get('driver_refuse_breath_sample') else None,
@@ -84,6 +86,8 @@ class IRPMapper:
         irp_form.admission_by_driver=data.get('irp_reason_grounds').get('admissionByDriver') if data.get('irp_reason_grounds') else False
         irp_form.independent_witness=data.get('irp_reason_grounds').get('independentWitness') if data.get('irp_reason_grounds') else False
         irp_form.reasonable_ground_other=data.get('irp_reason_grounds').get('other') if data.get('irp_reason_grounds') else False
+        irp_form.reasonable_suspicion_formed=data.get('irp_basics_ASD').get('reasonableSuspicionFormed') if data.get('irp_basics_ASD') else False
+        irp_form.mandatory_alcohol_screening_demand=data.get('irp_basics_ASD').get('mandatoryAlcoholScreeningDemand') if data.get('irp_basics_ASD') else False
         irp_form.time_of_suspicion=data.get('time_suspicion_formed') if data.get('time_suspicion_formed') else None
         irp_form.time_of_asd=data.get('time_ASD_demand') if data.get('time_ASD_demand') else None
         irp_form.refused_or_fail=data.get('driver_refuse_breath_sample') if data.get('driver_refuse_breath_sample') else None
