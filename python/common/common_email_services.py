@@ -1,3 +1,5 @@
+import os
+
 from keycloak import KeycloakOpenID
 from python.common import splunk
 from python.common.config import Config
@@ -47,6 +49,7 @@ def _send(payload, config, ticket_no) -> bool:
 
 
 def get_common_services_access_token(config):
+    os.environ['SSL_CERT_FILE'] = ''
     # Configure Keycloak client
     keycloak_openid = KeycloakOpenID(server_url=config.COMM_SERV_AUTH_URL,
                                      client_id=config.COMM_SERV_CLIENT_ID,
@@ -54,6 +57,7 @@ def get_common_services_access_token(config):
                                      client_secret_key=config.COMM_SERV_CLIENT_SECRET)
     # Get Token
     token = keycloak_openid.token('', '', 'client_credentials')
+    os.environ['SSL_CERT_FILE'] = config.MINIO_CERT_FILE
     return token['access_token']
 
 
