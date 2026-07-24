@@ -320,7 +320,7 @@ def test_send_all_copy_success(monkeypatch):
                         "content": "cGRm",
                         "contentType": "application/pdf",
                         "encoding": "base64",
-                        "filename": "MV6020_AB123_PF-77_20251120_police_Copy.pdf",
+                        "filename": "MV6020_AB123_PF-77_20251120_Police_Copy.pdf",
                     }
                 ],
             },
@@ -343,7 +343,7 @@ def test_send_all_copy_success(monkeypatch):
     assert captured["email_address"] == "officer@example.com"
     assert captured["email_type"] == "police"
     assert captured["message"]["collision_case_number"] == "AB123"
-    assert captured["attachments"][0]["filename"] == "MV6020_AB123_PF-77_20251120_police_Copy.pdf"
+    assert captured["attachments"][0]["filename"] == "MV6020_AB123_PF-77_20251120_Police_Copy.pdf"
 
 
 def test_send_all_copy_generate_all_pdf_attachments_failure(monkeypatch):
@@ -399,7 +399,7 @@ def test_send_all_copy_email_send_failure(monkeypatch):
                         "content": "cGRm",
                         "contentType": "application/pdf",
                         "encoding": "base64",
-                        "filename": "MV6020_AB123_PF-77_20251120_police_Copy.pdf",
+                        "filename": "MV6020_AB123_PF-77_20251120_Police_Copy.pdf",
                     }
                 ],
             },
@@ -466,9 +466,9 @@ def test_generate_all_pdf_attachments_success(monkeypatch):
     attachments = result["attachments"]
     assert len(attachments) == 3
 
-    assert attachments[0]["filename"] == "MV6020_AB123_PF-77_20251120_police_Copy.pdf"
-    assert attachments[1]["filename"] == "MV6020_AB123_PF-77_20251120_entity_7_Copy.pdf"
-    assert attachments[2]["filename"] == "MV6020_AB123_PF-77_20251120_entity_8_Copy.pdf"
+    assert attachments[0]["filename"] == "MV6020_AB123_PF-77_20251120_Police_Copy.pdf"
+    assert attachments[1]["filename"] == "MV6020_AB123_PF-77_20251120_Entity_7_Copy.pdf"
+    assert attachments[2]["filename"] == "MV6020_AB123_PF-77_20251120_Entity_8_Copy.pdf"
 
     assert base64.b64decode(attachments[0]["content"]) == b"PDF-POLICE"
     assert base64.b64decode(attachments[1]["content"]) == b"PDF-ENTITY-7"
