@@ -57,7 +57,7 @@ def get_common_services_access_token(config):
                                      client_secret_key=config.COMM_SERV_CLIENT_SECRET)
     # Get Token
     token = keycloak_openid.token('', '', 'client_credentials')
-    os.environ['SSL_CERT_FILE'] = config.MINIO_CERT_FILE
+    os.environ['SSL_CERT_FILE'] = config.MINIO_CERT_FILE if hasattr(config, 'MINIO_CERT_FILE') else ''
     return token['access_token']
 
 
