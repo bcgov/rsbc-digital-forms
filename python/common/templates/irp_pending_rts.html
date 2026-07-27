@@ -53,13 +53,14 @@
                     <td>{{ item[6] }}</td>
                     <td>{{ item[7] }}</td>
                     <td>{{ item[8] }}</td>
-                    <td>{{ item[9] }}</td>
+                    <td style="text-align: end;">{{ item[9] }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 {% endblock %}
 
-{% block thank_you_road_safety %}{% endblock %}
 
-{% block email_not_monitored %}{% endblock %}
+{% block email_not_monitored %}
+{% include 'partials/contact_rsi_support.html' %}
+{% endblock %}
