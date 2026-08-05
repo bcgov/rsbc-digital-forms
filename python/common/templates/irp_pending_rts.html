@@ -60,6 +60,9 @@
     </table>
 {% endblock %}
 
+{% block primary_text_3 %}
+    <p>Link to pending RTS tasks: <a href="{{message.pending_rts_tasks_url}}" >{{message.pending_rts_tasks_url}}</a></p>
+{% endblock %}
 
 {% block email_not_monitored %}
 {% include 'partials/contact_rsi_support.html' %}
