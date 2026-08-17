@@ -20,6 +20,7 @@ def _make_config(environment="DEV", bcc=None):
     cfg.COMM_SERV_CLIENT_ID = "test-client"
     cfg.COMM_SERV_REALM = "master"
     cfg.COMM_SERV_CLIENT_SECRET = "secret"
+    cfg.MINIO_CERT_FILE = ""
     return cfg
 
 

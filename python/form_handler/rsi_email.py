@@ -1,6 +1,7 @@
 import python.form_handler.helper as helper
 from python.form_handler.config import Config
 import python.form_handler.common_email_services as common_email_services
+import copy
 from datetime import datetime
 import json
 import logging
@@ -129,12 +130,13 @@ def send_email_to_vips(**args):
     # vips_email = config.VIPS_DPS_EMAIL
     file_data=args.get('file_data',None)
     # logging.debug("file_data: {}".format(file_data))
-    # config['BCC_EMAIL_ADDRESSES']=config['VIPS_BCC_EMAIL_ADDRESSES'].split(',')
-    config.BCC_EMAIL_ADDRESSES=config.VIPS_BCC_EMAIL_ADDRESSES
+    # Use a per-call config copy so VIPS BCC does not leak into other email flows.
+    vips_config = copy.copy(config)
+    vips_config.BCC_EMAIL_ADDRESSES = config.VIPS_BCC_EMAIL_ADDRESSES
     email_sent, response = common_email_services.send_email(
         vips_email,
         subject,
-        config,
+        vips_config,
         template.render(subject=subject, body=body, message=json.dumps("")), eventid,[{
                 "content": file_data,
                 "contentType": "string",

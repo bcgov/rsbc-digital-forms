@@ -68,6 +68,7 @@ def _send_notification_email(email, rts_list) -> None:
         "message": {
             "superintendent_email": Config.SUPERINTENDENT_EMAIL,
             "superintendent_fax": Config.SUPERINTENDENT_FAX,
+            "pending_rts_tasks_url": Config.PENDING_RTS_TASKS_URL,
             "pending_rts_count": len(rts_list),
             "pending_rts": rts_list
         },

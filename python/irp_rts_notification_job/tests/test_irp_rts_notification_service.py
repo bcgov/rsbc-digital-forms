@@ -204,14 +204,14 @@ class TestSendNotificationEmail:
         assert kwargs["officer_name"] == ROW_USER_A_1[2]
         assert kwargs["message"]["pending_rts_count"] == 2
 
-    def test_subject_contains_pending_count(self, monkeypatch):
+    def test_subject_matches_expected_value(self, monkeypatch):
         mock_send = MagicMock()
         monkeypatch.setattr("python.common.rsi_email.send_irp_pending_rts", mock_send)
 
         service._send_notification_email("user@example.com", [ROW_USER_A_1, ROW_USER_A_2])
 
         _, kwargs = mock_send.call_args
-        assert "2" in kwargs["subject"]
+        assert kwargs["subject"] == "Action Required – Outstanding Immediate Roadside Prohibition (IRP) Files"
 
     def test_officer_name_defaults_to_officer_when_list_empty(self, monkeypatch):
         mock_send = MagicMock()

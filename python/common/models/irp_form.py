@@ -22,6 +22,8 @@ class IRPForm(db.Model):
     admission_by_driver: bool
     independent_witness: bool
     reasonable_ground_other: bool
+    reasonable_suspicion_formed: bool
+    mandatory_alcohol_screening_demand: bool
     time_of_suspicion: str
     time_of_asd: str
     refused_or_fail: str
@@ -53,6 +55,8 @@ class IRPForm(db.Model):
     admission_by_driver = db.Column(db.Boolean, nullable=False)
     independent_witness = db.Column(db.Boolean, nullable=False)
     reasonable_ground_other = db.Column(db.Boolean, nullable=False)
+    reasonable_suspicion_formed = db.Column(db.Boolean, nullable=False, default=False)
+    mandatory_alcohol_screening_demand = db.Column(db.Boolean, nullable=False, default=False)
     time_of_suspicion = db.Column(db.String(5))
     time_of_asd = db.Column(db.String(5))
     refused_or_fail = db.Column(db.String(5))
