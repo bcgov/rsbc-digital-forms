@@ -30,7 +30,7 @@ packaging==25.0
 pika==1.4.2
 pluggy==1.6.0
 py==1.11.0
-pyasn1==0.6.3
+pyasn1==0.6.4
 pycparser==3.0
 PyJWT==2.12.1
 PyMeeus==0.5.12
