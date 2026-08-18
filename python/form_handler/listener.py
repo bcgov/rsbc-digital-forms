@@ -12,14 +12,14 @@ import pika
 
 from python.form_handler.helper import get_storage_ref_event_type,get_event_status
 
-from flask_api import FlaskAPI
+from flask import Flask
 from python.common.models import db
 
 logging.addLevelName(VERBOSE_LEVEL_NUM, 'VERBOSE')
 logging.verbose = verbose
 logging.config.dictConfig(Config.LOGGING)
 
-application = FlaskAPI(__name__)
+application = Flask(__name__)
 application.config['SECRET_KEY'] = Config.FLASK_SECRET_KEY
 application.config['SQLALCHEMY_DATABASE_URI'] = Config.DATABASE_URI
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

@@ -11,14 +11,13 @@ from python.task_scheduler.rabbitmq import RabbitMQ
 
 # app = Flask(__name__)
 
-from flask_api import FlaskAPI
 from python.common.models import db
 
 logging.addLevelName(VERBOSE_LEVEL_NUM, 'VERBOSE')
 logging.verbose = verbose
 logging.config.dictConfig(Config.LOGGING)
 
-app = FlaskAPI(__name__)
+app = Flask(__name__)
 app.config['SECRET_KEY'] = Config.FLASK_SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = Config.DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
