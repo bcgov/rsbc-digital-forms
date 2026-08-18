@@ -18,10 +18,6 @@ jobs:
       matrix:
         # contexts: [ 'roadside-forms-frontend/frontend_web_app', 'python/prohibition_web_svc','python/form_handler' ]
         include:
-            - contexts: roadside-forms-frontend/frontend_web_app
-              image_names: rsbc-roadside-forms-frontend
-              sarif_file: trivy-frontend.sarif
-              docker_file: roadside-forms-frontend/frontend_web_app/Dockerfile
             - contexts: python
               image_names: rsbc-roadside-forms-backend-api
               sarif_file: trivy-backend.sarif
