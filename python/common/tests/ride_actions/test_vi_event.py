@@ -3,7 +3,7 @@ import json
 import os
 import pytest
 import responses
-from flask_api import FlaskAPI
+from flask import Flask
 
 os.environ['TESTING'] = 'true'
 
@@ -20,7 +20,7 @@ from python.common.models.impound_lot_operator import ImpoundLotOperator
 from python.form_handler.config import Config
 from python.common.config import Config as CommonConfig
 
-application = FlaskAPI(__name__)
+application = Flask(__name__)
 application.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///:memory:"
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 application.config['TESTING'] = True

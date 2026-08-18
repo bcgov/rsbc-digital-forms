@@ -1,4 +1,4 @@
-from flask_api import FlaskAPI
+from flask import Flask
 import logging
 import pytz
 import uuid
@@ -13,7 +13,7 @@ from python.prohibition_web_svc.custom_json_encoder import CustomJSONEncoder
 from python.common.logging_utils import RequestContext, get_logger
 
 
-application = FlaskAPI(__name__)
+application = Flask(__name__)
 application.config['SECRET_KEY'] = Config.FLASK_SECRET_KEY
 application.config['SQLALCHEMY_DATABASE_URI'] = Config.DATABASE_URI
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -61,7 +61,7 @@ def setup_request_context():
     
     # Log the incoming request with context
     logger = get_logger(__name__)
-    logger.info(f"{request.method} {request.path} Incoming request")
+    logger.info(f"{request.method} {request.path} Incoming request from {request.remote_addr}")
 
 # After Request Middleware - Clean up RequestContext
 @application.after_request

@@ -5,7 +5,7 @@ import argparse
 import logging
 import sys
 
-from flask_api import FlaskAPI
+from flask import Flask
 
 from python.common.models.base import db
 from python.common.models.event import Event
@@ -20,7 +20,7 @@ logging.addLevelName(VERBOSE_LEVEL_NUM, 'VERBOSE')
 logging.verbose = verbose
 logging.basicConfig(level=Config.LOG_LEVEL, format=Config.LOG_FORMAT)
 
-application = FlaskAPI(__name__)
+application = Flask(__name__)
 application.config['SQLALCHEMY_DATABASE_URI'] = Config.DATABASE_URI
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 application.config['SQLALCHEMY_ECHO'] = False

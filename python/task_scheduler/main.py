@@ -11,6 +11,7 @@ from python.task_scheduler.rabbitmq import RabbitMQ
 
 # app = Flask(__name__)
 
+from flask import Flask
 from python.common.models import db
 
 logging.addLevelName(VERBOSE_LEVEL_NUM, 'VERBOSE')
