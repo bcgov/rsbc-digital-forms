@@ -12,6 +12,7 @@ class KeycloakAuth:
     OFFICER_GROUP_ID = os.getenv('OFFICER_GROUP_ID', 'd1f1e8b3-5c4a-4e2d-9e2f-5f6e6e6e6e6e')
     MV6020_GROUP_ID = os.getenv('MV6020_GROUP_ID', 'a3b2c1d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d')
     RCMP_GROUP_ID = os.getenv('RCMP_GROUP_ID', '699f7ab2-6068-4fa2-9e77-0d9110b6395c')
+    IRP_GROUP_ID = os.getenv('IRP_GROUP_ID', 'c1d2e3f4-5678-90ab-cdef-1234567890ab')
 
     access_token = None
     expires_in = -1000
