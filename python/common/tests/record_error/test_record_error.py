@@ -1,6 +1,6 @@
 import pytest
 import os
-from flask_api import FlaskAPI
+from flask import Flask
 
 # Set environment to indicate we're in test mode before importing models
 os.environ['TESTING'] = 'true'
@@ -10,7 +10,7 @@ from python.common.models.base import db
 from python.common.models.df_errors import DFErrors
 from python.common.enums import ErrorCode, ErrorStatus, EventType
 
-application = FlaskAPI(__name__)
+application = Flask(__name__)
 application.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///:memory:"
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 application.config['TESTING'] = True
