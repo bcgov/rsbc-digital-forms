@@ -26,7 +26,7 @@ Jinja2==3.1.6
 korean-lunar-calendar==0.4.0
 MarkupSafe
 packaging==25.0
-pika==1.4.2
+pika==1.4.4
 pluggy==1.6.0
 py==1.11.0
 pyasn1==0.6.4
