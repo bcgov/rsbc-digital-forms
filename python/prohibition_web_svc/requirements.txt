@@ -62,4 +62,4 @@ img2pdf
 split-image==2.0.1 # Versions above 2.0.1 have a breaking change that causes the image splitting to fail
 playwright>=1.58.0
 reportLab
-nltk>=3.9.3
+nltk>=3.10.3
