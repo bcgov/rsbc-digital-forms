@@ -4,7 +4,7 @@ Flask-SQLAlchemy==3.1.1
 pika==1.4.4
 werkzeug==3.1.8
 Flask-Migrate==4.1.0
-python-json-logger==4.1.0
+python-json-logger==4.2.0
 psycopg2-binary==2.9.11
 cryptography==50.0.0
 gunicorn==26.1.0
