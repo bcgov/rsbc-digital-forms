@@ -7,3 +7,79 @@ updates:
     allow:
       - dependency-type: "production"
     open-pull-requests-limit: 5
+
+  - package-ecosystem: "pip"
+    directory: "/python/form_handler"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "production"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "pip"
+    directory: "/python/data_cleanup_job"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "production"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "pip"
+    directory: "/python/irp_rts_notification_job"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "production"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "pip"
+    directory: "/python/submission_report_job"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "production"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "pip"
+    directory: "/python/task_scheduler"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "production"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "docker"
+    directory: "/python/prohibition_web_svc"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "docker"
+    directory: "/python/form_handler"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "docker"
+    directory: "/python/data_cleanup_job"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "docker"
+    directory: "/python/irp_rts_notification_job"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "docker"
+    directory: "/python/submission_report_job"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "docker"
+    directory: "/python/task_scheduler"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
