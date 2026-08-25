@@ -1967,6 +1967,18 @@
                                 entity.vehicle_make.label if entity.vehicle_make else '' }}</div>
                         </div>
                         <div class="grid-cell">
+                            <label class="grid-label">Vehicle Owner Name</label><br>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {{ entity.vehicle_owner_name }}
+                            </div>
+                        </div>
+                        <div class="grid-cell">
+                            <label class="grid-label">Vehicle Owner Address</label><br>
+                            <div class="grid-input grid-display" contenteditable="false">
+                                {{ entity.vehicle_owner_address}}
+                            </div>
+                        </div>                          
+                        <div class="grid-cell">
                             <label class="grid-label">Damage Loc.</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.damage_location_code.value if entity.damage_location_code else ''
@@ -2035,8 +2047,6 @@
                                 entity.contributing_factor_4.value if entity.contributing_factor_4 else
                                 '' }}</div>
                         </div>
-                        <div class="grid-cell"></div>
-                        <div class="grid-cell"></div>
                     </div>
                     <div class="grid-table grid-table-3col single-row">
                         <!-- Row 4 - Charges -->
@@ -2067,7 +2077,7 @@
 
                 </div>
 
-                <!-- Involved Person Section -->
+                <!-- ICBC Involved Person Section -->
                 <div class="section-divider">
                     <h4 class="subsection-header" style="margin-top: 10px;">All involved</h4>
                     {% for entity in data.entities %}
@@ -2173,6 +2183,17 @@
 
                 </div>
 
+                <!-- ICBC Additional Collision Details Section -->
+                <div class="section-divider">
+                    <h4 class="subsection-header">Additional Collision Details</h4>
+
+                    <div class="grid-table grid-table-2col">
+                        <div class="grid-cell grid-cell-full">
+                            <label class="grid-label">Box 99 Police Comments</label><br>
+                            <textarea class="grid-input auto-resize uppercase">{{ data.police_comments }}</textarea>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
