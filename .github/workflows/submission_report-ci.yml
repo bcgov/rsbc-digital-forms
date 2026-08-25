@@ -3,9 +3,6 @@ name: submission_report-ci
 on:
   pull_request:
     types: [opened, reopened, edited, synchronize]
-    branches-ignore:
-      - master
-      - main
     paths:
       - python/common/**
       - python/submission_report_job/**

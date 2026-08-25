@@ -14,9 +14,6 @@ name: task_scheduler-ci
 on:
   pull_request:
     types: [opened, reopened, edited, synchronize]
-    branches-ignore:
-      - master
-      - main
     paths:
       # - python/*.py
       # - python/common/**
