@@ -5,7 +5,7 @@ cffi==2.0.0
 chardet==7.4.3
 charset-normalizer==3.4.7
 click==8.4.2
-convertdate==2.4.0
+convertdate==2.4.1
 cryptography==50.0.0
 dataclasses-json==0.5.7
 dparse==0.6.4
