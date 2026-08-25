@@ -41,7 +41,10 @@ resource_map = {
 logger.info('*** static blueprint loaded ***')
 
 bp = Blueprint('static', __name__, url_prefix=Config.URL_PREFIX + '/api/v1')
-CORS(bp, resources={Config.URL_PREFIX + "/api/v1/static/*": {"origins": Config.ACCESS_CONTROL_ALLOW_ORIGIN}})
+CORS(bp, resources={
+    Config.URL_PREFIX + "/api/v1/static/*": {"origins": Config.ACCESS_CONTROL_ALLOW_ORIGIN},
+    Config.URL_PREFIX + "/api/v1/ping": {"origins": Config.ACCESS_CONTROL_ALLOW_ORIGIN},
+}, send_wildcard=Config.ACCESS_CONTROL_ALLOW_ORIGIN == "*")
 
 
 @bp.route('/static/<string:resource>', methods=['GET'])

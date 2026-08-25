@@ -160,6 +160,14 @@ def test_ping(client, app, monkeypatch):
     assert data[0]['name'] == 'Vancouver'
 
 
+def test_ping_includes_cors_headers(client):
+    """Test GET /api/v1/ping includes the configured CORS headers."""
+    response = client.get('/api/v1/ping', headers={'Origin': 'https://example.com'})
+
+    assert response.status_code == 200
+    assert response.headers.get('Access-Control-Allow-Origin') == static_blueprint.Config.ACCESS_CONTROL_ALLOW_ORIGIN
+
+
 def test_helper_functions():
     """Test helper functions directly"""
     # Test _is_known_resource

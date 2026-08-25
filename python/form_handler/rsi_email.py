@@ -74,11 +74,19 @@ def event_to_vips_dps(**args) -> tuple:
     storage_key = args.get('storage_key')
     eventid = args.get('message').get('event_id')
     # put_to_queue_name=args.get('put_to_queue_name',None)
-    title = 'VIPS email'
-    body_text = f"Sent to vips "
+    event_type = args.get('event_type')
+    if event_type == 'irp':
+        form_number = args.get('form_data', {}).get('irp_number')
+        title = f'Notice of Driving Prohibition {form_number}'
+        body_text = f"Sent to vips "
+    else:
+        form_number = args.get('form_data', {}).get('VI_number')
+        title = f'Vehicle Impoundment {form_number}'
+        body_text = f"Sent to vips "
+    file_name = f"{form_number}.pdf"
     file_data=args.get('file_data',None)
     try:
-        email_sent,respargs=send_email_to_vips(config=config, title=title, body=body_text, eventid=eventid,file_data=file_data)
+        email_sent,respargs=send_email_to_vips(config=config, title=title, body=body_text, eventid=eventid,file_data=file_data, file_name=file_name)
         if email_sent:
             logging.debug("email sent to vips")
             args['splunk_data'] = {
@@ -124,6 +132,7 @@ def send_email_to_vips(**args):
     config = args.get('config')
     # message = args.get('message')
     eventid = args.get('eventid')
+    file_name = args.get('file_name', f"{eventid}.pdf")
     body = args.get('body')
     template = get_jinja2_env().get_template('vips_dps_email.html')
     vips_email=config.VIPS_DPS_EMAIL.split(',')
@@ -141,7 +150,7 @@ def send_email_to_vips(**args):
                 "content": file_data,
                 "contentType": "string",
                 "encoding": "base64",
-                "filename": f"{eventid}.pdf"
+                "filename": file_name
             }])
     
     args['email_response'] = {
