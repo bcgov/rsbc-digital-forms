@@ -43,7 +43,7 @@ psycopg2-binary==2.9.12
 pytz==2026.3.post1
 PyYAML==6.0.3
 requests==2.33.0
-responses==0.26.0
+responses==0.26.2
 rsa==4.9.1
 safety==3.8.1
 six==1.16.0
