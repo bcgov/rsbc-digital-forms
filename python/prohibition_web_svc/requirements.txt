@@ -45,7 +45,7 @@ PyYAML==6.0.3
 requests==2.33.0
 responses==0.26.0
 rsa==4.9.1
-safety==3.7.0
+safety==3.8.1
 six==1.16.0
 SQLAlchemy==2.0.52
 toml==0.10.2
