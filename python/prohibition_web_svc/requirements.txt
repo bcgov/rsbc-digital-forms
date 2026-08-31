@@ -16,7 +16,7 @@ Flask-SQLAlchemy==3.1.1
 Flask-Migrate
 Flask-Caching
 flask-swagger-ui
-gunicorn==26.1.0
+gunicorn==26.2.0
 holidays==0.103
 idna==3.18
 iniconfig==1.1.1
