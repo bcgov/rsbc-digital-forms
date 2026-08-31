@@ -23,13 +23,14 @@ CORS(bp, resources={Config.URL_PREFIX + "/api/v1/users*": {"origins": Config.ACC
 def index():
     if request.method == 'GET':
         kwargs = middle_logic(
-            keycloak_logic.get_keycloak_user() + [
+            keycloak_logic.get_authorized_keycloak_user() + [
                 {"try": splunk_middleware.get_user, "fail": []},
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": user_middleware.get_user, "fail": [
                     {"try": http_responses.server_error_response, "fail": []}
                 ]}
             ],
+            required_permission='manage_users',
             request=request,
             config=Config)
         return kwargs.get('response')
@@ -42,7 +43,7 @@ def create():
     """
     if request.method == 'POST':
         kwargs = middle_logic(
-            keycloak_logic.get_keycloak_user() + [
+            keycloak_logic.get_authorized_keycloak_user() + [
                 {"try": user_middleware.request_contains_a_payload, "fail": [
                     {"try": http_responses.no_payload, "fail": []}
                 ]},
@@ -61,7 +62,7 @@ def create():
                             {"try": logger.warning, "args": ["Failed to send admin notification email"], "fail": []}
                         ]},
                     ]},
-                    {"try": http_responses.role_already_exists, "fail": []},
+                    {"try": http_responses.not_changed_response, "fail": []},
                 ]},
                 {"try": splunk_middleware.officer_has_applied, "fail": []},
                 {"try": splunk.log_to_splunk, "fail": []},
@@ -76,8 +77,9 @@ def create():
                             {"try": logger.warning, "args": ["Failed to send admin notification email"], "fail": []}
                         ]},
                 ]},
-                {"try": http_responses.role_already_exists, "fail": []},
+                {"try": http_responses.not_changed_response, "fail": []},
             ],
+            required_permission='manage_users',
             request=request,
             config=Config)
         return kwargs.get('response')
@@ -87,6 +89,7 @@ def create():
 def get(user_guid):
     if request.method == 'GET':
         kwargs = middle_logic(
+            keycloak_logic.get_keycloak_user() +
             [
                 {"try": splunk_middleware.get_user, "fail": []},
                 {"try": splunk.log_to_splunk, "fail": []},
@@ -109,7 +112,7 @@ def get_detachment(user_guid):
                     {"try": http_responses.officer_not_found, "fail": []}
                 ]},
             ],
-            required_permission='forms-get',
+            required_permission='view_submissions,manage_users',
             officer_id=user_guid,
             request=request,
             config=Config)
