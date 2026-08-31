@@ -160,8 +160,17 @@ def test_ping(client, app, monkeypatch):
     assert data[0]['name'] == 'Vancouver'
 
 
-def test_ping_includes_cors_headers(client):
+def test_ping_includes_cors_headers(client, monkeypatch):
     """Test GET /api/v1/ping includes the configured CORS headers."""
+    with client.application.app_context():
+        mock_response = make_response(jsonify([{"id": 1, "name": "Vancouver"}]), 200)
+
+    monkeypatch.setattr(
+        static_blueprint,
+        '_get_resource_cached',
+        lambda **kwargs: (True, {'response': mock_response}),
+    )
+
     response = client.get('/api/v1/ping', headers={'Origin': 'https://example.com'})
 
     assert response.status_code == 200
