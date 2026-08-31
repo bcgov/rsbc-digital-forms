@@ -35,7 +35,7 @@ def index():
                     {"try": http_responses.server_error_response, "fail": []},
                 ]},
             ],
-            required_permission='admin_users-index',
+            required_permission='manage_users',
             request=request,
             config=Config)
         return kwargs.get('response')
@@ -60,7 +60,7 @@ def create():
     """
     if request.method == 'POST':
         kwargs = helper.middle_logic(
-            keycloak_logic.get_keycloak_user() + [
+            keycloak_logic.get_authorized_keycloak_user() + [
                 {"try": admin_user_middleware.request_contains_a_payload, "fail": [
                     {"try": http_responses.no_payload, "fail": []}
                 ]},
@@ -96,6 +96,7 @@ def create():
                 ]},
                 {"try": http_responses.role_already_exists, "fail": []},
             ],
+            required_permission='manage_users',
             request=request,
             config=Config)
         return kwargs.get('response')
