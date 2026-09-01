@@ -25,7 +25,7 @@ def list_detachments():
                     {"try": http_responses.server_error_response, "fail": []}
                 ]},
             ],
-            required_permission='forms-get',
+            required_permission='create_submissions,view_submissions',
             request=request,
             config=Config)
         return kwargs.get('response')
@@ -76,7 +76,7 @@ def create_detachment_change_request():
                 ]},
                 {"try": http_responses.successful_create_response, "fail": []},
             ],
-            required_permission='forms-create',
+            required_permission='create_submissions',
             request=request,
             config=Config)
         return kwargs.get('response')

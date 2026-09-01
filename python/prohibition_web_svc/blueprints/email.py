@@ -41,7 +41,7 @@ def send_email():
             {"try": splunk.log_to_splunk, "fail": []},
             {"try": http_responses.successful_create_response, "fail": []}
         ],
-        required_permission='forms-print',
+        required_permission='create_submissions,view_submissions,send_email',
         request=request,
         config=Config
     )

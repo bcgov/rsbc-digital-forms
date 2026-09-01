@@ -7,8 +7,6 @@ from flask import request, Blueprint, make_response, jsonify
 from flask_cors import CORS
 import python.prohibition_web_svc.business.keycloak_logic as keycloak_logic
 import python.prohibition_web_svc.http_responses as http_responses
-import python.prohibition_web_svc.middleware.keycloak_middleware as keycloak_middleware
-import python.prohibition_web_svc.middleware.role_middleware as role_middleware
 import python.prohibition_web_svc.middleware.admin_user_middleware as admin_user_middleware
 import python.prohibition_web_svc.middleware.notification_middleware as notification_middleware
 
@@ -31,11 +29,8 @@ def index():
             keycloak_logic.get_authorized_keycloak_user() + [
                 {"try": splunk_middleware.admin_get_users, "fail": []},
                 {"try": splunk.log_to_splunk, "fail": []},
-                {"try": role_middleware.query_all_users, "fail": [
-                    {"try": http_responses.server_error_response, "fail": []},
-                ]},
             ],
-            required_permission='admin_users-index',
+            required_permission='manage_users',
             request=request,
             config=Config)
         return kwargs.get('response')
@@ -60,7 +55,7 @@ def create():
     """
     if request.method == 'POST':
         kwargs = helper.middle_logic(
-            keycloak_logic.get_keycloak_user() + [
+            keycloak_logic.get_authorized_keycloak_user() + [
                 {"try": admin_user_middleware.request_contains_a_payload, "fail": [
                     {"try": http_responses.no_payload, "fail": []}
                 ]},
@@ -71,31 +66,22 @@ def create():
                     {"try": admin_user_middleware.update_the_user, "fail": [
                         {"try": http_responses.server_error_response, "fail": []},
                     ]},
-                    {"try": admin_user_middleware.does_role_already_exist, "fail": [
-                        {"try": admin_user_middleware.create_user_role, "fail": [
-                            {"try": http_responses.server_error_response, "fail": []},
-                        ]},
-                        {"try": notification_middleware.send_new_user_admin_notification, "fail": [
-                            {"try": logger.warning, "args": ["Failed to send admin notification email"], "fail": []}
-                        ]},
+                    {"try": notification_middleware.send_new_user_admin_notification, "fail": [
+                        {"try": logger.warning, "args": ["Failed to send admin notification email"], "fail": []}
                     ]},
-                    {"try": http_responses.role_already_exists, "fail": []},
+                    {"try": http_responses.successful_update_response, "fail": []},
                 ]},
                 {"try": splunk_middleware.officer_has_applied, "fail": []},
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": admin_user_middleware.admin_create_a_user, "fail": [
                     {"try": http_responses.server_error_response, "fail": []},
                 ]},
-                {"try": admin_user_middleware.does_role_already_exist, "fail": [
-                    {"try": admin_user_middleware.create_user_role, "fail": [
-                        {"try": http_responses.server_error_response, "fail": []},
-                    ]},
-                    {"try": notification_middleware.send_new_user_admin_notification, "fail": [
-                            {"try": logger.warning, "args": ["Failed to send admin notification email"], "fail": []}
-                        ]},
+                {"try": notification_middleware.send_new_user_admin_notification, "fail": [
+                    {"try": logger.warning, "args": ["Failed to send admin notification email"], "fail": []}
                 ]},
-                {"try": http_responses.role_already_exists, "fail": []},
+                {"try": http_responses.successful_create_response, "fail": []},
             ],
+            required_permission='manage_users',
             request=request,
             config=Config)
         return kwargs.get('response')

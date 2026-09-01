@@ -58,7 +58,7 @@ def create_collision():
             {"try": splunk.log_to_splunk, "fail": []},
             {"try": http_responses.successful_create_response, "fail": []}
         ],
-        required_permission='forms-create',
+        required_permission='create_submissions',
         request=request,
         config=Config
     )
@@ -78,7 +78,7 @@ def get_collision(collision_case_num):
             ]},
             {"try": http_responses.successful_get_response, "fail": []}
         ],
-        required_permission='forms-get',
+        required_permission='view_submissions',
         request=request,
         config=Config,
         collision_case_num=collision_case_num

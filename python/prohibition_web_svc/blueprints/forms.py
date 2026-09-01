@@ -30,7 +30,7 @@ def index():
                 ]},
                 {"try": splunk.log_to_splunk, "fail": []}
             ],
-            required_permission='forms-index',
+            required_permission='view_submissions',
             request=request,
             config=Config)
         return kwargs.get('response')
@@ -62,7 +62,7 @@ def create():
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": http_responses.successful_create_response, "fail": []},
             ],
-            required_permission='forms-create',
+            required_permission='create_submissions',
             request=request,
             config=Config)
         return kwargs.get('response')
@@ -102,7 +102,7 @@ def update():
                 # TODO - Write to RabbitMQ ingested queue
                 {"try": http_responses.successful_update_response, "fail": []}
             ],
-            required_permission='forms-update',
+            required_permission='create_submissions',
             request=request,
             config=Config)
         return kwargs.get('response')

@@ -3,9 +3,8 @@ from cerberus import Validator
 from cerberus import errors
 import json
 from datetime import datetime
-import pytz
 from python.common.logging_utils import get_logger
-from python.common.models import db, User, UserRole
+from python.common.models import db, User
 
 logger = get_logger(__name__)
 
@@ -25,18 +24,6 @@ def user_has_not_applied_previously(**kwargs) -> tuple:
         logger.error(e)
         return False, kwargs
     return user_count == 0, kwargs
-
-
-def does_role_already_exist(**kwargs) -> tuple:
-    try:
-        user_role_count = db.session.query(UserRole) \
-            .filter(UserRole.user_guid == kwargs.get('user_guid')) \
-            .count()
-        logger.debug("inside does_role_already_exist(): " + str(user_role_count))
-    except Exception as e:
-        logger.error(e)
-        return False, kwargs
-    return user_role_count != 0, kwargs
 
 
 def update_the_user(**kwargs) -> tuple:
@@ -74,24 +61,6 @@ def create_a_user(**kwargs) -> tuple:
         )
         db.session.add(user)
         db.session.commit()
-    except Exception as e:
-        logger.error(e)
-        return False, kwargs
-    return True, kwargs
-
-
-def create_user_role(**kwargs) -> tuple:
-    tz = pytz.timezone("America/Vancouver")
-    now = datetime.now(tz)
-    try:
-        requested_role = UserRole(
-            user_guid=kwargs.get('user_guid'),
-            role_name="officer",
-            submitted_dt=now
-        )
-        db.session.add(requested_role)
-        db.session.commit()
-        kwargs['response'] = make_response(jsonify(UserRole.serialize(requested_role)), 201)
     except Exception as e:
         logger.error(e)
         return False, kwargs

@@ -31,7 +31,7 @@ def get_driver(dl_number):
                 {"try": icbc_middleware.splunk_get_driver, "fail": []},
                 {"try": splunk.log_to_splunk, "fail": []}
             ],
-            required_permission='driver-get',
+            required_permission='create_submissions',
             dl_number=dl_number,
             request=request,
             config=Config)
@@ -54,7 +54,7 @@ def get_vehicle(plate_number):
                 {"try": icbc_middleware.splunk_get_vehicle, "fail": []},
                 {"try": splunk.log_to_splunk, "fail": []}
             ],
-            required_permission='vehicle-get',
+            required_permission='create_submissions',
             plate_number=plate_number.upper(),
             request=request,
             config=Config)
