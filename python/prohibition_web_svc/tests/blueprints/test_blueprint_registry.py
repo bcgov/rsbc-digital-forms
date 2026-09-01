@@ -25,7 +25,6 @@ if "flask_caching" not in sys.modules:
 
 from python.prohibition_web_svc.blueprints import (
     admin_forms,
-    admin_user_roles,
     admin_users,
     collision,
     detachments,
@@ -37,7 +36,6 @@ from python.prohibition_web_svc.blueprints import (
     print as print_blueprint,
     static,
     submissions,
-    user_roles,
     users,
 )
 
@@ -46,7 +44,6 @@ from python.prohibition_web_svc.blueprints import (
     ("module", "bp_name", "expected_rules"),
     [
         (admin_forms, "admin_forms", {"/api/v1/admin/forms", "/api/v1/admin/forms/<string:form_id>"}),
-        (admin_user_roles, "admin_users_roles", {"/api/v1/admin/users/<string:user_guid>/roles", "/api/v1/admin/users/<string:user_guid>/roles/<string:role_name>"}),
         (admin_users, "admin_users", {"/api/v1/admin/users", "/api/v1/admin/users/<string:username>"}),
         (collision, "collision", {"/api/v1/collision", "/api/v1/collision/<collision_case_num>"}),
         (detachments, "detachments", {"/api/v1/detachments", "/api/v1/detachment-change-request"}),
@@ -58,7 +55,6 @@ from python.prohibition_web_svc.blueprints import (
         (print_blueprint, "print", {"/api/v1/print"}),
         (static, "static", {"/api/v1/static/<string:resource>", "/api/v1/static/<string:resource>/<string:static_id>", "/api/v1/ping"}),
         (submissions, "submission", {"/api/v1/submission/event/status"}),
-        (user_roles, "user_roles", {"/api/v1/user_roles", "/api/v1/user_roles/<string:role_name>"}),
         (users, "users", {"/api/v1/users", "/api/v1/users/<string:user_guid>", "/api/v1/users/<string:user_guid>/detachment", "/api/v1/users/<string:user_guid>/update-last-active"}),
     ],
 )
@@ -86,7 +82,6 @@ def test_application_registers_primary_blueprints():
 
     for module in (
         admin_forms,
-        admin_user_roles,
         admin_users,
         collision,
         detachments,
@@ -104,7 +99,6 @@ def test_application_registers_primary_blueprints():
 
     assert {
         "admin_forms",
-        "admin_users_roles",
         "admin_users",
         "collision",
         "detachments",

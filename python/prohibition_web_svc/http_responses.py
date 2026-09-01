@@ -6,13 +6,13 @@ from python.common.logging_utils import get_logger
 logger = get_logger(__name__)
 
 def successful_create_response(**kwargs) -> tuple:
-    response_dict = kwargs.get('response_dict')
+    response_dict = kwargs.get('response_dict', { 'message': 'record created successfully' })
     kwargs['response'] = make_response(response_dict, 201)
     return True, kwargs
 
 
 def successful_update_response(**kwargs) -> tuple:
-    response_dict = kwargs.get('response_dict')
+    response_dict = kwargs.get('response_dict', { 'message': 'record updated successfully' })
     kwargs['response'] = make_response(response_dict, 200)
     return True, kwargs
 

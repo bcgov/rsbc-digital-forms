@@ -58,6 +58,32 @@ def test_successful_create_response_uses_payload_and_status(flask_app):
     assert json.loads(kwargs["response"].get_data(as_text=True)) == {"id": 7}
 
 
+def test_successful_create_response_uses_default_message_when_no_payload(flask_app):
+    ok, kwargs = invoke_response_helper(flask_app, http_responses.successful_create_response)
+
+    assert ok is True
+    assert kwargs["response"].status_code == 201
+    body = json.loads(kwargs["response"].get_data(as_text=True))
+    assert body == {"message": "record created successfully"}
+
+
+def test_successful_update_response_uses_default_message_when_no_payload(flask_app):
+    ok, kwargs = invoke_response_helper(flask_app, http_responses.successful_update_response)
+
+    assert ok is True
+    assert kwargs["response"].status_code == 200
+    body = json.loads(kwargs["response"].get_data(as_text=True))
+    assert body == {"message": "record updated successfully"}
+
+
+def test_successful_update_response_uses_payload_and_status(flask_app):
+    ok, kwargs = invoke_response_helper(flask_app, http_responses.successful_update_response, response_dict={"id": 5, "status": "active"})
+
+    assert ok is True
+    assert kwargs["response"].status_code == 200
+    assert json.loads(kwargs["response"].get_data(as_text=True)) == {"id": 5, "status": "active"}
+
+
 def test_bad_request_response_includes_error_details(flask_app):
     ok, kwargs = invoke_response_helper(flask_app, http_responses.bad_request_response, response_dict={"error_details": "missing field"})
 
