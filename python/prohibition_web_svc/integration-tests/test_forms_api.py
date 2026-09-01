@@ -5,7 +5,7 @@ import json
 import responses
 import python.prohibition_web_svc.middleware.keycloak_middleware as middleware
 from datetime import datetime, timedelta
-from python.common.models import Form, UserRole
+from python.common.models import Form
 from python.prohibition_web_svc.app import db, create_app
 from python.prohibition_web_svc.config import Config
 
@@ -43,18 +43,6 @@ def forms(database):
         Form(form_id='AA-11111', form_type='24Hour', user_guid=None, lease_expiry=None, printed=None)
     ]
     db.session.bulk_save_objects(forms)
-    db.session.commit()
-
-
-@pytest.fixture
-def roles(database):
-    today = datetime.strptime("2021-07-21", "%Y-%m-%d")
-    user_role = [
-        UserRole(user_guid='john@idir', role_name='officer', submitted_dt=today),
-        UserRole(user_guid='larry@idir', role_name='officer', submitted_dt=today, approved_dt=today),
-        UserRole(user_guid='mo@idir', role_name='administrator', submitted_dt=today, approved_dt=today)
-    ]
-    db.session.bulk_save_objects(user_role)
     db.session.commit()
 
 

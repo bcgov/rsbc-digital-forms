@@ -18,7 +18,7 @@ def send_email_to_admin(**args):
     body = args.get('body')
     template = get_jinja2_env().get_template('admin_notice.html')
     return common_email_services.send_email(
-        [config.ADMIN_EMAIL_ADDRESS],
+        config.ADMIN_EMAIL_ADDRESS.split(','),
         subject,
         config,
         template.render(subject=subject, body=body, message=json.dumps(message)), 'admin'), args
@@ -31,7 +31,7 @@ def send_new_user_admin_notification(**args):
     body = args.get('body')
     template = get_jinja2_env().get_template('admin_notice_new_user_approval_request.html')
     return common_email_services.send_email(
-        [config.ADMIN_EMAIL_ADDRESS],
+        config.ADMIN_EMAIL_ADDRESS.split(','),
         subject,
         config,
         template.render(subject=subject, body=body, message=message), 'admin'), args
@@ -103,7 +103,7 @@ def send_admin_failure_notification(**args):
     message = args.get('message')
     template = get_jinja2_env().get_template('admin_notice_submission_failure.html')
     return common_email_services.send_email(
-        [config.ADMIN_EMAIL_ADDRESS],
+        config.ADMIN_EMAIL_ADDRESS.split(','),
         subject,
         config,
         template.render(subject=subject, message=message), 'admin'), args
