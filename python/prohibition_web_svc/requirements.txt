@@ -39,7 +39,7 @@ python-dateutil==2.9.0.post0
 python-jose==3.5.0
 python-json-logger==4.2.0
 python-keycloak==7.1.1
-psycopg2-binary==2.9.12
+psycopg2-binary==2.9.13
 pytz==2026.3.post1
 PyYAML==6.0.3
 requests==2.34.2
