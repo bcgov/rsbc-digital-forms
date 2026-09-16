@@ -42,7 +42,7 @@ def update_event_status():
                 ]},
                 {"try": http_responses.successful_update_response, "fail": []},
             ],
-            required_permission='forms-update',
+            required_permission='create_submissions',
             request=request,
             config=Config)
         logger.verbose(f"PATCH /submission/event/status endpoint response code: {kwargs.get('response').status_code}")

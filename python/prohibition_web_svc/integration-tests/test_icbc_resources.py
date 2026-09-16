@@ -3,7 +3,7 @@ import responses
 import urllib
 from datetime import datetime
 import python.prohibition_web_svc.middleware.keycloak_middleware as middleware
-from python.common.models import db, UserRole
+from python.common.models import db
 from python.prohibition_web_svc.app import create_app
 from python.prohibition_web_svc.config import Config
 import logging
@@ -30,17 +30,6 @@ def database(application):
         yield db
         db.drop_all()
         db.session.commit()
-
-
-@pytest.fixture
-def roles(database):
-    today = datetime.strptime("2021-07-21", "%Y-%m-%d")
-    user_role = [
-        UserRole(user_guid='john@idir', role_name='officer', submitted_dt=today),
-        UserRole(user_guid='larry@idir', role_name='officer', submitted_dt=today, approved_dt=today)
-    ]
-    db.session.bulk_save_objects(user_role)
-    db.session.commit()
 
 
 @responses.activate

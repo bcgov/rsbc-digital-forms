@@ -1,14 +1,12 @@
 from flask import Flask
 import logging
-import pytz
 import uuid
-from datetime import datetime
 from flask import request, g
-from python.common.models import db, migrate, Form, UserRole, User, Agency
+from python.common.models import db, migrate, Form, User, Agency
 from python.prohibition_web_svc.cache import cache
 from python.prohibition_web_svc.config import Config
 from python.prohibition_web_svc.commands import register_commands
-from python.prohibition_web_svc.blueprints import static, forms, admin_forms, icbc, user_roles, admin_user_roles, admin_users, users, events, collision, print, email, files, submissions, detachments
+from python.prohibition_web_svc.blueprints import static, forms, admin_forms, icbc, admin_users, users, events, collision, print, email, files, submissions, detachments
 from python.prohibition_web_svc.custom_json_encoder import CustomJSONEncoder
 from python.common.logging_utils import RequestContext, get_logger
 
@@ -20,12 +18,10 @@ application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 application.config["SQLALCHEMY_ECHO"] = False
 
 application.register_blueprint(admin_forms.bp)
-application.register_blueprint(admin_user_roles.bp)
 application.register_blueprint(admin_users.bp)
 application.register_blueprint(forms.bp)
 application.register_blueprint(icbc.bp)
 application.register_blueprint(static.bp)
-application.register_blueprint(user_roles.bp)
 application.register_blueprint(users.bp)
 application.register_blueprint(events.bp)
 application.register_blueprint(collision.bp)
@@ -126,8 +122,6 @@ def _seed_forms_for_development(database):
 
 
 def seed_initial_administrator(database):
-    vancouver_tz = pytz.timezone("America/Vancouver")
-    current_dt = datetime.now(vancouver_tz)
     agency = Agency(agency_name="RoadSafety", agency_id=1)
     database.session.add(agency)
     user = User(username=Config.ADMIN_USERNAME,
@@ -138,11 +132,6 @@ def seed_initial_administrator(database):
                 last_name="Administrator",
                 login=Config.ADMIN_USERNAME)
     database.session.add(user)
-    roles = [
-        UserRole(user_guid=Config.ADMIN_USERNAME, role_name='officer', submitted_dt=current_dt, approved_dt=current_dt),
-        UserRole(user_guid=Config.ADMIN_USERNAME, role_name='administrator', submitted_dt=current_dt, approved_dt=current_dt)
-    ]
-    database.session.bulk_save_objects(roles)
     database.session.commit()
     logging.warning("seed initial administrator: " + Config.ADMIN_USERNAME)
     return

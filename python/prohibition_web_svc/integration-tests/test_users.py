@@ -2,7 +2,7 @@ import pytest
 import responses
 import json
 import python.prohibition_web_svc.middleware.keycloak_middleware as middleware
-from python.common.models import db, User, UserRole, Agency
+from python.common.models import db, User, Agency
 from python.prohibition_web_svc.app import create_app
 from python.prohibition_web_svc.config import Config
 import logging
@@ -33,7 +33,6 @@ def database(application):
 
 @pytest.fixture
 def roles(database):
-    today = datetime.now()
     agency = Agency(agency_name="RoadSafety", agency_id=1)
     database.session.add(agency)
     users = [
@@ -53,8 +52,6 @@ def roles(database):
             last_name="Smith"),
     ]
     db.session.bulk_save_objects(users)
-    user_role = UserRole(role_name="officer", user_guid="aaa-bbb-ccc", approved_dt=today, submitted_dt=today)
-    db.session.add(user_role)
     db.session.commit()
 
 
@@ -96,12 +93,6 @@ def test_user_without_authorization_can_apply_to_use_the_app(as_guest, monkeypat
                .filter(User.first_name == "New") \
                .filter(User.last_name == "Officer") \
                .count() == 1
-    assert database.session.query(UserRole) \
-               .filter(UserRole.role_name == "officer") \
-               .filter(UserRole.user_guid == 'new-officer@idir') \
-               .filter(UserRole.submitted_dt != None) \
-               .filter(UserRole.approved_dt == None) \
-               .count() == 1
     assert responses.calls[0].request.body.decode() == json.dumps({
         'event': {
             'event': 'officer has applied',
@@ -135,12 +126,6 @@ def test_bceid_user_can_apply_to_use_the_app(as_guest, monkeypatch, roles, datab
                .filter(User.last_name == "Officer") \
                .filter(User.business_guid == "gggg-ffff-dddd-jjjj") \
                .count() == 1
-    assert database.session.query(UserRole) \
-               .filter(UserRole.role_name == "officer") \
-               .filter(UserRole.user_guid == 'aaa-bbb-ccc-fff') \
-               .filter(UserRole.submitted_dt != None) \
-               .filter(UserRole.approved_dt == None) \
-               .count() == 1
     assert responses.calls[0].request.body.decode() == json.dumps({
         'event': {
             'event': 'officer has applied',
@@ -172,12 +157,6 @@ def test_idir_user_can_apply_to_use_the_app(as_guest, monkeypatch, roles, databa
                .filter(User.agency == 'RCMP Terrace') \
                .filter(User.first_name == "New") \
                .filter(User.last_name == "Officer") \
-               .count() == 1
-    assert database.session.query(UserRole) \
-               .filter(UserRole.role_name == "officer") \
-               .filter(UserRole.user_guid == 'aaa-bbb-ccc-fff') \
-               .filter(UserRole.submitted_dt != None) \
-               .filter(UserRole.approved_dt == None) \
                .count() == 1
     assert responses.calls[0].request.body.decode() == json.dumps({
         'event': {

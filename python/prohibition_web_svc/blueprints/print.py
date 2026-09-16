@@ -43,7 +43,7 @@ def render_document():
             {"try": splunk.log_to_splunk, "fail": []},
             {"try": print_middleware.return_rendered_response, "fail": []}
         ],
-        required_permission='forms-print',
+        required_permission='create_submissions,view_submissions',
         request=request,
         config=Config
     )

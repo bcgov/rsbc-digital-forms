@@ -6,16 +6,20 @@ from python.common.logging_utils import get_logger
 logger = get_logger(__name__)
 
 def successful_create_response(**kwargs) -> tuple:
-    response_dict = kwargs.get('response_dict')
+    response_dict = kwargs.get('response_dict', { 'message': 'record created successfully' })
     kwargs['response'] = make_response(response_dict, 201)
     return True, kwargs
 
 
 def successful_update_response(**kwargs) -> tuple:
-    response_dict = kwargs.get('response_dict')
+    response_dict = kwargs.get('response_dict', { 'message': 'record updated successfully' })
     kwargs['response'] = make_response(response_dict, 200)
     return True, kwargs
 
+def not_changed_response(**kwargs) -> tuple:
+    response_dict = kwargs.get('response_dict')
+    kwargs['response'] = make_response(response_dict, 304)
+    return True, kwargs
 
 def server_error_response(**kwargs) -> tuple:
     kwargs['response'] = make_response({'error': 'server error'}, 500)
@@ -62,6 +66,12 @@ def keycloak_no_username(**kwargs) -> tuple:
 def no_user_guid(**kwargs) -> tuple:
     logger.warning("decoded keycloak token has no user_guid")
     kwargs['response'] = make_response({'error': 'server error'}, 500)
+    return True, kwargs
+
+
+def no_user_roles(**kwargs) -> tuple:
+    logger.warning("decoded keycloak token has no user roles")
+    kwargs['response'] = make_response({'error': 'no user roles'}, 500)
     return True, kwargs
 
 

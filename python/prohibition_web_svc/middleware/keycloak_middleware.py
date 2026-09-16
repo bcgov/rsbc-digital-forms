@@ -1,9 +1,6 @@
 import jwt
-import json
 import ssl
-from python.common.helper import load_permissions_into_dict
 from python.common.logging_utils import get_logger
-from python.common.models import db, UserRole, Permission
 from python.prohibition_web_svc.config import Config
 
 logger = get_logger(__name__)
@@ -105,36 +102,24 @@ def get_user_guid_from_decoded_access_token(**kwargs) -> tuple:
         return True, kwargs
     return False, kwargs
 
-
-def load_roles_and_permissions_from_static_file(**kwargs) -> tuple:
+def get_user_roles_from_decoded_access_token(**kwargs) -> tuple:
+    decoded_access_token = kwargs.get('decoded_access_token')
     try:
-        permissions = load_permissions_into_dict(Permission.query.all())
+        kwargs['user_roles'] = decoded_access_token['role']
     except Exception as e:
         logger.error(e)
         return False, kwargs
-    kwargs['permissions'] = permissions
-    return permissions is not None, kwargs
+    return True, kwargs
 
 
 def check_user_is_authorized(**kwargs) -> tuple:
     username = kwargs.get('username')
     required_permission = kwargs.get('required_permission', None)
-    permissions = kwargs.get('permissions')
+    required_permissions = required_permission.split(',') if required_permission else []
     user_roles = kwargs.get('user_roles')
     logger.verbose("inside check_user_is_authorized() {} {} {}".format(username, required_permission, "|".join(user_roles)))
     for role in user_roles:
-        logger.debug("if {} in {}".format(required_permission, json.dumps(permissions[role])))
-        if required_permission in permissions[role]['permissions']:
+        if any(rp in role for rp in required_permissions):
             return True, kwargs
+    logger.warning("user {} does not have required permission {}".format(username, required_permission))
     return False, kwargs
-
-
-def query_database_for_users_permissions(**kwargs) -> tuple:
-    logger.verbose("inside query_database_for_users_permissions()")
-    try:
-        kwargs['user_roles'] = UserRole.get_roles(kwargs.get('user_guid'))
-    except Exception as e:
-        logger.warning("error while querying database for user permissions: " + str(e))
-        return False, kwargs
-    return True, kwargs
-

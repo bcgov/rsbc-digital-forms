@@ -29,18 +29,15 @@ def get_keycloak_user() -> list:
         ]},
         {"try": keycloak_middleware.get_user_guid_from_decoded_access_token, "fail": [
             {"try": http_responses.no_user_guid, "fail": []},
+        ]},
+        {"try": keycloak_middleware.get_user_roles_from_decoded_access_token, "fail": [
+            {"try": http_responses.no_user_roles, "fail": []},
         ]}
     ]
 
 
 def get_authorized_keycloak_user() -> list:
     return get_keycloak_user() + [
-        {"try": keycloak_middleware.load_roles_and_permissions_from_static_file, "fail": [
-            {"try": http_responses.server_error_response, "fail": []},
-        ]},
-        {"try": keycloak_middleware.query_database_for_users_permissions, "fail": [
-            {"try": http_responses.server_error_response, "fail": []},
-        ]},
         {"try": keycloak_middleware.check_user_is_authorized, "fail": [
             {"try": splunk_middleware.permission_denied, "fail": []},
             {"try": splunk.log_to_splunk, "fail": []},

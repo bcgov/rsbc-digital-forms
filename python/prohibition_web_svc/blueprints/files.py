@@ -21,7 +21,7 @@ def create_file():
                 {"try": http_responses.server_error_response, "fail": []},
             ]},
         ],
-        required_permission='admin_user_roles-create',
+        required_permission='create_submissions',
         request=request,
         config=Config
     )
@@ -38,7 +38,7 @@ def download_file(filename):
                 {"try": http_responses.server_error_response, "fail": []},
             ]},
         ],
-        required_permission='forms-get',
+        required_permission='view_submissions',
         request=request,
         filename=filename,
         config=Config
@@ -56,7 +56,7 @@ def presigned_url(filename):
                 {"try": http_responses.server_error_response, "fail": []},
             ]},
         ],
-        required_permission='admin_user_roles-index',
+        required_permission='view_submissions',
         request=request,
         filename=filename,
         expiry=expiry,
@@ -76,7 +76,7 @@ def list_all_files():
                 {"try": http_responses.server_error_response, "fail": []},
             ]},
         ],
-        required_permission='admin_user_roles-index',
+        required_permission='admin',
         request=request,
         prefix=prefix,
         config=Config
@@ -92,7 +92,7 @@ def remove_file(filename):
                 {"try": http_responses.server_error_response, "fail": []},
             ]},
         ],
-        required_permission='admin_user_roles-delete',
+        required_permission='admin',
         request=request,
         filename=filename,
         config=Config

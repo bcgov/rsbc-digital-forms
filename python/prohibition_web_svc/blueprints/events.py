@@ -30,7 +30,7 @@ def index():
                     {"try": http_responses.server_error_response, "fail": []}
                 ]}
             ],
-            required_permission='forms-get',
+            required_permission='view_submissions',
             request=request,
             config=Config)
         logger.verbose(f"GET /event endpoint response code: {kwargs.get('response').status_code}")
@@ -91,7 +91,7 @@ def create():
                 {"try": splunk.log_to_splunk, "fail": []},
                 {"try": http_responses.successful_create_response, "fail": []},
             ],
-            required_permission='forms-create',
+            required_permission='create_submissions',
             request=request,
             config=Config)
         logger.verbose(f"POST /event endpoint response code: {kwargs.get('response').status_code}")
@@ -125,7 +125,7 @@ def update_irp(event_id):
                 ]},
                 {"try": http_responses.successful_update_response, "fail": []},
             ],
-            required_permission='forms-update',
+            required_permission='create_submissions',
             event_id=event_id,
             request=request,
             config=Config)
