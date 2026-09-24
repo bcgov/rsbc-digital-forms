@@ -1,0 +1,22 @@
+name: stuck_submissions_monitor_job-ci
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    paths:
+      - python/common/**
+      - python/stuck_submissions_monitor_job/**
+      - .github/workflows/stuck_submissions_monitor_job-ci.yml
+
+jobs:
+  CI:
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    uses: ./.github/workflows/ci-workflow.yml
+    with:
+      DOCKER_CONTEXT: python
+      DOCKER_FILE: python/stuck_submissions_monitor_job/dockerfile
+      DOCKER_IMAGE_NAME: rsbc-df-stuck-submissions-monitor
+    secrets: inherit
