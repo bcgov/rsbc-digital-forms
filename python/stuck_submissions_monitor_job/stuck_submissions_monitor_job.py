@@ -28,6 +28,11 @@ def _print_env_variables():
     logger.info(f"DB_NAME: {Config.DB_NAME_DF}")
     logger.info(f"DB_PORT: {Config.DB_PORT}")
 
+    logger.info(f"MONGO_HOST: {Config.MONGO_HOST}")
+    logger.info(f"MONGO_PORT: {Config.MONGO_PORT}")
+    logger.info(f"MONGO_USER: {Config.MONGO_USER}")
+    logger.info(f"MONGO_DB_NAME: {Config.MONGO_DB_NAME}")
+
     logger.info(f"SPLUNK_HOST: {Config.SPLUNK_HOST}")
     logger.info(f"SPLUNK_PORT: {Config.SPLUNK_PORT}")
     logger.info(f"OPENSHIFT_PLATE: {Config.OPENSHIFT_PLATE}")

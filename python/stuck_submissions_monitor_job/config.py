@@ -12,6 +12,13 @@ class Config():
     DB_PORT = os.environ.get('DB_PORT', 5432)
     DB_NAME_DF = os.environ.get('DB_NAME_DF', 'test')
 
+    # MongoDB settings
+    MONGO_HOST = os.environ.get('MONGO_HOST', 'localhost')
+    MONGO_PORT = int(os.environ.get('MONGO_PORT', 27017))
+    MONGO_USER = os.environ.get('MONGO_USER', '')
+    MONGO_PASS = os.environ.get('MONGO_PASS', '')
+    MONGO_DB_NAME = os.environ.get('MONGO_DB_NAME', 'formio')
+
     # Splunk settings
     SPLUNK_HOST = os.environ.get('SPLUNK_HOST', 'localhost')
     SPLUNK_PORT = int(os.environ.get('SPLUNK_PORT', 8088))
