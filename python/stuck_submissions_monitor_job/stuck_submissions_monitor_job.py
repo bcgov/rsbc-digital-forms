@@ -25,7 +25,7 @@ def _print_env_variables():
 
     logger.info(f"DB_HOST: {Config.DB_HOST}")
     logger.info(f"DB_USER: {Config.DB_USER}")
-    logger.info(f"DB_NAME: {Config.DB_NAME_DF}")
+    logger.info(f"DB_NAME: {Config.DB_NAME_FF_API}")
     logger.info(f"DB_PORT: {Config.DB_PORT}")
 
     logger.info(f"MONGO_HOST: {Config.MONGO_HOST}")
@@ -33,9 +33,17 @@ def _print_env_variables():
     logger.info(f"MONGO_USER: {Config.MONGO_USER}")
     logger.info(f"MONGO_DB_NAME: {Config.MONGO_DB_NAME}")
 
+    logger.info(f"KEYCLOAK_AUTH_URL: {Config.KEYCLOAK_AUTH_URL}")
+    logger.info(f"KEYCLOAK_REALM: {Config.KEYCLOAK_REALM}")
+    logger.info(f"KEYCLOAK_CLIENT_ID: {Config.KEYCLOAK_CLIENT_ID}")
+
     logger.info(f"SPLUNK_HOST: {Config.SPLUNK_HOST}")
     logger.info(f"SPLUNK_PORT: {Config.SPLUNK_PORT}")
     logger.info(f"OPENSHIFT_PLATE: {Config.OPENSHIFT_PLATE}")
+
+    logger.info(f"RETRY_SUBMISSION_URL: {Config.RETRY_SUBMISSION_URL}")
+    logger.info(f"FORMIO_BASE_URL: {Config.FORMIO_BASE_URL}")
+    logger.info(f"WEB_FORM_BASE_URL: {Config.WEB_FORM_BASE_URL}")
 
 
 def execute_stuck_submissions_monitor_job() -> None:
