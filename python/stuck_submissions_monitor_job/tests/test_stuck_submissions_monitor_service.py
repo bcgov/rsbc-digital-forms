@@ -15,7 +15,7 @@ class TestRunStuckSubmissionsMonitor:
         monkeypatch.setattr(service.psycopg2, "connect", connect_mock)
 
         fetch_mock = MagicMock(return_value=[])
-        process_mock = MagicMock()
+        process_mock = MagicMock(return_value={"success": 0, "failure": 0, "not_found": 0})
         monkeypatch.setattr(service, "_fetch_stuck_submissions", fetch_mock)
         monkeypatch.setattr(service, "_process_stuck_submissions", process_mock)
 
@@ -23,7 +23,7 @@ class TestRunStuckSubmissionsMonitor:
 
         connect_mock.assert_called_once()
         fetch_mock.assert_called_once_with(conn)
-        process_mock.assert_called_once_with(conn, [])
+        process_mock.assert_called_once_with([])
 
     def test_raises_when_connection_fails(self, monkeypatch):
         connect_mock = MagicMock(side_effect=RuntimeError("connection error"))
@@ -34,15 +34,63 @@ class TestRunStuckSubmissionsMonitor:
 
 
 class TestFetchStuckSubmissions:
-    def test_not_yet_implemented(self):
-        with pytest.raises(NotImplementedError):
-            service._fetch_stuck_submissions(MagicMock())
+    def test_fetches_submissions_from_database(self):
+        conn = MagicMock()
+        cursor = conn.cursor.return_value.__enter__.return_value
+        submissions = [("application-id", "draft-id", "submission-id", "form-id")]
+        cursor.fetchall.return_value = submissions
+
+        result = service._fetch_stuck_submissions(conn)
+
+        assert result == submissions
+        cursor.execute.assert_called_once()
+        assert "application_status = 'New'" in cursor.execute.call_args.args[0]
+        assert "INTERVAL '10 minutes'" in cursor.execute.call_args.args[0]
 
 
 class TestProcessStuckSubmissions:
-    def test_not_yet_implemented(self):
-        with pytest.raises(NotImplementedError):
-            service._process_stuck_submissions(MagicMock(), [])
+    def test_retries_submissions_found_in_mongo(self, monkeypatch):
+        submission = ("application-id", "draft-id", "submission-id", "form-id")
+        document = {"data": {"answer": "value"}}
+        monkeypatch.setattr(service, "_fetch_submission_from_mongo", MagicMock(return_value=document))
+        create_payload = MagicMock(return_value={"submissionId": "submission-id"})
+        send_retry = MagicMock(return_value=True)
+        send_summary = MagicMock()
+        monkeypatch.setattr(service, "_create_retry_submission_payload", create_payload)
+        monkeypatch.setattr(service, "_send_retry_submission", send_retry)
+        monkeypatch.setattr(service, "_send_summary_to_splunk", send_summary)
+
+        result = service._process_stuck_submissions([submission])
+
+        assert result == {"success": 1, "failure": 0, "not_found": 0}
+        create_payload.assert_called_once_with("form-id", "submission-id", document)
+        send_retry.assert_called_once_with("application-id", {"submissionId": "submission-id"})
+        send_summary.assert_called_once_with(result)
+
+    def test_counts_missing_mongo_submissions(self, monkeypatch):
+        submission = ("application-id", "draft-id", "submission-id", "form-id")
+        monkeypatch.setattr(service, "_fetch_submission_from_mongo", MagicMock(return_value=None))
+        send_retry = MagicMock()
+        send_summary = MagicMock()
+        monkeypatch.setattr(service, "_send_retry_submission", send_retry)
+        monkeypatch.setattr(service, "_send_summary_to_splunk", send_summary)
+
+        result = service._process_stuck_submissions([submission])
+
+        assert result == {"success": 0, "failure": 0, "not_found": 1}
+        send_retry.assert_not_called()
+        send_summary.assert_called_once_with(result)
+
+    def test_counts_failed_retry_submissions(self, monkeypatch):
+        submission = ("application-id", "draft-id", "submission-id", "form-id")
+        monkeypatch.setattr(service, "_fetch_submission_from_mongo", MagicMock(return_value={"data": {}}))
+        monkeypatch.setattr(service, "_create_retry_submission_payload", MagicMock(return_value={}))
+        monkeypatch.setattr(service, "_send_retry_submission", MagicMock(return_value=False))
+        monkeypatch.setattr(service, "_send_summary_to_splunk", MagicMock())
+
+        result = service._process_stuck_submissions([submission])
+
+        assert result == {"success": 0, "failure": 1, "not_found": 0}
 
 
 class TestGetAccessToken:
