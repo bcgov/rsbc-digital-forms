@@ -1,5 +1,6 @@
 import json
 import logging
+import time
 
 import psycopg2
 from bson import ObjectId
@@ -10,6 +11,9 @@ from python.common import splunk
 from python.stuck_submissions_monitor_job.config import Config
 
 logger = logging.getLogger(__name__)
+
+_access_token: str | None = None
+_access_token_expires_at = 0.0
 
 
 def run_stuck_submissions_monitor() -> None:
@@ -139,6 +143,11 @@ def _send_summary_to_splunk(retry_status_count) -> None:
 
 
 def _get_access_token() -> str | None:
+    global _access_token, _access_token_expires_at
+
+    if _access_token and time.monotonic() < _access_token_expires_at:
+        return _access_token
+
     base_url = Config.KEYCLOAK_AUTH_URL.rstrip('/')
     token_url = f"{base_url}/realms/{Config.KEYCLOAK_REALM}/protocol/openid-connect/token"
 
@@ -148,5 +157,8 @@ def _get_access_token() -> str | None:
         'client_secret': Config.KEYCLOAK_CLIENT_SECRET,
     })
     token_response.raise_for_status()
-    access_token = token_response.json().get('access_token')
-    return access_token
+    token_data = token_response.json()
+    _access_token = token_data.get('access_token')
+    expires_in = token_data.get('expires_in', 0)
+    _access_token_expires_at = time.monotonic() + expires_in if _access_token else 0.0
+    return _access_token
