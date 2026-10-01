@@ -44,31 +44,32 @@ def lease_a_form_id(**kwargs) -> tuple:
     id_list = []
     id_not_available = False
     try:
-        for form_type in data:
-            form_type_count = data.get(form_type)
-            if form_type_count > 0:
-                ids = db.session.query(Form) \
-                    .filter(Form.form_type == form_type) \
-                    .filter(Form.user_guid == None) \
-                    .limit(form_type_count) \
-                    .all()
-            
-                if not ids:
-                    id_not_available = True
-                    logger.warning('Insufficient unique ids available for {}'.format(form_type))
-                    record_error(
-                        **{
-                            'error_code': ErrorCode.F01,
-                            'error_details': f'Insufficient unique ids available for {form_type}',
-                            'event_type': form_type,
-                            'func': lease_a_form_id,
-                        }
-                    )
+        with db.session.no_autoflush:
+            for form_type in data:
+                form_type_count = data.get(form_type)
+                if form_type_count > 0:                
+                    ids = db.session.query(Form) \
+                        .filter(Form.form_type == form_type) \
+                        .filter(Form.user_guid == None) \
+                        .limit(form_type_count) \
+                        .all()
+                
+                    if not ids:
+                        id_not_available = True
+                        logger.warning('Insufficient unique ids available for {}'.format(form_type))
+                        record_error(
+                            **{
+                                'error_code': ErrorCode.F01,
+                                'error_details': f'Insufficient unique ids available for {form_type}',
+                                'event_type': form_type,
+                                'func': lease_a_form_id,
+                            }
+                        )
 
-                for id in ids:
-                    logger.debug(f'id: {id}')
-                    id.lease(user_guid)
-                    id_list.append(asdict(id))
+                    for id in ids:
+                        logger.debug(f'id: {id}')
+                        id.lease(user_guid)
+                        id_list.append(asdict(id))
 
         db.session.commit()
     except Exception as e:
@@ -79,6 +80,7 @@ def lease_a_form_id(**kwargs) -> tuple:
             'event_type': kwargs.get('form_type'),
             'func': lease_a_form_id,
         }
+        db.session.rollback()
     
     kwargs['response_dict'] = jsonify({'forms': id_list})
     is_successful = not id_not_available
