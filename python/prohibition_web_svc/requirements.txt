@@ -15,6 +15,7 @@ Flask-Cors>=6.0.5
 Flask-SQLAlchemy==3.1.1
 Flask-Migrate
 Flask-Caching
+SQLAlchemy>=2.0,<2.1
 flask-swagger-ui
 gunicorn==26.2.0
 holidays==0.104
@@ -47,7 +48,6 @@ responses==0.26.3
 rsa==4.9.1
 safety==3.8.1
 six==1.16.0
-SQLAlchemy==2.0.53
 toml==0.10.2
 urllib3==2.7.0
 Werkzeug==3.1.8
