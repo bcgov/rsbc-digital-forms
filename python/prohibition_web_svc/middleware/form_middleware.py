@@ -1,7 +1,6 @@
 import json
-import pytz
 import iso8601
-from datetime import datetime
+from datetime import datetime, timezone
 from cerberus import Validator
 from dataclasses import asdict
 from sqlalchemy import func, case
@@ -25,13 +24,11 @@ def log_payload_to_splunk(**kwargs) -> tuple:
     logger.debug(f"payload: | {payload}")
     try:
         request = kwargs.get('request')
-        kwargs['splunk_data'] = {
-            'event': "request form numbers",
+        kwargs['splunk_data'] = {            'event': "request form numbers",
             'user_guid': kwargs.get('user_guid', ''),
             'username': kwargs.get('username'),
             'request_id': kwargs.get('request_id', ''),
-            'payload': payload
-        }
+            'payload': payload        }
     except Exception as e:
         logger.error(e)
     return True, kwargs
@@ -44,31 +41,32 @@ def lease_a_form_id(**kwargs) -> tuple:
     id_list = []
     id_not_available = False
     try:
-        for form_type in data:
-            form_type_count = data.get(form_type)
-            if form_type_count > 0:
-                ids = db.session.query(Form) \
-                    .filter(Form.form_type == form_type) \
-                    .filter(Form.user_guid == None) \
-                    .limit(form_type_count) \
-                    .all()
-            
-                if not ids:
-                    id_not_available = True
-                    logger.warning('Insufficient unique ids available for {}'.format(form_type))
-                    record_error(
-                        **{
-                            'error_code': ErrorCode.F01,
-                            'error_details': f'Insufficient unique ids available for {form_type}',
-                            'event_type': form_type,
-                            'func': lease_a_form_id,
-                        }
-                    )
+        with db.session.no_autoflush:
+            for form_type in data:
+                form_type_count = data.get(form_type)
+                if form_type_count > 0:                
+                    ids = db.session.query(Form) \
+                        .filter(Form.form_type == form_type) \
+                        .filter(Form.user_guid == None) \
+                        .limit(form_type_count) \
+                        .all()
+                
+                    if not ids:
+                        id_not_available = True
+                        logger.warning('Insufficient unique ids available for {}'.format(form_type))
+                        record_error(
+                            **{
+                                'error_code': ErrorCode.F01,
+                                'error_details': f'Insufficient unique ids available for {form_type}',
+                                'event_type': form_type,
+                                'func': lease_a_form_id,
+                            }
+                        )
 
-                for id in ids:
-                    logger.debug(f'id: {id}')
-                    id.lease(user_guid)
-                    id_list.append(asdict(id))
+                    for id in ids:
+                        logger.debug(f'id: {id}')
+                        id.lease(user_guid)
+                        id_list.append(asdict(id))
 
         db.session.commit()
     except Exception as e:
@@ -79,6 +77,7 @@ def lease_a_form_id(**kwargs) -> tuple:
             'event_type': kwargs.get('form_type'),
             'func': lease_a_form_id,
         }
+        db.session.rollback()
     
     kwargs['response_dict'] = jsonify({'forms': id_list})
     is_successful = not id_not_available
@@ -160,32 +159,6 @@ def mark_form_as_printed_or_spoiled(**kwargs) -> tuple:
         return False, kwargs
     kwargs['response_dict'] = {'message': f'successfully printed or spoiled forms: {forms}'}
     return True, kwargs
-
-# def mark_form_as_spoiled(**kwargs) -> tuple:
-#     logger.debug('inside mark_form_as_spoiled()')
-#     payload = kwargs.get('payload')
-#     forms = payload.get('forms')
-#     user_guid = kwargs.get('user_guid')
-#     logger.debug(payload)
-#     for form in forms:
-#         number = forms.get(form)
-#         if form == "VI_number" or form == "IRP_number":
-#             number = str(number)[:-1]
-#         logger.debug(f'Form Number: {number}')
-#         form = db.session.query(Form) \
-#             .filter(Form.id == number) \
-#             .first()
-#         if form is None:
-#             logger.warning(f'{user_guid}, cannot update {payload.get(form)} as spoiled - record not found')
-#             return False, kwargs
-#         form.spoiled_timestamp = payload.get('spoiled_timestamp')
-#     try:
-#         db.session.commit()
-#     except Exception as e:
-#         return False, kwargs
-#     kwargs['response_dict'] = {'message': f'successfully spoiled forms: {forms}'}
-#     return True, kwargs
-
 
 def request_contains_a_payload(**kwargs) -> tuple:
     request = kwargs.get('request')
@@ -309,10 +282,8 @@ def convert_vancouver_to_utc(iso_datetime_string: str) -> datetime:
     timezone, but the API database field is not timezone aware. We
     convert the Vancouver timezone to UTC.
     """
-    utc_timezone = pytz.timezone("UTC")
     printed = iso8601.parse_date(iso_datetime_string)
-    return printed.astimezone(utc_timezone).replace(tzinfo=None)
-
+    return printed.astimezone(timezone.utc).replace(tzinfo=None)
 def get_form_statistics(**kwargs) -> tuple:
     try:
         results = db.session.query(
@@ -367,12 +338,6 @@ def get_form_statistics(**kwargs) -> tuple:
         return True, kwargs
     except Exception as e:
         logger.error(f"Error in get_form_statistics: {str(e)}")
-        # kwargs['error'] = {
-        #     'error_code': ErrorCode.F03,
-        #     'error_details': str(e),
-        #     'event_type': 'form_statistics',
-        #     'func': get_form_statistics,
-        # }
         return False, kwargs
 
 def record_form_error(**kwargs):
@@ -387,12 +352,10 @@ def record_form_error(**kwargs):
 
         if error is None:
             logger.warning("Error object is None")
-            return True, kwargs
-
-        record_error(**error)
+        else:
+            record_error(**error)
 
     except Exception as e:
-        # If recording the error itself fails, log it
         logger.error(f"Failed to record form error: {str(e)}")
     
     return True, kwargs

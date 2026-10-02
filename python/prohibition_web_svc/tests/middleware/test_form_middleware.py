@@ -1,6 +1,5 @@
 import pytest
 import json
-import pytz
 from datetime import datetime, date, timedelta
 from unittest.mock import MagicMock, patch, call
 from dataclasses import dataclass, asdict

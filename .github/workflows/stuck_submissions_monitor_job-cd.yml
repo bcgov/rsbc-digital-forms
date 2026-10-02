@@ -1,0 +1,25 @@
+name: stuck_submissions_monitor_job-cd
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches:
+      - master
+      - main
+    paths:
+      - python/common/**
+      - python/stuck_submissions_monitor_job/**
+      - .github/workflows/stuck_submissions_monitor_job-cd.yml
+      - trigger.txt
+
+jobs:
+  CD:
+    permissions:
+      contents: read
+    uses: ./.github/workflows/cd-workflow.yml
+    with:
+      DOCKER_CONTEXT: python
+      DOCKER_FILE: python/stuck_submissions_monitor_job/dockerfile
+      DOCKER_IMAGE_NAME: rsbc-df-stuck-submissions-monitor
+      IMPORT_IMAGE_TO_OPENSHIFT: false
+    secrets: inherit
