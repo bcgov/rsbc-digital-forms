@@ -47,7 +47,7 @@ responses==0.26.3
 rsa==4.9.1
 safety==3.8.1
 six==1.16.0
-SQLAlchemy==2.0.53
+SQLAlchemy==2.0.54
 toml==0.10.2
 urllib3==2.7.0
 Werkzeug==3.1.8
