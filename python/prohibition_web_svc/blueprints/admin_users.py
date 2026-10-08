@@ -92,3 +92,24 @@ def get(username):
     if request.method == 'GET':
         return make_response({"error": "method not implemented"}, 405)
 
+
+@bp.route('/admin/users/<string:user_guid>/approve', methods=['PATCH'])
+def approve(user_guid):
+    """
+    Approve a user
+    """
+    if request.method == 'PATCH':
+        kwargs = helper.middle_logic(
+            keycloak_logic.get_authorized_keycloak_user() + [
+                {"try": splunk_middleware.admin_approve_user, "fail": []},
+                {"try": splunk.log_to_splunk, "fail": []},
+                {"try": admin_user_middleware.approve_user, "fail": [
+                    {"try": http_responses.server_error_response, "fail": []},
+                ]},
+                {"try": http_responses.successful_update_response, "fail": []}
+            ],
+            required_permission='manage_users',
+            requested_user_guid=user_guid,
+            request=request,
+            config=Config)
+        return kwargs.get('response')
