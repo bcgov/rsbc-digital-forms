@@ -131,9 +131,9 @@ def admin_get_user_role(**kwargs) -> tuple:
     return True, kwargs
 
 
-def admin_update_user_role(**kwargs) -> tuple:
+def admin_approve_user(**kwargs) -> tuple:
     kwargs['splunk_data'] = {
-        "event": "admin update user-role",
+        "event": "admin approve user",
         "admin_user_guid": kwargs.get('user_guid', ''),
         "admin_username": kwargs.get('username', ''),
         "requested_user_guid": kwargs.get('requested_user_guid', ''),

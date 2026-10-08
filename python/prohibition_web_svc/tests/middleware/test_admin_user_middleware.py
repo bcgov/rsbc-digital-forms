@@ -51,6 +51,8 @@ class DummyUser:
         self.last_name = "Doe"
         self.business_guid = None
         self.last_active = None
+        self.applied_dt = None
+        self.approved_dt = None
         self.agency_ref = DummyAgency()
 
     @staticmethod
@@ -148,6 +150,10 @@ class TestUpdateTheUser:
 class TestAdminCreateAUser:
     def test_create_user_success(self, monkeypatch):
         mock_db = MagicMock()
+        applied_at = datetime(2024, 1, 2, 3, 4, 5)
+        mock_datetime = MagicMock()
+        mock_datetime.now.return_value = applied_at
+        monkeypatch.setattr(admin_user_middleware, "datetime", mock_datetime)
         monkeypatch.setattr(admin_user_middleware, "db", mock_db)
 
         kwargs = {
@@ -167,6 +173,8 @@ class TestAdminCreateAUser:
 
         assert result is True
         mock_db.session.add.assert_called_once()
+        created_user = mock_db.session.add.call_args.args[0]
+        assert created_user.applied_dt == applied_at
         mock_db.session.commit.assert_called_once()
 
     def test_create_user_exception_handling(self, monkeypatch):
@@ -189,6 +197,45 @@ class TestAdminCreateAUser:
         result, out_kwargs = admin_user_middleware.admin_create_a_user(**kwargs)
 
         assert result is False
+
+
+class TestApproveUser:
+    def test_approve_user_success(self, monkeypatch):
+        mock_db = MagicMock()
+        user = DummyUser(
+            user_guid="user-123",
+            username="jdoe",
+            display_name="John Doe",
+            login="jdoe@idir",
+            badge_number="AB1234",
+            agency_id=1,
+        )
+        approved_at = datetime(2024, 1, 2, 3, 4, 5)
+        mock_datetime = MagicMock()
+        mock_datetime.now.return_value = approved_at
+        mock_db.session.query().filter().first.return_value = user
+        monkeypatch.setattr(admin_user_middleware, "datetime", mock_datetime)
+        monkeypatch.setattr(admin_user_middleware, "db", mock_db)
+
+        result, out_kwargs = admin_user_middleware.approve_user(
+            requested_user_guid="user-123"
+        )
+
+        assert result is True
+        assert user.approved_dt == approved_at
+        mock_db.session.commit.assert_called_once()
+
+    def test_approve_user_exception_handling(self, monkeypatch):
+        mock_db = MagicMock()
+        mock_db.session.query.side_effect = Exception("db error")
+        monkeypatch.setattr(admin_user_middleware, "db", mock_db)
+
+        result, out_kwargs = admin_user_middleware.approve_user(
+            requested_user_guid="user-123"
+        )
+
+        assert result is False
+        assert out_kwargs["requested_user_guid"] == "user-123"
 
 
 class TestRequestContainsAPayload:
