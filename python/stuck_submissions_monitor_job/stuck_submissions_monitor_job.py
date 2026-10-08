@@ -1,0 +1,63 @@
+from __future__ import annotations
+
+import sys
+import logging
+
+from python.stuck_submissions_monitor_job.stuck_submissions_monitor_service import run_stuck_submissions_monitor
+from python.stuck_submissions_monitor_job.config import Config
+
+
+numeric_level = getattr(logging, Config.LOG_LEVEL, 10)
+logging.basicConfig(
+    level=numeric_level,
+    format='%(asctime)s [STUCK_SUBMISSIONS_MONITOR_JOB]: %(levelname)s %(module)s:%(lineno)d %(message)s'
+)
+logger = logging.getLogger(__name__)
+logging.getLogger("pymongo").setLevel(logging.WARNING)
+logging.getLogger("pymongo.connection").setLevel(logging.ERROR)
+logging.getLogger("pymongo.serverSelection").setLevel(logging.ERROR)
+
+
+def _print_env_variables():
+    logger.debug("Environment Variables:")
+    logger.info(f"LOG_LEVEL: {Config.LOG_LEVEL}")
+    logger.info(f"ENVIRONMENT: {Config.ENVIRONMENT}")
+
+    logger.info(f"DB_HOST: {Config.DB_HOST}")
+    logger.info(f"DB_USER: {Config.DB_USER}")
+    logger.info(f"DB_NAME: {Config.DB_NAME_FF_API}")
+    logger.info(f"DB_PORT: {Config.DB_PORT}")
+
+    logger.info(f"MONGO_HOST: {Config.MONGO_HOST}")
+    logger.info(f"MONGO_PORT: {Config.MONGO_PORT}")
+    logger.info(f"MONGO_USER: {Config.MONGO_USER}")
+    logger.info(f"MONGO_DB_NAME: {Config.MONGO_DB_NAME}")
+
+    logger.info(f"KEYCLOAK_AUTH_URL: {Config.KEYCLOAK_AUTH_URL}")
+    logger.info(f"KEYCLOAK_REALM: {Config.KEYCLOAK_REALM}")
+    logger.info(f"KEYCLOAK_CLIENT_ID: {Config.KEYCLOAK_CLIENT_ID}")
+
+    logger.info(f"SPLUNK_HOST: {Config.SPLUNK_HOST}")
+    logger.info(f"SPLUNK_PORT: {Config.SPLUNK_PORT}")
+    logger.info(f"OPENSHIFT_PLATE: {Config.OPENSHIFT_PLATE}")
+
+    logger.info(f"RETRY_SUBMISSION_URL: {Config.RETRY_SUBMISSION_URL}")
+    logger.info(f"FORMIO_BASE_URL: {Config.FORMIO_BASE_URL}")
+    logger.info(f"WEB_FORM_BASE_URL: {Config.WEB_FORM_BASE_URL}")
+
+
+def execute_stuck_submissions_monitor_job() -> None:
+    logger.info("Starting stuck submissions monitor job.")
+    try:
+        _print_env_variables()
+
+        run_stuck_submissions_monitor()
+
+        logger.info("Stuck submissions monitor job completed successfully.")
+    except Exception as e:
+        logger.error(f"An error occurred during stuck submissions monitor job: {e}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    execute_stuck_submissions_monitor_job()

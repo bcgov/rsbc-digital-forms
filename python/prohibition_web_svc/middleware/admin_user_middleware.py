@@ -60,6 +60,7 @@ def admin_create_a_user(**kwargs) -> tuple:
             first_name=kwargs.get('payload')['first_name'],
             last_name=kwargs.get('payload')['last_name']
         )
+        user.applied_dt = datetime.now()
         db.session.add(user)
         db.session.commit()
     except Exception as e:
@@ -126,7 +127,19 @@ def update_user_last_active(**kwargs):
         db.session.rollback()
         kwargs['response'] = {"error": f"An error occurred: {str(e)}"}, 500
         return False, kwargs
-    
+
+def approve_user(**kwargs) -> tuple:
+    try:
+        user = db.session.query(User) \
+            .filter(User.user_guid == kwargs.get('requested_user_guid')) \
+            .first()
+        user.approved_dt = datetime.now()
+        db.session.commit()
+    except Exception as e:
+        logger.warning(str(e))
+        return False, kwargs
+    return True, kwargs
+
 def validate_admin_create_user_payload(**kwargs) -> tuple:
     schema = {
           "user_guid": {
@@ -187,4 +200,4 @@ def validate_admin_create_user_payload(**kwargs) -> tuple:
         return True, kwargs
     logger.warning("validation error: " + json.dumps(cerberus.errors))
     kwargs['validation_errors'] = cerberus.errors
-    return False, kwargs    
+    return False, kwargs
