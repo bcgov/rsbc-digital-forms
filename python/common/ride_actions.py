@@ -13,6 +13,7 @@ ride_key=Config.RIDE_API_KEY
 twelve_hours_submitted = "12hr_submitted"
 twenty_four_hours_submitted = "24hr_submitted"
 vi_submitted = "vi_submitted"
+irp_submitted = "irp_submitted"
 
 def twelve_hours_event(**args):
     try:
@@ -200,6 +201,72 @@ def vi_event(**args):
                         'func': vi_event,
                         'ticket_no': args['form_data']['VI_number'] if 'VI_number' in args['form_data'] else None,
                         'event_id': args['message']['event_id']
+                    }
+        return False, args
+
+    return True, args
+
+def irp_event(**args):
+    form_data = args.get('form_data') or {}
+    irp_number = form_data.get('IRP_number') 
+    event_id = args.get('message', {}).get('event_id')
+
+    try:
+        logging.verbose(f"sending irp_submitted to RIDE with args: {args}")
+        if len(args.keys()) == 0:
+            return True, args
+
+        payloadRecord = {}
+        payloadRecord["eventType"] = irp_submitted
+        fill_common_payload_record(args, payloadRecord)
+
+        # IRP specific fields.
+        payloadRecord["irpNumber"] = irp_number
+        payloadRecord["viNumber"] = form_data.get('VI_number')
+        prohibition_type = form_data.get('type_of_prohibition')
+        payloadRecord["irpProhibitionType"] = prohibition_type
+        #payloadRecord["prohibitionPeriodDays"] = calculate_period_days()
+        payloadRecord["driverGender"] = form_data.get('gender')
+        payloadRecord["driverLicenceClass"] = form_data.get('driver_licence_class')
+
+        eventPayload = {
+            'typeofevent': irp_submitted,
+            'irpPayload': payloadRecord,
+        }
+
+        
+        fill_location(args, eventPayload)
+
+        endpoint = f"{ride_url}/dfV2events/irpsubmitted" # TODO: confirm path once producer endpoint exists
+        headers = {'ride-api-key': ride_key}
+        logging.info(f'calling RIDE Producer endpoint: {endpoint}')
+        logging.debug(f'payload: {eventPayload}')
+        logging.debug(f'headers: {headers}')
+        response = requests.post(endpoint, json=eventPayload, verify=False,headers=headers)
+        if response.status_code != 200:
+            args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': f'Error in sending irp_submitted event to RIDE, Response code: {response.status_code} response text: {response.text}',
+                        'event_type': 'IRP',
+                        'func': irp_event,
+                        'ticket_no': irp_number,
+                        'event_id': event_id
+                    }
+            logging.error(f'error code: {response.status_code} error message: {response.text}')
+            logging.error('error in sending irp_submitted event to RIDE')
+            return False, args
+        else:
+            logging.debug(response.text)
+    except Exception as e:
+        logging.error('error in sending irp_submitted event to RIDE')
+        logging.exception(e)
+        args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': e,
+                        'event_type': 'IRP',
+                        'func': irp_event,
+                        'ticket_no': irp_number,
+                        'event_id': event_id
                     }
         return False, args
 
