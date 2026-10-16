@@ -182,7 +182,7 @@ def convertDateTime(timevalue):
     date_obj = date_obj.replace(hour=0, minute=0, second=0, microsecond=00)
 
     # Specify the timezone (Pacific Time in this case)
-    pacific_time = pytz.timezone("America/Los_Angeles")
+    pacific_time = pytz.timezone("America/Vancouver")
     date_obj = pacific_time.localize(date_obj)
 
     # Convert to desired string format
@@ -200,7 +200,7 @@ def convertDateTimeWithSecs(timevalue):
     new_date_obj = datetime.strptime(timevalue, "%Y-%m-%dT%H:%M:%S")
 
     # Specify the timezone (Pacific Time in this case)
-    pacific_time = pytz.timezone("America/Los_Angeles")
+    pacific_time = pytz.timezone("America/Vancouver")
     new_date_obj = pacific_time.localize(new_date_obj)
 
     # Reformat the datetime object to include the timezone offset in the specified format

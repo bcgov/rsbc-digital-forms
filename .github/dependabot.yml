@@ -48,6 +48,14 @@ updates:
       - dependency-type: "production"
     open-pull-requests-limit: 5
 
+  - package-ecosystem: "pip"
+    directory: "/python/stuck_submissions_monitor_job"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "production"
+    open-pull-requests-limit: 5
+
   - package-ecosystem: "docker"
     directory: "/python/prohibition_web_svc"
     schedule:
@@ -80,6 +88,12 @@ updates:
 
   - package-ecosystem: "docker"
     directory: "/python/task_scheduler"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "docker"
+    directory: "/python/stuck_submissions_monitor_job"
     schedule:
       interval: "daily"
     open-pull-requests-limit: 5

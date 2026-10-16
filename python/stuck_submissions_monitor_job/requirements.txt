@@ -1,0 +1,6 @@
+psycopg2-binary
+pymongo
+python-json-logger
+pytz
+requests
+responses

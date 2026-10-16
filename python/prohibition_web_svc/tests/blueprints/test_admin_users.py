@@ -181,3 +181,38 @@ class TestGetUserDetails:
         assert response.status_code == 405
         body = json.loads(response.data)
         assert body['error'] == 'method not implemented'
+
+
+class TestApproveUser:
+    """Test PATCH /api/v1/admin/users/<user_guid>/approve"""
+
+    def test_approve_user_passes_guid_and_returns_response(self, client, monkeypatch):
+        middle_logic_call = {}
+        expected_response = {
+            'response': (
+                json.dumps({'message': 'User approved'}),
+                200,
+                {'Content-Type': 'application/json'},
+            )
+        }
+
+        def mock_middle_logic(steps, **kwargs):
+            middle_logic_call['steps'] = steps
+            middle_logic_call.update(kwargs)
+            return expected_response
+
+        monkeypatch.setattr(
+            'python.common.helper.middle_logic',
+            mock_middle_logic,
+        )
+        monkeypatch.setattr(
+            'python.prohibition_web_svc.business.keycloak_logic.get_authorized_keycloak_user',
+            lambda: [],
+        )
+
+        response = client.patch('/api/v1/admin/users/user-123/approve')
+
+        assert response.status_code == 200
+        assert json.loads(response.data) == {'message': 'User approved'}
+        assert middle_logic_call['requested_user_guid'] == 'user-123'
+        assert middle_logic_call['required_permission'] == 'manage_users'

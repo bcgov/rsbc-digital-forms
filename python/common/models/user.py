@@ -13,6 +13,8 @@ class User(db.Model):
     display_name = db.Column(db.String(80), nullable=True)
     login = db.Column(db.String(80), nullable=False)
     last_active = db.Column(db.DateTime, nullable=True)
+    applied_dt = db.Column(db.DateTime, nullable=True)
+    approved_dt = db.Column(db.DateTime, nullable=True)
 
     agency_ref = db.relationship('Agency', lazy=False)
 
@@ -41,4 +43,6 @@ class User(db.Model):
             "display_name": user.display_name,
             "login": user.login,
             "last_active": user.last_active,
+            "applied_dt": user.applied_dt,
+            "approved_dt": user.approved_dt,
         }

@@ -40,13 +40,15 @@ class DummyAgency:
 
 
 class DummyUser:
-    def __init__(self, user_guid, username, display_name, login, badge_number, agency_id):
+    def __init__(self, user_guid, username, display_name, login, badge_number, agency_id, applied_dt=None, approved_dt=None):
         self.user_guid = user_guid
         self.username = username
         self.display_name = display_name
         self.login = login
         self.badge_number = badge_number
         self.agency_id = agency_id
+        self.applied_dt = applied_dt
+        self.approved_dt = approved_dt
         self.first_name = "John"
         self.last_name = "Doe"
         self.business_guid = None
@@ -64,6 +66,8 @@ class DummyUser:
             "login": user.login,
             "badge_number": user.badge_number,
             "agency": user.agency_ref.agency_name if user.agency_ref else None,
+            "applied_dt": user.applied_dt,
+            "approved_dt": user.approved_dt,
         }
 
 
@@ -234,6 +238,8 @@ class TestGetUser:
             login="jdoe@idir",
             badge_number="AB1234",
             agency_id=1,
+            applied_dt=datetime(2024, 6, 1),
+            approved_dt=(datetime(2024, 6, 1),),
         )
         mock_db.session.query().filter().first.return_value = user
         monkeypatch.setattr(user_middleware, "db", mock_db)

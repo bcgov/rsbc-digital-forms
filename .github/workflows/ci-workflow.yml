@@ -65,6 +65,10 @@ jobs:
           pip install -r requirements.txt
           echo "Running tests for irp_rts_notification_job"
           pytest tests/
+          cd ../stuck_submissions_monitor_job
+          pip install -r requirements.txt
+          echo "Running tests for stuck_submissions_monitor_job"
+          pytest tests/
 
   trivy-scan:
     needs:
