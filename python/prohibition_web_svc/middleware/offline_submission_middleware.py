@@ -4,7 +4,6 @@ import uuid
 from python.common.enums import ErrorCode
 from python.common.logging_utils import get_logger
 from python.common.models import db, FormsflowOfflineSubmission
-from python.prohibition_web_svc.middleware import common_middleware
 
 logger = get_logger(__name__)
 

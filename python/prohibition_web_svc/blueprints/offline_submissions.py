@@ -1,4 +1,3 @@
-from python.common import splunk
 from python.common.logging_utils import get_logger
 from python.prohibition_web_svc.config import Config
 from python.common.helper import middle_logic
