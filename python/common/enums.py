@@ -143,6 +143,10 @@ class ErrorCode(BaseEnum):
     N02 = ErrorCodeDetails("N02", "Notification Service Error", ErrorCategory.SYSTEM, ErrorSeverity.HIGH,
                            "Ensure all required fields are provided in the email payload", True)
 
+    # Offline submission related error
+    O01 = ErrorCodeDetails("O01", "Error saving offline submission in the database", ErrorCategory.DATA, ErrorSeverity.HIGH,
+                           "Contact DF application support for further investigation", True)
+
     # Add more error codes as needed...
 
     @property
