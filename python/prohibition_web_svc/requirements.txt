@@ -18,7 +18,7 @@ Flask-Caching
 SQLAlchemy>=2.0,<2.1
 flask-swagger-ui
 gunicorn==26.2.0
-holidays==0.105
+holidays==0.106
 idna==3.20
 iniconfig==1.1.1
 iso8601==2.1.0
