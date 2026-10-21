@@ -1,5 +1,5 @@
 import logging
-from python.common.models import Event,Submission,SubmissionFormRef
+from python.common.models import Event,Submission,SubmissionFormRef,FormsflowOfflineSubmission
 import logging
 from python.task_scheduler.eventqueuefuncs import record_queue_error
 
@@ -79,3 +79,42 @@ def update_event_status(app,db,submission_id,event_id,status):
         return False,errmsg
     return True,None
 
+def query_pending_offline_submissions(app, db):
+    """Query pending offline submissions."""
+    offline_submissions = []
+    try:
+        with app.app_context():
+            query_result = db.session.query(FormsflowOfflineSubmission) \
+                .filter(FormsflowOfflineSubmission.status == 'pending') \
+                .all()
+            if len(query_result) == 0:
+                errmsg = "No pending offline submissions found"
+                return False, errmsg, None
+
+            for submission in query_result:
+                offline_submissions.append({
+                    'id': submission.id
+                })
+    except Exception as e:
+        logging.error(e, exc_info=True)
+        record_queue_error(app, None, query_pending_offline_submissions, str(e))
+        errmsg = f"Error querying pending offline submissions: {e}"
+        return False, errmsg, None
+    return True, None, offline_submissions
+
+def update_offline_submission_status(app,db,id,status):
+    """Update the offline submission status."""
+    try:
+        application = app
+        with application.app_context():
+            submission_data = db.session.query(FormsflowOfflineSubmission) \
+                .filter(FormsflowOfflineSubmission.id == id) \
+                .one()
+            submission_data.status=status    
+            db.session.commit()
+    except Exception as e:
+        logging.error(e, exc_info=True)
+        record_queue_error(app, {'id': id}, update_offline_submission_status, str(e) )
+        errmsg=f"Error updating offline submission status: {e}"
+        return False,errmsg
+    return True,None
