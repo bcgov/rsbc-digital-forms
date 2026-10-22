@@ -147,6 +147,21 @@ class ErrorCode(BaseEnum):
     O01 = ErrorCodeDetails("O01", "Error saving offline submission in the database", ErrorCategory.DATA, ErrorSeverity.HIGH,
                            "Contact DF application support for further investigation", True)
 
+    O02 = ErrorCodeDetails("O02", "Error retrieving offline submission from the database", ErrorCategory.DATA, ErrorSeverity.HIGH,
+                           "Contact DF application support for further investigation", True)
+
+    O03 = ErrorCodeDetails("O03", "Missing offline submission ID", ErrorCategory.VALIDATION, ErrorSeverity.LOW,
+                           "Ensure that the offline submission ID is provided", True)
+
+    O04 = ErrorCodeDetails("O04", "Invalid offline submission data", ErrorCategory.VALIDATION, ErrorSeverity.HIGH,
+                           "Ensure that the offline submission data is valid", True)
+
+    O05 = ErrorCodeDetails("O05", "Message reached max retry count", ErrorCategory.SYSTEM, ErrorSeverity.HIGH,
+                           "Contact DF application support for further investigation", False)
+
+    O06 = ErrorCodeDetails("O06", "Offline submission hold queue error", ErrorCategory.SYSTEM, ErrorSeverity.HIGH,
+                           "Contact DF application support for further investigation", False)
+
     # Add more error codes as needed...
 
     @property

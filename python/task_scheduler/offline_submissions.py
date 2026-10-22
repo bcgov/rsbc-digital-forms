@@ -24,7 +24,7 @@ def process_offline_submission(app, db):
                             f"offline_submission_id: {submission['id']}"
                         )
                         update_status, update_err = update_offline_submission_status(
-                            app, db, submission['id'], 'processed'
+                            app, db, submission['id'], 'queued'
                         )
                         if not update_status:
                             logging.error(

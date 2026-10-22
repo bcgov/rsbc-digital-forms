@@ -12,6 +12,10 @@ class Config():
     STORAGE_FAIL_QUEUE_PERS=os.getenv('STORAGE_FAIL_QUEUE_PERS', 'df-storage-events-fail-persistent')
     EVENT_TYPES                         = os.getenv('EVENT_TYPES', 'vi,24h,12h,irp').split(',')
     PENDING_EVENT_STATUSES = os.getenv('PENDING_EVENT_STATUSES', 'pending,retrying').split(',')
+    OFFLINE_SUBMISSION_WATCH_QUEUE = os.getenv('OFFLINE_SUBMISSION_WATCH_QUEUE', 'df-offline-submissions')
+    OFFLINE_SUBMISSION_HOLD_QUEUE = os.getenv('OFFLINE_SUBMISSION_HOLD_QUEUE', 'df-offline-submissions-hold')
+    OFFLINE_SUBMISSION_FAIL_QUEUE = os.getenv('OFFLINE_SUBMISSION_FAIL_QUEUE', 'df-offline-submissions-fail')
+    OFFLINE_SUBMISSION_MAX_RETRIES = int(os.getenv('OFFLINE_SUBMISSION_MAX_RETRIES', '5'))
 
     DB_HOST = os.environ.get('DB_HOST', 'db')
     DB_USER = os.environ.get('DB_USER', 'testuser')

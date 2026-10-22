@@ -10,7 +10,7 @@ class TestProcessOfflineSubmission:
     def configure_verbose_logging(self, monkeypatch):
         monkeypatch.setattr(service.logging, "verbose", MagicMock(), raising=False)
 
-    def test_publishes_submissions_and_marks_them_processed(self, monkeypatch):
+    def test_publishes_submissions_and_marks_them_queued(self, monkeypatch):
         app = MagicMock()
         db = MagicMock()
         submissions = [{"id": 1}, {"id": 2}]
@@ -35,8 +35,8 @@ class TestProcessOfflineSubmission:
         queue_mock.assert_any_call(
             app, writer, submissions[1], service.Config.OFFLINE_SUBMISSION_WATCH_QUEUE
         )
-        update_mock.assert_any_call(app, db, 1, "processed")
-        update_mock.assert_any_call(app, db, 2, "processed")
+        update_mock.assert_any_call(app, db, 1, "queued")
+        update_mock.assert_any_call(app, db, 2, "queued")
         assert update_mock.call_count == 2
 
     def test_does_not_update_status_when_submission_cannot_be_queued(self, monkeypatch):
@@ -76,7 +76,7 @@ class TestProcessOfflineSubmission:
         service.process_offline_submission(app, db)
 
         assert update_mock.call_count == 2
-        update_mock.assert_any_call(app, db, 2, "processed")
+        update_mock.assert_any_call(app, db, 2, "queued")
 
     def test_returns_true_when_there_are_no_pending_submissions(self, monkeypatch):
         app = MagicMock()

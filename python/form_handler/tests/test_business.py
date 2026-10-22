@@ -7,6 +7,7 @@ import pytest
 
 import python.form_handler.business as business
 import python.form_handler.actions as actions
+import python.form_handler.actions_offline_submission as offline_actions
 import python.form_handler.rsi_email as rsi_email
 
 
@@ -160,3 +161,34 @@ class TestProcessIncomingForm:
         result2 = business.process_incoming_form()
         assert result1 is not result2
         assert result1["vi"] is not result2["vi"]
+
+
+class TestProcessIncomingOfflineSubmissions:
+    def test_pipeline_uses_expected_actions_in_order(self):
+        pipeline = business.process_incoming_offline_submissions()
+
+        assert [step["try"] for step in pipeline] == [
+            offline_actions.set_offline_submission_id,
+            offline_actions.get_offline_submission_data,
+            offline_actions.validate_offline_submission_data,
+            offline_actions.update_status_processing,
+            offline_actions.send_to_formio,
+            offline_actions.send_to_formsflow,
+            offline_actions.update_status_completed,
+        ]
+        assert all(isinstance(step["fail"], list) for step in pipeline)
+
+    def test_pipeline_builds_fresh_steps_and_failure_lists(self):
+        first = business.process_incoming_offline_submissions()
+        second = business.process_incoming_offline_submissions()
+
+        assert first is not second
+        assert first[0] is not second[0]
+        assert first[0]["fail"] is not second[0]["fail"]
+
+    def test_send_failures_are_routed_to_hold_queue(self):
+        pipeline = business.process_incoming_offline_submissions()
+
+        for index in (1, 3, 4):
+            failure_actions = [step["try"] for step in pipeline[index]["fail"]]
+            assert offline_actions.add_to_hold_queue in failure_actions
