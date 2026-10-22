@@ -20,7 +20,7 @@ flask-swagger-ui
 gunicorn==26.2.0
 holidays==0.106
 idna==3.20
-iniconfig==1.1.1
+iniconfig==2.3.1
 iso8601==2.1.0
 itsdangerous==2.2.0
 Jinja2==3.1.6
