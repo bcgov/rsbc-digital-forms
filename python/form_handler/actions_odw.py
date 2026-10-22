@@ -16,7 +16,7 @@ def send_to_odw(**args):
     elif event_type == '24h':
         return ride_actions.twenty_four_hours_event(**args)
     elif event_type == 'irp':
-            return ride_actions.irp_event(**args)
+        return ride_actions.irp_event(**args)
     else:
         return True, args
 

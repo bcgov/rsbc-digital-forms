@@ -67,4 +67,5 @@ def process_incoming_form() -> dict:
         "irp": load_event_actions()
             + send_to_vips_actions()
            + send_to_admin_actions()
+           + send_to_odw_actions()
     }
