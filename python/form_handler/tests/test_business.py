@@ -8,6 +8,7 @@ import pytest
 import python.form_handler.business as business
 import python.form_handler.actions as actions
 import python.form_handler.rsi_email as rsi_email
+import python.form_handler.actions_odw as actions_odw
 
 
 class TestProcessIncomingForm:
@@ -135,6 +136,11 @@ class TestProcessIncomingForm:
     def test_irp_pipeline_contains_event_to_vips_dps(self):
         callables = [s["try"] for s in self.result["irp"]]
         assert rsi_email.event_to_vips_dps in callables
+
+    @pytest.mark.parametrize("event_type", ["vi", "24h", "12h", "irp"])
+    def test_pipeline_contains_send_to_odw(self, event_type):
+        callables = [s["try"] for s in self.result[event_type]]
+        assert actions_odw.send_to_odw in callables
 
     def test_vi_pipeline_contains_event_to_vips_dps(self):
         callables = [s["try"] for s in self.result["vi"]]
