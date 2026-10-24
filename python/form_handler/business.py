@@ -1,5 +1,5 @@
 # import python.common.middleware as middleware
-from python.form_handler import actions_offline_submission
+from python.form_handler import actions_formio, actions_formsflow, actions_offline_submission
 import python.form_handler.actions as actions
 from python.form_handler.actions_admin import send_to_admin_actions
 from python.form_handler.actions_icbc import send_to_icbc_actions
@@ -87,15 +87,17 @@ def process_incoming_offline_submissions() -> dict:
                 {"try": actions_offline_submission.update_status_error, "fail": []}
             ]}
         ]},
-        {"try": actions_offline_submission.send_to_formio, "fail": [
+        {"try": actions_formio.send_to_formio, "fail": [
             {"try": actions_offline_submission.add_to_hold_queue, "fail": [
                 {"try": actions_offline_submission.record_process_error, "fail": []},
                 {"try": actions_offline_submission.update_status_error, "fail": []}
             ]}
         ]},
-        {"try": actions_offline_submission.send_to_formsflow, "fail": [
-            {"try": actions_offline_submission.record_process_error, "fail": []},
-            {"try": actions_offline_submission.update_status_error, "fail": []}
+        {"try": actions_formsflow.send_to_formsflow, "fail": [
+            {"try": actions_offline_submission.add_to_hold_queue, "fail": [
+                {"try": actions_offline_submission.record_process_error, "fail": []},
+                {"try": actions_offline_submission.update_status_error, "fail": []}
+            ]}
         ]},
         {"try": actions_offline_submission.update_status_completed, "fail": [
             {"try": actions_offline_submission.record_process_error, "fail": []},

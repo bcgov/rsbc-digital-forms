@@ -76,6 +76,11 @@ def test_get_offline_submission_data_reports_database_error(monkeypatch):
         {"form_id": None, "payload": {"data": {"name": "A"}}},
         {"form_id": "form-1", "payload": None},
         {"form_id": "form-1", "payload": {"other": {"name": "A"}}},
+        {
+            "form_id": "form-1",
+            "username": "officer@example.test",
+            "payload": {"data": {"name": "A"}},
+        },
     ],
 )
 def test_validate_offline_submission_data_rejects_invalid_data(submission_data):
@@ -92,7 +97,11 @@ def test_validate_offline_submission_data_rejects_invalid_data(submission_data):
 def test_validate_offline_submission_data_accepts_valid_data():
     result, out_args = actions.validate_offline_submission_data(
         offline_submission_id=42,
-        submission_data={"form_id": "form-1", "payload": {"data": {"name": "A"}}},
+        submission_data={
+            "form_id": "form-1",
+            "username": "officer@example.test",
+            "payload": {"data": {"currentUser": {"id": "officer-1"}, "name": "A"}},
+        },
         message={"id": 42},
     )
 
@@ -267,12 +276,3 @@ def test_record_process_error_records_and_notifies(monkeypatch):
     )
     assert out_args["error"] is error
 
-
-@pytest.mark.parametrize("action", [actions.send_to_formio, actions.send_to_formsflow])
-def test_external_submission_actions_report_failure(action):
-    args = {"offline_submission_id": 42}
-
-    result, out_args = action(**args)
-
-    assert result is False
-    assert out_args == args

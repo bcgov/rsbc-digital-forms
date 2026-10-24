@@ -162,6 +162,12 @@ class ErrorCode(BaseEnum):
     O06 = ErrorCodeDetails("O06", "Offline submission hold queue error", ErrorCategory.SYSTEM, ErrorSeverity.HIGH,
                            "Contact DF application support for further investigation", False)
 
+    O07 = ErrorCodeDetails("O07", "Error sending offline submission to Formio", ErrorCategory.SYSTEM, ErrorSeverity.HIGH,
+                           "Contact DF application support for further investigation", False)
+
+    O08 = ErrorCodeDetails("O08", "Error sending offline submission to Formsflow", ErrorCategory.SYSTEM, ErrorSeverity.HIGH,
+                           "Contact DF application support for further investigation", False)
+
     # Add more error codes as needed...
 
     @property

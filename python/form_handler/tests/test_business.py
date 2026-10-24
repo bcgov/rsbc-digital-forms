@@ -8,6 +8,8 @@ import pytest
 import python.form_handler.business as business
 import python.form_handler.actions as actions
 import python.form_handler.actions_offline_submission as offline_actions
+import python.form_handler.actions_formio as formio_actions
+import python.form_handler.actions_formsflow as formsflow_actions
 import python.form_handler.rsi_email as rsi_email
 
 
@@ -172,8 +174,8 @@ class TestProcessIncomingOfflineSubmissions:
             offline_actions.get_offline_submission_data,
             offline_actions.validate_offline_submission_data,
             offline_actions.update_status_processing,
-            offline_actions.send_to_formio,
-            offline_actions.send_to_formsflow,
+            formio_actions.send_to_formio,
+            formsflow_actions.send_to_formsflow,
             offline_actions.update_status_completed,
         ]
         assert all(isinstance(step["fail"], list) for step in pipeline)
@@ -189,6 +191,6 @@ class TestProcessIncomingOfflineSubmissions:
     def test_send_failures_are_routed_to_hold_queue(self):
         pipeline = business.process_incoming_offline_submissions()
 
-        for index in (1, 3, 4):
+        for index in (1, 3, 4, 5):
             failure_actions = [step["try"] for step in pipeline[index]["fail"]]
             assert offline_actions.add_to_hold_queue in failure_actions

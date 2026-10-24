@@ -75,9 +75,26 @@ def validate_offline_submission_data(**args):
         args['error'] = invalid_submission_error
         return False, args
 
-    payload = submission_data['payload'].get('data') if 'data' in submission_data['payload'] else None
-    if not payload:
-        args['error'] = invalid_submission_error
+    if not submission_data.get('username'):
+        args['error'] = {
+            **invalid_submission_error,
+            'error_details': 'Submission is missing username field',
+        }
+        return False, args
+
+    payload_data = submission_data['payload'].get('data') if 'data' in submission_data['payload'] else None
+    if not payload_data:
+        args['error'] = {
+            **invalid_submission_error,
+            'error_details': 'Payload is missing data field',
+        }
+        return False, args
+
+    if not payload_data.get('currentUser'):
+        args['error'] = {
+            **invalid_submission_error,
+            'error_details': 'Payload is missing currentUser field',
+        }
         return False, args
 
     return True, args
@@ -129,14 +146,6 @@ def _update_status(submission_id, status, app, db):
         submission_data = db.session.query(FormsflowOfflineSubmission).filter_by(id=submission_id).first()
         submission_data.status = status
         db.session.commit()
-
-def send_to_formio(**kwargs):
-    logging.verbose("Sending to Formio")
-    return False, kwargs
-
-def send_to_formsflow(**kwargs):
-    logging.verbose("Sending to Formsflow")
-    return False, kwargs
 
 def add_to_hold_queue(**args)->tuple:
     logging.verbose(f"inside add_to_hold_queue() with args: {args}")

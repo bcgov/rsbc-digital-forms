@@ -46,6 +46,7 @@ def create_offline_submission(**kwargs):
     local_submission_id = kwargs.get('local_submission_id')
     payload = kwargs.get('payload')
     user_guid = kwargs.get('user_guid')
+    username = kwargs.get('username')
     form_id = kwargs.get('form_id')
     logger.verbose(f"Creating offline submission with local_submission_id {local_submission_id} for user_guid {user_guid}.")
 
@@ -55,6 +56,7 @@ def create_offline_submission(**kwargs):
           payload=payload,
           status='pending',
           form_id=form_id,
+          username=username,
           created_dt=datetime.now(),
           created_by=user_guid,
       )
