@@ -492,3 +492,66 @@ def log_get_collision_to_splunk(**kwargs) -> tuple:
         'collision_case_number': kwargs.get('collision_case_num')
     }
     return True, kwargs
+
+def get_collision_metadata(**kwargs) -> tuple:
+    """
+    Metadata for a collision case number: the submission it belongs to and its
+    processing state. Returns references only, never submission contents.
+    """
+    collision_case_num = kwargs.get('collision_case_num')
+    try:
+        collision = db.session.query(TarCollision)\
+                    .filter(TarCollision.collision_case_num == collision_case_num)\
+                    .first()
+        if not collision or not collision.submission:
+            kwargs['error'] = {
+                'error_code': ErrorCode.C03,
+                'error_details': f"Collision not found for case number: {collision_case_num}",
+                'event_type': EVENT_TYPE,
+                'ticket_no': collision_case_num,
+                'func': get_collision_metadata,
+            }
+            return False, kwargs
+        submission = collision.submission
+        form_ref = db.session.query(SubmissionFormRef)\
+                    .filter(SubmissionFormRef.submission_id == submission.submission_id,
+                            SubmissionFormRef.form_type == MV6020_FORM_TYPE)\
+                    .first()
+        icbc_status = None
+        if form_ref:
+            icbc_status = next((e.status for e in form_ref.events if e.destination == 'ICBC'), None)
+        kwargs['response_dict'] = {
+            'collision_case_num': collision_case_num,
+            'ff_application_id': submission.ff_application_id,
+            'task_processing_status': submission.task_processing_status,
+            'submitted_offline': submission.submitted_offline,
+            'form_version': form_ref.form_version if form_ref else None,
+            'icbc_status': icbc_status,
+        }
+        return True, kwargs
+    except Exception as e:
+        logger.error(e)
+        kwargs['error'] = {
+            'error_code': ErrorCode.C02,
+            'error_details': str(e),
+            'event_type': EVENT_TYPE,
+            'ticket_no': collision_case_num,
+            'func': get_collision_metadata,
+        }
+        return False, kwargs
+
+def collision_metadata_not_found(**kwargs) -> tuple:
+    error = kwargs.get('error') or {}
+    return error.get('error_code') == ErrorCode.C03, kwargs
+
+
+def log_get_collision_metadata_to_splunk(**kwargs) -> tuple:
+    kwargs['splunk_data'] = {
+        'event': "get collision metadata",
+        'request_id': kwargs.get('request_id', ''),
+        'user_guid': kwargs.get('user_guid'),
+        'username': kwargs.get('username'),
+        'form_type': MV6020_FORM_TYPE,
+        'collision_case_number': kwargs.get('collision_case_num')
+    }
+    return True, kwargs
