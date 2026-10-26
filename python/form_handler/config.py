@@ -29,8 +29,8 @@ class Config():
     # Keycloak settings
     KEYCLOAK_URL = os.environ.get('KEYCLOAK_URL', 'http://keycloak:8080').rstrip('/')
     KEYCLOAK_REALM = os.environ.get('KEYCLOAK_REALM', 'master')
-    KEYCLOAK_CLIENT_ID = os.environ.get('FORM_HANDLER_KEYCLOAD_CLIENT_ID', 'rsbc-df-form-handler')
-    KEYCLOAK_CLIENT_SECRET = os.environ.get('FORM_HANDLER_KEYCLOAD_CLIENT_SECRET', 'secret')
+    KEYCLOAK_CLIENT_ID = os.environ.get('FORM_HANDLER_KEYCLOAK_CLIENT_ID', 'rsbc-df-form-handler')
+    KEYCLOAK_CLIENT_SECRET = os.environ.get('FORM_HANDLER_KEYCLOAK_CLIENT_SECRET', 'secret')
 
     DB_HOST = os.environ.get('DB_HOST', 'db')
     DB_USER = os.environ.get('DB_USER', 'testuser')
