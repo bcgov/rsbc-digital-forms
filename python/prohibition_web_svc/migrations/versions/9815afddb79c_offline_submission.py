@@ -34,6 +34,11 @@ def upgrade():
     sa.UniqueConstraint('local_submission_id', 'created_by', name='uq_local_submission_id_created_by'),
     schema='formsflow'
     )
+    op.execute("""
+    GRANT USAGE ON SCHEMA formsflow TO df_db_app_user;
+    GRANT UPDATE, INSERT, SELECT, DELETE ON TABLE formsflow.offline_submission TO df_db_app_user;
+    GRANT UPDATE, USAGE, SELECT ON SEQUENCE formsflow.offline_submission_id_seq TO df_db_app_user;
+    """)
     # ### end Alembic commands ###
 
 
