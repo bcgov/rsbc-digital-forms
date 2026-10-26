@@ -80,3 +80,4 @@ from .TAR.police_district import TarPoliceDistrict
 from .TAR.police_agency import TarPoliceAgency
 from .TAR.lki_highway import TarLkiHighway
 from .TAR.lki_segment import TarLkiSegment
+from .formsflow.offline_submissions import FormsflowOfflineSubmission

@@ -185,12 +185,14 @@ def send_error_to_rsiops(**args):
         to_emails,
         subject,
         config,
-        template.render(subject=subject, body=body, message=json.dumps(message)), eventid,[{
-                "content": json.dumps(message),
-                "contentType": "string",
-                # "encoding": "base64",
-                "filename": "event.json"
-            }])
+        template.render(subject=subject, body=body, message=json.dumps(message)), 
+        eventid,
+        [{
+            "content": json.dumps(message),
+            "contentType": "string",
+            # "encoding": "base64",
+            "filename": "event.json"
+        }] if message else None)
     return email_sent, args
 
 

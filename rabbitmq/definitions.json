@@ -34,7 +34,20 @@
             "value": "rabbitmq-cluster-id-BRiH-8OLLKXDCgmS_5m6Aw"
         }
     ],
-    "policies": [],
+    "policies": [
+        {
+            "vhost": "/",
+            "name": "offline-submission-retry-delay",
+            "pattern": "^df-offline-submissions-hold$",
+            "apply-to": "queues",
+            "definition": {
+                "message-ttl": 60000,
+                "dead-letter-exchange": "",
+                "dead-letter-routing-key": "df-offline-submissions"
+            },
+            "priority": 0
+        }
+    ],
     "queues": [
         {
             "name": "df-storage-events",
@@ -71,6 +84,27 @@
             "arguments": {
                 "x-queue-type": "classic"
             }
+        },
+        {
+            "name": "df-offline-submissions",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "df-offline-submissions-hold",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "df-offline-submissions-fail",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
         }
     ],
     "exchanges": [],

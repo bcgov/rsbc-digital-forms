@@ -1,15 +1,11 @@
 # import python.common.middleware as middleware
-from python.common import splunk
+from python.form_handler import actions_formio, actions_formsflow, actions_offline_submission
 import python.form_handler.actions as actions
 from python.form_handler.actions_admin import send_to_admin_actions
 from python.form_handler.actions_icbc import send_to_icbc_actions
 from python.form_handler.actions_load_event import load_event_actions
 from python.form_handler.actions_odw import send_to_odw_actions
 import python.form_handler.rsi_email as rsi_email
-# import python.common.splunk_application_for_review as splunk
-# import python.common.splunk as common_splunk
-from python.form_handler.actions import get_storage_ref_event_type
-import python.common.ride_actions as ride_actions
 from python.form_handler.actions_vips import send_to_vips_actions
 
 
@@ -68,3 +64,42 @@ def process_incoming_form() -> dict:
             + send_to_vips_actions()
            + send_to_admin_actions()
     }
+
+def process_incoming_offline_submissions() -> dict:
+    return [
+        {"try": actions_offline_submission.set_offline_submission_id, "fail": [
+            {"try": actions_offline_submission.record_process_error, "fail": []},
+            {"try": actions_offline_submission.update_status_error, "fail": []}
+        ]},
+        {"try": actions_offline_submission.get_offline_submission_data, "fail": [
+            {"try": actions_offline_submission.add_to_hold_queue, "fail": [
+                {"try": actions_offline_submission.record_process_error, "fail": []},
+                {"try": actions_offline_submission.update_status_error, "fail": []}
+            ]}
+        ]},
+        {"try": actions_offline_submission.validate_offline_submission_data, "fail": [
+            {"try": actions_offline_submission.record_process_error, "fail": []},
+            {"try": actions_offline_submission.update_status_error, "fail": []}
+        ]},
+        {"try": actions_offline_submission.update_status_processing, "fail": [
+            {"try": actions_offline_submission.add_to_hold_queue, "fail": [
+                {"try": actions_offline_submission.record_process_error, "fail": []},
+                {"try": actions_offline_submission.update_status_error, "fail": []}
+            ]}
+        ]},
+        {"try": actions_formio.send_to_formio, "fail": [
+            {"try": actions_offline_submission.add_to_hold_queue, "fail": [
+                {"try": actions_offline_submission.record_process_error, "fail": []},
+                {"try": actions_offline_submission.update_status_error, "fail": []}
+            ]}
+        ]},
+        {"try": actions_formsflow.send_to_formsflow, "fail": [
+            {"try": actions_offline_submission.add_to_hold_queue, "fail": [
+                {"try": actions_offline_submission.record_process_error, "fail": []},
+                {"try": actions_offline_submission.update_status_error, "fail": []}
+            ]}
+        ]},
+        {"try": actions_offline_submission.update_status_completed, "fail": [
+            {"try": actions_offline_submission.record_process_error, "fail": []},
+        ]}
+    ]

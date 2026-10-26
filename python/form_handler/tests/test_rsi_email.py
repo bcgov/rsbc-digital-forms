@@ -82,3 +82,42 @@ class TestEventToVipsDps:
 
         assert result is False
         assert out_args == args
+
+
+class TestSendErrorToRsiops:
+    def test_omits_attachment_when_message_is_absent(self, monkeypatch):
+        env = MagicMock()
+        env.get_template.return_value.render.return_value = "rendered"
+        monkeypatch.setattr(rsi_email, "get_jinja2_env", lambda: env)
+        send_email = MagicMock(return_value=(True, {}))
+        monkeypatch.setattr(rsi_email.common_email_services, "send_email", send_email)
+        config = MagicMock(RSIOPS_EMAIL_ADDRESS="ops@example.com")
+
+        result, args = rsi_email.send_error_to_rsiops(
+            config=config, title="Error", body={"error": "failure"}
+        )
+
+        assert result is True
+        assert args["config"] is config
+        assert send_email.call_args.args[-1] is None
+
+    def test_attaches_message_when_present(self, monkeypatch):
+        env = MagicMock()
+        env.get_template.return_value.render.return_value = "rendered"
+        monkeypatch.setattr(rsi_email, "get_jinja2_env", lambda: env)
+        send_email = MagicMock(return_value=(True, {}))
+        monkeypatch.setattr(rsi_email.common_email_services, "send_email", send_email)
+        config = MagicMock(RSIOPS_EMAIL_ADDRESS="ops@example.com")
+        message = {"id": 42}
+
+        rsi_email.send_error_to_rsiops(
+            config=config, title="Error", body={"error": "failure"}, message=message
+        )
+
+        assert send_email.call_args.args[-1] == [
+            {
+                "content": '{"id": 42}',
+                "contentType": "string",
+                "filename": "event.json",
+            }
+        ]
