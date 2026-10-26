@@ -8,6 +8,7 @@ from anyio import Path
 from minio import Minio
 from python.common.logging_utils import get_logger
 from python.common.models import db, Submission, SubmissionFormRef, SubmissionEvent, TarCollision
+from python.common.models.TAR.collision import ORIGINAL_REVISION
 from python.common.enums import ErrorCode
 from python.prohibition_web_svc.business.cryptography_logic import encryptPdf_method1
 from python.prohibition_web_svc.config import Config
@@ -51,7 +52,7 @@ def check_if_case_number_exists(**kwargs) -> tuple:
     """
     logger.verbose('inside check_if_case_number_exists()')
     case_number = kwargs.get('ticket_no')
-    if case_number is None:
+    if case_number is None or is_change_report(kwargs.get('payload')):
         return True, kwargs
     try:
         submission = db.session.query(TarCollision).filter(
@@ -100,10 +101,66 @@ def validate_collision_payload(**kwargs) -> tuple:
         }
     return is_valid, kwargs
 
+def is_change_report(payload) -> bool:
+    return bool(payload) and str(payload.get('isChangeReport')).lower() == 'true'
+
+def set_collision_revision(**kwargs) -> tuple:
+    """
+    Assign the revision for this submission. An original MV6020 is revision 0.
+    A change report becomes latest + 1, and only if it was created from the
+    latest revision: branching from an older revision is rejected.
+    """
+    logger.verbose('inside set_collision_revision()')
+    payload = kwargs.get('payload') or {}
+    case_number = kwargs.get('ticket_no')
+    if not is_change_report(payload):
+        kwargs['revision'] = ORIGINAL_REVISION
+        return True, kwargs
+    try:
+        parent = int(payload.get('parentRevision'))
+    except (TypeError, ValueError):
+        parent = None
+    try:
+        latest = db.session.query(db.func.max(TarCollision.revision))\
+                    .filter(TarCollision.collision_case_num == case_number)\
+                    .scalar()
+    except Exception as e:
+        logger.error(e)
+        kwargs['error'] = {
+            'error_code': ErrorCode.G00,
+            'error_details': str(e),
+            'event_type': EVENT_TYPE,
+            'ticket_no': case_number,
+            'func': set_collision_revision,
+        }
+        kwargs['response_dict'] = {'error_details': 'Could not check the collision revision'}
+        return False, kwargs
+
+    if latest is None:
+        details = f'No collision found for case number {case_number}; a change report needs an existing collision'
+    elif parent is None:
+        details = 'Change report is missing a valid parentRevision'
+    elif parent != latest:
+        details = f'Change report was created from revision {parent}, but the latest revision is {latest}'
+    else:
+        kwargs['revision'] = latest + 1
+        logger.info(f"change report for {case_number}: revision {kwargs['revision']}")
+        return True, kwargs
+    kwargs['error'] = {
+        'error_code': ErrorCode.C05,
+        'error_details': details,
+        'event_type': EVENT_TYPE,
+        'ticket_no': case_number,
+        'func': set_collision_revision,
+    }
+    kwargs['response_dict'] = {'error_details': details}
+    return False, kwargs
+
 def save_collision_data(**kwargs) -> tuple:
     logger.verbose('inside save_collision_data()')
     date_created = datetime.now()
     data = copy.deepcopy(kwargs.get('payload'))
+    data['revision'] = kwargs.get('revision', ORIGINAL_REVISION)
     user_guid = common_middleware.get_user_guid(**kwargs)
 
     try:
@@ -420,11 +477,14 @@ def _validate_witness_required_fields(collision: CollisionRequestPayload, kwargs
 
 def get_collision_data(**kwargs) -> tuple:
     collision_case_num = kwargs.get('collision_case_num')
+    revision = kwargs.get('revision')
     logger.debug(f"Retrieving collision data for collision: {collision_case_num}")
     try:
-        collision_data = db.session.query(TarCollision)\
-                        .filter(TarCollision.collision_case_num == collision_case_num)\
-                        .first()
+        query = db.session.query(TarCollision)\
+                        .filter(TarCollision.collision_case_num == collision_case_num)
+        if revision is not None:
+            query = query.filter(TarCollision.revision == revision)
+        collision_data = query.order_by(TarCollision.revision.desc()).first()
         if not collision_data:
             kwargs['error'] = {
                 'error_code': ErrorCode.C03,
@@ -495,15 +555,17 @@ def log_get_collision_to_splunk(**kwargs) -> tuple:
 
 def get_collision_metadata(**kwargs) -> tuple:
     """
-    Metadata for a collision case number: the submission it belongs to and its
-    processing state. Returns references only, never submission contents.
+    Metadata for every revision of a collision case number, oldest first.
+    Returns references only, never submission contents.
     """
     collision_case_num = kwargs.get('collision_case_num')
     try:
-        collision = db.session.query(TarCollision)\
+        collisions = db.session.query(TarCollision)\
                     .filter(TarCollision.collision_case_num == collision_case_num)\
-                    .first()
-        if not collision or not collision.submission:
+                    .order_by(TarCollision.revision)\
+                    .all()
+        revisions = [_revision_metadata(c) for c in collisions if c.submission]
+        if not revisions:
             kwargs['error'] = {
                 'error_code': ErrorCode.C03,
                 'error_details': f"Collision not found for case number: {collision_case_num}",
@@ -512,21 +574,10 @@ def get_collision_metadata(**kwargs) -> tuple:
                 'func': get_collision_metadata,
             }
             return False, kwargs
-        submission = collision.submission
-        form_ref = db.session.query(SubmissionFormRef)\
-                    .filter(SubmissionFormRef.submission_id == submission.submission_id,
-                            SubmissionFormRef.form_type == MV6020_FORM_TYPE)\
-                    .first()
-        icbc_status = None
-        if form_ref:
-            icbc_status = next((e.status for e in form_ref.events if e.destination == 'ICBC'), None)
         kwargs['response_dict'] = {
             'collision_case_num': collision_case_num,
-            'ff_application_id': submission.ff_application_id,
-            'task_processing_status': submission.task_processing_status,
-            'submitted_offline': submission.submitted_offline,
-            'form_version': form_ref.form_version if form_ref else None,
-            'icbc_status': icbc_status,
+            'latest_revision': revisions[-1]['revision'],
+            'revisions': revisions,
         }
         return True, kwargs
     except Exception as e:
@@ -539,6 +590,25 @@ def get_collision_metadata(**kwargs) -> tuple:
             'func': get_collision_metadata,
         }
         return False, kwargs
+
+def _revision_metadata(collision) -> dict:
+    submission = collision.submission
+    form_ref = db.session.query(SubmissionFormRef)\
+                .filter(SubmissionFormRef.submission_id == submission.submission_id,
+                        SubmissionFormRef.form_type == MV6020_FORM_TYPE)\
+                .first()
+    icbc_status = None
+    if form_ref:
+        icbc_status = next((e.status for e in form_ref.events if e.destination == 'ICBC'), None)
+    return {
+        'revision': collision.revision,
+        'ff_application_id': submission.ff_application_id,
+        'task_processing_status': submission.task_processing_status,
+        'submitted_offline': submission.submitted_offline,
+        'created_dt': submission.created_dt.isoformat() if submission.created_dt else None,
+        'form_version': form_ref.form_version if form_ref else None,
+        'icbc_status': icbc_status,
+    }
 
 def collision_metadata_not_found(**kwargs) -> tuple:
     error = kwargs.get('error') or {}

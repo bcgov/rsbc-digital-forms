@@ -39,6 +39,10 @@ def create_collision():
                   {"try": common_middleware.record_event_error, "fail": []},
                   {"try": http_responses.application_already_exists, "fail": []},
             ]},
+            {"try": collision_middleware.set_collision_revision, "fail": [
+                  {"try": common_middleware.record_event_error, "fail": []},
+                  {"try": http_responses.revision_conflict_response, "fail": []},
+            ]},
             {"try": collision_middleware.validate_collision_payload, "fail": [
                 {"try": common_middleware.record_event_error, "fail": []},
                 {"try": http_responses.bad_request_response, "fail": []}
@@ -81,7 +85,8 @@ def get_collision(collision_case_num):
         required_permission='view_submissions',
         request=request,
         config=Config,
-        collision_case_num=collision_case_num
+        collision_case_num=collision_case_num,
+        revision=request.args.get('revision', type=int)
     )
     logger.verbose(f"GET /collision/{collision_case_num} endpoint response code: {kwargs.get('response').status_code}")
     return kwargs.get('response')

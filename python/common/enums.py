@@ -127,6 +127,9 @@ class ErrorCode(BaseEnum):
     
     C04 = ErrorCodeDetails("C04", "Collision PDF saving error", ErrorCategory.DATA, ErrorSeverity.HIGH, 
                            "Contact DF application support for further investigation", False)
+
+    C05 = ErrorCodeDetails("C05", "Change report revision conflict", ErrorCategory.DATA, ErrorSeverity.LOW,
+                           "Reload the latest revision of the collision and submit the change report again", True)
     
     
     # Collision related error

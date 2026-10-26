@@ -152,3 +152,8 @@ def forbidden_detachment(**kwargs) -> tuple:
 def detachment_conflict(**kwargs) -> tuple:
     kwargs['response'] = make_response({'error': 'detachment was changed by a concurrent request'}, 409)
     return True, kwargs
+
+def revision_conflict_response(**kwargs) -> tuple:
+    detail = kwargs.get('response_dict', {}).get('error_details', None)
+    kwargs['response'] = make_response({'error': 'revision conflict', 'error_details': detail}, 409)
+    return True, kwargs

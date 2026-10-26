@@ -1,14 +1,24 @@
 from dataclasses import dataclass
 from decimal import Decimal
+from sqlalchemy import ForeignKeyConstraint
 from ..base import db
+from .collision import ORIGINAL_REVISION
 
 @dataclass
 class TarLocation(db.Model):
     __tablename__ = 'location'
-    __table_args__ = {'schema': 'TAR'}
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ['collision_case_num', 'revision'],
+            ['TAR.collision.collision_case_num', 'TAR.collision.revision'],
+            name='location_collision_revision_fkey'
+        ),
+        {'schema': 'TAR'},
+    )
 
     location_id: int
     collision_case_num: str
+    revision: int
     hwy_code: str
     hwy_route_num: str
     segment_num: str
@@ -41,7 +51,8 @@ class TarLocation(db.Model):
     lighting_cond: str
 
     location_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    collision_case_num = db.Column(db.String, db.ForeignKey('TAR.collision.collision_case_num'), nullable=False)
+    collision_case_num = db.Column(db.String, nullable=False)
+    revision = db.Column(db.Integer, nullable=False, default=ORIGINAL_REVISION)
     hwy_code = db.Column(db.String, nullable=False)
     hwy_route_num = db.Column(db.String(4))
     segment_num = db.Column(db.String(4))
