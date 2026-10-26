@@ -2,7 +2,6 @@ from python.common.verbose_logging import VERBOSE_LEVEL_NUM, verbose
 from python.form_handler.config import Config
 import python.form_handler.helper as helper
 import python.form_handler.business as business
-from python.form_handler.helper import middle_logic, get_listeners
 from python.form_handler.rabbitmq import RabbitMQ
 from python.form_handler.message import decode_message
 import logging
@@ -48,7 +47,10 @@ class Listener:
             when a message arrives invoke the callback()
         """
         while True:
-            self.listener.consume(self.config.STORAGE_WATCH_QUEUE, self.callback)
+            self.listener.consume_queues({
+                self.config.STORAGE_WATCH_QUEUE: self.callback,
+                self.config.OFFLINE_SUBMISSION_WATCH_QUEUE: self.offline_submission_callback,
+            })
 
     def callback(self, ch, method, properties, body):
         try:
@@ -78,11 +80,26 @@ class Listener:
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
-# def create_app():
-#     with application.app_context():
-#         logging.warning('inside create_app()')
-#         initialize_app(application)
-#         return application
+    def offline_submission_callback(self, ch, method, properties, body):
+        message_dict = None
+        try:
+            message_dict = decode_message(body, self.config.ENCRYPT_KEY)
+            logging.debug('offline submission message: {}'.format(message_dict))
+            helper.middle_logic(
+                business.process_incoming_offline_submissions(),
+                message=message_dict,
+                config=self.config,
+                writer=self.writer,
+                app=application,
+                db=db,
+            )
+        except Exception:
+            logging.exception('Error processing offline submission message')
+            ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
+            return
+
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+
 
 class DFListener:
     def __init__(self):

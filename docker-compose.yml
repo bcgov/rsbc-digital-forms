@@ -1,50 +1,115 @@
 services:
-  # rabbitmq:
-  #   build: ./rabbitmq
-  #   environment:
-  #     # The RABBITMQ_DEFAULT_USER is used
-  #     # to connect to the web admin
-  #     RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
-  #     RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
-  #     RABBITMQ_LOGS: "DEBUG"
-  #   networks:
-  #     - docker-network
-  #   healthcheck:
-  #     test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
-  #     interval: 5s
-  #     timeout: 15s
-  #     retries: 5
-  #   ports:
-  #     - "15672:15672" # Web admin port
-  #     - "5672:5672" # Do not expose this port in production
+  rabbitmq:
+    build: ./rabbitmq
+    environment:
+      # The RABBITMQ_DEFAULT_USER is used
+      # to connect to the web admin
+      RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
+      RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
+      RABBITMQ_LOGS: "DEBUG"
+    networks:
+      - docker-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 15s
+      retries: 5
+    ports:
+      - "15672:15672" # Web admin port
+      - "5672:5672" # Do not expose this port in production
 
-  # form_handler:
-  #   build:
-  #     context: python
-  #     dockerfile: form_handler/Dockerfile-local
-  #   depends_on:
-  #     rabbitmq:
-  #       condition: service_healthy
-  #   restart: on-failure:20
+  form_handler:
+    build:
+      context: python
+      dockerfile: form_handler/Dockerfile-local
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: on-failure:20
 
-  #   networks:
-  #     - docker-network
-  #   environment:
-  #     RABBITMQ_URL: "${RABBITMQ_URL}"
-  #     RABBITMQ_USER: "${RABBITMQ_USER}"
-  #     RABBITMQ_PASS: "${RABBITMQ_PASS}"
-  #     VIPS_API_USERNAME: "${VIPS_API_USERNAME}"
-  #     VIPS_API_PASSWORD: "${VIPS_API_PASSWORD}"
-  #     VIPS_API_ROOT_URL: "${VIPS_API_ROOT_URL}"
-  #     COMM_SERV_AUTH_URL: "${COMM_SERV_AUTH_URL}"
-  #     COMM_SERV_API_ROOT_URL: "${COMM_SERV_API_ROOT_URL}"
-  #     COMM_SERV_REALM: "${COMM_SERV_REALM}"
-  #     COMM_SERV_CLIENT_ID: "${COMM_SERV_CLIENT_ID}"
-  #     COMM_SERV_CLIENT_SECRET: "${COMM_SERV_CLIENT_SECRET}"
-  #     ADMIN_EMAIL_ADDRESS: "${ADMIN_EMAIL_ADDRESS}"
-  #     BCC_EMAIL_ADDRESSES: "${BCC_EMAIL_ADDRESSES}"
-  #     LOG_LEVEL: "INFO"
-  #     ENCRYPT_KEY: "${ENCRYPT_KEY}"
+    networks:
+      - docker-network
+    environment:
+      RABBITMQ_URL: "rabbitmq"
+      RABBITMQ_USER: "${RABBITMQ_USER}"
+      RABBITMQ_PASS: "${RABBITMQ_PASS}"
+      VIPS_API_USERNAME: "${VIPS_API_USERNAME}"
+      VIPS_API_PASSWORD: "${VIPS_API_PASSWORD}"
+      VIPS_API_ROOT_URL: "${VIPS_API_ROOT_URL}"
+      COMM_SERV_AUTH_URL: "${COMM_SERV_AUTH_URL}"
+      COMM_SERV_API_ROOT_URL: "${COMM_SERV_API_ROOT_URL}"
+      COMM_SERV_REALM: "${COMM_SERV_REALM}"
+      COMM_SERV_CLIENT_ID: "${COMM_SERV_CLIENT_ID}"
+      COMM_SERV_CLIENT_SECRET: "${COMM_SERV_CLIENT_SECRET}"
+      ADMIN_EMAIL_ADDRESS: "${ADMIN_EMAIL_ADDRESS}"
+      BCC_EMAIL_ADDRESSES: "${BCC_EMAIL_ADDRESSES}"
+      VIPS_BCC_EMAIL_ADDRESSES: "${VIPS_BCC_EMAIL_ADDRESSES}"
+      LOG_LEVEL: "DEBUG"
+      ENCRYPT_KEY: "${ENCRYPT_KEY}"
+      ICBC_API_ROOT: "${ICBC_API_ROOT}" # "http://mock_svcs:5003"
+      ICBC_API_SUBMIT_ROOT: "${ICBC_API_SUBMIT_ROOT}"
+      ICBC_API_USERNAME: "${ICBC_API_USERNAME}"
+      ICBC_API_PASSWORD: "${ICBC_API_PASSWORD}"
+      STORAGE_HOST: "minio"
+      STORAGE_PORT: "9000"
+      STORAGE_ACCESS_KEY: "${STORAGE_ACCESS_KEY}"
+      STORAGE_SECRET_KEY: "${STORAGE_SECRET_KEY}"
+      RIDE_API_URL: "${RIDE_API_URL}"
+      RIDE_API_KEY: "${RIDE_API_KEY}"
+      VIPS_DPS_EMAIL: "${VIPS_DPS_EMAIL}"
+      GEOCODING_API_URL: "${GEOCODING_API_URL}"
+      GEOCODING_API_KEY: "${GEOCODING_API_KEY}"
+      ENVIRONMENT: "${ENVIRONMENT}"
+      RSIOPS_EMAIL_ADDRESS: "${RSIOPS_EMAIL_ADDRESS}"
+      FORMIO_API_URL: "${FORMIO_API_URL}"
+      FORMIO_ROOT_EMAIL: "${FORMIO_ROOT_EMAIL}"
+      FORMIO_ROOT_PASSWORD: "${FORMIO_ROOT_PASSWORD}"
+      REACT_APP_BASE_URL: "${REACT_APP_BASE_URL}"
+      FORMSFLOW_API_URL: "${FORMSFLOW_API_URL}"
+      KEYCLOAK_URL: "${KEYCLOAK_URL}"
+      KEYCLOAK_REALM: "${KEYCLOAK_REALM}"
+      FORM_HANDLER_KEYCLOAK_CLIENT_ID: "${FORM_HANDLER_KEYCLOAK_CLIENT_ID}"
+      FORM_HANDLER_KEYCLOAK_CLIENT_SECRET: "${FORM_HANDLER_KEYCLOAK_CLIENT_SECRET}"
+
+
+  task_scheduler:
+    build:
+      context: python
+      dockerfile: task_scheduler/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    restart: on-failure:20
+    networks:
+      - docker-network
+    env_file:
+      - .env      
+    environment:
+      DB_HOST: "db"
+      RABBITMQ_URL: "rabbitmq"
+      RABBITMQ_USER: "${RABBITMQ_USER}"
+      RABBITMQ_PASS: "${RABBITMQ_PASS}"
+      VIPS_API_USERNAME: "${VIPS_API_USERNAME}"
+      VIPS_API_PASSWORD: "${VIPS_API_PASSWORD}"
+      VIPS_API_ROOT_URL: "${VIPS_API_ROOT_URL}"
+      COMM_SERV_AUTH_URL: "${COMM_SERV_AUTH_URL}"
+      COMM_SERV_API_ROOT_URL: "${COMM_SERV_API_ROOT_URL}"
+      COMM_SERV_REALM: "${COMM_SERV_REALM}"
+      COMM_SERV_CLIENT_ID: "${COMM_SERV_CLIENT_ID}"
+      COMM_SERV_CLIENT_SECRET: "${COMM_SERV_CLIENT_SECRET}"
+      ADMIN_EMAIL_ADDRESS: "a@a.com"
+      BCC_EMAIL_ADDRESSES: "$a@a.com"
+      LOG_LEVEL: "DEBUG"
+      ENCRYPT_KEY: "${ENCRYPT_KEY}"
+      ICBC_API_ROOT: "http://mock_svcs:5003"
+      STORAGE_HOST: "minio"
+      STORAGE_PORT: "9000"
+      STORAGE_ACCESS_KEY: "${STORAGE_ACCESS_KEY}"
+      STORAGE_SECRET_KEY: "${STORAGE_SECRET_KEY}"      
+      ENVIRONMENT: "${ENVIRONMENT}"
+
 
   # web_app:
   #   build:
@@ -52,9 +117,9 @@ services:
   #     dockerfile: Dockerfile-local
   #     args:
   #       REACT_APP_BASE_URL: "${REACT_APP_BASE_URL_DEV}"
-  #       REACT_APP_KEYCLOAK_URL: "${KEYCLOAK_AUTH_URL}"
-  #       REACT_APP_KEYCLOAK_REALM: "${KEYCLOAK_REALM}"
-  #       REACT_APP_KEYCLOAK_CLIENT_ID: "${KEYCLOAK_CLIENT_ID}"
+  #       REACT_APP_KEYCLOAK_URL: "${REACT_APP_KEYCLOAK_URL}"
+  #       REACT_APP_KEYCLOAK_REALM: "${REACT_APP_KEYCLOAK_REALM}"
+  #       REACT_APP_KEYCLOAK_CLIENT_ID: "${REACT_APP_KEYCLOAK_CLIENT_ID}"
   #       REACT_APP_API_BASE_URL: "${REACT_APP_API_BASE_URL}"
   #   env_file:
   #     - .env
@@ -71,8 +136,8 @@ services:
       - "${FORWARD_MINIO_PORT:-9000}:9000"
       - "${FORWARD_MINIO_CONSOLE_PORT:-9090}:9090"
     environment:
-      MINIO_ROOT_USER: "root"
-      MINIO_ROOT_PASSWORD: "password"
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD}"
       BITNAMI_DEBUG: "true"
       SSL_ENABLED: "false"
       MINIO_NOTIFY_AMQP_ENABLE_DF_RABBITMQ: "on"
@@ -105,7 +170,8 @@ services:
       - .env
     environment:
       FLASK_SECRET_KEY: "${FLASK_SECRET_KEY}"
-      ICBC_API_ROOT: "${ICBC_API_ROOT}"
+      ICBC_API_ROOT: "http://mock_svcs:5000/vips/icbc"
+      #"${ICBC_API_ROOT}"
       ICBC_LOGIN_USER_ID: "${ICBC_LOGIN_USER_ID}"
       ICBC_API_USERNAME: "${ICBC_API_USERNAME}"
       ICBC_API_PASSWORD: "${ICBC_API_PASSWORD}"
@@ -117,10 +183,12 @@ services:
       ADMIN_USERNAME: "${ADMIN_USERNAME}"
       FLASK_BASIC_AUTH_USER: "${FLASK_BASIC_AUTH_USER}"
       FLASK_BASIC_AUTH_PASS: "${FLASK_BASIC_AUTH_PASS}"
+      MINIO_BUCKET_URL: "minio:9000"
       MINIO_SK: "${MINIO_SK}"
       MINIO_AK: "${MINIO_AK}"
       DB_HOST: "db"
       REACT_APP_BASE_URL: "${REACT_APP_BASE_URL}"
+      ENVIRONMENT: "${ENVIRONMENT}"
     command: bash -c "cd /home/appuser/python/prohibition_web_svc && flask db upgrade && cd /home/appuser && gunicorn --bind 0.0.0.0:5000 --pythonpath /home/appuser/python/prohibition_web_svc 'app:create_app()'"
     networks:
       - docker-network
@@ -134,6 +202,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      keycloak:
+        condition: service_started
 
   db:
     image: postgres:14.1-alpine
@@ -154,19 +224,43 @@ services:
       timeout: 5s
       retries: 5
 
-  # mock_svcs:
-  #   build:
-  #     context: mock_services
-  #     dockerfile: all_mock_svc/Dockerfile-local
-  #   environment:
-  #     FLASK_SECRET_KEY: 1234
-  #     API_USERNAME: user
-  #     API_PASSWORD: password
-  #     LOG_LEVEL: "DEBUG"
-  #   networks:
-  #     - docker-network
-  #   ports:
-  #     - "5003:5000"
+  mock_svcs:
+    build:
+      context: mock_services
+      dockerfile: all_mock_svc/Dockerfile-local
+    environment:
+      FLASK_SECRET_KEY: 1234
+      API_USERNAME: user
+      API_PASSWORD: password
+      LOG_LEVEL: "DEBUG"
+    networks:
+      - docker-network
+    ports:
+      - "5003:5000"
+
+  keycloak:
+    image: keycloak/keycloak:26.4
+    command: >
+      start-dev
+      --http-port=8080
+      --hostname-strict=false
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: "${KEYCLOAK_ADMIN}"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "${KEYCLOAK_ADMIN_PASSWORD}"
+      KEYCLOAK_ADMIN: "${KEYCLOAK_ADMIN}"
+      KEYCLOAK_ADMIN_PASSWORD: "${KEYCLOAK_ADMIN_PASSWORD}"
+      KEYCLOAK_DATABASE_HOST: "${KEYCLOAK_DATABASE_HOST}"
+      KEYCLOAK_DATABASE_PORT: "${KEYCLOAK_DATABASE_PORT}"
+      KEYCLOAK_DATABASE_USER: "${KEYCLOAK_DATABASE_USER}"
+      KEYCLOAK_DATABASE_PASSWORD: "${KEYCLOAK_DATABASE_PASSWORD}"
+      KEYCLOAK_LOG_LEVEL: "INFO"
+      KEYCLOAK_ROOT_LOG_LEVEL: INFO
+    depends_on:
+      - db
+    ports:
+      - "8083:8080"
+    networks:
+      - docker-network
 
 networks:
   docker-network:
