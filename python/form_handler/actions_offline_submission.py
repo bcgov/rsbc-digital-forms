@@ -192,10 +192,13 @@ def add_to_hold_queue(**args)->tuple:
                         'func': add_to_hold_queue,
                     }
             return False, args
+
+        args['suppress_email_notification'] = True
+        return record_process_error(**args)
+        
     except Exception as e:
         logging.exception(e)
         return False, args
-    return True, args
 
 def update_status_error(**args):
     logging.verbose("Updating status to error")
@@ -214,6 +217,7 @@ def record_process_error(**args):
     try:
         error_obj = args.get('error')
         application = args.get('app')
+        suppress_email_notification = args.get('suppress_email_notification', False)
 
         with application.app_context():          
             record_error(**error_obj)
@@ -222,7 +226,9 @@ def record_process_error(**args):
                 'config': args.get('config'),
                 'body': error_obj,
             }
-            send_error_to_rsiops(**email)
+            if not suppress_email_notification:
+                send_error_to_rsiops(**email)
+        args['suppress_email_notification'] = False
         return True, args
     except Exception as e:
         # If recording the error itself fails, log it

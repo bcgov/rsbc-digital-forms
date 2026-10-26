@@ -146,7 +146,13 @@ def test_status_actions_return_error_when_update_raises(monkeypatch, action):
 def test_add_to_hold_queue_increments_retry_and_publishes(monkeypatch):
     encoded = MagicMock(return_value=b"encoded")
     monkeypatch.setattr(actions, "encode_message", encoded)
+    record_error = MagicMock()
+    send_email = MagicMock()
+    monkeypatch.setattr(actions, "record_error", record_error)
+    monkeypatch.setattr(actions, "send_error_to_rsiops", send_email)
     message = {"id": 42}
+    error = {"error_code": ErrorCode.O03}
+    app = _app_context_mock()
     writer = MagicMock()
     writer.publish_confirmed.return_value = True
 
@@ -155,18 +161,25 @@ def test_add_to_hold_queue_increments_retry_and_publishes(monkeypatch):
         message=message,
         offline_submission_id=42,
         writer=writer,
+        app=app,
+        error=error,
     )
 
     assert result is True
     assert message["offline_submission_retry_count"] == 1
     encoded.assert_called_once_with(message, "secret")
     writer.publish_confirmed.assert_called_once_with("offline-hold", b"encoded")
+    record_error.assert_called_once_with(**error)
+    send_email.assert_not_called()
     assert out_args["message"] is message
+    assert out_args["suppress_email_notification"] is False
 
 
 def test_add_to_hold_queue_normalizes_invalid_retry_count(monkeypatch):
     monkeypatch.setattr(actions, "encode_message", MagicMock(return_value=b"encoded"))
     message = {"id": 42, "offline_submission_retry_count": "invalid"}
+    record_process_error = MagicMock(return_value=(True, {}))
+    monkeypatch.setattr(actions, "record_process_error", record_process_error)
     writer = MagicMock()
     writer.publish_confirmed.return_value = True
 
@@ -176,6 +189,7 @@ def test_add_to_hold_queue_normalizes_invalid_retry_count(monkeypatch):
 
     assert result is True
     assert message["offline_submission_retry_count"] == 1
+    assert record_process_error.call_args.kwargs["suppress_email_notification"] is True
 
 
 def test_add_to_hold_queue_does_not_publish_after_retry_limit():
@@ -275,4 +289,3 @@ def test_record_process_error_records_and_notifies(monkeypatch):
         body=error,
     )
     assert out_args["error"] is error
-
