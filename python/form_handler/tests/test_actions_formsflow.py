@@ -117,9 +117,11 @@ def test_send_to_formsflow_submits_existing_draft(monkeypatch):
     args = _args(
         _submission_data(payload={"data": {"answer": "yes"}, "serverDraftId": "draft-7"})
     )
+    offline_submission = SimpleNamespace(status="sent_to_formio", application_id=None)
+    args["db"].session.query.return_value.filter_by.return_value.first.return_value = offline_submission
     token_response = _token_response()
     draft_response = MagicMock(status_code=200, text="submitted")
-    draft_response.json.return_value = {"id": "draft-7"}
+    draft_response.json.return_value = {"id": "application-55"}
     post = MagicMock(return_value=token_response)
     put = MagicMock(return_value=draft_response)
     monkeypatch.setattr(actions_formsflow.requests, "post", post)
@@ -142,7 +144,13 @@ def test_send_to_formsflow_submits_existing_draft(monkeypatch):
         headers={"Authorization": "Bearer keycloak-token"},
     )
     draft_response.raise_for_status.assert_called_once_with()
-    args["db"].session.query.assert_not_called()
+    args["db"].session.query.assert_called_once_with(
+        actions_formsflow.FormsflowOfflineSubmission
+    )
+    args["db"].session.query.return_value.filter_by.assert_called_once_with(id=42)
+    assert offline_submission.status == "sent_to_formsflow"
+    assert offline_submission.application_id == "application-55"
+    args["db"].session.commit.assert_called_once_with()
 
 
 def test_send_to_formsflow_skips_application_creation_when_id_exists(monkeypatch):

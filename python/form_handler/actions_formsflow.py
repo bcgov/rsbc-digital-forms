@@ -69,6 +69,13 @@ def send_to_formsflow(**args):
             response.raise_for_status()
             logging.verbose(f"Draft submitted successfully: {response.json()}")
 
+            application_id = response.json().get('id')
+            with application.app_context():
+                offline_submission = db.session.query(FormsflowOfflineSubmission).filter_by(id=offline_submission_id).first()
+                offline_submission.status = 'sent_to_formsflow'
+                offline_submission.application_id = application_id
+                db.session.commit()
+
     except Exception as e:
         logging.exception(e)
         args['error'] = {
