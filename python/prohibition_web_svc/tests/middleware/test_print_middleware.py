@@ -1,3 +1,4 @@
+import asyncio
 import base64
 from io import BytesIO
 import pytest
@@ -305,3 +306,177 @@ class TestPrintMiddleware:
             extracted = zip_file.read(names[0])
 
         assert extracted == pdf_bytes
+
+
+class _FakePage:
+    def __init__(self, tracker):
+        self.tracker = tracker
+        self.html = None
+
+    async def set_content(self, html, wait_until=None):
+        self.html = html
+
+    async def evaluate(self, script):
+        return None
+
+    async def content(self):
+        return self.html
+
+    async def pdf(self, **kwargs):
+        self.tracker["active"] += 1
+        self.tracker["max_active"] = max(self.tracker["max_active"], self.tracker["active"])
+        await asyncio.sleep(0.01)
+        self.tracker["active"] -= 1
+        if "FAIL" in self.html:
+            raise RuntimeError("pdf failed")
+        return b"PDF:" + self.html.encode()
+
+
+class _FakeContext:
+    def __init__(self, tracker):
+        self.tracker = tracker
+
+    async def new_page(self):
+        return _FakePage(self.tracker)
+
+    async def close(self):
+        self.tracker["contexts_closed"] += 1
+
+
+class _FakeBrowser:
+    def __init__(self, tracker):
+        self.tracker = tracker
+
+    async def new_context(self, **kwargs):
+        return _FakeContext(self.tracker)
+
+    async def close(self):
+        self.tracker["browsers_closed"] += 1
+
+
+class _FakePlaywright:
+    def __init__(self, tracker):
+        self.chromium = self
+        self.tracker = tracker
+
+    async def launch(self, **kwargs):
+        self.tracker["launches"] += 1
+        return _FakeBrowser(self.tracker)
+
+
+def _fake_async_playwright(tracker):
+    class _CM:
+        async def __aenter__(self):
+            return _FakePlaywright(tracker)
+
+        async def __aexit__(self, *exc):
+            return False
+
+    return lambda: _CM()
+
+
+@pytest.fixture
+def tracker(monkeypatch):
+    t = {"launches": 0, "browsers_closed": 0, "contexts_closed": 0, "active": 0, "max_active": 0}
+    monkeypatch.setattr(print_middleware, "async_playwright", _fake_async_playwright(t))
+    return t
+
+
+@pytest.fixture
+def template_file(tmp_path):
+    (tmp_path / "logo.png").write_bytes(b"\x89PNG-fake")
+    tpl = tmp_path / "t.html"
+    tpl.write_text(
+        '<html><body><img src="logo.png"><img src="https://x/y.png">'
+        "<p>{{ data.name }}</p></body></html>"
+    )
+    return str(tpl)
+
+
+def _data(name="A"):
+    return {"name": name, "form_details": {"form_no": "1", "form_title": "T", "subtext": "s", "form_version": "v"}}
+
+
+class TestImageDataUrl:
+    def test_existing_image_returns_data_url(self, tmp_path):
+        print_middleware._image_data_url.cache_clear()
+        img = tmp_path / "a.jpg"
+        img.write_bytes(b"abc")
+        url = print_middleware._image_data_url(str(img))
+        assert url == "data:image/jpeg;base64," + base64.b64encode(b"abc").decode()
+
+    def test_unknown_extension_defaults_to_png(self, tmp_path):
+        print_middleware._image_data_url.cache_clear()
+        img = tmp_path / "a.bin"
+        img.write_bytes(b"abc")
+        assert print_middleware._image_data_url(str(img)).startswith("data:image/png;base64,")
+
+    def test_missing_image_returns_none(self, tmp_path):
+        print_middleware._image_data_url.cache_clear()
+        assert print_middleware._image_data_url(str(tmp_path / "nope.png")) is None
+
+    def test_result_is_cached(self, tmp_path):
+        print_middleware._image_data_url.cache_clear()
+        img = tmp_path / "a.png"
+        img.write_bytes(b"abc")
+        print_middleware._image_data_url(str(img))
+        print_middleware._image_data_url(str(img))
+        assert print_middleware._image_data_url.cache_info().hits == 1
+
+
+class TestBuildHtml:
+    def test_inlines_relative_images_only(self, template_file):
+        print_middleware._image_data_url.cache_clear()
+        html, template_data = print_middleware._build_html(template_file, _data("Bob"), "pdf")
+        assert 'src="data:image/png;base64,' in html
+        assert 'src="https://x/y.png"' in html
+        assert "<p>Bob</p>" in html
+        assert template_data["output_type"] == "pdf"
+
+    def test_missing_relative_image_left_unchanged(self, tmp_path):
+        tpl = tmp_path / "t.html"
+        tpl.write_text('<img src="missing.png">')
+        html, _ = print_middleware._build_html(str(tpl), {}, "pdf")
+        assert 'src="missing.png"' in html
+
+
+class TestRenderMany:
+    def test_single_browser_launch_and_ordered_results(self, tracker, template_file):
+        data_list = [_data(f"n{i}") for i in range(5)]
+        results = print_middleware.render_many_with_playwright(template_file, data_list, "pdf")
+
+        assert tracker["launches"] == 1
+        assert tracker["browsers_closed"] == 1
+        assert tracker["contexts_closed"] == 5
+        assert all(ok for ok, _ in results)
+        for i, (_, content) in enumerate(results):
+            assert content.startswith(b"PDF:") and f"n{i}".encode() in content
+
+    def test_concurrency_is_capped(self, tracker, template_file, monkeypatch):
+        monkeypatch.setattr(print_middleware, "MAX_CONCURRENT_RENDERS", 2)
+        print_middleware.render_many_with_playwright(template_file, [_data(f"n{i}") for i in range(6)], "pdf")
+        assert 1 < tracker["max_active"] <= 2
+
+    def test_one_failure_does_not_affect_others(self, tracker, template_file):
+        results = print_middleware.render_many_with_playwright(
+            template_file, [_data("ok1"), _data("FAIL"), _data("ok2")], "pdf"
+        )
+        assert [ok for ok, _ in results] == [True, False, True]
+        assert "pdf failed" in results[1][1]
+        assert tracker["contexts_closed"] == 3
+
+    def test_html_output_type(self, tracker, template_file):
+        results = print_middleware.render_many_with_playwright(template_file, [_data("h")], "html")
+        assert results[0][0] is True
+        assert "<p>h</p>" in results[0][1]
+
+    def test_template_error_fails_all_jobs(self, tracker, tmp_path):
+        results = print_middleware.render_many_with_playwright(str(tmp_path / "missing.html"), [{}, {}], "pdf")
+        assert [ok for ok, _ in results] == [False, False]
+        assert tracker["launches"] == 0
+
+    def test_single_render_wrapper(self, tracker, template_file):
+        success, content = print_middleware.render_with_playwright(template_file, _data("solo"), "pdf")
+        assert success is True
+        assert b"solo" in content
+        assert tracker["launches"] == 1
