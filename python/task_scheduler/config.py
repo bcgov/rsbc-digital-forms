@@ -3,14 +3,10 @@ import os
 
 
 class Config():
-    WATCH_QUEUE                         = os.getenv('WATCH_QUEUE', 'DF.valid')
-    HOLD_QUEUE                          = os.getenv('HOLD_QUEUE', 'DF.hold')
-    FAIL_QUEUE                          = os.getenv('FAIL_QUEUE', 'DF.fail')
     STORAGE_WATCH_QUEUE = os.getenv('STORAGE_WATCH_QUEUE', 'df-storage-events')
-    STORAGE_HOLD_QUEUE = os.getenv('STORAGE_HOLD_QUEUE', 'df-storage-events-hold')
-    STORAGE_FAIL_QUEUE = os.getenv('STORAGE_FAIL_QUEUE', 'df-storage-events-fail')
-    STORAGE_FAIL_QUEUE_PERS=os.getenv('STORAGE_FAIL_QUEUE_PERS', 'df-storage-events-fail-persistent')
     EVENT_TYPES                         = os.getenv('EVENT_TYPES', 'vi,24h,12h,irp').split(',')
+
+    OFFLINE_SUBMISSION_WATCH_QUEUE = os.getenv('OFFLINE_SUBMISSION_WATCH_QUEUE', 'df-offline-submissions')
 
     DB_HOST = os.environ.get('DB_HOST', 'db')
     DB_USER = os.environ.get('DB_USER', 'testuser')
@@ -25,11 +21,6 @@ class Config():
     SYSTEM_RECORD_MAX_RETRIES = int(os.environ.get('SYSTEM_RECORD_MAX_RETRIES', 2))
     SYSTEM_RECORD_MAX_TRANSIENT_RETRIES = int(os.environ.get('SYSTEM_RECORD_MAX_TRANSIENT_RETRIES', 2))
 
-    STORAGE_HOST = os.environ.get('STORAGE_HOST', 'localhost')
-    STORAGE_PORT = os.environ.get('STORAGE_PORT', 9000)
-    STORAGE_ACCESS_KEY = os.environ.get('STORAGE_ACCESS_KEY', '4NahK2Km8xCBMaNPD9HN')
-    STORAGE_SECRET_KEY= os.environ.get('STORAGE_SECRET_KEY', 'CrMchOp3C3XXCfwnr49CjENrQXKXKukN8RE30itl')
-
     RABBITMQ_URL                        = os.getenv('RABBITMQ_URL', 'localhost')
     RABBITMQ_USER                       = os.getenv('RABBITMQ_USER')
     RABBITMQ_PASS                       = os.getenv('RABBITMQ_PASS')
@@ -40,29 +31,6 @@ class Config():
     RABBITMQ_MESSAGE_ENCODE             = os.getenv('RABBITMQ_MESSAGE_ENCODE', 'utf-8')
     ENCRYPT_KEY                         = os.getenv('ENCRYPT_KEY','secret')
     ENCRYPT_KEY_SALT = os.getenv('ENCRYPT_KEY_SALT', 'aaaa')
-
-
-    ICBC_API_ROOT = os.getenv('ICBC_API_ROOT', 'http://localhost:5003')
-    ICBC_API_USERNAME = os.getenv('ICBC_API_USERNAME', 'user')
-    ICBC_API_PASSWORD = os.getenv('ICBC_API_PASSWORD', 'password')
-
-
-    VIPS_ROOT = os.getenv('VIPS_ROOT', 'http://localhost:5003')
-    VIPS_API_USERNAME = os.getenv('VIPS_API_USERNAME', 'user')
-    VIPS_API_PASSWORD = os.getenv('VIPS_API_PASSWORD', 'password')
-
-    COMM_SERV_AUTH_URL = os.getenv('COMM_SERV_AUTH_URL', 'http://localhost')
-    COMM_SERV_API_ROOT_URL = os.getenv('COMM_SERV_API_ROOT_URL', 'http://localhost')
-    COMM_SERV_REALM = os.getenv('COMM_SERV_REALM', 'realm')
-    COMM_SERV_CLIENT_ID = os.getenv('COMM_SERV_CLIENT_ID', '')
-    COMM_SERV_CLIENT_SECRET = os.getenv('COMM_SERV_CLIENT_SECRET', '')
-
-    RSIOPS_EMAIL_ADDRESS = os.getenv('RSIOPS_EMAIL_ADDRESS')
-    REPLY_EMAIL_ADDRESS = os.getenv('REPLY_EMAIL_ADDRESS', 'do-not-reply-rsi@gov.bc.ca')
-    TMP_STORAGE_LOCAL=os.getenv('TMP_STORAGE_LOCAL')
-
-    MINIO_SECURE                        = os.environ.get("MINIO_SECURE", False)
-    MINIO_CERT_FILE                     = os.environ.get("MINIO_CERT_FILE", "/opt/app-root/src/ca.crt")
 
     TASK_SCHEDULER_INTERVAL_SECONDS      = int(os.environ.get("TASK_SCHEDULER_INTERVAL_SECONDS", 5))
 

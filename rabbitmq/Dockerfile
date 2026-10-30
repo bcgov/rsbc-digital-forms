@@ -1,4 +1,4 @@
-FROM rabbitmq:3.8
+FROM rabbitmq:3.8-management
 
 # TODO - modify this container to run as non-root
 
