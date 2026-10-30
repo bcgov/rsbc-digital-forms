@@ -204,6 +204,22 @@ class TestPrintMiddleware:
             
             mock_commit.assert_called_once()
 
+    def test_update_form_printed_status_prefers_form_number(self):
+        """Prefer form_number when both form identifiers are provided."""
+        payload = {
+            "template": "mv6020.html",
+            "data": {
+                "form_number": "FORM-123",
+                "collision_case_num": "COLLISION-456",
+            },
+        }
+
+        with patch('python.prohibition_web_svc.middleware.form_middleware.update_form_status') as mock_update, \
+             patch('python.prohibition_web_svc.middleware.print_middleware.db.session.commit'):
+            print_middleware.update_form_printed_status(payload=payload)
+
+        assert mock_update.call_args[1]['form_number'] == 'FORM-123'
+
     def test_update_form_printed_status_template_not_mapped(self):
         """Test update skipped when template is not mapped."""
         payload = {

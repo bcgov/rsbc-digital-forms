@@ -458,7 +458,7 @@ def update_form_printed_status(**kwargs) -> tuple:
             return True, kwargs  # Nothing to update
 
         user_guid = payload['data'].get('completed_by_id', kwargs.get('user_guid', ''))
-        form_number = payload['data'].get('collision_case_num') or payload['data'].get('form_number')
+        form_number = payload['data'].get('form_number') or payload['data'].get('collision_case_num')
         printed_timestamp = datetime.now()
         
         if not form_number:
