@@ -562,10 +562,48 @@
         .uppercase {
             text-transform: uppercase;
         }
+
+        /* Change report: what changed since the parent revision (ICBC copy only) */
+        .grid-cell.cr-changed,
+        .cr-changed {
+            background: #fff176;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .cr-banner {
+            margin: 8px 0;
+            padding: 8px 10px;
+            border: 1.5pt solid black;
+            font-size: 10pt;
+        }
+
+        .cr-banner .cr-key {
+            padding: 0 4px;
+        }
+
+        .cr-removed {
+            margin-top: 6px;
+        }
+
+        .cr-removed ul {
+            margin: 4px 0 0 18px;
+            padding: 0;
+        }
+
+        .cr-entity-note {
+            font-weight: normal;
+            font-size: 9pt;
+            margin-left: 6px;
+        }
     </style>
 </head>
 
 <body></body>
+
+    {# Change report highlights. data.change_report is set for the ICBC copy of a change report only. #}
+    {% macro cr(key) %}{% if data.change_report and data.change_report.highlights_available and key in data.change_report.changed %} cr-changed{% endif %}{% endmacro %}
+    {% macro cre(index0, key) %}{% if data.change_report and data.change_report.highlights_available %}{% set row = data.change_report.entity_rows[index0] %}{% if row.change == 'added' or key in row.fields %} cr-changed{% endif %}{% endif %}{% endmacro %}
 
     {% if data.print_options.is_draft %}
     <div class="draft-watermark">DRAFT COPY</div>
@@ -583,10 +621,39 @@
             </div>
         </div>
 
+        {% if data.change_report %}
+        {% set change = data.change_report %}
+        <div class="cr-banner">
+            <strong>CHANGE REPORT</strong> for Collision Case No {{ data.collision_case_num }}:
+            revision {{ change.revision }}, which replaces revision {{ change.parent_revision }}.
+            {% if not change.highlights_available %}
+            Changes could not be highlighted because revision {{ change.parent_revision }} was not available.
+            Compare with revision {{ change.parent_revision }} to see what changed.
+            {% elif change.summary.unchanged %}
+            No fields changed from revision {{ change.parent_revision }}.
+            {% else %}
+            Fields that changed since revision {{ change.parent_revision }} are <span class="cr-changed cr-key">highlighted</span>.
+            {% endif %}
+            {% if change.removed_entities or change.removed_persons %}
+            <div class="cr-removed">
+                <strong>Removed in this revision</strong>
+                <ul>
+                    {% for removed in change.removed_entities %}
+                    <li>Entity {{ removed.entity_num }}{% if removed.entity_type %} ({{ removed.entity_type }}){% endif %}</li>
+                    {% endfor %}
+                    {% for removed in change.removed_persons %}
+                    <li>Entity {{ removed.entity_num }}: involved person{{ 's' if removed.persons|length > 1 }} {{ removed.persons|join(', ') }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
         {% if data.print_options and (data.print_options.type == "police" or data.print_options.type == "icbc") %}
 
         <div class="grid-table grid-table-2col">
-            <div class="grid-cell grid-cell-full">
+            <div class="grid-cell grid-cell-full{{ cr('collision_scenario') }}">
                 <label class="grid-label">MV6020 Report</label><br>
                 <input type="checkbox" id="scenarios" name="scenarios" {% if data.collision_scenario %}checked{% endif
                     %}>
@@ -594,7 +661,7 @@
                     data.collision_scenario.label }}</label>
             </div>
            
-            <div class="grid-cell grid-cell-full">
+            <div class="grid-cell grid-cell-full{{ cr('has_countable_fatal') }}">
                 <label class="grid-label">Does this collision contain a Countable Fatal?</label><br>
                 <div class="radio-group">
                     <div class="radio-option">
@@ -614,12 +681,12 @@
                     </div>
                 </div>
             </div>
-            <div class="grid-cell">
+            <div class="grid-cell{{ cr('countable_fatal_total') }}">
                 <label class="grid-label">Total Countable Fatals</label><br>
                 <div class="grid-input grid-display" contenteditable="false">{{ data.countable_fatal_total }}
                 </div>
             </div>
-            <div class="grid-cell">
+            <div class="grid-cell{{ cr('total_est_damage') }}">
                 <label class="grid-label">Total Estimated Damage</label><br>
                 <div class="grid-input grid-display" contenteditable="false">${{ data.total_est_damage }}
                 </div>
@@ -645,17 +712,17 @@
                 <h4 class="subsection-header">
                     File Details</h4>
                 <div class="grid-table grid-table-3col">
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('collision_case_num') }}">
                         <label class="grid-label">Collision Case No</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{
                             data.collision_case_num }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('prime_file_vjur') }}">
                         <label class="grid-label">PRIME File VJUR</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{
                             data.prime_file_vjur.label }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('police_file_num') }}">
                         <label class="grid-label">Police File Number</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{
                             data.police_file_num }}</div>
@@ -668,25 +735,25 @@
                     Collision Details</h4>
 
                 <div class="grid-table grid-table-3col">
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('date_collision') }}">
                         <label class="grid-label">Date of Collision (yyyy-mm-dd)</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.date_collision[:10] if
                             data.date_collision else '' }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('reported_same_day') }}">
                         <input type="checkbox" {% if data.reported_same_day %}checked{% endif %}>
                         <label style="font-weight: normal;">Collision was reported on day of occurrence</label>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('time_collision') }}">
                         <label class="grid-label">Time of Collision (hh:mm)</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.time_collision }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('date_reported') }}">
                         <label class="grid-label">Date Reported (yyyy-mm-dd)</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.date_reported[:10] if
                             data.date_reported else '' }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('collision_type') }}">
                         <label class="grid-label">Collision Type</label><br>
                         <div class="grid-input grid-display" contenteditable="false" style="width: 200px;">{% if
                             data.collision_type == 5 %}Fatality{% elif data.collision_type == 3 %}Personal
@@ -694,36 +761,36 @@
                             {% elif data.collision_type == 0 %}Non-reportable{% else %}{{
                             data.collision_type }}{% endif %}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('hit_and_run') }}">
                         <label class="grid-label">Was it a hit and run?</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ 'Yes' if
                             data.hit_and_run == 6 else 'No' }}</div>
 
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('police_attended') }}">
                         <label class="grid-label">Did police attend?</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ 'Yes' if
                             data.police_attended == 1 else 'No' }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('police_agency_type_district') }}">
                         <label class="grid-label">Police Agency Type / District</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{
                             data.police_agency_type_district.label }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('police_agency_code') }}">
                         <label class="grid-label">Police Code (Agency/Detachment)</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.police_agency_code.code }}
                             {{ data.police_agency_code.agency_name }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('police_zone') }}">
                         <label class="grid-label">Police Zone</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.police_zone }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('hwy_code') }}">
                         <label class="grid-label">Highway Code</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.hwy_code }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('hwy_route_num') }}">
                         <label class="grid-label">Highway or Route Number</label><br>
                         <div class="grid-input grid-display" contenteditable="false">
                             {% if data.hwy_route_num %}
@@ -731,7 +798,7 @@
                             {% endif %}
                         </div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('segment_num') }}">
                         <label class="grid-label">Segment Number</label><br>
                         <div class="grid-input grid-display" contenteditable="false">
                             {% if data.segment_num %}
@@ -739,37 +806,37 @@
                             {% endif %}
                         </div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('loc_code_km') }}">
                         <label class="grid-label">Location Code (Kilometres)</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.loc_code_km }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('city_name') }}">
                         <label class="grid-label">Name of City, Municipality, Town, District or Village</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.city_name }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('city_status') }}">
                         <label class="grid-label">City, Municipality, Town, District or Village Status</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ 'Organized Territory' if
                             data.city_status=="organizedTerritory"
                             else 'Unorganized Territory' }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('street_on') }}">
                         <label class="grid-label">Collision Location - Street (ON)</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.street_on }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('street_at') }}">
                         <label class="grid-label">Collision Location - Cross Street (AT)</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.street_at }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('street_desc') }}">
                         <label class="grid-label">Collision Location Description</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.street_desc }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('lat_decim_degrees') }}">
                         <label class="grid-label">Latitude Decimal Degrees</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.lat_decim_degrees }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('long_decim_degrees') }}">
                         <label class="grid-label">Longitude Decimal Degrees</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.long_decim_degrees }}</div>
                     </div>
@@ -777,15 +844,15 @@
                         <label class="grid-label">Lat.</label><br>
                         <div class="grid-input grid-display" contenteditable="false">N+</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('lat_degree') }}">
                         <label class="grid-label">Lat. Deg</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.lat_degree }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('lat_min') }}">
                         <label class="grid-label">Lat. Min</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.lat_min }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('lat_sec') }}">
                         <label class="grid-label">Lat. Sec</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.lat_sec }}</div>
                     </div>
@@ -793,15 +860,15 @@
                         <label class="grid-label">Long.</label><br>
                         <div class="grid-input grid-display" contenteditable="false">W-</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('long_degree') }}">
                         <label class="grid-label">Long. Deg</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.long_degree }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('long_min') }}">
                         <label class="grid-label">Long. Min</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.long_min }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ cr('long_sec') }}">
                         <label class="grid-label">Long. Sec</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.long_sec }}</div>
                     </div>
@@ -901,7 +968,12 @@
                 {% for entity in data.entities %}
                 {% set entity_index = loop.index %}
                 <div class="section-divider">
-                    <h4 class="subsection-header">Entity No. {{ entity_index }}</h4>
+                    <h4 class="subsection-header">Entity No. {{ entity_index }}
+                    {%- if data.change_report and data.change_report.highlights_available %}
+                    {%- set entity_change = data.change_report.entity_rows[loop.index0].change %}
+                    {%- if entity_change == 'added' %} <span class="cr-changed cr-entity-note">Added in this revision</span>
+                    {%- elif entity_change == 'modified' %} <span class="cr-changed cr-entity-note">Changed in this revision</span>
+                    {%- endif %}{% endif %}</h4>
 
                     <!-- Entity Type and Basic Info -->
                     <div class="grid-table grid-table-3col">

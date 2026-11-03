@@ -1,0 +1,48 @@
+{
+  "_comment": "Fields the change report diff ignores. Confirmed against a real dev MV6020 submission (2026-10-23). form_number, collision_case_prefix and collision_case_num are compared: a change report keeps the parent's case number, so a difference there is a real change. Edit freely; no code change needed.",
+  "exclude_top_level": [
+    "applicationId",
+    "applicationStatus",
+    "currentUser",
+    "completed_by_id",
+    "currentUserRole",
+    "submitterEmail",
+    "submitterFirstName",
+    "submitterLastName",
+    "form_version",
+    "submitted_offline",
+    "form_details",
+    "print_options",
+    "print_options_summary",
+    "dashboardColumns",
+    "notification",
+    "fileViewer",
+    "icbc_submission_date",
+    "summary_was_verified",
+    "reportType",
+    "isChangeReport",
+    "collisionNumber",
+    "parentSubmissionId",
+    "parentRevision",
+    "parentFormId",
+    "parentFormEdition"
+  ],
+  "exclude_in_entities": [
+    "rowindex",
+    "charges"
+  ],
+  "exclude_in_involved_persons": [
+    "is_unknown_entity",
+    "is_vehicle_parked",
+    "refresh_status_options",
+    "status"
+  ],
+  "entity_match_keys": [
+    "entity_num",
+    "rowindex"
+  ],
+  "compare_arrays_whole": [
+    "charges_list",
+    "witnesses"
+  ]
+}
