@@ -28,20 +28,17 @@ class RabbitMQ:
         return string
 
     def consume(self, queue_name: str, callback):
+        self.consume_queues({queue_name: callback})
+
+    def consume_queues(self, queue_callbacks: dict):
         try:
-            self._verify_or_create(queue_name)
             self.channel.basic_qos(prefetch_count=1)
-            self.channel.basic_consume(queue=queue_name, on_message_callback=callback)
-        except Exception as error:
-            logging.info('Connection Exception - will be retried')
-        try:
+            for queue_name, callback in queue_callbacks.items():
+                self._verify_or_create(queue_name)
+                self.channel.basic_consume(queue=queue_name, on_message_callback=callback)
             self.channel.start_consuming()
         except Exception as error:
-            logging.info('Connection Exception - will be retried')
-        except workflow.AMQPConnectorSocketConnectError as error:
-            logging.info('SocketConnectionError - expected')
-        # except workflow.AMQPConnector as error:
-        #     logging.info('AMQPConnector error - expected')
+            logging.error('Connection Exception - will be retried', error, exc_info=True)
         
 
     def publish(self, queue_name: str, payload: bytes):
@@ -61,6 +58,30 @@ class RabbitMQ:
                 logging.warning("Could not publish message to queue ... trying to reestablish the connection")
                 self._refresh_connection(queue_name)
         
+        return False
+
+    def publish_confirmed(self, queue_name: str, payload: bytes):
+        logging.info('publish with confirmation to: ' + queue_name)
+        for tries in range(RabbitMQ.MaximumTriesAfterError):
+            try:
+                self._refresh_connection(queue_name)
+                self.channel.confirm_delivery()
+                self.channel.basic_publish(
+                    exchange='',
+                    routing_key=queue_name,
+                    body=payload,
+                    properties=pika.BasicProperties(
+                        delivery_mode=2,
+                        content_type='application/json',
+                    ),
+                    mandatory=True,
+                )
+                return True
+            except Exception:
+                logging.warning(
+                    'Could not publish confirmed message ... trying to reestablish the connection'
+                )
+                self._refresh_connection(queue_name)
         return False
 
     def _refresh_connection(self, queue_name):

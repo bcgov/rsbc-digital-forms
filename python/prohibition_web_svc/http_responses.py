@@ -152,3 +152,10 @@ def forbidden_detachment(**kwargs) -> tuple:
 def detachment_conflict(**kwargs) -> tuple:
     kwargs['response'] = make_response({'error': 'detachment was changed by a concurrent request'}, 409)
     return True, kwargs
+
+def offline_submission_already_exists(**kwargs) -> tuple:
+    if kwargs.get('error'):
+        kwargs['response'] = make_response({'error': kwargs.get('error').get('error_details', 'error occurred')}, 500)
+    else:
+        kwargs['response'] = make_response({'message': 'offline submission already exists'}, 202)
+    return True, kwargs
