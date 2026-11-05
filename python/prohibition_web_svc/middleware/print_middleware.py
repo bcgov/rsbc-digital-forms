@@ -13,7 +13,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from playwright.async_api import async_playwright
 from python.common.enums import ErrorCode
 from python.common.logging_utils import get_logger
-from python.prohibition_web_svc.helpers import mv6020_helper
+from python.prohibition_web_svc.helpers import change_report_helper, mv6020_helper
 from python.prohibition_web_svc.models.print_request_payload import PrintRequestPayload
 from python.common.models.base import db
 
@@ -243,6 +243,25 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
         error_html = f"<h1>Error rendering template with Playwright</h1><p>{e}</p>"
         return False, error_html
 
+def add_change_report_context(**kwargs) -> tuple:
+    """Highlight what a change report changed, in previews and downloads of every copy.
+
+    The form reads the parent revision from Form.io and sends it as payload.parentData,
+    as Camunda does for the emailed ICBC copy. Without it the report renders with a
+    banner saying the changes could not be highlighted. Never fails the print.
+    """
+    logger.verbose('inside add_change_report_context()')
+    try:
+        payload = kwargs.get('payload') or {}
+        data = payload.get('data') or {}
+        parent_data = payload.pop('parentData', None)
+        if change_report_helper.is_change_report(data):
+            data['change_report'] = change_report_helper.build_context(data, parent_data)
+    except Exception as e:
+        logger.error(f'change report context failed; printing without highlights: {type(e).__name__}')
+    return True, kwargs
+
+
 def render_with_playwright(template_path: str, data: dict, output_type: str = "pdf"):
     """Synchronous wrapper for the async Playwright render function."""
     return asyncio.run(render_with_playwright_async(template_path, data, output_type))
@@ -401,6 +420,9 @@ def log_payload_to_splunk(**kwargs) -> tuple:
         payload = request.get_json()
         payload = copy.deepcopy(payload)
         payload_masked = mv6020_helper.mask_collision_sensitive_data(payload)
+        # change report previews also carry the parent revision
+        if isinstance(payload_masked.get('parentData'), dict):
+            payload_masked['parentData'] = mv6020_helper.mask_collision_sensitive_data(payload_masked['parentData'])
         kwargs['splunk_data'] = {
             'event': 'print request received',
             'request_id': kwargs.get('request_id', ''),
