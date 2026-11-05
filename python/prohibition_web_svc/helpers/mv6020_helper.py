@@ -2,6 +2,8 @@ from typing import Tuple, Dict, Any
 from datetime import datetime
 import zoneinfo
 import base64
+import copy
+from pathlib import Path
 from python.common.enums import ErrorCode
 import python.common.helper as helper
 from python.common.logging_utils import get_logger
@@ -223,7 +225,7 @@ def _send_all_copy(**kwargs):
         "collision_time": formatted_time,
     }
 
-    success = rsi_email.send_mv6020_copy(
+    success, kwargs = rsi_email.send_mv6020_copy(
         config=Config,
         subject=subject,
         email_address=email_address,
@@ -247,37 +249,58 @@ def generate_all_PDF_attachments(**kwargs):
     police_file_num = data.get('police_file_num')
     date_collision = helper.format_date_iso(data.get('date_collision'), '%Y%m%d')
 
-    kwargs.get('payload', {}).get('data', {}).get('print_options', {})['type'] = 'police'
-    kwargs.get('payload', {}).get('data', {}).get('print_options', {})['is_draft'] = False
-    files = {}
-    success, print_result  = print_middleware.render_document_with_playwright(**kwargs)
-    if success:
-        files['police'] = print_result
-    else:
-        logger.error(f"Failed to render document for admin copy: {print_result.get('error', {})}")
-        kwargs['response_dict'] = {
-            'message': f'Failed to render document for admin copy',
-            'description': print_result.get('error', {})
+    template_name = payload.get('template')
+    template_path = Path(print_middleware.__file__).parent.parent / "templates" / template_name
+    if not template_path.exists():
+        error = {
+            'error_code': ErrorCode.P01,
+            'error_details': f"Template '{template_name}' not found in templates folder",
+            'event_type': print_middleware.EVENT_TYPE,
+            'func': generate_all_PDF_attachments,
         }
-        kwargs["error"] = print_result.get("error", {})
+        kwargs['response_dict'] = {'message': 'Failed to render document for admin copy', 'description': error}
+        kwargs['error'] = error
         return False, kwargs
 
+    def _data_for(print_type, **extra_print_options):
+        # per-job copy so the shared payload is never mutated
+        job_data = copy.deepcopy(data)
+        job_data['print_options'] = {
+            **(job_data.get('print_options') or {}),
+            'type': print_type,
+            'is_draft': False,
+            **extra_print_options,
+        }
+        return job_data
+
     entities = data.get("entities", [])
-    kwargs.get('payload', {}).get('data', {}).get('print_options', {})['type'] = 'entity'
-    for entity in entities:
-        kwargs.get('payload', {}).get('data', {}).get('print_options', {})['entity_num'] = entity.get("entity_num")
-        success, print_result  = print_middleware.render_document_with_playwright(**kwargs)
-        if success:
-            files[f"entity_{entity.get('entity_num')}"] = print_result
-        else:
-            logger.error(f"Failed to render document for entity {entity.get('entity_num')} in admin copy: {print_result.get('error', {})}")
-            kwargs['response_dict'] = {
-                'message': f'Failed to render document for entity {entity.get("entity_num")} in admin copy',
-                'description': print_result.get('error', {})
+    keys = ['police'] + [f"entity_{e.get('entity_num')}" for e in entities]
+    jobs = [_data_for('police')] + [
+        _data_for('entity', entity_num=e.get('entity_num')) for e in entities
+    ]
+
+    # one browser launch, concurrent renders
+    results = print_middleware.render_many_with_playwright(str(template_path), jobs, 'pdf')
+
+    files = {}
+    for key, (ok, content) in zip(keys, results):
+        if not ok:
+            label = 'admin copy' if key == 'police' else f"entity {key[len('entity_'):]} in admin copy"
+            logger.error(f"Failed to render document for {label}: {content}")
+            error = {
+                'error_code': ErrorCode.P02,
+                'error_details': f"Rendering failed: {content}",
+                'event_type': print_middleware.EVENT_TYPE,
+                'func': generate_all_PDF_attachments,
             }
-            kwargs["error"] = print_result.get("error", {})
+            kwargs['response_dict'] = {
+                'message': f'Failed to render document for {label}',
+                'description': error
+            }
+            kwargs['error'] = error
             return False, kwargs
-        
+        files[key] = {'rendered_content': content}
+
     attachments = []
     for key, result in files.items():
         pdf_bytes = result.get("rendered_content")

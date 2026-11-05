@@ -1,5 +1,6 @@
 import logging
 import logging.config
+import time
 import pika
 import pika.exceptions
 import pika.adapters.utils.connection_workflow as workflow
@@ -8,6 +9,7 @@ import pika.adapters.utils.connection_workflow as workflow
 class RabbitMQ:
 
     MaximumTriesAfterError = 5
+    ReconnectDelaySeconds = 5
 
     def __init__(self, config):
         self.amqp_connection = self._get_connection_url(config)
@@ -38,8 +40,22 @@ class RabbitMQ:
                 self.channel.basic_consume(queue=queue_name, on_message_callback=callback)
             self.channel.start_consuming()
         except Exception as error:
-            logging.error('Connection Exception - will be retried', error, exc_info=True)
-        
+            logging.error('Connection Exception - will be retried: %s', error, exc_info=True)
+            time.sleep(RabbitMQ.ReconnectDelaySeconds)
+            self._reconnect()
+
+    def _reconnect(self):
+        try:
+            try:
+                if self.connection and self.connection.is_open:
+                    self.connection.close()
+            except Exception:
+                pass
+            self.connection = self._get_connection(self.amqp_connection)
+            self.channel = self._get_channel(self.connection)
+        except Exception as error:
+            logging.error('Reconnect failed - will retry: %s', error)
+
 
     def publish(self, queue_name: str, payload: bytes):
         logging.info('publish to: ' + queue_name)
