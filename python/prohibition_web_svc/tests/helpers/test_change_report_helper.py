@@ -151,3 +151,57 @@ def test_template_is_unchanged_for_new_reports():
     html = _render(copy.deepcopy(PARENT))
     assert 'CHANGE REPORT' not in html
     assert ' cr-changed' not in html.split('</style>', 1)[1]
+
+
+def _all_cell_classes(html, label):
+    """Classes of every cell with this label, in page order (police copy, then ICBC copy)."""
+    pattern = r'<div class="([^"]*)">\s*<label class="grid-label">' + re.escape(label) + r'</label>'
+    return [match.split() for match in re.findall(pattern, html)]
+
+
+def _rendered_change(**changes):
+    data = _change(**changes)
+    data['change_report'] = change_report_helper.build_context(data, PARENT)
+    return _render(data)
+
+
+def test_template_highlights_entity_fields_on_their_entity_only():
+    entities = copy.deepcopy(PARENT['entities'])
+    entities[0]['estimated_vehicle_damage'] = 12500
+    html = _rendered_change(entities=entities)
+    # Entity 01 changed, entity 30 did not.
+    assert ['cr-changed' in c for c in _all_cell_classes(html, 'Estimated Vehicle Damage ($)')] == [True, False]
+    assert ['cr-changed' in c for c in _all_cell_classes(html, 'Entity Number')] == [False, False]
+
+
+def test_template_highlights_person_fields_on_their_person_only():
+    entities = copy.deepcopy(PARENT['entities'])
+    entities[0]['involved_persons'][1]['age'] = 41
+    html = _rendered_change(entities=entities)
+    # Police copy "Box 14 Age" and ICBC copy "Box 14": person 1 unchanged, person 2 changed.
+    assert ['cr-changed' in c for c in _all_cell_classes(html, 'Box 14 Age')] == [False, True]
+    assert ['cr-changed' in c for c in _all_cell_classes(html, 'Box 14')] == [False, True]
+    assert html.count('Changed in this revision') == 2  # entity heading and person heading
+
+
+def test_template_highlights_every_cell_of_an_added_person():
+    entities = copy.deepcopy(PARENT['entities'])
+    entities[0]['involved_persons'].append({'status': 'passenger', 'given_name': 'C', 'surname': 'NEW'})
+    html = _rendered_change(entities=entities)
+    assert ['cr-changed' in c for c in _all_cell_classes(html, 'Box 14 Age')] == [False, False, True]
+    assert ['cr-changed' in c for c in _all_cell_classes(html, 'Box 14')] == [False, False, True]
+    assert 'Added in this revision' in html
+
+
+def test_template_highlights_police_comments_and_witnesses():
+    html = _rendered_change(police_comments='UPDATED', has_witnesses='Y',
+                            witnesses=[{'witness_name': 'W', 'address': 'A', 'contact_phn_num': '1'}])
+    assert all('cr-changed' in c for c in _all_cell_classes(html, 'Box 99 Police Comments'))
+    assert 'cr-changed' in _all_cell_classes(html, 'Are there witnesses?')[0]
+    assert re.search(r'<div class="grid-cell grid-cell-full cr-changed">\s*<table', html)
+
+
+def test_template_highlights_box_fields_in_both_copies():
+    html = _rendered_change(road_class={'value': '12', 'label': '12 TWO LANE'})
+    assert all('cr-changed' in c for c in _all_cell_classes(html, 'Box 1 Road Class'))
+    assert re.search(r'<div class="icbc-box cr-changed">\s*<div class="icbc-box-label">Box 1</div>', html)

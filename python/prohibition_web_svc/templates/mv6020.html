@@ -571,6 +571,14 @@
             print-color-adjust: exact;
         }
 
+        /* Let the highlight show through inputs inside a changed cell */
+        .cr-changed .grid-input,
+        .cr-changed textarea,
+        .cr-changed .icbc-box-value,
+        .cr-changed .icbc-box-label {
+            background: transparent;
+        }
+
         .cr-banner {
             margin: 8px 0;
             padding: 8px 10px;
@@ -603,6 +611,22 @@
 
     {# Change report highlights. data.change_report is set for the ICBC copy of a change report only. #}
     {% macro cr(key) %}{% if data.change_report and data.change_report.highlights_available and key in data.change_report.changed %} cr-changed{% endif %}{% endmacro %}
+    {# crc(keys[, entity index0[, person index0]]): highlight a cell when any of its fields changed,
+       or its entity or involved person was added in this revision. #}
+    {% macro crc(keys, e=none, p=none) -%}
+    {%- set c = data.change_report -%}
+    {%- if c and c.highlights_available -%}
+    {%- if e is none -%}
+    {%- if keys | select('in', c.changed) | list %} cr-changed{% endif -%}
+    {%- else -%}
+    {%- set row = c.entity_rows[e] -%}
+    {%- if p is none -%}
+    {%- if row.change == 'added' or keys | select('in', row.fields) | list %} cr-changed{% endif -%}
+    {%- else -%}
+    {%- set person = row.persons.get(p) or row.persons.get(p | string) -%}
+    {%- if row.change == 'added' or (person and (person.change == 'added' or keys | select('in', person.fields) | list)) %} cr-changed{% endif -%}
+    {%- endif -%}{%- endif -%}{%- endif -%}
+    {%- endmacro %}
     {% macro cre(index0, key) %}{% if data.change_report and data.change_report.highlights_available %}{% set row = data.change_report.entity_rows[index0] %}{% if row.change == 'added' or key in row.fields %} cr-changed{% endif %}{% endif %}{% endmacro %}
 
     {% if data.print_options.is_draft %}
@@ -882,64 +906,64 @@
 
                 <!-- Box 1 Road Class -->
                 <div class="grid-table grid-table-3col">
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ crc(['road_class']) }}">
                         <label class="grid-label">Box 1 Road Class</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.road_class.label }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ crc(['traffic_flow']) }}">
                         <label class="grid-label">Box 1A Traffic Flow</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.traffic_flow.label }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ crc(['collision_loc']) }}">
                         <label class="grid-label">Box 2 Collision Location</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.collision_loc.label }}
                         </div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ crc(['primary_speed_zone']) }}">
                         <label class="grid-label">Box 2A Primary Speed Zone</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.primary_speed_zone.label }}
                         </div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ crc(['secondary_speed_zone']) }}">
                         <label class="grid-label">Box 2B Secondary (Advisory) Speed Zone</label><br>
                         <div class="grid-input grid-display" contenteditable="false">
                             {% if data.secondary_speed_zone %}{{ data.secondary_speed_zone.label }}{% endif %}
                         </div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ crc(['land_usage']) }}">
                         <label class="grid-label">Box 3 Land Usage in Collision Area</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.land_usage.label }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ crc(['road_type']) }}">
                         <label class="grid-label">Box 4 Road Type</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.road_type.label }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ crc(['traffic_control']) }}">
                         <label class="grid-label">Box 5 Traffic Control</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.traffic_control.label }}
                         </div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ crc(['roadway_character']) }}">
                         <label class="grid-label">Box 6 Roadway Character (Horizontal / Vertical)</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.roadway_character.label }}
                         </div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ crc(['roadway_surface_cond']) }}">
                         <label class="grid-label">Box 7 Roadway Surface Condition</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.roadway_surface_cond.label
                             }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ crc(['weather_cond']) }}">
                         <label class="grid-label">Box 8 Weather Condition</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.weather_cond.label }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ crc(['lighting_cond']) }}">
                         <label class="grid-label">Box 9 Lighting Condition (Illum. means artificial
                             light)</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.lighting_cond.label }}
                         </div>
                     </div>
-                    <div class="grid-cell grid-cell-full">
+                    <div class="grid-cell grid-cell-full{{ crc(['primary_collision_occ_code']) }}">
                         <label class="grid-label">For Primary Collision Occurrence Code, select the code that best
                             illustrates the key occurrence according to the Primary Collision Occurrence
                             diagram</label><br>
@@ -949,12 +973,12 @@
                         <div class="grid-input grid-display" contenteditable="false">{{
                             data.primary_collision_occ_code.label }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ crc(['first_contact_event']) }}">
                         <label class="grid-label">Box 21 First Contact/Event - Type of Collision</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.first_contact_event.label
                             }}</div>
                     </div>
-                    <div class="grid-cell">
+                    <div class="grid-cell{{ crc(['first_contact_loc']) }}">
                         <label class="grid-label">Box 24 Location of First Contact</label><br>
                         <div class="grid-input grid-display" contenteditable="false">{{ data.first_contact_loc.label }}
                         </div>
@@ -966,6 +990,7 @@
 
                 <!-- Entity Section - Dynamic based on data.entities array -->
                 {% for entity in data.entities %}
+{% set cr_entity = loop.index0 %}
                 {% set entity_index = loop.index %}
                 <div class="section-divider">
                     <h4 class="subsection-header">Entity No. {{ entity_index }}
@@ -977,7 +1002,7 @@
 
                     <!-- Entity Type and Basic Info -->
                     <div class="grid-table grid-table-3col">
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['entity_type'], cr_entity) }}">
                             <label class="grid-label">Entity Type</label><br>
 
                             <div class="grid-input grid-display" contenteditable="false">{% if
@@ -986,130 +1011,130 @@
                                 entity.entity_type.value == 'O' %}Other{% else %}{{ entity.entity_type.value }}{% endif
                                 %}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['entity_num'], cr_entity) }}">
                             <label class="grid-label">Entity Number</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{{
                                 entity.entity_num }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['possible_offender'], cr_entity) }}">
                             <label class="grid-label">Possible Offender?</label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {% if entity.possible_offender %}Yes{% else %}No{% endif %}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_parked'], cr_entity) }}">
                             <input type="checkbox" {% if entity.vehicle_parked %}checked{% endif %}>
                             <label style="font-weight: normal; font-size: 9pt; font-style: italic; margin-left: 5px;">
                                 The vehicle was parked at the time of the collision
                             </label>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['unknown_entity'], cr_entity) }}">
                             <input type="checkbox" {% if entity.unknown_entity %}checked{% endif %}>
                             <label style="font-weight: normal;">Unknown Entity</label>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['driver_license_num'], cr_entity) }}">
                             <label class="grid-label">Driver's Licence Number</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.driver_license_num }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['license_prov_state'], cr_entity) }}">
                             <label class="grid-label">Licence Province or State of Issue</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.license_prov_state.label if entity.license_prov_state else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['license_expiry'], cr_entity) }}">
                             <label class="grid-label">Licence Expiry</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.license_expiry }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['surname'], cr_entity) }}">
                             <label class="grid-label">Surname</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.surname }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['given_name'], cr_entity) }}">
                             <label class="grid-label">Given Names</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.given_name }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['license_class'], cr_entity) }}">
                             <label class="grid-label">Licence Class</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{{
                                 entity.license_class }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['graduated_license_type'], cr_entity) }}">
                             <label class="grid-label">Graduated Licence Type</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{{
                                 entity.graduated_license_type }}</div>
                         </div>
                         {% if not (data.print_options and data.print_options.type == "entity" and
                         data.print_options.entity_num != entity.entity_num) %}
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['residential_address'], cr_entity) }}">
                             <label class="grid-label">Residential Address</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.residential_address
                                 }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['contact_phone_num'], cr_entity) }}">
                             <label class="grid-label">Contact Phone Number</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.contact_phone_num }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['contact_email'], cr_entity) }}">
                             <label class="grid-label">Contact Email</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.contact_email }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['date_of_birth'], cr_entity) }}">
                             <label class="grid-label">Date of Birth (yyyy-mm-dd)</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.date_of_birth[:10] if
                                 entity.date_of_birth else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['age_at_collision'], cr_entity) }}">
                             <label class="grid-label">Age at Time of Collision</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{{
                                 entity.age_at_collision }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['sex'], cr_entity) }}">
                             <label class="grid-label">Sex</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{{
                                 entity.sex.label if entity.sex else '' }}</div>
                         </div>
                          {% endif %}
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_colour'], cr_entity) }}">
                             <label class="grid-label">Vehicle Colour</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_colour }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_plate_num'], cr_entity) }}">
                             <label class="grid-label">Vehicle Plate Number</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_plate_num }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_plate_prov_state'], cr_entity) }}">
                             <label class="grid-label">Vehicle Plate Province or State</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.vehicle_plate_prov_state.label if entity.vehicle_plate_prov_state else '' }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_year'], cr_entity) }}">
                             <label class="grid-label">Vehicle Year</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_year.label if
                                 entity.vehicle_year else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_make'], cr_entity) }}">
                             <label class="grid-label">Vehicle Make</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_make.label if
                                 entity.vehicle_make else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_style'], cr_entity) }}">
                             <label class="grid-label">Vehicle Style</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_style.label
                                 if entity.vehicle_style else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['trailer_towed_plate_num'], cr_entity) }}">
                             <label class="grid-label">Trailer/Towed Vehicle Plate Number</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.trailer_towed_plate_num }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['trailer_towed_plate_prov_state'], cr_entity) }}">
                             <label class="grid-label">Trailer/Towed Plate Prov. or State</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.trailer_towed_plate_prov_state.label if entity.trailer_towed_plate_prov_state
@@ -1120,27 +1145,27 @@
                         <div class="grid-cell">
                             <!-- Empty cell -->
                         </div>
-                        <div class="grid-cell grid-cell-full">
+                        <div class="grid-cell grid-cell-full{{ crc(['is_registered_owner'], cr_entity) }}">
                             <input type="checkbox" {% if entity.is_registered_owner %}checked{% endif %}>
                             <label style="font-weight: normal;">Registered owner has the same name and residential
                                 address as the person listed in this Entity</label>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_owner_name'], cr_entity) }}">
                             <label class="grid-label">Vehicle Owner Name</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_owner_name }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_owner_address'], cr_entity) }}">
                             <label class="grid-label">Vehicle Owner Address</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_owner_address
                                 }}</div>
                         </div>
                         {% endif %}
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['nsc_num'], cr_entity) }}">
                             <label class="grid-label">National Safety Code (NSC) Number</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.nsc_num }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['jur_code'], cr_entity) }}">
                             <label class="grid-label">Jurisdiction Code</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.jur_code }}</div>
                         </div>
@@ -1151,29 +1176,29 @@
 
                     <!-- Damage and Incident Details -->
                     <div class="grid-table grid-table-3col">
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['damage_location_code'], cr_entity) }}">
                             <label class="grid-label">Damage Location on Entity</label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {% if entity.damage_location_code %}{{ entity.damage_location_code.label }}{% endif %}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['severety_code'], cr_entity) }}">
                             <label class="grid-label">Severity of Damage</label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {% if entity.severety_code %}{{ entity.severety_code.label }}{% endif %}</div>
 
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['estimated_vehicle_damage'], cr_entity) }}">
                             <label class="grid-label">Estimated Vehicle Damage ($)</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.estimated_vehicle_damage }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_stolen'], cr_entity) }}">
                             <label class="grid-label">Vehicle Stolen?</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{% if
                                 entity.vehicle_stolen == 'Y' %}Yes{% elif entity.vehicle_stolen == 'N' %}No{% else %}{{
                                 entity.vehicle_stolen }}{% endif %}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_towed'], cr_entity) }}">
                             <label class="grid-label">Vehicle Towed?</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{% if
                                 entity.vehicle_towed == 'Y' %}Yes{% elif entity.vehicle_towed == 'N' %}No{% else %}{{
@@ -1184,14 +1209,14 @@
                             <!-- Empty Cell -->
                         </div>
                             {% if entity.ilo_name and entity.ilo_name|length > 0 %}
-                            <div class="grid-cell grid-cell-full">
+                            <div class="grid-cell grid-cell-full{{ crc(['ilo_address', 'ilo_city', 'ilo_name', 'ilo_phone'], cr_entity) }}">
                                 <label class="grid-label">Vehicle Towed By</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">
                                     {{ entity.ilo_name }}, {{ entity.ilo_address }}, {{ entity.ilo_city }}, {{ entity.ilo_phone }}
                                 </div>
                             </div>
                             {% else %}
-                            <div class="grid-cell grid-cell-full">
+                            <div class="grid-cell grid-cell-full{{ crc(['vehicle_towed_by'], cr_entity) }}">
                                 <label class="grid-label">Vehicle Towed By</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">
                                     {{ entity.vehicle_towed_by.label }}
@@ -1199,7 +1224,7 @@
                             </div>
                             {% endif %}
                         {% endif %}
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['dir_of_travel'], cr_entity) }}">
                             <label class="grid-label">Direction of Travel</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{% if
                                 entity.dir_of_travel == 'N' %}N{% elif entity.dir_of_travel == 'E' %}E{% elif
@@ -1207,12 +1232,12 @@
                                 entity.dir_of_travel == 'P' %}Parked{% elif entity.dir_of_travel == 'U' %}Unknown{% else
                                 %}{{ entity.dir_of_travel }}{% endif %}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['entity_street'], cr_entity) }}">
                             <label class="grid-label">Street on Which Entity was Travelling/Parked</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.entity_street }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['insurance_coverage', 'other_insurance_policy_num', 'other_insurer'], cr_entity) }}">
                             <label class="grid-label">Insurance Coverage</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{% if
                                 entity.insurance_coverage == 'I' %}ICBC{% elif entity.insurance_coverage == 'N' %}None{%
@@ -1230,46 +1255,46 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['second_contact'], cr_entity) }}">
                             <label class="grid-label">Box 22 Second Contact/Event</label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {%if entity.second_contact %}{{ entity.second_contact.label }}{% endif %}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['pre_collision_vehicle_action_first_event'], cr_entity) }}">
                             <label class="grid-label">Box 25 Pre-Collision Vehicle Action First Event</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.pre_collision_vehicle_action_first_event.label }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_type'], cr_entity) }}">
                             <label class="grid-label">Box 27 Vehicle Type</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_type.label }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_use'], cr_entity) }}">
                             <label class="grid-label">Box 27A Vehicle Use</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_use.label }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['contributing_factor_1', 'entity_type'], cr_entity) }}">
                             <label class="grid-label">{% if entity.entity_type == 'C' %}<b>Box 34</b> Contributing
                                 Factor{% else %}<b>Box 31</b> Contributing Factor{% endif %}</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.contributing_factor_1.label }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['contributing_factor_2', 'entity_type'], cr_entity) }}">
                             <label class="grid-label">{% if entity.entity_type == 'C' %}<b>Box 35</b> Contributing
                                 Factor{% else %}<b>Box 32</b> Contributing Factor{% endif %}</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.contributing_factor_2.label }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['contributing_factor_3', 'entity_type'], cr_entity) }}">
                             <label class="grid-label">{% if entity.entity_type == 'C' %}<b>Box 36</b> Contributing
                                 Factor{% else %}<b>Box 33</b> Contributing Factor{% endif %}</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.contributing_factor_3.label }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['contributing_factor_4', 'entity_type'], cr_entity) }}">
                             <label class="grid-label">{% if entity.entity_type == 'C' %}<b>Box 36A</b> Contributing
                                 Factor{% else %}<b>Box 33A</b> Contributing Factor{% endif %}</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
@@ -1296,7 +1321,7 @@
                     </h5>
                     <div class="grid-table grid-table-2col">
                         {% if entity.blood_alc_tests_taken == 'Y' %}
-                            <div class="grid-cell grid-cell-full" style="border-bottom: none;">
+                            <div class="grid-cell grid-cell-full{{ crc(['blood_alc_test'], cr_entity) }}" style="border-bottom: none;">
                                 <label class="grid-label">Blood Alcohol Tests</label><br>
                                 <div class="grid-input grid-display" contenteditable="false" style="width: 60px;">{% if
                                     entity.blood_alc_test == 'BAC' %}BAC{% elif entity.blood_alc_test == 'BTA' %}BTA{% elif
@@ -1305,7 +1330,7 @@
 
                             </div>
                             {% if entity.blood_alc_test != 'NOT' %}
-                            <div class="grid-cell grid-cell-full" style="border-bottom: 1.5pt solid #000;">
+                            <div class="grid-cell grid-cell-full{{ crc(['result_1', 'result_2'], cr_entity) }}" style="border-bottom: 1.5pt solid #000;">
                                 <label style="font-weight: normal;">Result 1</label>
                                 <div class="grid-input grid-display" contenteditable="false"
                                     style="width: 100px; margin-left: 5px;">{{ entity.result_1 }}</div>
@@ -1318,7 +1343,7 @@
                         {% endif %}
                         <!-- Charges Table -->
                         {% if entity.has_charges == 'Y' and entity.charges and entity.charges|length > 0 %}
-                        <div class="grid-cell grid-cell-full">
+                        <div class="grid-cell grid-cell-full{{ crc(['charges'], cr_entity) }}">
                             <label class="grid-label">Charges</label><br>
                             <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-top: 5px;">
                                 <thead>
@@ -1355,17 +1380,24 @@
 
                     <!-- Involved Persons Section -->
                     {% for person in entity.involved_persons %}
+{% set cr_person = loop.index0 %}
                     <div class="section-divider" style="margin-top: 15px;">
 
                     </div>
                     <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold;">
                         Involved Person No. {{ loop.index }} associated to Entity No. {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})
+                        {%- if data.change_report and data.change_report.highlights_available %}
+                        {%- set cr_row = data.change_report.entity_rows[cr_entity] %}
+                        {%- set cr_person_change = (cr_row.persons.get(cr_person) or cr_row.persons.get(cr_person | string) or {}).change %}
+                        {%- if cr_row.change == 'added' or cr_person_change == 'added' %} <span class="cr-changed cr-entity-note">Added in this revision</span>
+                        {%- elif cr_person_change == 'modified' %} <span class="cr-changed cr-entity-note">Changed in this revision</span>
+                        {%- endif %}{% endif %}
                     </h5>
 
                     {% if (data.print_options and data.print_options.type != "entity") %}
                     <!-- Status and Names -->
                     <div class="grid-table grid-table-3col">
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['status', 'status_option'], cr_entity, cr_person) }}">
                             <label class="grid-label">Status</label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {% if person.status_option and person.status_option.label %}
@@ -1377,23 +1409,23 @@
                                 {% else %}{{ person.status }}{% endif %}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['surname'], cr_entity, cr_person) }}">
                             <label class="grid-label">Surname</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ person.surname }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['given_name'], cr_entity, cr_person) }}">
                             <label class="grid-label">Given Names</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ person.given_name }}</div>
                         </div>
                         <!-- Date of Death - Only show if deceased -->
                         {% if person.status == 'deceased' %}
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['date_of_death'], cr_entity, cr_person) }}">
                             <label class="grid-label">Date of Death</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 150px;">{{
                                 person.date_of_death[:10] if person.date_of_death else '' }}</div>
                         </div>
                         {% endif %}
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_occupied'], cr_entity, cr_person) }}">
                             <label class="grid-label">Box 10 Vehicle Occupied</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ person.vehicle_occupied }}
                             </div>
@@ -1403,63 +1435,63 @@
                             <img src="images/box11.png" style="width: 80px; height: 60px; border: 1px solid #000;">
 
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['position_of_person'], cr_entity, cr_person) }}">
                             <label class="grid-label">Box 11 Indicate Position of Person</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 person.position_of_person.label }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['safety_equipment_used'], cr_entity, cr_person) }}">
                             <label class="grid-label">Box 12 Safety Equipment Used</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 person.safety_equipment_used.label }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['ejection_from_vehicle'], cr_entity, cr_person) }}">
                             <label class="grid-label">Box 13 Ejection From Vehicle</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 person.ejection_from_vehicle.label }}</div>
                         </div>
                         {% if not (data.print_options and data.print_options.type == "entity" and
                         data.print_options.entity_num != entity.entity_num) %}
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['age'], cr_entity, cr_person) }}">
                             <label class="grid-label">Box 14 Age</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ person.age }}</div>
                         </div>
                         {% endif %}
                         {% if not (data.print_options and data.print_options.type == "entity" and
                         data.print_options.entity_num != entity.entity_num) %}
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['sex'], cr_entity, cr_person) }}">
                             <label class="grid-label">Box 15 Sex</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ person.sex.label }}</div>
                         </div>
                         {% endif %}
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['severe_injury_location'], cr_entity, cr_person) }}">
                             <label class="grid-label">Box 16 Location of Most Severe Injury</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 person.severe_injury_location.label }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['injury_type'], cr_entity, cr_person) }}">
                             <label class="grid-label">Box 17 Type of Injury</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ person.injury_type.label }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['consciousness_state'], cr_entity, cr_person) }}">
                             <label class="grid-label">Box 18 State of Consciousness</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 person.consciousness_state.label }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['injured_taken_to'], cr_entity, cr_person) }}">
                             <label class="grid-label">Box 19 Injured Taken To</label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {% if person.injured_taken_to %}{{ person.injured_taken_to.label }}{% endif %}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['injured_taken_by'], cr_entity, cr_person) }}">
                             <label class="grid-label">Box 20 Injured Taken By</label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {% if person.injured_taken_by %}{{ person.injured_taken_by.label }}{% endif %}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['injury_classification'], cr_entity, cr_person) }}">
                             <label class="grid-label">Box 20A Injury Classification</label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {% if person.injury_classification %}{{ person.injury_classification.label }}{% endif %}
@@ -1473,84 +1505,84 @@
                     <div>
                         <!-- Person Header Row with Boxes -->
                         <div class="grid-table grid-table-7col" >
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['vehicle_occupied'], cr_entity, cr_person) }}">
                                 <label class="grid-label">Box 10</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     person.vehicle_occupied if
                                     person.vehicle_occupied else '' }}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['position_of_person'], cr_entity, cr_person) }}">
                                 <label class="grid-label">Box 11</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     person.position_of_person.value if
                                     person.position_of_person else '' }}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['safety_equipment_used'], cr_entity, cr_person) }}">
                                 <label class="grid-label">Box 12</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     person.safety_equipment_used.value if
                                     person.safety_equipment_used else '' }}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['ejection_from_vehicle'], cr_entity, cr_person) }}">
                                 <label class="grid-label">Box 13</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     person.ejection_from_vehicle.value if
                                     person.ejection_from_vehicle else '1' }}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['age'], cr_entity, cr_person) }}">
                                 <label class="grid-label">Box 14</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     person.age if person.age else '' }}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['sex'], cr_entity, cr_person) }}">
                                 <label class="grid-label">Box 15</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     person.sex.value if person.sex else '' }}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['severe_injury_location'], cr_entity, cr_person) }}">
                                 <label class="grid-label">Box 16</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     person.severe_injury_location.value if
                                     person.severe_injury_location else '' }}</div>
                             </div>
 
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['injury_type'], cr_entity, cr_person) }}">
                                 <label class="grid-label">Box 17</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     person.injury_type.value if person.injury_type else
                                     '' }}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['consciousness_state'], cr_entity, cr_person) }}">
                                 <label class="grid-label">Box 18</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     person.consciousness_state.value if
                                     person.consciousness_state else '' }}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['injured_taken_to'], cr_entity, cr_person) }}">
                                 <label class="grid-label">Box19</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     person.injured_taken_to.value if
                                     person.injured_taken_to else '' }}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['injured_taken_by'], cr_entity, cr_person) }}">
                                 <label class="grid-label">Box 20</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     person.injured_taken_by.value if
                                     person.injured_taken_by else '' }}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['injury_classification'], cr_entity, cr_person) }}">
                                 <label class="grid-label">Box 20A</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     person.injury_classification.value if
                                     person.injury_classification else '' }}</div>
                             </div>
-                            <div class="grid-cell" style="grid-column: span 2;">
+                            <div class="grid-cell{{ crc(['date_of_death'], cr_entity, cr_person) }}" style="grid-column: span 2;">
                                 <label class="grid-label">Date of Death</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     person.date_of_death[:10] if person.date_of_death else '' }}</div>
                             </div>
 
-                            <div class="grid-cell grid-cell-full">
+                            <div class="grid-cell grid-cell-full{{ crc(['given_name', 'surname'], cr_entity, cr_person) }}">
                                 <label class="grid-label">Name</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     person.surname }} , {{ person.given_name }}</div>
@@ -1569,17 +1601,17 @@
 
                     <!-- Box 29 and Box 30 -->
                     <div class="grid-table grid-table-2col">
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['pedestrian_location']) }}">
                             <label class="grid-label">Box 29 Pedestrian Location</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 data.pedestrian_location.label }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['pedestrian_action']) }}">
                             <label class="grid-label">Box 30 Pedestrian Action</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.pedestrian_action.label
                                 }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['has_other_prop_damage']) }}">
                             <label class="grid-label">Was there other property damage?</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 150px;">{% if
                                 data.has_other_prop_damage == 'N' %}No{% elif data.has_other_prop_damage == 'U' %}Yes,
@@ -1593,19 +1625,19 @@
                         </div>
                         {% endif %}
                         {% if data.has_other_prop_damage == 'Y' %}
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['prop_damage_est_value']) }}">
                             <label class="grid-label">Estimated Value:</label><br>
                             <div class="grid-input grid-display" contenteditable="false"
                                 style="width: 150px; margin-left: 10px;">{{ data.prop_damage_est_value }}</div>
                         </div>
                         {% endif %}
                         {% if data.has_other_prop_damage == 'Y' or data.has_other_prop_damage == 'U' %}
-                        <div class="grid-cell grid-cell-full">
+                        <div class="grid-cell grid-cell-full{{ crc(['other_prop_damage_desc']) }}">
                             <label class="grid-label">Other Property Damage - list property damaged</label><br>
                             <textarea class="grid-input auto-resize uppercase">{{ data.other_prop_damage_desc }}</textarea>
                         </div>
                         {% endif %}
-                        <div class="grid-cell grid-cell-full">
+                        <div class="grid-cell grid-cell-full{{ crc(['has_witnesses']) }}">
                             <label class="grid-label">Are there witnesses?</label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {% if data.has_witnesses == 'Y' %}Yes{% elif data.has_witnesses == 'N' %}No
@@ -1613,7 +1645,7 @@
                         </div>
                         <!-- Witness Table -->
                         {% if data.witnesses %}
-                        <div class="grid-cell grid-cell-full">
+                        <div class="grid-cell grid-cell-full{{ crc(['witnesses']) }}">
                             <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                                 <thead>
                                     <tr>
@@ -1645,12 +1677,12 @@
                         </div>
                         {% endif %}
                          {% if not (data.print_options and data.print_options.type == "entity") %}
-                        <div class="grid-cell grid-cell-full">
+                        <div class="grid-cell grid-cell-full{{ crc(['police_comments']) }}">
                             <label class="grid-label">Box 99 Police Comments</label><br>
                             <textarea class="grid-input auto-resize uppercase">{{ data.police_comments }}</textarea>
                         </div>
                         {% endif %}
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['collision_type']) }}">
                             <label class="grid-label">Collision Type</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 200px;">{% if
                                 data.collision_type == 5 %}Fatality{% elif data.collision_type == 3 %}Personal
@@ -1658,20 +1690,20 @@
                                 {% elif data.collision_type == 0 %}Non-reportable{% else %}{{
                                 data.collision_type }}{% endif %}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['total_est_damage']) }}">
                             <label class="grid-label">Total Estimated Damage</label><br>
                             <div class="grid-input grid-display" contenteditable="false">${{ data.total_est_damage }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['total_injured']) }}">
                             <label class="grid-label">Total Injured</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.total_injured }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['total_killed']) }}">
                             <label class="grid-label">Total Killed</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.total_killed }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['total_vehicles']) }}">
                             <label class="grid-label">Total Vehicles</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.total_vehicles }}</div>
                         </div>
@@ -1688,36 +1720,36 @@
 <div class="section-divider">
                     <h4 class="subsection-header">Completed By</h4>
                     <div class="grid-table grid-table-3col">
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['completed_by_name']) }}">
                             <label class="grid-label">Officer's Name</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.completed_by_name }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['officer_badge_no']) }}">
                             <label class="grid-label">Officer's ID No.</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.officer_badge_no }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['agency']) }}">
                             <label class="grid-label">Agency </label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.agency }}</div>
                         </div>
                         {% if not (data.print_options and data.print_options.type == "entity") %}
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['officer_email']) }}">
                             <label class="grid-label">Officer's Email </label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.officer_email }}</div>
                         </div>
                         {% endif %}
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['icbc_submission_date']) }}">
                             <label class="grid-label">Date Submitted to ICBC </label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {%if data.icbc_submission_date %}{{ data.icbc_submission_date[:10] }}{% endif %}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['investigated_by_traffic_analyst']) }}">
                             <label class="grid-label">Investigated by Traffic Analyst? </label><br>
                             <div class="grid-input grid-display" contenteditable="false">{% if
                                 data.investigated_by_traffic_analyst == 'Y' %}Yes{% elif data.investigated_by_traffic_analyst == 'N' %}No{% else %}{{
                                 data.investigated_by_traffic_analyst }}{% endif %}</div>
                         </div>
-                        <div class="grid-cell grid-cell-full">
+                        <div class="grid-cell grid-cell-full{{ crc(['reviewed_by']) }}">
                             <label class="grid-label">Reviewed by </label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.reviewed_by }}</div>
                         </div>
@@ -1737,7 +1769,7 @@
     {% if data.print_options and data.print_options.type == "icbc" %}
     <div class="page icbc-copy">
         <div class="grid-table grid-table-2col">
-            <div class="grid-cell grid-cell-full">
+            <div class="grid-cell grid-cell-full{{ crc(['collision_scenario']) }}">
                 <label class="grid-label">MV6020 Report</label><br>
                 <input type="checkbox" id="scenarios" name="scenarios" {% if data.collision_scenario %}checked{% endif
                     %}>
@@ -1745,7 +1777,7 @@
                     data.collision_scenario.label }}</label>
             </div>
            
-            <div class="grid-cell grid-cell-full">
+            <div class="grid-cell grid-cell-full{{ crc(['has_countable_fatal']) }}">
                 <label class="grid-label">Does this collision contain a Countable Fatal?</label><br>
                 <div class="radio-group">
                     <div class="radio-option">
@@ -1765,12 +1797,12 @@
                     </div>
                 </div>
             </div>
-            <div class="grid-cell">
+            <div class="grid-cell{{ crc(['countable_fatal_total']) }}">
                 <label class="grid-label">Total Countable Fatals</label><br>
                 <div class="grid-input grid-display" contenteditable="false">{{ data.countable_fatal_total }}
                 </div>
             </div>
-            <div class="grid-cell">
+            <div class="grid-cell{{ crc(['total_est_damage']) }}">
                 <label class="grid-label">Total Estimated Damage</label><br>
                 <div class="grid-input grid-display" contenteditable="false">${{ data.total_est_damage }}
                 </div>
@@ -1783,40 +1815,40 @@
                 <div class="grid-table grid-table-2col single-row">
                     <div class="grid-cell">
                         <div class="grid-table grid-table-2col">
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['collision_case_num']) }}">
                                 <label class="grid-label">Collision Case Number</label><br>
                                 <div class="grid-input grid-display" contenteditable="false" style="width: 200px;">
                                     {{ data.collision_case_num }}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['date_collision']) }}">
                                 <label class="grid-label">Date of Collision (yyyy-mm-dd)</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     data.date_collision[:10] if data.date_collision else '' }}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['time_collision']) }}">
                                 <label class="grid-label">Time of Collision (hh:mm)</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{ data.time_collision
                                     }}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['collision_type']) }}">
                                 <label class="grid-label">Collision Type</label><br>
                                 <div class="grid-input grid-display" contenteditable="false" style="width: 200px;">
                                     {{data.collision_type}}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['hit_and_run']) }}">
                                 <label class="grid-label">Hit and Run</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{data.hit_and_run}}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['primary_collision_occ_code']) }}">
                                 <label class="grid-label">Diagram</label><br>
                                 <div class="grid-input grid-display" contenteditable="false">{{
                                     data.primary_collision_occ_code.value }}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['police_attended']) }}">
                                 <label class="grid-label">Police Attended</label><br>
                                 <div class="grid-input grid-display" contenteditable="false" style="width: 50px;">{{data.police_attended}}</div>
                             </div>
-                            <div class="grid-cell">
+                            <div class="grid-cell{{ crc(['police_agency_code']) }}">
                                 <label class="grid-label">Police Code</label><br>
                                 <div class="grid-input grid-display" contenteditable="false" style="width: 100px;">
                                     {{ data.police_agency_code.code }}</div>
@@ -1829,25 +1861,25 @@
                             <div class="grid-table grid-table-4col">
                                 <!-- Row 1 -->
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['road_class']) }}">
                                         <div class="icbc-box-label">Box 1</div>
                                         <div class="icbc-box-value">{{ data.road_class.value }}</div>
                                     </div>
                                 </div>
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['traffic_flow']) }}">
                                         <div class="icbc-box-label">Box 1A</div>
                                         <div class="icbc-box-value">{{ data.traffic_flow.value }}</div>
                                     </div>
                                 </div>
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['collision_loc']) }}">
                                         <div class="icbc-box-label">Box 2</div>
                                         <div class="icbc-box-value">{{ data.collision_loc.value }}</div>
                                     </div>
                                 </div>
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['primary_speed_zone']) }}">
                                         <div class="icbc-box-label">Box 2A</div>
                                         <div class="icbc-box-value">{{ data.primary_speed_zone.value }}</div>
                                     </div>
@@ -1855,25 +1887,25 @@
 
                                 <!-- Row 2 -->
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['secondary_speed_zone']) }}">
                                         <div class="icbc-box-label">Box 2B</div>
                                         <div class="icbc-box-value">{% if data.secondary_speed_zone %}{{ data.secondary_speed_zone.value }}{% endif %}</div>
                                     </div>
                                 </div>
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['land_usage']) }}">
                                         <div class="icbc-box-label">Box 3</div>
                                         <div class="icbc-box-value">{{ data.land_usage.value }}</div>
                                     </div>
                                 </div>
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['road_type']) }}">
                                         <div class="icbc-box-label">Box 4</div>
                                         <div class="icbc-box-value">{{ data.road_type.value }}</div>
                                     </div>
                                 </div>
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['traffic_control']) }}">
                                         <div class="icbc-box-label">Box 5</div>
                                         <div class="icbc-box-value">{{ data.traffic_control.value }}</div>
                                     </div>
@@ -1881,25 +1913,25 @@
 
                                 <!-- Row 3 -->
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['roadway_character']) }}">
                                         <div class="icbc-box-label">Box 6</div>
                                         <div class="icbc-box-value">{{ data.roadway_character.value }}</div>
                                     </div>
                                 </div>
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['roadway_surface_cond']) }}">
                                         <div class="icbc-box-label">Box 7</div>
                                         <div class="icbc-box-value">{{ data.roadway_surface_cond.value }}</div>
                                     </div>
                                 </div>
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['weather_cond']) }}">
                                         <div class="icbc-box-label">Box 8</div>
                                         <div class="icbc-box-value">{{ data.weather_cond.value }}</div>
                                     </div>
                                 </div>
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['lighting_cond']) }}">
                                         <div class="icbc-box-label">Box 9</div>
                                         <div class="icbc-box-value">{{ data.lighting_cond.value }}</div>
                                     </div>
@@ -1907,25 +1939,25 @@
 
                                 <!-- Row 4 -->
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['first_contact_event']) }}">
                                         <div class="icbc-box-label">Box 21</div>
                                         <div class="icbc-box-value">{{ data.first_contact_event.value }}</div>
                                     </div>
                                 </div>
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['first_contact_loc']) }}">
                                         <div class="icbc-box-label">Box 24</div>
                                         <div class="icbc-box-value">{{ data.first_contact_loc.value }}</div>
                                     </div>
                                 </div>
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['pedestrian_location']) }}">
                                         <div class="icbc-box-label">Box 29</div>
                                         <div class="icbc-box-value">{{ data.pedestrian_location.value }}</div>
                                     </div>
                                 </div>
                                 <div class="grid-cell">
-                                    <div class="icbc-box">
+                                    <div class="icbc-box{{ crc(['pedestrian_action']) }}">
                                         <div class="icbc-box-label">Box 30</div>
                                         <div class="icbc-box-value">{{ data.pedestrian_action.value }}</div>
                                     </div>
@@ -1941,11 +1973,11 @@
 
                     <!-- City and Highway -->
                     <div class="grid-table grid-table-4col single-row">
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['city_name']) }}">
                             <label class="grid-label">City</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.city_name }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['hwy_route_num']) }}">
                             <label class="grid-label">LKI Route</label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {%if data.hwy_route_num %}
@@ -1953,7 +1985,7 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['segment_num']) }}">
                             <label class="grid-label">LKI Segment</label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {%if data.segment_num %}
@@ -1961,20 +1993,20 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['hwy_code']) }}">
                             <label class="grid-label">Highway</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 50px;">{{
                                 data.hwy_code }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['loc_code_km']) }}">
                             <label class="grid-label">LKI Offset</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.loc_code_km }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['street_on']) }}">
                             <label class="grid-label">Location Description - On</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.street_on }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['street_at']) }}">
                             <label class="grid-label">Location Description - At</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ data.street_at }}</div>
                         </div>
@@ -1988,17 +2020,17 @@
                             <label class="grid-label">Latitude Direction</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 50px;">N+</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['lat_degree']) }}">
                             <label class="grid-label">Latitude Degrees</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 50px;">{{
                                 data.lat_degree }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['lat_min']) }}">
                             <label class="grid-label">Latitude Minutes</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 50px;">{{
                                 data.lat_min }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['lat_sec']) }}">
                             <label class="grid-label">Latitude Seconds</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 80px;">{{
                                 data.lat_sec }}</div>
@@ -2007,17 +2039,17 @@
                             <label class="grid-label">Longitude Direction</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 50px;">W-</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['long_degree']) }}">
                             <label class="grid-label">Longitude Degrees</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 50px;">{{
                                 data.long_degree }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['long_min']) }}">
                             <label class="grid-label">Longitude Minutes</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 50px;">{{
                                 data.long_min }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['long_sec']) }}">
                             <label class="grid-label">Longitude Seconds</label><br>
                             <div class="grid-input grid-display" contenteditable="false" style="width: 80px;">{{
                                 data.long_sec }}</div>
@@ -2031,86 +2063,87 @@
                 <!-- Entities Section -->
                 <div class="section-divider">
                     {% for entity in data.entities %}
+{% set cr_entity = loop.index0 %}
                     {% set entity_index = loop.index %}
                     <h4 class="subsection-header" style="margin-top: 10px;">Entity {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})</h4>
 
                     <!-- Main Entity Grid - 2 columns like ICBC boxes -->
                     <div class="grid-table grid-table-4col">
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['police_file_num']) }}">
                             <label class="grid-label">Police File Number</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 data.police_file_num }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['entity_num'], cr_entity) }}">
                             <label class="grid-label">Entity No.</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.entity_num }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['entity_type'], cr_entity) }}">
                             <label class="grid-label">Entity Type</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.entity_type.value }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['possible_offender'], cr_entity) }}">
                             <label class="grid-label">Possible Offender</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{% if entity.possible_offender %}Y{% else %}N{% endif %}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['driver_license_num'], cr_entity) }}">
                             <label class="grid-label">Driver's Licence No.</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.driver_license_num }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['given_name', 'surname'], cr_entity) }}">
                             <label class="grid-label">Name (Surname, Given Names)</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.surname }}, {{ entity.given_name }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_plate_num'], cr_entity) }}">
                             <label class="grid-label">Vehicle Plate Number</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.vehicle_plate_num }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['license_class'], cr_entity) }}">
                             <label class="grid-label">Licence Class</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.license_class }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_plate_prov_state'], cr_entity) }}">
                             <label class="grid-label">Vehicle Plate Province or State</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.vehicle_plate_prov_state.label if entity.vehicle_plate_prov_state
                                 else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_stolen'], cr_entity) }}">
                             <label class="grid-label">Vehicle Stolen</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_stolen if
                                 entity.vehicle_stolen
                                 else 'N' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['license_prov_state'], cr_entity) }}">
                             <label class="grid-label">Licence Prov. or State</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.license_prov_state.label if entity.license_prov_state else '' }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['date_of_birth'], cr_entity) }}">
                             <label class="grid-label">Date of Birth (yyyy-mm-dd)</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.date_of_birth[:10] if entity.date_of_birth else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_towed'], cr_entity) }}">
                             <label class="grid-label">Vehicle Towed</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.vehicle_towed}}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['graduated_license_type'], cr_entity) }}">
                             <label class="grid-label">Licence Indicator</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.graduated_license_type }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['sex'], cr_entity) }}">
                             <label class="grid-label">Sex</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{ entity.sex.value }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['ilo_name', 'vehicle_towed_by'], cr_entity) }}">
                             <label class="grid-label">Vehicle Towed By</label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {%if entity.ilo_name and entity.ilo_name|length > 0 %}
@@ -2120,66 +2153,66 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_year'], cr_entity) }}">
                             <label class="grid-label">Vehicle Year</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.vehicle_year.label if entity.vehicle_year else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_make'], cr_entity) }}">
                             <label class="grid-label">Vehicle Make</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.vehicle_make.label if entity.vehicle_make else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_owner_name'], cr_entity) }}">
                             <label class="grid-label">Vehicle Owner Name</label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {{ entity.vehicle_owner_name }}
                             </div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_owner_address'], cr_entity) }}">
                             <label class="grid-label">Vehicle Owner Address</label><br>
                             <div class="grid-input grid-display" contenteditable="false">
                                 {{ entity.vehicle_owner_address}}
                             </div>
                         </div>                          
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['damage_location_code'], cr_entity) }}">
                             <label class="grid-label">Damage Loc.</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.damage_location_code.value if entity.damage_location_code else ''
                                 }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['severety_code'], cr_entity) }}">
                             <label class="grid-label">Damage Sev.</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.severety_code.value if entity.severety_code else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['dir_of_travel'], cr_entity) }}">
                             <label class="grid-label">Dir. of Travel</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.dir_of_travel if entity.dir_of_travel else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['second_contact'], cr_entity) }}">
                             <label class="grid-label">Box 22/23</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.second_contact.value if entity.second_contact else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['pre_collision_vehicle_action_first_event'], cr_entity) }}">
                             <label class="grid-label">Box 25/26</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.pre_collision_vehicle_action_first_event.value if
                                 entity.pre_collision_vehicle_action_first_event else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_type'], cr_entity) }}">
                             <label class="grid-label">Box 27/28</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.vehicle_type.value if entity.vehicle_type else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['vehicle_use'], cr_entity) }}">
                             <label class="grid-label">Box 27A/28A</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.vehicle_use.value if entity.vehicle_use else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['blood_alc_test', 'result_1', 'result_2'], cr_entity) }}">
                             <label class="grid-label">
                                 {{ 'Blood' if entity.blood_alc_test == 'BAC' else "Breath" }}
                                 
@@ -2187,25 +2220,25 @@
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 [entity.result_1, entity.result_2] | select | max if entity.result_1 or entity.result_2 else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['contributing_factor_1'], cr_entity) }}">
                             <label class="grid-label">Box 31/34</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.contributing_factor_1.value if entity.contributing_factor_1 else
                                 '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['contributing_factor_2'], cr_entity) }}">
                             <label class="grid-label">Box 32/35</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.contributing_factor_2.value if entity.contributing_factor_2 else
                                 '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['contributing_factor_3'], cr_entity) }}">
                             <label class="grid-label">Box 33/36</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.contributing_factor_3.value if entity.contributing_factor_3 else
                                 '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['contributing_factor_4'], cr_entity) }}">
                             <label class="grid-label">Box 33A/36A</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.contributing_factor_4.value if entity.contributing_factor_4 else
@@ -2214,21 +2247,21 @@
                     </div>
                     <div class="grid-table grid-table-3col single-row">
                         <!-- Row 4 - Charges -->
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['charges'], cr_entity) }}">
                             <label class="grid-label">Charge 1</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.charges[0].charge_type.value if entity.charges and
                                 entity.charges|length > 0 else '' }} {{ entity.charges[0].section_num if
                                 entity.charges and entity.charges|length > 0 else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['charges'], cr_entity) }}">
                             <label class="grid-label">Charge 2</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.charges[1].charge_type.value if entity.charges and
                                 entity.charges|length > 1 else '' }} {{ entity.charges[1].section_num if
                                 entity.charges and entity.charges|length > 1 else '' }}</div>
                         </div>
-                        <div class="grid-cell">
+                        <div class="grid-cell{{ crc(['charges'], cr_entity) }}">
                             <label class="grid-label">Charge 3</label><br>
                             <div class="grid-input grid-display" contenteditable="false">{{
                                 entity.charges[2].charge_type.value if entity.charges and
@@ -2245,95 +2278,97 @@
                 <div class="section-divider">
                     <h4 class="subsection-header" style="margin-top: 10px;">All involved</h4>
                     {% for entity in data.entities %}
+{% set cr_entity = loop.index0 %}
                     {% set entity_index = loop.index %}
                     <div class="icbc-involved-person">
                         <h4 class="subsection-header" style="border: 1.5pt solid #000;">Entity {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})</h4>
 
                         {% for person in entity.involved_persons %}
+{% set cr_person = loop.index0 %}
                         <div>
                             <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold; border-right: 1.5pt solid #000;  border-left: 1px solid #000;">
                                 Involved Person {{ loop.index }} associated to Entity {{ entity_index }}
                             </h5>
                             <!-- Person Header Row with Boxes -->
                             <div class="grid-table grid-table-7col" >
-                                <div class="grid-cell">
+                                <div class="grid-cell{{ crc(['vehicle_occupied'], cr_entity, cr_person) }}">
                                     <label class="grid-label">Box 10</label><br>
                                     <div class="grid-input grid-display" contenteditable="false">{{
                                         person.vehicle_occupied if
                                         person.vehicle_occupied else '' }}</div>
                                 </div>
-                                <div class="grid-cell">
+                                <div class="grid-cell{{ crc(['position_of_person'], cr_entity, cr_person) }}">
                                     <label class="grid-label">Box 11</label><br>
                                     <div class="grid-input grid-display" contenteditable="false">{{
                                         person.position_of_person.value if
                                         person.position_of_person else '' }}</div>
                                 </div>
-                                <div class="grid-cell">
+                                <div class="grid-cell{{ crc(['safety_equipment_used'], cr_entity, cr_person) }}">
                                     <label class="grid-label">Box 12</label><br>
                                     <div class="grid-input grid-display" contenteditable="false">{{
                                         person.safety_equipment_used.value if
                                         person.safety_equipment_used else '' }}</div>
                                 </div>
-                                <div class="grid-cell">
+                                <div class="grid-cell{{ crc(['ejection_from_vehicle'], cr_entity, cr_person) }}">
                                     <label class="grid-label">Box 13</label><br>
                                     <div class="grid-input grid-display" contenteditable="false">{{
                                         person.ejection_from_vehicle.value if
                                         person.ejection_from_vehicle else '1' }}</div>
                                 </div>
-                                <div class="grid-cell">
+                                <div class="grid-cell{{ crc(['age'], cr_entity, cr_person) }}">
                                     <label class="grid-label">Box 14</label><br>
                                     <div class="grid-input grid-display" contenteditable="false">{{
                                         person.age if person.age else '' }}</div>
                                 </div>
-                                <div class="grid-cell">
+                                <div class="grid-cell{{ crc(['sex'], cr_entity, cr_person) }}">
                                     <label class="grid-label">Box 15</label><br>
                                     <div class="grid-input grid-display" contenteditable="false">{{
                                         person.sex.value if person.sex else '' }}</div>
                                 </div>
-                                <div class="grid-cell">
+                                <div class="grid-cell{{ crc(['severe_injury_location'], cr_entity, cr_person) }}">
                                     <label class="grid-label">Box 16</label><br>
                                     <div class="grid-input grid-display" contenteditable="false">{{
                                         person.severe_injury_location.value if
                                         person.severe_injury_location else '' }}</div>
                                 </div>
 
-                                <div class="grid-cell">
+                                <div class="grid-cell{{ crc(['injury_type'], cr_entity, cr_person) }}">
                                     <label class="grid-label">Box 17</label><br>
                                     <div class="grid-input grid-display" contenteditable="false">{{
                                         person.injury_type.value if person.injury_type else
                                         '' }}</div>
                                 </div>
-                                <div class="grid-cell">
+                                <div class="grid-cell{{ crc(['consciousness_state'], cr_entity, cr_person) }}">
                                     <label class="grid-label">Box 18</label><br>
                                     <div class="grid-input grid-display" contenteditable="false">{{
                                         person.consciousness_state.value if
                                         person.consciousness_state else '' }}</div>
                                 </div>
-                                <div class="grid-cell">
+                                <div class="grid-cell{{ crc(['injured_taken_to'], cr_entity, cr_person) }}">
                                     <label class="grid-label">Box19</label><br>
                                     <div class="grid-input grid-display" contenteditable="false">{{
                                         person.injured_taken_to.value if
                                         person.injured_taken_to else '' }}</div>
                                 </div>
-                                <div class="grid-cell">
+                                <div class="grid-cell{{ crc(['injured_taken_by'], cr_entity, cr_person) }}">
                                     <label class="grid-label">Box 20</label><br>
                                     <div class="grid-input grid-display" contenteditable="false">{{
                                         person.injured_taken_by.value if
                                         person.injured_taken_by else '' }}</div>
                                 </div>
-                                <div class="grid-cell">
+                                <div class="grid-cell{{ crc(['injury_classification'], cr_entity, cr_person) }}">
                                     <label class="grid-label">Box 20A</label><br>
                                     <div class="grid-input grid-display" contenteditable="false">{{
                                         person.injury_classification.value if
                                         person.injury_classification else '' }}</div>
                                 </div>
-                                <div class="grid-cell" style="grid-column: span 2;">
+                                <div class="grid-cell{{ crc(['date_of_death'], cr_entity, cr_person) }}" style="grid-column: span 2;">
                                     <label class="grid-label">Date of Death</label><br>
                                     <div class="grid-input grid-display" contenteditable="false">{{
                                         person.date_of_death[:10] if person.date_of_death else '' }}</div>
                                 </div>
 
-                                <div class="grid-cell grid-cell-full">
+                                <div class="grid-cell grid-cell-full{{ crc(['given_name', 'surname'], cr_entity, cr_person) }}">
                                     <label class="grid-label">Name</label><br>
                                     <div class="grid-input grid-display" contenteditable="false">{{
                                         person.surname }} , {{ person.given_name }}</div>
@@ -2352,7 +2387,7 @@
                     <h4 class="subsection-header">Additional Collision Details</h4>
 
                     <div class="grid-table grid-table-2col">
-                        <div class="grid-cell grid-cell-full">
+                        <div class="grid-cell grid-cell-full{{ crc(['police_comments']) }}">
                             <label class="grid-label">Box 99 Police Comments</label><br>
                             <textarea class="grid-input auto-resize uppercase">{{ data.police_comments }}</textarea>
                         </div>
