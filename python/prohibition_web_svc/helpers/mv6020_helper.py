@@ -39,6 +39,12 @@ def send_mv6020_copy(**kwargs):
         email_address = print_options.get('email', '')
         ptype = print_options.get('type', '').lower()
 
+        # A change report highlights what changed since the parent revision. Built for every
+        # email; the renderer keeps it on the police and ICBC copies only (also the police copy
+        # in the admin email).
+        if change_report_helper.is_change_report(data):
+            data['change_report'] = change_report_helper.build_context(data, payload.get('parentData'))
+
         if ptype != 'entity':
             # Map collision_type codes to labels
             COLLISION_TYPE_MAP = {
@@ -61,8 +67,6 @@ def send_mv6020_copy(**kwargs):
 
             if ptype == 'icbc':
                 full_name = "ICBC"
-                # A change report's ICBC copy highlights what changed since the parent revision.
-                data['change_report'] = change_report_helper.build_context(data, payload.get('parentData'))
             elif ptype == 'police':
                 full_name = proper_case(data.get("completed_by_name"))  # defaults to "Officer"
 

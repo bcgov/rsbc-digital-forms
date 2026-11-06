@@ -620,12 +620,13 @@ def _change_report_payload(copy_type):
     return {"payload": {"data": data, "parentData": parent}}
 
 
-@pytest.mark.parametrize("copy_type, highlighted", [("icbc", True), ("police", False)])
-def test_send_mv6020_copy_highlights_changes_on_the_icbc_copy_only(monkeypatch, copy_type, highlighted):
+@pytest.mark.parametrize("copy_type, highlighted", [("icbc", True), ("police", True), ("entity", False)])
+def test_send_mv6020_copy_highlights_changes_on_the_police_and_icbc_copies_only(monkeypatch, copy_type, highlighted):
     rendered = {}
 
     def render(**kw):
-        rendered["data"] = dict(kw["payload"]["data"])
+        # What the template sees for this copy.
+        rendered["data"] = helper.change_report_helper.context_for_copy(dict(kw["payload"]["data"]))
         return True, {"rendered_content": b"PDF", "filename": "mv.pdf", "content_type": "application/pdf"}
 
     monkeypatch.setattr(helper.print_middleware, "set_event_type", lambda **kw: (True, kw))

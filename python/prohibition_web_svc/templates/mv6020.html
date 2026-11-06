@@ -609,7 +609,7 @@
 
 <body></body>
 
-    {# Change report highlights. data.change_report is set for the ICBC copy of a change report only. #}
+    {# Change report highlights. data.change_report is set for the police and ICBC copies of a change report only. #}
     {% macro cr(key) %}{% if data.change_report and data.change_report.highlights_available and key in data.change_report.changed %} cr-changed{% endif %}{% endmacro %}
     {# crc(keys[, entity index0[, person index0]]): highlight a cell when any of its fields changed,
        or its entity or involved person was added in this revision. #}

@@ -325,6 +325,34 @@ class TestChangeReportPrint:
         assert context['changed'] == ['street_on']
         assert context['revision'] == 3
 
+    @pytest.mark.parametrize('ptype, highlighted', [('police', True), ('icbc', True), ('ICBC', True),
+                                                    ('entity', False), (None, False)])
+    def test_only_police_and_icbc_copies_show_the_changes(self, ptype, highlighted):
+        payload = self._payload(ptype, street_on='1ST AVE')
+        result, kwargs = print_middleware.add_change_report_context(payload=payload)
+        template_data = print_middleware.change_report_helper.context_for_copy(kwargs['payload']['data'])
+        assert ('change_report' in template_data) is highlighted
+        assert 'change_report' in kwargs['payload']['data']  # still there for the next copy of a zip
+
+    def test_download_all_highlights_the_police_copy_but_not_the_driver_copies(self):
+        payload = self._payload('all', street_on='1ST AVE',
+                                entities=[{'entity_num': 1}, {'entity_num': 2}],
+                                police_file_num='P1', date_collision='2025-11-20T00:00:00-08:00')
+        payload['parentData']['entities'] = [{'entity_num': 1}, {'entity_num': 2}]
+        payload['options'] = {'type': 'pdf'}
+        _, kwargs = print_middleware.add_change_report_context(payload=payload)
+        seen = []
+
+        def render(template_path, data, output_type='pdf'):
+            template_data = print_middleware.change_report_helper.context_for_copy(dict(data))
+            seen.append((data['print_options']['type'], 'change_report' in template_data))
+            return True, b'%PDF'
+
+        with patch.object(print_middleware, 'render_with_playwright', side_effect=render):
+            result, kwargs = print_middleware.render_document_with_playwright(**kwargs)
+        assert result is True
+        assert seen == [('police', True), ('entity', False), ('entity', False)]
+
     def test_parent_data_is_not_passed_to_the_template(self):
         result, kwargs = print_middleware.add_change_report_context(payload=self._payload())
         assert 'parentData' not in kwargs['payload']

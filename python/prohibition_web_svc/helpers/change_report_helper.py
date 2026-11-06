@@ -1,10 +1,16 @@
 """
-Change report context for the MV6020 ICBC copy.
+Change report context for the MV6020 police and ICBC copies.
 
-A change report is a new revision of the same collision case number. Camunda
-reads the parent revision from Form.io and sends it as payload.parentData to
-/api/v1/email. This compares it with the change report and tells the template
-what to highlight. The report itself is always rendered in full.
+A change report is a new revision of the same collision case number. The parent
+revision arrives as payload.parentData: from Camunda (Form.io lookup) on
+/api/v1/email, and from the form's pdfGenerator on /api/v1/print. This compares
+it with the change report and tells the template what to highlight. The report
+itself is always rendered in full.
+
+Only the police and ICBC copies show the changes (BA, 2026-11-05); driver/entity
+copies render as before. The context is built once per request and dropped at
+render time for other copies (see context_for_copy), so the admin email and the
+download-all zip, which render several copies from one payload, get it right.
 
 The context added to the template data as data.change_report:
 
@@ -30,8 +36,19 @@ ENTITY_PATH = re.compile(r'^entities\[(?P<key>[a-z_]+)=(?P<value>[^\]]*)\]$')
 PERSON_PATH = re.compile(r'involved_persons\[(?P<index>\d+)\]$')
 
 
+HIGHLIGHTED_COPIES = ('police', 'icbc')
+
+
 def is_change_report(data) -> bool:
     return isinstance(data, dict) and str(data.get('isChangeReport')).lower() == 'true'
+
+
+def context_for_copy(template_data: dict) -> dict:
+    """The template data for one copy: without data.change_report unless it is a police or ICBC copy."""
+    print_type = str(((template_data.get('print_options') or {}).get('type')) or '').lower()
+    if 'change_report' in template_data and print_type not in HIGHLIGHTED_COPIES:
+        template_data = {k: v for k, v in template_data.items() if k != 'change_report'}
+    return template_data
 
 
 def _parent_revision(data: dict):

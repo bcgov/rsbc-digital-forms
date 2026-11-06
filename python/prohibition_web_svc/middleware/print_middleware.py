@@ -124,7 +124,7 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
             lstrip_blocks=True,
         )
         tpl = env.get_template(template_name)
-        template_data = {**data, 'output_type': output_type}
+        template_data = change_report_helper.context_for_copy({**data, 'output_type': output_type})
         html_str = tpl.render(data=template_data)
         
         # Convert relative image paths to base64 data URLs for Playwright
@@ -244,11 +244,13 @@ async def render_with_playwright_async(template_path: str, data: dict, output_ty
         return False, error_html
 
 def add_change_report_context(**kwargs) -> tuple:
-    """Highlight what a change report changed, in previews and downloads of every copy.
+    """Highlight what a change report changed, in previews and downloads.
 
     The form reads the parent revision from Form.io and sends it as payload.parentData,
-    as Camunda does for the emailed ICBC copy. Without it the report renders with a
-    banner saying the changes could not be highlighted. Never fails the print.
+    as Camunda does for the emails. Built for every copy; the renderer keeps it on the
+    police and ICBC copies only (change_report_helper.context_for_copy). Without the
+    parent, those copies render with a banner saying the changes could not be
+    highlighted. Never fails the print.
     """
     logger.verbose('inside add_change_report_context()')
     try:
