@@ -1,13 +1,23 @@
 from dataclasses import dataclass
 from decimal import Decimal
+from sqlalchemy import ForeignKeyConstraint
 from ..base import db
+from .collision import ORIGINAL_REVISION
 
 @dataclass
 class TarAdditionalCollisionDetails(db.Model):
     __tablename__ = 'additional_collision_details'
-    __table_args__ = {'schema': 'TAR'}
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ['collision_case_num', 'revision'],
+            ['TAR.collision.collision_case_num', 'TAR.collision.revision'],
+            name='additional_collision_details_collision_revision_fkey'
+        ),
+        {'schema': 'TAR'},
+    )
 
     collision_case_num: str
+    revision: int
     pedestrian_location: str
     pedestrian_action: str
     has_other_prop_damage: str
@@ -23,7 +33,8 @@ class TarAdditionalCollisionDetails(db.Model):
     summary_was_verified: bool = False
     officer_email: str = None
 
-    collision_case_num = db.Column(db.String(10), db.ForeignKey('TAR.collision.collision_case_num'), primary_key=True)
+    collision_case_num = db.Column(db.String(10), primary_key=True)
+    revision = db.Column(db.Integer, primary_key=True, default=ORIGINAL_REVISION)
     pedestrian_location = db.Column(db.String(2), db.ForeignKey('TAR.pedestrian_location.code'))
     pedestrian_action = db.Column(db.String(2), db.ForeignKey('TAR.pedestrian_action.code'))
     has_other_prop_damage = db.Column(db.String(2), nullable=False)

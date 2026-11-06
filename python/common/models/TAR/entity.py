@@ -1,15 +1,25 @@
 from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal
+from sqlalchemy import ForeignKeyConstraint
 from ..base import db
+from .collision import ORIGINAL_REVISION
 
 @dataclass
 class TarEntity(db.Model):
     __tablename__ = 'entity'
-    __table_args__ = {'schema': 'TAR'}
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ['collision_case_num', 'revision'],
+            ['TAR.collision.collision_case_num', 'TAR.collision.revision'],
+            name='entity_collision_revision_fkey'
+        ),
+        {'schema': 'TAR'},
+    )
 
     entity_id: int
     collision_case_num: str
+    revision: int
     entity_type: str
     entity_num: str
     possible_offender: str
@@ -75,7 +85,8 @@ class TarEntity(db.Model):
     ilo_phone_num: str
 
     entity_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    collision_case_num = db.Column(db.String(10), db.ForeignKey('TAR.collision.collision_case_num'), nullable=False)
+    collision_case_num = db.Column(db.String(10), nullable=False)
+    revision = db.Column(db.Integer, nullable=False, default=ORIGINAL_REVISION)
     entity_type = db.Column(db.String(1), db.ForeignKey('TAR.entity_type.code'), nullable=False)
     entity_num = db.Column(db.String(2), nullable=False)
     possible_offender = db.Column(db.String(1), nullable=False)
