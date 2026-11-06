@@ -2,8 +2,10 @@
 MV6020 change report diff.
 
 Compares the parent revision of an MV6020 with its change report and reports
-added, removed and modified records and fields. The ICBC copy of a change
-report highlights these.
+added, removed and modified records and fields. The police and ICBC copies of
+a change report highlight these. Entity and involved person rows are matched by
+the form's hidden row id (cr_row_id) when both revisions have it, so deleting a
+row doesn't make the rows after it look changed.
 
     python -m python.prohibition_web_svc.helpers.change_report_diff before.json after.json
         [--config change_report_fields.json] [--out diff.json] [--strict] [--no-values]
@@ -90,20 +92,40 @@ def _match_key(before: list, after: list, keys: list):
     return None
 
 
+def _person_pairs(before: list, after: list, config) -> tuple:
+    """(match_by, [(old_index, new_index)]): by the form's row id when both revisions have one,
+    else by position (revisions saved before the row id existed). None marks a missing side."""
+    match_by = _match_key(before, after, config.get('person_match_keys', []))
+    if not match_by:
+        return 'position', [(i if i < len(before) else None, i if i < len(after) else None)
+                            for i in range(max(len(before), len(after)))]
+    new_index = {str(row.get(match_by)): i for i, row in enumerate(after)}
+    old_keys = {str(row.get(match_by)) for row in before}
+    pairs = [(i, new_index.get(str(row.get(match_by)))) for i, row in enumerate(before)]
+    pairs += [(None, i) for i, row in enumerate(after) if str(row.get(match_by)) not in old_keys]
+    return match_by, pairs
+
+
 def _diff_involved_persons(before: list, after: list, config, strict, prefix) -> list:
-    """Involved persons have no stable id, so they are matched by position."""
+    """Persons are matched by the form's row id (cr_row_id), or by position for older revisions.
+
+    Each record has old_index / new_index (None when that side has no such person)."""
     exclude = set(config.get('exclude_in_involved_persons', []))
+    match_by, pairs = _person_pairs(before, after, config)
     records = []
-    for index in range(max(len(before), len(after))):
-        path = f'{prefix}involved_persons[{index}]'
-        if index >= len(before):
-            records.append({'path': path, 'change': 'added', 'new': after[index]})
-        elif index >= len(after):
-            records.append({'path': path, 'change': 'removed', 'old': before[index]})
+    for old_index, new_index in pairs:
+        row = after[new_index] if new_index is not None else before[old_index]
+        key = row.get(match_by) if match_by != 'position' else (new_index if new_index is not None else old_index)
+        path = f'{prefix}involved_persons[{key}]' if match_by == 'position' else f'{prefix}involved_persons[{match_by}={key}]'
+        record = {'path': path, 'old_index': old_index, 'new_index': new_index}
+        if old_index is None:
+            records.append({**record, 'change': 'added', 'new': after[new_index]})
+        elif new_index is None:
+            records.append({**record, 'change': 'removed', 'old': before[old_index]})
         else:
-            fields = _diff_fields(before[index], after[index], exclude, strict, prefix=path + '.')
+            fields = _diff_fields(before[old_index], after[new_index], exclude, strict, prefix=path + '.')
             if fields:
-                records.append({'path': path, 'change': 'modified', 'fields': fields})
+                records.append({**record, 'change': 'modified', 'fields': fields})
     return records
 
 

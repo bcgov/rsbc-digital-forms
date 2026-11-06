@@ -74,7 +74,8 @@ def test_removed_entities_and_persons_are_reported():
     entities = [copy.deepcopy(PARENT['entities'][0])]
     entities[0]['involved_persons'] = entities[0]['involved_persons'][:1]
     context = change_report_helper.build_context(_change(entities=entities), PARENT)
-    assert context['removed_entities'] == [{'entity_num': '30', 'entity_type': 'PEDESTRIAN'}]
+    assert context['removed_entities'] == [{'entity_num': '30', 'entity_type': 'PEDESTRIAN', 'index': 1,
+                                            'entity': PARENT['entities'][1]}]
     assert context['removed_persons'] == [{'entity_num': '01', 'persons': [2]}]
 
 
@@ -108,11 +109,13 @@ def test_logs_counts_never_values(caplog):
 # Real submissions fill every field the template reads; these fixtures don't, so
 # missing fields render blank here (ChainableUndefined) instead of failing.
 
-def _render(data):
+def _render(data, copy_type='icbc', **print_options):
     env = Environment(loader=FileSystemLoader(str(TEMPLATES)), autoescape=select_autoescape(['html', 'xml']),
                       undefined=ChainableUndefined)
-    data = dict(data, print_options={'type': 'icbc', 'email': '', 'is_draft': False})
-    return env.get_template('mv6020.html').render(data=dict(data, output_type='pdf'))
+    data = dict(data, print_options={'type': copy_type, 'email': '', 'is_draft': False, **print_options})
+    # As the renderer does: per copy, deleted rows put back or the context dropped.
+    data = change_report_helper.context_for_copy(dict(data, output_type='pdf'))
+    return env.get_template('mv6020.html').render(data=data)
 
 
 def _cell_classes(html, label):
@@ -136,7 +139,8 @@ def test_template_lists_removed_entities_and_marks_added_ones():
     html = _render(data)
     assert 'Removed in this revision' in html
     assert 'Entity 30 (PEDESTRIAN)' in html
-    assert html.count('Added in this revision') == 1
+    # Police copy entity heading and the two ICBC copy entity headings.
+    assert html.count('Added in this revision') == 3
 
 
 def test_template_says_when_highlights_are_unavailable():
@@ -181,7 +185,8 @@ def test_template_highlights_person_fields_on_their_person_only():
     # Police copy "Box 14 Age" and ICBC copy "Box 14": person 1 unchanged, person 2 changed.
     assert ['cr-changed' in c for c in _all_cell_classes(html, 'Box 14 Age')] == [False, True]
     assert ['cr-changed' in c for c in _all_cell_classes(html, 'Box 14')] == [False, True]
-    assert html.count('Changed in this revision') == 2  # entity heading and person heading
+    # Police copy entity and person headings, ICBC copy two entity headings and a person heading.
+    assert html.count('Changed in this revision') == 5
 
 
 def test_template_highlights_every_cell_of_an_added_person():
@@ -205,3 +210,88 @@ def test_template_highlights_box_fields_in_both_copies():
     html = _rendered_change(road_class={'value': '12', 'label': '12 TWO LANE'})
     assert all('cr-changed' in c for c in _all_cell_classes(html, 'Box 1 Road Class'))
     assert re.search(r'<div class="icbc-box cr-changed">\s*<div class="icbc-box-label">Box 1</div>', html)
+
+
+# Deleted rows: matched by the form's row id, shown from the parent, highlighted and crossed out.
+
+def _with_ids(entities):
+    for e, entity in enumerate(entities):
+        entity['cr_row_id'] = f'e{e}'
+        for p, person in enumerate(entity['involved_persons']):
+            person['cr_row_id'] = f'e{e}p{p}'
+    return entities
+
+
+PARENT_WITH_IDS = dict(PARENT, entities=_with_ids(copy.deepcopy(PARENT['entities'])))
+
+
+def _deleting(edit):
+    entities = copy.deepcopy(PARENT_WITH_IDS['entities'])
+    edit(entities)
+    data = _change(entities=entities)
+    data['change_report'] = change_report_helper.build_context(data, PARENT_WITH_IDS)
+    return data
+
+
+def test_deleting_the_first_person_does_not_make_the_next_one_look_changed():
+    data = _deleting(lambda entities: entities[0]['involved_persons'].pop(0))
+    row = data['change_report']['entity_rows'][0]
+    assert row['persons'] == {}
+    assert row['deleted_persons'] == [{'index': 0, 'person': PARENT_WITH_IDS['entities'][0]['involved_persons'][0]}]
+    assert data['change_report']['removed_persons'] == [{'entity_num': '01', 'persons': [1]}]
+
+
+def test_older_revisions_without_row_ids_are_matched_by_position():
+    entities = copy.deepcopy(PARENT['entities'])
+    entities[0]['involved_persons'].pop(0)
+    data = _change(entities=_with_ids(entities))
+    row = change_report_helper.build_context(data, PARENT)['entity_rows'][0]
+    assert row['persons'] == {0: {'change': 'modified', 'fields': ['given_name']}}  # status is not compared
+    assert [d['index'] for d in row['deleted_persons']] == [1]
+
+
+def test_renumbered_entity_is_matched_by_row_id():
+    def delete_first_vehicle(entities):
+        entities.insert(0, _entity('01', cr_row_id='new'))
+        entities.pop(1)
+    # The form renumbers: a vehicle deleted and another added gets the same entity number.
+    context = _deleting(delete_first_vehicle)['change_report']
+    assert [e['entity_num'] for e in context['removed_entities']] == ['01']
+    assert context['entity_rows'][0]['change'] == 'added'
+
+
+def test_police_and_icbc_copies_show_deleted_rows_where_they_were():
+    data = _deleting(lambda entities: (entities[0]['involved_persons'].pop(0), entities.pop(1)))
+    shown = change_report_helper.context_for_copy(dict(data, print_options={'type': 'police'}))
+    assert [e['entity_num'] for e in shown['entities']] == ['01', '30']
+    assert [p['given_name'] for p in shown['entities'][0]['involved_persons']] == ['A', 'B']
+    rows = shown['change_report']['entity_rows']
+    assert rows[0]['persons'] == {0: {'change': 'removed', 'fields': [], 'was_number': 1}}
+    assert rows[1]['change'] == 'removed' and rows[1]['was_number'] == '30'
+    # The payload itself is unchanged: it renders the other copies too.
+    assert [e['entity_num'] for e in data['entities']] == ['01']
+    assert len(data['entities'][0]['involved_persons']) == 1
+
+
+def test_driver_copies_do_not_show_deleted_rows():
+    data = _deleting(lambda entities: entities.pop(1))
+    shown = change_report_helper.context_for_copy(dict(data, print_options={'type': 'entity', 'entity_num': '01'}))
+    assert 'change_report' not in shown
+    assert [e['entity_num'] for e in shown['entities']] == ['01']
+
+
+def test_template_crosses_out_a_deleted_person_in_both_copies():
+    html = _render(_deleting(lambda entities: entities[0]['involved_persons'].pop(0)))
+    assert [('cr-deleted' in c, 'cr-changed' in c) for c in _all_cell_classes(html, 'Box 14 Age')] \
+        == [(True, True), (False, False)]
+    assert ['cr-deleted' in c for c in _all_cell_classes(html, 'Box 14')] == [True, False]
+    assert html.count('Deleted in this revision (was Involved Person No. 1 in revision 0)') == 2
+
+
+def test_template_crosses_out_a_deleted_entity_and_its_persons():
+    html = _render(_deleting(lambda entities: entities.pop(0)))
+    # Vehicle 01 (deleted, with its two persons) is shown before pedestrian 30.
+    assert ['cr-deleted' in c for c in _all_cell_classes(html, 'Entity Number')] == [True, False]
+    assert all('cr-deleted' in c for c in _all_cell_classes(html, 'Box 14 Age'))
+    assert 'Deleted in this revision (was Entity No. 01 in revision 0)' in html
+    assert '.cr-deleted .grid-input' in html

@@ -563,7 +563,7 @@
             text-transform: uppercase;
         }
 
-        /* Change report: what changed since the parent revision (ICBC copy only) */
+        /* Change report: what changed since the parent revision (police and ICBC copies) */
         .grid-cell.cr-changed,
         .cr-changed {
             background: #fff176;
@@ -599,6 +599,13 @@
             padding: 0;
         }
 
+        /* Deleted in this revision: shown from the parent revision, values crossed out */
+        .cr-deleted .grid-input,
+        .cr-deleted textarea,
+        .cr-deleted .icbc-box-value {
+            text-decoration: line-through;
+        }
+
         .cr-entity-note {
             font-weight: normal;
             font-size: 9pt;
@@ -621,11 +628,25 @@
     {%- else -%}
     {%- set row = c.entity_rows[e] -%}
     {%- if p is none -%}
-    {%- if row.change == 'added' or keys | select('in', row.fields) | list %} cr-changed{% endif -%}
+    {%- if row.change == 'removed' %} cr-changed cr-deleted
+    {%- elif row.change == 'added' or keys | select('in', row.fields) | list %} cr-changed{% endif -%}
     {%- else -%}
     {%- set person = row.persons.get(p) or row.persons.get(p | string) -%}
-    {%- if row.change == 'added' or (person and (person.change == 'added' or keys | select('in', person.fields) | list)) %} cr-changed{% endif -%}
+    {%- if row.change == 'removed' or (person and person.change == 'removed') %} cr-changed cr-deleted
+    {%- elif row.change == 'added' or (person and (person.change == 'added' or keys | select('in', person.fields) | list)) %} cr-changed{% endif -%}
     {%- endif -%}{%- endif -%}{%- endif -%}
+    {%- endmacro %}
+    {# cr_note(entity index0[, person index0]): "Added / Changed / Deleted in this revision" for a heading. #}
+    {% macro cr_note(e, p=none) -%}
+    {%- set c = data.change_report -%}
+    {%- if c and c.highlights_available -%}
+    {%- set row = c.entity_rows[e] -%}
+    {%- set item = row if p is none else (row.persons.get(p) or row.persons.get(p | string) or {}) -%}
+    {%- if row.change == 'removed' or item.change == 'removed' %} <span class="cr-changed cr-entity-note">Deleted in this revision
+        {%- if item.was_number %} (was {{ 'Entity' if p is none else 'Involved Person' }} No. {{ item.was_number }} in revision {{ c.parent_revision }}){% endif %}</span>
+    {%- elif row.change == 'added' or item.change == 'added' %} <span class="cr-changed cr-entity-note">Added in this revision</span>
+    {%- elif item.change == 'modified' %} <span class="cr-changed cr-entity-note">Changed in this revision</span>
+    {%- endif -%}{%- endif -%}
     {%- endmacro %}
     {% macro cre(index0, key) %}{% if data.change_report and data.change_report.highlights_available %}{% set row = data.change_report.entity_rows[index0] %}{% if row.change == 'added' or key in row.fields %} cr-changed{% endif %}{% endif %}{% endmacro %}
 
@@ -993,12 +1014,7 @@
 {% set cr_entity = loop.index0 %}
                 {% set entity_index = loop.index %}
                 <div class="section-divider">
-                    <h4 class="subsection-header">Entity No. {{ entity_index }}
-                    {%- if data.change_report and data.change_report.highlights_available %}
-                    {%- set entity_change = data.change_report.entity_rows[loop.index0].change %}
-                    {%- if entity_change == 'added' %} <span class="cr-changed cr-entity-note">Added in this revision</span>
-                    {%- elif entity_change == 'modified' %} <span class="cr-changed cr-entity-note">Changed in this revision</span>
-                    {%- endif %}{% endif %}</h4>
+                    <h4 class="subsection-header">Entity No. {{ entity_index }}{{ cr_note(cr_entity) }}</h4>
 
                     <!-- Entity Type and Basic Info -->
                     <div class="grid-table grid-table-3col">
@@ -1386,12 +1402,7 @@
                     </div>
                     <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold;">
                         Involved Person No. {{ loop.index }} associated to Entity No. {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})
-                        {%- if data.change_report and data.change_report.highlights_available %}
-                        {%- set cr_row = data.change_report.entity_rows[cr_entity] %}
-                        {%- set cr_person_change = (cr_row.persons.get(cr_person) or cr_row.persons.get(cr_person | string) or {}).change %}
-                        {%- if cr_row.change == 'added' or cr_person_change == 'added' %} <span class="cr-changed cr-entity-note">Added in this revision</span>
-                        {%- elif cr_person_change == 'modified' %} <span class="cr-changed cr-entity-note">Changed in this revision</span>
-                        {%- endif %}{% endif %}
+                        {{- cr_note(cr_entity, cr_person) }}
                     </h5>
 
                     {% if (data.print_options and data.print_options.type != "entity") %}
@@ -2065,7 +2076,7 @@
                     {% for entity in data.entities %}
 {% set cr_entity = loop.index0 %}
                     {% set entity_index = loop.index %}
-                    <h4 class="subsection-header" style="margin-top: 10px;">Entity {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})</h4>
+                    <h4 class="subsection-header" style="margin-top: 10px;">Entity {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }}){{ cr_note(cr_entity) }}</h4>
 
                     <!-- Main Entity Grid - 2 columns like ICBC boxes -->
                     <div class="grid-table grid-table-4col">
@@ -2281,13 +2292,13 @@
 {% set cr_entity = loop.index0 %}
                     {% set entity_index = loop.index %}
                     <div class="icbc-involved-person">
-                        <h4 class="subsection-header" style="border: 1.5pt solid #000;">Entity {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }})</h4>
+                        <h4 class="subsection-header" style="border: 1.5pt solid #000;">Entity {{ entity_index }} ({{ entity.entity_type.label }} {{ entity.entity_num }}){{ cr_note(cr_entity) }}</h4>
 
                         {% for person in entity.involved_persons %}
 {% set cr_person = loop.index0 %}
                         <div>
                             <h5 style="background-color: #e6e6e6; padding: 5px; margin: 0; font-weight: bold; border-right: 1.5pt solid #000;  border-left: 1px solid #000;">
-                                Involved Person {{ loop.index }} associated to Entity {{ entity_index }}
+                                Involved Person {{ loop.index }} associated to Entity {{ entity_index }}{{ cr_note(cr_entity, cr_person) }}
                             </h5>
                             <!-- Person Header Row with Boxes -->
                             <div class="grid-table grid-table-7col" >
