@@ -157,3 +157,11 @@ def revision_conflict_response(**kwargs) -> tuple:
     detail = kwargs.get('response_dict', {}).get('error_details', None)
     kwargs['response'] = make_response({'error': 'revision conflict', 'error_details': detail}, 409)
     return True, kwargs
+
+
+def offline_submission_already_exists(**kwargs) -> tuple:
+    if kwargs.get('error'):
+        kwargs['response'] = make_response({'error': kwargs.get('error').get('error_details', 'error occurred')}, 500)
+    else:
+        kwargs['response'] = make_response({'message': 'offline submission already exists'}, 202)
+    return True, kwargs

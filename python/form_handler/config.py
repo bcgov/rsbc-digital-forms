@@ -12,6 +12,25 @@ class Config():
     STORAGE_FAIL_QUEUE_PERS=os.getenv('STORAGE_FAIL_QUEUE_PERS', 'df-storage-events-fail-persistent')
     EVENT_TYPES                         = os.getenv('EVENT_TYPES', 'vi,24h,12h,irp').split(',')
     PENDING_EVENT_STATUSES = os.getenv('PENDING_EVENT_STATUSES', 'pending,retrying').split(',')
+    
+    OFFLINE_SUBMISSION_WATCH_QUEUE = os.getenv('OFFLINE_SUBMISSION_WATCH_QUEUE', 'df-offline-submissions')
+    OFFLINE_SUBMISSION_HOLD_QUEUE = os.getenv('OFFLINE_SUBMISSION_HOLD_QUEUE', 'df-offline-submissions-hold')
+    OFFLINE_SUBMISSION_FAIL_QUEUE = os.getenv('OFFLINE_SUBMISSION_FAIL_QUEUE', 'df-offline-submissions-fail')
+    OFFLINE_SUBMISSION_MAX_RETRIES = int(os.getenv('OFFLINE_SUBMISSION_MAX_RETRIES', '5'))
+
+    FORMIO_API_URL = os.getenv('FORMIO_API_URL', 'http://localhost:3000').rstrip('/')
+    FORMIO_ROOT_EMAIL = os.getenv('FORMIO_ROOT_EMAIL')
+    FORMIO_ROOT_PASSWORD = os.getenv('FORMIO_ROOT_PASSWORD')
+    FORMIO_TOKEN_HEADER = os.getenv('FORMIO_TOKEN_HEADER', 'x-jwt-token')
+
+    WEB_APP_URL = os.getenv('REACT_APP_BASE_URL', 'http://localhost:3000/roadside-forms').rstrip('/')
+    FORMSFLOW_API_URL = os.getenv('FORMSFLOW_API_URL', 'http://localhost:5009').rstrip('/')
+
+    # Keycloak settings
+    KEYCLOAK_URL = os.environ.get('KEYCLOAK_URL', 'http://keycloak:8080').rstrip('/')
+    KEYCLOAK_REALM = os.environ.get('KEYCLOAK_REALM', 'master')
+    KEYCLOAK_CLIENT_ID = os.environ.get('FORM_HANDLER_KEYCLOAK_CLIENT_ID', 'rsbc-df-form-handler')
+    KEYCLOAK_CLIENT_SECRET = os.environ.get('FORM_HANDLER_KEYCLOAK_CLIENT_SECRET', 'secret')
 
     DB_HOST = os.environ.get('DB_HOST', 'db')
     DB_USER = os.environ.get('DB_USER', 'testuser')

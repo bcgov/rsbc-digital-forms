@@ -1,5 +1,6 @@
 import logging
 import logging.config
+import time
 import pika
 import pika.exceptions
 import pika.adapters.utils.connection_workflow as workflow
@@ -8,6 +9,7 @@ import pika.adapters.utils.connection_workflow as workflow
 class RabbitMQ:
 
     MaximumTriesAfterError = 5
+    ReconnectDelaySeconds = 5
 
     def __init__(self, config):
         self.amqp_connection = self._get_connection_url(config)
@@ -28,21 +30,32 @@ class RabbitMQ:
         return string
 
     def consume(self, queue_name: str, callback):
+        self.consume_queues({queue_name: callback})
+
+    def consume_queues(self, queue_callbacks: dict):
         try:
-            self._verify_or_create(queue_name)
             self.channel.basic_qos(prefetch_count=1)
-            self.channel.basic_consume(queue=queue_name, on_message_callback=callback)
-        except Exception as error:
-            logging.info('Connection Exception - will be retried')
-        try:
+            for queue_name, callback in queue_callbacks.items():
+                self._verify_or_create(queue_name)
+                self.channel.basic_consume(queue=queue_name, on_message_callback=callback)
             self.channel.start_consuming()
         except Exception as error:
-            logging.info('Connection Exception - will be retried')
-        except workflow.AMQPConnectorSocketConnectError as error:
-            logging.info('SocketConnectionError - expected')
-        # except workflow.AMQPConnector as error:
-        #     logging.info('AMQPConnector error - expected')
-        
+            logging.error('Connection Exception - will be retried: %s', error, exc_info=True)
+            time.sleep(RabbitMQ.ReconnectDelaySeconds)
+            self._reconnect()
+
+    def _reconnect(self):
+        try:
+            try:
+                if self.connection and self.connection.is_open:
+                    self.connection.close()
+            except Exception:
+                pass
+            self.connection = self._get_connection(self.amqp_connection)
+            self.channel = self._get_channel(self.connection)
+        except Exception as error:
+            logging.error('Reconnect failed - will retry: %s', error)
+
 
     def publish(self, queue_name: str, payload: bytes):
         logging.info('publish to: ' + queue_name)
@@ -61,6 +74,30 @@ class RabbitMQ:
                 logging.warning("Could not publish message to queue ... trying to reestablish the connection")
                 self._refresh_connection(queue_name)
         
+        return False
+
+    def publish_confirmed(self, queue_name: str, payload: bytes):
+        logging.info('publish with confirmation to: ' + queue_name)
+        for tries in range(RabbitMQ.MaximumTriesAfterError):
+            try:
+                self._refresh_connection(queue_name)
+                self.channel.confirm_delivery()
+                self.channel.basic_publish(
+                    exchange='',
+                    routing_key=queue_name,
+                    body=payload,
+                    properties=pika.BasicProperties(
+                        delivery_mode=2,
+                        content_type='application/json',
+                    ),
+                    mandatory=True,
+                )
+                return True
+            except Exception:
+                logging.warning(
+                    'Could not publish confirmed message ... trying to reestablish the connection'
+                )
+                self._refresh_connection(queue_name)
         return False
 
     def _refresh_connection(self, queue_name):
