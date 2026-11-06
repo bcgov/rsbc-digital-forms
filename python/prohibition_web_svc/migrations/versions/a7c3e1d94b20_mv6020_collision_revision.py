@@ -6,7 +6,7 @@ that references a collision carries the revision. Existing rows become
 revision 0, the original submission.
 
 Revision ID: a7c3e1d94b20
-Revises: f28f7c94e9ee
+Revises: 773fcdb08038
 Create Date: 2026-10-26 09:00:00.000000
 
 """
@@ -16,7 +16,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'a7c3e1d94b20'
-down_revision = 'f28f7c94e9ee'
+down_revision = '773fcdb08038'
 branch_labels = None
 depends_on = None
 
