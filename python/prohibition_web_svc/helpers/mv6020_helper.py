@@ -10,6 +10,7 @@ from python.common.logging_utils import get_logger
 from python.common.models import db, Agency,AgencyAdmin, User
 from python.prohibition_web_svc.config import Config
 import python.common.rsi_email as rsi_email
+from python.prohibition_web_svc.helpers import change_report_helper
 from python.prohibition_web_svc.middleware import print_middleware
 
 logger = get_logger(__name__)
@@ -39,6 +40,12 @@ def send_mv6020_copy(**kwargs):
         print_options = data.get('print_options', {})
         email_address = print_options.get('email', '')
         ptype = print_options.get('type', '').lower()
+
+        # A change report highlights what changed since the parent revision. Built for every
+        # email; the renderer keeps it on the police and ICBC copies only (also the police copy
+        # in the admin email).
+        if change_report_helper.is_change_report(data):
+            data['change_report'] = change_report_helper.build_context(data, payload.get('parentData'))
 
         if ptype != 'entity':
             # Map collision_type codes to labels

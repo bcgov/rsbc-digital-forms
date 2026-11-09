@@ -2,6 +2,9 @@ from dataclasses import dataclass
 from datetime import date, datetime, time
 from ..base import db
 
+# Revision of an original MV6020 submission; change reports are 1, 2, ...
+ORIGINAL_REVISION = 0
+
 @dataclass
 class TarCollision(db.Model):
     __tablename__ = 'collision'
@@ -9,6 +12,7 @@ class TarCollision(db.Model):
 
     submission_id: int
     collision_case_num: str
+    revision: int
     collision_scenario: str
     police_file_num: str
     prime_file_vjur: int
@@ -35,6 +39,7 @@ class TarCollision(db.Model):
 
     submission_id = db.Column(db.Integer, db.ForeignKey('submission.submission_id'), nullable=False)
     collision_case_num = db.Column(db.String(10), primary_key=True, nullable=False)
+    revision = db.Column(db.Integer, primary_key=True, nullable=False, default=ORIGINAL_REVISION)
     collision_scenario = db.Column(db.String(2), db.ForeignKey('TAR.collision_scenario.code'), nullable=False)
     police_file_num = db.Column(db.String(18), nullable=False)
     prime_file_vjur = db.Column(db.Integer, db.ForeignKey('agency.id'), nullable=False)
