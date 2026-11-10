@@ -5,6 +5,7 @@ import json
 import re
 import python.common.helper as helper
 from datetime import datetime
+from functools import lru_cache
 from pathlib import Path
 from zipfile import ZipFile
 from io import BytesIO
@@ -13,7 +14,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from playwright.async_api import async_playwright
 from python.common.enums import ErrorCode
 from python.common.logging_utils import get_logger
-from python.prohibition_web_svc.helpers import mv6020_helper
+from python.prohibition_web_svc.helpers import change_report_helper, mv6020_helper
 from python.prohibition_web_svc.models.print_request_payload import PrintRequestPayload
 from python.common.models.base import db
 
@@ -110,142 +111,193 @@ def validate_print_payload(**kwargs) -> tuple:
         }
         return False, kwargs
 
-async def render_with_playwright_async(template_path: str, data: dict, output_type: str = "pdf"):
-    """Render the Jinja template using Playwright."""
+_IMAGE_MIME_TYPES = {
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.gif': 'image/gif',
+    '.svg': 'image/svg+xml',
+}
+MAX_CONCURRENT_RENDERS = 5
+
+
+@lru_cache(maxsize=64)
+def _image_data_url(image_path: str):
+    """Return a base64 data URL for an image file, or None if it can't be read."""
+    path = Path(image_path)
+    if not path.exists():
+        return None
+    try:
+        img_base64 = base64.b64encode(path.read_bytes()).decode('utf-8')
+    except Exception as e:
+        logger.warning(f"Could not load image {path}: {e}")
+        return None
+    mime_type = _IMAGE_MIME_TYPES.get(path.suffix.lower(), 'image/png')
+    return f"data:{mime_type};base64,{img_base64}"
+
+
+def _build_html(template_path: str, data: dict, output_type: str):
+    """Render the Jinja template and inline relative images. Returns (html, template_data)."""
     template_dir = str(Path(template_path).parent) or "."
     template_name = Path(template_path).name
 
-    try:
-        # Render the template with Jinja2
-        env = Environment(
-            loader=FileSystemLoader(template_dir),
-            autoescape=select_autoescape(["html", "xml"]),
-            trim_blocks=True,
-            lstrip_blocks=True,
-        )
-        tpl = env.get_template(template_name)
-        template_data = {**data, 'output_type': output_type}
-        html_str = tpl.render(data=template_data)
-        
-        # Convert relative image paths to base64 data URLs for Playwright
-        
-        def replace_image_src(match):
-            src = match.group(1)
-            if not src.startswith(('http://', 'https://', 'data:', 'file://')):
-                # Handle relative paths
-                image_path = Path(template_dir) / src
-                if image_path.exists():
-                    try:
-                        with open(image_path, 'rb') as img_file:
-                            img_data = img_file.read()
-                            img_base64 = base64.b64encode(img_data).decode('utf-8')
-                            # Determine MIME type based on file extension
-                            ext = image_path.suffix.lower()
-                            mime_type = {
-                                '.png': 'image/png',
-                                '.jpg': 'image/jpeg', 
-                                '.jpeg': 'image/jpeg',
-                                '.gif': 'image/gif',
-                                '.svg': 'image/svg+xml'
-                            }.get(ext, 'image/png')
-                            return f'src="data:{mime_type};base64,{img_base64}"'
-                    except Exception as e:
-                        print(f"Warning: Could not load image {image_path}: {e}")
-                        return match.group(0)  # Return original if failed
-            return match.group(0)  # Return original for absolute URLs
-        
-        # Replace image src attributes
-        html_str = re.sub(r'src="([^"]*)"', replace_image_src, html_str)
+    env = Environment(
+        loader=FileSystemLoader(template_dir),
+        autoescape=select_autoescape(["html", "xml"]),
+        trim_blocks=True,
+        lstrip_blocks=True,
+    )
+    tpl = env.get_template(template_name)
+    # Change report: police/ICBC copies get the highlights and deleted rows, other copies none.
+    template_data = change_report_helper.context_for_copy({**data, 'output_type': output_type})
+    html_str = tpl.render(data=template_data)
 
-        # Use Playwright to process HTML
-        async with async_playwright() as p:
-            browser = await p.chromium.launch(
-                headless=True,
-                args=["--disable-dev-shm-usage"]
-            )
-            
-            try:
-                context = await browser.new_context(
-                    viewport={"width": 816, "height": 1056},
-                    device_scale_factor=2  # High-DPI rendering helps thin lines survive
-                )
-                page = await context.new_page()
-                await page.set_content(html_str, wait_until="networkidle")
-                
-                # Wait for auto-resize script to execute
-                await page.evaluate("""
-                    () => {
-                        return new Promise((resolve) => {
-                            if (document.readyState === 'complete') {
-                                // Give extra time for auto-resize to complete
-                                setTimeout(resolve, 100);
-                            } else {
-                                window.addEventListener('load', () => {
-                                    setTimeout(resolve, 100);
-                                });
-                            }
+    def replace_image_src(match):
+        src = match.group(1)
+        if not src.startswith(('http://', 'https://', 'data:', 'file://')):
+            data_url = _image_data_url(str(Path(template_dir) / src))
+            if data_url:
+                return f'src="{data_url}"'
+        return match.group(0)
+
+    return re.sub(r'src="([^"]*)"', replace_image_src, html_str), template_data
+
+
+async def _render_page(browser, html_str: str, template_data: dict, output_type: str):
+    """Render prepared HTML in its own browser context. Returns html str or pdf bytes."""
+    context = await browser.new_context(
+        viewport={"width": 816, "height": 1056},
+        device_scale_factor=2  # High-DPI rendering helps thin lines survive
+    )
+    try:
+        page = await context.new_page()
+        await page.set_content(html_str, wait_until="networkidle")
+
+        # Wait for auto-resize script to execute
+        await page.evaluate("""
+            () => {
+                return new Promise((resolve) => {
+                    if (document.readyState === 'complete') {
+                        // Give extra time for auto-resize to complete
+                        setTimeout(resolve, 100);
+                    } else {
+                        window.addEventListener('load', () => {
+                            setTimeout(resolve, 100);
                         });
                     }
-                """)
-                
-                if output_type.lower() == "html":
-                    final_html = await page.content()
-                    return True, final_html
-                else:
-                    # Set explicit page dimensions to US Letter (8.5in x 11in) with 0.5in margins on sides, 0.75in top/bottom
-                    # This gives a content area of 7.5in x 9.5in
-                    # await page.set_viewport_size({"width": 816, "height": 1056})  # 8.5in x 11in at 96 DPI
-                    
-                    # Build dynamic header configuration
-                    form_details = template_data.get('form_details')
-                    header = {
-                        'form_no': form_details.get('form_no', ''),
-                        'form_title': form_details.get('form_title', ''),
-                        'subtext': form_details.get('subtext', '')
-                    }
-                    
-                    # Create dynamic header template
-                    header_template = f"""
-                        <div style="display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; font-family: Arial, sans-serif;">
-                            <span style="font-size: 11pt; font-weight: bold;">{header['form_title']}{' - ' + header['form_no'] if header['form_no'] else ''}</span>
-                            <span style="font-size: 9pt; font-weight: bold;">{header['subtext']}</span>
-                        </div>
-                    """
-                    
-                    # Build dynamic footer configuration MV6020E (122025)
-                    footer = {
-                        'form_version': form_details.get('form_version', '')
-                    }
-                    
-                    # Create dynamic footer template
-                    footer_template = f"""
-                        <div style="display: flex; justify-content: space-between; width: 100%; padding: 5px 20px; font-family: Arial, sans-serif; font-size: 8pt;">
-                            <span>{footer['form_version']}</span>
-                            <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
-                        </div>
-                    """
-                    
-                    pdf_bytes = await page.pdf(
-                        width="8.5in",
-                        height="11in",
-                        print_background=True,
-                        display_header_footer=True,
-                        header_template=header_template,
-                        footer_template=footer_template,
-                        prefer_css_page_size=True,
-                    )
-                    return True, pdf_bytes
-                
-            finally:
-                await browser.close()
-                    
+                });
+            }
+        """)
+
+        if output_type.lower() == "html":
+            return await page.content()
+
+        form_details = template_data.get('form_details')
+        header = {
+            'form_no': form_details.get('form_no', ''),
+            'form_title': form_details.get('form_title', ''),
+            'subtext': form_details.get('subtext', '')
+        }
+
+        header_template = f"""
+            <div style="display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; font-family: Arial, sans-serif;">
+                <span style="font-size: 11pt; font-weight: bold;">{header['form_title']}{' - ' + header['form_no'] if header['form_no'] else ''}</span>
+                <span style="font-size: 9pt; font-weight: bold;">{header['subtext']}</span>
+            </div>
+        """
+
+        # Footer includes form version, e.g. MV6020E (122025)
+        footer = {
+            'form_version': form_details.get('form_version', '')
+        }
+
+        footer_template = f"""
+            <div style="display: flex; justify-content: space-between; width: 100%; padding: 5px 20px; font-family: Arial, sans-serif; font-size: 8pt;">
+                <span>{footer['form_version']}</span>
+                <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+            </div>
+        """
+
+        return await page.pdf(
+            width="8.5in",
+            height="11in",
+            print_background=True,
+            display_header_footer=True,
+            header_template=header_template,
+            footer_template=footer_template,
+            prefer_css_page_size=True,
+        )
+    finally:
+        await context.close()
+
+
+async def render_many_with_playwright_async(template_path: str, data_list: list, output_type: str = "pdf"):
+    """Render several data sets with a single browser, concurrently.
+
+    Returns a list of (success, content) tuples in the same order as data_list.
+    """
+    try:
+        prepared = [_build_html(template_path, d, output_type) for d in data_list]
     except Exception as e:
-        error_html = f"<h1>Error rendering template with Playwright</h1><p>{e}</p>"
-        return False, error_html
+        logger.error(e)
+        return [(False, f"<h1>Error rendering template with Playwright</h1><p>{e}</p>")] * len(data_list)
+
+    semaphore = asyncio.Semaphore(MAX_CONCURRENT_RENDERS)
+
+    async def render_one(browser, html_str, template_data):
+        async with semaphore:
+            try:
+                return True, await _render_page(browser, html_str, template_data, output_type)
+            except Exception as e:
+                logger.error(e)
+                return False, f"<h1>Error rendering template with Playwright</h1><p>{e}</p>"
+
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(
+            headless=True,
+            args=["--disable-dev-shm-usage"]
+        )
+        try:
+            return list(await asyncio.gather(
+                *(render_one(browser, html_str, td) for html_str, td in prepared)
+            ))
+        finally:
+            await browser.close()
+
+
+async def render_with_playwright_async(template_path: str, data: dict, output_type: str = "pdf"):
+    """Render the Jinja template using Playwright."""
+    results = await render_many_with_playwright_async(template_path, [data], output_type)
+    return results[0]
+
+def add_change_report_context(**kwargs) -> tuple:
+    """Highlight what a change report changed, in previews and downloads.
+
+    The form reads the parent revision from Form.io and sends it as payload.parentData,
+    as Camunda does for the emails. Built for every copy; the renderer keeps it on the
+    police and ICBC copies only (change_report_helper.context_for_copy). Without the
+    parent, those copies render with a banner saying the changes could not be
+    highlighted. Never fails the print.
+    """
+    logger.verbose('inside add_change_report_context()')
+    try:
+        payload = kwargs.get('payload') or {}
+        data = payload.get('data') or {}
+        parent_data = payload.pop('parentData', None)
+        if change_report_helper.is_change_report(data):
+            data['change_report'] = change_report_helper.build_context(data, parent_data)
+    except Exception as e:
+        logger.error(f'change report context failed; printing without highlights: {type(e).__name__}')
+    return True, kwargs
+
 
 def render_with_playwright(template_path: str, data: dict, output_type: str = "pdf"):
     """Synchronous wrapper for the async Playwright render function."""
     return asyncio.run(render_with_playwright_async(template_path, data, output_type))
+
+def render_many_with_playwright(template_path: str, data_list: list, output_type: str = "pdf"):
+    """Synchronous wrapper: render many data sets with one browser launch."""
+    return asyncio.run(render_many_with_playwright_async(template_path, data_list, output_type))
 
 def render_document_with_playwright(**kwargs) -> tuple:
     """Render document using Playwright and store result in kwargs."""
@@ -401,6 +453,9 @@ def log_payload_to_splunk(**kwargs) -> tuple:
         payload = request.get_json()
         payload = copy.deepcopy(payload)
         payload_masked = mv6020_helper.mask_collision_sensitive_data(payload)
+        # change report previews also carry the parent revision
+        if isinstance(payload_masked.get('parentData'), dict):
+            payload_masked['parentData'] = mv6020_helper.mask_collision_sensitive_data(payload_masked['parentData'])
         kwargs['splunk_data'] = {
             'event': 'print request received',
             'request_id': kwargs.get('request_id', ''),
@@ -428,7 +483,7 @@ def update_form_printed_status(**kwargs) -> tuple:
             return True, kwargs  # Nothing to update
 
         user_guid = payload['data'].get('completed_by_id', kwargs.get('user_guid', ''))
-        form_number = payload['data'].get('collision_case_num') or payload['data'].get('form_number')
+        form_number = payload['data'].get('form_number') or payload['data'].get('collision_case_num')
         printed_timestamp = datetime.now()
         
         if not form_number:

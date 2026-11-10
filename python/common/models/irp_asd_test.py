@@ -23,7 +23,7 @@ class IRPASDTest(db.Model):
     irp_form_id = db.Column(db.Integer, db.ForeignKey('irp_form.form_id'), nullable=False)
     test_number = db.Column(db.Integer, nullable=False)
     asd_identification = db.Column(db.String(20), nullable=False)
-    serial_number = db.Column(db.String(20), nullable=False)
+    serial_number = db.Column(db.String(10), nullable=False)
     test_time = db.Column(db.String(5), nullable=False)
     result = db.Column(db.String(20), nullable=False)
     result_shown_to_driver = db.Column(db.String(5), nullable=False)

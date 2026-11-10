@@ -92,6 +92,9 @@ jobs:
           context: ${{ inputs.DOCKER_CONTEXT }}
           file: ${{ inputs.DOCKER_FILE }}
           push: true
+          provenance: false
+          sbom: false
+          outputs: type=image,oci-mediatypes=false,push=true
           build-args: |
             REACT_APP_KEYCLOAK_URL=${{ secrets.REACT_APP_KEYCLOAK_URL }}
             REACT_APP_KEYCLOAK_REALM=${{ secrets.REACT_APP_KEYCLOAK_REALM }}
@@ -100,7 +103,7 @@ jobs:
             REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }}
             REACT_APP_GIT_COMMIT_HASH=${{ github.event.pull_request.head.sha }}
             PUBLIC_URL=${{ secrets.PUBLIC_URL }}
-            REACT_APP_GIT_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
+            REACT_APP_GIT_COMMIT_HASH=${{ github.event.pull_request.head.sha }}
           tags: ${{ steps.meta.outputs.tags }}
           platforms: linux/amd64
       # - name: Install OpenShift CLI tools

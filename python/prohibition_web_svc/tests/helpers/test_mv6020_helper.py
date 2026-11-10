@@ -331,7 +331,7 @@ def test_send_all_copy_success(monkeypatch):
 
     def fake_send_mv6020_copy(**kw):
         captured.update(kw)
-        return True
+        return True, kw
 
     monkeypatch.setattr(helper.rsi_email, "send_mv6020_copy", fake_send_mv6020_copy)
 
@@ -363,7 +363,7 @@ def test_send_all_copy_generate_all_pdf_attachments_failure(monkeypatch):
 
     monkeypatch.setattr(helper, "generate_all_PDF_attachments", lambda **kw: (False, kw))
 
-    send_mock = MagicMock(return_value=True)
+    send_mock = MagicMock(return_value=(True, {}))
     monkeypatch.setattr(helper.rsi_email, "send_mv6020_copy", send_mock)
 
     success, result = helper._send_all_copy(**kwargs)
@@ -405,7 +405,7 @@ def test_send_all_copy_email_send_failure(monkeypatch):
             },
         ),
     )
-    monkeypatch.setattr(helper.rsi_email, "send_mv6020_copy", lambda **kw: False)
+    monkeypatch.setattr(helper.rsi_email, "send_mv6020_copy", lambda **kw: (False, kw))
 
     success, result = helper._send_all_copy(**kwargs)
 
@@ -432,37 +432,42 @@ def test_send_mv6020_copy_unknown_type(monkeypatch):
     assert result["response_dict"]["message"] == "Failed to send email"
 
 
-def test_generate_all_pdf_attachments_success(monkeypatch):
-    kwargs = {
+def _all_kwargs(entities):
+    return {
         "payload": {
+            "template": "mv6020.html",
             "data": {
                 "collision_case_num": "AB123",
                 "police_file_num": "PF-77",
                 "date_collision": "2025-11-20T00:00:00-08:00",
                 "print_options": {"type": "all", "email": "officer@example.com"},
-                "entities": [{"entity_num": 7}, {"entity_num": 8}],
-            }
+                "entities": entities,
+            },
         }
     }
 
-    def fake_render(**kw):
-        print_options = kw["payload"]["data"]["print_options"]
-        ptype = print_options.get("type")
-        entity_num = print_options.get("entity_num")
 
-        if ptype == "police":
-            return True, {"rendered_content": b"PDF-POLICE"}
-        if ptype == "entity" and entity_num == 7:
-            return True, {"rendered_content": b"PDF-ENTITY-7"}
-        if ptype == "entity" and entity_num == 8:
-            return True, {"rendered_content": "PDF-ENTITY-8"}
-        return False, {"error": {"error_details": "unexpected render path"}}
+def test_generate_all_pdf_attachments_success(monkeypatch):
+    kwargs = _all_kwargs([{"entity_num": 7}, {"entity_num": 8}])
+    captured = {}
 
-    monkeypatch.setattr(helper.print_middleware, "render_document_with_playwright", fake_render)
+    def fake_render_many(template_path, data_list, output_type):
+        captured["data_list"] = data_list
+        captured["output_type"] = output_type
+        return [(True, b"PDF-POLICE"), (True, b"PDF-ENTITY-7"), (True, "PDF-ENTITY-8")]
+
+    monkeypatch.setattr(helper.print_middleware, "render_many_with_playwright", fake_render_many)
 
     success, result = helper.generate_all_PDF_attachments(**kwargs)
 
     assert success is True
+    assert captured["output_type"] == "pdf"
+    opts = [d["print_options"] for d in captured["data_list"]]
+    assert [(o["type"], o.get("entity_num")) for o in opts] == [("police", None), ("entity", 7), ("entity", 8)]
+    assert all(o["is_draft"] is False for o in opts)
+    # shared payload is not mutated
+    assert kwargs["payload"]["data"]["print_options"]["type"] == "all"
+
     attachments = result["attachments"]
     assert len(attachments) == 3
 
@@ -476,59 +481,31 @@ def test_generate_all_pdf_attachments_success(monkeypatch):
 
 
 def test_generate_all_pdf_attachments_failure_police_render(monkeypatch):
-    kwargs = {
-        "payload": {
-            "data": {
-                "collision_case_num": "AB123",
-                "police_file_num": "PF-77",
-                "date_collision": "2025-11-20T00:00:00-08:00",
-                "print_options": {"type": "all", "email": "officer@example.com"},
-                "entities": [{"entity_num": 7}],
-            }
-        }
-    }
-
     monkeypatch.setattr(
         helper.print_middleware,
-        "render_document_with_playwright",
-        lambda **kw: (False, {"error": {"error_details": "police render failed"}}),
+        "render_many_with_playwright",
+        lambda *a, **k: [(False, "police render failed"), (True, b"PDF-ENTITY-7")],
     )
 
-    success, result = helper.generate_all_PDF_attachments(**kwargs)
+    success, result = helper.generate_all_PDF_attachments(**_all_kwargs([{"entity_num": 7}]))
 
     assert success is False
     assert result["response_dict"]["message"] == "Failed to render document for admin copy"
-    assert result["error"]["error_details"] == "police render failed"
+    assert "police render failed" in result["error"]["error_details"]
 
 
 def test_generate_all_pdf_attachments_failure_entity_render(monkeypatch):
-    kwargs = {
-        "payload": {
-            "data": {
-                "collision_case_num": "AB123",
-                "police_file_num": "PF-77",
-                "date_collision": "2025-11-20T00:00:00-08:00",
-                "print_options": {"type": "all", "email": "officer@example.com"},
-                "entities": [{"entity_num": 7}],
-            }
-        }
-    }
+    monkeypatch.setattr(
+        helper.print_middleware,
+        "render_many_with_playwright",
+        lambda *a, **k: [(True, b"PDF-POLICE"), (False, "entity render failed")],
+    )
 
-    calls = {"count": 0}
-
-    def fake_render(**kw):
-        calls["count"] += 1
-        if calls["count"] == 1:
-            return True, {"rendered_content": b"PDF-POLICE"}
-        return False, {"error": {"error_details": "entity render failed"}}
-
-    monkeypatch.setattr(helper.print_middleware, "render_document_with_playwright", fake_render)
-
-    success, result = helper.generate_all_PDF_attachments(**kwargs)
+    success, result = helper.generate_all_PDF_attachments(**_all_kwargs([{"entity_num": 7}]))
 
     assert success is False
     assert result["response_dict"]["message"] == "Failed to render document for entity 7 in admin copy"
-    assert result["error"]["error_details"] == "entity render failed"
+    assert "entity render failed" in result["error"]["error_details"]
 
 
 
@@ -601,3 +578,42 @@ def test_mask_collision_sensitive_data_no_sensitive_fields():
     data = {"some_field": "value", "other_field": 123}
     masked = helper.mask_collision_sensitive_data(data)
     assert masked == data
+
+
+def _change_report_payload(copy_type):
+    data = {
+        "collision_case_num": "RZ001036",
+        "date_collision": "2025-11-20T00:00:00-08:00",
+        "time_collision": "17:00",
+        "time_collision_unknown": False,
+        "street_on": "1ST AVE",
+        "isChangeReport": True,
+        "parentRevision": 0,
+        "completed_by_name": "TIGER SCOTT",
+        "print_options": {"type": copy_type, "email": "officer@example.com"},
+    }
+    parent = {k: v for k, v in data.items() if k not in ("isChangeReport", "parentRevision", "print_options")}
+    parent["street_on"] = "MAIN ST"
+    return {"payload": {"data": data, "parentData": parent}}
+
+
+@pytest.mark.parametrize("copy_type, highlighted", [("icbc", True), ("police", True), ("entity", False)])
+def test_send_mv6020_copy_highlights_changes_on_the_police_and_icbc_copies_only(monkeypatch, copy_type, highlighted):
+    rendered = {}
+
+    def render(**kw):
+        # What the template sees for this copy.
+        rendered["data"] = helper.change_report_helper.context_for_copy(dict(kw["payload"]["data"]))
+        return True, {"rendered_content": b"PDF", "filename": "mv.pdf", "content_type": "application/pdf"}
+
+    monkeypatch.setattr(helper.print_middleware, "set_event_type", lambda **kw: (True, kw))
+    monkeypatch.setattr(helper.print_middleware, "render_document_with_playwright", render)
+    monkeypatch.setattr(helper.rsi_email, "send_mv6020_copy", lambda **kw: True)
+
+    success, _ = helper.send_mv6020_copy(**_change_report_payload(copy_type))
+    assert success is True
+    if highlighted:
+        assert rendered["data"]["change_report"]["changed"] == ["street_on"]
+        assert rendered["data"]["change_report"]["revision"] == 1
+    else:
+        assert "change_report" not in rendered["data"]
