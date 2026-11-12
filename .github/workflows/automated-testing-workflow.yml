@@ -1,5 +1,8 @@
 name: run-ui-test-scenarios
 
+permissions:
+  contents: read
+
 on:
   workflow_call:
     inputs:

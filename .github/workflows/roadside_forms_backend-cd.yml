@@ -1,5 +1,8 @@
 name: roadside_forms_backend-cd
 
+permissions:
+  contents: read
+
 on:
   # push:
   #   branches:

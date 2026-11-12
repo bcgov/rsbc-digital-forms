@@ -1,5 +1,8 @@
 name: form_handler-ci
 
+permissions:
+  contents: read
+
 # on:
 #   push:
 #     branches_ignore:

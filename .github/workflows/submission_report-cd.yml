@@ -1,5 +1,8 @@
 name: submission_report-cd
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     types: [opened, reopened, edited, synchronize]
