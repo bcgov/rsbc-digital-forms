@@ -1,5 +1,8 @@
 name: form_handler-cd
 
+permissions:
+  contents: read
+
 on:
   # push:
   #   branches:

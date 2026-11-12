@@ -1,5 +1,8 @@
 name: submission_report-ci
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     types: [opened, reopened, edited, synchronize]

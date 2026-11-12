@@ -1,5 +1,8 @@
 name: db-migrate-workflow
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:

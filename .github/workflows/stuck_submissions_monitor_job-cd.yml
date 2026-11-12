@@ -1,5 +1,8 @@
 name: stuck_submissions_monitor_job-cd
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     types: [opened, reopened, edited, synchronize]

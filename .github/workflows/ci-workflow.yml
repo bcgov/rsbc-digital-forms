@@ -1,5 +1,8 @@
 name: ci-workflow
 
+permissions:
+  contents: read
+
 on:
   workflow_call:
     inputs:

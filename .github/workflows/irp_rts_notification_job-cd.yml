@@ -1,5 +1,8 @@
 name: irp_rts_notification_job-cd
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     types: [opened, reopened, edited, synchronize]

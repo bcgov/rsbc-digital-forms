@@ -1,5 +1,8 @@
 name: cd-workflow
 
+permissions:
+  contents: read
+
 on:
   workflow_call:
     inputs:
@@ -126,4 +129,3 @@ jobs:
       #     oc import-image $IMAGE_NAME:latest --confirm
 
           
-
