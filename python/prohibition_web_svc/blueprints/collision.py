@@ -39,6 +39,10 @@ def create_collision():
                   {"try": common_middleware.record_event_error, "fail": []},
                   {"try": http_responses.application_already_exists, "fail": []},
             ]},
+            {"try": collision_middleware.set_collision_revision, "fail": [
+                  {"try": common_middleware.record_event_error, "fail": []},
+                  {"try": http_responses.revision_conflict_response, "fail": []},
+            ]},
             {"try": collision_middleware.validate_collision_payload, "fail": [
                 {"try": common_middleware.record_event_error, "fail": []},
                 {"try": http_responses.bad_request_response, "fail": []}
@@ -81,7 +85,32 @@ def get_collision(collision_case_num):
         required_permission='view_submissions',
         request=request,
         config=Config,
-        collision_case_num=collision_case_num
+        collision_case_num=collision_case_num,
+        revision=request.args.get('revision', type=int)
     )
     logger.verbose(f"GET /collision/{collision_case_num} endpoint response code: {kwargs.get('response').status_code}")
+    return kwargs.get('response')
+
+@bp.route('/collision/metadata/<collision_case_num>', methods=['GET'])
+def get_collision_metadata(collision_case_num):
+    logger.verbose(f"GET /collision/metadata/{collision_case_num} endpoint called")
+    kwargs = middle_logic(
+        get_authorized_keycloak_user() + [
+            {"try": collision_middleware.log_get_collision_metadata_to_splunk, "fail": []},
+            {"try": splunk.log_to_splunk, "fail": []},
+            {"try": collision_middleware.get_collision_metadata, "fail": [
+                {"try": common_middleware.record_event_error, "fail": []},
+                {"try": collision_middleware.collision_metadata_not_found, "fail": [
+                    {"try": http_responses.server_error_response, "fail": []}
+                ]},
+                {"try": http_responses.not_found_response, "fail": []}
+            ]},
+            {"try": http_responses.successful_get_response, "fail": []}
+        ],
+        required_permission='create_submissions',
+        request=request,
+        config=Config,
+        collision_case_num=collision_case_num
+    )
+    logger.verbose(f"GET /collision/metadata/{collision_case_num} endpoint response code: {kwargs.get('response').status_code}")
     return kwargs.get('response')
