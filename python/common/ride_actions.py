@@ -247,7 +247,7 @@ def irp_event(**args):
         }
         fill_location(args, eventPayload)
 
-        endpoint = f"{ride_url}/dfV2events/irpsubmitted" # TODO: confirm path once producer endpoint exists
+        endpoint = f"{ride_url}/dfV2events/irpsubmitted"
         headers = {'ride-api-key': ride_key}
         logging.info(f'calling RIDE Producer endpoint: {endpoint}')
         logging.debug(f'payload: {eventPayload}')
