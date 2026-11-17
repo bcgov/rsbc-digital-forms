@@ -40,12 +40,14 @@ def send_to_formio(**args):
                 **submission_data.get('payload', {}).get('data', {}),
                 'submitted_offline': True
             }
+            owner = payload.get('submitterEmail')
             response = requests.post(
                 formio_url,
                 json={
                     'data': {
                         **payload
                     },
+                    'owner': owner,
                     'metadata': submission_data.get('payload', {}).get('metadata'),
                     'state': submission_data.get('payload', {}).get('state'),
                     '_vnote': submission_data.get('payload', {}).get('_vnote')
