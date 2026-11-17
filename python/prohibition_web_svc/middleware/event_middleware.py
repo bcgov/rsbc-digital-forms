@@ -532,7 +532,7 @@ def save_event_pdf(**kwargs) -> tuple:
                 form_version, 
                 submission_id, 
                 storage_key,
-                list_of_events=['VIPS', 'ADMIN', 'RTS'])
+                list_of_events=['VIPS', 'ADMIN', 'RTS', 'ODW'])
 
     except Exception as e:
         logger.error(e)
