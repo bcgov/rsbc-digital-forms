@@ -30,7 +30,16 @@ def _app_context_mock():
     return app
 
 
-def test_send_to_formio_creates_submission_and_persists_id(monkeypatch):
+@pytest.mark.parametrize(
+    "form_data, expected_owner",
+    [
+        ({"firstName": "Ada", "submitterEmail": "ada@example.test"}, "ada@example.test"),
+        ({"firstName": "Ada"}, None),
+    ],
+)
+def test_send_to_formio_creates_submission_and_persists_id(
+    monkeypatch, form_data, expected_owner
+):
     app = _app_context_mock()
     db = MagicMock()
     offline_submission = SimpleNamespace(status="processing", submission_id=None)
@@ -38,6 +47,7 @@ def test_send_to_formio_creates_submission_and_persists_id(monkeypatch):
     login_response = MagicMock()
     login_response.headers.get.return_value = "formio-token"
     submission_response = MagicMock()
+    submission_response.status_code = 201
     submission_response.json.return_value = {"_id": "formio-submission-123"}
     post = MagicMock(side_effect=[login_response, submission_response])
     monkeypatch.setattr(actions_formio.requests, "post", post)
@@ -45,7 +55,7 @@ def test_send_to_formio_creates_submission_and_persists_id(monkeypatch):
         "form_id": "form-123",
         "submission_id": None,
         "payload": {
-            "data": {"firstName": "Ada"},
+            "data": form_data,
             "metadata": {"source": "offline"},
             "state": "submitted",
             "_vnote": "saved locally",
@@ -72,7 +82,8 @@ def test_send_to_formio_creates_submission_and_persists_id(monkeypatch):
         call(
             "https://formio.example.test/form/form-123/submission",
             json={
-                "data": {"firstName": "Ada", "submitted_offline": True},
+                "data": {**form_data, "submitted_offline": True},
+                "owner": expected_owner,
                 "metadata": {"source": "offline"},
                 "state": "submitted",
                 "_vnote": "saved locally",

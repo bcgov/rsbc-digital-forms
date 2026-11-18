@@ -185,7 +185,20 @@ def test_send_mv6020_copy_success_entity(monkeypatch):
     assert "Successfully sent email to Alice Smith" in result["response_dict"]["message"]
 
 
-def test_send_mv6020_copy_success_admin(monkeypatch):
+@pytest.mark.parametrize(
+    "agency_data, expected_subject, expected_agency_name",
+    [
+        (
+            {"agency_name": "Example Police Department"},
+            "Example Police Department - MV6020 - AB123 - PF-77",
+            "Example Police Department",
+        ),
+        ({}, " - MV6020 - AB123 - PF-77", ""),
+    ],
+)
+def test_send_mv6020_copy_success_admin(
+    monkeypatch, agency_data, expected_subject, expected_agency_name
+):
     """Admin copy should collect attachments and send to configured admins."""
     payload = {
         "payload": {
@@ -215,6 +228,7 @@ def test_send_mv6020_copy_success_admin(monkeypatch):
                     "display_name": "Officer Example",
                     "badge_number": "42",
                     "agency_id": 99,
+                    **agency_data,
                 },
             },
         ),
@@ -255,10 +269,11 @@ def test_send_mv6020_copy_success_admin(monkeypatch):
 
     assert success is True
     assert result["response_dict"]["message"] == "Successfully sent admin copy email to ['admin1@example.com', 'admin2@example.com']"
-    assert captured["subject"] == "MV6020 - AB123 - PF-77"
+    assert captured["subject"] == expected_subject
     assert captured["email_address"] == ["admin1@example.com", "admin2@example.com"]
     assert captured["email_type"] == "admin"
     assert captured["message"]["collision_case_number"] == "AB123"
+    assert captured["message"]["agency_name"] == expected_agency_name
     assert captured["message"]["submission_date"] == "2025-11-19"
     assert captured["attachments"][0]["filename"] == "MV6020-AB123-police-copy.pdf"
 

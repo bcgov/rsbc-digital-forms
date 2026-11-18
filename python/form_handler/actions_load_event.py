@@ -21,6 +21,10 @@ def load_event_actions() -> list:
                 {"try": actions.add_to_retry_queue, "fail": []},
                 {"try": actions.update_event_status_hold, "fail": []},
             ]},
+            {"try": actions.get_agency_data, "fail": [
+                {"try": actions.add_to_retry_queue, "fail": []},
+                {"try": actions.update_event_status_hold, "fail": []},
+            ]},
             {"try": actions.validate_event_data, "fail": [
                 {"try": rsi_email.rsiops_event_to_error_queue, "fail": []},
                 {"try": actions.add_to_persistent_failed_queue, "fail": []},

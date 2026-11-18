@@ -160,7 +160,8 @@ class TestGetAgencyAdminEmail:
         return {
             "app": app,
             "db": db,
-            "user_data": {"agency_id": 1},
+            "user_data": {"agency_ref": {"id": 1, "agency_name": "Vancouver Police Department"}},
+            "agency_data": {"id": 1, "agency_name": "Vancouver Police Department"},
             "message": {"event_id": "E1", "event_type": "admin"},
         }
 
@@ -244,12 +245,13 @@ class TestGetAgencyAdminEmail:
         db.session.query.return_value.filter.return_value.all.return_value = []
 
         args = self._base_args()
-        args["user_data"]["agency_id"] = 99
+        args["agency_data"]["id"] = 99
         args["db"] = db
         actions_admin.get_agency_admin_email(**args)
         
-        # Verify filter was called with correct agency_id
-        db.session.query.return_value.filter.assert_called_once()
+        query_filter = db.session.query.return_value.filter.call_args.args[0]
+        assert query_filter.left.name == "agency_id"
+        assert query_filter.right.value == 99
 
 
 # ---------------------------------------------------------------------------
@@ -268,6 +270,7 @@ class TestSetAdminEmailContent:
                 "created_dt": submission_date,
                 "agency_file_no": "FILE-001",
             },
+            "agency_data": {"id": 1, "agency_name": "Vancouver Police Department"},
             "storage_ref": {
                 "form_type": "VI",
                 "form_id": "VI-2024-001",
@@ -355,10 +358,10 @@ class TestSetAdminEmailContent:
 
     @patch("python.form_handler.actions_admin.date_time_to_local_tz_string")
     def test_body_contains_none_agency_name_when_missing(self, mock_date_fn):
-        """Body should set agency_name to None when agency_ref is missing"""
+        """Body should set agency_name to None when agency_data has no name."""
         mock_date_fn.return_value = "2024-01-15 10:30:00"
         args = self._base_args()
-        args["user_data"].pop("agency_ref")
+        args["agency_data"].pop("agency_name")
         _, out_args = actions_admin.set_admin_email_content(**args)
         assert "agency_name" in out_args["body"]
         assert out_args["body"]["agency_name"] is None
@@ -373,12 +376,13 @@ class TestSetAdminEmailContent:
 
     @patch("python.form_handler.actions_admin.date_time_to_local_tz_string")
     def test_title_includes_form_type_and_number(self, mock_date_fn):
-        """Title should include form type and number"""
+        """Title should include agency and submission details in order."""
         mock_date_fn.return_value = "2024-01-15 10:30:00"
         args = self._base_args()
         _, out_args = actions_admin.set_admin_email_content(**args)
-        assert "VI" in out_args["title"]
-        assert "VI-2024-001" in out_args["title"]
+        assert out_args["title"] == (
+            "Vancouver Police Department - VI - VI-2024-001 - FILE-001"
+        )
 
     @patch("python.form_handler.actions_admin.date_time_to_local_tz_string")
     def test_handles_missing_optional_fields(self, mock_date_fn):
