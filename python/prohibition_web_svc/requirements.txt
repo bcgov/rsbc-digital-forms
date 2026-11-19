@@ -15,7 +15,7 @@ Flask-Cors>=6.0.5
 Flask-SQLAlchemy==3.1.1
 Flask-Migrate
 Flask-Caching
-SQLAlchemy>=2.0,<2.1
+SQLAlchemy>=2.1.8,<2.2
 flask-swagger-ui
 gunicorn==26.2.0
 holidays==0.106
