@@ -25,8 +25,7 @@ objects:
           containers:
           - image: ${IMAGE_NAME}
             name: downgrade-pod
-            entrypoint: ["sh", "-c"]
-            command: ["echo Starting downgrade... && flask db downgrade"]
+            command: ["flask", "db", "downgrade"]
             env:
             - name: DB_HOST
               value: ${DB_HOST}
