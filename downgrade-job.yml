@@ -1,0 +1,50 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  annotations:
+    description: for downgrade pod
+    openshift.io/display-name: for downgrade pod
+    openshift.io/long-description: This template deploys pod downgrade
+    tags: df-db-downgrade
+  name: df-db-downgrade-pod-template
+labels:
+  app.kubernetes.io/component: df-db-downgrade-pod
+  app.kubernetes.io/name: df
+  app.kubernetes.io/managed-by: template
+objects:
+  - apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: db-downgrade-job
+    spec:
+      completions: 1
+      template:
+        spec:
+          imagePullSecrets:
+            - name: artifactory-pull-secret
+          containers:
+          - image: ${IMAGE_NAME}
+            name: downgrade-pod
+            entrypoint: ["sh", "-c"]
+            command: ["echo Starting downgrade... && flask db downgrade"]
+            env:
+            - name: DB_HOST
+              value: ${DB_HOST}
+            - name: DB_PORT
+              value: ${DB_PORT}
+            - name: DB_NAME
+              value: ${DB_NAME}
+            - name: DB_USER
+              value: ${DB_USER}
+            - name: DB_PASS
+              value: ${DB_PASS}
+          restartPolicy: Never
+      backoffLimit: 1
+
+parameters:
+  - name: IMAGE_NAME
+  - name: DB_HOST
+  - name: DB_PORT
+  - name: DB_NAME
+  - name: DB_USER
+  - name: DB_PASS
