@@ -6,7 +6,7 @@ chardet==7.6.0
 charset-normalizer==3.5.2
 click==8.5.0
 convertdate==2.5.1
-cryptography==50.0.1
+cryptography==50.0.2
 dataclasses-json==0.5.7
 dparse==0.6.4
 ecdsa==0.19.2
@@ -30,7 +30,7 @@ packaging==26.3
 pika==1.4.4
 pluggy==1.7.0
 py==1.11.0
-pyasn1==0.6.4
+pyasn1==0.6.5
 pycparser==3.0
 PyJWT==2.15.1
 PyMeeus==0.5.12
