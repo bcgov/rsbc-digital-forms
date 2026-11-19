@@ -496,3 +496,94 @@ class TestRenderMany:
         assert success is True
         assert b"solo" in content
         assert tracker["launches"] == 1
+
+
+class TestChangeReportPrint:
+    """Previews and downloads of a change report highlight what changed since the parent."""
+
+    PARENT = {'collision_case_num': 'RZ001036', 'street_on': 'MAIN ST', 'entities': []}
+
+    def _payload(self, ptype='police', **changes):
+        data = dict(self.PARENT, isChangeReport=True, parentRevision=2, print_options={'type': ptype}, **changes)
+        return {'template': 'mv6020.html', 'data': data, 'parentData': dict(self.PARENT)}
+
+    @pytest.mark.parametrize('ptype', ['police', 'icbc', 'entity', 'all'])
+    def test_every_copy_gets_the_highlights(self, ptype):
+        payload = self._payload(ptype, street_on='1ST AVE')
+        result, kwargs = print_middleware.add_change_report_context(payload=payload)
+        assert result is True
+        context = kwargs['payload']['data']['change_report']
+        assert context['highlights_available'] is True
+        assert context['changed'] == ['street_on']
+        assert context['revision'] == 3
+
+    @pytest.mark.parametrize('ptype, highlighted', [('police', True), ('icbc', True), ('ICBC', True),
+                                                    ('entity', False), (None, False)])
+    def test_only_police_and_icbc_copies_show_the_changes(self, ptype, highlighted):
+        payload = self._payload(ptype, street_on='1ST AVE')
+        result, kwargs = print_middleware.add_change_report_context(payload=payload)
+        template_data = print_middleware.change_report_helper.context_for_copy(kwargs['payload']['data'])
+        assert ('change_report' in template_data) is highlighted
+        assert 'change_report' in kwargs['payload']['data']  # still there for the next copy of a zip
+
+    def test_download_all_highlights_the_police_copy_but_not_the_driver_copies(self):
+        payload = self._payload('all', street_on='1ST AVE',
+                                entities=[{'entity_num': 1}, {'entity_num': 2}],
+                                police_file_num='P1', date_collision='2025-11-20T00:00:00-08:00')
+        payload['parentData']['entities'] = [{'entity_num': 1}, {'entity_num': 2}]
+        payload['options'] = {'type': 'pdf'}
+        _, kwargs = print_middleware.add_change_report_context(payload=payload)
+        seen = []
+
+        def render_many(template_path, data_list, output_type='pdf'):
+            for data in data_list:
+                template_data = print_middleware.change_report_helper.context_for_copy(dict(data))
+                seen.append((data['print_options']['type'], 'change_report' in template_data))
+            return [(True, b'%PDF') for _ in data_list]
+
+        with patch.object(print_middleware, 'render_many_with_playwright', side_effect=render_many):
+            result, kwargs = print_middleware.render_document_with_playwright(**kwargs)
+        assert result is True
+        assert seen == [('police', True), ('entity', False), ('entity', False)]
+
+    @pytest.mark.parametrize('ptype, shown', [('police', 'highlighted'), ('icbc', 'highlighted'), ('entity', 'plain')])
+    def test_every_render_passes_through_the_per_copy_context(self, tmp_path, ptype, shown):
+        template = tmp_path / 'probe.html'
+        template.write_text("{{ 'highlighted' if data.change_report else 'plain' }}")
+        _, kwargs = print_middleware.add_change_report_context(payload=self._payload(ptype, street_on='1ST AVE'))
+        html, _ = print_middleware._build_html(str(template), kwargs['payload']['data'], 'html')
+        assert html == shown
+
+    def test_parent_data_is_not_passed_to_the_template(self):
+        result, kwargs = print_middleware.add_change_report_context(payload=self._payload())
+        assert 'parentData' not in kwargs['payload']
+
+    def test_missing_parent_prints_without_highlights(self):
+        payload = self._payload(street_on='1ST AVE')
+        del payload['parentData']
+        result, kwargs = print_middleware.add_change_report_context(payload=payload)
+        assert result is True
+        assert kwargs['payload']['data']['change_report']['highlights_available'] is False
+
+    def test_new_reports_are_unchanged(self):
+        payload = {'template': 'mv6020.html', 'data': dict(self.PARENT, print_options={'type': 'police'})}
+        result, kwargs = print_middleware.add_change_report_context(payload=payload)
+        assert result is True
+        assert 'change_report' not in kwargs['payload']['data']
+
+    def test_a_failure_never_stops_the_print(self):
+        with patch.object(print_middleware.change_report_helper, 'build_context', side_effect=ValueError('boom')):
+            result, kwargs = print_middleware.add_change_report_context(payload=self._payload())
+        assert result is True
+        assert 'change_report' not in kwargs['payload']['data']
+
+    def test_parent_data_is_masked_in_the_splunk_log(self):
+        request = MagicMock()
+        request.get_json.return_value = {
+            'template': 'mv6020.html',
+            'data': {'entities': [{'surname': 'CURRENT'}]},
+            'parentData': {'entities': [{'surname': 'PARENT', 'involved_persons': [{'given_name': 'P'}]}]},
+        }
+        result, kwargs = print_middleware.log_payload_to_splunk(request=request)
+        logged = json.dumps(kwargs['splunk_data'])
+        assert 'PARENT' not in logged and 'CURRENT' not in logged and '"P"' not in logged

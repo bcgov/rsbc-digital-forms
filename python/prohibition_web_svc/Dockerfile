@@ -17,6 +17,7 @@ RUN yum update -y && \
     glib2-devel \
     nss \
     nspr \
+    libatomic \
     atk \
     at-spi2-atk \
     cups-libs \

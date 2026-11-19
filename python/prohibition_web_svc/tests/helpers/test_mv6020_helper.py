@@ -578,3 +578,42 @@ def test_mask_collision_sensitive_data_no_sensitive_fields():
     data = {"some_field": "value", "other_field": 123}
     masked = helper.mask_collision_sensitive_data(data)
     assert masked == data
+
+
+def _change_report_payload(copy_type):
+    data = {
+        "collision_case_num": "RZ001036",
+        "date_collision": "2025-11-20T00:00:00-08:00",
+        "time_collision": "17:00",
+        "time_collision_unknown": False,
+        "street_on": "1ST AVE",
+        "isChangeReport": True,
+        "parentRevision": 0,
+        "completed_by_name": "TIGER SCOTT",
+        "print_options": {"type": copy_type, "email": "officer@example.com"},
+    }
+    parent = {k: v for k, v in data.items() if k not in ("isChangeReport", "parentRevision", "print_options")}
+    parent["street_on"] = "MAIN ST"
+    return {"payload": {"data": data, "parentData": parent}}
+
+
+@pytest.mark.parametrize("copy_type, highlighted", [("icbc", True), ("police", True), ("entity", False)])
+def test_send_mv6020_copy_highlights_changes_on_the_police_and_icbc_copies_only(monkeypatch, copy_type, highlighted):
+    rendered = {}
+
+    def render(**kw):
+        # What the template sees for this copy.
+        rendered["data"] = helper.change_report_helper.context_for_copy(dict(kw["payload"]["data"]))
+        return True, {"rendered_content": b"PDF", "filename": "mv.pdf", "content_type": "application/pdf"}
+
+    monkeypatch.setattr(helper.print_middleware, "set_event_type", lambda **kw: (True, kw))
+    monkeypatch.setattr(helper.print_middleware, "render_document_with_playwright", render)
+    monkeypatch.setattr(helper.rsi_email, "send_mv6020_copy", lambda **kw: True)
+
+    success, _ = helper.send_mv6020_copy(**_change_report_payload(copy_type))
+    assert success is True
+    if highlighted:
+        assert rendered["data"]["change_report"]["changed"] == ["street_on"]
+        assert rendered["data"]["change_report"]["revision"] == 1
+    else:
+        assert "change_report" not in rendered["data"]

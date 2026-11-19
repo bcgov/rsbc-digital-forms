@@ -152,3 +152,10 @@ def test_successful_get_response_returns_response_wrapper(flask_app):
     assert ok is True
     assert kwargs["response"].status_code == 200
     assert kwargs["response"].get_json() == {"items": [1, 2]}
+
+
+def test_revision_conflict_response(flask_app):
+    result, kwargs = http_responses.revision_conflict_response(response_dict={'error_details': 'stale parent'})
+    assert result is True
+    assert kwargs['response'].status_code == 409
+    assert kwargs['response'].get_json() == {'error': 'revision conflict', 'error_details': 'stale parent'}

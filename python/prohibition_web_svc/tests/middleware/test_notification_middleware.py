@@ -508,3 +508,17 @@ def test_send_email_routes_to_access_request_approved():
 
 
 
+
+
+def test_log_payload_to_splunk_masks_change_report_parent_data():
+    payload = {
+        "template": "mv6020.html",
+        "data": {"collision_case_num": "RZ000101", "entities": [{"surname": "CURRENT"}]},
+        "parentData": {"collision_case_num": "RZ000101", "entities": [{"surname": "PARENT"}]},
+    }
+    result, kwargs = notification_middleware.log_payload_to_splunk(request=MockRequest(json_data=payload))
+    assert result is True
+    logged = kwargs['splunk_data']['payload']
+    assert logged['data']['entities'][0]['surname'] == "[REDACTED]"
+    assert logged['parentData']['entities'][0]['surname'] == "[REDACTED]"
+    assert logged['parentData']['collision_case_num'] == "RZ000101"

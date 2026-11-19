@@ -383,7 +383,7 @@ def test_get_collision_data_success():
     with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db, \
          patch('python.prohibition_web_svc.middleware.collision_middleware.asdict') as mock_asdict:
         
-        mock_db.session.query.return_value.filter.return_value.first.return_value = mock_collision
+        mock_db.session.query.return_value.filter.return_value.order_by.return_value.first.return_value = mock_collision
         
         # Mock asdict to return predictable values
         mock_asdict.side_effect = [
@@ -412,7 +412,7 @@ def test_get_collision_data_success():
 def test_get_collision_data_not_found():
     """Test when collision data is not found"""
     with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db:
-        mock_db.session.query.return_value.filter.return_value.first.return_value = None
+        mock_db.session.query.return_value.filter.return_value.order_by.return_value.first.return_value = None
         
         kwargs = {'collision_case_num': 'MV-999'}
         result, out_kwargs = collision_middleware.get_collision_data(**kwargs)
@@ -451,7 +451,7 @@ def test_get_collision_data_with_null_location():
     with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db, \
          patch('python.prohibition_web_svc.middleware.collision_middleware.asdict') as mock_asdict:
         
-        mock_db.session.query.return_value.filter.return_value.first.return_value = mock_collision
+        mock_db.session.query.return_value.filter.return_value.order_by.return_value.first.return_value = mock_collision
         
         # Mock asdict to return the collision data
         mock_asdict.return_value = {'collision_case_num': 'MV-001'}
@@ -477,7 +477,7 @@ def test_get_collision_data_with_empty_entities():
     with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db, \
          patch('python.prohibition_web_svc.middleware.collision_middleware.asdict') as mock_asdict:
         
-        mock_db.session.query.return_value.filter.return_value.first.return_value = mock_collision
+        mock_db.session.query.return_value.filter.return_value.order_by.return_value.first.return_value = mock_collision
         
         # Mock asdict to return the collision data
         mock_asdict.return_value = {'collision_case_num': 'MV-001'}
@@ -520,7 +520,7 @@ def test_get_collision_data_with_multiple_entities_and_witnesses():
     with patch('python.prohibition_web_svc.middleware.collision_middleware.db') as mock_db, \
          patch('python.prohibition_web_svc.middleware.collision_middleware.asdict') as mock_asdict:
         
-        mock_db.session.query.return_value.filter.return_value.first.return_value = mock_collision
+        mock_db.session.query.return_value.filter.return_value.order_by.return_value.first.return_value = mock_collision
         
         # Mock asdict to return predictable values
         mock_asdict.side_effect = [
