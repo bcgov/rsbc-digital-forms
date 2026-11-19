@@ -43,7 +43,8 @@ def get_agency_admin_email(**args)->tuple:
         user_data = args.get('user_data', {})
         application = args.get('app')
         db = args.get('db')
-        agency_id = user_data.get('agency_id')
+        agency_data = args.get('agency_data', {})
+        agency_id = agency_data.get('id')
         with application.app_context():
             agency_admins = db.session.query(AgencyAdmin) \
                 .filter(AgencyAdmin.agency_id == agency_id) \
@@ -71,6 +72,7 @@ def set_admin_email_content(**args)->tuple:
     logging.verbose(f"inside set_admin_email_content() with args: {args}")
     try:
         submission_date = args.get('event_data', {}).get('created_dt')
+        agency_name = args.get('agency_data', {}).get('agency_name')
         body = {
             'form_type': args.get('storage_ref', {}).get('form_type'),
             'form_number': args.get('storage_ref', {}).get('form_id'),
@@ -78,10 +80,10 @@ def set_admin_email_content(**args)->tuple:
             'submission_date': date_time_to_local_tz_string(submission_date),
             'officer_badge': args.get('user_data', {}).get('badge_number'),
             'officer_name': f"{args.get('user_data', {}).get('display_name')}",
-            'agency_name': args.get('user_data', {}).get('agency_ref', {}).get('agency_name'),
+            'agency_name': agency_name,
         }
         args['body'] = body
-        args['title'] = f"{body['form_type']} - {body['form_number']} - {body['agency_file_number']}"
+        args['title'] = f"{agency_name} - {body['form_type']} - {body['form_number']} - {body['agency_file_number']}"
     except Exception as e:
         logging.error(f'Error setting admin email content: {e}')
         args['error'] = {
