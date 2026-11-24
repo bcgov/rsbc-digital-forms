@@ -106,6 +106,24 @@ class TestProcessIncomingForm:
         callables = [s["try"] for s in self.result["vi"]]
         assert actions.get_event_form_data in callables
 
+    @pytest.mark.parametrize("event_type", ["vi", "24h", "12h", "irp"])
+    def test_pipeline_loads_agency_data_after_user_data(self, event_type):
+        callables = [step["try"] for step in self.result[event_type]]
+
+        assert callables.index(actions.get_agency_data) == (
+            callables.index(actions.get_event_user_data) + 1
+        )
+
+    @pytest.mark.parametrize("event_type", ["vi", "24h", "12h", "irp"])
+    def test_get_agency_data_failure_retries_and_holds_event(self, event_type):
+        pipeline = self.result[event_type]
+        step = next(item for item in pipeline if item["try"] is actions.get_agency_data)
+
+        assert [item["try"] for item in step["fail"]] == [
+            actions.add_to_retry_queue,
+            actions.update_event_status_hold,
+        ]
+
     def test_vi_pipeline_contains_validate_event_data(self):
         callables = [s["try"] for s in self.result["vi"]]
         assert actions.validate_event_data in callables

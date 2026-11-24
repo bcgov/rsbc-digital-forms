@@ -26,7 +26,7 @@ class RabbitMQ:
             config.MAX_CONNECTION_RETRIES,
             config.RETRY_DELAY
         )
-        logging.debug(string)
+        logging.debug(f'User: {config.RABBITMQ_USER}, URL: {config.RABBITMQ_URL}')
         return string
 
     def consume(self, queue_name: str, callback):

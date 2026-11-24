@@ -20,6 +20,7 @@ RUN yum update -y && \
     atk \
     at-spi2-atk \
     cups-libs \
+    libatomic \
     libdrm \
     gtk3 \
     libXcomposite \
