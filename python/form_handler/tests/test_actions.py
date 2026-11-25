@@ -4,6 +4,7 @@ Unit tests for python.form_handler.actions
 from __future__ import annotations
 
 import json
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch, call
 import pytest
 
@@ -123,6 +124,76 @@ class TestValidateEventData:
         in_args = {"message": {"event_id": "1"}, "custom_key": "custom_value"}
         _, out_args = actions.validate_event_data(**in_args)
         assert out_args["custom_key"] == "custom_value"
+
+
+# ---------------------------------------------------------------------------
+# get_agency_data
+# ---------------------------------------------------------------------------
+
+class TestGetAgencyData:
+    """Tests for get_agency_data()"""
+
+    def _base_args(self, agency_id=42):
+        return {
+            "app": _make_app_mock(),
+            "db": _make_db_mock(),
+            "event_data": {"agency_id": agency_id},
+            "user_data": {"agency_ref": {"id": 7, "agency_name": "Fallback Agency"}},
+        }
+
+    def test_sets_agency_data_from_matching_record(self):
+        args = self._base_args()
+        agency = SimpleNamespace(
+            id=42,
+            agency_name="Event Agency",
+            _sa_instance_state=object(),
+        )
+        args["db"].session.query.return_value.filter.return_value.all.return_value = [agency]
+
+        result, out_args = actions.get_agency_data(**args)
+
+        assert result is True
+        assert out_args["agency_data"] == {"id": 42, "agency_name": "Event Agency"}
+        query_filter = args["db"].session.query.return_value.filter.call_args.args[0]
+        assert query_filter.left.name == "id"
+        assert query_filter.right.value == 42
+
+    @pytest.mark.parametrize(
+        "records",
+        [
+            [],
+            [
+                SimpleNamespace(id=42, agency_name="First"),
+                SimpleNamespace(id=42, agency_name="Second"),
+            ],
+        ],
+    )
+    def test_falls_back_when_agency_record_is_not_unique(self, records):
+        args = self._base_args()
+        args["db"].session.query.return_value.filter.return_value.all.return_value = records
+
+        result, out_args = actions.get_agency_data(**args)
+
+        assert result is True
+        assert out_args["agency_data"] == args["user_data"]["agency_ref"]
+
+    def test_falls_back_without_query_when_event_has_no_agency_id(self):
+        args = self._base_args(agency_id=None)
+
+        result, out_args = actions.get_agency_data(**args)
+
+        assert result is True
+        assert out_args["agency_data"] == args["user_data"]["agency_ref"]
+        args["db"].session.query.assert_not_called()
+
+    def test_returns_false_when_agency_query_raises(self):
+        args = self._base_args()
+        args["db"].session.query.side_effect = RuntimeError("database unavailable")
+
+        result, out_args = actions.get_agency_data(**args)
+
+        assert result is False
+        assert "agency_data" not in out_args
 
 
 # ---------------------------------------------------------------------------

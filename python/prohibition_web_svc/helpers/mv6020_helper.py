@@ -180,18 +180,19 @@ def _send_admin_copy(**kwargs):
     is_unknown = data.get("time_collision_unknown", False)
     formatted_date, formatted_time = format_collision_datetime(raw_date,raw_time,is_unknown)
 
+    agency_name = kwargs.get('user_data', {}).get('agency_name', '')
     message = {
         "form_type": FORM_TYPE,
         "collision_case_number": collision_case_no,
         "agency_file_number": data.get("police_file_num", ""),
         "officer_name": kwargs.get('user_data', {}).get('display_name', ''),
         "officer_badge": kwargs.get('user_data', {}).get('badge_number', ''),
-        "agency_name": kwargs.get('user_data', {}).get('agency_name', ''),
+        "agency_name": agency_name,
         "submission_date": helper.format_date_iso(submission_date, "%Y-%m-%d"),
         "collision_date": formatted_date,
         "collision_time": formatted_time,
     }
-    subject = f"{FORM_TYPE} - {collision_case_no} - {data.get('police_file_num', '')}"
+    subject = f"{agency_name} - {FORM_TYPE} - {collision_case_no} - {data.get('police_file_num', '')}"
 
     success, kwargs = rsi_email.send_mv6020_copy(
         config=Config,

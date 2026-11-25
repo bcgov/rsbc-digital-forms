@@ -3,6 +3,7 @@ import logging
 import logging.config
 from python.common import form_middleware
 from python.common.helper import date_time_to_local_tz_string
+from python.common.models.agency import Agency
 from python.form_handler.config import Config
 import logging
 import json
@@ -158,6 +159,33 @@ def get_event_user_data(**args) ->tuple:
         logging.exception(e)
         return False, args
     return True,args
+
+def get_agency_data(**args) -> tuple:
+    logging.verbose(f"inside get_agency_data() with args: {args}")
+    try:
+        application = args.get('app')
+        db = args.get('db')
+        event_data = args.get('event_data')
+        user_data = args['user_data']
+        agency_id = event_data.get('agency_id')
+        if agency_id:
+            with application.app_context():
+                agency_data = db.session.query(Agency) \
+                    .filter(Agency.id == agency_id) \
+                    .all()
+                if len(agency_data) == 0 or len(agency_data) > 1:
+                    args['agency_data'] = user_data.get('agency_ref')
+                    return True, args
+                for a in agency_data:
+                    agency_dict = a.__dict__
+                    agency_dict.pop('_sa_instance_state', None)
+                    args['agency_data'] = agency_dict
+        else: 
+            args['agency_data'] = user_data.get('agency_ref')
+    except Exception as e:
+        logging.exception(e)
+        return False, args
+    return True, args
 
 
 def validate_event_retry_count(**args)->tuple:
