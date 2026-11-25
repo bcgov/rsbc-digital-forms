@@ -5,7 +5,7 @@ from python.common.helper import date_time_to_local_tz_string, format_date_only,
 from python.common.config import Config
 from python.common.enums import ErrorCode
 
-from python.common.models import ImpoundLotOperator, JurisdictionCrossRef, Province, Vehicle, VehicleStyle, VehicleType
+from python.common.models import Agency, ImpoundLotOperator, IRPProhibitionType, JurisdictionCrossRef, Province, Vehicle, VehicleStyle, VehicleType
 
 ride_url=Config.RIDE_API_URL
 ride_key=Config.RIDE_API_KEY
@@ -13,6 +13,7 @@ ride_key=Config.RIDE_API_KEY
 twelve_hours_submitted = "12hr_submitted"
 twenty_four_hours_submitted = "24hr_submitted"
 vi_submitted = "vi_submitted"
+irp_submitted = "irp_submitted"
 
 def twelve_hours_event(**args):
     try:
@@ -205,6 +206,82 @@ def vi_event(**args):
 
     return True, args
 
+def irp_event(**args):
+    form_data = args.get('form_data') or {}
+    irp_number = _trim(form_data.get('irp_number'))
+    event_id = (args.get('message') or {}).get('event_id')
+
+    try:
+        logging.verbose(f"sending irp_submitted to RIDE with args: {args}")
+        if len(args.keys()) == 0:
+            return True, args
+
+        # IRP payload follows the ODW irp mapping, so fill_common_payload_record is not used
+        payloadRecord = {}
+        payloadRecord["eventID"] = event_id
+        payloadRecord["eventVersion"] = 1.0
+        payloadRecord["eventDtm"] = date_time_to_local_tz_string(args['event_data']['created_dt'])
+        payloadRecord["eventType"] = irp_submitted
+        payloadRecord["irpNumber"] = irp_number
+        payloadRecord["viNumber"] = _trim(form_data.get('vi_number'))
+        prohibition_type = form_data.get('irp_prohibition_type')
+        payloadRecord["irpProhibitionType"] = prohibition_type
+        payloadRecord["prohibitionPeriodDays"] = get_irp_prohibition_period(prohibition_type, args)
+        payloadRecord["driverGender"] = form_data.get('gender')
+        payloadRecord["driverDateOfBirth"] = format_date_only(args['event_data']['driver_dob'])
+        payloadRecord["driverLicenceClass"] = _trim(form_data.get('driver_licence_class'))
+        payloadRecord["dateOfDriving"] = format_date_only(args['event_data']['date_of_driving'])
+        payloadRecord["timeOfDriving"] = args['event_data']['time_of_driving']
+        payloadRecord["agencyFileNumber"] = _trim(args['event_data']['agency_file_no'])
+        payloadRecord["officerDisplayName"] = args['user_data']['display_name']
+        payloadRecord["addressOfOffence"] = _trim(args['event_data']['intersection_or_address_of_offence'])
+        payloadRecord["offenceCity"] = form_middleware.get_city_name(args['event_data']['offence_city'], args)
+        payloadRecord["officerBadgeNumber"] = args['user_data']['badge_number']
+        agency = get_event_agency(args)
+        payloadRecord["vjurCde"] = agency.get('vjur')
+        payloadRecord["enforcementAgencyName"] = agency.get('agency_name')
+
+        eventPayload = {
+            'typeofevent': irp_submitted,
+            'irpPayload': payloadRecord,
+        }
+        fill_location(args, eventPayload)
+
+        endpoint = f"{ride_url}/dfV2events/irpsubmitted"
+        headers = {'ride-api-key': ride_key}
+        logging.info(f'calling RIDE Producer endpoint: {endpoint}')
+        logging.debug(f'payload: {eventPayload}')
+        logging.debug(f'headers: {headers}')
+        response = requests.post(endpoint, json=eventPayload, verify=False,headers=headers)
+        if response.status_code != 200:
+            args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': f'Error in sending irp_submitted event to RIDE, Response code: {response.status_code} response text: {response.text}',
+                        'event_type': 'IRP',
+                        'func': irp_event,
+                        'ticket_no': irp_number,
+                        'event_id': event_id
+                    }
+            logging.error(f'error code: {response.status_code} error message: {response.text}')
+            logging.error('error in sending irp_submitted event to RIDE')
+            return False, args
+        else:
+            logging.debug(response.text)
+    except Exception as e:
+        logging.error('error in sending irp_submitted event to RIDE')
+        logging.exception(e)
+        args['error'] = {
+                        'error_code': ErrorCode.R01,
+                        'error_details': e,
+                        'event_type': 'IRP',
+                        'func': irp_event,
+                        'ticket_no': irp_number,
+                        'event_id': event_id
+                    }
+        return False, args
+
+    return True, args
+
 def fill_location(args, eventPayload):
     if 'latitude' in args['event_data'] and 'longitude' in args['event_data'] and args['event_data']['latitude'] and args['event_data']['longitude']:
         eventPayload["locationRequestPayload"] = {}
@@ -242,8 +319,9 @@ def fill_common_payload_record(args, payloadRecord):
     payloadRecord["offenceCity"] = form_middleware.get_city_name(args['event_data']['offence_city'], args)
     payloadRecord["officerDisplayName"] = args['user_data']['display_name']
     payloadRecord["officerBadgeNumber"] = args['user_data']['badge_number']
-    payloadRecord["enforcementAgencyName"] = args['user_data']['agency_ref']['agency_name']
-    payloadRecord["vjurCde"] = args['user_data']['agency_ref']['vjur']
+    agency = get_event_agency(args)
+    payloadRecord["enforcementAgencyName"] = agency.get('agency_name')
+    payloadRecord["vjurCde"] = agency.get('vjur')
 
 
 def get_Province(args) -> str:
@@ -274,6 +352,41 @@ def get_jurisdiction(jurisdiction, args) -> str:
             else:
                 return juris_data[0].jurisdiction_name
     return None
+
+
+def get_irp_prohibition_period(prohibition_type, args) -> int:
+    if prohibition_type:
+        application = args.get('app')
+        db = args.get('db')
+        with application.app_context():
+            prohibition_data = db.session.query(IRPProhibitionType) \
+                    .filter(IRPProhibitionType.code == prohibition_type) \
+                    .all()
+            if len(prohibition_data) == 0:
+                logging.error(f"irp prohibition type not found: {prohibition_type}")
+            else:
+                return prohibition_data[0].prohibition_period
+    return None
+
+
+def get_event_agency(args) -> dict:
+    agency_id = args['event_data'].get('agency_id')
+    if agency_id:
+        application = args.get('app')
+        db = args.get('db')
+        with application.app_context():
+            agency_data = db.session.query(Agency) \
+                    .filter(Agency.id == agency_id) \
+                    .all()
+            if len(agency_data) == 0:
+                logging.error(f"agency not found: {agency_id}, using user agency")
+            else:
+                return {'vjur': agency_data[0].vjur, 'agency_name': agency_data[0].agency_name}
+    return args['user_data']['agency_ref']
+
+
+def _trim(value):
+    return value.strip() if isinstance(value, str) else value
 
 
 def get_vehicle_make_model(args) -> str:

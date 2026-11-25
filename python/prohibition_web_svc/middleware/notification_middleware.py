@@ -34,7 +34,10 @@ def log_payload_to_splunk(**kwargs) -> tuple:
         # do form specific masking if needed.
         if template_name == mv6020_helper.EMAIL_TEMPLATE:
             form_type = mv6020_helper.FORM_TYPE # add form_id to request payload
-            splunk_payload['data'] = mv6020_helper.mask_collision_sensitive_data(splunk_payload['data'])  
+            splunk_payload['data'] = mv6020_helper.mask_collision_sensitive_data(splunk_payload['data'])
+            # change reports also carry the parent revision
+            if splunk_payload.get('parentData'):
+                splunk_payload['parentData'] = mv6020_helper.mask_collision_sensitive_data(splunk_payload['parentData'])
         else:
             # generic notifications will have form_id field set.
             form_type = splunk_payload.get('form_id', template_name)

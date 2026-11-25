@@ -1,5 +1,6 @@
 from python.common.helper import str_to_integer
 from python.common.models import TarCollision, TarLocation, TarAdditionalCollisionDetails, TarWitnessInfo, TarEntity, TarInvolvedPerson, TarCharges
+from python.common.models.TAR.collision import ORIGINAL_REVISION
 from python.prohibition_web_svc.models.collision_request_payload import CollisionRequestPayload
 
 
@@ -11,6 +12,7 @@ class CollisionMapper:
         """
         tar_collision = TarCollision(
             collision_case_num=collision_request_payload['collision_case_num'],
+            revision=collision_request_payload.get('revision', ORIGINAL_REVISION),
             collision_scenario=collision_request_payload['collision_scenario']['value'] if collision_request_payload.get('collision_scenario') else None,
             police_file_num=collision_request_payload['police_file_num'],
             prime_file_vjur=collision_request_payload['prime_file_vjur']['value'] if collision_request_payload.get('prime_file_vjur') else None,
